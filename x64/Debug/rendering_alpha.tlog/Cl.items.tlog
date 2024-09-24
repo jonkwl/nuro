@@ -1,0 +1,10 @@
+D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui_demo.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_demo.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui_draw.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_draw.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui_impl_glfw.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_impl_glfw.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui_impl_opengl3.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_impl_opengl3.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui_tables.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_tables.obj
+D:\linear_algebra\rendering_alpha\imgui\imgui_widgets.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_widgets.obj
+D:\linear_algebra\rendering_alpha\engine\runtime.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\runtime.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\shader\Shader.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\Shader.obj
