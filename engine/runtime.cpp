@@ -27,21 +27,32 @@ struct _context {
 	int width = 800;
 	int height = 800;
 	string title = "Rendering Engine";
+	bool fullscreen = true;
 
 	GLFWwindow* window = nullptr;
 
 	bool wireframe = false;
 
-	double time = 0.0;
-	double last_time = 0.0;
-	double delta_time = 0.0;
+	float time = 0.0;
+	float last_time = 0.0;
+	float delta_time = 0.0;
 
-	float camera_fov = 45;
+	GLenum cursor_mode = GLFW_CURSOR_DISABLED;
+	glm::vec2 mouse_last;
+
+	float camera_fov = 70;
 	glm::vec3 camera_position;
 	glm::vec3 camera_rotation;
 
-	float movement_speed = 10.0f;
-	float rotation_speed = 0.25f;
+	float movement_speed = 2.0f;
+	float sensitivity = 1.0f;
+	bool lock_movement = false;
+
+	glm::vec2 key_axis;
+	glm::vec2 mouse_axis;
+
+	bool esc_pressed = false;
+	bool show_ui = false;
 };
 _context context;
 
@@ -60,36 +71,49 @@ void gl_viewport_set() {
 	glViewport(context.x, context.y, context.width, context.height);
 }
 
+void update_cursor() {
+	glfwSetInputMode(context.window, GLFW_CURSOR, context.cursor_mode);
+}
+
 void process_inputs() {
 	if (glfwGetKey(context.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(context.window, true);
 	}
 
 	if (glfwGetKey(context.window, GLFW_KEY_W) == GLFW_PRESS) {
-		context.camera_position.z += context.movement_speed * (float)context.delta_time;
+		context.key_axis.x = 1.0f;
 	} else if (glfwGetKey(context.window, GLFW_KEY_S) == GLFW_PRESS) {
-		context.camera_position.z -= context.movement_speed * (float)context.delta_time;
+		context.key_axis.x = -1.0f;
+	}
+	else {
+		context.key_axis.x = 0.0f;
 	}
 
 	if (glfwGetKey(context.window, GLFW_KEY_D) == GLFW_PRESS) {
-		context.camera_position.x += context.movement_speed * (float)context.delta_time;
+		context.key_axis.y = 1.0f;
 	}
 	else if (glfwGetKey(context.window, GLFW_KEY_A) == GLFW_PRESS) {
-		context.camera_position.x -= context.movement_speed * (float)context.delta_time;
+		context.key_axis.y = -1.0f;
+	}
+	else {
+		context.key_axis.y = 0.0f;
 	}
 
-	if (glfwGetKey(context.window, GLFW_KEY_T) == GLFW_PRESS) {
-		context.camera_position.y += context.movement_speed * (float)context.delta_time;
+	if (glfwGetKey(context.window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		if (context.esc_pressed) return;
+		context.esc_pressed = true;
+		context.show_ui = !context.show_ui;
+		if (context.cursor_mode == GLFW_CURSOR_NORMAL) {
+			context.cursor_mode = GLFW_CURSOR_DISABLED;
+		}
+		else {
+			context.cursor_mode = GLFW_CURSOR_NORMAL;
+		}
+		update_cursor();
+		context.lock_movement = !context.lock_movement;
 	}
-	else if (glfwGetKey(context.window, GLFW_KEY_G) == GLFW_PRESS) {
-		context.camera_position.y -= context.movement_speed * (float)context.delta_time;
-	}
-
-	if (glfwGetKey(context.window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		context.camera_rotation.y += context.rotation_speed * 10 * (float)context.delta_time;
-	}
-	else if (glfwGetKey(context.window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		context.camera_rotation.y -= context.rotation_speed * 10 * (float)context.delta_time;
+	else {
+		context.esc_pressed = false;
 	}
 }
 
@@ -257,12 +281,28 @@ void setup_ui() {
 	ImGui_ImplOpenGL3_Init("#version 130");
 }
 
-void vec3_dialog(string name, glm::vec3& vec, float min = -10.0f, float max = 10.0f) {
+void vec3_dialog(string name, glm::vec3& value, float min = -10.0f, float max = 10.0f) {
 	ImGui::Begin(string("Vector3: " + name).c_str());
 
-	ImGui::SliderFloat("X", &vec.x, min, max);
-	ImGui::SliderFloat("Y", &vec.y, min, max);
-	ImGui::SliderFloat("Z", &vec.z, min, max);
+	ImGui::SliderFloat("X", &value.x, min, max);
+	ImGui::SliderFloat("Y", &value.y, min, max);
+	ImGui::SliderFloat("Z", &value.z, min, max);
+
+	ImGui::End();
+}
+
+void float_dialog(string name, float& value, float min = -10.0f, float max = 10.0f) {
+	ImGui::Begin(string("Float:" + name).c_str());
+
+	ImGui::SliderFloat(name.c_str(), &value, min, max);
+
+	ImGui::End();
+}
+
+void bool_dialog(string name, bool& value, float min = -10.0f, float max = 10.0f) {
+	ImGui::Begin(string("Bool:" + name).c_str());
+
+	ImGui::Checkbox(name.c_str(), &value);
 
 	ImGui::End();
 }
@@ -330,6 +370,46 @@ glm::mat4 mvp(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
 	return projection * view * model;
 }
 
+glm::vec3 vec_forward(const glm::vec3& rotation) {
+	// Convert Euler angles (in degrees) to radians
+	glm::vec3 rotation_rad = glm::radians(rotation);
+
+	// Create a quaternion from the Euler angles
+	glm::quat quaternion = glm::quat(rotation_rad);
+
+	// Define the forward vector in local space (typically negative Z-axis)
+	glm::vec3 forward_local = glm::vec3(0.0f, 0.0f, 1.0f); // Points forward in local space
+
+	// Rotate the local forward vector by the quaternion
+	glm::vec3 forward_vector = quaternion * forward_local;
+
+	// Return the forward vector
+	return forward_vector;
+}
+
+glm::vec3 vec_right(const glm::vec3& rotation) {
+	glm::vec3 rotation_rad = glm::radians(rotation);
+	glm::quat quaternion = glm::quat(rotation_rad);
+	glm::vec3 right_local = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::vec3 right_vector = quaternion * right_local;
+	return right_vector;
+}
+
+void calculate_camera_movement() {
+	if (context.lock_movement) return;
+
+	glm::vec3 cam_forward = vec_forward(context.camera_rotation);
+	glm::vec3 cam_right = vec_right(context.camera_rotation);
+
+	glm::vec3 rotate_direction = glm::vec3(-context.mouse_axis.y, context.mouse_axis.x, 0.0f);
+	glm::vec3 new_rotation = context.camera_rotation + (rotate_direction * context.sensitivity * context.delta_time);
+	new_rotation = glm::vec3(glm::clamp(new_rotation.x, -90.0f, 90.0f), new_rotation.y, new_rotation.z);
+	context.camera_rotation = new_rotation;
+
+	glm::vec3 movement_direction = cam_forward * context.key_axis.x + cam_right * context.key_axis.y;
+	context.camera_position += movement_direction * context.movement_speed * context.delta_time;
+}
+
 int main() {
 	glfwSetErrorCallback(glfw_error_callback);
 
@@ -339,11 +419,28 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	if (context.fullscreen) {
+		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+
+		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+		context.width = mode->width;
+		context.height = mode->height;
+	}
+
 	context.window = glfwCreateWindow(context.width, context.height, context.title.c_str(), nullptr, nullptr);
 	glfwSetFramebufferSizeCallback(context.window, framebuffer_size_callback);
 
 	if (context.window == nullptr) {
 		return throw_err("Creation of window failed");
+	}
+
+	update_cursor();
+
+	if (context.wireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	glfwMakeContextCurrent(context.window);
@@ -359,8 +456,6 @@ int main() {
 	unsigned int vao = triangle_vao(&indice_count);
 	unsigned int texture = getTexture();
 
-	if (context.wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	setup_ui();
 
 	glEnable(GL_DEPTH_TEST);
@@ -370,6 +465,10 @@ int main() {
 
 	context.last_time = glfwGetTime();
 
+	double mouseX, mouseY;
+	glfwGetCursorPos(context.window, &mouseX, &mouseY);
+	context.mouse_last = glm::vec2(mouseX, mouseY);
+
 	context.camera_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	while (!glfwWindowShouldClose(context.window)) {
@@ -377,6 +476,12 @@ int main() {
 		context.time = glfwGetTime();
 		context.delta_time = context.time - context.last_time;
 		context.last_time = context.time;
+
+		// set mouse
+		double mouseX, mouseY;
+		glfwGetCursorPos(context.window, &mouseX, &mouseY);
+		context.mouse_axis = glm::vec2(mouseX - context.mouse_last.x, -(mouseY - context.mouse_last.y));
+		context.mouse_last = glm::vec2(mouseX, mouseY);
 
 		// clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -398,16 +503,25 @@ int main() {
 			glm::vec3(-2.0f, 0.0f, 5.0f),
 			glm::vec3(2.0f, 0.0f, 5.0f),
 			glm::vec3(-2.0f, 0.0f, 7.0f),
-			glm::vec3(2.0f, 0.0f, 7.0f)
+			glm::vec3(2.0f, 0.0f, 7.0f),
+			glm::vec3(0.0f, 0.0f, 9.0f)
 		};
 
 		for (int i = 0; i < sizeof(objects) / sizeof(objects[0]); i++) {
-			float angle = 20.0f * i + (float)context.time * 10;
+			glm::vec3 position = objects[i];
+			glm::vec3 rotation(0.0f, 0.0f, 0.0f);
+			glm::vec3 scale(1.0f, 1.0f, 1.0f);
+
+			if (i == 0) {
+				position = glm::vec3(position.x, (sin(context.time * 2) + 1) / 2, position.z);
+				rotation = glm::vec3(context.time * 70, context.time * 50, context.time * 30);
+			}
 
 			// calculate new camera transform
+			calculate_camera_movement();
 
 			// calculate mvp
-			glm::mat4 model = model_matrix(objects[i], glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+			glm::mat4 model = model_matrix(position, rotation, scale);
 			glm::mat4 view = view_matrix();
 			glm::mat4 projection = projection_matrix();
 
@@ -423,8 +537,19 @@ int main() {
 		ImGui::NewFrame();
 
 		// custom ui
-		vec3_dialog("Camera Position", context.camera_position);
-		vec3_dialog("Camera Rotation", context.camera_rotation, -360.0f, 360.0f);
+		if (context.show_ui) {
+			vec3_dialog("Camera Position", context.camera_position);
+			vec3_dialog("Camera Rotation", context.camera_rotation, -360.0f, 360.0f);
+			float_dialog("FOV", context.camera_fov, 30, 90);
+			bool_dialog("Wireframe", context.wireframe);
+
+			if (context.wireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		}
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
