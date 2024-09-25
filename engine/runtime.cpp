@@ -10,16 +10,22 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include <stb_image.h>
+
 #include "../engine/rendering/shader/Shader.h"
+
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 using namespace std;
 
 struct _context {
-	float time;
+	double time = 0.0;
 	int x = 0;
 	int y = 0;
 	int width = 800;
-	int height = 600;
+	int height = 800;
 	string title = "Rendering Engine";
 	GLFWwindow* window = nullptr;
 	bool wireframe = false;
@@ -55,13 +61,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 
 int triangle_vao(unsigned int* indice_count) {
 	// define vertices and indices
-	unsigned int vertice_components = 7;
+	unsigned int vertice_components = 9;
 	float vertices[] = {
-		// position (vec3)      // base_color (vec4)
-		0.5f,  -0.5f,  0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f,  0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
-		0.5f,   0.5f,  0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
-		-0.5f,  0.5f,  0.0f,    0.0f, 1.0f, 1.0f, 1.0f
+		// position (vec3)      // base_color (vec4)       // texture coords
+		0.5f,  -0.5f,  0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+		-0.5f, -0.5f,  0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    0.0f, 0.0f,
+		0.5f,   0.5f,  0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		-0.5f,  0.5f,  0.0f,    0.0f, 1.0f, 1.0f, 1.0f,    0.0f, 1.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
@@ -87,6 +93,9 @@ int triangle_vao(unsigned int* indice_count) {
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertice_components * sizeof(float), (void*)(3*sizeof(float)));
 	glEnableVertexAttribArray(1);
 
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertice_components * sizeof(float), (void*)(7 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
 	// create element buffer object (ebo)
 	unsigned int ebo;
 	glGenBuffers(1, &ebo);
@@ -99,6 +108,35 @@ int triangle_vao(unsigned int* indice_count) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	return vao;
+}
+
+unsigned int getTexture() {
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, channels;
+
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* data = stbi_load("assets/textures/texture.jpg", &width, &height, &channels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+	return texture;
 }
 
 void setup_ui() {
@@ -156,6 +194,7 @@ int main() {
 	Shader default_shader("assets/tmp/shaders/vertex.shader", "assets/tmp/shaders/fragment.shader");
 	unsigned int indice_count;
 	unsigned int vao = triangle_vao(&indice_count);
+	unsigned int texture = getTexture();
 
 	if(context.wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -176,6 +215,9 @@ int main() {
 
 		// set shader
 		default_shader.use();
+
+		// set texture
+		glBindTexture(GL_TEXTURE_2D, texture);
 
 		// render objects
 		glBindVertexArray(vao);

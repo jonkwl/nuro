@@ -18,7 +18,7 @@ public:
 	void setInt(const std::string& name, int value) const;
 	void setFloat(const std::string& name, float value) const;
 private:
-	static bool shader_compiled(int shader, std::string* log);
+	static bool shader_compiled(std::string type, int shader, std::string* log);
 	static bool program_linked(int program, std::string* log);
 };
 

@@ -14,7 +14,7 @@ Shader::Shader(std::string vertex_path, std::string fragment_path) {
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vertex_code, nullptr);
 	glCompileShader(vertex);
-	if (!shader_compiled(vertex, &log)) {
+	if (!shader_compiled(std::string("Vertex"), vertex, &log)) {
 		std::cerr << log << std::endl;
 		return;
 	}
@@ -22,7 +22,7 @@ Shader::Shader(std::string vertex_path, std::string fragment_path) {
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fragment_code, nullptr);
 	glCompileShader(fragment);
-	if (!shader_compiled(fragment, &log)) {
+	if (!shader_compiled(std::string("Fragment"), fragment, &log)) {
 		std::cerr << log << std::endl;
 		return;
 	}
@@ -57,14 +57,14 @@ void Shader::setFloat(const std::string& name, float value) const
 	glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
 
-bool Shader::shader_compiled(int shader, std::string* log) {
+bool Shader::shader_compiled(std::string type, int shader, std::string* log) {
 	int success;
 	char shader_log[512];
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(shader, 512, NULL, shader_log);
 		std::string _log(shader_log);
-		*log = "Shader Compilation Error | " + _log;
+		*log = "Shader Compilation Error / " + type + " | " + _log;
 		return false;
 	}
 	return true;

@@ -1,5 +1,13 @@
-﻿  runtime.cpp
-D:\linear_algebra\rendering_alpha\engine\runtime.cpp(169,29): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+﻿  stb_image.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  runtime.cpp
   Shader.cpp
   Code wird generiert...
+  glad.c
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe
