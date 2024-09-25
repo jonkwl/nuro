@@ -22,35 +22,48 @@
 using namespace std;
 
 struct _context {
+	// Window
 	int x = 0;
 	int y = 0;
 	int width = 800;
 	int height = 800;
 	string title = "Rendering Engine";
 	bool fullscreen = true;
-
 	GLFWwindow* window = nullptr;
 
+	// Render settings
 	bool wireframe = false;
 
+	// Time
 	float time = 0.0;
 	float last_time = 0.0;
 	float delta_time = 0.0;
 
+	// Environmental settings
+	glm::vec4 background_color;
+
+	// Cursor settings
 	GLenum cursor_mode = GLFW_CURSOR_DISABLED;
 	glm::vec2 mouse_last;
 
+	// Camera settings
 	float camera_fov = 70;
 	glm::vec3 camera_position;
 	glm::vec3 camera_rotation;
 
-	float movement_speed = 2.0f;
-	float sensitivity = 1.0f;
+	// Movement settings
+	float movement_speed = 12.0f;
+	float sensitivity = 6.0f;
 	bool lock_movement = false;
+	bool lock_lookaround = false;
 
+	// Input settings
+	float key_smooth_factor = 5.0f;
 	glm::vec2 key_axis;
+	glm::vec2 key_axis_smooth;
 	glm::vec2 mouse_axis;
 
+	// Input cache
 	bool esc_pressed = false;
 	bool show_ui = false;
 };
@@ -110,7 +123,7 @@ void process_inputs() {
 			context.cursor_mode = GLFW_CURSOR_NORMAL;
 		}
 		update_cursor();
-		context.lock_movement = !context.lock_movement;
+		context.lock_lookaround = !context.lock_lookaround;
 	}
 	else {
 		context.esc_pressed = false;
@@ -307,6 +320,14 @@ void bool_dialog(string name, bool& value, float min = -10.0f, float max = 10.0f
 	ImGui::End();
 }
 
+void color_dialog(string name, glm::vec4& value) {
+	ImGui::Begin(string("Bool:" + name).c_str());
+
+	ImGui::ColorPicker4(name.c_str(), (float*)&value);
+
+	ImGui::End();
+}
+
 glm::mat4 model_matrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 	glm::mat4 model(1.0f);
 
@@ -395,19 +416,24 @@ glm::vec3 vec_right(const glm::vec3& rotation) {
 	return right_vector;
 }
 
+void refresh_key_axis_smooth() {
+	context.key_axis_smooth = glm::mix(context.key_axis_smooth, context.key_axis, context.key_smooth_factor * context.delta_time);
+}
+
 void calculate_camera_movement() {
-	if (context.lock_movement) return;
+	if (!context.lock_movement) {
+		glm::vec3 cam_forward = vec_forward(context.camera_rotation);
+		glm::vec3 cam_right = vec_right(context.camera_rotation);
+		glm::vec3 movement_direction = cam_forward * context.key_axis_smooth.x + cam_right * context.key_axis_smooth.y;
+		context.camera_position += movement_direction * context.movement_speed * context.delta_time;
+	}
 
-	glm::vec3 cam_forward = vec_forward(context.camera_rotation);
-	glm::vec3 cam_right = vec_right(context.camera_rotation);
-
-	glm::vec3 rotate_direction = glm::vec3(-context.mouse_axis.y, context.mouse_axis.x, 0.0f);
-	glm::vec3 new_rotation = context.camera_rotation + (rotate_direction * context.sensitivity * context.delta_time);
-	new_rotation = glm::vec3(glm::clamp(new_rotation.x, -90.0f, 90.0f), new_rotation.y, new_rotation.z);
-	context.camera_rotation = new_rotation;
-
-	glm::vec3 movement_direction = cam_forward * context.key_axis.x + cam_right * context.key_axis.y;
-	context.camera_position += movement_direction * context.movement_speed * context.delta_time;
+	if (!context.lock_lookaround) {
+		glm::vec3 rotate_direction = glm::vec3(-context.mouse_axis.y, context.mouse_axis.x, 0.0f);
+		glm::vec3 new_rotation = context.camera_rotation + (rotate_direction * context.sensitivity * context.delta_time);
+		new_rotation = glm::vec3(glm::clamp(new_rotation.x, -90.0f, 90.0f), new_rotation.y, new_rotation.z);
+		context.camera_rotation = new_rotation;
+	}
 }
 
 int main() {
@@ -483,7 +509,11 @@ int main() {
 		context.mouse_axis = glm::vec2(mouseX - context.mouse_last.x, -(mouseY - context.mouse_last.y));
 		context.mouse_last = glm::vec2(mouseX, mouseY);
 
+		// refresh key axis smooth
+		refresh_key_axis_smooth();
+
 		// clear screen
+		glClearColor(context.background_color.x, context.background_color.y, context.background_color.z, context.background_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// process inputs
@@ -497,6 +527,8 @@ int main() {
 
 		// render objects
 		glBindVertexArray(vao);
+
+		calculate_camera_movement();
 		
 		glm::vec3 objects[] = {
 			glm::vec3(0.0f, 0.0f, 5.0f),
@@ -516,9 +548,6 @@ int main() {
 				position = glm::vec3(position.x, (sin(context.time * 2) + 1) / 2, position.z);
 				rotation = glm::vec3(context.time * 70, context.time * 50, context.time * 30);
 			}
-
-			// calculate new camera transform
-			calculate_camera_movement();
 
 			// calculate mvp
 			glm::mat4 model = model_matrix(position, rotation, scale);
@@ -542,6 +571,7 @@ int main() {
 			vec3_dialog("Camera Rotation", context.camera_rotation, -360.0f, 360.0f);
 			float_dialog("FOV", context.camera_fov, 30, 90);
 			bool_dialog("Wireframe", context.wireframe);
+			color_dialog("Background Color", context.background_color);
 
 			if (context.wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
