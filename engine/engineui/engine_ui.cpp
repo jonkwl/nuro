@@ -1,6 +1,6 @@
 #include "engine_ui.h"
 
-void EngineUI::Setup() {
+void EngineUI::setup() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -13,13 +13,13 @@ void EngineUI::Setup() {
 	ImGui_ImplOpenGL3_Init("#version 130");
 }
 
-void EngineUI::NewFrame() {
+void EngineUI::newFrame() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 }
 
-void EngineUI::Render() {
+void EngineUI::render() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

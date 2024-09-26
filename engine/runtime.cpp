@@ -152,14 +152,20 @@ int triangle_vao(unsigned int* indice_count) {
 }
 
 int main() {
+	//
+	// SETUP PHASE 1: CREATE CONTEXT AND LOAD GRAPHICS API //
+	//
+
+	Log::printProcessStart("Runtime", "Creating context...");
+
+	// Set error callback and initialize context
 	glfwSetErrorCallback(glfw_error_callback);
-
 	glfwInit();
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	// Check for fullscreen
 	if (Context::fullscreen) {
 		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
@@ -171,69 +177,95 @@ int main() {
 		Context::height = mode->height;
 	}
 
+	// Create window
 	Context::window = glfwCreateWindow(Context::width, Context::height, Context::title.c_str(), nullptr, nullptr);
 	glfwSetFramebufferSizeCallback(Context::window, Context::framebuffer_size_callback);
-
 	if (Context::window == nullptr) {
 		return throw_err("Creation of window failed");
 	}
 
-	Context::setCursor(Context::cursorMode);
-
-	if (Runtime::wireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-
+	// Load graphics api
 	glfwMakeContextCurrent(Context::window);
-
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		return throw_err("Initialization of GLAD failed");
 	}
 
-	// Refresh viewport
+	// Update context
 	Context::set_viewport();
+	Context::setCursor(Context::cursorMode);	
 
-	// Shader default_shader("assets/tmp/shaders/vertex.shader", "assets/tmp/shaders/fragment.shader");
+	// Setup render settings
+	if (Runtime::wireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	Log::printProcessDone("Runtime", "Context created");
+
+	//
+	// SETUP PHASE 2: LOAD ASSETS, COMPILE SHADERS
+	//
+
+	Log::printProcessStart("Runtime", "Loading assets...");
+
+	// Cube vao
 	unsigned int indice_count;
 	unsigned int vao = triangle_vao(&indice_count);
 
+	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
 	std::vector<Shader*> shaders = ShaderBuilder::loadAndCompile(shader_paths);
 	Shader* default_shader = shaders.at(0);
 
-	EngineUI::Setup();
+	Log::printProcessDone("Runtime", "Loaded assets");
 
-	glEnable(GL_DEPTH_TEST);
+	//
+	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
+	//
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	Runtime::last_time = glfwGetTime();
-
-	// setup inputs
+	EngineUI::setup();
 	Input::setupInputs();
 
-	// Awake game logic
+	//
+	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
+	//
 	awake();
 
 	while (!glfwWindowShouldClose(Context::window)) {
-		// update time
+		//
+		// UPDATE PHASE 1: UPDATE GLOBAL TIMES
+		//
+
 		Runtime::time = glfwGetTime();
 		Runtime::delta_time = Runtime::time - Runtime::last_time;
 		Runtime::last_time = Runtime::time;
 
-		// update inputs
+		//
+		// UPDATE PHASE 2: UPDATE ANY SCRIPTS NEEDING UPDATE
+		//
+
 		Input::updateInputs();
 
-		// update game logic before rendering
+		//
+		// UPDATE PHASE 3: EXTERNAL TRANSFORM MANIPULATION (e.g. due to physics)
+		// (NONE)
+		//
+
+		//
+		// UPDATE PHASE 4: UPDATE GAME LOGIC
+		//
 		update();
 
-		// render next frame
+		//
+		// UPDATE PHASE 5: RENDER NEXT FRAME
+		//
 
+		// Clear screen buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glBindVertexArray(vao);
 
-		// check for inspector mode
+		// Select camera to be rendered (depending on whether inspector mode is activated)
 		if (!Runtime::inspectorMode) {
 			Runtime::renderCamera = Runtime::activeCamera;
 		}
@@ -242,27 +274,36 @@ int main() {
 			InspectorMode::refreshInspector();
 		}
 
+		// Render each linked entity
 		for (int i = 0; i < Runtime::entityLinks.size(); i++) {
 			Entity* entity = Runtime::entityLinks.at(i);
 
-			// set shader
+			// Bind vao
+			glBindVertexArray(vao);
+
+			// Set shader
 			default_shader->use();
 
-			// set texture
+			// Set texture
 			entity->texture->use();
 
-			// calculate mvp
+			// Calculate mvp
 			glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);
 
-			// set shader
+			// Set shader uniforms
 			default_shader->setMatrix4("mvp", mvp);
 
+			// Draw call
 			glDrawElements(GL_TRIANGLES, indice_count, GL_UNSIGNED_INT, 0);
 		}
 
+		//
+		// UPDATE PHASE 6: SETUP ENGINES INSPECTOR MODE IF ACTIVATED (UI ETC.)
+		//
+
 		if (Runtime::inspectorMode) {
 			// Engine UI
-			EngineUI::NewFrame();
+			EngineUI::newFrame();
 			if (Runtime::showEngineUI) {
 				EngineDialog::vec3_dialog("Camera Position", Runtime::renderCamera->position);
 				EngineDialog::vec3_dialog("Camera Rotation", Runtime::renderCamera->rotation, -360.0f, 360.0f);
@@ -276,13 +317,18 @@ int main() {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				}
 			}
-			EngineUI::Render();
+			EngineUI::render();
 		}
 
-		// handle events and buffer
+		//
+		// UPDATE PHASE 7: MANAGE WINDOW CONTEXT AND PROCESS GRAPHICS API EVENTS
+		//
+
 		glfwSwapBuffers(Context::window);
 		glfwPollEvents();
 	}
+
+	// Exit application
 
 	glfwTerminate();
 	return 0;

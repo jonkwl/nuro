@@ -9,7 +9,7 @@
 class EngineUI
 {
 public:
-	static void Setup();
-	static void NewFrame();
-	static void Render();
+	static void setup();
+	static void newFrame();
+	static void render();
 };
