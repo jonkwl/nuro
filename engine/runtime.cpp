@@ -13,27 +13,6 @@ bool Runtime::wireframe = false;
 bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
 
-struct InspectorModeSetup {
-	float movement_speed = 12.0f;
-	float sensitivity = 6.0f;
-	bool lock_movement = false;
-	bool lock_lookaround = false;
-};
-InspectorModeSetup inspectorModeSetup;
-void refresh_inspector() {
-	Camera* camera = Runtime::inspectorCamera;
-	glm::vec3 cam_forward = VectorHelper::forward(camera->rotation);
-	glm::vec3 cam_right = VectorHelper::right(camera->rotation);
-	glm::vec3 movement_direction = cam_forward * Input::keyAxisSmooth.x + cam_right * Input::keyAxisSmooth.y;
-	camera->position += movement_direction * inspectorModeSetup.movement_speed * Runtime::delta_time;
-	if (!Runtime::showEngineUI) {
-		glm::vec3 rotate_direction = glm::vec3(-Input::mouseAxis.y, Input::mouseAxis.x, 0.0f);
-		glm::vec3 new_rotation = camera->rotation + (rotate_direction * inspectorModeSetup.sensitivity * Runtime::delta_time);
-		new_rotation = glm::vec3(glm::clamp(new_rotation.x, -90.0f, 90.0f), new_rotation.y, new_rotation.z);
-		camera->rotation = new_rotation;
-	}
-}
-
 static void glfw_error_callback(int error, const char* description)
 {
 	fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -253,10 +232,10 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glBindVertexArray(vao);
 
-		// check for inspector camera
+		// check for inspector mode
 		if (Runtime::inspectorMode) {
 			Runtime::activeCamera = Runtime::inspectorCamera;
-			refresh_inspector();
+			InspectorMode::refreshInspector();
 		}
 
 		for (int i = 0; i < Runtime::entityLinks.size(); i++) {

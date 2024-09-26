@@ -1,4 +1,8 @@
-﻿  runtime.cpp
-D:\linear_algebra\rendering_alpha\engine\runtime.cpp(230,34): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
-D:\linear_algebra\rendering_alpha\engine\runtime.cpp(241,30): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+﻿  input.cpp
+  inspector_mode.cpp
+  game_logic.cpp
+  runtime.cpp
+D:\linear_algebra\rendering_alpha\engine\runtime.cpp(209,34): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+D:\linear_algebra\rendering_alpha\engine\runtime.cpp(220,30): warning C4244: "=": Konvertierung von "double" in "float", möglicher Datenverlust
+  Code wird generiert...
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe

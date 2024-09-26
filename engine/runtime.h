@@ -43,6 +43,8 @@ using json = nlohmann::json;
 
 #include "../engine/utils/vector_helper.h"
 
+#include "../engine/utils/inspector_mode.h"
+
 class Runtime {
 public:
 	// Entity system
