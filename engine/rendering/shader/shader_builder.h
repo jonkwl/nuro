@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "../engine/rendering/shader/shader.h"
-#include "../engine/utils/log/log.h"
-#include "../engine/utils/iohandler/iohandler.h"
+#include "../engine/utils/log.h"
+#include "../engine/utils/iohandler.h"
 
 class ShaderBuilder
 {

@@ -2,6 +2,8 @@
 
 #include <glm.hpp>
 
+#include "../engine/rendering/texture/texture.h"
+
 class Entity
 {
 public:
@@ -10,4 +12,6 @@ public:
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
+
+	Texture* texture;
 };

@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 #include <string>
-#include "../../utils/log/log.h"
-#include "../../utils/iohandler/iohandler.h"
+#include "../../utils/log.h"
+#include "../../utils/iohandler.h"
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 

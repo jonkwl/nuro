@@ -4,6 +4,7 @@
 
 class Camera
 {
+public:
 	Camera();
 
 	glm::vec3 position;

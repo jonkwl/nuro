@@ -135,11 +135,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\context\context.cpp" />
     <ClCompile Include="engine\objects\camera.cpp" />
     <ClCompile Include="engine\objects\entity.cpp" />
     <ClCompile Include="engine\rendering\shader\shader_builder.cpp" />
-    <ClCompile Include="engine\utils\iohandler\iohandler.cpp" />
-    <ClCompile Include="engine\utils\log\log.cpp" />
+    <ClCompile Include="engine\utils\iohandler.cpp" />
+    <ClCompile Include="engine\utils\log.cpp" />
+    <ClCompile Include="engine\rendering\core\render_core.cpp" />
+    <ClCompile Include="engine\input\input.cpp" />
+    <ClCompile Include="engine\engineui\engine_dialog.cpp" />
+    <ClCompile Include="engine\engineui\engine_ui.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -153,16 +158,22 @@
     <ClCompile Include="engine\runtime.cpp" />
     <ClCompile Include="engine\rendering\shader\shader.cpp" />
     <ClCompile Include="engine\rendering\texture\texture.cpp" />
+    <ClCompile Include="engine\utils\vector_helper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\context\context.h" />
     <ClInclude Include="engine\objects\camera.h" />
     <ClInclude Include="engine\rendering\shader\shader_builder.h" />
     <ClInclude Include="engine\runtime.h" />
-    <ClInclude Include="engine\utils\log\log.h" />
+    <ClInclude Include="engine\utils\log.h" />
     <ClInclude Include="engine\objects\entity.h" />
+    <ClInclude Include="engine\rendering\core\render_core.h" />
+    <ClInclude Include="engine\input\input.h" />
+    <ClInclude Include="engine\engineui\engine_dialog.h" />
+    <ClInclude Include="engine\engineui\engine_ui.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
-    <ClInclude Include="engine\utils\iohandler\iohandler.h" />
+    <ClInclude Include="engine\utils\iohandler.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
@@ -174,6 +185,7 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="engine\rendering\shader\shader.h" />
     <ClInclude Include="engine\rendering\texture\texture.h" />
+    <ClInclude Include="engine\utils\vector_helper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

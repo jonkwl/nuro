@@ -57,10 +57,10 @@
     <ClCompile Include="engine\rendering\shader\shader_builder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\iohandler\iohandler.cpp">
+    <ClCompile Include="engine\utils\iohandler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\log\log.cpp">
+    <ClCompile Include="engine\utils\log.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\rendering\texture\texture.cpp">
@@ -73,6 +73,24 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\objects\camera.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\core\render_core.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\input.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\context\context.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\engineui\engine_dialog.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\engineui\engine_ui.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\utils\vector_helper.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,7 +125,7 @@
     <ClInclude Include="engine\rendering\shader\shader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\iohandler\iohandler.h">
+    <ClInclude Include="engine\utils\iohandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="stb\stb_image.h">
@@ -116,7 +134,7 @@
     <ClInclude Include="engine\rendering\shader\shader_builder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\log\log.h">
+    <ClInclude Include="engine\utils\log.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\texture\texture.h">
@@ -132,6 +150,24 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\objects\camera.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\core\render_core.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\input.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\context\context.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\engine_dialog.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\engine_ui.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utils\vector_helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

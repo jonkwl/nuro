@@ -4,7 +4,7 @@
 #include <stb_image.h>
 #include <string>
 
-#include "../engine/utils/log/log.h"
+#include "../engine/utils/log.h"
 
 class Texture
 {

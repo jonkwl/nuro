@@ -7,8 +7,20 @@
 #include "../engine/objects/camera.h"
 
 void awake() {
-	Entity* object = Runtime::createEntity();
-	object->position.z = 5.0f;
+	// Import textures
+	bool uploaded;
+	Texture* plankTexture = new Texture("./user/assets/textures/plank.jpg", uploaded);
+	Texture* obamaTexture = new Texture("./user/assets/textures/obama.jpg", uploaded);
+
+	// Create objects
+	Entity* plank = Runtime::createEntity();
+	plank->position.z = 5.0f;
+	plank->texture = plankTexture;
+
+	Entity* obama = Runtime::createEntity();
+	obama->position.x = 1.5f;
+	obama->position.z = 5.0f;
+	obama->texture = obamaTexture;
 }
 
 void update() {

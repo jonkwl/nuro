@@ -1,8 +1,13 @@
+D:\linear_algebra\rendering_alpha\engine\context\context.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\context.obj
 D:\linear_algebra\rendering_alpha\engine\objects\camera.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\camera.obj
 D:\linear_algebra\rendering_alpha\engine\objects\entity.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\entity.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader_builder.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\shader_builder.obj
-D:\linear_algebra\rendering_alpha\engine\utils\iohandler\iohandler.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\iohandler.obj
-D:\linear_algebra\rendering_alpha\engine\utils\log\log.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\log.obj
+D:\linear_algebra\rendering_alpha\engine\utils\iohandler.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\iohandler.obj
+D:\linear_algebra\rendering_alpha\engine\utils\log.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\log.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\core\render_core.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\render_core.obj
+D:\linear_algebra\rendering_alpha\engine\input\input.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\input.obj
+D:\linear_algebra\rendering_alpha\engine\engineui\engine_dialog.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\engine_dialog.obj
+D:\linear_algebra\rendering_alpha\engine\engineui\engine_ui.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\engine_ui.obj
 D:\linear_algebra\rendering_alpha\user\src\game_logic.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\game_logic.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj
 D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj
@@ -16,3 +21,4 @@ D:\linear_algebra\rendering_alpha\imgui\imgui_widgets.cpp;D:\linear_algebra\rend
 D:\linear_algebra\rendering_alpha\engine\runtime.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\runtime.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\shader.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\texture\texture.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\texture.obj
+D:\linear_algebra\rendering_alpha\engine\utils\vector_helper.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\vector_helper.obj
