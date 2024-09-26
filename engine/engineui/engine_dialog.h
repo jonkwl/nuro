@@ -14,5 +14,7 @@ public:
 	static void float_dialog(std::string name, float& value, float min = -10.0f, float max = 10.0f);
 	static void bool_dialog(std::string name, bool& value);
 	static void color_dialog(std::string name, glm::vec4& value);
+	
+	static void show_diagnostics(int fps);
 };
 

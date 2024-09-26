@@ -53,10 +53,11 @@ public:
 	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 	static void useCamera(Camera* camera);
 
-	// Time
+	// Time & frames
 	static float time; // Time passed since application beginning
-	static float last_time; // Time passed since application beginning of last frame
-	static float delta_time; // Frame delta time
+	static float lastTime; // Time passed since application beginning of last frame
+	static float deltaTime; // Frame delta time
+	static int fps; // current fps
 
 	// Render settings
 	static bool wireframe; // Wireframe option
@@ -64,4 +65,5 @@ public:
 	// Engine settings
 	static bool inspectorMode; // Activates engines inspector mode
 	static bool showEngineUI; // Shows engine ui (only available in inspector mode)
+	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 };

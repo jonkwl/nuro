@@ -33,3 +33,11 @@ void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
 
     ImGui::End();
 }
+
+void EngineDialog::show_diagnostics(int fps) {
+    ImGui::Begin("Diagnostics");
+
+    ImGui::LabelText("FPS", "%d", fps);
+
+    ImGui::End();
+}

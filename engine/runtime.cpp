@@ -6,13 +6,15 @@ Camera* Runtime::activeCamera = new Camera();
 Camera* Runtime::inspectorCamera = new Camera();
 
 float Runtime::time = 0.0f;
-float Runtime::last_time = 0.0f;
-float Runtime::delta_time = 0.0f;
+float Runtime::lastTime = 0.0f;
+float Runtime::deltaTime = 0.0f;
+int Runtime::fps = 0;
 
 bool Runtime::wireframe = false;
 
-bool Runtime::inspectorMode = true;
+bool Runtime::inspectorMode = false;
 bool Runtime::showEngineUI = false;
+bool Runtime::showDiagnostics = false;
 
 Entity* Runtime::createEntity() {
 	Entity* entity = new Entity();
@@ -196,11 +198,12 @@ int main() {
 
 	// Setup render settings
 	if (Runtime::wireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
 	}
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glfwSwapInterval(1); // V-Sync
 
 	Log::printProcessDone("Runtime", "Context created");
 
@@ -239,8 +242,9 @@ int main() {
 		//
 
 		Runtime::time = glfwGetTime();
-		Runtime::delta_time = Runtime::time - Runtime::last_time;
-		Runtime::last_time = Runtime::time;
+		Runtime::deltaTime = Runtime::time - Runtime::lastTime;
+		Runtime::lastTime = Runtime::time;
+		Runtime::fps = static_cast<int>(1.0f / Runtime::deltaTime);
 
 		//
 		// UPDATE PHASE 2: UPDATE ANY SCRIPTS NEEDING UPDATE
@@ -249,7 +253,7 @@ int main() {
 		Input::updateInputs();
 
 		//
-		// UPDATE PHASE 3: EXTERNAL TRANSFORM MANIPULATION (e.g. due to physics)
+		// UPDATE PHASE 3: EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
 		// (NONE)
 		//
 
@@ -298,12 +302,13 @@ int main() {
 		}
 
 		//
-		// UPDATE PHASE 6: SETUP ENGINES INSPECTOR MODE IF ACTIVATED (UI ETC.)
+		// UPDATE PHASE 6: RENDER ENGINE UI
 		//
 
+		EngineUI::newFrame();
+
+		// Inspector mode ui
 		if (Runtime::inspectorMode) {
-			// Engine UI
-			EngineUI::newFrame();
 			if (Runtime::showEngineUI) {
 				EngineDialog::vec3_dialog("Camera Position", Runtime::renderCamera->position);
 				EngineDialog::vec3_dialog("Camera Rotation", Runtime::renderCamera->rotation, -360.0f, 360.0f);
@@ -317,8 +322,14 @@ int main() {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				}
 			}
-			EngineUI::render();
 		}
+
+		// Diagnostics ui
+		if (Runtime::showDiagnostics) {
+			EngineDialog::show_diagnostics(Runtime::fps);
+		}
+
+		EngineUI::render();
 
 		//
 		// UPDATE PHASE 7: MANAGE WINDOW CONTEXT AND PROCESS GRAPHICS API EVENTS

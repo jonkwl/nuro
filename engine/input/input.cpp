@@ -47,7 +47,7 @@ void Input::updateInputs() {
 		keyAxis.y = 0.0f;
 	}
 
-	Input::keyAxisSmooth = glm::mix(Input::keyAxisSmooth, Input::keyAxis, Input::keyAxisSmoothingFactor * Runtime::delta_time);
+	Input::keyAxisSmooth = glm::mix(Input::keyAxisSmooth, Input::keyAxis, Input::keyAxisSmoothingFactor * Runtime::deltaTime);
 
 	// get escape input
 	if (glfwGetKey(Context::window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
