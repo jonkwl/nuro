@@ -35,16 +35,6 @@ int throw_err(std::string message) {
 	return -1;
 }
 
-void gl_viewport_set() {
-	glViewport(Context::viewport_x, Context::viewport_y, Context::width, Context::height);
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	Context::width = width;
-	Context::height = height;
-	gl_viewport_set();
-}
-
 int triangle_vao(unsigned int* indice_count) {
 	// define vertices and indices
 	unsigned int vertice_components = 9;
@@ -182,7 +172,7 @@ int main() {
 	}
 
 	Context::window = glfwCreateWindow(Context::width, Context::height, Context::title.c_str(), nullptr, nullptr);
-	glfwSetFramebufferSizeCallback(Context::window, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(Context::window, Context::framebuffer_size_callback);
 
 	if (Context::window == nullptr) {
 		return throw_err("Creation of window failed");
@@ -200,7 +190,8 @@ int main() {
 		return throw_err("Initialization of GLAD failed");
 	}
 
-	gl_viewport_set();
+	// Refresh viewport
+	Context::set_viewport();
 
 	// Shader default_shader("assets/tmp/shaders/vertex.shader", "assets/tmp/shaders/fragment.shader");
 	unsigned int indice_count;

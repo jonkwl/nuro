@@ -44,8 +44,8 @@ using json = nlohmann::json;
 class Runtime {
 public:
 	// Entity system
-	static std::vector<Entity*> entityLinks;
-	static Entity* createEntity();
+	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
+	static Entity* createEntity(); // Creates a new entity and links it with runtime
 
 	// Camera settings
 	static Camera* renderCamera; // This camera gets rendered to the screen
@@ -54,14 +54,14 @@ public:
 	static void useCamera(Camera* camera);
 
 	// Time
-	static float time;
-	static float last_time;
-	static float delta_time;
+	static float time; // Time passed since application beginning
+	static float last_time; // Time passed since application beginning of last frame
+	static float delta_time; // Frame delta time
 
 	// Render settings
-	static bool wireframe;
+	static bool wireframe; // Wireframe option
 
 	// Engine settings
-	static bool inspectorMode;
-	static bool showEngineUI;
+	static bool inspectorMode; // Activates engines inspector mode
+	static bool showEngineUI; // Shows engine ui (only available in inspector mode)
 };
