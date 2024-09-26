@@ -10,6 +10,6 @@
 class ShaderBuilder
 {
 public:
-	static std::vector<Shader> loadAndCompile(std::vector<std::string> path);
+	static std::vector<Shader*> loadAndCompile(std::vector<std::string> path);
 };
 

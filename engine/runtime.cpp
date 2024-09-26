@@ -1,37 +1,7 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "runtime.h"
 
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <map>
-
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
-#include <stb_image.h>
-
-#include "../engine/rendering/shader/shader.h"
-#include "../engine/rendering/shader/shader_builder.h"
-
-#include "../engine/rendering/texture/texture.h"
-
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
-#include <gtc/quaternion.hpp>
-
-#include "../engine/rendering/core/render_core.h"
-
-#include <json/json.hpp>
-using json = nlohmann::json;
-
-#include "../engine/utils/log/log.h"
-
-using namespace std;
+std::vector<Entity*> entity_links;
+Camera* active_camera;
 
 struct _context {
 	// Window
@@ -39,7 +9,7 @@ struct _context {
 	int y = 0;
 	int width = 800;
 	int height = 800;
-	string title = "Rendering Engine";
+	std::string title = "Rendering Engine";
 	bool fullscreen = true;
 	GLFWwindow* window = nullptr;
 
@@ -86,8 +56,8 @@ static void glfw_error_callback(int error, const char* description)
 	fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-int throw_err(string message) {
-	cout << "ERROR: " << message << endl;
+int throw_err(std::string message) {
+	std::cout << "ERROR: " << message << std::endl;
 	glfwTerminate();
 	return -1;
 }
@@ -306,8 +276,8 @@ void setup_ui() {
 	ImGui_ImplOpenGL3_Init("#version 130");
 }
 
-void vec3_dialog(string name, glm::vec3& value, float min = -10.0f, float max = 10.0f) {
-	ImGui::Begin(string("Vector3: " + name).c_str());
+void vec3_dialog(std::string name, glm::vec3& value, float min = -10.0f, float max = 10.0f) {
+	ImGui::Begin(std::string("Vector3: " + name).c_str());
 
 	ImGui::SliderFloat("X", &value.x, min, max);
 	ImGui::SliderFloat("Y", &value.y, min, max);
@@ -316,24 +286,24 @@ void vec3_dialog(string name, glm::vec3& value, float min = -10.0f, float max = 
 	ImGui::End();
 }
 
-void float_dialog(string name, float& value, float min = -10.0f, float max = 10.0f) {
-	ImGui::Begin(string("Float:" + name).c_str());
+void float_dialog(std::string name, float& value, float min = -10.0f, float max = 10.0f) {
+	ImGui::Begin(std::string("Float:" + name).c_str());
 
 	ImGui::SliderFloat(name.c_str(), &value, min, max);
 
 	ImGui::End();
 }
 
-void bool_dialog(string name, bool& value, float min = -10.0f, float max = 10.0f) {
-	ImGui::Begin(string("Bool:" + name).c_str());
+void bool_dialog(std::string name, bool& value, float min = -10.0f, float max = 10.0f) {
+	ImGui::Begin(std::string("Bool:" + name).c_str());
 
 	ImGui::Checkbox(name.c_str(), &value);
 
 	ImGui::End();
 }
 
-void color_dialog(string name, glm::vec4& value) {
-	ImGui::Begin(string("Bool:" + name).c_str());
+void color_dialog(std::string name, glm::vec4& value) {
+	ImGui::Begin(std::string("Bool:" + name).c_str());
 
 	ImGui::ColorPicker4(name.c_str(), (float*)&value);
 
@@ -493,9 +463,9 @@ int main() {
 	unsigned int indice_count;
 	unsigned int vao = triangle_vao(&indice_count);
 
-	vector<string> shader_paths = { "./resources/shaders" };
-	vector<Shader> shaders = ShaderBuilder::loadAndCompile(shader_paths);
-	Shader default_shader = shaders.at(0);
+	std::vector<std::string> shader_paths = { "./resources/shaders" };
+	std::vector<Shader*> shaders = ShaderBuilder::loadAndCompile(shader_paths);
+	Shader* default_shader = shaders.at(0);
 
 	bool uploaded;
 	Texture plank("./user/assets/textures/plank.jpg", uploaded);
@@ -516,6 +486,9 @@ int main() {
 
 	context.camera_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
+	// Awake game logic
+	awake();
+
 	while (!glfwWindowShouldClose(context.window)) {
 		// set time
 		context.time = glfwGetTime();
@@ -535,53 +508,33 @@ int main() {
 		glClearColor(context.background_color.x, context.background_color.y, context.background_color.z, context.background_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		render_core_update();
-
 		// process inputs
 		process_inputs();
+
+		// update game logic before rendering
+		update();
 
 		// render objects
 		glBindVertexArray(vao);
 
 		calculate_camera_movement();
-		
-		glm::vec3 objects[] = {
-			glm::vec3(0.0f, 0.0f, 5.0f),
-			glm::vec3(-2.0f, 0.0f, 5.0f),
-			glm::vec3(2.0f, 0.0f, 5.0f),
-			glm::vec3(-2.0f, 0.0f, 7.0f),
-			glm::vec3(2.0f, 0.0f, 7.0f),
-			glm::vec3(0.0f, 0.0f, 9.0f)
-		};
 
-		for (int i = 0; i < sizeof(objects) / sizeof(objects[0]); i++) {
+		for (int i = 0; i < entity_links.size(); i++) {
+			Entity* entity = entity_links.at(i);
+
 			// set shader
-			default_shader.use();
+			default_shader->use();
 
 			// set texture
-			if (i == 0) {
-				obama.use();
-			}
-			else {
-				plank.use();
-			}
-
-			glm::vec3 position = objects[i];
-			glm::vec3 rotation(0.0f, 0.0f, 0.0f);
-			glm::vec3 scale(1.0f, 1.0f, 1.0f);
-
-			if (i == 0) {
-				position = glm::vec3(position.x, (sin(context.time * 2) + 1) / 2, position.z);
-				rotation = glm::vec3(context.time * 70, context.time * 50, context.time * 30);
-			}
+			plank.use();
 
 			// calculate mvp
-			glm::mat4 model = model_matrix(position, rotation, scale);
+			glm::mat4 model = model_matrix(entity->position, entity->rotation, entity->scale);
 			glm::mat4 view = view_matrix();
 			glm::mat4 projection = projection_matrix();
 
 			// set shader
-			default_shader.setMatrix4("mvp", mvp(model, view, projection));
+			default_shader->setMatrix4("mvp", mvp(model, view, projection));
 
 			glDrawElements(GL_TRIANGLES, indice_count, GL_UNSIGNED_INT, 0);
 		}
@@ -617,4 +570,14 @@ int main() {
 
 	glfwTerminate();
 	return 0;
+}
+
+Entity* Runtime::createEntity() {
+	Entity* entity = new Entity();
+	entity_links.push_back(entity);
+	return entity;
+}
+
+void Runtime::useCamera(Camera* camera) {
+	active_camera = camera;
 }

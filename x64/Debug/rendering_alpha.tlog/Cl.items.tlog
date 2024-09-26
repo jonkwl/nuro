@@ -1,8 +1,9 @@
+D:\linear_algebra\rendering_alpha\engine\objects\camera.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\camera.obj
+D:\linear_algebra\rendering_alpha\engine\objects\entity.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\entity.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader_builder.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\shader_builder.obj
 D:\linear_algebra\rendering_alpha\engine\utils\iohandler\iohandler.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\iohandler.obj
 D:\linear_algebra\rendering_alpha\engine\utils\log\log.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\log.obj
-D:\linear_algebra\rendering_alpha\engine\rendering\material\material.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\material.obj
-D:\linear_algebra\rendering_alpha\engine\rendering\core\render_core.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\render_core.obj
+D:\linear_algebra\rendering_alpha\user\src\game_logic.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\game_logic.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj
 D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj
 D:\linear_algebra\rendering_alpha\imgui\imgui.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui.obj

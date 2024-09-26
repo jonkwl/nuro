@@ -1,7 +1,7 @@
 #include "shader_builder.h"
 
-std::vector<Shader> ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
-	std::vector<Shader> shaders;
+std::vector<Shader*> ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
+	std::vector<Shader*> shaders;
 
 	Log::printProcessStart("ShaderBuilder", "Building shaders...");
 	Log::printProcessState("ShaderBuilder", "Fetching shaders...");
@@ -31,7 +31,7 @@ std::vector<Shader> ShaderBuilder::loadAndCompile(std::vector<std::string> paths
 		const char* fragment_src = fragment_code.c_str();
 
 		bool compiled = false;
-		Shader shader(vertex_src, fragment_src, compiled);
+		Shader* shader = new Shader(vertex_src, fragment_src, compiled);
 		if (compiled) {
 			shaders.push_back(shader);
 			Log::printProcessInfo("Compiled " + shader_names[i]);

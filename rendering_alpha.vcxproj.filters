@@ -66,10 +66,13 @@
     <ClCompile Include="engine\rendering\texture\texture.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\material\material.cpp">
+    <ClCompile Include="user\src\game_logic.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\core\render_core.cpp">
+    <ClCompile Include="engine\objects\entity.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\objects\camera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,10 +122,16 @@
     <ClInclude Include="engine\rendering\texture\texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\material\material.h">
+    <ClInclude Include="user\src\game_logic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\core\render_core.h">
+    <ClInclude Include="engine\runtime.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\objects\entity.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\objects\camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

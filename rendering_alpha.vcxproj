@@ -135,11 +135,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\objects\camera.cpp" />
+    <ClCompile Include="engine\objects\entity.cpp" />
     <ClCompile Include="engine\rendering\shader\shader_builder.cpp" />
     <ClCompile Include="engine\utils\iohandler\iohandler.cpp" />
     <ClCompile Include="engine\utils\log\log.cpp" />
-    <ClCompile Include="engine\rendering\material\material.cpp" />
-    <ClCompile Include="engine\rendering\core\render_core.cpp" />
+    <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -154,10 +155,12 @@
     <ClCompile Include="engine\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\objects\camera.h" />
     <ClInclude Include="engine\rendering\shader\shader_builder.h" />
+    <ClInclude Include="engine\runtime.h" />
     <ClInclude Include="engine\utils\log\log.h" />
-    <ClInclude Include="engine\rendering\material\material.h" />
-    <ClInclude Include="engine\rendering\core\render_core.h" />
+    <ClInclude Include="engine\objects\entity.h" />
+    <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="engine\utils\iohandler\iohandler.h" />
     <ClInclude Include="imgui\imconfig.h" />
