@@ -1,6 +1,7 @@
 #include "runtime.h"
 
 std::vector<Entity*> Runtime::entityLinks;
+Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
 Camera* Runtime::inspectorCamera = new Camera();
 
@@ -12,6 +13,16 @@ bool Runtime::wireframe = false;
 
 bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
+
+Entity* Runtime::createEntity() {
+	Entity* entity = new Entity();
+	entityLinks.push_back(entity);
+	return entity;
+}
+
+void Runtime::useCamera(Camera* camera) {
+	activeCamera = camera;
+}
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -208,9 +219,8 @@ int main() {
 
 	Runtime::last_time = glfwGetTime();
 
-	double mouseX, mouseY;
-	glfwGetCursorPos(Context::window, &mouseX, &mouseY);
-	Input::mouseLast = glm::vec2(mouseX, mouseY);
+	// setup inputs
+	Input::setupInputs();
 
 	// Awake game logic
 	awake();
@@ -233,8 +243,11 @@ int main() {
 		glBindVertexArray(vao);
 
 		// check for inspector mode
-		if (Runtime::inspectorMode) {
-			Runtime::activeCamera = Runtime::inspectorCamera;
+		if (!Runtime::inspectorMode) {
+			Runtime::renderCamera = Runtime::activeCamera;
+		}
+		else {
+			Runtime::renderCamera = Runtime::inspectorCamera;
 			InspectorMode::refreshInspector();
 		}
 
@@ -248,7 +261,7 @@ int main() {
 			entity->texture->use();
 
 			// calculate mvp
-			glm::mat4 mvp = RenderCore::mvp(entity, Runtime::activeCamera, Context::width, Context::height);
+			glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);
 
 			// set shader
 			default_shader->setMatrix4("mvp", mvp);
@@ -260,9 +273,9 @@ int main() {
 			// Engine UI
 			EngineUI::NewFrame();
 			if (Runtime::showEngineUI) {
-				EngineDialog::vec3_dialog("Camera Position", Runtime::activeCamera->position);
-				EngineDialog::vec3_dialog("Camera Rotation", Runtime::activeCamera->rotation, -360.0f, 360.0f);
-				EngineDialog::float_dialog("FOV", Runtime::activeCamera->fov, 30, 90);
+				EngineDialog::vec3_dialog("Camera Position", Runtime::renderCamera->position);
+				EngineDialog::vec3_dialog("Camera Rotation", Runtime::renderCamera->rotation, -360.0f, 360.0f);
+				EngineDialog::float_dialog("FOV", Runtime::renderCamera->fov, 30, 90);
 				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
 
 				if (Runtime::wireframe) {
@@ -282,14 +295,4 @@ int main() {
 
 	glfwTerminate();
 	return 0;
-}
-
-Entity* Runtime::createEntity() {
-	Entity* entity = new Entity();
-	entityLinks.push_back(entity);
-	return entity;
-}
-
-void Runtime::useCamera(Camera* camera) {
-	activeCamera = camera;
 }

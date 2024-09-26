@@ -10,15 +10,17 @@ glm::vec2 Input::mouseLast = glm::vec2(0.0f);
 bool Input::escPressed = false;
 
 void Input::setupInputs() {
-
+	double mouseX, mouseY;
+	glfwGetCursorPos(Context::window, &mouseX, &mouseY);
+	mouseLast = glm::vec2(mouseX, mouseY);
 }
 
 void Input::updateInputs() {
 	// set mouse
 	double mouseX, mouseY;
 	glfwGetCursorPos(Context::window, &mouseX, &mouseY);
-	Input::mouseAxis = glm::vec2(mouseX - Input::mouseLast.x, -(mouseY - Input::mouseLast.y));
-	Input::mouseLast = glm::vec2(mouseX, mouseY);
+	mouseAxis = glm::vec2(mouseX - mouseLast.x, -(mouseY - mouseLast.y));
+	mouseLast = glm::vec2(mouseX, mouseY);
 
 	// set axis inputs
 	if (glfwGetKey(Context::window, GLFW_KEY_SPACE) == GLFW_PRESS) {
