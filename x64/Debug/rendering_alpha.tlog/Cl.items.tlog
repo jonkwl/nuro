@@ -1,3 +1,8 @@
+D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader_builder.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\shader_builder.obj
+D:\linear_algebra\rendering_alpha\engine\utils\iohandler\iohandler.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\iohandler.obj
+D:\linear_algebra\rendering_alpha\engine\utils\log\log.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\log.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\material\material.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\material.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\core\render_core.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\render_core.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj
 D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj
 D:\linear_algebra\rendering_alpha\imgui\imgui.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui.obj
@@ -8,4 +13,5 @@ D:\linear_algebra\rendering_alpha\imgui\imgui_impl_opengl3.cpp;D:\linear_algebra
 D:\linear_algebra\rendering_alpha\imgui\imgui_tables.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_tables.obj
 D:\linear_algebra\rendering_alpha\imgui\imgui_widgets.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\imgui_widgets.obj
 D:\linear_algebra\rendering_alpha\engine\runtime.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\runtime.obj
-D:\linear_algebra\rendering_alpha\engine\rendering\shader\Shader.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\Shader.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\shader.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\texture\texture.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\texture.obj

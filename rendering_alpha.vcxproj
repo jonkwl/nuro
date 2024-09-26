@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>stb;glm;imgui;D:\linear_algebra\rendering_alpha\dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>stb;glm;imgui;D:\linear_algebra\rendering_alpha\dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +135,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\rendering\shader\shader_builder.cpp" />
+    <ClCompile Include="engine\utils\iohandler\iohandler.cpp" />
+    <ClCompile Include="engine\utils\log\log.cpp" />
+    <ClCompile Include="engine\rendering\material\material.cpp" />
+    <ClCompile Include="engine\rendering\core\render_core.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -143,11 +150,16 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="engine\runtime.cpp" />
-    <ClCompile Include="engine\rendering\shader\Shader.cpp" />
+    <ClCompile Include="engine\rendering\shader\shader.cpp" />
+    <ClCompile Include="engine\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\rendering\shader\shader_builder.h" />
+    <ClInclude Include="engine\utils\log\log.h" />
+    <ClInclude Include="engine\rendering\material\material.h" />
+    <ClInclude Include="engine\rendering\core\render_core.h" />
     <ClInclude Include="stb\stb_image.h" />
-    <ClInclude Include="engine\utils\filereader.h" />
+    <ClInclude Include="engine\utils\iohandler\iohandler.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
@@ -157,7 +169,8 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="engine\rendering\shader\Shader.h" />
+    <ClInclude Include="engine\rendering\shader\shader.h" />
+    <ClInclude Include="engine\rendering\texture\texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

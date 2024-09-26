@@ -29,3 +29,7 @@
 *.exe
 *.out
 *.app
+/.vs
+/.vs
+/.vs/rendering_alpha/FileContentIndex
+/.vs/rendering_alpha

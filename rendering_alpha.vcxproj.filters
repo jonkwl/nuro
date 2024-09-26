@@ -48,10 +48,28 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Quelldateien\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\shader\Shader.cpp">
+    <ClCompile Include="engine\rendering\shader\shader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="stb\stb_image.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\shader\shader_builder.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\utils\iohandler\iohandler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\utils\log\log.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\texture\texture.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\material\material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\core\render_core.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,13 +101,28 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Headerdateien\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\shader\Shader.h">
+    <ClInclude Include="engine\rendering\shader\shader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\filereader.h">
+    <ClInclude Include="engine\utils\iohandler\iohandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="stb\stb_image.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\shader\shader_builder.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utils\log\log.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\texture\texture.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\material\material.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\core\render_core.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

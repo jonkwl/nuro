@@ -1,10 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <map>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -12,12 +14,22 @@
 
 #include <stb_image.h>
 
-#include "../engine/rendering/shader/Shader.h"
+#include "../engine/rendering/shader/shader.h"
+#include "../engine/rendering/shader/shader_builder.h"
+
+#include "../engine/rendering/texture/texture.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtc/quaternion.hpp>
+
+#include "../engine/rendering/core/render_core.h"
+
+#include <json/json.hpp>
+using json = nlohmann::json;
+
+#include "../engine/utils/log/log.h"
 
 using namespace std;
 
@@ -266,7 +278,7 @@ unsigned int getTexture() {
 	int width, height, channels;
 
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load("assets/textures/plank.jpg", &width, &height, &channels, 0);
+	unsigned char* data = stbi_load("./user/assets/textures/plank.jpg", &width, &height, &channels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -477,10 +489,17 @@ int main() {
 
 	gl_viewport_set();
 
-	Shader default_shader("assets/tmp/shaders/vertex.shader", "assets/tmp/shaders/fragment.shader");
+	// Shader default_shader("assets/tmp/shaders/vertex.shader", "assets/tmp/shaders/fragment.shader");
 	unsigned int indice_count;
 	unsigned int vao = triangle_vao(&indice_count);
-	unsigned int texture = getTexture();
+
+	vector<string> shader_paths = { "./resources/shaders" };
+	vector<Shader> shaders = ShaderBuilder::loadAndCompile(shader_paths);
+	Shader default_shader = shaders.at(0);
+
+	bool uploaded;
+	Texture plank("./user/assets/textures/plank.jpg", uploaded);
+	Texture obama("./user/assets/textures/obama.jpg", uploaded);
 
 	setup_ui();
 
@@ -516,14 +535,10 @@ int main() {
 		glClearColor(context.background_color.x, context.background_color.y, context.background_color.z, context.background_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		render_core_update();
+
 		// process inputs
 		process_inputs();
-
-		// set shader
-		default_shader.use();
-
-		// set texture
-		glBindTexture(GL_TEXTURE_2D, texture);
 
 		// render objects
 		glBindVertexArray(vao);
@@ -540,6 +555,17 @@ int main() {
 		};
 
 		for (int i = 0; i < sizeof(objects) / sizeof(objects[0]); i++) {
+			// set shader
+			default_shader.use();
+
+			// set texture
+			if (i == 0) {
+				obama.use();
+			}
+			else {
+				plank.use();
+			}
+
 			glm::vec3 position = objects[i];
 			glm::vec3 rotation(0.0f, 0.0f, 0.0f);
 			glm::vec3 scale(1.0f, 1.0f, 1.0f);
