@@ -1,8 +1,5 @@
-﻿  input.cpp
-  inspector_mode.cpp
-  runtime_entity.cpp
-  game_logic.cpp
-  runtime.cpp
-D:\linear_algebra\rendering_alpha\engine\runtime.cpp(121,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  runtime_entity.cpp
+  mesh.cpp
+D:\linear_algebra\rendering_alpha\engine\rendering\model\mesh.cpp(49,46): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   Generating Code...
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe
