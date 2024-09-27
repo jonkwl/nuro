@@ -6,25 +6,6 @@ Model::Model(std::string path, IMaterial* material)
 	resolveModel(path);
 }
 
-void Model::render(glm::mat4 mvp) {
-    for (int i = 0; i < meshes.size(); i++) {
-        meshes[i]->bind();
-
-        // Set shader
-        // default_shader->use();
-        material->bind();
-
-        // Set texture
-        // entity->texture->use();
-
-        // Set shader uniforms
-
-        material->getShader()->setMatrix4("mvp", mvp);
-
-        meshes[i]->render();
-    }
-}
-
 void Model::resolveModel(std::string path)
 {
     Assimp::Importer import;

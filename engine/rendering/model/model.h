@@ -28,8 +28,6 @@ public:
 	std::vector<Mesh*> meshes;
 
 	IMaterial* material;
-
-	void render(glm::mat4 mvp);
 private:
 	std::string directory;
 

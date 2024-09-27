@@ -1,6 +1,6 @@
 #include "runtime.h"
 
-std::vector<Entity*> Runtime::entityLinks;
+std::vector<RuntimeEntity*> Runtime::entityLinks;
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
 Camera* Runtime::inspectorCamera = new Camera();
@@ -18,7 +18,8 @@ bool Runtime::showDiagnostics = false;
 
 Entity* Runtime::createEntity() {
 	Entity* entity = new Entity();
-	entityLinks.push_back(entity);
+	RuntimeEntity* runtimeEntity = new RuntimeEntity(entity);
+	entityLinks.push_back(runtimeEntity);
 	return entity;
 }
 
@@ -156,15 +157,7 @@ int main() {
 
 		// Render each linked entity
 		for (int i = 0; i < Runtime::entityLinks.size(); i++) {
-			Entity* entity = Runtime::entityLinks.at(i);
-
-			if (entity->model == nullptr) continue;
-
-			// Calculate mvp
-			glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);
-
-			// Draw call
-			entity->model->render(mvp);
+			Runtime::entityLinks.at(i)->render();
 		}
 
 		//

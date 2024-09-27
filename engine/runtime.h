@@ -20,7 +20,8 @@
 #include <json/json.hpp>
 using json = nlohmann::json;
 
-#include "../engine/rendering/core/render_core.h"
+#include "../engine/core/runtime_entity.h"
+
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/texture/texture.h"
@@ -46,7 +47,7 @@ using json = nlohmann::json;
 class Runtime {
 public:
 	// Entity system
-	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
+	static std::vector<RuntimeEntity*> entityLinks; // All entities that will be processed by the runtime
 	static Entity* createEntity(); // Creates a new entity and links it with runtime
 
 	// Camera settings

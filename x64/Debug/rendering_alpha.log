@@ -1,2 +1,8 @@
-﻿  game_logic.cpp
+﻿  input.cpp
+  inspector_mode.cpp
+  runtime_entity.cpp
+  game_logic.cpp
+  runtime.cpp
+D:\linear_algebra\rendering_alpha\engine\runtime.cpp(121,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe

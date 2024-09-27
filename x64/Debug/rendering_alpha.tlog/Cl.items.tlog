@@ -14,6 +14,7 @@ D:\linear_algebra\rendering_alpha\engine\rendering\material\unlit_material.cpp;D
 D:\linear_algebra\rendering_alpha\engine\rendering\model\model.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\model.obj
 D:\linear_algebra\rendering_alpha\engine\utils\string_helper.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\string_helper.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\model\mesh.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\mesh.obj
+D:\linear_algebra\rendering_alpha\engine\core\runtime_entity.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\runtime_entity.obj
 D:\linear_algebra\rendering_alpha\user\src\game_logic.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\game_logic.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj
 D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj
