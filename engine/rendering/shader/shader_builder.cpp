@@ -25,8 +25,8 @@ void ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
 
 	Log::printProcessState("ShaderBuilder", "Compiling shaders...");
 	for (int i = 0; i < shader_paths.size(); i++) {
-		std::string vertex_code = IOHandler::ReadFile(shader_paths[i] + "/.vertex");
-		std::string fragment_code = IOHandler::ReadFile(shader_paths[i] + "/.fragment");
+		std::string vertex_code = IOHandler::ReadFile(shader_paths[i] + "/.vert");
+		std::string fragment_code = IOHandler::ReadFile(shader_paths[i] + "/.frag");
 		const char* vertex_src = vertex_code.c_str();
 		const char* fragment_src = fragment_code.c_str();
 

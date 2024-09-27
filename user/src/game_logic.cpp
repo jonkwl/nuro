@@ -36,11 +36,15 @@ void awake() {
 		object_batch[i]->material = plank;
 		object_batch[i]->position = glm::vec3((i % 10) * 2.0f, 0, (i / 10) * 2.0f);
 	}
+
+	Mesh* mesh = new Mesh("./user/assets/models/cube.obj");
 }
 
 void update() {
+	/*
 	for (int i = 0; i < amount; i++) {
 		object_batch[i]->position = glm::vec3(object_batch[i]->position.x, (sin(Runtime::time * 2) + 1) / 2, object_batch[i]->position.z);
 		object_batch[i]->rotation += glm::vec3(50.0f * Runtime::deltaTime, 30.0f * Runtime::deltaTime, 15.0f * Runtime::deltaTime);
 	}
+	*/
 }

@@ -5,6 +5,10 @@
 class CubeMesh
 {
 public:
-	static unsigned int generate(unsigned int& indice_count);
+	CubeMesh(unsigned int& indice_count);
+	
+	void bind();
+private:
+	unsigned int id;
 };
 

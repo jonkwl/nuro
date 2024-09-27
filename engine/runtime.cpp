@@ -95,18 +95,14 @@ int main() {
 	// SETUP PHASE 2: LOAD ASSETS, COMPILE SHADERS
 	//
 
-	Log::printProcessStart("Runtime", "Loading assets...");
-
 	// Cube vao
-	unsigned int cube_indice_count;
-	unsigned int cube_vao = CubeMesh::generate(cube_indice_count);
+	unsigned int default_mesh_indice_count;
+	CubeMesh* default_mesh = new CubeMesh(default_mesh_indice_count);
 
 	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
 	ShaderBuilder::loadAndCompile(shader_paths);
 	Shader* default_shader = ShaderBuilder::get("unlit");
-
-	Log::printProcessDone("Runtime", "Loaded assets");
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -172,8 +168,8 @@ int main() {
 				//
 			}
 			else {
-				glBindVertexArray(cube_vao);
-				indice_count = cube_indice_count;
+				default_mesh->bind();
+				indice_count = default_mesh_indice_count;
 			}
 
 			// Set shader
