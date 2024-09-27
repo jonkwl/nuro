@@ -34,7 +34,7 @@ Shader::Shader(const char* vertex_src, const char* fragment_src, bool& compiled)
 	compiled = true;
 }
 
-void Shader::use() {
+void Shader::bind() {
 	glUseProgram(id);
 }
 

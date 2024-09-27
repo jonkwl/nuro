@@ -99,6 +99,9 @@
     <ClCompile Include="engine\rendering\material\unlit_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\rendering\mesh\mesh.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -183,6 +186,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\material\unlit_material.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\mesh\mesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

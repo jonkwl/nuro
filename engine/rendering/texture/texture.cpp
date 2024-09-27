@@ -33,6 +33,6 @@ Texture::Texture(std::string path, bool& uploaded)
 	uploaded = true;
 }
 
-void Texture::use() {
+void Texture::bind() {
 	glBindTexture(GL_TEXTURE_2D, id);
 }

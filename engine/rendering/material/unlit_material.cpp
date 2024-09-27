@@ -8,6 +8,6 @@ UnlitMaterial::UnlitMaterial()
 
 void UnlitMaterial::bind()
 {
-	shader->use();
-	texture->use();
+	shader->bind();
+	texture->bind();
 }

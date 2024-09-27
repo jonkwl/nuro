@@ -11,7 +11,7 @@ class Texture
 public:
 	Texture(std::string path, bool& uploaded);
 
-	void use();
+	void bind();
 private:
 	unsigned int id;
 };

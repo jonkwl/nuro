@@ -12,7 +12,7 @@ class Shader
 public:
 	Shader(const char* vertex_src, const char* fragment_src, bool& compiled);
 
-	void use();
+	void bind();
 
 	unsigned int getId() { return id; }
 
