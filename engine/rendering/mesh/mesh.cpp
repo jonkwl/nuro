@@ -22,59 +22,92 @@ void Mesh::parseMesh(std::string path)
 		std::string line = source[i];
 
 		if (StringHelper::startsWith(line, "vt")) {
-
-			std::vector<float> append = parseCoordinates(line);
-			_texture_coords.insert(_texture_coords.end(), append.begin(), append.end());
-
+			texture_coords.push_back(parseCoordinates(line));
 		}
 		else if (StringHelper::startsWith(line, "vn")) {
-
-			std::vector<float> append = parseCoordinates(line);
-			_normals.insert(_normals.end(), append.begin(), append.end());
-
+			normal_coords.push_back(parseCoordinates(line));
 		}
 		else if (StringHelper::startsWith(line, "v")) {
-
-			std::vector<float> append = parseCoordinates(line);
-			_vertices.insert(_vertices.end(), append.begin(), append.end());
-
+			vertice_coords.push_back(parseCoordinates(line));
 		}
 		else if (StringHelper::startsWith(line, "f")) {
 			parseFace(line);
 		}
 	}
+
+	// For debugging vertice coords & face vertice indexes
+	/*for (int i = 0; i < vertice_coords.size(); i++) {
+		glm::vec3 coords = vertice_coords[i];
+		Log::printProcessInfo("Vertice " + std::to_string(i + 1) + ": x" + std::to_string(coords.x) + ": y" + std::to_string(coords.y) + ": z" + std::to_string(coords.z));
+	}
+
+	for (int i = 0; i < faces.size(); i++) {
+		Face face = faces[i];
+		Log::printProcessInfo("Vertice Indexes of Face " + std::to_string(i + 1) + ": " + std::to_string(face.vertice_coords_index.x) + " " + std::to_string(face.vertice_coords_index.y) + " " + std::to_string(face.vertice_coords_index.z));
+	}*/
 }
 
-std::vector<float> Mesh::parseCoordinates(const std::string& line) {
-	std::vector<float> coords;
+glm::vec3 Mesh::parseCoordinates(const std::string& line) {
+	glm::vec3 coords(0.0f);
 	std::vector<std::string> elements = StringHelper::split(line, " ");
+	int foundCoords = 0;
 	for (int i = 0; i < elements.size(); i++) {
 		std::stringstream ss(elements[i]);
 		float coord;
 		ss >> coord;
 		if (!ss.fail()) {
-			coords.push_back(coord);
+			foundCoords++;
+			switch (foundCoords) {
+			case 1:
+				coords.x = coord;
+				break;
+			case 2:
+				coords.y = coord;
+				break;
+			case 3:
+				coords.z = coord;
+				break;
+			}
 		}
 	}
 	return coords;
 }
 
+// PROOF OF CONCEPT TESTING CODE!
 void Mesh::parseFace(const std::string& line) {
 	std::vector<std::string> vertex = StringHelper::split(line, " ");
+	Face face;
+
+	int vertice_coords_found = 0;
+
 	for (int a = 0; a < vertex.size(); a++) {
 		std::vector<std::string> vertex_data = StringHelper::split(vertex[a], "/");
 		for (int b = 0; b < vertex_data.size(); b++) {
 			// Parse first element of vertex data: Vertex coordinate (resulting in indice index)
 			if (b == 0) {
 				std::stringstream ss(vertex_data[b]);
-				int indice;
-				ss >> indice;
+				int vertex_index;
+				ss >> vertex_index;
 				if (!ss.fail()) {
-					_indices.push_back(indice);
+					vertice_coords_found++;
+					vertex_index--;
+					switch (vertice_coords_found) {
+					case 1:
+						face.vertice_coords_index.x = vertex_index;
+						break;
+					case 2:
+						face.vertice_coords_index.y = vertex_index;
+						break;
+					case 3:
+						face.vertice_coords_index.z = vertex_index;
+						break;
+					}
 				}
 			}
 		}
 	}
+
+	faces.push_back(face);
 }
 
 void Mesh::generateVAO()
@@ -82,36 +115,16 @@ void Mesh::generateVAO()
     // Define vertices and indices
     unsigned int vertice_components = 3; // Only position now
 
-	/*float* vertices = new float[100];
-	for (int i = 0; i < _vertices.size(); i++) {
-		vertices[i] = _vertices[i];
+	std::vector<float> vertices;
+	for (int i = 0; i < vertice_coords.size(); i++) {
+		glm::vec3 vertice = vertice_coords[i];
+		vertices.insert(vertices.end(), { vertice.x, vertice.y, vertice.z });
 	}
 
-    unsigned int* indices = new unsigned int[_indices.size()];
-	for (int i = 0; i < _indices.size(); i++) {
-		indices[i] = _indices[i];
-	}
-
-	indice_count = _indices.size();*/
-
-	std::vector<float> vertices = {
-		1.000000, -1.000000, -1.000000,
-		1.000000, -1.000000, 1.000000,
-		-1.000000, -1.000000, 1.000000,
-		-1.000000, -1.000000, -1.000000,
-		1.000000, 1.000000, -1.000000,
-		0.999999, 1.000000, 1.000001,
-		-1.000000, 1.000000, 1.000000
-		-1.000000, 1.000000, - 1.000000
+	std::vector<int> indices{
+		1, 2, 3
 	};
-
-	int indices[] = { 
-		12, 13, 14,
-		0, 1, 2,
-		9, 10, 11
-	};
-
-	indice_count = sizeof(indices) / sizeof(indices[0]);
+	indice_count = indices.size();
 
     // Create vertex array object (VAO)
     unsigned int vao;
@@ -132,7 +145,7 @@ void Mesh::generateVAO()
     unsigned int ebo;
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), indices.data(), GL_STATIC_DRAW);
 
     // Unbind VAO, VBO and EBO
     glBindVertexArray(0);
@@ -140,4 +153,9 @@ void Mesh::generateVAO()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     id = vao;
+}
+
+glm::ivec3 Mesh::resolve_face_vertice(int vertice)
+{
+	return glm::vec3(vertice * 3, vertice * 3 + 1, vertice * 3 + 2);
 }

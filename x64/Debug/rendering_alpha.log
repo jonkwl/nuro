@@ -1,12 +1,3 @@
 ﻿  mesh.cpp
-D:\linear_algebra\rendering_alpha\engine\rendering\mesh\mesh.cpp(103,3): warning C4305: "Initialisierung": Verkürzung von "double" in "_Ty"
-          with
-          [
-              _Ty=float
-          ]
-D:\linear_algebra\rendering_alpha\engine\rendering\mesh\mesh.cpp(103,23): warning C4305: "Initialisierung": Verkürzung von "double" in "_Ty"
-          with
-          [
-              _Ty=float
-          ]
+D:\linear_algebra\rendering_alpha\engine\rendering\mesh\mesh.cpp(127,29): warning C4267: "=": Konvertierung von "size_t" nach "unsigned int", Datenverlust möglich
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe
