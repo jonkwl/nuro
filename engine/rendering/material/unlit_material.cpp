@@ -9,5 +9,13 @@ UnlitMaterial::UnlitMaterial()
 void UnlitMaterial::bind()
 {
 	shader->bind();
-	texture->bind();
+
+	if (texture != nullptr) {
+		texture->bind();
+	}
+}
+
+Shader* UnlitMaterial::getShader()
+{
+	return shader;
 }

@@ -14,7 +14,8 @@
 #include "../engine/utils/iohandler.h"
 #include "../engine/utils/string_helper.h"
 
-#include "../engine/rendering/model/mesh_data.h"
+#include "../engine/rendering/model/mesh.h"
+#include "../engine/rendering/material/imaterial.h"
 
 struct Face {
 	glm::ivec3 vertice_coords_index;
@@ -23,18 +24,17 @@ struct Face {
 class Model
 {
 public:
-	Model(std::string path);
+	Model(std::string path, IMaterial* material);
+	std::vector<Mesh*> meshes;
 
-	void bind();
-	void render();
+	IMaterial* material;
+
+	void render(glm::mat4 mvp);
 private:
-	std::vector<MeshData*> meshes;
 	std::string directory;
 
 	void resolveModel(std::string path);
 
 	void processNode(aiNode* node, const aiScene* scene);
-	MeshData* processMesh(aiMesh* mesh, const aiScene* scene);
-
-	void generateVAO();
+	Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
 };

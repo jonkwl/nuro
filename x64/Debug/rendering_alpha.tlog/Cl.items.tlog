@@ -13,7 +13,7 @@ D:\linear_algebra\rendering_alpha\engine\utils\inspector_mode.cpp;D:\linear_alge
 D:\linear_algebra\rendering_alpha\engine\rendering\material\unlit_material.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\unlit_material.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\model\model.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\model.obj
 D:\linear_algebra\rendering_alpha\engine\utils\string_helper.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\string_helper.obj
-D:\linear_algebra\rendering_alpha\engine\rendering\model\mesh_data.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\mesh_data.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\model\mesh.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\mesh.obj
 D:\linear_algebra\rendering_alpha\user\src\game_logic.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\game_logic.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj
 D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj

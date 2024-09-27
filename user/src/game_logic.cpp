@@ -24,21 +24,20 @@ void awake() {
 	Texture* plankTexture = new Texture("./user/assets/textures/plank.jpg", success);
 	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg", success);
 
-	UnlitMaterial* plank = new UnlitMaterial();
-	plank->texture = plankTexture;
+	UnlitMaterial* unlit = new UnlitMaterial();
+	Model* model = new Model("./user/assets/models/air_hockey.fbx", unlit);
 
-	Model* cubeModel = new Model("./user/assets/models/air_hockey.fbx");
-
-	/* for (int i = 0; i < amount; i++) {
+	/*for (int i = 0; i < amount; i++) {
 		object_batch[i] = Runtime::createEntity();
 		object_batch[i]->material = plank;
+		object_batch[i]->model = model;
 		object_batch[i]->position = glm::vec3((i % 10) * 2.0f, 0, (i / 10) * 2.0f);
-	} */
+	}*/
 
 	Entity* meshEntity = Runtime::createEntity();
-	meshEntity->material = plank;
-	meshEntity->model = cubeModel;
+	meshEntity->model = model;
 	meshEntity->position.z = 5;
+	meshEntity->rotation.x = 90;
 }
 
 void update() {

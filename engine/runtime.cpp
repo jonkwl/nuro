@@ -160,24 +160,11 @@ int main() {
 
 			if (entity->model == nullptr) continue;
 
-			// Bind vao
-			entity->model->bind();
-
-			// Set shader
-			// default_shader->use();
-			entity->material->bind();
-
-			// Set texture
-			// entity->texture->use();
-
 			// Calculate mvp
 			glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);
 
-			// Set shader uniforms
-			default_shader->setMatrix4("mvp", mvp);
-
 			// Draw call
-			entity->model->render();
+			entity->model->render(mvp);
 		}
 
 		//

@@ -11,6 +11,7 @@ class UnlitMaterial : public IMaterial
 public:
 	UnlitMaterial();
 	void bind();
+	Shader* getShader();
 	Texture* texture;
 private:
 	Shader* shader;

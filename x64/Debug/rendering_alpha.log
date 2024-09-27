@@ -1,8 +1,8 @@
 ﻿  input.cpp
   entity.cpp
   render_core.cpp
+  unlit_material.cpp
   model.cpp
-D:\linear_algebra\rendering_alpha\engine\rendering\model\model.cpp(19,61): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   runtime.cpp
 D:\linear_algebra\rendering_alpha\engine\runtime.cpp(120,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   inspector_mode.cpp

@@ -6,4 +6,5 @@ class IMaterial {
 public:
 	virtual void bind() {}
 	virtual ~IMaterial() {}
+	virtual Shader* getShader() { return nullptr; }
 };

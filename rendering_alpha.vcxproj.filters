@@ -108,7 +108,7 @@
     <ClCompile Include="engine\utils\string_helper.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\model\mesh_data.cpp">
+    <ClCompile Include="engine\rendering\model\mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -206,7 +206,7 @@
     <ClInclude Include="engine\utils\string_helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\model\mesh_data.h">
+    <ClInclude Include="engine\rendering\model\mesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
