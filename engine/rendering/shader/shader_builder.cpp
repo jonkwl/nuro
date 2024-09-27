@@ -1,8 +1,9 @@
 #include "shader_builder.h"
 
-std::vector<Shader*> ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
-	std::vector<Shader*> shaders;
+std::vector<Shader*> ShaderBuilder::shaders;
+std::vector<std::string> ShaderBuilder::identifiers;
 
+void ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
 	Log::printProcessStart("ShaderBuilder", "Building shaders...");
 	Log::printProcessState("ShaderBuilder", "Fetching shaders...");
 
@@ -19,7 +20,6 @@ std::vector<Shader*> ShaderBuilder::loadAndCompile(std::vector<std::string> path
 			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[i]);
 			shader_names.push_back(shaders_in_folder[i]);
 			Log::printProcessInfo("- " + shader_names[x]);
-
 		}
 	}
 
@@ -34,11 +34,22 @@ std::vector<Shader*> ShaderBuilder::loadAndCompile(std::vector<std::string> path
 		Shader* shader = new Shader(vertex_src, fragment_src, compiled);
 		if (compiled) {
 			shaders.push_back(shader);
+			identifiers.push_back(shader_names.at(i));
 			Log::printProcessInfo("Compiled " + shader_names[i]);
 		}
 	}
 
 	Log::printProcessDone("ShaderBuilder", "Finished building the shaders");
+}
 
-	return shaders;
+Shader* ShaderBuilder::get(std::string name) {
+	auto it = std::find(identifiers.begin(), identifiers.end(), name);
+	if (it != identifiers.end()) {
+		int index = std::distance(identifiers.begin(), it);
+		return shaders.at(index);
+	}
+	else {
+		Log::printError("ShaderBuilder", "Couldn't find shader " + name);
+		return nullptr;
+	}
 }

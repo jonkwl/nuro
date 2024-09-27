@@ -9,6 +9,7 @@ D:\linear_algebra\rendering_alpha\engine\input\input.cpp;D:\linear_algebra\rende
 D:\linear_algebra\rendering_alpha\engine\engineui\engine_dialog.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\engine_dialog.obj
 D:\linear_algebra\rendering_alpha\engine\engineui\engine_ui.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\engine_ui.obj
 D:\linear_algebra\rendering_alpha\engine\utils\inspector_mode.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\inspector_mode.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\material\unlit_material.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\unlit_material.obj
 D:\linear_algebra\rendering_alpha\user\src\game_logic.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\game_logic.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj
 D:\linear_algebra\rendering_alpha\glad.c;D:\linear_algebra\rendering_alpha\x64\Debug\glad.obj

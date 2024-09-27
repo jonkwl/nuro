@@ -5,6 +5,7 @@
 #include "../engine/runtime.h"
 #include "../engine/objects/entity.h"
 #include "../engine/objects/camera.h"
+#include "../engine/rendering/material/unlit_material.h"
 
 Camera* camera = nullptr;
 Entity* plank = nullptr;
@@ -18,26 +19,21 @@ void awake() {
 	Runtime::inspectorMode = true;
 	Runtime::showDiagnostics = true;
 
-	// Import textures
-	bool uploaded;
-	Texture* plankTexture = new Texture("./user/assets/textures/plank.jpg", uploaded);
-	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg", uploaded);
-
-	// Use camera
+	// Create camera
 	camera = new Camera();
-	Runtime::useCamera(camera); // Be aware: Inspector mode is activated, so this camera won't be rendering
+	Runtime::useCamera(camera);
 
-	// Create objects
-	// plank = Runtime::createEntity();
-	// plank->position.z = 5.0f;
-	// plank->texture = plankTexture;
+	// Import textures
+	bool success;
+	Texture* plankTexture = new Texture("./user/assets/textures/plank.jpg", success);
+	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg", success);
 
-	// dirt = Runtime::createEntity();
-	// dirt->texture = dirtTexture;
+	UnlitMaterial* plank = new UnlitMaterial();
+	plank->texture = plankTexture;
 
 	for (int i = 0; i < amount; i++) {
 		object_batch[i] = Runtime::createEntity();
-		object_batch[i]->texture = plankTexture;
+		object_batch[i]->material = plank;
 		object_batch[i]->position = glm::vec3((i % 10) * 2.0f, 0, (i / 10) * 2.0f);
 	}
 }

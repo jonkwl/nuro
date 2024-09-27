@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/utils/log.h"
@@ -10,6 +11,10 @@
 class ShaderBuilder
 {
 public:
-	static std::vector<Shader*> loadAndCompile(std::vector<std::string> path);
+	static void loadAndCompile(std::vector<std::string> path);
+	static Shader* get(std::string name);
+private:
+	static std::vector<Shader*> shaders;
+	static std::vector <std::string> identifiers;
 };
 

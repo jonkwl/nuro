@@ -219,8 +219,8 @@ int main() {
 
 	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
-	std::vector<Shader*> shaders = ShaderBuilder::loadAndCompile(shader_paths);
-	Shader* default_shader = shaders.at(0);
+	ShaderBuilder::loadAndCompile(shader_paths);
+	Shader* default_shader = ShaderBuilder::get("unlit");
 
 	Log::printProcessDone("Runtime", "Loaded assets");
 
@@ -286,10 +286,11 @@ int main() {
 			glBindVertexArray(vao);
 
 			// Set shader
-			default_shader->use();
+			// default_shader->use();
+			entity->material->bind();
 
 			// Set texture
-			entity->texture->use();
+			// entity->texture->use();
 
 			// Calculate mvp
 			glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);

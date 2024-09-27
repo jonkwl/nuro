@@ -3,6 +3,7 @@
 #include <glm.hpp>
 
 #include "../engine/rendering/texture/texture.h"
+#include "../engine/rendering/material/imaterial.h"
 
 class Entity
 {
@@ -13,5 +14,5 @@ public:
 	glm::vec3 rotation;
 	glm::vec3 scale;
 
-	Texture* texture;
+	IMaterial* material;
 };
