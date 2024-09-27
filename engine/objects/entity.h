@@ -4,6 +4,7 @@
 
 #include "../engine/rendering/texture/texture.h"
 #include "../engine/rendering/material/imaterial.h"
+#include "../engine/rendering/mesh/mesh.h"
 
 class Entity
 {
@@ -15,4 +16,6 @@ public:
 	glm::vec3 scale;
 
 	IMaterial* material;
+
+	Mesh* mesh;
 };

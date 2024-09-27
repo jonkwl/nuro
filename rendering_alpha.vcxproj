@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\rendering\mesh\cube_mesh.cpp" />
     <ClCompile Include="engine\context\context.cpp" />
     <ClCompile Include="engine\objects\camera.cpp" />
     <ClCompile Include="engine\objects\entity.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="engine\utils\vector_helper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\rendering\mesh\cube_mesh.h" />
     <ClInclude Include="engine\context\context.h" />
     <ClInclude Include="engine\objects\camera.h" />
     <ClInclude Include="engine\rendering\material\imaterial.h" />

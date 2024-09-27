@@ -7,4 +7,6 @@ Entity::Entity()
 	scale = glm::vec3(1.0f);
 
 	material = nullptr;
+
+	mesh = nullptr;
 }
