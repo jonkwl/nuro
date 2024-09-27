@@ -14,6 +14,8 @@
 #include "../engine/utils/iohandler.h"
 #include "../engine/utils/string_helper.h"
 
+#include "../engine/rendering/model/mesh_data.h"
+
 struct Face {
 	glm::ivec3 vertice_coords_index;
 };
@@ -24,18 +26,15 @@ public:
 	Model(std::string path);
 
 	void bind();
-	unsigned int getIndiceCount();
+	void render();
 private:
-	unsigned int id;
-	unsigned int indice_count;
-
-	std::vector<aiMesh*> meshes;
+	std::vector<MeshData*> meshes;
 	std::string directory;
 
 	void resolveModel(std::string path);
 
 	void processNode(aiNode* node, const aiScene* scene);
-	aiMesh* processMesh(aiMesh* mesh, const aiScene* scene);
+	MeshData* processMesh(aiMesh* mesh, const aiScene* scene);
 
 	void generateVAO();
 };

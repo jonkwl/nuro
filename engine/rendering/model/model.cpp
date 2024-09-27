@@ -6,12 +6,18 @@ Model::Model(std::string path)
     generateVAO();
 }
 
-void Model::bind() {
-    glBindVertexArray(id);
+void Model::bind()
+{
+    for (int i = 0; i < meshes.size(); i++) {
+        glBindVertexArray(meshes[i]->vao);
+    }
 }
 
-unsigned int Model::getIndiceCount() {
-    return indice_count;
+void Model::render()
+{
+    for (int i = 0; i < meshes.size(); i++) {
+        glDrawElements(GL_TRIANGLES, meshes[i]->indices.size(), GL_UNSIGNED_INT, 0);
+    }
 }
 
 void Model::resolveModel(std::string path)
@@ -26,8 +32,6 @@ void Model::resolveModel(std::string path)
     }
 
     processNode(scene->mRootNode, scene);
-
-    Log::printProcessInfo(std::to_string(meshes.size()));
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)
@@ -45,52 +49,65 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     } 
 }
 
-aiMesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
+MeshData* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    return mesh;
+    std::vector<VertexData> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture*> textures;
+
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+    {
+        VertexData vertex;
+        vertex.Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+        
+        /*vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+
+        if (mesh->mTextureCoords[0])
+        {
+            vertex.TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+        }
+        else {
+            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+        }*/
+
+        vertices.push_back(vertex);
+    }
+
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+    {
+        aiFace face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; j++) {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+
+    // Texture loading can be implemented here
+    
+    return new MeshData(vertices, indices, textures);
 }
 
 void Model::generateVAO()
 {
-    // Define vertices and indices
-    unsigned int vertice_components = 3; // Only position now
+    for (int i = 0; i < meshes.size(); i++) {
+        MeshData* mesh = meshes[i];
 
-    std::vector<float> vertices{
-        -1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        0.05f, 1.0f, 1.0f
-    };
+        glGenVertexArrays(1, &mesh->vao);
+        glGenBuffers(1, &mesh->vbo);
+        glGenBuffers(1, &mesh->ebo);
 
-	std::vector<int> indices{
-        0, 1, 2
-	};
-	indice_count = indices.size();
+        glBindVertexArray(mesh->vao);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
 
-    // Create vertex array object (VAO)
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+        glBufferData(GL_ARRAY_BUFFER, mesh->vertices.size() * sizeof(VertexData), &mesh->vertices[0], GL_STATIC_DRAW);
 
-    // Create vertex buffer object (VBO) and set data
-    unsigned int vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indices.size() * sizeof(unsigned int),
+            &mesh->indices[0], GL_STATIC_DRAW);
 
-    // Set vertex attrib pointers of VAO using data from VBO
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertice_components * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+        // vertex positions
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 
-    // Create element buffer object (EBO)
-    unsigned int ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), indices.data(), GL_STATIC_DRAW);
-
-    // Unbind VAO, VBO and EBO
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    id = vao;
+        glBindVertexArray(0);
+    }
 }

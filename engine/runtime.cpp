@@ -95,9 +95,6 @@ int main() {
 	// SETUP PHASE 2: LOAD ASSETS, COMPILE SHADERS
 	//
 
-	// Cube vao
-	CubeModel* default_model = new CubeModel();
-
 	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
 	ShaderBuilder::loadAndCompile(shader_paths);
@@ -161,16 +158,10 @@ int main() {
 		for (int i = 0; i < Runtime::entityLinks.size(); i++) {
 			Entity* entity = Runtime::entityLinks.at(i);
 
+			if (entity->model == nullptr) continue;
+
 			// Bind vao
-			unsigned int indice_count = 0;
-			if (entity->model != nullptr) {
-				entity->model->bind();
-				indice_count = entity->model->getIndiceCount();
-			}
-			else {
-				default_model->bind();
-				indice_count = default_model->getIndiceCount();
-			}
+			entity->model->bind();
 
 			// Set shader
 			// default_shader->use();
@@ -186,7 +177,7 @@ int main() {
 			default_shader->setMatrix4("mvp", mvp);
 
 			// Draw call
-			glDrawElements(GL_TRIANGLES, indice_count, GL_UNSIGNED_INT, 0);
+			entity->model->render();
 		}
 
 		//

@@ -27,7 +27,7 @@ void awake() {
 	UnlitMaterial* plank = new UnlitMaterial();
 	plank->texture = plankTexture;
 
-	Model* cubeModel = new Model("./user/assets/models/cube.obj");
+	Model* cubeModel = new Model("./user/assets/models/air_hockey.fbx");
 
 	/* for (int i = 0; i < amount; i++) {
 		object_batch[i] = Runtime::createEntity();
