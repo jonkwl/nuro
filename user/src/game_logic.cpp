@@ -8,8 +8,8 @@
 #include "../engine/rendering/material/unlit_material.h"
 
 Camera* camera = nullptr;
-Entity* plank = nullptr;
-Entity* dirt = nullptr;
+Entity* floorLamp = nullptr;
+Entity* mannequin = nullptr;
 
 int amount = 100;
 std::vector<Entity*> object_batch(amount);
@@ -21,30 +21,25 @@ void awake() {
 
 	// Import textures
 	bool success;
-	Texture* plankTexture = new Texture("./user/assets/textures/plank.jpg", success);
-	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg", success);
+	Texture* exampleTexture = new Texture("./user/assets/textures/plank.jpg", success);
 
 	UnlitMaterial* unlit = new UnlitMaterial();
-	Model* model = new Model("./user/assets/models/air_hockey.fbx", unlit);
 
-	/*for (int i = 0; i < amount; i++) {
-		object_batch[i] = Runtime::createEntity();
-		object_batch[i]->material = plank;
-		object_batch[i]->model = model;
-		object_batch[i]->position = glm::vec3((i % 10) * 2.0f, 0, (i / 10) * 2.0f);
-	}*/
+	Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", unlit);
+	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", unlit);
 
-	Entity* meshEntity = Runtime::createEntity();
-	meshEntity->model = model;
-	meshEntity->position.z = 5;
-	meshEntity->rotation.x = 90;
+	floorLamp = Runtime::createEntity();
+	floorLamp->model = floorLampModel;
+	floorLamp->position = glm::vec3(-1.0f, 0.0f, 5.0f);
+	floorLamp->rotation = glm::vec3(90.0f, 0.0f, 90.0f);
+	floorLamp->scale = glm::vec3(1.5f, 1.5f, 1.5f);
+
+	mannequin = Runtime::createEntity();
+	mannequin->model = mannequinModel;
+	mannequin->position = glm::vec3(1.0f, 0.0f, 5.0f);
+	mannequin->rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 }
 
 void update() {
-	/*
-	for (int i = 0; i < amount; i++) {
-		object_batch[i]->position = glm::vec3(object_batch[i]->position.x, (sin(Runtime::time * 2) + 1) / 2, object_batch[i]->position.z);
-		object_batch[i]->rotation += glm::vec3(50.0f * Runtime::deltaTime, 30.0f * Runtime::deltaTime, 15.0f * Runtime::deltaTime);
-	}
-	*/
+	mannequin->rotation.z += 0.5f;
 }
