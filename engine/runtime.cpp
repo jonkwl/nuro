@@ -10,9 +10,9 @@ float Runtime::lastTime = 0.0f;
 float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 
-bool Runtime::wireframe = false;
+bool Runtime::wireframe = true;
 
-bool Runtime::inspectorMode = false;
+bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
 bool Runtime::showDiagnostics = false;
 
@@ -96,8 +96,7 @@ int main() {
 	//
 
 	// Cube vao
-	unsigned int default_mesh_indice_count;
-	CubeMesh* default_mesh = new CubeMesh(default_mesh_indice_count);
+	CubeMesh* default_mesh = new CubeMesh();
 
 	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
@@ -165,11 +164,12 @@ int main() {
 			// Bind vao
 			unsigned int indice_count = 0;
 			if (entity->mesh != nullptr) {
-				//
+				entity->mesh->bind();
+				indice_count = entity->mesh->getIndiceCount();
 			}
 			else {
 				default_mesh->bind();
-				indice_count = default_mesh_indice_count;
+				indice_count = default_mesh->getIndiceCount();
 			}
 
 			// Set shader

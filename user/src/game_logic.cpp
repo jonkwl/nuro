@@ -15,10 +15,6 @@ int amount = 100;
 std::vector<Entity*> object_batch(amount);
 
 void awake() {
-	// Runtime settings
-	Runtime::inspectorMode = true;
-	Runtime::showDiagnostics = true;
-
 	// Create camera
 	camera = new Camera();
 	Runtime::useCamera(camera);
@@ -31,13 +27,18 @@ void awake() {
 	UnlitMaterial* plank = new UnlitMaterial();
 	plank->texture = plankTexture;
 
-	for (int i = 0; i < amount; i++) {
+	Mesh* cubeMesh = new Mesh("./user/assets/models/cube.obj");
+
+	/* for (int i = 0; i < amount; i++) {
 		object_batch[i] = Runtime::createEntity();
 		object_batch[i]->material = plank;
 		object_batch[i]->position = glm::vec3((i % 10) * 2.0f, 0, (i / 10) * 2.0f);
-	}
+	} */
 
-	Mesh* mesh = new Mesh("./user/assets/models/cube.obj");
+	Entity* meshEntity = Runtime::createEntity();
+	meshEntity->material = plank;
+	meshEntity->mesh = cubeMesh;
+	meshEntity->position.z = 5;
 }
 
 void update() {

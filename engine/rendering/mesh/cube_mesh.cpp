@@ -1,6 +1,6 @@
 #include "cube_mesh.h"
 
-CubeMesh::CubeMesh(unsigned int& indice_count)
+CubeMesh::CubeMesh()
 {
     // Define vertices and indices
     unsigned int vertice_components = 3; // Only position now
@@ -104,4 +104,8 @@ CubeMesh::CubeMesh(unsigned int& indice_count)
 void CubeMesh::bind()
 {
     glBindVertexArray(id);
+}
+
+unsigned int CubeMesh::getIndiceCount() {
+    return indice_count;
 }

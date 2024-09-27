@@ -149,6 +149,7 @@
     <ClCompile Include="engine\utils\inspector_mode.cpp" />
     <ClCompile Include="engine\rendering\material\unlit_material.cpp" />
     <ClCompile Include="engine\rendering\mesh\mesh.cpp" />
+    <ClCompile Include="engine\utils\string_helper.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -180,6 +181,7 @@
     <ClInclude Include="engine\utils\inspector_mode.h" />
     <ClInclude Include="engine\rendering\material\unlit_material.h" />
     <ClInclude Include="engine\rendering\mesh\mesh.h" />
+    <ClInclude Include="engine\utils\string_helper.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="engine\utils\iohandler.h" />

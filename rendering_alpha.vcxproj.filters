@@ -105,6 +105,9 @@
     <ClCompile Include="engine\rendering\mesh\cube_mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\utils\string_helper.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -195,6 +198,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\mesh\cube_mesh.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utils\string_helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
