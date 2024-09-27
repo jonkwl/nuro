@@ -4,7 +4,7 @@
 
 #include "../engine/rendering/texture/texture.h"
 #include "../engine/rendering/material/imaterial.h"
-#include "../engine/rendering/mesh/mesh.h"
+#include "../engine/rendering/model/model.h"
 
 class Entity
 {
@@ -17,5 +17,5 @@ public:
 
 	IMaterial* material;
 
-	Mesh* mesh;
+	Model* model;
 };

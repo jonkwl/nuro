@@ -99,10 +99,10 @@
     <ClCompile Include="engine\rendering\material\unlit_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\mesh\mesh.cpp">
+    <ClCompile Include="engine\rendering\model\model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\mesh\cube_mesh.cpp">
+    <ClCompile Include="engine\rendering\model\cube_model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\utils\string_helper.cpp">
@@ -194,10 +194,10 @@
     <ClInclude Include="engine\rendering\material\unlit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\mesh\mesh.h">
+    <ClInclude Include="engine\rendering\model\model.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\mesh\cube_mesh.h">
+    <ClInclude Include="engine\rendering\model\cube_model.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\utils\string_helper.h">

@@ -27,7 +27,7 @@ void awake() {
 	UnlitMaterial* plank = new UnlitMaterial();
 	plank->texture = plankTexture;
 
-	Mesh* cubeMesh = new Mesh("./user/assets/models/cube.obj");
+	Model* cubeModel = new Model("./user/assets/models/cube.obj");
 
 	/* for (int i = 0; i < amount; i++) {
 		object_batch[i] = Runtime::createEntity();
@@ -37,7 +37,7 @@ void awake() {
 
 	Entity* meshEntity = Runtime::createEntity();
 	meshEntity->material = plank;
-	meshEntity->mesh = cubeMesh;
+	meshEntity->model = cubeModel;
 	meshEntity->position.z = 5;
 }
 

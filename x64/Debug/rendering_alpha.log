@@ -1,3 +1,5 @@
-﻿  mesh.cpp
-D:\linear_algebra\rendering_alpha\engine\rendering\mesh\mesh.cpp(127,29): warning C4267: "=": Konvertierung von "size_t" nach "unsigned int", Datenverlust möglich
+﻿  runtime.cpp
+D:\linear_algebra\rendering_alpha\engine\runtime.cpp(123,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  game_logic.cpp
+  Generating Code...
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe

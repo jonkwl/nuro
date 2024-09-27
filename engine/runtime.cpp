@@ -96,7 +96,7 @@ int main() {
 	//
 
 	// Cube vao
-	CubeMesh* default_mesh = new CubeMesh();
+	CubeModel* default_model = new CubeModel();
 
 	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
@@ -163,13 +163,13 @@ int main() {
 
 			// Bind vao
 			unsigned int indice_count = 0;
-			if (entity->mesh != nullptr) {
-				entity->mesh->bind();
-				indice_count = entity->mesh->getIndiceCount();
+			if (entity->model != nullptr) {
+				entity->model->bind();
+				indice_count = entity->model->getIndiceCount();
 			}
 			else {
-				default_mesh->bind();
-				indice_count = default_mesh->getIndiceCount();
+				default_model->bind();
+				indice_count = default_model->getIndiceCount();
 			}
 
 			// Set shader

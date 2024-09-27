@@ -1,4 +1,4 @@
-D:\linear_algebra\rendering_alpha\engine\rendering\mesh\cube_mesh.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\cube_mesh.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\model\cube_model.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\cube_model.obj
 D:\linear_algebra\rendering_alpha\engine\context\context.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\context.obj
 D:\linear_algebra\rendering_alpha\engine\objects\camera.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\camera.obj
 D:\linear_algebra\rendering_alpha\engine\objects\entity.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\entity.obj
@@ -11,7 +11,7 @@ D:\linear_algebra\rendering_alpha\engine\engineui\engine_dialog.cpp;D:\linear_al
 D:\linear_algebra\rendering_alpha\engine\engineui\engine_ui.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\engine_ui.obj
 D:\linear_algebra\rendering_alpha\engine\utils\inspector_mode.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\inspector_mode.obj
 D:\linear_algebra\rendering_alpha\engine\rendering\material\unlit_material.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\unlit_material.obj
-D:\linear_algebra\rendering_alpha\engine\rendering\mesh\mesh.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\mesh.obj
+D:\linear_algebra\rendering_alpha\engine\rendering\model\model.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\model.obj
 D:\linear_algebra\rendering_alpha\engine\utils\string_helper.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\string_helper.obj
 D:\linear_algebra\rendering_alpha\user\src\game_logic.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\game_logic.obj
 D:\linear_algebra\rendering_alpha\stb\stb_image.cpp;D:\linear_algebra\rendering_alpha\x64\Debug\stb_image.obj

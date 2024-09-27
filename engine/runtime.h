@@ -24,7 +24,8 @@ using json = nlohmann::json;
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/texture/texture.h"
-#include "../engine/rendering/mesh/cube_mesh.h"
+#include "../engine/rendering/model/cube_model.h"
+#include "../engine/rendering/model/model.h"
 
 #include "../engine/objects/entity.h"
 #include "../engine/objects/camera.h"

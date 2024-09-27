@@ -2,10 +2,10 @@
 
 #include <glad/glad.h>
 
-class CubeMesh
+class CubeModel
 {
 public:
-	CubeMesh();
+	CubeModel();
 	
 	void bind();
 	unsigned int getIndiceCount();

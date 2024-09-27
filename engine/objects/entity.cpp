@@ -8,5 +8,5 @@ Entity::Entity()
 
 	material = nullptr;
 
-	mesh = nullptr;
+	model = nullptr;
 }
