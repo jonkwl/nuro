@@ -1,5 +1,5 @@
-﻿  runtime_entity.cpp
-  mesh.cpp
-D:\linear_algebra\rendering_alpha\engine\rendering\model\mesh.cpp(49,46): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+﻿  entity.cpp
+  shader_builder.cpp
+D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader_builder.cpp(48,13): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
   Generating Code...
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe

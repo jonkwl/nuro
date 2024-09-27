@@ -9,7 +9,7 @@
 class Texture
 {
 public:
-	Texture(std::string path, bool& uploaded);
+	Texture(std::string path);
 
 	void bind();
 private:

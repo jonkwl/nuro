@@ -1,6 +1,6 @@
 #include "texture.h"
 
-Texture::Texture(std::string path, bool& uploaded)
+Texture::Texture(std::string path)
 {
 	id = 0;
 
@@ -19,7 +19,6 @@ Texture::Texture(std::string path, bool& uploaded)
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data) {
 		Log::printError("Texture", "Couldn't load texture data");
-		uploaded = false;
 		return;
 	}
 
@@ -29,8 +28,6 @@ Texture::Texture(std::string path, bool& uploaded)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	stbi_image_free(data);
-
-	uploaded = true;
 }
 
 void Texture::bind() {

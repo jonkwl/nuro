@@ -16,15 +16,10 @@ void RuntimeEntity::render()
     for (int i = 0; i < entity->model->meshes.size(); i++) {
         entity->model->meshes[i]->bind();
 
-        // Set shader
-        // default_shader->use();
+        // Set bind material (handles shader and texture binding and preset shader uniforms)
         entity->model->material->bind();
 
-        // Set texture
-        // entity->texture->use();
-
-        // Set shader uniforms
-
+        // Set shader mvp uniform
         entity->model->material->getShader()->setMatrix4("mvp", mvp);
 
         entity->model->meshes[i]->render();

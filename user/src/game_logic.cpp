@@ -8,6 +8,7 @@
 #include "../engine/rendering/material/unlit_material.h"
 
 Camera* camera = nullptr;
+Entity* cube = nullptr;
 Entity* floorLamp = nullptr;
 Entity* mannequin = nullptr;
 
@@ -20,13 +21,18 @@ void awake() {
 	Runtime::useCamera(camera);
 
 	// Import textures
-	bool success;
-	Texture* exampleTexture = new Texture("./user/assets/textures/plank.jpg", success);
+	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg");
 
 	UnlitMaterial* unlit = new UnlitMaterial();
 
+	Model* cubeModel = new Model("./user/assets/models/cube.obj", unlit);
 	Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", unlit);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", unlit);
+
+	cube = Runtime::createEntity();
+	cube->model = cubeModel;
+	cube->position = glm::vec3(0.0f, 0.0f, 7.5f);
+	cube->scale = glm::vec3(0.75f, 0.75f, 0.75f);
 
 	floorLamp = Runtime::createEntity();
 	floorLamp->model = floorLampModel;
