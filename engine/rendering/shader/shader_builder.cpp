@@ -17,8 +17,8 @@ void ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
 		std::vector<std::string> shaders_in_folder = IOHandler::GetFolders(paths[i]);
 		for (int x = 0; x < shaders_in_folder.size(); x++) {
 
-			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[i]);
-			shader_names.push_back(shaders_in_folder[i]);
+			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
+			shader_names.push_back(shaders_in_folder[x]);
 			Log::printProcessInfo("- " + shader_names[x]);
 		}
 	}

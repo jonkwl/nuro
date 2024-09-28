@@ -6,6 +6,7 @@
 #include "../engine/objects/entity.h"
 #include "../engine/objects/camera.h"
 #include "../engine/rendering/material/unlit_material.h"
+#include "../engine/rendering/material/rainbow_material.h"
 
 Camera* camera = nullptr;
 Entity* cube = nullptr;
@@ -24,10 +25,11 @@ void awake() {
 	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg");
 
 	UnlitMaterial* unlit = new UnlitMaterial();
+	RainbowMaterial* rainbow = new RainbowMaterial();
 
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", unlit);
 	Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", unlit);
-	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", unlit);
+	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", rainbow);
 
 	cube = Runtime::createEntity();
 	cube->model = cubeModel;

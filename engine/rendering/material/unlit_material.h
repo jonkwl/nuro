@@ -9,9 +9,27 @@
 class UnlitMaterial : public IMaterial
 {
 public:
-	UnlitMaterial();
-	void bind();
-	Shader* getShader();
+	UnlitMaterial() {
+
+		shader = ShaderBuilder::get("unlit");
+		texture = nullptr;
+
+	}
+
+	void bind() {
+
+		shader->bind();
+
+		if (texture != nullptr) {
+			texture->bind();
+		}
+
+	}
+
+	Shader* getShader() {
+		return shader;
+	}
+
 	Texture* texture;
 private:
 	Shader* shader;

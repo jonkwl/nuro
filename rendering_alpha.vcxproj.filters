@@ -96,9 +96,6 @@
     <ClCompile Include="engine\utils\inspector_mode.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\material\unlit_material.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="engine\rendering\model\model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -213,6 +210,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\runtime_entity.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\material\rainbow_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

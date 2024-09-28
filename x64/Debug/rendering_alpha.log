@@ -1,5 +1,2 @@
-﻿  entity.cpp
-  shader_builder.cpp
-D:\linear_algebra\rendering_alpha\engine\rendering\shader\shader_builder.cpp(48,13): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
-  Generating Code...
+﻿  game_logic.cpp
   rendering_alpha.vcxproj -> D:\linear_algebra\rendering_alpha\x64\Debug\rendering_alpha.exe
