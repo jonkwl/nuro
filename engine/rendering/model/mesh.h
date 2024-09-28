@@ -13,16 +13,20 @@ struct VertexData {
 class Mesh
 {
 public:
-    Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures);
+    Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures, int materialIndex);
 
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture*> textures;
 
+    void bind();
+    void render();
+
+    unsigned int getMaterialIndex();
+private:
     unsigned int vao;
     unsigned int vbo;
     unsigned int ebo;
 
-    void bind();
-    void render();
+    unsigned int materialIndex;
 };

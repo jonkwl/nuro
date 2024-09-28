@@ -1,10 +1,11 @@
 #include "mesh.h"
 
-Mesh::Mesh(std::vector<VertexData> _vertices, std::vector<unsigned int> _indices, std::vector<Texture*> _textures)
+Mesh::Mesh(std::vector<VertexData> _vertices, std::vector<unsigned int> _indices, std::vector<Texture*> _textures, int _materialIndex)
 {
 	vertices = _vertices;
 	indices = _indices;
 	textures = _textures;
+    materialIndex = _materialIndex;
 
     // Generate VAO, VBO and EBO
     glGenVertexArrays(1, &vao);
@@ -47,4 +48,9 @@ void Mesh::bind()
 void Mesh::render()
 {
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+unsigned int Mesh::getMaterialIndex()
+{
+    return materialIndex;
 }

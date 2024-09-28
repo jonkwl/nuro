@@ -1,6 +1,9 @@
 #include "runtime.h"
 
 std::vector<RuntimeEntity*> Runtime::entityLinks;
+
+UnlitMaterial* Runtime::defaultMaterial = nullptr;
+
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
 Camera* Runtime::inspectorCamera = new Camera();
@@ -99,7 +102,10 @@ int main() {
 	// Loading all shaders
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
 	ShaderBuilder::loadAndCompile(shader_paths);
-	Shader* default_shader = ShaderBuilder::get("unlit");
+
+	// Creating default material
+	Runtime::defaultMaterial = new UnlitMaterial();
+	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -144,6 +150,8 @@ int main() {
 		//
 
 		// Clear screen buffer
+		// Clear screen buffer
+		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)

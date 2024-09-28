@@ -24,6 +24,7 @@ using json = nlohmann::json;
 
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
+#include "../engine/rendering/material/unlit_material.h"
 #include "../engine/rendering/texture/texture.h"
 #include "../engine/rendering/model/cube_model.h"
 #include "../engine/rendering/model/model.h"
@@ -49,6 +50,9 @@ public:
 	// Entity system
 	static std::vector<RuntimeEntity*> entityLinks; // All entities that will be processed by the runtime
 	static Entity* createEntity(); // Creates a new entity and links it with runtime
+
+	// Default material asset
+	static UnlitMaterial* defaultMaterial;
 
 	// Camera settings
 	static Camera* renderCamera; // This camera gets rendered to the screen

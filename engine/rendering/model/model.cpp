@@ -1,20 +1,37 @@
 #include "model.h"
 
+Model::Model(std::string path)
+{
+    resolveModel(path);
+}
+
 Model::Model(std::string path, IMaterial* material)
 {
-    this->material = material;
+    std::vector<IMaterial*> materials = { material };
+    this->materials = materials;
 	resolveModel(path);
+}
+
+Model::Model(std::string path, std::initializer_list<IMaterial*> materials)
+{
+    this->materials = materials;
+    resolveModel(path);
 }
 
 void Model::resolveModel(std::string path)
 {
     Assimp::Importer import;
-    const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         Log::printError("Mesh", import.GetErrorString());
         return;
+    }
+
+    model_materials.reserve(scene->mNumMaterials);
+    for (int i = 0; i < scene->mNumMaterials; i++) {
+        model_materials.push_back(scene->mMaterials[i]);
     }
 
     processNode(scene->mRootNode, scene);
@@ -38,6 +55,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture*> textures;
+    unsigned int materialIndex;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -66,6 +84,8 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
     }
 
     // Texture loading can be implemented here
+
+    materialIndex = mesh->mMaterialIndex;
     
-    return new Mesh(vertices, indices, textures);
+    return new Mesh(vertices, indices, textures, materialIndex);
 }

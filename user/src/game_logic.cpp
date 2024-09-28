@@ -27,8 +27,17 @@ void awake() {
 	UnlitMaterial* unlit = new UnlitMaterial();
 	RainbowMaterial* rainbow = new RainbowMaterial();
 
-	Model* cubeModel = new Model("./user/assets/models/cube.obj", unlit);
-	Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", unlit);
+	UnlitMaterial* lightGray = new UnlitMaterial();
+	lightGray->baseColor = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
+	UnlitMaterial* darkGray = new UnlitMaterial();
+	darkGray->baseColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+	UnlitMaterial* white = new UnlitMaterial();
+	white->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	UnlitMaterial* black = new UnlitMaterial();
+	black->baseColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	Model* cubeModel = new Model("./user/assets/models/cube.obj", { unlit, unlit });
+	Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", { lightGray, black, darkGray, white });
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", rainbow);
 
 	cube = Runtime::createEntity();
@@ -49,5 +58,5 @@ void awake() {
 }
 
 void update() {
-	mannequin->rotation.z += 0.5f;
+	// mannequin->rotation.z += 0.5f;
 }

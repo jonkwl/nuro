@@ -13,6 +13,7 @@ public:
 
 		shader = ShaderBuilder::get("unlit");
 		texture = nullptr;
+		baseColor = glm::vec4(1.0f);
 
 	}
 
@@ -24,6 +25,7 @@ public:
 			texture->bind();
 		}
 
+		shader->setVec4("baseColor", baseColor);
 	}
 
 	Shader* getShader() {
@@ -31,6 +33,7 @@ public:
 	}
 
 	Texture* texture;
+	glm::vec4 baseColor;
 private:
 	Shader* shader;
 };

@@ -24,10 +24,12 @@ struct Face {
 class Model
 {
 public:
+	Model(std::string path);
 	Model(std::string path, IMaterial* material);
+	Model(std::string path, std::initializer_list<IMaterial*> materials);
 	std::vector<Mesh*> meshes;
 
-	IMaterial* material;
+	std::vector<IMaterial*> materials;
 private:
 	std::string directory;
 
@@ -35,4 +37,6 @@ private:
 
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
+
+	std::vector<aiMaterial*> model_materials;
 };

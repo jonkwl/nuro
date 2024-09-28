@@ -13,15 +13,34 @@ void RuntimeEntity::render()
     // Calculate mvp
     glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);
 
-    for (int i = 0; i < entity->model->meshes.size(); i++) {
-        entity->model->meshes[i]->bind();
+    // Get model
+    Model* model = entity->model;
 
-        // Set bind material (handles shader and texture binding and preset shader uniforms)
-        entity->model->material->bind();
+    // Render each mesh of entity
+    for (int i = 0; i < entity->model->meshes.size(); i++) {
+        Mesh* mesh = model->meshes[i];
+
+        // Bind mesh
+        mesh->bind();
+
+        // Get mesh material by index
+        IMaterial* material;
+
+        unsigned int materialIndex = mesh->getMaterialIndex();
+        if (materialIndex < model->materials.size()) {
+            material = model->materials.at(materialIndex);
+        }
+        else {
+            material = Runtime::defaultMaterial;
+        }
+
+        // Bind material
+        material->bind();
 
         // Set shader mvp uniform
-        entity->model->material->getShader()->setMatrix4("mvp", mvp);
+        material->getShader()->setMatrix4("mvp", mvp);
 
-        entity->model->meshes[i]->render();
+        // Render mesh
+        mesh->render();
     }
 }
