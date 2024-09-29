@@ -11,7 +11,10 @@ void RuntimeEntity::render()
     if (entity->model == nullptr) return;
 
     // Calculate mvp
-    glm::mat4 mvp = RenderCore::mvp(entity, Runtime::renderCamera, Context::width, Context::height);
+    glm::mat4 model_matrix = RenderCore::model_matrix(entity);
+    glm::mat4 view_matrix = RenderCore::view_matrix(Runtime::renderCamera);
+    glm::mat4 projection_matrix = RenderCore::projection_matrix(Runtime::renderCamera, Context::width, Context::height);
+    glm::mat4 mvp = projection_matrix * view_matrix * model_matrix;
 
     // Get model
     Model* model = entity->model;
@@ -39,6 +42,7 @@ void RuntimeEntity::render()
 
         // Set shader mvp uniform
         material->getShader()->setMatrix4("mvp", mvp);
+        material->getShader()->setMatrix4("model", model_matrix);
 
         // Render mesh
         mesh->render();

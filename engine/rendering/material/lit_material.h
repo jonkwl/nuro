@@ -18,11 +18,11 @@ public:
 	}
 
 	void bind() {
-
 		shader->bind();
 		texture->bind();
 		shader->setVec4("baseColor", baseColor);
 		shader->setVec3("cameraPosition", Runtime::renderCamera->position);
+		shader->setVec3("lightPosition", lightPosition);
 	}
 
 	Shader* getShader() {
@@ -31,6 +31,7 @@ public:
 
 	Texture* texture;
 	glm::vec4 baseColor;
+	glm::vec3 lightPosition;
 private:
 	Shader* shader;
 };
