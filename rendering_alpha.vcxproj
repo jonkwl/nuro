@@ -167,6 +167,7 @@
     <ClCompile Include="engine\utils\vector_helper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\rendering\material\lit_material.h" />
     <ClInclude Include="engine\rendering\material\rainbow_material.h" />
     <ClInclude Include="engine\rendering\model\cube_model.h" />
     <ClInclude Include="engine\context\context.h" />

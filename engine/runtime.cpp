@@ -3,6 +3,7 @@
 std::vector<RuntimeEntity*> Runtime::entityLinks;
 
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
+Texture* Runtime::defaultTexture = nullptr;
 
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
@@ -13,7 +14,7 @@ float Runtime::lastTime = 0.0f;
 float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 
-bool Runtime::wireframe = true;
+bool Runtime::wireframe = false;
 
 bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
@@ -103,8 +104,11 @@ int main() {
 	std::vector<std::string> shader_paths = { "./resources/shaders" };
 	ShaderBuilder::loadAndCompile(shader_paths);
 
+	// Creating default texture
+	Runtime::defaultTexture = new Texture("./resources/textures/default.jpg");
+
 	// Creating default material
-	Runtime::defaultMaterial = new UnlitMaterial();
+	Runtime::defaultMaterial = new UnlitMaterial(Runtime::defaultTexture);
 	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	//

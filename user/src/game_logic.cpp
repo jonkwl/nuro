@@ -6,6 +6,7 @@
 #include "../engine/objects/entity.h"
 #include "../engine/objects/camera.h"
 #include "../engine/rendering/material/unlit_material.h"
+#include "../engine/rendering/material/lit_material.h"
 #include "../engine/rendering/material/rainbow_material.h"
 
 Camera* camera = nullptr;
@@ -24,26 +25,28 @@ void awake() {
 	// Import textures
 	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg");
 
-	UnlitMaterial* unlit = new UnlitMaterial();
+	UnlitMaterial* unlit = new UnlitMaterial(Runtime::defaultTexture);
+	LitMaterial* lit = new LitMaterial(Runtime::defaultTexture);
 	RainbowMaterial* rainbow = new RainbowMaterial();
 
-	UnlitMaterial* lightGray = new UnlitMaterial();
-	lightGray->baseColor = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
-	UnlitMaterial* darkGray = new UnlitMaterial();
-	darkGray->baseColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
-	UnlitMaterial* white = new UnlitMaterial();
-	white->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	UnlitMaterial* black = new UnlitMaterial();
-	black->baseColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	LitMaterial* dirt = new LitMaterial(dirtTexture);
 
-	Model* cubeModel = new Model("./user/assets/models/cube.obj", { unlit, unlit });
+	LitMaterial* lightGray = new LitMaterial(Runtime::defaultTexture);
+	lightGray->baseColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+	LitMaterial* darkGray = new LitMaterial(Runtime::defaultTexture);
+	darkGray->baseColor = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
+	LitMaterial* white = new LitMaterial(Runtime::defaultTexture);
+	white->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	LitMaterial* black = new LitMaterial(Runtime::defaultTexture);
+	black->baseColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+
+	Model* cubeModel = new Model("./user/assets/models/cube.obj", { dirt, dirt });
 	Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", { lightGray, black, darkGray, white });
-	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", rainbow);
+	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", lit);
 
 	cube = Runtime::createEntity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(0.0f, 0.0f, 7.5f);
-	cube->scale = glm::vec3(0.75f, 0.75f, 0.75f);
+	cube->position = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	floorLamp = Runtime::createEntity();
 	floorLamp->model = floorLampModel;
@@ -58,5 +61,5 @@ void awake() {
 }
 
 void update() {
-	// mannequin->rotation.z += 0.5f;
+	cube->rotation += glm::vec3(0.5, 0.5, 0.0f);
 }

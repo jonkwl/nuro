@@ -215,5 +215,8 @@
     <ClInclude Include="engine\rendering\material\rainbow_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="engine\rendering\material\lit_material.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

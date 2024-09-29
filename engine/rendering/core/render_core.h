@@ -13,8 +13,6 @@
 class RenderCore
 {
 public:
-	void render(std::vector<Entity*> entity_links, Camera* camera);
-
 	static glm::mat4 model_matrix(Entity* entity);
 	static glm::mat4 view_matrix(Camera* camera);
 	static glm::mat4 projection_matrix(Camera* camera, int width, int height);

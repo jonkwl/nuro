@@ -6,12 +6,12 @@
 #include "../engine/utils/log.h"
 #include "imaterial.h"
 
-class UnlitMaterial : public IMaterial
+class LitMaterial : public IMaterial
 {
 public:
-	UnlitMaterial(Texture* texture) {
+	LitMaterial(Texture* texture) {
 
-		shader = ShaderBuilder::get("unlit");
+		shader = ShaderBuilder::get("lit");
 		this->texture = texture;
 		baseColor = glm::vec4(1.0f);
 
@@ -22,6 +22,7 @@ public:
 		shader->bind();
 		texture->bind();
 		shader->setVec4("baseColor", baseColor);
+		shader->setVec3("cameraPosition", Runtime::renderCamera->position);
 	}
 
 	Shader* getShader() {
