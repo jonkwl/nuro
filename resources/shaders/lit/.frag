@@ -14,7 +14,7 @@ uniform vec3 lightPosition;
 void main()
 {
     // set normals
-    vec3 normals = normalize(v_normals);
+    vec3 normalDirection = normalize(v_normals);
 
     // light variables
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
@@ -27,15 +27,16 @@ void main()
     vec3 ambient = ambientColor * ambientStrength;
 
     // diffuse light
-    float diffuseValue = max(0.0, dot(lightDirection, normals));
+    float diffuseValue = max(0.0, dot(lightDirection, normalDirection));
     vec3 diffuse = lightColor * diffuseValue * lightStrength;
 
     // specular light
     float specularStrength = 0.5;
-    vec3 viewDir = normalize(cameraPosition - v_fragmentPosition);
-    vec3 reflectDir = reflect(-lightDirection, normals);
     float glossiness = 32.0;
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 viewDirection = normalize(cameraPosition - v_fragmentPosition);
+    // vec3 reflectDirection = reflect(-lightDirection, normalDirection); // Phong Lighting (deprecated)
+    vec3 halfwayDirection = normalize(viewDirection + lightDirection); // Blinn Phong Lighting
+    float spec = pow(max(dot(halfwayDirection, normalDirection), 0.0), glossiness);
     vec3 specular = lightColor * spec * specularStrength * lightStrength;
     
     // lighting = ambient + diffuse + specular

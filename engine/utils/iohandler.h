@@ -12,4 +12,5 @@ public:
     static std::string ReadFile(const std::string& path);
     static std::vector<std::string> ReadFileLines(const std::string& path);
     static std::vector<std::string> GetFolders(const std::string& path);
+    static std::string GetFilename(const std::string& path);
 };

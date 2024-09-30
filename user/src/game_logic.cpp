@@ -43,7 +43,7 @@ void awake() {
 	Model* lightModel = new Model("./user/assets/models/cube.obj", { unlit, unlit });
 	light = Runtime::createEntity();
 	light->model = lightModel;
-	light->position.y = 1.6f;
+	light->position.y = 1.0f;
 	light->scale = glm::vec3(0.25f, 0.25f, 0.25f);
 
 	lit = new LitMaterial(Runtime::defaultTexture);
@@ -52,7 +52,13 @@ void awake() {
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { dirt, dirt });
 	cube = Runtime::createEntity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(0.0f, 0.0f, 3.5f);
+	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
+
+	Model* floorModel = new Model("./user/assets/models/cube.obj", { lit, lit });
+	Entity* floor = Runtime::createEntity();
+	floor->model = floorModel;
+	floor->position = glm::vec3(0.0f, -1.0f, 0.0f);
+	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);
 	
 	//Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", { lightGray, black, darkGray, white });
 	/*floorLamp = Runtime::createEntity();
@@ -69,6 +75,7 @@ void awake() {
 }
 
 void update() {
+	/*
 	static float angle = 0.0f;  // Keeps track of the angle of rotation
 	float radius = 10.0f;        // Radius of the circular path
 
@@ -82,6 +89,7 @@ void update() {
 	// Update material light positions
 	lit->lightPosition = light->position;
 	dirt->lightPosition = light->position;
+	*/
 
 	// Rotate the cube on the y-axis
 	cube->rotation.y += 1.0f;

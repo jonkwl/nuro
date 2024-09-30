@@ -20,6 +20,8 @@ Model::Model(std::string path, std::initializer_list<IMaterial*> materials)
 
 void Model::resolveModel(std::string path)
 {
+    Log::printProcessStart("Model", "Starting to build model " + IOHandler::GetFilename(path) + "...");
+
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -35,6 +37,8 @@ void Model::resolveModel(std::string path)
     }
 
     processNode(scene->mRootNode, scene);
+
+    Log::printProcessDone("Model", "Built model " + IOHandler::GetFilename(path));
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)
@@ -47,11 +51,13 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
         processNode(node->mChildren[i], scene);
-    } 
+    }
 }
 
 Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
+    Log::printProcessInfo("- Building mesh " + std::to_string(meshes.size() + 1));
+
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture*> textures;
