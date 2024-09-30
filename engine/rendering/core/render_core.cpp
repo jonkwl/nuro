@@ -1,22 +1,33 @@
 #include "render_core.h"
 
+glm::vec3 RenderCore::prepare_world_position(glm::vec3 position)
+{
+	return glm::vec3(position.x, position.y, -position.z);
+}
+
+glm::vec3 RenderCore::prepare_world_rotation(glm::vec3 rotation)
+{
+	return glm::vec3(-rotation.x, -rotation.y, rotation.z);
+}
+
 glm::mat4 RenderCore::model_matrix(Entity* entity) {
 	glm::mat4 model(1.0f);
 
 	// object position
-	model = glm::translate(model, glm::vec3(entity->position.x, entity->position.y, -entity->position.z));
+	glm::vec3 worldPosition = prepare_world_position(entity->position);
+	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
-	model = glm::rotate(model, glm::radians(-entity->rotation.x), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(-entity->rotation.y), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, glm::radians(entity->rotation.z), glm::vec3(0, 0, 1));
+	glm::vec3 worldRotation = prepare_world_rotation(entity->rotation);
+	model = glm::rotate(model, glm::radians(worldRotation.x), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(worldRotation.y), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(worldRotation.z), glm::vec3(0, 0, 1));
 
 	// object scale
 	model = glm::scale(model, entity->scale);
 
 	return model;
 }
-
 glm::mat4 RenderCore::view_matrix(Camera* camera) {
 	glm::vec3 camera_position = camera->position;
 	glm::vec3 camera_rotation = camera->rotation;
@@ -49,11 +60,9 @@ glm::mat4 RenderCore::view_matrix(Camera* camera) {
 
 	return viewMatrix;
 }
-
 glm::mat4 RenderCore::projection_matrix(Camera* camera, int width, int height) {
 	return glm::perspective(glm::radians(camera->fov), (float)width / (float)height, camera->nearClipping, camera->farClipping);
 }
-
 glm::mat4 RenderCore::mvp(Entity* entity, Camera* camera, int width, int height) {
 	glm::mat4 model = model_matrix(entity);
 	glm::mat4 view = view_matrix(camera);

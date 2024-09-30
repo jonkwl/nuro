@@ -22,7 +22,7 @@ void main()
     float lightStrength = 0.5;
 
     // ambient light
-    float ambientStrength = 0.15;
+    float ambientStrength = 0.15; 
     vec3 ambientColor = vec3(1.0, 1.0, 1.0);
     vec3 ambient = ambientColor * ambientStrength;
 

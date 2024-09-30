@@ -14,6 +14,7 @@ public:
 		shader = ShaderBuilder::get("lit");
 		this->texture = texture;
 		baseColor = glm::vec4(1.0f);
+		lightPosition = glm::vec3(0.0f);
 
 	}
 
@@ -21,8 +22,8 @@ public:
 		shader->bind();
 		texture->bind();
 		shader->setVec4("baseColor", baseColor);
-		shader->setVec3("cameraPosition", Runtime::renderCamera->position);
-		shader->setVec3("lightPosition", lightPosition);
+		shader->setVec3("cameraPosition", RenderCore::prepare_world_position(Runtime::renderCamera->position));
+		shader->setVec3("lightPosition", RenderCore::prepare_world_position(lightPosition));
 	}
 
 	Shader* getShader() {
