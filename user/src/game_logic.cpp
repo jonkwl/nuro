@@ -3,8 +3,8 @@
 #include <iostream>
 
 #include "../engine/runtime.h"
-#include "../engine/objects/entity.h"
-#include "../engine/objects/camera.h"
+#include "../engine/entity/entity.h"
+#include "../engine/camera/camera.h"
 #include "../engine/rendering/material/unlit_material.h"
 #include "../engine/rendering/material/lit_material.h"
 #include "../engine/rendering/material/rainbow_material.h"

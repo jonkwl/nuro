@@ -22,8 +22,8 @@ public:
 		shader->bind();
 		texture->bind();
 		shader->setVec4("baseColor", baseColor);
-		shader->setVec3("cameraPosition", RenderCore::prepare_world_position(Runtime::renderCamera->position));
-		shader->setVec3("lightPosition", RenderCore::prepare_world_position(lightPosition));
+		shader->setVec3("cameraPosition", Transformation::prepare_world_position(Runtime::renderCamera->position));
+		shader->setVec3("lightPosition", Transformation::prepare_world_position(lightPosition));
 	}
 
 	Shader* getShader() {

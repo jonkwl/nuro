@@ -69,13 +69,13 @@
     <ClCompile Include="user\src\game_logic.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\objects\entity.cpp">
+    <ClCompile Include="engine\entity\entity.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\objects\camera.cpp">
+    <ClCompile Include="engine\camera\camera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\core\render_core.cpp">
+    <ClCompile Include="engine\rendering\core\transformation.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\input\input.cpp">
@@ -108,7 +108,7 @@
     <ClCompile Include="engine\rendering\model\mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\runtime_entity.cpp">
+    <ClCompile Include="engine\entity\entity_processor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -164,13 +164,13 @@
     <ClInclude Include="engine\runtime.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\objects\entity.h">
+    <ClInclude Include="engine\entity\entity.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\objects\camera.h">
+    <ClInclude Include="engine\camera\camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\core\render_core.h">
+    <ClInclude Include="engine\rendering\core\transformation.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\input\input.h">
@@ -209,7 +209,7 @@
     <ClInclude Include="engine\rendering\model\mesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\runtime_entity.h">
+    <ClInclude Include="engine\entity\entity_processor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\material\rainbow_material.h">

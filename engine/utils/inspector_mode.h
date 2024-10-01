@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../engine/runtime.h"
-#include "../engine/objects/camera.h"
+#include "../engine/camera/camera.h"
 
 class InspectorMode
 {

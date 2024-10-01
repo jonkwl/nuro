@@ -7,10 +7,10 @@
 #include <gtc/type_ptr.hpp>
 #include <gtc/quaternion.hpp>
 
-#include "../engine/objects/entity.h"
-#include "../engine/objects/camera.h"
+#include "../engine/entity/entity.h"
+#include "../engine/camera/camera.h"
 
-class RenderCore
+class Transformation
 {
 public:
 	static glm::vec3 prepare_world_position(glm::vec3 position); // Inverses some of the input position componenets for unity like positioning

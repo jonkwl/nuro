@@ -31,7 +31,7 @@ void main()
     vec3 diffuse = lightColor * diffuseValue * lightStrength;
 
     // specular light
-    float specularStrength = 0.5;
+    float specularStrength = 0.75;
     float glossiness = 32.0;
     vec3 viewDirection = normalize(cameraPosition - v_fragmentPosition);
     // vec3 reflectDirection = reflect(-lightDirection, normalDirection); // Phong Lighting (deprecated)

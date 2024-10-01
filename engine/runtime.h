@@ -20,7 +20,7 @@
 #include <json/json.hpp>
 using json = nlohmann::json;
 
-#include "../engine/core/runtime_entity.h"
+#include "../engine/entity/entity_processor.h"
 
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
@@ -29,8 +29,8 @@ using json = nlohmann::json;
 #include "../engine/rendering/model/cube_model.h"
 #include "../engine/rendering/model/model.h"
 
-#include "../engine/objects/entity.h"
-#include "../engine/objects/camera.h"
+#include "../engine/entity/entity.h"
+#include "../engine/camera/camera.h"
 
 #include "../engine/utils/log.h"
 #include "../engine/utils/vector_helper.h"
@@ -48,7 +48,7 @@ using json = nlohmann::json;
 class Runtime {
 public:
 	// Entity system
-	static std::vector<RuntimeEntity*> entityLinks; // All entities that will be processed by the runtime
+	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 	static Entity* createEntity(); // Creates a new entity and links it with runtime
 
 	// Default material asset

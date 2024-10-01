@@ -1,6 +1,6 @@
 #include "runtime.h"
 
-std::vector<RuntimeEntity*> Runtime::entityLinks;
+std::vector<EntityProcessor*> Runtime::entityLinks;
 
 Texture* Runtime::defaultDiffuseTexture = nullptr;
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
@@ -22,8 +22,8 @@ bool Runtime::showDiagnostics = false;
 
 Entity* Runtime::createEntity() {
 	Entity* entity = new Entity();
-	RuntimeEntity* runtimeEntity = new RuntimeEntity(entity);
-	entityLinks.push_back(runtimeEntity);
+	EntityProcessor* entityLink = new EntityProcessor(entity);
+	entityLinks.push_back(entityLink);
 	return entity;
 }
 
@@ -88,7 +88,7 @@ int main() {
 	}
 
 	// Update context
-	Context::set_viewport();
+	Context::setViewport();
 	Context::setCursor(Context::cursorMode);	
 
 	// Setup render settings

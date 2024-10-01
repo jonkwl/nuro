@@ -21,7 +21,7 @@ public:
 	static GLenum cursorMode;
 
 	static void setCursor(GLenum cusor_mode);
+	static void setViewport();
 
-	static void set_viewport();
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };

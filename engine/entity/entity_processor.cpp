@@ -1,19 +1,19 @@
-#include "runtime_entity.h"
+#include "entity_processor.h"
 #include "../engine/runtime.h"
 
-RuntimeEntity::RuntimeEntity(Entity* entity)
+EntityProcessor::EntityProcessor(Entity* entity)
 {
 	this->entity = entity;
 }
 
-void RuntimeEntity::render()
+void EntityProcessor::render()
 {
     if (entity->model == nullptr) return;
 
     // Calculate mvp
-    glm::mat4 model_matrix = RenderCore::model_matrix(entity);
-    glm::mat4 view_matrix = RenderCore::view_matrix(Runtime::renderCamera);
-    glm::mat4 projection_matrix = RenderCore::projection_matrix(Runtime::renderCamera, Context::width, Context::height);
+    glm::mat4 model_matrix = Transformation::model_matrix(entity);
+    glm::mat4 view_matrix = Transformation::view_matrix(Runtime::renderCamera);
+    glm::mat4 projection_matrix = Transformation::projection_matrix(Runtime::renderCamera, Context::width, Context::height);
     glm::mat4 mvp = projection_matrix * view_matrix * model_matrix;
 
     // Get model

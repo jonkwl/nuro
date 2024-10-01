@@ -1,16 +1,16 @@
-#include "render_core.h"
+#include "transformation.h"
 
-glm::vec3 RenderCore::prepare_world_position(glm::vec3 position)
+glm::vec3 Transformation::prepare_world_position(glm::vec3 position)
 {
 	return glm::vec3(position.x, position.y, -position.z);
 }
 
-glm::vec3 RenderCore::prepare_world_rotation(glm::vec3 rotation)
+glm::vec3 Transformation::prepare_world_rotation(glm::vec3 rotation)
 {
 	return glm::vec3(-rotation.x, -rotation.y, rotation.z);
 }
 
-glm::mat4 RenderCore::model_matrix(Entity* entity) {
+glm::mat4 Transformation::model_matrix(Entity* entity) {
 	glm::mat4 model(1.0f);
 
 	// object position
@@ -28,7 +28,7 @@ glm::mat4 RenderCore::model_matrix(Entity* entity) {
 
 	return model;
 }
-glm::mat4 RenderCore::view_matrix(Camera* camera) {
+glm::mat4 Transformation::view_matrix(Camera* camera) {
 	glm::vec3 camera_position = camera->position;
 	glm::vec3 camera_rotation = camera->rotation;
 
@@ -60,10 +60,10 @@ glm::mat4 RenderCore::view_matrix(Camera* camera) {
 
 	return viewMatrix;
 }
-glm::mat4 RenderCore::projection_matrix(Camera* camera, int width, int height) {
+glm::mat4 Transformation::projection_matrix(Camera* camera, int width, int height) {
 	return glm::perspective(glm::radians(camera->fov), (float)width / (float)height, camera->nearClipping, camera->farClipping);
 }
-glm::mat4 RenderCore::mvp(Entity* entity, Camera* camera, int width, int height) {
+glm::mat4 Transformation::mvp(Entity* entity, Camera* camera, int width, int height) {
 	glm::mat4 model = model_matrix(entity);
 	glm::mat4 view = view_matrix(camera);
 	glm::mat4 projection = projection_matrix(camera, width, height);

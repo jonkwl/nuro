@@ -19,12 +19,12 @@ void Context::setCursor(GLenum cusor_mode) {
 	glfwSetInputMode(Context::window, GLFW_CURSOR, cursorMode);
 }
 
-void Context::set_viewport() {
+void Context::setViewport() {
 	glViewport(viewport_x, viewport_y, width, height);
 }
 
 void Context::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	width = width;
 	height = height;
-	set_viewport();
+	setViewport();
 }
