@@ -29,15 +29,15 @@ void awake() {
 	// Import textures
 	Texture* dirtTexture = new Texture("./user/assets/textures/dirt.jpg");
 
-	UnlitMaterial* unlit = new UnlitMaterial(Runtime::defaultTexture);
+	UnlitMaterial* unlit = new UnlitMaterial(Runtime::defaultDiffuseTexture);
 
-	/*LitMaterial* lightGray = new LitMaterial(Runtime::defaultTexture);
+	/*LitMaterial* lightGray = new LitMaterial(Runtime::defaultDiffuseTexture);
 	lightGray->baseColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
-	LitMaterial* darkGray = new LitMaterial(Runtime::defaultTexture);
+	LitMaterial* darkGray = new LitMaterial(Runtime::defaultDiffuseTexture);
 	darkGray->baseColor = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
-	LitMaterial* white = new LitMaterial(Runtime::defaultTexture);
+	LitMaterial* white = new LitMaterial(Runtime::defaultDiffuseTexture);
 	white->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	LitMaterial* black = new LitMaterial(Runtime::defaultTexture);
+	LitMaterial* black = new LitMaterial(Runtime::defaultDiffuseTexture);
 	black->baseColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);*/
 
 	Model* lightModel = new Model("./user/assets/models/cube.obj", { unlit, unlit });
@@ -46,7 +46,7 @@ void awake() {
 	light->position.y = 1.0f;
 	light->scale = glm::vec3(0.25f, 0.25f, 0.25f);
 
-	lit = new LitMaterial(Runtime::defaultTexture);
+	lit = new LitMaterial(Runtime::defaultDiffuseTexture);
 	dirt = new LitMaterial(dirtTexture);
 
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { dirt, dirt });
@@ -54,11 +54,11 @@ void awake() {
 	cube->model = cubeModel;
 	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
 
-	Model* floorModel = new Model("./user/assets/models/cube.obj", { lit, lit });
+	/*Model* floorModel = new Model("./user/assets/models/cube.obj", {lit, lit});
 	Entity* floor = Runtime::createEntity();
 	floor->model = floorModel;
 	floor->position = glm::vec3(0.0f, -1.0f, 0.0f);
-	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);
+	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);*/
 	
 	//Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", { lightGray, black, darkGray, white });
 	/*floorLamp = Runtime::createEntity();
@@ -75,7 +75,6 @@ void awake() {
 }
 
 void update() {
-	/*
 	static float angle = 0.0f;  // Keeps track of the angle of rotation
 	float radius = 10.0f;        // Radius of the circular path
 
@@ -89,7 +88,6 @@ void update() {
 	// Update material light positions
 	lit->lightPosition = light->position;
 	dirt->lightPosition = light->position;
-	*/
 
 	// Rotate the cube on the y-axis
 	cube->rotation.y += 1.0f;

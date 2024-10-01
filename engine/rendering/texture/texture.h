@@ -6,10 +6,18 @@
 
 #include "../engine/utils/log.h"
 
+enum TextureType {
+	DIFFUSE,
+	NORMAL,
+	METALLIC
+};
+
 class Texture
 {
 public:
-	Texture(std::string path);
+	Texture(std::string path, TextureType type = DIFFUSE);
+
+	TextureType type;
 
 	void bind();
 private:

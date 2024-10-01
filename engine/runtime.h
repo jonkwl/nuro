@@ -52,7 +52,7 @@ public:
 	static Entity* createEntity(); // Creates a new entity and links it with runtime
 
 	// Default material asset
-	static Texture* defaultTexture;
+	static Texture* defaultDiffuseTexture;
 	static UnlitMaterial* defaultMaterial;
 
 	// Camera settings

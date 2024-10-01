@@ -2,8 +2,8 @@
 
 std::vector<RuntimeEntity*> Runtime::entityLinks;
 
+Texture* Runtime::defaultDiffuseTexture = nullptr;
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
-Texture* Runtime::defaultTexture = nullptr;
 
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
@@ -56,6 +56,8 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	glfwWindowHint(GLFW_SAMPLES, 4); // Create buffer for anti aliasing
+
 	// Check for fullscreen
 	if (Context::fullscreen) {
 		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
@@ -81,17 +83,21 @@ int main() {
 		return throw_err("Initialization of GLAD failed");
 	}
 
+	if (Runtime::wireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
+	}
+
 	// Update context
 	Context::set_viewport();
 	Context::setCursor(Context::cursorMode);	
 
 	// Setup render settings
-	if (Runtime::wireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
-	}
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_MULTISAMPLE); // MSAA Anti Aliasing
+	glEnable(GL_FRAMEBUFFER_SRGB); // Default Gamma Correction
 	glfwSwapInterval(1); // V-Sync
 
 	Log::printProcessDone("Runtime", "Context created");
@@ -105,10 +111,10 @@ int main() {
 	ShaderBuilder::loadAndCompile(shader_paths);
 
 	// Creating default texture
-	Runtime::defaultTexture = new Texture("./resources/textures/default.jpg");
+	Runtime::defaultDiffuseTexture = new Texture("./resources/textures/default.jpg", DIFFUSE);
 
 	// Creating default material
-	Runtime::defaultMaterial = new UnlitMaterial(Runtime::defaultTexture);
+	Runtime::defaultMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
 	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	//

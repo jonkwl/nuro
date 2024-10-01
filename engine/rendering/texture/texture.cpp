@@ -1,8 +1,9 @@
 #include "texture.h"
 
-Texture::Texture(std::string path)
+Texture::Texture(std::string path,TextureType type)
 {
 	id = 0;
+	this->type = type;
 
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -22,7 +23,13 @@ Texture::Texture(std::string path)
 		return;
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	if (type == DIFFUSE) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+	else {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);

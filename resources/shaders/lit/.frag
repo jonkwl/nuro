@@ -19,10 +19,10 @@ void main()
     // light variables
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     vec3 lightDirection = normalize(lightPosition - v_fragmentPosition);
-    float lightStrength = 0.5;
+    float lightStrength = 0.3;
 
     // ambient light
-    float ambientStrength = 0.15; 
+    float ambientStrength = 0.05; 
     vec3 ambientColor = vec3(1.0, 1.0, 1.0);
     vec3 ambient = ambientColor * ambientStrength;
 
