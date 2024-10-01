@@ -21,7 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine\runtime.cpp">
+    <ClCompile Include="engine\runtime\runtime.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
@@ -81,7 +81,7 @@
     <ClCompile Include="engine\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\context\context.cpp">
+    <ClCompile Include="engine\window\window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\engineui\engine_dialog.cpp">
@@ -109,6 +109,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\entity\entity_processor.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,7 +164,7 @@
     <ClInclude Include="user\src\game_logic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\runtime.h">
+    <ClInclude Include="engine\runtime\runtime.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\entity\entity.h">
@@ -176,7 +179,7 @@
     <ClInclude Include="engine\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\context\context.h">
+    <ClInclude Include="engine\window\window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\engineui\engine_dialog.h">

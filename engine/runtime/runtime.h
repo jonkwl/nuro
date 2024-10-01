@@ -39,7 +39,7 @@ using json = nlohmann::json;
 #include "../engine/engineui/engine_ui.h"
 #include "../engine/engineui/engine_dialog.h"
 
-#include "../engine/context/context.h"
+#include "../engine/window/window.h"
 
 #include "../engine/input/input.h"
 
@@ -47,6 +47,8 @@ using json = nlohmann::json;
 
 class Runtime {
 public:
+	static int START_LOOP(); // Main loop
+
 	// Entity system
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 	static Entity* createEntity(); // Creates a new entity and links it with runtime

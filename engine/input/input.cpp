@@ -11,36 +11,36 @@ bool Input::escPressed = false;
 
 void Input::setupInputs() {
 	double mouseX, mouseY;
-	glfwGetCursorPos(Context::window, &mouseX, &mouseY);
+	glfwGetCursorPos(Window::glfw, &mouseX, &mouseY);
 	mouseLast = glm::vec2(mouseX, mouseY);
 }
 
 void Input::updateInputs() {
 	// set mouse
 	double mouseX, mouseY;
-	glfwGetCursorPos(Context::window, &mouseX, &mouseY);
+	glfwGetCursorPos(Window::glfw, &mouseX, &mouseY);
 	mouseAxis = glm::vec2(mouseX - mouseLast.x, -(mouseY - mouseLast.y));
 	mouseLast = glm::vec2(mouseX, mouseY);
 
 	// set axis inputs
-	if (glfwGetKey(Context::window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(Context::window, true);
+	if (glfwGetKey(Window::glfw, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(Window::glfw, true);
 	}
 
-	if (glfwGetKey(Context::window, GLFW_KEY_W) == GLFW_PRESS) {
+	if (glfwGetKey(Window::glfw, GLFW_KEY_W) == GLFW_PRESS) {
 		keyAxis.x = 1.0f;
 	}
-	else if (glfwGetKey(Context::window, GLFW_KEY_S) == GLFW_PRESS) {
+	else if (glfwGetKey(Window::glfw, GLFW_KEY_S) == GLFW_PRESS) {
 		keyAxis.x = -1.0f;
 	}
 	else {
 		keyAxis.x = 0.0f;
 	}
 
-	if (glfwGetKey(Context::window, GLFW_KEY_D) == GLFW_PRESS) {
+	if (glfwGetKey(Window::glfw, GLFW_KEY_D) == GLFW_PRESS) {
 		keyAxis.y = 1.0f;
 	}
-	else if (glfwGetKey(Context::window, GLFW_KEY_A) == GLFW_PRESS) {
+	else if (glfwGetKey(Window::glfw, GLFW_KEY_A) == GLFW_PRESS) {
 		keyAxis.y = -1.0f;
 	}
 	else {
@@ -50,15 +50,15 @@ void Input::updateInputs() {
 	Input::keyAxisSmooth = glm::mix(Input::keyAxisSmooth, Input::keyAxis, Input::keyAxisSmoothingFactor * Runtime::deltaTime);
 
 	// get escape input
-	if (glfwGetKey(Context::window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+	if (glfwGetKey(Window::glfw, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		if (escPressed) return;
 		escPressed = true;
 		Runtime::showEngineUI = !Runtime::showEngineUI;
-		if (Context::cursorMode == GLFW_CURSOR_NORMAL) {
-			Context::setCursor(GLFW_CURSOR_DISABLED);
+		if (Window::cursorMode == GLFW_CURSOR_NORMAL) {
+			Window::setCursor(GLFW_CURSOR_DISABLED);
 		}
 		else {
-			Context::setCursor(GLFW_CURSOR_NORMAL);
+			Window::setCursor(GLFW_CURSOR_NORMAL);
 		}
 	}
 	else {

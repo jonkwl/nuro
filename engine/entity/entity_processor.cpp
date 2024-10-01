@@ -1,5 +1,5 @@
 #include "entity_processor.h"
-#include "../engine/runtime.h"
+#include "../engine/runtime/runtime.h"
 
 EntityProcessor::EntityProcessor(Entity* entity)
 {
@@ -13,7 +13,7 @@ void EntityProcessor::render()
     // Calculate mvp
     glm::mat4 model_matrix = Transformation::model_matrix(entity);
     glm::mat4 view_matrix = Transformation::view_matrix(Runtime::renderCamera);
-    glm::mat4 projection_matrix = Transformation::projection_matrix(Runtime::renderCamera, Context::width, Context::height);
+    glm::mat4 projection_matrix = Transformation::projection_matrix(Runtime::renderCamera, Window::width, Window::height);
     glm::mat4 mvp = projection_matrix * view_matrix * model_matrix;
 
     // Get model

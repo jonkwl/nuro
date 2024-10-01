@@ -135,8 +135,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\main.cpp" />
     <ClCompile Include="engine\rendering\model\cube_model.cpp" />
-    <ClCompile Include="engine\context\context.cpp" />
+    <ClCompile Include="engine\window\window.cpp" />
     <ClCompile Include="engine\camera\camera.cpp" />
     <ClCompile Include="engine\entity\entity.cpp" />
     <ClCompile Include="engine\rendering\shader\shader_builder.cpp" />
@@ -161,7 +162,7 @@
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="engine\runtime.cpp" />
+    <ClCompile Include="engine\runtime\runtime.cpp" />
     <ClCompile Include="engine\rendering\shader\shader.cpp" />
     <ClCompile Include="engine\rendering\texture\texture.cpp" />
     <ClCompile Include="engine\utils\vector_helper.cpp" />
@@ -170,11 +171,11 @@
     <ClInclude Include="engine\rendering\material\lit_material.h" />
     <ClInclude Include="engine\rendering\material\rainbow_material.h" />
     <ClInclude Include="engine\rendering\model\cube_model.h" />
-    <ClInclude Include="engine\context\context.h" />
+    <ClInclude Include="engine\window\window.h" />
     <ClInclude Include="engine\camera\camera.h" />
     <ClInclude Include="engine\rendering\material\imaterial.h" />
     <ClInclude Include="engine\rendering\shader\shader_builder.h" />
-    <ClInclude Include="engine\runtime.h" />
+    <ClInclude Include="engine\runtime\runtime.h" />
     <ClInclude Include="engine\utils\log.h" />
     <ClInclude Include="engine\entity\entity.h" />
     <ClInclude Include="engine\rendering\core\transformation.h" />

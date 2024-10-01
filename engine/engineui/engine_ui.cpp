@@ -9,7 +9,7 @@ void EngineUI::setup() {
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplGlfw_InitForOpenGL(Context::window, true);
+	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
 }
 

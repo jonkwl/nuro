@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glm.hpp>
-#include "../engine/runtime.h"
-#include "../engine/context/context.h"
+#include "../engine/runtime/runtime.h"
+#include "../engine/window/window.h"
 
 class Input
 {

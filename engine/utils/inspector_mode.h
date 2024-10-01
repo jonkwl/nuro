@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../engine/runtime.h"
+#include "../engine/runtime/runtime.h"
 #include "../engine/camera/camera.h"
 
 class InspectorMode

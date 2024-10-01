@@ -42,7 +42,7 @@ int throw_err(std::string message) {
 	return -1;
 }
 
-int main() {
+int Runtime::START_LOOP() {
 	//
 	// SETUP PHASE 1: CREATE CONTEXT AND LOAD GRAPHICS API //
 	//
@@ -59,26 +59,26 @@ int main() {
 	glfwWindowHint(GLFW_SAMPLES, 4); // Create buffer for anti aliasing
 
 	// Check for fullscreen
-	if (Context::fullscreen) {
+	if (Window::fullscreen) {
 		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
 
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-		Context::width = mode->width;
-		Context::height = mode->height;
+		Window::width = mode->width;
+		Window::height = mode->height;
 	}
 
 	// Create window
-	Context::window = glfwCreateWindow(Context::width, Context::height, Context::title.c_str(), nullptr, nullptr);
-	glfwSetFramebufferSizeCallback(Context::window, Context::framebuffer_size_callback);
-	if (Context::window == nullptr) {
+	Window::glfw = glfwCreateWindow(Window::width, Window::height, Window::title.c_str(), nullptr, nullptr);
+	glfwSetFramebufferSizeCallback(Window::glfw, Window::framebuffer_size_callback);
+	if (Window::glfw == nullptr) {
 		return throw_err("Creation of window failed");
 	}
 
 	// Load graphics api
-	glfwMakeContextCurrent(Context::window);
+	glfwMakeContextCurrent(Window::glfw);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		return throw_err("Initialization of GLAD failed");
 	}
@@ -88,8 +88,8 @@ int main() {
 	}
 
 	// Update context
-	Context::setViewport();
-	Context::setCursor(Context::cursorMode);	
+	Window::setViewport();
+	Window::setCursor(Window::cursorMode);
 
 	// Setup render settings
 	glEnable(GL_DEPTH_TEST);
@@ -129,7 +129,7 @@ int main() {
 	//
 	awake();
 
-	while (!glfwWindowShouldClose(Context::window)) {
+	while (!glfwWindowShouldClose(Window::glfw)) {
 		//
 		// UPDATE PHASE 1: UPDATE GLOBAL TIMES
 		//
@@ -211,7 +211,7 @@ int main() {
 		// UPDATE PHASE 7: MANAGE WINDOW CONTEXT AND PROCESS GRAPHICS API EVENTS
 		//
 
-		glfwSwapBuffers(Context::window);
+		glfwSwapBuffers(Window::glfw);
 		glfwPollEvents();
 	}
 
