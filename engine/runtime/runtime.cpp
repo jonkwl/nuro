@@ -4,6 +4,7 @@ std::vector<EntityProcessor*> Runtime::entityLinks;
 
 Texture* Runtime::defaultDiffuseTexture = nullptr;
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
+Skybox* Runtime::defaultSkybox = nullptr;
 
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
@@ -20,6 +21,8 @@ bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
 bool Runtime::showDiagnostics = false;
 
+Skybox* Runtime::activeSkybox = nullptr;
+
 Entity* Runtime::createEntity() {
 	Entity* entity = new Entity();
 	EntityProcessor* entityLink = new EntityProcessor(entity);
@@ -29,6 +32,31 @@ Entity* Runtime::createEntity() {
 
 void Runtime::useCamera(Camera* camera) {
 	activeCamera = camera;
+}
+
+Camera* Runtime::getCameraRendering()
+{
+	return renderCamera;
+}
+
+Camera* Runtime::getActiveCamera()
+{
+	return activeCamera;
+}
+
+Camera* Runtime::getInspectorCamera()
+{
+	return inspectorCamera;
+}
+
+void Runtime::setSkybox(Skybox* skybox)
+{
+	activeSkybox = skybox;
+}
+
+Skybox* Runtime::getActiveSkybox()
+{
+	return activeSkybox;
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -107,7 +135,7 @@ int Runtime::START_LOOP() {
 	//
 
 	// Loading all shaders
-	std::vector<std::string> shader_paths = { "./resources/shaders" };
+	std::vector<std::string> shader_paths = { "./resources/shaders/materials", "./resources/shaders/post_processing"};
 	ShaderBuilder::loadAndCompile(shader_paths);
 
 	// Creating default texture
@@ -116,6 +144,16 @@ int Runtime::START_LOOP() {
 	// Creating default material
 	Runtime::defaultMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
 	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+
+	// Creating default skybox
+	Runtime::defaultSkybox = new Skybox({
+		"./resources/skybox/default/right.jpg",
+		"./resources/skybox/default/left.jpg",
+		"./resources/skybox/default/top.jpg",
+		"./resources/skybox/default/bottom.jpg",
+		"./resources/skybox/default/front.jpg",
+		"./resources/skybox/default/back.jpg"
+		});
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -172,9 +210,18 @@ int Runtime::START_LOOP() {
 			InspectorMode::refreshInspector();
 		}
 
+		// Get view and projection matrices
+		glm::mat4 view = Transformation::view_matrix(renderCamera);
+		glm::mat4 projection = Transformation::projection_matrix(renderCamera, Window::width, Window::height);
+
 		// Render each linked entity
 		for (int i = 0; i < Runtime::entityLinks.size(); i++) {
-			Runtime::entityLinks.at(i)->render();
+			Runtime::entityLinks.at(i)->render(view, projection);
+		}
+
+		// Render skybox
+		if (activeSkybox != nullptr) {
+			activeSkybox->draw(view, projection);
 		}
 
 		//

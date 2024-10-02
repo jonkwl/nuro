@@ -8,5 +8,5 @@ class EntityProcessor
 public:
 	EntityProcessor(Entity* entity);
 	Entity* entity;
-	void render();
+	void render(glm::mat4 view, glm::mat4 projection);
 };

@@ -152,6 +152,7 @@
     <ClCompile Include="engine\utils\string_helper.cpp" />
     <ClCompile Include="engine\rendering\model\mesh.cpp" />
     <ClCompile Include="engine\entity\entity_processor.cpp" />
+    <ClCompile Include="engine\rendering\skybox\skybox.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -188,6 +189,7 @@
     <ClInclude Include="engine\utils\string_helper.h" />
     <ClInclude Include="engine\rendering\model\mesh.h" />
     <ClInclude Include="engine\entity\entity_processor.h" />
+    <ClInclude Include="engine\rendering\skybox\skybox.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="engine\utils\iohandler.h" />

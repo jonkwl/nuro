@@ -22,6 +22,9 @@ int amount = 100;
 std::vector<Entity*> object_batch(amount);
 
 void awake() {
+	// Set default skybox
+	Runtime::setSkybox(Runtime::defaultSkybox);
+
 	// Create camera
 	camera = new Camera();
 	Runtime::useCamera(camera);
@@ -43,22 +46,24 @@ void awake() {
 	Model* lightModel = new Model("./user/assets/models/cube.obj", { unlit, unlit });
 	light = Runtime::createEntity();
 	light->model = lightModel;
-	light->position.y = 1.0f;
+	light->position = glm::vec3(1.0f, 1.0f, 0.0f);
 	light->scale = glm::vec3(0.25f, 0.25f, 0.25f);
 
 	lit = new LitMaterial(Runtime::defaultDiffuseTexture);
 	dirt = new LitMaterial(dirtTexture);
 
-	Model* cubeModel = new Model("./user/assets/models/cube.obj", { dirt, dirt });
+	/*Model* cubeModel = new Model("./user/assets/models/cube.obj", {dirt, dirt});
 	cube = Runtime::createEntity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
+	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);*/
 
-	/*Model* floorModel = new Model("./user/assets/models/cube.obj", {lit, lit});
+	UnlitMaterial* floorMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
+	floorMaterial->baseColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
+	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	Entity* floor = Runtime::createEntity();
 	floor->model = floorModel;
 	floor->position = glm::vec3(0.0f, -1.0f, 0.0f);
-	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);*/
+	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);
 	
 	//Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", { lightGray, black, darkGray, white });
 	/*floorLamp = Runtime::createEntity();
@@ -90,5 +95,5 @@ void update() {
 	dirt->lightPosition = light->position;
 
 	// Rotate the cube on the y-axis
-	cube->rotation.y += 1.0f;
+	// cube->rotation.y += 1.0f;
 }

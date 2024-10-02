@@ -5,7 +5,7 @@ float InspectorMode::sensitivity = 6.0f;
 
 void InspectorMode::refreshInspector() {
 
-	Camera* camera = Runtime::inspectorCamera;
+	Camera* camera = Runtime::getInspectorCamera();
 
 	glm::vec3 cam_forward = VectorHelper::forward(camera->rotation);
 	glm::vec3 cam_right = VectorHelper::right(camera->rotation);

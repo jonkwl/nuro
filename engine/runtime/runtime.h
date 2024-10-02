@@ -28,6 +28,7 @@ using json = nlohmann::json;
 #include "../engine/rendering/texture/texture.h"
 #include "../engine/rendering/model/cube_model.h"
 #include "../engine/rendering/model/model.h"
+#include "../engine/rendering/skybox/skybox.h"
 
 #include "../engine/entity/entity.h"
 #include "../engine/camera/camera.h"
@@ -50,18 +51,22 @@ public:
 	static int START_LOOP(); // Main loop
 
 	// Entity system
-	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 	static Entity* createEntity(); // Creates a new entity and links it with runtime
 
-	// Default material asset
+	// All default assets
 	static Texture* defaultDiffuseTexture;
 	static UnlitMaterial* defaultMaterial;
+	static Skybox* defaultSkybox;
 
 	// Camera settings
-	static Camera* renderCamera; // This camera gets rendered to the screen
-	static Camera* activeCamera; // Container camera; Sets render camera value if inspector mode is OFF
-	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 	static void useCamera(Camera* camera);
+	static Camera* getCameraRendering(); // Returns camera actually being rendered
+	static Camera* getActiveCamera(); // Returns camera selected by user (active camera)
+	static Camera* getInspectorCamera();
+
+	// Skybox settings
+	static void setSkybox(Skybox* skybox); // Set active skybox
+	static Skybox* getActiveSkybox(); // Get active skybox
 
 	// Time & frames
 	static float time; // Time passed since application beginning
@@ -76,4 +81,12 @@ public:
 	static bool inspectorMode; // Activates engines inspector mode
 	static bool showEngineUI; // Shows engine ui (only available in inspector mode)
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
+private:
+	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
+
+	static Camera* renderCamera; // This camera gets rendered to the screen
+	static Camera* activeCamera; // Container camera; Sets render camera value if inspector mode is OFF
+	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
+
+	static Skybox* activeSkybox; // Currently selected skybox
 };
