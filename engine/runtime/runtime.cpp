@@ -103,9 +103,9 @@ void generate_post_processing_buffers(unsigned int& _fbo, unsigned int& _texture
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Window::width, Window::height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, Window::width, Window::height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
@@ -203,15 +203,15 @@ int Runtime::START_LOOP() {
 	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
-	Runtime::defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default.jpg");
-	/*Runtime::defaultSky = Cubemap::GetByFaces(
+	// Runtime::defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default.jpg");
+	Runtime::defaultSky = Cubemap::GetByFaces(
 		"./resources/skybox/environment/right.jpg",
 		"./resources/skybox/environment/left.jpg",
 		"./resources/skybox/environment/top.jpg",
 		"./resources/skybox/environment/bottom.jpg",
 		"./resources/skybox/environment/front.jpg",
 		"./resources/skybox/environment/back.jpg"
-	);*/
+	);
 	Runtime::defaultSkybox = new Skybox(Runtime::defaultSky);
 
 	// Post processing setup
@@ -233,7 +233,7 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
-	float contrast = 1.05f;
+	float contrast = 1.0f;
 
 	bool chromaticAberration = true;
 	float chromaticAberrationStrength = 1.15f;
