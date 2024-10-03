@@ -10,27 +10,27 @@ uniform vec2 screenResolution;
 
 uniform float contrast;
 
-uniform float vignetteAmount;
-uniform float vignetteFalloff;
+uniform vec3 vignetteColor;
+uniform float vignetteRadius;
+uniform float vignetteSoftness;
+uniform float vignetteRoundness;
 
 void main() 
 {
-    vec4 color = texture(screenTexture, textureCoords);
-    vec2 uv = vec2(textureCoords);
+    vec2 uv = textureCoords;
+    vec4 color = texture(screenTexture, uv);
+    vec2 center = vec2(0.5, 0.5);
 
-    /* // Contrast
+    // Contrast
     color.rgb = ((color.rgb - 0.5) * contrast) + 0.5;
-    color.rgb = clamp(color.rgb, 0.0, 1.0); */
+    color.rgb = clamp(color.rgb, 0.0, 1.0);
 
     // Vignette
-    /* vec2 uv = 1.0 - textureCoords.xy;
-    uv *=  1.0 - uv.yx;
-    float vig = uv.x*uv.y * 15.0;
-    vig = pow(vig, 0.25);
-    FragColor = vec4(vig); */
-
-    float dist = distance(uv, vec2(0.5, 0.5));
-    color.rgb *= smoothstep(0.8, vignetteFalloff * 0.8, dist * (vignetteAmount + vignetteFalloff));
+    float aspectRatio = screenResolution.x / screenResolution.y;
+    vec2 scaledUV = vec2((uv.x - center.x) / vignetteRoundness, uv.y - center.y);
+    float dist = length(scaledUV);
+    float vignette = smoothstep(vignetteRadius, vignetteRadius - vignetteSoftness, dist);
+    color.rgb *= mix(vignetteColor, vec3(1.0), vignette);
 
     FragColor = color;
 }

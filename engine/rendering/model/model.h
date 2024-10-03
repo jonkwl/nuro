@@ -26,7 +26,7 @@ class Model
 public:
 	Model(std::string path);
 	Model(std::string path, IMaterial* material);
-	Model(std::string path, std::initializer_list<IMaterial*> materials);
+	Model(std::string path, std::vector<IMaterial*> materials);
 	std::vector<Mesh*> meshes;
 
 	std::vector<IMaterial*> materials;

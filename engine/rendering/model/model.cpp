@@ -12,7 +12,7 @@ Model::Model(std::string path, IMaterial* material)
 	resolveModel(path);
 }
 
-Model::Model(std::string path, std::initializer_list<IMaterial*> materials)
+Model::Model(std::string path, std::vector<IMaterial*> materials)
 {
     this->materials = materials;
     resolveModel(path);

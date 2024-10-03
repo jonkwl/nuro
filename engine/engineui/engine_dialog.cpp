@@ -34,6 +34,18 @@ void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
     ImGui::End();
 }
 
+void EngineDialog::input_dialog(std::string name, std::vector<InputPair> inputs)
+{
+    ImGui::Begin(std::string("Float: " + name).c_str());
+
+    for (int i = 0; i < inputs.size(); i++) {
+        InputPair pair = inputs[i];
+        ImGui::SliderFloat(pair.name.c_str(), &pair.floatValue, pair.sliderMin, pair.sliderMax);
+    }
+
+    ImGui::End();
+}
+
 void EngineDialog::show_diagnostics(int fps) {
     ImGui::Begin("Diagnostics");
 

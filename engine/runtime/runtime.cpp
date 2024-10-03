@@ -290,6 +290,12 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
+	float contrast = 1.03f;
+	glm::vec3 vignetteColor = glm::vec3(0.0f, 0.0f, 0.0);
+	float vignetteRadius = 0.695f;
+	float vignetteSoftness = 0.28f;
+	float vignetteRoundness = 1.2f;
+
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		//
 		// UPDATE PHASE 1: UPDATE GLOBAL TIMES
@@ -348,6 +354,21 @@ int Runtime::START_LOOP() {
 			activeSkybox->draw(view, projection);
 		}
 
+		// Render framebuffer
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		pp_shader->bind();
+		pp_shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
+		pp_shader->setFloat("contrast", contrast);
+		pp_shader->setVec3("vignetteColor", vignetteColor);
+		pp_shader->setFloat("vignetteRadius", vignetteRadius);
+		pp_shader->setFloat("vignetteSoftness", vignetteSoftness);
+		pp_shader->setFloat("vignetteRoundness", vignetteRoundness);
+		glBindVertexArray(pp_vao);
+		glDisable(GL_DEPTH_TEST);
+		glBindTexture(GL_TEXTURE_2D, pp_texture);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
 		//
 		// UPDATE PHASE 6: RENDER ENGINE UI
 		//
@@ -361,6 +382,12 @@ int Runtime::START_LOOP() {
 				EngineDialog::vec3_dialog("Camera Rotation", Runtime::renderCamera->rotation, -360.0f, 360.0f);
 				EngineDialog::float_dialog("FOV", Runtime::renderCamera->fov, 30, 90);
 				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
+
+				InputPair a = { "Contrast", contrast, 0.95f, 1.1f };
+				InputPair b = { "Vignette Radius", vignetteRadius, 0.0f, 1.0f };
+				InputPair c = { "Vignette Softness", vignetteSoftness, 0.0f, 1.0f };
+				InputPair d = { "Vignette Roundness", vignetteRoundness, 0.0f, 2.0f };
+				EngineDialog::input_dialog("Post Processing", { a, b, c, d });
 
 				if (Runtime::wireframe) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -381,17 +408,6 @@ int Runtime::START_LOOP() {
 		//
 		// UPDATE PHASE 7: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
 		//
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		pp_shader->bind();
-		pp_shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
-		pp_shader->setFloat("contrast", 1.03f);
-		pp_shader->setFloat("vignetteAmount", 0.9f);
-		pp_shader->setFloat("vignetteFalloff", 0.15f);
-		glBindVertexArray(pp_vao);
-		glDisable(GL_DEPTH_TEST);
-		glBindTexture(GL_TEXTURE_2D, pp_texture);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glfwSwapBuffers(Window::glfw);
 		glfwPollEvents();
