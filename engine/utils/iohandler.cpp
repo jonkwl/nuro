@@ -48,3 +48,18 @@ std::string IOHandler::GetFilename(const std::string& path)
     size_t pos = path.find_last_of("/\\");
     return (pos != std::string::npos) ? path.substr(pos + 1) : path;
 }
+
+std::string IOHandler::GetFilenameRaw(const std::string& path) {
+    size_t pos = path.find_last_of("/\\");
+    std::string filename = (pos != std::string::npos) ? path.substr(pos + 1) : path;
+    size_t dotPos = filename.find_last_of('.');
+    return (dotPos != std::string::npos) ? filename.substr(0, dotPos) : filename;
+}
+
+std::string IOHandler::GetLastFolder(const std::string& path) {
+    std::filesystem::path fsPath(path);
+    if (fsPath.has_parent_path()) {
+        return fsPath.parent_path().filename().string();
+    }
+    return "";
+}

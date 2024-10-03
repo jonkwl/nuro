@@ -29,6 +29,7 @@ using json = nlohmann::json;
 #include "../engine/rendering/model/cube_model.h"
 #include "../engine/rendering/model/model.h"
 #include "../engine/rendering/skybox/skybox.h"
+#include "../engine/rendering/skybox/cubemap.h"
 
 #include "../engine/entity/entity.h"
 #include "../engine/camera/camera.h"
@@ -56,6 +57,7 @@ public:
 	// All default assets
 	static Texture* defaultDiffuseTexture;
 	static UnlitMaterial* defaultMaterial;
+	static Cubemap* defaultSky;
 	static Skybox* defaultSkybox;
 
 	// Camera settings

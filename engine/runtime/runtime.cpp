@@ -4,6 +4,7 @@ std::vector<EntityProcessor*> Runtime::entityLinks;
 
 Texture* Runtime::defaultDiffuseTexture = nullptr;
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
+Cubemap* Runtime::defaultSky = nullptr;
 Skybox* Runtime::defaultSkybox = nullptr;
 
 Camera* Runtime::renderCamera = new Camera();
@@ -174,7 +175,6 @@ int Runtime::START_LOOP() {
 
 	// Update context
 	Window::setViewport();
-	Window::setCursor(Window::cursorMode);
 
 	// Setup render settings
 	glEnable(GL_DEPTH_TEST);
@@ -203,10 +203,18 @@ int Runtime::START_LOOP() {
 	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
-	Runtime::defaultSkybox = new Skybox("./resources/skybox/default.jpg");
+	Runtime::defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default.jpg");
+	/*Runtime::defaultSky = Cubemap::GetByFaces(
+		"./resources/skybox/environment/right.jpg",
+		"./resources/skybox/environment/left.jpg",
+		"./resources/skybox/environment/top.jpg",
+		"./resources/skybox/environment/bottom.jpg",
+		"./resources/skybox/environment/front.jpg",
+		"./resources/skybox/environment/back.jpg"
+	);*/
+	Runtime::defaultSkybox = new Skybox(Runtime::defaultSky);
 
 	// Post processing setup
-
 	unsigned int pp_fbo, pp_texture, pp_vao;
 	generate_post_processing_buffers(pp_fbo, pp_texture, pp_vao);
 	Shader* pp_shader = ShaderBuilder::get("framebuffer");
@@ -214,6 +222,8 @@ int Runtime::START_LOOP() {
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
 	//
+
+	Window::setCursor(Window::cursorMode);
 
 	EngineUI::setup();
 	Input::setupInputs();
@@ -226,7 +236,7 @@ int Runtime::START_LOOP() {
 	float contrast = 1.05f;
 
 	bool chromaticAberration = true;
-	float chromaticAberrationStrength = 1.1f;
+	float chromaticAberrationStrength = 1.15f;
 	float chromaticAberrationRange = 0.2f;
 	float chromaticAberrationRedOffset = 0.01f;
 	float chromaticAberrationBlueOffset = 0.01f;

@@ -117,6 +117,9 @@
     <ClCompile Include="engine\rendering\skybox\skybox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\rendering\skybox\cubemap.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -228,6 +231,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="stb\stb_image_write.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\skybox\cubemap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

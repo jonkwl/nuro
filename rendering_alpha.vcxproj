@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\rendering\skybox\cubemap.cpp" />
     <ClCompile Include="engine\main.cpp" />
     <ClCompile Include="engine\rendering\model\cube_model.cpp" />
     <ClCompile Include="engine\window\window.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="engine\utils\vector_helper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\rendering\skybox\cubemap.h" />
     <ClInclude Include="engine\rendering\material\lit_material.h" />
     <ClInclude Include="engine\rendering\material\rainbow_material.h" />
     <ClInclude Include="engine\rendering\model\cube_model.h" />
