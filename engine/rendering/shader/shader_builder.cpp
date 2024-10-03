@@ -19,7 +19,7 @@ void ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
 
 			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
 			shader_names.push_back(shaders_in_folder[x]);
-			Log::printProcessInfo("- " + shader_names[x]);
+			Log::printProcessInfo("- " + shader_names.at(shader_names.size() - 1));
 		}
 	}
 

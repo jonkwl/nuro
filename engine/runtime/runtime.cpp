@@ -70,6 +70,123 @@ int throw_err(std::string message) {
 	return -1;
 }
 
+void generate_post_processing_buffers(unsigned int& _fbo, unsigned int& _texture, unsigned int &_vao) {
+	/*unsigned int fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Window::width, Window::height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::width, Window::height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	GLenum fboResult = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboResult != GL_FRAMEBUFFER_COMPLETE) {
+		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboResult));
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	float vertices[] =
+	{
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		-1.0f,  1.0f,  0.0f, 1.0f,
+
+		 1.0f,  1.0f,  1.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f,  0.0f, 1.0f
+	};
+
+	unsigned int vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	unsigned int vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(vbo, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(2 * sizeof(float)));
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	_fbo = fbo;
+	_texture = texture;
+	_vao = vao;*/
+
+	float vertices[] =
+	{
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		-1.0f,  1.0f,  0.0f, 1.0f,
+
+		 1.0f,  1.0f,  1.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f,  0.0f, 1.0f
+	};
+
+	unsigned int vao, vbo;
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	// Frame buffer object
+	unsigned int fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	// Framebuffer texture
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Window::width, Window::height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+	// Render buffer object
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::width, Window::height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	// Check for framebuffer error
+	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+	}
+
+	_fbo = fbo;
+	_texture = texture;
+	_vao = vao;
+}
+
 int Runtime::START_LOOP() {
 	//
 	// SETUP PHASE 1: CREATE CONTEXT AND LOAD GRAPHICS API //
@@ -155,6 +272,12 @@ int Runtime::START_LOOP() {
 		"./resources/skybox/default/back.jpg"
 		});
 
+	// Post processing setup
+
+	unsigned int pp_fbo, pp_texture, pp_vao;
+	generate_post_processing_buffers(pp_fbo, pp_texture, pp_vao);
+	Shader* pp_shader = ShaderBuilder::get("framebuffer");
+
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
 	//
@@ -197,8 +320,8 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: RENDER NEXT FRAME
 		//
 
-		// Clear screen buffer
-		// Clear screen buffer
+		// Bind framebuffer and clear buffer
+		glBindFramebuffer(GL_FRAMEBUFFER, pp_fbo);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)
@@ -215,6 +338,7 @@ int Runtime::START_LOOP() {
 		glm::mat4 projection = Transformation::projection_matrix(renderCamera, Window::width, Window::height);
 
 		// Render each linked entity
+		glEnable(GL_DEPTH_TEST);
 		for (int i = 0; i < Runtime::entityLinks.size(); i++) {
 			Runtime::entityLinks.at(i)->render(view, projection);
 		}
@@ -255,8 +379,19 @@ int Runtime::START_LOOP() {
 		EngineUI::render();
 
 		//
-		// UPDATE PHASE 7: MANAGE WINDOW CONTEXT AND PROCESS GRAPHICS API EVENTS
+		// UPDATE PHASE 7: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
 		//
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		pp_shader->bind();
+		pp_shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
+		pp_shader->setFloat("contrast", 1.03f);
+		pp_shader->setFloat("vignetteAmount", 0.9f);
+		pp_shader->setFloat("vignetteFalloff", 0.15f);
+		glBindVertexArray(pp_vao);
+		glDisable(GL_DEPTH_TEST);
+		glBindTexture(GL_TEXTURE_2D, pp_texture);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glfwSwapBuffers(Window::glfw);
 		glfwPollEvents();
