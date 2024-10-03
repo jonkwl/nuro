@@ -17,7 +17,7 @@ uniform float chromaticAberrationRedOffset;
 uniform float chromaticAberrationBlueOffset;
 
 uniform bool vignette;
-uniform vec3 vignetteColor;
+uniform vec4 vignetteColor;
 uniform float vignetteRadius;
 uniform float vignetteSoftness;
 uniform float vignetteRoundness;
@@ -51,7 +51,7 @@ void main()
         vec2 scaledUV = vec2((uv.x - center.x) / vignetteRoundness, uv.y - center.y);
         float vignetteDist = length(scaledUV);
         float vignette = smoothstep(vignetteRadius, vignetteRadius - vignetteSoftness, vignetteDist);
-        color.rgb *= mix(vignetteColor, vec3(1.0), vignette);
+        color.rgba *= mix(vignetteColor, vec4(1.0), vignette);
     }
     
     FragColor = color;

@@ -223,7 +223,7 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
-	float contrast = 1.02f;
+	float contrast = 1.05f;
 
 	bool chromaticAberration = true;
 	float chromaticAberrationStrength = 1.1f;
@@ -232,9 +232,9 @@ int Runtime::START_LOOP() {
 	float chromaticAberrationBlueOffset = 0.01f;
 
 	bool vignette = true;
-	glm::vec3 vignetteColor = glm::vec3(0.0f, 0.0f, 0.0);
-	float vignetteRadius = 0.7f;
-	float vignetteSoftness = 0.28f;
+	glm::vec4 vignetteColor = glm::vec4(0.0f, 0.0f, 0.0, 0.7f);
+	float vignetteRadius = 0.66f;
+	float vignetteSoftness = 0.36f;
 	float vignetteRoundness = 1.35f;
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
@@ -310,7 +310,7 @@ int Runtime::START_LOOP() {
 		pp_shader->setFloat("chromaticAberrationBlueOffset", chromaticAberrationBlueOffset);
 
 		pp_shader->setBool("vignette", vignette);
-		pp_shader->setVec3("vignetteColor", vignetteColor);
+		pp_shader->setVec4("vignetteColor", vignetteColor);
 		pp_shader->setFloat("vignetteRadius", vignetteRadius);
 		pp_shader->setFloat("vignetteSoftness", vignetteSoftness);
 		pp_shader->setFloat("vignetteRoundness", vignetteRoundness);
