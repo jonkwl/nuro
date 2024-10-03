@@ -80,7 +80,7 @@ void awake() {
 }
 
 void update() {
-	static float angle = 0.0f;  // Keeps track of the angle of rotation
+	/*static float angle = 0.0f;  // Keeps track of the angle of rotation
 	float radius = 10.0f;        // Radius of the circular path
 
 	// Update the light position using sine and cosine for circular motion
@@ -92,7 +92,7 @@ void update() {
 
 	// Update material light positions
 	lit->lightPosition = light->position;
-	dirt->lightPosition = light->position;
+	dirt->lightPosition = light->position;*/
 
 	// Rotate the cube on the y-axis
 	// cube->rotation.y += 1.0f;

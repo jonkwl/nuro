@@ -290,11 +290,19 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
-	float contrast = 1.03f;
+	float contrast = 1.02f;
+
+	bool chromaticAberration = true;
+	float chromaticAberrationStrength = 1.1f;
+	float chromaticAberrationRange = 0.2f;
+	float chromaticAberrationRedOffset = 0.01f;
+	float chromaticAberrationBlueOffset = 0.01f;
+
+	bool vignette = true;
 	glm::vec3 vignetteColor = glm::vec3(0.0f, 0.0f, 0.0);
-	float vignetteRadius = 0.695f;
+	float vignetteRadius = 0.7f;
 	float vignetteSoftness = 0.28f;
-	float vignetteRoundness = 1.2f;
+	float vignetteRoundness = 1.35f;
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		//
@@ -359,11 +367,21 @@ int Runtime::START_LOOP() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		pp_shader->bind();
 		pp_shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
+
 		pp_shader->setFloat("contrast", contrast);
+
+		pp_shader->setBool("chromaticAberration", chromaticAberration);
+		pp_shader->setFloat("chromaticAberrationStrength", chromaticAberrationStrength);
+		pp_shader->setFloat("chromaticAberrationRange", chromaticAberrationRange);
+		pp_shader->setFloat("chromaticAberrationRedOffset", chromaticAberrationRedOffset);
+		pp_shader->setFloat("chromaticAberrationBlueOffset", chromaticAberrationBlueOffset);
+
+		pp_shader->setBool("vignette", vignette);
 		pp_shader->setVec3("vignetteColor", vignetteColor);
 		pp_shader->setFloat("vignetteRadius", vignetteRadius);
 		pp_shader->setFloat("vignetteSoftness", vignetteSoftness);
 		pp_shader->setFloat("vignetteRoundness", vignetteRoundness);
+
 		glBindVertexArray(pp_vao);
 		glDisable(GL_DEPTH_TEST);
 		glBindTexture(GL_TEXTURE_2D, pp_texture);
@@ -384,10 +402,17 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
 
 				InputPair a = { "Contrast", contrast, 0.95f, 1.1f };
-				InputPair b = { "Vignette Radius", vignetteRadius, 0.0f, 1.0f };
-				InputPair c = { "Vignette Softness", vignetteSoftness, 0.0f, 1.0f };
-				InputPair d = { "Vignette Roundness", vignetteRoundness, 0.0f, 2.0f };
-				EngineDialog::input_dialog("Post Processing", { a, b, c, d });
+				InputPair b = { "Chromatic Aberration Strength", chromaticAberrationStrength, 0.0f, 5.0f };
+				InputPair c = { "Chromatic Aberration Range", chromaticAberrationRange, 0.0f, 1.0f };
+				InputPair d = { "Chromatic Aberration Red Offset", chromaticAberrationRedOffset, -0.1f, 0.1f };
+				InputPair e = { "Chromatic Aberration Blue Offset", chromaticAberrationBlueOffset, -0.1f, 0.1f };
+				InputPair f = { "Vignette Radius", vignetteRadius, 0.0f, 1.0f };
+				InputPair g = { "Vignette Softness", vignetteSoftness, 0.0f, 1.0f };
+				InputPair h = { "Vignette Roundness", vignetteRoundness, 0.0f, 2.0f };
+				EngineDialog::input_dialog("Post Processing", { a, b, c, d, e, f, g, h });
+
+				EngineDialog::bool_dialog("Chromatic Aberration", chromaticAberration);
+				EngineDialog::bool_dialog("Vignette", vignette);
 
 				if (Runtime::wireframe) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
