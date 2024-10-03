@@ -71,66 +71,6 @@ int throw_err(std::string message) {
 }
 
 void generate_post_processing_buffers(unsigned int& _fbo, unsigned int& _texture, unsigned int &_vao) {
-	/*unsigned int fbo;
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Window::width, Window::height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::width, Window::height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-	GLenum fboResult = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboResult != GL_FRAMEBUFFER_COMPLETE) {
-		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboResult));
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	float vertices[] =
-	{
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		-1.0f,  1.0f,  0.0f, 1.0f,
-
-		 1.0f,  1.0f,  1.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f,  0.0f, 1.0f
-	};
-
-	unsigned int vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	unsigned int vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(vbo, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(2 * sizeof(float)));
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	_fbo = fbo;
-	_texture = texture;
-	_vao = vao;*/
-
 	float vertices[] =
 	{
 		 1.0f, -1.0f,  1.0f, 0.0f,
@@ -263,14 +203,7 @@ int Runtime::START_LOOP() {
 	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
-	Runtime::defaultSkybox = new Skybox({
-		"./resources/skybox/default/right.jpg",
-		"./resources/skybox/default/left.jpg",
-		"./resources/skybox/default/top.jpg",
-		"./resources/skybox/default/bottom.jpg",
-		"./resources/skybox/default/front.jpg",
-		"./resources/skybox/default/back.jpg"
-		});
+	Runtime::defaultSkybox = new Skybox("./resources/skybox/default.jpg");
 
 	// Post processing setup
 

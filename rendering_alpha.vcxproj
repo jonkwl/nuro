@@ -190,6 +190,7 @@
     <ClInclude Include="engine\rendering\model\mesh.h" />
     <ClInclude Include="engine\entity\entity_processor.h" />
     <ClInclude Include="engine\rendering\skybox\skybox.h" />
+    <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="engine\utils\iohandler.h" />
