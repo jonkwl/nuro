@@ -209,6 +209,9 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: RENDER NEXT FRAME
 		//
 
+		// FIRST PASS (SHADOW MAP)
+
+		// SECOND PASS (SCREEN COLORS)
 		// Bind post processing framebuffer and clear buffer
 		PostProcessing::Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
