@@ -8,7 +8,9 @@ uniform sampler2D screenTexture;
 
 uniform vec2 screenResolution;
 
+uniform float exposure;
 uniform float contrast;
+uniform float gamma;
 
 uniform bool chromaticAberration;
 uniform float chromaticAberrationStrength;
@@ -22,10 +24,19 @@ uniform float vignetteRadius;
 uniform float vignetteSoftness;
 uniform float vignetteRoundness;
 
+vec3 ACES(vec3 x) {
+    const float a = 2.51;
+    const float b = 0.03;
+    const float c = 2.43;
+    const float d = 0.59;
+    const float e = 0.14;
+    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+}
+
 void main() 
 {
     vec2 uv = textureCoords;
-    vec4 color = texture(screenTexture, uv);
+    vec3 color = texture(screenTexture, uv).rgb;
     vec2 center = vec2(0.5, 0.5);
     vec2 toCenter = uv - center;
     float aspectRatio = screenResolution.x / screenResolution.y;
@@ -42,17 +53,24 @@ void main()
         color.b = texture2D(screenTexture, blueOffset).b;
     }
 
-    // Contrast
-    color.rgb = ((color.rgb - 0.5) * contrast) + 0.5;
-    color.rgb = clamp(color.rgb, 0.0, 1.0);
-
     // Vignette
     if(vignette){
         vec2 scaledUV = vec2((uv.x - center.x) / vignetteRoundness, uv.y - center.y);
         float vignetteDist = length(scaledUV);
         float vignette = smoothstep(vignetteRadius, vignetteRadius - vignetteSoftness, vignetteDist);
-        color.rgba *= mix(vignetteColor, vec4(1.0), vignette);
+        color.rgb *= mix(vignetteColor.rgb, vec3(1.0), vignette);
     }
-    
-    FragColor = color;
+
+    // Contrast
+    color.rgb = ((color.rgb - 0.5) * contrast) + 0.5;
+    color.rgb = clamp(color.rgb, 0.0, 1.0);
+
+    // Exposure / Tone Mapping
+    vec3 hdrColor = color;
+    vec3 toneMapped = ACES(hdrColor * exposure);
+
+    // Gamma
+    vec3 gammaCorrected = pow(toneMapped, vec3(1.0 / gamma));
+
+    FragColor = vec4(gammaCorrected, 1.0);
 }

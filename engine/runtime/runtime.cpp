@@ -103,7 +103,7 @@ void generate_post_processing_buffers(unsigned int& _fbo, unsigned int& _texture
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, Window::width, Window::height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -182,7 +182,7 @@ int Runtime::START_LOOP() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_MULTISAMPLE); // MSAA Anti Aliasing
-	glEnable(GL_FRAMEBUFFER_SRGB); // Default Gamma Correction
+	// glEnable(GL_FRAMEBUFFER_SRGB); // Default Gamma Correction (Handled by post processing) 
 	glfwSwapInterval(1); // V-Sync
 
 	Log::printProcessDone("Runtime", "Context created");
@@ -233,7 +233,9 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
+	float exposure = 1.0f;
 	float contrast = 1.0f;
+	float gamma = 2.2f;
 
 	bool chromaticAberration = true;
 	float chromaticAberrationStrength = 1.15f;
@@ -311,7 +313,9 @@ int Runtime::START_LOOP() {
 		pp_shader->bind();
 		pp_shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
 
+		pp_shader->setFloat("exposure", exposure);
 		pp_shader->setFloat("contrast", contrast);
+		pp_shader->setFloat("gamma", gamma);
 
 		pp_shader->setBool("chromaticAberration", chromaticAberration);
 		pp_shader->setFloat("chromaticAberrationStrength", chromaticAberrationStrength);
@@ -327,6 +331,7 @@ int Runtime::START_LOOP() {
 
 		glBindVertexArray(pp_vao);
 		glDisable(GL_DEPTH_TEST);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, pp_texture);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -344,15 +349,17 @@ int Runtime::START_LOOP() {
 				EngineDialog::float_dialog("FOV", Runtime::renderCamera->fov, 30, 90);
 				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
 
-				InputPair a = { "Contrast", contrast, 0.95f, 1.1f };
-				InputPair b = { "Chromatic Aberration Strength", chromaticAberrationStrength, 0.0f, 5.0f };
-				InputPair c = { "Chromatic Aberration Range", chromaticAberrationRange, 0.0f, 1.0f };
-				InputPair d = { "Chromatic Aberration Red Offset", chromaticAberrationRedOffset, -0.1f, 0.1f };
-				InputPair e = { "Chromatic Aberration Blue Offset", chromaticAberrationBlueOffset, -0.1f, 0.1f };
-				InputPair f = { "Vignette Radius", vignetteRadius, 0.0f, 1.0f };
-				InputPair g = { "Vignette Softness", vignetteSoftness, 0.0f, 1.0f };
-				InputPair h = { "Vignette Roundness", vignetteRoundness, 0.0f, 2.0f };
-				EngineDialog::input_dialog("Post Processing", { a, b, c, d, e, f, g, h });
+				InputPair a = { "Exposure", exposure, 0.0f, 10.0f };
+				InputPair b = { "Contrast", contrast, 0.95f, 1.1f };
+				InputPair c = { "Gamma", gamma, 0.0f, 5.0f };
+				InputPair d = { "Chromatic Aberration Strength", chromaticAberrationStrength, 0.0f, 5.0f };
+				InputPair e = { "Chromatic Aberration Range", chromaticAberrationRange, 0.0f, 1.0f };
+				InputPair f = { "Chromatic Aberration Red Offset", chromaticAberrationRedOffset, -0.1f, 0.1f };
+				InputPair g = { "Chromatic Aberration Blue Offset", chromaticAberrationBlueOffset, -0.1f, 0.1f };
+				InputPair h = { "Vignette Radius", vignetteRadius, 0.0f, 1.0f };
+				InputPair i = { "Vignette Softness", vignetteSoftness, 0.0f, 1.0f };
+				InputPair j = { "Vignette Roundness", vignetteRoundness, 0.0f, 2.0f };
+				EngineDialog::input_dialog("Post Processing", { a, b, c, d, e, f, g, h, i, j });
 
 				EngineDialog::bool_dialog("Chromatic Aberration", chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", vignette);
