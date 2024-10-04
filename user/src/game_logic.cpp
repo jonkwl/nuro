@@ -10,7 +10,6 @@
 #include "../engine/rendering/material/rainbow_material.h"
 
 Camera* camera = nullptr;
-Entity* light = nullptr;
 Entity* cube = nullptr;
 Entity* floorLamp = nullptr;
 Entity* mannequin = nullptr;
@@ -43,12 +42,6 @@ void awake() {
 	LitMaterial* black = new LitMaterial(Runtime::defaultDiffuseTexture);
 	black->baseColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);*/
 
-	Model* lightModel = new Model("./user/assets/models/cube.obj", { unlit, unlit });
-	light = Runtime::createEntity();
-	light->model = lightModel;
-	light->position = glm::vec3(1.0f, 1.0f, 0.0f);
-	light->scale = glm::vec3(0.25f, 0.25f, 0.25f);
-
 	lit = new LitMaterial(Runtime::defaultDiffuseTexture);
 	dirt = new LitMaterial(dirtTexture);
 
@@ -57,13 +50,13 @@ void awake() {
 	cube->model = cubeModel;
 	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
 
-	/*UnlitMaterial* floorMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
+	UnlitMaterial* floorMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
 	floorMaterial->baseColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	Entity* floor = Runtime::createEntity();
 	floor->model = floorModel;
 	floor->position = glm::vec3(0.0f, -1.0f, 0.0f);
-	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);*/
+	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);
 	
 	//Model* floorLampModel = new Model("./user/assets/models/floor_lamp.fbx", { lightGray, black, darkGray, white });
 	/*floorLamp = Runtime::createEntity();
@@ -89,10 +82,6 @@ void update() {
 
 	// Increment the angle to continue rotation
 	angle += 0.01f; // Adjust the speed of rotation by changing this value*/
-
-	// Update material light positions
-	lit->lightPosition = light->position;
-	dirt->lightPosition = light->position;
 
 	// Rotate the cube on the y-axis
 	cube->rotation.y += 1.0f;

@@ -30,6 +30,7 @@ using json = nlohmann::json;
 #include "../engine/rendering/model/model.h"
 #include "../engine/rendering/skybox/skybox.h"
 #include "../engine/rendering/skybox/cubemap.h"
+#include "../engine/rendering/postprocessing/post_processing.h"
 
 #include "../engine/entity/entity.h"
 #include "../engine/camera/camera.h"
@@ -65,6 +66,9 @@ public:
 	static Camera* getCameraRendering(); // Returns camera actually being rendered
 	static Camera* getActiveCamera(); // Returns camera selected by user (active camera)
 	static Camera* getInspectorCamera();
+
+	static float lightIntensity;
+	static glm::vec3 lightPosition;
 
 	// Skybox settings
 	static void setSkybox(Skybox* skybox); // Set active skybox

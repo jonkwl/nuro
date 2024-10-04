@@ -1,5 +1,7 @@
 #include "runtime.h"
 
+// Default runtime values
+
 std::vector<EntityProcessor*> Runtime::entityLinks;
 
 Texture* Runtime::defaultDiffuseTexture = nullptr;
@@ -23,6 +25,9 @@ bool Runtime::showEngineUI = false;
 bool Runtime::showDiagnostics = false;
 
 Skybox* Runtime::activeSkybox = nullptr;
+
+float Runtime::lightIntensity = 0.3f;
+glm::vec3 Runtime::lightPosition = glm::vec3(1.0f, 1.0f, 0.0f);
 
 Entity* Runtime::createEntity() {
 	Entity* entity = new Entity();
@@ -69,63 +74,6 @@ int throw_err(std::string message) {
 	std::cout << "ERROR: " << message << std::endl;
 	glfwTerminate();
 	return -1;
-}
-
-void generate_post_processing_buffers(unsigned int& _fbo, unsigned int& _texture, unsigned int &_vao) {
-	float vertices[] =
-	{
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		-1.0f,  1.0f,  0.0f, 1.0f,
-
-		 1.0f,  1.0f,  1.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f,  0.0f, 1.0f
-	};
-
-	unsigned int vao, vbo;
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-	// Frame buffer object
-	unsigned int fbo;
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-	// Framebuffer texture
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-
-	// Render buffer object
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::width, Window::height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-	// Check for framebuffer error
-	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
-		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
-	}
-
-	_fbo = fbo;
-	_texture = texture;
-	_vao = vao;
 }
 
 int Runtime::START_LOOP() {
@@ -214,10 +162,8 @@ int Runtime::START_LOOP() {
 	);
 	Runtime::defaultSkybox = new Skybox(Runtime::defaultSky);
 
-	// Post processing setup
-	unsigned int pp_fbo, pp_texture, pp_vao;
-	generate_post_processing_buffers(pp_fbo, pp_texture, pp_vao);
-	Shader* pp_shader = ShaderBuilder::get("framebuffer");
+	// Setup post processing
+	PostProcessing::Initialize();
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -232,22 +178,6 @@ int Runtime::START_LOOP() {
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
 	//
 	awake();
-
-	float exposure = 1.0f;
-	float contrast = 1.0f;
-	float gamma = 2.2f;
-
-	bool chromaticAberration = true;
-	float chromaticAberrationStrength = 1.15f;
-	float chromaticAberrationRange = 0.2f;
-	float chromaticAberrationRedOffset = 0.01f;
-	float chromaticAberrationBlueOffset = 0.01f;
-
-	bool vignette = true;
-	glm::vec4 vignetteColor = glm::vec4(0.0f, 0.0f, 0.0, 0.7f);
-	float vignetteRadius = 0.66f;
-	float vignetteSoftness = 0.36f;
-	float vignetteRoundness = 1.35f;
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		//
@@ -279,8 +209,8 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: RENDER NEXT FRAME
 		//
 
-		// Bind framebuffer and clear buffer
-		glBindFramebuffer(GL_FRAMEBUFFER, pp_fbo);
+		// Bind post processing framebuffer and clear buffer
+		PostProcessing::Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)
@@ -309,32 +239,8 @@ int Runtime::START_LOOP() {
 
 		// Render framebuffer
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		pp_shader->bind();
-		pp_shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
-
-		pp_shader->setFloat("exposure", exposure);
-		pp_shader->setFloat("contrast", contrast);
-		pp_shader->setFloat("gamma", gamma);
-
-		pp_shader->setBool("chromaticAberration", chromaticAberration);
-		pp_shader->setFloat("chromaticAberrationStrength", chromaticAberrationStrength);
-		pp_shader->setFloat("chromaticAberrationRange", chromaticAberrationRange);
-		pp_shader->setFloat("chromaticAberrationRedOffset", chromaticAberrationRedOffset);
-		pp_shader->setFloat("chromaticAberrationBlueOffset", chromaticAberrationBlueOffset);
-
-		pp_shader->setBool("vignette", vignette);
-		pp_shader->setVec4("vignetteColor", vignetteColor);
-		pp_shader->setFloat("vignetteRadius", vignetteRadius);
-		pp_shader->setFloat("vignetteSoftness", vignetteSoftness);
-		pp_shader->setFloat("vignetteRoundness", vignetteRoundness);
-
-		glBindVertexArray(pp_vao);
-		glDisable(GL_DEPTH_TEST);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pp_texture);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
+		PostProcessing::Render();
+		 
 		//
 		// UPDATE PHASE 6: RENDER ENGINE UI
 		//
@@ -349,20 +255,21 @@ int Runtime::START_LOOP() {
 				EngineDialog::float_dialog("FOV", Runtime::renderCamera->fov, 30, 90);
 				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
 
-				InputPair a = { "Exposure", exposure, 0.0f, 10.0f };
-				InputPair b = { "Contrast", contrast, 0.95f, 1.1f };
-				InputPair c = { "Gamma", gamma, 0.0f, 5.0f };
-				InputPair d = { "Chromatic Aberration Strength", chromaticAberrationStrength, 0.0f, 5.0f };
-				InputPair e = { "Chromatic Aberration Range", chromaticAberrationRange, 0.0f, 1.0f };
-				InputPair f = { "Chromatic Aberration Red Offset", chromaticAberrationRedOffset, -0.1f, 0.1f };
-				InputPair g = { "Chromatic Aberration Blue Offset", chromaticAberrationBlueOffset, -0.1f, 0.1f };
-				InputPair h = { "Vignette Radius", vignetteRadius, 0.0f, 1.0f };
-				InputPair i = { "Vignette Softness", vignetteSoftness, 0.0f, 1.0f };
-				InputPair j = { "Vignette Roundness", vignetteRoundness, 0.0f, 2.0f };
-				EngineDialog::input_dialog("Post Processing", { a, b, c, d, e, f, g, h, i, j });
+				InputPair x = {"Light Intensity", lightIntensity, 0.0f, 5.0f};
+				InputPair a = { "Exposure", PostProcessing::exposure, 0.0f, 10.0f };
+				InputPair b = { "Contrast", PostProcessing::contrast, 0.95f, 1.1f };
+				InputPair c = { "Gamma", PostProcessing::gamma, 0.0f, 5.0f };
+				InputPair d = { "Chromatic Aberration Strength", PostProcessing::chromaticAberrationStrength, 0.0f, 5.0f };
+				InputPair e = { "Chromatic Aberration Range", PostProcessing::chromaticAberrationRange, 0.0f, 1.0f };
+				InputPair f = { "Chromatic Aberration Red Offset", PostProcessing::chromaticAberrationRedOffset, -0.1f, 0.1f };
+				InputPair g = { "Chromatic Aberration Blue Offset", PostProcessing::chromaticAberrationBlueOffset, -0.1f, 0.1f };
+				InputPair h = { "Vignette Radius", PostProcessing::vignetteRadius, 0.0f, 1.0f };
+				InputPair i = { "Vignette Softness", PostProcessing::vignetteSoftness, 0.0f, 1.0f };
+				InputPair j = { "Vignette Roundness", PostProcessing::vignetteRoundness, 0.0f, 2.0f };
+				EngineDialog::input_dialog("Post Processing", { x, a, b, c, d, e, f, g, h, i, j });
 
-				EngineDialog::bool_dialog("Chromatic Aberration", chromaticAberration);
-				EngineDialog::bool_dialog("Vignette", vignette);
+				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::chromaticAberration);
+				EngineDialog::bool_dialog("Vignette", PostProcessing::vignette);
 
 				if (Runtime::wireframe) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

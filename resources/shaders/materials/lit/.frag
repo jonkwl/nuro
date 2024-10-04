@@ -10,6 +10,7 @@ uniform vec4 baseColor; // Base color
 uniform sampler2D baseTexture; // Texture sampler
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
+uniform float lightIntensity;
 
 void main()
 {
@@ -19,7 +20,7 @@ void main()
     // light variables
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     vec3 lightDirection = normalize(lightPosition - v_fragmentPosition);
-    float lightStrength = 0.3;
+    // float lightIntensity = 0.3;
 
     // ambient light
     float ambientStrength = 0.05; 
@@ -28,16 +29,15 @@ void main()
 
     // diffuse light
     float diffuseValue = max(0.0, dot(lightDirection, normalDirection));
-    vec3 diffuse = lightColor * diffuseValue * lightStrength;
+    vec3 diffuse = lightColor * diffuseValue * lightIntensity;
 
     // specular light
     float specularStrength = 0.75;
     float glossiness = 32.0;
     vec3 viewDirection = normalize(cameraPosition - v_fragmentPosition);
-    // vec3 reflectDirection = reflect(-lightDirection, normalDirection); // Phong Lighting (deprecated)
-    vec3 halfwayDirection = normalize(viewDirection + lightDirection); // Blinn Phong Lighting
+    vec3 halfwayDirection = normalize(viewDirection + lightDirection);
     float spec = pow(max(dot(halfwayDirection, normalDirection), 0.0), glossiness);
-    vec3 specular = lightColor * spec * specularStrength * lightStrength;
+    vec3 specular = lightColor * spec * specularStrength * lightIntensity;
     
     // lighting = ambient + diffuse + specular
     vec3 lighting = ambient + diffuse + specular;
