@@ -46,14 +46,14 @@ void awake() {
 	dirt = new LitMaterial(dirtTexture);
 
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { lit, lit });
-	cube = Runtime::createEntity();
+	cube = new Entity();
 	cube->model = cubeModel;
 	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
 
 	UnlitMaterial* floorMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
 	floorMaterial->baseColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
-	Entity* floor = Runtime::createEntity();
+	Entity* floor = new Entity();
 	floor->model = floorModel;
 	floor->position = glm::vec3(0.0f, -1.0f, 0.0f);
 	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);
@@ -66,7 +66,7 @@ void awake() {
 	floorLamp->scale = glm::vec3(1.5f, 1.5f, 1.5f);*/
 
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", lit);
-	mannequin = Runtime::createEntity();
+	mannequin = new Entity();
 	mannequin->model = mannequinModel;
 	mannequin->position = glm::vec3(1.0f, 0.0f, 5.5f);
 	mannequin->rotation = glm::vec3(90.0f, 0.0f, 0.0f);

@@ -29,11 +29,10 @@ Skybox* Runtime::activeSkybox = nullptr;
 float Runtime::lightIntensity = 0.3f;
 glm::vec3 Runtime::lightPosition = glm::vec3(1.0f, 3.0f, 0.0f);
 
-Entity* Runtime::createEntity() {
-	Entity* entity = new Entity();
+void Runtime::linkEntity(Entity* entity)
+{
 	EntityProcessor* entityLink = new EntityProcessor(entity);
 	entityLinks.push_back(entityLink);
-	return entity;
 }
 
 void Runtime::useCamera(Camera* camera) {
@@ -67,13 +66,7 @@ Skybox* Runtime::getActiveSkybox()
 
 static void glfw_error_callback(int error, const char* description)
 {
-	fprintf(stderr, "GLFW Error %d: %s\n", error, description);
-}
-
-int throw_err(std::string message) {
-	std::cout << "ERROR: " << message << std::endl;
-	glfwTerminate();
-	return -1;
+	Log::printError("GLFW", "Error: " + std::to_string(error), description);
 }
 
 int Runtime::START_LOOP() {
@@ -108,13 +101,13 @@ int Runtime::START_LOOP() {
 	Window::glfw = glfwCreateWindow(Window::width, Window::height, Window::title.c_str(), nullptr, nullptr);
 	glfwSetFramebufferSizeCallback(Window::glfw, Window::framebuffer_size_callback);
 	if (Window::glfw == nullptr) {
-		return throw_err("Creation of window failed");
+		Log::printError("GLFW", "Creation of window failed");
 	}
 
 	// Load graphics api
 	glfwMakeContextCurrent(Window::glfw);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		return throw_err("Initialization of GLAD failed");
+		Log::printError("GLFW", "Initialization of GLAD failed");
 	}
 
 	if (Runtime::wireframe) {

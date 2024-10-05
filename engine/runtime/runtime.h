@@ -54,7 +54,7 @@ public:
 	static void TERMINATE(); // Terminate and exit
 
 	// Entity system
-	static Entity* createEntity(); // Creates a new entity and links it with runtime
+	static void linkEntity(Entity* entity); // Links a given entity with the runtime (creating a runtime entity)
 
 	// All default assets
 	static Texture* defaultDiffuseTexture;
