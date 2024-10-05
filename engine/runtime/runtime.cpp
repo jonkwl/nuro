@@ -304,3 +304,12 @@ int Runtime::START_LOOP() {
 	glfwTerminate();
 	return 0;
 }
+
+void Runtime::TERMINATE()
+{
+	if (Window::glfw != nullptr) {
+		glfwDestroyWindow(Window::glfw);
+		glfwTerminate();
+	}
+	std::exit(0);
+}

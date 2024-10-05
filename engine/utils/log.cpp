@@ -1,7 +1,20 @@
 #include "log.h"
 
-void Log::printError(std::string origin, std::string error) {
+#include "../engine/runtime/runtime.h"
+
+void Log::printError(std::string origin, std::string error, std::string additional_info) {
     print(TextColor::White, BackgroundColor::Red, getBuffer() + origin + " >>> ERROR: " + error + getBuffer());
+    if (additional_info != "") {
+        print(TextColor::White, BackgroundColor::Black, additional_info);
+    }
+    Runtime::TERMINATE();
+}
+
+void Log::printWarning(std::string origin, std::string warning, std::string additional_info) {
+    print(TextColor::White, BackgroundColor::Yellow, getBuffer() + origin + " >>> WARNING: " + warning + getBuffer());
+    if (additional_info != "") {
+        print(TextColor::White, BackgroundColor::Black, additional_info);
+    }
 }
 
 void Log::printProcessStart(std::string origin, std::string process)

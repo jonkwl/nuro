@@ -28,7 +28,8 @@ public:
         White = 47,
     };
 
-    static void printError(std::string origin, std::string error);
+    static void printError(std::string origin, std::string error, std::string additional_info = "");
+    static void printWarning(std::string origin, std::string warning, std::string additional_info = "");
 
     static void printProcessStart(std::string origin, std::string process);
     static void printProcessState(std::string origin, std::string process);

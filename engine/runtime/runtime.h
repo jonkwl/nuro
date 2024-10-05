@@ -51,6 +51,7 @@ using json = nlohmann::json;
 class Runtime {
 public:
 	static int START_LOOP(); // Main loop
+	static void TERMINATE(); // Terminate and exit
 
 	// Entity system
 	static Entity* createEntity(); // Creates a new entity and links it with runtime

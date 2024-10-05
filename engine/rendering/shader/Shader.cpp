@@ -72,8 +72,7 @@ bool Shader::shader_compiled(std::string type, int shader) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(shader, 512, NULL, shader_log);
-		Log::printError("Shader", "Compilation of " + type + " shader failed!");
-		Log::printProcessInfo(shader_log);
+		Log::printError("Shader", "Compilation of " + type + " shader failed!", shader_log);
 		return false;
 	}
 	return true;
@@ -85,8 +84,7 @@ bool Shader::program_linked(int program) {
 	glGetProgramiv(program, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(program, 512, NULL, shader_log);
-		Log::printError("Shader", "Linking of program failed!");
-		Log::printProcessInfo(shader_log);
+		Log::printError("Shader", "Linking of program failed!", shader_log);
 		return false;
 	}
 	return true;
