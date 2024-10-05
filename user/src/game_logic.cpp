@@ -45,7 +45,7 @@ void awake() {
 	lit = new LitMaterial(Runtime::defaultDiffuseTexture);
 	dirt = new LitMaterial(dirtTexture);
 
-	Model* cubeModel = new Model("./user/assets/models/cube.obj", { dirt, dirt });
+	Model* cubeModel = new Model("./user/assets/models/cube.obj", { lit, lit });
 	cube = Runtime::createEntity();
 	cube->model = cubeModel;
 	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);

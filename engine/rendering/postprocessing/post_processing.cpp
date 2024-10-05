@@ -1,21 +1,6 @@
 #include "post_processing.h"
 
-float PostProcessing::exposure = 1.0f;
-float PostProcessing::contrast = 1.0f;
-float PostProcessing::gamma = 2.2f;
-
-bool PostProcessing::chromaticAberration = true;
-float PostProcessing::chromaticAberrationStrength = 1.15f;
-float PostProcessing::chromaticAberrationRange = 0.2f;
-float PostProcessing::chromaticAberrationRedOffset = 0.01f;
-float PostProcessing::chromaticAberrationBlueOffset = 0.01f;
-
-bool PostProcessing::vignette = true;
-glm::vec4 PostProcessing::vignetteColor = glm::vec4(0.0f, 0.0f, 0.0, 0.7f);
-float PostProcessing::vignetteRadius = 0.66f;
-float PostProcessing::vignetteSoftness = 0.36f;
-float PostProcessing::vignetteRoundness = 1.35f;
-
+PostProcessingSetup PostProcessing::setup = PostProcessingSetup();
 unsigned int PostProcessing::fbo = 0;
 unsigned int PostProcessing::rbo = 0;
 unsigned int PostProcessing::texture = 0;
@@ -23,7 +8,7 @@ unsigned int PostProcessing::vao = 0;
 unsigned int PostProcessing::vbo = 0;
 Shader* PostProcessing::shader = nullptr;
 
-void PostProcessing::Initialize()
+void PostProcessing::initialize()
 {
 	// Get default post processing shader
 	shader = ShaderBuilder::get("framebuffer");
@@ -77,13 +62,13 @@ void PostProcessing::Initialize()
 	}
 }
 
-void PostProcessing::Bind()
+void PostProcessing::bind()
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
 
-void PostProcessing::Render()
+void PostProcessing::render()
 {
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -92,21 +77,22 @@ void PostProcessing::Render()
 	shader->bind();
 	shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
 
-	shader->setFloat("exposure", exposure);
-	shader->setFloat("contrast", contrast);
-	shader->setFloat("gamma", gamma);
+	shader->setFloat("exposure", setup.exposure);
+	shader->setFloat("contrast", setup.contrast);
+	shader->setFloat("gamma", setup.gamma);
 
-	shader->setBool("chromaticAberration", chromaticAberration);
-	shader->setFloat("chromaticAberrationStrength", chromaticAberrationStrength);
-	shader->setFloat("chromaticAberrationRange", chromaticAberrationRange);
-	shader->setFloat("chromaticAberrationRedOffset", chromaticAberrationRedOffset);
-	shader->setFloat("chromaticAberrationBlueOffset", chromaticAberrationBlueOffset);
+	shader->setBool("chromaticAberration", setup.chromaticAberration);
+	shader->setFloat("chromaticAberrationStrength", setup.chromaticAberrationStrength);
+	shader->setFloat("chromaticAberrationRange", setup.chromaticAberrationRange);
+	shader->setFloat("chromaticAberrationRedOffset", setup.chromaticAberrationRedOffset);
+	shader->setFloat("chromaticAberrationBlueOffset", setup.chromaticAberrationBlueOffset);
 
-	shader->setBool("vignette", vignette);
-	shader->setVec4("vignetteColor", vignetteColor);
-	shader->setFloat("vignetteRadius", vignetteRadius);
-	shader->setFloat("vignetteSoftness", vignetteSoftness);
-	shader->setFloat("vignetteRoundness", vignetteRoundness);
+	shader->setBool("vignette", setup.vignette);
+	shader->setFloat("vignetteStrength", setup.vignetteStrength);
+	shader->setVec3("vignetteColor", setup.vignetteColor);
+	shader->setFloat("vignetteRadius", setup.vignetteRadius);
+	shader->setFloat("vignetteSoftness", setup.vignetteSoftness);
+	shader->setFloat("vignetteRoundness", setup.vignetteRoundness);
 
 	// Bind vao and texture and render framebuffer to screen
 	glBindVertexArray(vao);

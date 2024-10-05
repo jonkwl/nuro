@@ -19,7 +19,8 @@ uniform float chromaticAberrationRedOffset;
 uniform float chromaticAberrationBlueOffset;
 
 uniform bool vignette;
-uniform vec4 vignetteColor;
+uniform float vignetteStrength;
+uniform vec3 vignetteColor;
 uniform float vignetteRadius;
 uniform float vignetteSoftness;
 uniform float vignetteRoundness;
@@ -57,20 +58,19 @@ void main()
     if(vignette){
         vec2 scaledUV = vec2((uv.x - center.x) / vignetteRoundness, uv.y - center.y);
         float vignetteDist = length(scaledUV);
-        float vignette = smoothstep(vignetteRadius, vignetteRadius - vignetteSoftness, vignetteDist);
-        color.rgb *= mix(vignetteColor.rgb, vec3(1.0), vignette);
+        float vignetteFactor = smoothstep(vignetteRadius, vignetteRadius - vignetteSoftness, vignetteDist);
+        color *= mix(vignetteColor, vec3(1.0), vignetteFactor);
     }
 
     // Contrast
-    color.rgb = ((color.rgb - 0.5) * contrast) + 0.5;
-    color.rgb = clamp(color.rgb, 0.0, 1.0);
+    color = ((color - 0.5) * contrast) + 0.5;
+    color = clamp(color, 0.0, 1.0);
 
     // Exposure / Tone Mapping
-    vec3 hdrColor = color;
-    vec3 toneMapped = ACES(hdrColor * exposure);
+    color = ACES(color * exposure);
 
     // Gamma
-    vec3 gammaCorrected = pow(toneMapped, vec3(1.0 / gamma));
+    color = pow(color, vec3(1.0 / gamma));
 
-    FragColor = vec4(gammaCorrected, 1.0);
+    FragColor = vec4(color, 1.0);
 }

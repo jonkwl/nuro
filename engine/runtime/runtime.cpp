@@ -27,7 +27,7 @@ bool Runtime::showDiagnostics = false;
 Skybox* Runtime::activeSkybox = nullptr;
 
 float Runtime::lightIntensity = 0.3f;
-glm::vec3 Runtime::lightPosition = glm::vec3(1.0f, 1.0f, 0.0f);
+glm::vec3 Runtime::lightPosition = glm::vec3(1.0f, 3.0f, 0.0f);
 
 Entity* Runtime::createEntity() {
 	Entity* entity = new Entity();
@@ -163,7 +163,7 @@ int Runtime::START_LOOP() {
 	Runtime::defaultSkybox = new Skybox(Runtime::defaultSky);
 
 	// Setup post processing
-	PostProcessing::Initialize();
+	PostProcessing::initialize();
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -213,7 +213,7 @@ int Runtime::START_LOOP() {
 
 		// SECOND PASS (SCREEN COLORS)
 		// Bind post processing framebuffer and clear buffer
-		PostProcessing::Bind();
+		PostProcessing::bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)
@@ -242,7 +242,7 @@ int Runtime::START_LOOP() {
 
 		// Render framebuffer
 
-		PostProcessing::Render();
+		PostProcessing::render();
 		 
 		//
 		// UPDATE PHASE 6: RENDER ENGINE UI
@@ -259,20 +259,21 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
 
 				InputPair x = {"Light Intensity", lightIntensity, 0.0f, 5.0f};
-				InputPair a = { "Exposure", PostProcessing::exposure, 0.0f, 10.0f };
-				InputPair b = { "Contrast", PostProcessing::contrast, 0.95f, 1.1f };
-				InputPair c = { "Gamma", PostProcessing::gamma, 0.0f, 5.0f };
-				InputPair d = { "Chromatic Aberration Strength", PostProcessing::chromaticAberrationStrength, 0.0f, 5.0f };
-				InputPair e = { "Chromatic Aberration Range", PostProcessing::chromaticAberrationRange, 0.0f, 1.0f };
-				InputPair f = { "Chromatic Aberration Red Offset", PostProcessing::chromaticAberrationRedOffset, -0.1f, 0.1f };
-				InputPair g = { "Chromatic Aberration Blue Offset", PostProcessing::chromaticAberrationBlueOffset, -0.1f, 0.1f };
-				InputPair h = { "Vignette Radius", PostProcessing::vignetteRadius, 0.0f, 1.0f };
-				InputPair i = { "Vignette Softness", PostProcessing::vignetteSoftness, 0.0f, 1.0f };
-				InputPair j = { "Vignette Roundness", PostProcessing::vignetteRoundness, 0.0f, 2.0f };
-				EngineDialog::input_dialog("Post Processing", { x, a, b, c, d, e, f, g, h, i, j });
+				InputPair a = { "Exposure", PostProcessing::setup.exposure, 0.0f, 10.0f };
+				InputPair b = { "Contrast", PostProcessing::setup.contrast, 0.95f, 1.1f };
+				InputPair c = { "Gamma", PostProcessing::setup.gamma, 0.0f, 5.0f };
+				InputPair d = { "Chromatic Aberration Strength", PostProcessing::setup.chromaticAberrationStrength, 0.0f, 5.0f };
+				InputPair e = { "Chromatic Aberration Range", PostProcessing::setup.chromaticAberrationRange, 0.0f, 1.0f };
+				InputPair f = { "Chromatic Aberration Red Offset", PostProcessing::setup.chromaticAberrationRedOffset, -0.1f, 0.1f };
+				InputPair g = { "Chromatic Aberration Blue Offset", PostProcessing::setup.chromaticAberrationBlueOffset, -0.1f, 0.1f };
+				InputPair h = { "Vignette Strength", PostProcessing::setup.vignetteStrength, 0.0f, 1.0f };
+				InputPair i = { "Vignette Radius", PostProcessing::setup.vignetteRadius, 0.0f, 1.0f };
+				InputPair j = { "Vignette Softness", PostProcessing::setup.vignetteSoftness, 0.0f, 1.0f };
+				InputPair k = { "Vignette Roundness", PostProcessing::setup.vignetteRoundness, 0.0f, 2.0f };
+				EngineDialog::input_dialog("Post Processing", { x, a, b, c, d, e, f, g, h, i, j, k });
 
-				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::chromaticAberration);
-				EngineDialog::bool_dialog("Vignette", PostProcessing::vignette);
+				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
+				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
 
 				if (Runtime::wireframe) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
