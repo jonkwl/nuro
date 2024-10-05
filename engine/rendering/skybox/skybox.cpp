@@ -14,7 +14,7 @@ Skybox::Skybox(Cubemap* cubemap, Shader* custom_shader)
     generate();
 }
 
-void Skybox::draw(glm::mat4 view, glm::mat4 projection)
+void Skybox::render(glm::mat4 view, glm::mat4 projection)
 {
     glDepthFunc(GL_LEQUAL);
 

@@ -1,24 +1,24 @@
 #include "transformation.h"
 
-glm::vec3 Transformation::prepare_world_position(glm::vec3 position)
+glm::vec3 Transformation::prepareWorldPosition(glm::vec3 position)
 {
 	return glm::vec3(position.x, position.y, -position.z);
 }
 
-glm::vec3 Transformation::prepare_world_rotation(glm::vec3 rotation)
+glm::vec3 Transformation::prepareWorldRotation(glm::vec3 rotation)
 {
 	return glm::vec3(-rotation.x, -rotation.y, rotation.z);
 }
 
-glm::mat4 Transformation::model_matrix(Entity* entity) {
+glm::mat4 Transformation::modelMatrix(Entity* entity) {
 	glm::mat4 model(1.0f);
 
 	// object position
-	glm::vec3 worldPosition = prepare_world_position(entity->position);
+	glm::vec3 worldPosition = prepareWorldPosition(entity->position);
 	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
-	glm::vec3 worldRotation = prepare_world_rotation(entity->rotation);
+	glm::vec3 worldRotation = prepareWorldRotation(entity->rotation);
 	model = glm::rotate(model, glm::radians(worldRotation.x), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, glm::radians(worldRotation.y), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(worldRotation.z), glm::vec3(0, 0, 1));
@@ -28,7 +28,7 @@ glm::mat4 Transformation::model_matrix(Entity* entity) {
 
 	return model;
 }
-glm::mat4 Transformation::view_matrix(Camera* camera) {
+glm::mat4 Transformation::viewMatrix(Camera* camera) {
 	glm::vec3 camera_position = camera->position;
 	glm::vec3 camera_rotation = camera->rotation;
 
@@ -60,12 +60,23 @@ glm::mat4 Transformation::view_matrix(Camera* camera) {
 
 	return viewMatrix;
 }
-glm::mat4 Transformation::projection_matrix(Camera* camera, int width, int height) {
+glm::mat4 Transformation::projectionMatrix(Camera* camera, int width, int height) {
 	return glm::perspective(glm::radians(camera->fov), (float)width / (float)height, camera->nearClipping, camera->farClipping);
 }
-glm::mat4 Transformation::mvp(Entity* entity, Camera* camera, int width, int height) {
-	glm::mat4 model = model_matrix(entity);
-	glm::mat4 view = view_matrix(camera);
-	glm::mat4 projection = projection_matrix(camera, width, height);
-	return projection * view * model;
+
+glm::mat4 Transformation::lightViewMatrix(glm::vec3 lightPosition)
+{
+	glm::vec3 position = prepareWorldPosition(lightPosition);
+	glm::mat4 view = glm::lookAt(
+		position,
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f)
+	);
+	return view;
+}
+
+glm::mat4 Transformation::lightProjectionMatrix(Camera* camera)
+{
+	glm::mat4 projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, camera->nearClipping, camera->farClipping);
+	return projection;
 }

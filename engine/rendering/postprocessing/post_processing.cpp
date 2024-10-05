@@ -3,7 +3,7 @@
 PostProcessingSetup PostProcessing::setup = PostProcessingSetup();
 unsigned int PostProcessing::fbo = 0;
 unsigned int PostProcessing::rbo = 0;
-unsigned int PostProcessing::texture = 0;
+unsigned int PostProcessing::screenTexture = 0;
 unsigned int PostProcessing::vao = 0;
 unsigned int PostProcessing::vbo = 0;
 Shader* PostProcessing::shader = nullptr;
@@ -40,14 +40,14 @@ void PostProcessing::initialize()
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Create framebuffer texture
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glGenTextures(1, &screenTexture);
+	glBindTexture(GL_TEXTURE_2D, screenTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
 
 	// Create render buffer
 	glGenRenderbuffers(1, &rbo);
@@ -73,8 +73,13 @@ void PostProcessing::render()
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, screenTexture);
+
 	// Bind shader and set uniforms
 	shader->bind();
+
+	shader->setInt("screenTexture", 0);
 	shader->setVec2("screenResolution", glm::vec2(Window::width, Window::height));
 
 	shader->setFloat("exposure", setup.exposure);
@@ -97,7 +102,6 @@ void PostProcessing::render()
 	// Bind vao and texture and render framebuffer to screen
 	glBindVertexArray(vao);
 	glDisable(GL_DEPTH_TEST);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }

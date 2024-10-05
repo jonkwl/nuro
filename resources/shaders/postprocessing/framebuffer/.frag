@@ -5,7 +5,6 @@ out vec4 FragColor;
 in vec2 textureCoords;
 
 uniform sampler2D screenTexture;
-
 uniform vec2 screenResolution;
 
 uniform float exposure;
@@ -24,6 +23,8 @@ uniform vec3 vignetteColor;
 uniform float vignetteRadius;
 uniform float vignetteSoftness;
 uniform float vignetteRoundness;
+
+uniform bool showShadowMap;
 
 vec3 ACES(vec3 x) {
     const float a = 2.51;

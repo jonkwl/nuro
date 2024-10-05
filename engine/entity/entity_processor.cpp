@@ -6,13 +6,13 @@ EntityProcessor::EntityProcessor(Entity* entity)
 	this->entity = entity;
 }
 
-void EntityProcessor::render(glm::mat4 view, glm::mat4 projection)
+void EntityProcessor::render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
     if (entity->model == nullptr) return;
 
     // Calculate mvp
-    glm::mat4 model_matrix = Transformation::model_matrix(entity);
-    glm::mat4 mvp = projection * view * model_matrix;
+    glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
+    glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
 
     // Get model
     Model* model = entity->model;
@@ -40,7 +40,7 @@ void EntityProcessor::render(glm::mat4 view, glm::mat4 projection)
 
         // Set shader mvp uniform
         material->getShader()->setMatrix4("mvp", mvp);
-        material->getShader()->setMatrix4("model", model_matrix);
+        material->getShader()->setMatrix4("model", modelMatrix);
 
         // Render mesh
         mesh->render();

@@ -24,7 +24,7 @@ struct PostProcessingSetup {
 	glm::vec3 vignetteColor = glm::vec3(0.0f, 0.0f, 0.0);
 	float vignetteRadius = 0.7f;
 	float vignetteSoftness = 0.35f;
-	float vignetteRoundness = 1.35f;
+	float vignetteRoundness = 1.8f;
 };
 
 class PostProcessing
@@ -38,7 +38,7 @@ public:
 private:
 	static unsigned int fbo;
 	static unsigned int rbo;
-	static unsigned int texture;
+	static unsigned int screenTexture;
 	static unsigned int vao;
 	static unsigned int vbo;
 	static Shader* shader;

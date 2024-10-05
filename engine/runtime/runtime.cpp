@@ -1,5 +1,7 @@
 #include "runtime.h"
 
+#include <stb_image_write.h>
+
 // Default runtime values
 
 std::vector<EntityProcessor*> Runtime::entityLinks;
@@ -27,7 +29,7 @@ bool Runtime::showDiagnostics = false;
 Skybox* Runtime::activeSkybox = nullptr;
 
 float Runtime::lightIntensity = 0.3f;
-glm::vec3 Runtime::lightPosition = glm::vec3(1.0f, 3.0f, 0.0f);
+glm::vec3 Runtime::lightPosition = glm::vec3(5.0f, 5.0f, -5.0f);
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -64,9 +66,58 @@ Skybox* Runtime::getActiveSkybox()
 	return activeSkybox;
 }
 
-static void glfw_error_callback(int error, const char* description)
+void glfw_error_callback(int error, const char* description)
 {
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);
+}
+
+void getShadowMap(unsigned int size, unsigned int& fbo, unsigned int& depthMap) {
+	glGenFramebuffers(1, &fbo);
+
+	const unsigned int SHADOW_MAP_WIDTH = size, SHADOW_MAP_HEIGHT = size;
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void saveDepthMapAsImage(int width, int height, const std::string& filename) {
+	// Create a buffer to hold the depth data
+	std::vector<float> depthData(width * height);
+
+	// Read the depth data from the framebuffer
+	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
+
+	// Normalize the depth data to the range [0, 255] for visualization
+	std::vector<unsigned char> depthImage(width * height);
+	for (int i = 0; i < width * height; ++i) {
+		// Depth values are typically in the range [0, 1], map them to [0, 255]
+		depthImage[i] = static_cast<unsigned char>(depthData[i] * 255.0f);
+	}
+
+	// Flip the image vertically because OpenGL's origin is bottom-left
+	std::vector<unsigned char> flippedImage(width * height);
+	for (int y = 0; y < height; ++y) {
+		memcpy(&flippedImage[y * width], &depthImage[(height - 1 - y) * width], width);
+	}
+
+	// Save the image using stb_image_write
+	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0) {
+		std::cout << "Depth map saved as " << filename << std::endl;
+	}
+	else {
+		std::cerr << "Failed to save the depth map." << std::endl;
+	}
 }
 
 int Runtime::START_LOOP() {
@@ -114,9 +165,6 @@ int Runtime::START_LOOP() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
 	}
 
-	// Update context
-	Window::setViewport();
-
 	// Setup render settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -133,7 +181,10 @@ int Runtime::START_LOOP() {
 	//
 
 	// Loading all shaders
-	std::vector<std::string> shader_paths = { "./resources/shaders/materials", "./resources/shaders/post_processing"};
+	std::vector<std::string> shader_paths = { 
+		"./resources/shaders/materials", 
+		"./resources/shaders/postprocessing",
+		"./resources/shaders/shadows" };
 	ShaderBuilder::loadAndCompile(shader_paths);
 
 	// Creating default texture
@@ -172,7 +223,17 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
+	// Create shadow map
+	bool depth_map_saved = false;
+	unsigned int shadow_map_fbo;
+	unsigned int shadow_map_texture;
+	unsigned int shadow_map_size = 1024;
+	getShadowMap(shadow_map_size, shadow_map_fbo, shadow_map_texture);
+	Shader* shadow_pass_shader = ShaderBuilder::get("shadow_pass");
+
 	while (!glfwWindowShouldClose(Window::glfw)) {
+		unsigned int width = Window::width, height = Window::height;
+
 		//
 		// UPDATE PHASE 1: UPDATE GLOBAL TIMES
 		//
@@ -199,13 +260,50 @@ int Runtime::START_LOOP() {
 		update();
 
 		//
-		// UPDATE PHASE 5: RENDER NEXT FRAME
+		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
 		//
 
-		// FIRST PASS (SHADOW MAP)
+		// Set viewport, bind shadow map framebuffer and clear buffers
+		glEnable(GL_DEPTH_TEST);
+		glViewport(0, 0, shadow_map_size, shadow_map_size);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadow_map_fbo);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-		// SECOND PASS (SCREEN COLORS)
-		// Bind post processing framebuffer and clear buffer
+		// Create shadow map transformation matrices
+		glm::mat4 light_projection = Transformation::lightProjectionMatrix(renderCamera);
+		glm::mat4 light_view = Transformation::lightViewMatrix(Runtime::lightPosition);
+		glm::mat4 light_space = light_projection * light_view;
+
+		// Bind shadow pass shader render every mesh of each object
+		shadow_pass_shader->bind();
+		for (int i = 0; i < entityLinks.size(); i++) {
+			Entity* entity = entityLinks.at(i)->entity;
+			if (entity->model == nullptr) continue;
+			Model* model = entity->model;
+			for (int a = 0; a < model->meshes.size(); a++) {
+				Mesh* mesh = model->meshes.at(a);
+				mesh->bind();
+				glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
+				shadow_pass_shader->setMatrix4("lightSpace", light_space);
+				shadow_pass_shader->setMatrix4("model", modelMatrix);
+				mesh->render();
+			}
+		}
+
+		// Save depth map
+		if (!depth_map_saved) {
+			saveDepthMapAsImage(shadow_map_size, shadow_map_size, "./depth_map.png");
+			depth_map_saved = true;
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		  
+		//
+		// UPDATE PHASE 6: FORWARD RENDERING PASS: Render next frame
+		//
+		
+		// Set viewport, bind post processing framebuffer and clear buffers
+		glViewport(0, 0, width, height);
 		PostProcessing::bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -219,8 +317,8 @@ int Runtime::START_LOOP() {
 		}
 
 		// Get view and projection matrices
-		glm::mat4 view = Transformation::view_matrix(renderCamera);
-		glm::mat4 projection = Transformation::projection_matrix(renderCamera, Window::width, Window::height);
+		glm::mat4 view = Transformation::viewMatrix(renderCamera);
+		glm::mat4 projection = Transformation::projectionMatrix(renderCamera, width, height);
 
 		// Render each linked entity
 		glEnable(GL_DEPTH_TEST);
@@ -230,15 +328,15 @@ int Runtime::START_LOOP() {
 
 		// Render skybox
 		if (activeSkybox != nullptr) {
-			activeSkybox->draw(view, projection);
+			activeSkybox->render(view, projection);
 		}
 
 		// Render framebuffer
 
 		PostProcessing::render();
-		 
+		
 		//
-		// UPDATE PHASE 6: RENDER ENGINE UI
+		// UPDATE PHASE 7: RENDER ENGINE UI
 		//
 
 		EngineUI::newFrame();
@@ -285,7 +383,7 @@ int Runtime::START_LOOP() {
 		EngineUI::render();
 
 		//
-		// UPDATE PHASE 7: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
+		// UPDATE PHASE 8: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
 		//
 
 		glfwSwapBuffers(Window::glfw);

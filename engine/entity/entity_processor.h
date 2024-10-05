@@ -7,6 +7,7 @@ class EntityProcessor
 {
 public:
 	EntityProcessor(Entity* entity);
+	void render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+
 	Entity* entity;
-	void render(glm::mat4 view, glm::mat4 projection);
 };
