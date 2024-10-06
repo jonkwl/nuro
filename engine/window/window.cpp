@@ -2,8 +2,8 @@
 
 GLFWwindow* Window::glfw = nullptr;
 
-int Window::width = 800;
-int Window::height = 600;
+int Window::width = 1200;
+int Window::height = 800;
 
 std::string Window::title = "Rendering Alpha";
 

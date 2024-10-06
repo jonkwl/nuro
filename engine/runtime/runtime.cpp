@@ -29,7 +29,7 @@ bool Runtime::showDiagnostics = false;
 Skybox* Runtime::activeSkybox = nullptr;
 
 unsigned int Runtime::shadowMap = 0;
-unsigned int Runtime::shadowMapSize = 1024;
+unsigned int Runtime::shadowMapSize = 4096;
 unsigned int Runtime::shadowMapFramebuffer = 0;
 
 float Runtime::lightIntensity = 0.3f;

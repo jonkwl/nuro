@@ -22,7 +22,7 @@ struct PostProcessingSetup {
 	bool vignette = true;
 	float vignetteStrength = 1.0f;
 	glm::vec3 vignetteColor = glm::vec3(0.0f, 0.0f, 0.0);
-	float vignetteRadius = 0.7f;
+	float vignetteRadius = 0.68f;
 	float vignetteSoftness = 0.35f;
 	float vignetteRoundness = 1.8f;
 };

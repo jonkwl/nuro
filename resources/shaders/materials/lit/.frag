@@ -16,6 +16,30 @@ uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform float lightIntensity;
 
+float shadowPCF(sampler2D shadowMap, vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius) {
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    
+    int sampleCount = 0;
+    float weightSum = 0.0;
+
+    for (int x = -kernelRadius; x <= kernelRadius; ++x) {
+        for (int y = -kernelRadius; y <= kernelRadius; ++y) {
+            vec2 offset = vec2(float(x), float(y)) * texelSize * smoothing;
+            float pcfDepth = texture(shadowMap, projectionCoords.xy + offset).r;
+            float dist = length(vec2(x, y));
+            float weight = exp(-dist * dist / (2.0 * float(kernelRadius) * float(kernelRadius)));
+            shadow += weight * (currentDepth - bias > pcfDepth ? 1.0 : 0.0);
+            weightSum += weight;
+            sampleCount++;
+        }
+    }
+
+    shadow = shadow / weightSum;
+    
+    return shadow;
+}
+
 float getShadow()
 {
     vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
@@ -29,13 +53,12 @@ float getShadow()
     vec3 normalDirection = normalize(v_normals);
     vec3 lightDirection = normalize(lightPosition - v_fragmentPosition);
 
-    //float maxBias = 0.05;
-    //float minBias = 0.005;
-    float minBias = 0.01;
     float maxBias = 0.01;
+    float minBias = 0.005;
     float bias = max(maxBias * dot(normalDirection, lightDirection), minBias);
+    bias = 0.001f;
 
-    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    float shadow = shadowPCF(shadowMap, projectionCoordinates, currentDepth, bias, 1.0, 3);
 
     return shadow;
 }

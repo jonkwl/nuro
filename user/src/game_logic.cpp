@@ -72,16 +72,7 @@ void awake() {
 }
 
 void update() {
-	/*static float angle = 0.0f;  // Keeps track of the angle of rotation
-	float radius = 10.0f;        // Radius of the circular path
-
-	// Update the light position using sine and cosine for circular motion
-	light->position.x = radius * cos(angle);
-	light->position.z = radius * sin(angle);
-
-	// Increment the angle to continue rotation
-	angle += 0.01f; // Adjust the speed of rotation by changing this value*/
-
-	// Rotate the cube on the y-axis
-	// cube->rotation.y += 1.0f;
+	// Object rotation
+	cube->rotation.y += 1.0f;
+	mannequin->rotation.z += 1.0f;
 }
