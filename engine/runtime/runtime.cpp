@@ -28,6 +28,10 @@ bool Runtime::showDiagnostics = false;
 
 Skybox* Runtime::activeSkybox = nullptr;
 
+unsigned int Runtime::shadowMap = 0;
+unsigned int Runtime::shadowMapSize = 1024;
+unsigned int Runtime::shadowMapFramebuffer = 0;
+
 float Runtime::lightIntensity = 0.3f;
 glm::vec3 Runtime::lightPosition = glm::vec3(5.0f, 5.0f, -5.0f);
 
@@ -66,12 +70,17 @@ Skybox* Runtime::getActiveSkybox()
 	return activeSkybox;
 }
 
+unsigned int Runtime::getShadowMap()
+{
+	return shadowMap;
+}
+
 void glfw_error_callback(int error, const char* description)
 {
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);
 }
 
-void getShadowMap(unsigned int size, unsigned int& fbo, unsigned int& depthMap) {
+void createShadowMap(unsigned int& depthMap, unsigned int size, unsigned int& fbo) {
 	glGenFramebuffers(1, &fbo);
 
 	const unsigned int SHADOW_MAP_WIDTH = size, SHADOW_MAP_HEIGHT = size;
@@ -92,31 +101,21 @@ void getShadowMap(unsigned int size, unsigned int& fbo, unsigned int& depthMap) 
 }
 
 void saveDepthMapAsImage(int width, int height, const std::string& filename) {
-	// Create a buffer to hold the depth data
 	std::vector<float> depthData(width * height);
-
-	// Read the depth data from the framebuffer
 	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
-
-	// Normalize the depth data to the range [0, 255] for visualization
 	std::vector<unsigned char> depthImage(width * height);
 	for (int i = 0; i < width * height; ++i) {
-		// Depth values are typically in the range [0, 1], map them to [0, 255]
 		depthImage[i] = static_cast<unsigned char>(depthData[i] * 255.0f);
 	}
-
-	// Flip the image vertically because OpenGL's origin is bottom-left
 	std::vector<unsigned char> flippedImage(width * height);
 	for (int y = 0; y < height; ++y) {
 		memcpy(&flippedImage[y * width], &depthImage[(height - 1 - y) * width], width);
 	}
-
-	// Save the image using stb_image_write
 	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0) {
-		std::cout << "Depth map saved as " << filename << std::endl;
+		Log::printProcessDone("Depth Map", "Depth map saved as " + filename);
 	}
 	else {
-		std::cerr << "Failed to save the depth map." << std::endl;
+		Log::printError("Depth Map", "Failed to save depth map at " + filename);
 	}
 }
 
@@ -161,7 +160,7 @@ int Runtime::START_LOOP() {
 		Log::printError("GLFW", "Initialization of GLAD failed");
 	}
 
-	if (Runtime::wireframe) {
+	if (wireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
 	}
 
@@ -187,16 +186,18 @@ int Runtime::START_LOOP() {
 		"./resources/shaders/shadows" };
 	ShaderBuilder::loadAndCompile(shader_paths);
 
+	Shader* shadowPassShader = ShaderBuilder::get("shadow_pass");
+
 	// Creating default texture
-	Runtime::defaultDiffuseTexture = new Texture("./resources/textures/default.jpg", DIFFUSE);
+	defaultDiffuseTexture = new Texture("./resources/textures/default.jpg", DIFFUSE);
 
 	// Creating default material
-	Runtime::defaultMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
-	Runtime::defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+	defaultMaterial = new UnlitMaterial(defaultDiffuseTexture);
+	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
-	// Runtime::defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default.jpg");
-	Runtime::defaultSky = Cubemap::GetByFaces(
+	// defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default.jpg");
+	defaultSky = Cubemap::GetByFaces(
 		"./resources/skybox/environment/right.jpg",
 		"./resources/skybox/environment/left.jpg",
 		"./resources/skybox/environment/top.jpg",
@@ -204,7 +205,10 @@ int Runtime::START_LOOP() {
 		"./resources/skybox/environment/front.jpg",
 		"./resources/skybox/environment/back.jpg"
 	);
-	Runtime::defaultSkybox = new Skybox(Runtime::defaultSky);
+	defaultSkybox = new Skybox(defaultSky);
+
+	// Initialize entity processor default fields
+	EntityProcessor::linkDefaults(defaultMaterial, shadowPassShader);
 
 	// Setup post processing
 	PostProcessing::initialize();
@@ -225,11 +229,7 @@ int Runtime::START_LOOP() {
 
 	// Create shadow map
 	bool depth_map_saved = false;
-	unsigned int shadow_map_fbo;
-	unsigned int shadow_map_texture;
-	unsigned int shadow_map_size = 1024;
-	getShadowMap(shadow_map_size, shadow_map_fbo, shadow_map_texture);
-	Shader* shadow_pass_shader = ShaderBuilder::get("shadow_pass");
+	createShadowMap(shadowMap, shadowMapSize, shadowMapFramebuffer);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		unsigned int width = Window::width, height = Window::height;
@@ -238,10 +238,10 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 1: UPDATE GLOBAL TIMES
 		//
 
-		Runtime::time = glfwGetTime();
-		Runtime::deltaTime = Runtime::time - Runtime::lastTime;
-		Runtime::lastTime = Runtime::time;
-		Runtime::fps = static_cast<int>(1.0f / Runtime::deltaTime);
+		time = glfwGetTime();
+		deltaTime = time - lastTime;
+		lastTime = time;
+		fps = static_cast<int>(1.0f / deltaTime);
 
 		//
 		// UPDATE PHASE 2: UPDATE ANY SCRIPTS NEEDING UPDATE
@@ -263,67 +263,60 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
 		//
 
-		// Set viewport, bind shadow map framebuffer and clear buffers
+		// Set viewport and bind shadow map framebuffer
+		glViewport(0, 0, shadowMapSize, shadowMapSize);
 		glEnable(GL_DEPTH_TEST);
-		glViewport(0, 0, shadow_map_size, shadow_map_size);
-		glBindFramebuffer(GL_FRAMEBUFFER, shadow_map_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFramebuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		// Create shadow map transformation matrices
-		glm::mat4 light_projection = Transformation::lightProjectionMatrix(renderCamera);
-		glm::mat4 light_view = Transformation::lightViewMatrix(Runtime::lightPosition);
-		glm::mat4 light_space = light_projection * light_view;
+		// Get shadow map transformation matrices
+		glm::mat4 lightProjection = Transformation::lightProjectionMatrix(renderCamera);
+		glm::mat4 lightView = Transformation::lightViewMatrix(lightPosition);
+		glm::mat4 lightSpace = lightProjection * lightView;
+		EntityProcessor::currentLightSpace = lightSpace;
 
-		// Bind shadow pass shader render every mesh of each object
-		shadow_pass_shader->bind();
+		// Bind shadow pass shader and render each objects depth on shadow map
+		shadowPassShader->bind();
 		for (int i = 0; i < entityLinks.size(); i++) {
-			Entity* entity = entityLinks.at(i)->entity;
-			if (entity->model == nullptr) continue;
-			Model* model = entity->model;
-			for (int a = 0; a < model->meshes.size(); a++) {
-				Mesh* mesh = model->meshes.at(a);
-				mesh->bind();
-				glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
-				shadow_pass_shader->setMatrix4("lightSpace", light_space);
-				shadow_pass_shader->setMatrix4("model", modelMatrix);
-				mesh->render();
-			}
+			entityLinks.at(i)->shadowPass();
 		}
 
 		// Save depth map
 		if (!depth_map_saved) {
-			saveDepthMapAsImage(shadow_map_size, shadow_map_size, "./depth_map.png");
+			saveDepthMapAsImage(shadowMapSize, shadowMapSize, "./depth_map.png");
 			depth_map_saved = true;
 		}
 
+		// Unbind shadow map framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		  
 		//
 		// UPDATE PHASE 6: FORWARD RENDERING PASS: Render next frame
 		//
 		
-		// Set viewport, bind post processing framebuffer and clear buffers
+		// Set viewport and bind post processing framebuffer
 		glViewport(0, 0, width, height);
 		PostProcessing::bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)
-		if (!Runtime::inspectorMode) {
-			Runtime::renderCamera = Runtime::activeCamera;
+		if (!inspectorMode) {
+			renderCamera = activeCamera;
 		}
 		else {
-			Runtime::renderCamera = Runtime::inspectorCamera;
+			renderCamera = inspectorCamera;
 			InspectorMode::refreshInspector();
 		}
 
 		// Get view and projection matrices
 		glm::mat4 view = Transformation::viewMatrix(renderCamera);
 		glm::mat4 projection = Transformation::projectionMatrix(renderCamera, width, height);
+		EntityProcessor::currentView = view;
+		EntityProcessor::currentProjection = projection;
 
 		// Render each linked entity
 		glEnable(GL_DEPTH_TEST);
-		for (int i = 0; i < Runtime::entityLinks.size(); i++) {
-			Runtime::entityLinks.at(i)->render(view, projection);
+		for (int i = 0; i < entityLinks.size(); i++) {
+			entityLinks.at(i)->render();
 		}
 
 		// Render skybox
@@ -332,7 +325,6 @@ int Runtime::START_LOOP() {
 		}
 
 		// Render framebuffer
-
 		PostProcessing::render();
 		
 		//
@@ -342,12 +334,12 @@ int Runtime::START_LOOP() {
 		EngineUI::newFrame();
 
 		// Inspector mode ui
-		if (Runtime::inspectorMode) {
-			if (Runtime::showEngineUI) {
-				EngineDialog::vec3_dialog("Camera Position", Runtime::renderCamera->position);
-				EngineDialog::vec3_dialog("Camera Rotation", Runtime::renderCamera->rotation, -360.0f, 360.0f);
-				EngineDialog::float_dialog("FOV", Runtime::renderCamera->fov, 30, 90);
-				EngineDialog::bool_dialog("Wireframe", Runtime::wireframe);
+		if (inspectorMode) {
+			if (showEngineUI) {
+				EngineDialog::vec3_dialog("Camera Position", renderCamera->position);
+				EngineDialog::vec3_dialog("Camera Rotation", renderCamera->rotation, -360.0f, 360.0f);
+				EngineDialog::float_dialog("FOV", renderCamera->fov, 30, 90);
+				EngineDialog::bool_dialog("Wireframe", wireframe);
 
 				InputPair x = {"Light Intensity", lightIntensity, 0.0f, 5.0f};
 				InputPair a = { "Exposure", PostProcessing::setup.exposure, 0.0f, 10.0f };
@@ -366,7 +358,7 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
 
-				if (Runtime::wireframe) {
+				if (wireframe) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				}
 				else {
@@ -376,8 +368,8 @@ int Runtime::START_LOOP() {
 		}
 
 		// Diagnostics ui
-		if (Runtime::showDiagnostics) {
-			EngineDialog::show_diagnostics(Runtime::fps);
+		if (showDiagnostics) {
+			EngineDialog::show_diagnostics(fps);
 		}
 
 		EngineUI::render();

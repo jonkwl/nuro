@@ -50,8 +50,8 @@ void awake() {
 	cube->model = cubeModel;
 	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
 
-	UnlitMaterial* floorMaterial = new UnlitMaterial(Runtime::defaultDiffuseTexture);
-	floorMaterial->baseColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
+	LitMaterial* floorMaterial = new LitMaterial(Runtime::defaultDiffuseTexture);
+	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	Entity* floor = new Entity();
 	floor->model = floorModel;

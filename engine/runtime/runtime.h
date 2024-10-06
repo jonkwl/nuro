@@ -88,6 +88,9 @@ public:
 	static bool inspectorMode; // Activates engines inspector mode
 	static bool showEngineUI; // Shows engine ui (only available in inspector mode)
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
+
+	// Shadow settings
+	static unsigned int getShadowMap();
 private:
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 
@@ -96,4 +99,8 @@ private:
 	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 
 	static Skybox* activeSkybox; // Currently selected skybox
+
+	static unsigned int shadowMap; // Shadow map
+	static unsigned int shadowMapSize; // Shadow map size
+	static unsigned int shadowMapFramebuffer; // Shadow map Framebuffer
 };

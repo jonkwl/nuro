@@ -1,16 +1,25 @@
 #version 330 core
 
-out vec4 FragColor;         // Output color of the fragment
+out vec4 FragColor;
 
-in vec3 v_normals;            // Input normal vector
-in vec2 v_textureCoords;      // Input texture coordinates
+in vec3 v_normals;
 in vec3 v_fragmentPosition;
+in vec4 v_fragmentLightSpacePosition;
+in vec2 v_textureCoords;
 
-uniform vec4 baseColor; // Base color
-uniform sampler2D baseTexture; // Texture sampler
+uniform vec4 baseColor;
+
+uniform sampler2D diffuseTexture;
+uniform sampler2D shadowMap;
+
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform float lightIntensity;
+
+float getShadow()
+{
+    return 0.0;
+}
 
 void main()
 {
@@ -23,7 +32,7 @@ void main()
     // float lightIntensity = 0.3;
 
     // ambient light
-    float ambientStrength = 0.05; 
+    float ambientStrength = 0.025; 
     vec3 ambientColor = vec3(1.0, 1.0, 1.0);
     vec3 ambient = ambientColor * ambientStrength;
 
@@ -38,12 +47,15 @@ void main()
     vec3 halfwayDirection = normalize(viewDirection + lightDirection);
     float spec = pow(max(dot(halfwayDirection, normalDirection), 0.0), glossiness);
     vec3 specular = lightColor * spec * specularStrength * lightIntensity;
-    
-    // lighting = ambient + diffuse + specular
-    vec3 lighting = ambient + diffuse + specular;
+
+    // shadow
+    float shadow = getShadow();
+
+    // final lighting value
+    vec3 lighting = ambient + (1.0 - shadow) * (diffuse + specular);
 
     // final color = base color * lighting color
     vec4 finalColor = vec4(baseColor.x * lighting.x, baseColor.y * lighting.y, baseColor.z * lighting.z, 1.0);
 
-    FragColor = texture(baseTexture, v_textureCoords) * finalColor;
+    FragColor = texture(diffuseTexture, v_textureCoords) * finalColor;
 }
