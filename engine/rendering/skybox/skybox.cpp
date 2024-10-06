@@ -16,18 +16,31 @@ Skybox::Skybox(Cubemap* cubemap, Shader* custom_shader)
 
 void Skybox::render(glm::mat4 view, glm::mat4 projection)
 {
+    // Cache depth function used before
+    GLint defaultDepthFunction;
+    glGetIntegerv(GL_DEPTH_FUNC, &defaultDepthFunction);
+
+    // Set custom depth function for skybox render
     glDepthFunc(GL_LEQUAL);
 
+    // Set skyvbox shader transformation matrices
     view = glm::mat4(glm::mat3(view));
     shader->bind();
     shader->setMatrix4("view", view);
     shader->setMatrix4("projection", projection);
 
+    // Bind skybox vao
     glBindVertexArray(vao);
+
+    // Bind cubemap texture
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+
+    // Draw skybox
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    glDepthFunc(GL_LESS);
+    // Reset depth function to depth function used before
+    glDepthFunc(defaultDepthFunction);
 }
 
 void Skybox::generate()

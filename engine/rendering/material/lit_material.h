@@ -9,19 +9,25 @@
 class LitMaterial : public IMaterial
 {
 public:
-	LitMaterial(Texture* texture) {
+	LitMaterial(Texture* diffuseTexture) {
 
 		shader = ShaderBuilder::get("lit");
-		this->texture = texture;
+		this->diffuseTexture = diffuseTexture;
 		baseColor = glm::vec4(1.0f);
-		lightPosition = glm::vec3(0.0f);
 
 	}
 
 	void bind() {
 		shader->bind();
-		texture->bind();
+
 		shader->setVec4("baseColor", baseColor);
+
+		diffuseTexture->bind(0);
+		shader->setInt("diffuseTexture", 0);
+
+		Runtime::bindShadowMap(1);
+		shader->setInt("shadowMap", 1);
+
 		shader->setVec3("cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->position));
 		shader->setVec3("lightPosition", Transformation::prepareWorldPosition(Runtime::lightPosition));
 		shader->setFloat("lightIntensity", Runtime::lightIntensity);
@@ -31,9 +37,9 @@ public:
 		return shader;
 	}
 
-	Texture* texture;
 	glm::vec4 baseColor;
-	glm::vec3 lightPosition;
+
+	Texture* diffuseTexture;
 private:
 	Shader* shader;
 };

@@ -7,7 +7,6 @@
 #include "../engine/camera/camera.h"
 #include "../engine/rendering/material/unlit_material.h"
 #include "../engine/rendering/material/lit_material.h"
-#include "../engine/rendering/material/rainbow_material.h"
 
 Camera* camera = nullptr;
 Entity* cube = nullptr;
@@ -68,7 +67,7 @@ void awake() {
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", lit);
 	mannequin = new Entity();
 	mannequin->model = mannequinModel;
-	mannequin->position = glm::vec3(1.0f, 0.0f, 5.5f);
+	mannequin->position = glm::vec3(1.0f, -0.9f, 5.5f);
 	mannequin->rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 }
 
@@ -84,5 +83,5 @@ void update() {
 	angle += 0.01f; // Adjust the speed of rotation by changing this value*/
 
 	// Rotate the cube on the y-axis
-	cube->rotation.y += 1.0f;
+	// cube->rotation.y += 1.0f;
 }

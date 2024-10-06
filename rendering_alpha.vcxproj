@@ -173,7 +173,6 @@
   <ItemGroup>
     <ClInclude Include="engine\rendering\skybox\cubemap.h" />
     <ClInclude Include="engine\rendering\material\lit_material.h" />
-    <ClInclude Include="engine\rendering\material\rainbow_material.h" />
     <ClInclude Include="engine\rendering\model\cube_model.h" />
     <ClInclude Include="engine\window\window.h" />
     <ClInclude Include="engine\camera\camera.h" />

@@ -20,7 +20,10 @@ public:
 	void bind() {
 
 		shader->bind();
-		texture->bind();
+
+		texture->bind(0);
+		shader->setInt("baseTexture", 0);
+
 		shader->setVec4("baseColor", baseColor);
 	}
 

@@ -19,7 +19,7 @@ public:
 
 	TextureType type;
 
-	void bind();
+	void bind(unsigned int slot);
 private:
 	unsigned int id;
 };

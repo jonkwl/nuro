@@ -90,7 +90,7 @@ public:
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
 	// Shadow settings
-	static unsigned int getShadowMap();
+	static void bindShadowMap(unsigned int slot);
 private:
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 

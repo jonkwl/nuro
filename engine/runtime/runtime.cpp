@@ -70,9 +70,10 @@ Skybox* Runtime::getActiveSkybox()
 	return activeSkybox;
 }
 
-unsigned int Runtime::getShadowMap()
+void Runtime::bindShadowMap(unsigned int slot)
 {
-	return shadowMap;
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
 }
 
 void glfw_error_callback(int error, const char* description)
@@ -90,8 +91,10 @@ void createShadowMap(unsigned int& depthMap, unsigned int size, unsigned int& fb
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
@@ -265,7 +268,6 @@ int Runtime::START_LOOP() {
 
 		// Set viewport and bind shadow map framebuffer
 		glViewport(0, 0, shadowMapSize, shadowMapSize);
-		glEnable(GL_DEPTH_TEST);
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFramebuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -276,10 +278,13 @@ int Runtime::START_LOOP() {
 		EntityProcessor::currentLightSpace = lightSpace;
 
 		// Bind shadow pass shader and render each objects depth on shadow map
+		glEnable(GL_DEPTH_TEST);
+		glCullFace(GL_FRONT);
 		shadowPassShader->bind();
 		for (int i = 0; i < entityLinks.size(); i++) {
 			entityLinks.at(i)->shadowPass();
 		}
+		glCullFace(GL_BACK);
 
 		// Save depth map
 		if (!depth_map_saved) {

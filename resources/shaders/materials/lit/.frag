@@ -18,7 +18,26 @@ uniform float lightIntensity;
 
 float getShadow()
 {
-    return 0.0;
+    vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
+    projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
+
+    if(projectionCoordinates.z > 1.0) return 0.0f;
+
+    float closestDepth = texture(shadowMap, projectionCoordinates.xy).r;
+    float currentDepth = projectionCoordinates.z;
+
+    vec3 normalDirection = normalize(v_normals);
+    vec3 lightDirection = normalize(lightPosition - v_fragmentPosition);
+
+    //float maxBias = 0.05;
+    //float minBias = 0.005;
+    float minBias = 0.01;
+    float maxBias = 0.01;
+    float bias = max(maxBias * dot(normalDirection, lightDirection), minBias);
+
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
 }
 
 void main()
