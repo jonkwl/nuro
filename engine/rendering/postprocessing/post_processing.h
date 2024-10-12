@@ -9,6 +9,8 @@
 #include "../engine/rendering/shader/shader_builder.h"
 
 struct PostProcessingSetup {
+	unsigned int msaaSamples = 4;
+
 	float exposure = 0.85f;
 	float contrast = 1.0f;
 	float gamma = 2.2f;
@@ -44,7 +46,6 @@ private:
 	static unsigned int msaaFbo; // Anti-Aliasing framebuffer
 	static unsigned int msaaRbo; // Anti-Aliasing renderbuffer
 	static unsigned int msaaColorBuffer; // Anti-Aliasing color buffer texture
-	static unsigned int msaaSampleAmount; // Anti-Aliasing sample amount
 
 	static unsigned int renderVao; // Rendered quad vertex array object
 	static unsigned int renderVbo; // Rendered quad vertex buffer object

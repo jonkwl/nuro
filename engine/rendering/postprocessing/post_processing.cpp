@@ -10,7 +10,6 @@ unsigned int PostProcessing::ppRbo = 0;
 unsigned int PostProcessing::msaaFbo = 0;
 unsigned int PostProcessing::msaaRbo = 0;
 unsigned int PostProcessing::msaaColorBuffer = 0;
-unsigned int PostProcessing::msaaSampleAmount = 4;
 
 unsigned int PostProcessing::renderVao = 0;
 unsigned int PostProcessing::renderVbo = 0;
@@ -77,7 +76,7 @@ void PostProcessing::initialize()
 	// Create multi-sampled color buffer texture
 	glGenTextures(1, &msaaColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msaaColorBuffer);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSampleAmount, GL_RGBA16F, Window::width, Window::height, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, setup.msaaSamples, GL_RGBA16F, Window::width, Window::height, GL_TRUE);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, msaaColorBuffer, 0);
@@ -85,7 +84,7 @@ void PostProcessing::initialize()
 	// Create multi-sampled renderbuffer for depth and stencil
 	glGenRenderbuffers(1, &msaaRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, msaaRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSampleAmount, GL_DEPTH24_STENCIL8, Window::width, Window::height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, setup.msaaSamples, GL_DEPTH24_STENCIL8, Window::width, Window::height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, msaaRbo);
 
 	// Check for multi-sampled framebuffer error
