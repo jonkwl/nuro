@@ -136,8 +136,6 @@ int Runtime::START_LOOP() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfwWindowHint(GLFW_SAMPLES, 4); // Create buffer for anti aliasing
-
 	// Check for fullscreen
 	if (Window::fullscreen) {
 		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
@@ -172,8 +170,6 @@ int Runtime::START_LOOP() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_MULTISAMPLE); // MSAA Anti Aliasing
-	// glEnable(GL_FRAMEBUFFER_SRGB); // Default Gamma Correction (Handled by post processing) 
 	glfwSwapInterval(1); // V-Sync
 
 	Log::printProcessDone("Runtime", "Context created");

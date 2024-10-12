@@ -36,11 +36,18 @@ public:
 
 	static PostProcessingSetup setup;
 private:
-	static unsigned int fbo;
-	static unsigned int rbo;
-	static unsigned int screenTexture;
-	static unsigned int vao;
-	static unsigned int vbo;
+	static unsigned int screenTexture; // Texture to be rendered on screen
+
+	static unsigned int ppFbo; // Post processing framebuffer
+	static unsigned int ppRbo; // Post processing renderbuffer
+
+	static unsigned int msaaFbo; // Anti-Aliasing framebuffer
+	static unsigned int msaaRbo; // Anti-Aliasing renderbuffer
+	static unsigned int msaaColorBuffer; // Anti-Aliasing color buffer texture
+	static unsigned int msaaSampleAmount; // Anti-Aliasing sample amount
+
+	static unsigned int renderVao; // Rendered quad vertex array object
+	static unsigned int renderVbo; // Rendered quad vertex buffer object
 	static Shader* shader;
 };
 

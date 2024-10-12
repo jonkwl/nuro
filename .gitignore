@@ -430,5 +430,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+depth_map.jpg
+
 # JetBrains Rider
 *.sln.iml
