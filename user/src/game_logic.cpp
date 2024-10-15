@@ -28,15 +28,15 @@ void awake() {
 	Runtime::useCamera(camera);
 
 	// Import textures
-	Texture* testDiffuse = new Texture("./user/assets/textures/dirt.jpg");
-	Texture* testNormal = new Texture("./user/assets/textures/dirt.jpg");
+	Texture* testDiffuse = new Texture("./user/assets/textures/tree_bark_01_color.jpg");
+	Texture* testNormal = new Texture("./user/assets/textures/tree_bark_01_normal.jpg");
 
 	UnlitMaterial* unlit = new UnlitMaterial();
 
 	lit = new LitMaterial();
 
 	test = new LitMaterial();
-	test->diffuseTexture = testDiffuse;
+	test->diffuseMap = testDiffuse;
 
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { test, test });
 	cube = new Entity();

@@ -1,14 +1,21 @@
 #version 330 core
 
-out vec4 FragColor;         // Output color of the fragment
+out vec4 FragColor;
 
-in vec3 normals;            // Input normal vector
-in vec2 textureCoords;      // Input texture coordinates
+in vec3 normals;
+in vec2 textureCoords;
 
-uniform vec4 baseColor; // Base color
-uniform sampler2D baseTexture; // Texture sampler
+uniform vec4 baseColor;
+uniform bool enableTexture;
+uniform sampler2D baseTexture;
 
 void main()
 {
-    FragColor = texture(baseTexture, textureCoords) * baseColor;
+    vec4 color = baseColor;
+
+    if(enableTexture){
+        color = texture(baseTexture, textureCoords) * color;
+    }
+
+    FragColor = color;
 }

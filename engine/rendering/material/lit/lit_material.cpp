@@ -5,7 +5,7 @@
 LitMaterial::LitMaterial()
 {
 	shader = ShaderBuilder::get("lit");
-	diffuseTexture = Runtime::defaultDiffuseTexture;
+	diffuseMap = nullptr;
 	baseColor = glm::vec4(1.0f);
 }
 
@@ -18,8 +18,12 @@ void LitMaterial::bind()
 	Runtime::mainShadowMap->bind(0);
 	shader->setInt("shadowMap", 0);
 
-	diffuseTexture->bind(1);
-	shader->setInt("diffuseMap", 1);
+	bool enableDiffuseMap = diffuseMap != nullptr;
+	shader->setBool("enableDiffuseMap", enableDiffuseMap);
+	if (enableDiffuseMap) {
+		diffuseMap->bind(1);
+		shader->setInt("diffuseMap", 1);
+	}
 
 	shader->setVec3("cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->position));
 	shader->setVec3("lightPosition", Transformation::prepareWorldPosition(Runtime::lightPosition));

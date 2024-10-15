@@ -58,7 +58,6 @@ public:
 	static void linkEntity(Entity* entity); // Links a given entity with the runtime (creating a runtime entity)
 
 	// All default assets
-	static Texture* defaultDiffuseTexture;
 	static UnlitMaterial* defaultMaterial;
 	static Cubemap* defaultSky;
 	static Skybox* defaultSkybox;

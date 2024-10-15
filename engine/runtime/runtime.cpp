@@ -6,7 +6,6 @@
 
 std::vector<EntityProcessor*> Runtime::entityLinks;
 
-Texture* Runtime::defaultDiffuseTexture = nullptr;
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Cubemap* Runtime::defaultSky = nullptr;
 Skybox* Runtime::defaultSkybox = nullptr;
@@ -183,9 +182,6 @@ int Runtime::START_LOOP() {
 	ShaderBuilder::loadAndCompile(shader_paths);
 
 	Shader* shadowPassShader = ShaderBuilder::get("shadow_pass");
-
-	// Creating default texture
-	defaultDiffuseTexture = new Texture("./resources/textures/default.jpg", DIFFUSE);
 
 	// Creating default material
 	defaultMaterial = new UnlitMaterial();

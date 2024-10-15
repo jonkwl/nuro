@@ -14,7 +14,7 @@ public:
 	Shader* getShader();
 
 	glm::vec4 baseColor;
-	Texture* diffuseTexture;
+	Texture* diffuseMap;
 private:
 	Shader* shader;
 };
