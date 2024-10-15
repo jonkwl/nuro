@@ -28,14 +28,14 @@ void awake() {
 	Runtime::useCamera(camera);
 
 	// Import textures
-	Texture* testDiffuse = new Texture("./user/assets/textures/tree_bark_01_color.jpg");
-	Texture* testNormal = new Texture("./user/assets/textures/tree_bark_01_normal.jpg");
+	Texture* testDiffuse = new Texture("./user/assets/textures/plank.jpg");
 
 	UnlitMaterial* unlit = new UnlitMaterial();
 
 	lit = new LitMaterial();
 
 	test = new LitMaterial();
+	test->tiling = glm::vec2(2.0f, 2.0f);
 	test->diffuseMap = testDiffuse;
 
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { test, test });

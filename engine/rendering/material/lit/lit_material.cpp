@@ -5,8 +5,11 @@
 LitMaterial::LitMaterial()
 {
 	shader = ShaderBuilder::get("lit");
-	diffuseMap = nullptr;
 	baseColor = glm::vec4(1.0f);
+	tiling = glm::vec2(1.0f);
+	offset = glm::vec2(0.0f);
+	diffuseMap = nullptr;
+	normalMap = nullptr;
 }
 
 void LitMaterial::bind()
@@ -18,11 +21,21 @@ void LitMaterial::bind()
 	Runtime::mainShadowMap->bind(0);
 	shader->setInt("shadowMap", 0);
 
+	shader->setVec2("tiling", tiling);
+	shader->setVec2("offset", offset);
+
 	bool enableDiffuseMap = diffuseMap != nullptr;
 	shader->setBool("enableDiffuseMap", enableDiffuseMap);
 	if (enableDiffuseMap) {
 		diffuseMap->bind(1);
 		shader->setInt("diffuseMap", 1);
+	}
+
+	bool enableNormalMap = normalMap != nullptr;
+	shader->setBool("enableNormalMap", enableNormalMap);
+	if (enableNormalMap) {
+		normalMap->bind(2);
+		shader->setInt("normalMap", 2);
 	}
 
 	shader->setVec3("cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->position));

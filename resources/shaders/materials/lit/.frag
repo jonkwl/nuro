@@ -11,14 +11,17 @@ uniform vec4 baseColor;
 
 uniform sampler2D shadowMap;
 
+uniform vec2 tiling;
+uniform vec2 offset;
+
 uniform bool enableDiffuseMap;
 uniform sampler2D diffuseMap;
 
-uniform bool enableSpecularMap;
-uniform sampler2D specularMap;
-
 uniform bool enableNormalMap;
 uniform sampler2D normalMap;
+
+uniform bool enableSpecularMap;
+uniform sampler2D specularMap;
 
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
@@ -73,6 +76,9 @@ float getShadow()
 
 void main()
 {
+    // set uv
+    vec2 uv = v_textureCoords * tiling + offset;
+
     // set normals
     vec3 normalDirection = normalize(v_normals);
 
@@ -108,7 +114,7 @@ void main()
     vec4 finalColor = vec4(baseColor.x * lighting.x, baseColor.y * lighting.y, baseColor.z * lighting.z, 1.0);
 
     if(enableDiffuseMap){
-        finalColor = texture(diffuseMap, v_textureCoords) * finalColor;
+        finalColor = texture(diffuseMap, uv) * finalColor;
     }
 
     FragColor = finalColor;

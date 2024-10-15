@@ -13,8 +13,10 @@ public:
 	void bind();
 	Shader* getShader();
 
-	Texture* texture;
 	glm::vec4 baseColor;
+	glm::vec2 tiling;
+	glm::vec2 offset;
+	Texture* texture;
 private:
 	Shader* shader;
 };

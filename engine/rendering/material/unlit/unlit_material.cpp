@@ -5,13 +5,20 @@
 UnlitMaterial::UnlitMaterial()
 {
 	shader = ShaderBuilder::get("unlit");
-	texture = nullptr;
 	baseColor = glm::vec4(1.0f);
+	tiling = glm::vec2(1.0f);
+	offset = glm::vec2(0.0f);
+	texture = nullptr;
 }
 
 void UnlitMaterial::bind()
 {
 	shader->bind();
+
+	shader->setVec4("baseColor", baseColor);
+
+	shader->setVec2("tiling", tiling);
+	shader->setVec2("offset", offset);
 
 	bool enableTexture = texture != nullptr;
 	shader->setBool("enableTexture", enableTexture);
@@ -19,8 +26,6 @@ void UnlitMaterial::bind()
 		texture->bind(0);
 		shader->setInt("baseTexture", 0);
 	}
-
-	shader->setVec4("baseColor", baseColor);
 }
 
 Shader* UnlitMaterial::getShader()

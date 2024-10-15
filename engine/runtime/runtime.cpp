@@ -19,6 +19,7 @@ float Runtime::lastTime = 0.0f;
 float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 
+bool Runtime::vsync = true;
 bool Runtime::wireframe = false;
 
 bool Runtime::inspectorMode = true;
@@ -30,7 +31,7 @@ Skybox* Runtime::activeSkybox = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
 float Runtime::lightIntensity = 0.3f;
-glm::vec3 Runtime::lightPosition = glm::vec3(5.0f, 5.0f, -5.0f);
+glm::vec3 Runtime::lightPosition = glm::vec3(3.0f, 5.0f, -5.0f);
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -166,7 +167,7 @@ int Runtime::START_LOOP() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glfwSwapInterval(1); // V-Sync
+	glfwSwapInterval(vsync ? 1 : 0); // V-Sync
 
 	Log::printProcessDone("Runtime", "Context created");
 

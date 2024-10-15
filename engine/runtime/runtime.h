@@ -82,6 +82,7 @@ public:
 	static int fps; // current fps
 
 	// Render settings
+	static bool vsync; // V-Sync option
 	static bool wireframe; // Wireframe option
 
 	// Engine settings

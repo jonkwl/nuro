@@ -14,7 +14,10 @@ public:
 	Shader* getShader();
 
 	glm::vec4 baseColor;
+	glm::vec2 tiling;
+	glm::vec2 offset;
 	Texture* diffuseMap;
+	Texture* normalMap;
 private:
 	Shader* shader;
 };
