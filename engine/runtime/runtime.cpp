@@ -28,9 +28,7 @@ bool Runtime::showDiagnostics = false;
 
 Skybox* Runtime::activeSkybox = nullptr;
 
-unsigned int Runtime::shadowMap = 0;
-unsigned int Runtime::shadowMapSize = 4096;
-unsigned int Runtime::shadowMapFramebuffer = 0;
+ShadowMap* Runtime::mainShadowMap = nullptr;
 
 float Runtime::lightIntensity = 0.3f;
 glm::vec3 Runtime::lightPosition = glm::vec3(5.0f, 5.0f, -5.0f);
@@ -70,10 +68,9 @@ Skybox* Runtime::getActiveSkybox()
 	return activeSkybox;
 }
 
-void Runtime::bindShadowMap(unsigned int slot)
+std::vector<EntityProcessor*> Runtime::getEntityLinks()
 {
-	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, shadowMap);
+	return entityLinks;
 }
 
 void glfw_error_callback(int error, const char* description)
@@ -191,7 +188,7 @@ int Runtime::START_LOOP() {
 	defaultDiffuseTexture = new Texture("./resources/textures/default.jpg", DIFFUSE);
 
 	// Creating default material
-	defaultMaterial = new UnlitMaterial(defaultDiffuseTexture);
+	defaultMaterial = new UnlitMaterial();
 	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
@@ -228,7 +225,7 @@ int Runtime::START_LOOP() {
 
 	// Create shadow map
 	bool depth_map_saved = false;
-	createShadowMap(shadowMap, shadowMapSize, shadowMapFramebuffer);
+	mainShadowMap = new ShadowMap(4096, shadowPassShader);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		unsigned int width = Window::width, height = Window::height;
@@ -262,34 +259,15 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
 		//
 
-		// Set viewport and bind shadow map framebuffer
-		glViewport(0, 0, shadowMapSize, shadowMapSize);
-		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFramebuffer);
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		// Get shadow map transformation matrices
-		glm::mat4 lightProjection = Transformation::lightProjectionMatrix(renderCamera);
-		glm::mat4 lightView = Transformation::lightViewMatrix(lightPosition);
-		glm::mat4 lightSpace = lightProjection * lightView;
-		EntityProcessor::currentLightSpace = lightSpace;
-
-		// Bind shadow pass shader and render each objects depth on shadow map
-		glEnable(GL_DEPTH_TEST);
-		glCullFace(GL_FRONT);
-		shadowPassShader->bind();
-		for (int i = 0; i < entityLinks.size(); i++) {
-			entityLinks.at(i)->shadowPass();
-		}
-		glCullFace(GL_BACK);
+		mainShadowMap->render(lightPosition);
 
 		// Save depth map
 		if (!depth_map_saved) {
-			saveDepthMapAsImage(shadowMapSize, shadowMapSize, "./depth_map.png");
+			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
+			saveDepthMapAsImage(mainShadowMap->getSize(), mainShadowMap->getSize(), "./depth_map.png");
 			depth_map_saved = true;
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-
-		// Unbind shadow map framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		  
 		//
 		// UPDATE PHASE 6: FORWARD RENDERING PASS: Render next frame

@@ -24,13 +24,14 @@ using json = nlohmann::json;
 
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
-#include "../engine/rendering/material/unlit_material.h"
+#include "../engine/rendering/material/unlit/unlit_material.h"
 #include "../engine/rendering/texture/texture.h"
 #include "../engine/rendering/model/cube_model.h"
 #include "../engine/rendering/model/model.h"
 #include "../engine/rendering/skybox/skybox.h"
 #include "../engine/rendering/skybox/cubemap.h"
 #include "../engine/rendering/postprocessing/post_processing.h"
+#include "../engine/rendering/shadows/shadow_map.h"
 
 #include "../engine/entity/entity.h"
 #include "../engine/camera/camera.h"
@@ -90,7 +91,10 @@ public:
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
 	// Shadow settings
-	static void bindShadowMap(unsigned int slot);
+	static ShadowMap* mainShadowMap; // Default shadow map
+
+	// Return data
+	static std::vector<EntityProcessor*> getEntityLinks();
 private:
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 
@@ -99,8 +103,4 @@ private:
 	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 
 	static Skybox* activeSkybox; // Currently selected skybox
-
-	static unsigned int shadowMap; // Shadow map
-	static unsigned int shadowMapSize; // Shadow map size
-	static unsigned int shadowMapFramebuffer; // Shadow map Framebuffer
 };

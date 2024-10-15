@@ -123,6 +123,15 @@
     <ClCompile Include="engine\rendering\postprocessing\post_processing.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\rendering\shadows\shadow_map.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\material\lit\lit_material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\material\unlit\unlit_material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -206,7 +215,7 @@
     <ClInclude Include="engine\rendering\material\imaterial.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\material\unlit_material.h">
+    <ClInclude Include="engine\rendering\material\unlit\unlit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\model\model.h">
@@ -224,7 +233,7 @@
     <ClInclude Include="engine\entity\entity_processor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\material\lit_material.h">
+    <ClInclude Include="engine\rendering\material\lit\lit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\skybox\skybox.h">
@@ -237,6 +246,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\postprocessing\post_processing.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\shadows\shadow_map.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\rendering\material\lit\lit_material.cpp" />
+    <ClCompile Include="engine\rendering\material\unlit\unlit_material.cpp" />
     <ClCompile Include="engine\rendering\skybox\cubemap.cpp" />
     <ClCompile Include="engine\main.cpp" />
     <ClCompile Include="engine\rendering\model\cube_model.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="engine\entity\entity_processor.cpp" />
     <ClCompile Include="engine\rendering\skybox\skybox.cpp" />
     <ClCompile Include="engine\rendering\postprocessing\post_processing.cpp" />
+    <ClCompile Include="engine\rendering\shadows\shadow_map.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -172,7 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\rendering\skybox\cubemap.h" />
-    <ClInclude Include="engine\rendering\material\lit_material.h" />
+    <ClInclude Include="engine\rendering\material\lit\lit_material.h" />
     <ClInclude Include="engine\rendering\model\cube_model.h" />
     <ClInclude Include="engine\window\window.h" />
     <ClInclude Include="engine\camera\camera.h" />
@@ -186,13 +189,14 @@
     <ClInclude Include="engine\engineui\engine_dialog.h" />
     <ClInclude Include="engine\engineui\engine_ui.h" />
     <ClInclude Include="engine\utils\inspector_mode.h" />
-    <ClInclude Include="engine\rendering\material\unlit_material.h" />
+    <ClInclude Include="engine\rendering\material\unlit\unlit_material.h" />
     <ClInclude Include="engine\rendering\model\model.h" />
     <ClInclude Include="engine\utils\string_helper.h" />
     <ClInclude Include="engine\rendering\model\mesh.h" />
     <ClInclude Include="engine\entity\entity_processor.h" />
     <ClInclude Include="engine\rendering\skybox\skybox.h" />
     <ClInclude Include="engine\rendering\postprocessing\post_processing.h" />
+    <ClInclude Include="engine\rendering\shadows\shadow_map.h" />
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
