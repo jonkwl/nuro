@@ -38,7 +38,7 @@ void awake() {
 	test->tiling = glm::vec2(2.0f, 2.0f);
 	test->diffuseMap = testDiffuse;
 
-	Model* cubeModel = new Model("./user/assets/models/cube.obj", { test, test });
+	Model* cubeModel = new Model("./user/assets/models/cube.obj", { lit, lit });
 	cube = new Entity();
 	cube->model = cubeModel;
 	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
@@ -60,6 +60,5 @@ void awake() {
 
 void update() {
 	// Object rotation
-	/*cube->rotation.y += 1.0f;
-	mannequin->rotation.z += 1.0f;*/
+	cube->rotation.y += 1.0f;
 }
