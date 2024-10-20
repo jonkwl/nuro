@@ -41,7 +41,7 @@ void awake() {
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { lit, lit });
 	cube = new Entity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(-2.0f, 0.0f, 3.5f);
+	cube->position = glm::vec3(-2.0f, 1.5f, 3.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);

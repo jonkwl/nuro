@@ -31,11 +31,12 @@ void ShaderBuilder::loadAndCompile(std::vector<std::string> paths) {
 		const char* fragment_src = fragment_code.c_str();
 
 		bool compiled = false;
-		Shader* shader = new Shader(vertex_src, fragment_src, compiled);
+		std::string name = shader_names.at(i);
+		Shader* shader = new Shader(vertex_src, fragment_src, compiled, name);
 		if (compiled) {
 			shaders.push_back(shader);
-			identifiers.push_back(shader_names.at(i));
-			Log::printProcessInfo("Compiled " + shader_names[i]);
+			identifiers.push_back(name);
+			Log::printProcessInfo("Compiled " + name);
 		}
 	}
 

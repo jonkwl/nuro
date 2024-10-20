@@ -49,6 +49,7 @@ private:
 
 	static unsigned int renderVao; // Rendered quad vertex array object
 	static unsigned int renderVbo; // Rendered quad vertex buffer object
+
 	static Shader* shader;
 };
 
