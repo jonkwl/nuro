@@ -40,6 +40,8 @@ struct Material {
 
     bool enableSpecularMap;
     sampler2D specularMap;
+
+    bool useLegacyLighting;
 };
 uniform Material material;
 
@@ -115,17 +117,7 @@ vec3 getSpecular()
     return specular;
 }
 
-void main()
-{
-    // set uv
-    uv = v_textureCoords * material.tiling + material.offset;
-
-    // set normals
-    normalDirection = normalize(v_normals);
-
-    // light variables
-    lightDirection = normalize(scene.lightPosition - v_fragmentPosition);
-
+vec3 getLegacyLighting() {
     // ambient light
     vec3 ambient = getAmbient();
 
@@ -141,9 +133,36 @@ void main()
     // final lighting value
     vec3 lighting = ambient + (1.0 - shadow) * (diffuse + specular);
 
-    // final color = base color * lighting color
-    vec4 finalColor = vec4(vec3(material.baseColor) * lighting, 1.0);
+    return lighting;
+}
 
+vec3 getPBRLighting() {
+    return vec3(0.0);
+}
+
+void main()
+{
+    // set uv
+    uv = v_textureCoords * material.tiling + material.offset;
+
+    // set normals
+    normalDirection = normalize(v_normals);
+
+    // light variables
+    lightDirection = normalize(scene.lightPosition - v_fragmentPosition);
+
+    // calculate lighting
+
+    vec3 lighting = vec3(0.0);
+    if(!material.useLegacyLighting){
+        lighting = getPBRLighting(); // pbr lighting
+    } else {
+        lighting = getLegacyLighting(); // simpler legacy lighting
+    }
+
+    // calculate and set final color
+
+    vec4 finalColor = vec4(vec3(material.baseColor) * lighting, 1.0);
     if(material.enableDiffuseMap){
         finalColor = texture(material.diffuseMap, uv) * finalColor;
     }

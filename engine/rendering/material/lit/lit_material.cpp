@@ -26,7 +26,7 @@ void LitMaterial::bind()
 	shader->setVec3("light.lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader->setFloat("light.lightIntensity", Runtime::lightIntensity);
 	shader->setVec3("light.ambientColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("light.ambientIntensity", 0.025f);
+	shader->setFloat("light.ambientIntensity", 0.1f);
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);
@@ -47,6 +47,8 @@ void LitMaterial::bind()
 		normalMap->bind(2);
 		shader->setInt("material.normalMap", 2);
 	}
+
+	shader->setBool("material.useLegacyLighting", true);
 }
 
 Shader* LitMaterial::getShader()
