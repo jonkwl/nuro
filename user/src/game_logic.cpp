@@ -50,7 +50,7 @@ void awake() {
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
 	cube = new Entity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(-2.0f, 1.5f, 3.5f);
+	cube->position = glm::vec3(-3.0f, 1.5f, 3.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
@@ -73,7 +73,7 @@ void awake() {
 	Entity* mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->model = mannequinModel;
-	mannequin->position = glm::vec3(1.0f, -0.9f, 5.5f);
+	mannequin->position = glm::vec3(1.0f, -0.9f, 6.5f);
 	mannequin->rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 }
 
