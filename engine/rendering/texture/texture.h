@@ -7,15 +7,17 @@
 #include "../engine/utils/log.h"
 
 enum TextureType {
-	DIFFUSE,
+	ALBEDO,
 	NORMAL,
-	METALLIC
+	ROUGHNESS,
+	METALLIC,
+	AMBIENT_OCCLUSION
 };
 
 class Texture
 {
 public:
-	Texture(std::string path, TextureType type = DIFFUSE);
+	Texture(std::string path, TextureType type);
 
 	TextureType type;
 

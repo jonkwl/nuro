@@ -14,11 +14,20 @@ public:
 	Shader* getShader();
 
 	glm::vec4 baseColor;
+
 	glm::vec2 tiling;
 	glm::vec2 offset;
-	Texture* diffuseMap;
+
+	Texture* albedoMap;
 	Texture* normalMap;
+
+	float roughness;
+	Texture* roughnessMap;
+
+	float metallic;
+	Texture* metallicMap;
+
+	Texture* ambientOcclusionMap;
 private:
 	Shader* shader;
 };
-

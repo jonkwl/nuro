@@ -95,6 +95,10 @@ public:
 
 	// Return data
 	static std::vector<EntityProcessor*> getEntityLinks();
+
+	// tmp for material testing
+	static float roughness;
+	static float metallic;
 private:
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 

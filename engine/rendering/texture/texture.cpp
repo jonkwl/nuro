@@ -1,9 +1,11 @@
 #include "texture.h"
 
-Texture::Texture(std::string path,TextureType type)
+Texture::Texture(std::string path, TextureType type)
 {
 	id = 0;
 	this->type = type;
+
+	Log::printProcessInfo("Loading texture " + path + "...");
 
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -23,15 +25,34 @@ Texture::Texture(std::string path,TextureType type)
 		return;
 	}
 
-	if (type == DIFFUSE) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	}
-	else {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	GLenum internalFormat = GL_SRGB;
+	GLenum format = GL_RGB;
+
+	switch (type) {
+	case ALBEDO:
+		internalFormat = GL_SRGB;
+		format = GL_RGB;
+		break;
+	case NORMAL:
+		internalFormat = GL_RGB;
+		format = GL_RGB;
+		break;
+	case ROUGHNESS:
+		internalFormat = GL_RED;
+		format = GL_RED;
+		break;
+	case METALLIC:
+		internalFormat = GL_RED;
+		format = GL_RED;
+		break;
+	case AMBIENT_OCCLUSION:
+		internalFormat = GL_RED;
+		format = GL_RED;
+		break;
 	}
 
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	stbi_image_free(data);

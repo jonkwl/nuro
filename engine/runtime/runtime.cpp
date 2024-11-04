@@ -33,6 +33,9 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 float Runtime::lightIntensity = 0.3f;
 glm::vec3 Runtime::lightPosition = glm::vec3(3.0f, 5.0f, -5.0f);
 
+float Runtime::roughness = 0.45f;
+float Runtime::metallic = 0.2f;
+
 void Runtime::linkEntity(Entity* entity)
 {
 	EntityProcessor* entityLink = new EntityProcessor(entity);
@@ -311,6 +314,9 @@ int Runtime::START_LOOP() {
 
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
+
+				EngineDialog::float_dialog("roughness", roughness, 0.0f, 1.0f);
+				EngineDialog::float_dialog("metallic", metallic, 0.0f, 1.0f);
 
 				if (wireframe) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
