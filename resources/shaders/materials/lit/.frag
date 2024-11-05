@@ -136,31 +136,64 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec4 shadePBR() {
-    // get albedo value
+vec3 getAlbedo() 
+{
     vec3 albedo = vec3(1.0);
     if(material.enableAlbedoMap){
         albedo = pow(texture(material.albedoMap, uv).rgb, vec3(gamma));
     }
     albedo *= vec3(material.baseColor);
+    return albedo;
+}
 
-    // get roughness value
-    float roughness = material.roughness;
+float getRoughness() 
+{
+    float roughness = 0.0;
     if(material.enableRoughnessMap){
         roughness = texture(material.roughnessMap, uv).r;
+    } else{
+        roughness = material.roughness;
     }
+    return roughness;
+}
 
-    // get metallic value
-    float metallic = material.metallic;
+float getMetallic() 
+{
+    float metallic = 0.0;
     if(material.enableMetallicMap){
         metallic = texture(material.metallicMap, uv).r;
+    } else{
+        metallic = material.metallic;
     }
+    return metallic;
+}
 
-    // get ambient occlusion value
+float getAmbientOcclusion() 
+{
     float ambientOcclusion = 1.0;
     if(material.enableAmbientOcclusionMap){
         ambientOcclusion = texture(material.ambientOcclusionMap, uv).r;
     }
+    return ambientOcclusion;
+}
+
+vec3 getAmbient(vec3 albedo, float ambientOcclusion) {
+    vec3 ambient = vec3(scene.ambientStrength) * albedo * ambientOcclusion;
+    return ambient;
+}
+
+vec4 shadePBR() {
+    // get albedo
+    vec3 albedo = getAlbedo();
+
+    // get roughness
+    float roughness = getRoughness();
+
+    // get metallic
+    float metallic = getMetallic();
+
+    // get ambient occlusion
+    float ambientOcclusion = getAmbientOcclusion();
 
     vec3 N = normalize(v_normals); // normal direction
     vec3 V = normalize(scene.cameraPosition - v_fragmentPosition); // view direction
@@ -199,19 +232,21 @@ vec4 shadePBR() {
         Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
     }
 
-    // shadow value
+    // get shadow
     float shadow = getShadow();
   
-    // ambient component
-    vec3 ambient = vec3(scene.ambientStrength) * albedo * ambientOcclusion;
+    // get ambient
+    vec3 ambient = getAmbient(albedo, ambientOcclusion);
+
+    // assemble shaded color
     vec3 color = ambient + Lo * (1.0 - shadow);
 	
     // gamma correction
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0 / gamma));
 
-    vec4 finalColor = vec4(color, 1.0);
-    return finalColor;
+    // return shaded color
+    return vec4(color, 1.0);
 }
 
 void main()

@@ -33,9 +33,9 @@ void awake() {
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS);
 	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", METALLIC);
 	LitMaterial* pbrSphereMaterial = new LitMaterial();
-	pbrSphereMaterial->albedoMap = sphereAlbedo;
-	pbrSphereMaterial->roughnessMap = sphereRoughness;
-	pbrSphereMaterial->metallicMap = sphereMetallic;
+	pbrSphereMaterial->setAlbedoMap(sphereAlbedo);
+	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
+	pbrSphereMaterial->setMetallicMap(sphereMetallic);
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
 	Entity* pbrSphere = new Entity();
 	pbrSphere->model = pbrSphereModel;
@@ -44,7 +44,7 @@ void awake() {
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO);
 	LitMaterial* plank = new LitMaterial();
 	plank->tiling = glm::vec2(2.0f, 2.0f);
-	plank->albedoMap = plankAlbedo;
+	plank->setAlbedoMap(plankAlbedo);
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
@@ -65,9 +65,9 @@ void awake() {
 	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);
 	Texture* mannequinMetallic = new Texture("./user/assets/textures/mannequin_metallic.jpg", METALLIC);
 	LitMaterial* mannequinMaterial = new LitMaterial();
-	mannequinMaterial->albedoMap = mannequinAlbedo;
-	mannequinMaterial->roughnessMap = mannequinRoughness;
-	mannequinMaterial->metallicMap = mannequinMetallic;
+	mannequinMaterial->setAlbedoMap(mannequinAlbedo);
+	mannequinMaterial->setRoughnessMap(mannequinRoughness);
+	mannequinMaterial->setMetallicMap(mannequinMetallic);
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", mannequinMaterial);
 	Entity* mannequin = new Entity();

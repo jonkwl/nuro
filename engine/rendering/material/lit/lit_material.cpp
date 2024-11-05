@@ -6,8 +6,6 @@ LitMaterial::LitMaterial()
 {
 	shader = ShaderBuilder::get("lit");
 
-	baseColor = glm::vec4(1.0f);
-
 	tiling = glm::vec2(1.0f);
 	offset = glm::vec2(0.0f);
 
@@ -21,6 +19,11 @@ LitMaterial::LitMaterial()
 	metallicMap = nullptr;
 
 	ambientOcclusionMap = nullptr;
+
+	shader->bind();
+	syncStaticUniforms();
+	syncSceneUniforms();
+	syncLightUniforms();
 }
 
 void LitMaterial::bind()
@@ -28,16 +31,8 @@ void LitMaterial::bind()
 	shader->bind();
 
 	// Set scene data
-	Runtime::mainShadowMap->bind(0);
-	shader->setInt("scene.shadowMap", 0);
+	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
 	shader->setVec3("scene.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->position));
-	shader->setVec3("scene.ambientColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("scene.ambientStrength", 0.00001f);
-
-	// Set light data
-	shader->setVec3("light.position", Transformation::prepareWorldPosition(Runtime::lightPosition));
-	shader->setVec3("light.color", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("light.intensity", Runtime::lightIntensity);
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);
@@ -45,45 +40,92 @@ void LitMaterial::bind()
 	shader->setVec2("material.tiling", tiling);
 	shader->setVec2("material.offset", offset);
 
-	bool enableAlbedoMap = albedoMap != nullptr;
 	shader->setBool("material.enableAlbedoMap", enableAlbedoMap);
 	if (enableAlbedoMap) {
-		albedoMap->bind(1);
-		shader->setInt("material.albedoMap", 1);
+		albedoMap->bind(ALBEDO_MAP_UNIT);
 	}
 
-	bool enableNormalMap = normalMap != nullptr;
 	shader->setBool("material.enableNormalMap", enableNormalMap);
 	if (enableNormalMap) {
-		normalMap->bind(2);
-		shader->setInt("material.normalMap", 2);
+		normalMap->bind(NORMAL_MAP_UNIT);
 	}
 
-	shader->setFloat("material.roughness", roughness);
-	bool enableRoughnessMap = roughnessMap != nullptr;
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
 	if (enableRoughnessMap) {
-		roughnessMap->bind(3);
-		shader->setInt("material.roughnessMap", 3);
+		roughnessMap->bind(ROUGHNESS_MAP_UNIT);
+	}
+	else {
+		shader->setFloat("material.roughness", roughness);
 	}
 
-	shader->setFloat("material.metallic", metallic);
-	bool enableMetallicMap = metallicMap != nullptr;
 	shader->setBool("material.enableMetallicMap", enableMetallicMap);
 	if (enableMetallicMap) {
-		metallicMap->bind(4);
-		shader->setInt("material.metallicMap", 4);
+		metallicMap->bind(METALLIC_MAP_UNIT);
+	}
+	else {
+		shader->setFloat("material.metallic", metallic);
 	}
 
-	bool enableAmbientOcclusionMap = ambientOcclusionMap != nullptr;
 	shader->setBool("material.enableAmbientOcclusionMap", enableAmbientOcclusionMap);
 	if (enableAmbientOcclusionMap) {
-		ambientOcclusionMap->bind(5);
-		shader->setInt("material.ambientOcclusionMap", 5);
+		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_MAP_UNIT);
 	}
 }
 
 Shader* LitMaterial::getShader()
 {
 	return shader;
+}
+
+void LitMaterial::setAlbedoMap(Texture* albedoMap)
+{
+	enableAlbedoMap = true;
+	this->albedoMap = albedoMap;
+}
+
+void LitMaterial::setNormalMap(Texture* normalMap)
+{
+	enableNormalMap = true;
+	this->normalMap = normalMap;
+}
+
+void LitMaterial::setRoughnessMap(Texture* roughnessMap)
+{
+	enableRoughnessMap = true;
+	this->roughnessMap = roughnessMap;
+}
+
+void LitMaterial::setMetallicMap(Texture* metallicMap)
+{
+	enableMetallicMap = true;
+	this->metallicMap = metallicMap;
+}
+
+void LitMaterial::setAmbientOcclusionMap(Texture* ambientOcclusionMap)
+{
+	enableAmbientOcclusionMap = true;
+	this->ambientOcclusionMap = ambientOcclusionMap;
+}
+
+void LitMaterial::syncStaticUniforms()
+{
+	shader->setInt("scene.shadowMap", SHADOW_MAP_UNIT);
+	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
+	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);
+	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
+	shader->setInt("material.metallicMap", METALLIC_MAP_UNIT);
+	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
+}
+
+void LitMaterial::syncSceneUniforms()
+{
+	shader->setVec3("scene.ambientColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setFloat("scene.ambientStrength", 0.00001f);
+}
+
+void LitMaterial::syncLightUniforms()
+{
+	shader->setVec3("light.position", Transformation::prepareWorldPosition(Runtime::lightPosition));
+	shader->setVec3("light.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setFloat("light.intensity", Runtime::lightIntensity);
 }
