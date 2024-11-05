@@ -9,7 +9,7 @@
 #include "../engine/rendering/shader/shader_builder.h"
 
 struct PostProcessingSetup {
-	unsigned int msaaSamples = 8;
+	unsigned int msaaSamples = 2;
 
 	float exposure = 0.85f;
 	float contrast = 1.0f;

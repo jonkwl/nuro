@@ -203,7 +203,7 @@ int Runtime::START_LOOP() {
 
 	// Create shadow map
 	bool depth_map_saved = false;
-	mainShadowMap = new ShadowMap(4096, shadowPassShader);
+	mainShadowMap = new ShadowMap(2048, shadowPassShader);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		unsigned int width = Window::width, height = Window::height;
