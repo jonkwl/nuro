@@ -80,6 +80,7 @@ public:
 	static float lastTime; // Time passed since application beginning of last frame
 	static float deltaTime; // Frame delta time
 	static int fps; // current fps
+	static float averageFps; // averaged current fps
 
 	// Render settings
 	static bool vsync; // V-Sync option
@@ -107,4 +108,8 @@ private:
 	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 
 	static Skybox* activeSkybox; // Currently selected skybox
+
+	// Averaged fps calculations
+	static int averageFpsFrameCount; // Count of frames in the current second
+	static float averageFpsElapsedTime; // Time accumulator for averaging FPS
 };

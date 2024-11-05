@@ -18,13 +18,14 @@ float Runtime::time = 0.0f;
 float Runtime::lastTime = 0.0f;
 float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
+float Runtime::averageFps = 0.0f;
 
 bool Runtime::vsync = true;
 bool Runtime::wireframe = false;
 
 bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
-bool Runtime::showDiagnostics = false;
+bool Runtime::showDiagnostics = true;
 
 Skybox* Runtime::activeSkybox = nullptr;
 
@@ -35,6 +36,9 @@ glm::vec3 Runtime::lightPosition = glm::vec3(3.0f, 5.0f, -5.0f);
 
 float Runtime::roughness = 0.45f;
 float Runtime::metallic = 0.2f;
+
+int Runtime::averageFpsFrameCount = 0;
+float Runtime::averageFpsElapsedTime = 0.0f;
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -217,6 +221,14 @@ int Runtime::START_LOOP() {
 		lastTime = time;
 		fps = static_cast<int>(1.0f / deltaTime);
 
+		averageFpsElapsedTime += deltaTime;
+		averageFpsFrameCount++;
+		if (averageFpsElapsedTime >= 1.0f) {
+			averageFps = static_cast<float>(averageFpsFrameCount) / averageFpsElapsedTime;
+			averageFpsElapsedTime = 0.0f;
+			averageFpsFrameCount = 0;
+		}
+
 		//
 		// UPDATE PHASE 2: UPDATE ANY SCRIPTS NEEDING UPDATE
 		//
@@ -329,7 +341,7 @@ int Runtime::START_LOOP() {
 
 		// Diagnostics ui
 		if (showDiagnostics) {
-			EngineDialog::show_diagnostics(fps);
+			EngineDialog::show_diagnostics(averageFps);
 		}
 
 		EngineUI::render();

@@ -1,7 +1,7 @@
 #include "inspector_mode.h"
 
 float InspectorMode::movementSpeed = 12.0f;
-float InspectorMode::sensitivity = 6.0f;
+float InspectorMode::sensitivity = 3.0f;
 
 void InspectorMode::refreshInspector() {
 

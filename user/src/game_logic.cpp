@@ -78,7 +78,7 @@ void awake() {
 }
 
 void update() {
-	cube->rotation.y += 1.0f;
+	cube->rotation.y += 80.0f * Runtime::deltaTime;
 
 	sphereMaterial->roughness = Runtime::roughness;
 	sphereMaterial->metallic = Runtime::metallic;

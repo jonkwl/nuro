@@ -204,8 +204,6 @@ vec4 shadePBR() {
     // get shadow
     float shadow = getShadow();
 
-    shadow = 0.0;
-
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
     int iterations = shadow == 1.0 ? 0 : 1; // iterate over every light source, or none if object is in shadow
