@@ -204,6 +204,8 @@ vec4 shadePBR() {
     // get shadow
     float shadow = getShadow();
 
+    shadow = 0.0;
+
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
     int iterations = shadow == 1.0 ? 0 : 1; // iterate over every light source, or none if object is in shadow
@@ -212,29 +214,39 @@ vec4 shadePBR() {
         vec3 L = normalize(light.position - v_fragmentPosition); // light direction
         vec3 H = normalize(V + L); // halfway direction
 
+        // cosine of angle between N and L, indicates effective light contribution from source
+        float NdotL = max(dot(N, L), 0.0);
+        if(NdotL == 0.0)
+        {
+            continue; // no light contribution from source, skip light
+        }
+
         // per-light radiance
         // float distance = length(light.position - v_fragmentPosition);
         // float attenuation = 1.0 / (distance * distance);
         float attenuation = 1.0; // full attenuation for directional lights
+        if(attenuation == 0.0) 
+        {
+            continue; // no light contribution from source, skip light
+        }
         vec3 radiance = light.color * light.intensity * attenuation;
         
-        // cook-torrance brdf
+        // specular component
         float NDF = distributionGGX(N, H, roughness);        
         float G = geometrySmith(N, V, L, roughness);      
-        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);       
-        
-        vec3 kS = F;
-        vec3 kD = vec3(1.0) - kS;
-        kD *= 1.0 - metallic;	  
-        
+        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);    
         vec3 numerator = NDF * G * F;
         float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
         float epsilon = 0.0001;
         vec3 specular = numerator / max(denominator, epsilon);  
+        
+        // diffuse component (lambertian)
+        vec3 kD = vec3(1.0) - F;
+        kD *= 1.0 - metallic;
+        vec3 diffuse = kD * albedo / PI;
             
-        // add to outgoing radiance
-        float NdotL = max(dot(N, L), 0.0);                
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
+        // add to outgoing radiance          
+        Lo += (diffuse + specular) * radiance * NdotL; 
     }
   
     // get ambient
