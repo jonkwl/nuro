@@ -52,4 +52,6 @@ void EngineDialog::show_diagnostics(int fps) {
     ImGui::LabelText("FPS", "%d", fps);
 
     ImGui::End();
+
+    ImPlot::ShowDemoWindow();
 }
