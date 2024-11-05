@@ -112,19 +112,19 @@ float distributionGGX(vec3 N, vec3 H, float roughness)
     float a2 = a * a;
     float NdotH = max(dot(N, H), 0.0);
     float NdotH2 = NdotH * NdotH;
-    float num = a2;
-    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * denom * denom;
-    return num / denom;
+    float numerator = a2;
+    float denominator = (NdotH2 * (a2 - 1.0) + 1.0);
+    denominator = PI * denominator * denominator;
+    return numerator / denominator;
 }
 
 float geometrySchlickGGX(float NdotV, float roughness)
 {
     float r = (roughness + 1.0);
     float k = (r * r) / 8.0;
-    float num = NdotV;
-    float denom = NdotV * (1.0 - k) + k;
-    return num / denom;
+    float numerator = NdotV;
+    float denominator = NdotV * (1.0 - k) + k;
+    return numerator / denominator;
 }
 
 float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
@@ -198,12 +198,16 @@ vec4 shadePBR() {
     vec3 N = normalize(v_normals); // normal direction
     vec3 V = normalize(scene.cameraPosition - v_fragmentPosition); // view direction
 
-    vec3 F0 = vec3(0.04); // base reflectivity
-    F0 = mix(F0, albedo, metallic);
+    float dialectricReflecitivity = 0.04;
+    vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
 
-    // calculate each lights impact
+    // get shadow
+    float shadow = getShadow();
+
+    // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 1; ++i) 
+    int iterations = shadow == 1.0 ? 0 : 1; // iterate over every light source, or none if object is in shadow
+    for(int i = 0; i < iterations; ++i)
     {
         vec3 L = normalize(light.position - v_fragmentPosition); // light direction
         vec3 H = normalize(V + L); // halfway direction
@@ -224,16 +228,14 @@ vec4 shadePBR() {
         kD *= 1.0 - metallic;	  
         
         vec3 numerator = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-        vec3 specular = numerator / denominator;  
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+        float epsilon = 0.0001;
+        vec3 specular = numerator / max(denominator, epsilon);  
             
         // add to outgoing radiance
         float NdotL = max(dot(N, L), 0.0);                
         Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
     }
-
-    // get shadow
-    float shadow = getShadow();
   
     // get ambient
     vec3 ambient = getAmbient(albedo, ambientOcclusion);
