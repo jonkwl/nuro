@@ -143,9 +143,9 @@ int Runtime::START_LOOP() {
 		Log::printError("GLFW", "Initialization of GLAD failed");
 	}
 
-	if (wireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
-	}
+	// Debug graphics api version
+	const char* version = (const char*)glGetString(GL_VERSION);
+	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
 
 	// Setup render settings
 	glEnable(GL_DEPTH_TEST);
