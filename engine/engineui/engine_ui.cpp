@@ -16,16 +16,18 @@ void EngineUI::setup() {
 
 	fonts.uiRegular = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", 14);
 	fonts.uiBold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", 14);
+	fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", 15);
 
 	ImGui::StyleColorsDark();
 
 	ImGuiStyle& style = ImGui::GetStyle();
 
-	style.WindowPadding = ImVec2(16.0f, 16.0f);
+	style.WindowPadding = ImVec2(20.0f, 20.0f);
 	style.WindowRounding = 4.0f;
 	style.WindowMenuButtonPosition = ImGuiDir_None;
+	style.WindowBorderSize = 0.5f;
 
-	style.FramePadding = ImVec2(2.0f, 2.0f);
+	style.FramePadding = ImVec2(3.0f, 3.0f);
 	style.FrameRounding = 2.0f;
 
 	style.GrabMinSize = 5.0f;
@@ -52,6 +54,8 @@ void EngineUI::setup() {
 	imguiColors[ImGuiCol_SliderGrab] = colors.elementComponent;
 	imguiColors[ImGuiCol_SliderGrabActive] = colors.elementComponent;
 	imguiColors[ImGuiCol_CheckMark] = colors.elementComponent;
+
+	imguiColors[ImGuiCol_Border] = colors.borderColor;
 
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 130");

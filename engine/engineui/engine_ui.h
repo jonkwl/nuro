@@ -10,22 +10,25 @@
 #include <iostream>
 
 struct Colors {
-	ImVec4 background = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+	ImVec4 background = ImVec4(0.1f, 0.1f, 0.1f, 0.95f);
 	ImVec4 text = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	ImVec4 element = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
 	ImVec4 elementHovered = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
 	ImVec4 elementActive = ImVec4(0.4f, 0.4f, 0.4f, 1.0f);
 	ImVec4 elementComponent = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
+
+	ImVec4 borderColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 };
 
 struct WindowFlags {
-	ImGuiWindowFlags fixed = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGuiWindowFlags fixed = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar;
 };
 
 struct Fonts {
 	ImFont* uiRegular;
 	ImFont* uiBold;
+	ImFont* uiHeadline;
 };
 
 class EngineUI
