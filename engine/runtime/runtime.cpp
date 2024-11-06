@@ -267,6 +267,9 @@ int Runtime::START_LOOP() {
 		glViewport(0, 0, width, height);
 		PostProcessing::bind();
 
+		// Render wireframe if enabled
+		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		// Select camera to be rendered (depending on whether inspector mode is activated)
 		if (!inspectorMode) {
 			renderCamera = activeCamera;
@@ -287,6 +290,9 @@ int Runtime::START_LOOP() {
 		for (int i = 0; i < entityLinks.size(); i++) {
 			entityLinks.at(i)->render();
 		}
+
+		// Disable wireframe if enabled
+		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		// Render skybox
 		if (activeSkybox != nullptr) {
@@ -329,13 +335,6 @@ int Runtime::START_LOOP() {
 
 				EngineDialog::float_dialog("roughness", roughness, 0.0f, 1.0f);
 				EngineDialog::float_dialog("metallic", metallic, 0.0f, 1.0f);
-
-				if (wireframe) {
-					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				}
-				else {
-					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				}
 			}
 		}
 
