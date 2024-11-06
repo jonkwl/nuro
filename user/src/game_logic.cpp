@@ -23,7 +23,7 @@ void awake() {
 
 	// Create all entities
 	sphereMaterial = new LitMaterial();
-	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
@@ -39,7 +39,7 @@ void awake() {
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
 	Entity* pbrSphere = new Entity();
 	pbrSphere->model = pbrSphereModel;
-	pbrSphere->position = glm::vec3(3.0f, 0.0f, 3.5f);
+	pbrSphere->position = glm::vec3(3.0f, 0.0f, 0.0f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO);
 	LitMaterial* plank = new LitMaterial();
@@ -50,7 +50,7 @@ void awake() {
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
 	cube = new Entity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(-3.0f, 1.5f, 3.5f);
+	cube->position = glm::vec3(-3.0f, 1.5f, 0.0f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
@@ -73,7 +73,7 @@ void awake() {
 	Entity* mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->model = mannequinModel;
-	mannequin->position = glm::vec3(1.0f, -0.9f, 6.5f);
+	mannequin->position = glm::vec3(1.0f, -0.9f, 3.0f);
 	mannequin->rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 }
 

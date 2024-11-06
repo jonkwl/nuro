@@ -3,15 +3,17 @@
 float InspectorMode::movementSpeed = 12.0f;
 float InspectorMode::sensitivity = 0.08f;
 
-void InspectorMode::refreshInspector() {
+glm::vec3 centerPoint = glm::vec3(0.0f, 0.0f, 0.0f);
+float radius = 6.0f;
+float rotationSpeed = 20.0f;
+float currentAngle = 0.0f;
 
-	Camera* camera = Runtime::getInspectorCamera();
-
+void movementMode(Camera* camera, float speed, float sensitivity) {
 	glm::vec3 cam_forward = VectorHelper::forward(camera->rotation);
 	glm::vec3 cam_right = VectorHelper::right(camera->rotation);
 
 	glm::vec3 movement_direction = cam_forward * Input::keyAxisSmooth.x + cam_right * Input::keyAxisSmooth.y;
-	camera->position += movement_direction * movementSpeed * Runtime::deltaTime;
+	camera->position += movement_direction * speed * Runtime::deltaTime;
 
 	if (!Runtime::showEngineUI) {
 
@@ -22,4 +24,23 @@ void InspectorMode::refreshInspector() {
 		camera->rotation = new_rotation;
 
 	}
+}
+
+void rotationMode(Camera* camera) {
+	currentAngle += rotationSpeed * Runtime::deltaTime;
+
+	float angleRadians = glm::radians(currentAngle);
+
+	float x = centerPoint.x + radius * glm::cos(angleRadians);
+	float z = centerPoint.z + radius * glm::sin(angleRadians);
+	float y = camera->position.y;
+
+	camera->position = glm::vec3(x, y, z);
+	camera->lookAt(centerPoint);
+}
+
+void InspectorMode::refreshInspector() {
+
+	Camera* camera = Runtime::getInspectorCamera();
+	movementMode(camera, movementSpeed, sensitivity);
 }
