@@ -175,7 +175,6 @@
     <ClCompile Include="engine\runtime\runtime.cpp" />
     <ClCompile Include="engine\rendering\shader\shader.cpp" />
     <ClCompile Include="engine\rendering\texture\texture.cpp" />
-    <ClCompile Include="engine\utils\vector_helper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\rendering\skybox\cubemap.h" />
@@ -219,7 +218,6 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="engine\rendering\shader\shader.h" />
     <ClInclude Include="engine\rendering\texture\texture.h" />
-    <ClInclude Include="engine\utils\vector_helper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

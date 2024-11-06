@@ -90,9 +90,6 @@
     <ClCompile Include="engine\engineui\engine_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\vector_helper.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="engine\utils\inspector_mode.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -216,9 +213,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\engineui\engine_ui.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\utils\vector_helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\utils\inspector_mode.h">

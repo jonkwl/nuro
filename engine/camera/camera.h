@@ -14,6 +14,4 @@ public:
 	float fov;
 	float nearClipping;
 	float farClipping;
-
-	void lookAt(glm::vec3 point);
 };

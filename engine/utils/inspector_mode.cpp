@@ -4,8 +4,8 @@ float InspectorMode::movementSpeed = 12.0f;
 float InspectorMode::sensitivity = 0.08f;
 
 void updateMovementMode(Camera* camera, float speed, float sensitivity) {
-	glm::vec3 cam_forward = VectorHelper::forward(camera->transform.rotation);
-	glm::vec3 cam_right = VectorHelper::right(camera->transform.rotation);
+	glm::vec3 cam_forward = camera->transform.forward();
+	glm::vec3 cam_right = camera->transform.right();
 
 	glm::vec3 movement_direction = cam_forward * Input::keyAxisSmooth.x + cam_right * Input::keyAxisSmooth.y;
 	camera->transform.position += movement_direction * speed * Runtime::deltaTime;
@@ -33,7 +33,7 @@ void updateRotationMode(Camera* camera, glm::vec3 centerPoint, float radius, flo
 	float y = camera->transform.position.y;
 
 	camera->transform.position = glm::vec3(x, y, z);
-	camera->lookAt(centerPoint);
+	camera->transform.lookAt(centerPoint);
 }
 
 void InspectorMode::refreshInspector() {

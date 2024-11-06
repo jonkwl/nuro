@@ -37,7 +37,6 @@ using json = nlohmann::json;
 #include "../engine/camera/camera.h"
 
 #include "../engine/utils/log.h"
-#include "../engine/utils/vector_helper.h"
 #include "../engine/utils/inspector_mode.h"
 
 #include "../engine/engineui/engine_ui.h"
