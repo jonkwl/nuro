@@ -219,6 +219,32 @@
     <ClInclude Include="engine\rendering\shader\shader.h" />
     <ClInclude Include="engine\rendering\texture\texture.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\skybox\default\default.jpg" />
+    <Image Include="resources\skybox\environment\back.jpg" />
+    <Image Include="resources\skybox\environment\bottom.jpg" />
+    <Image Include="resources\skybox\environment\front.jpg" />
+    <Image Include="resources\skybox\environment\left.jpg" />
+    <Image Include="resources\skybox\environment\right.jpg" />
+    <Image Include="resources\skybox\environment\top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\materials\legacy\lit_legacy\.frag" />
+    <None Include="resources\shaders\materials\legacy\lit_legacy\.vert" />
+    <None Include="resources\shaders\materials\lit\.frag" />
+    <None Include="resources\shaders\materials\lit\.vert" />
+    <None Include="resources\shaders\materials\skybox\.frag" />
+    <None Include="resources\shaders\materials\skybox\.vert" />
+    <None Include="resources\shaders\materials\unlit\.frag" />
+    <None Include="resources\shaders\materials\unlit\.vert" />
+    <None Include="resources\shaders\postprocessing\framebuffer\.frag" />
+    <None Include="resources\shaders\postprocessing\framebuffer\.vert" />
+    <None Include="resources\shaders\shadows\shadow_pass\.frag" />
+    <None Include="resources\shaders\shadows\shadow_pass\.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\Inter_18pt-Regular.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

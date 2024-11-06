@@ -267,4 +267,44 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\skybox\environment\top.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+    <Image Include="resources\skybox\environment\back.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+    <Image Include="resources\skybox\environment\bottom.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+    <Image Include="resources\skybox\environment\front.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+    <Image Include="resources\skybox\environment\left.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+    <Image Include="resources\skybox\environment\right.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+    <Image Include="resources\skybox\default\default.jpg">
+      <Filter>Ressourcendateien</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\materials\unlit\.vert" />
+    <None Include="resources\shaders\materials\unlit\.frag" />
+    <None Include="resources\shaders\materials\skybox\.vert" />
+    <None Include="resources\shaders\materials\skybox\.frag" />
+    <None Include="resources\shaders\materials\lit\.vert" />
+    <None Include="resources\shaders\materials\lit\.frag" />
+    <None Include="resources\shaders\materials\legacy\lit_legacy\.vert" />
+    <None Include="resources\shaders\materials\legacy\lit_legacy\.frag" />
+    <None Include="resources\shaders\postprocessing\framebuffer\.vert" />
+    <None Include="resources\shaders\postprocessing\framebuffer\.frag" />
+    <None Include="resources\shaders\shadows\shadow_pass\.vert" />
+    <None Include="resources\shaders\shadows\shadow_pass\.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\Inter_18pt-Regular.ttf" />
+  </ItemGroup>
 </Project>

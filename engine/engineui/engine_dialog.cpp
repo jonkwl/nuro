@@ -31,7 +31,7 @@ float remap(float old_min, float old_max, float new_min, float new_max, float va
 }
 
 void EngineDialog::vec3_dialog(std::string name, glm::vec3& value, float min, float max) {
-    ImGui::Begin(std::string("Vector3: " + name).c_str());
+    ImGui::Begin(std::string("Vector3: " + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     ImGui::SliderFloat("X", &value.x, min, max);
     ImGui::SliderFloat("Y", &value.y, min, max);
@@ -41,7 +41,7 @@ void EngineDialog::vec3_dialog(std::string name, glm::vec3& value, float min, fl
 }
 
 void EngineDialog::float_dialog(std::string name, float& value, float min, float max) {
-    ImGui::Begin(std::string("Float: " + name).c_str());
+    ImGui::Begin(std::string("Float: " + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     ImGui::SliderFloat(name.c_str(), &value, min, max);
 
@@ -49,7 +49,7 @@ void EngineDialog::float_dialog(std::string name, float& value, float min, float
 }
 
 void EngineDialog::bool_dialog(std::string name, bool& value) {
-    ImGui::Begin(std::string("Bool: " + name).c_str());
+    ImGui::Begin(std::string("Bool: " + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     ImGui::Checkbox(name.c_str(), &value);
 
@@ -57,7 +57,7 @@ void EngineDialog::bool_dialog(std::string name, bool& value) {
 }
 
 void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
-    ImGui::Begin(std::string("Color: " + name).c_str());
+    ImGui::Begin(std::string("Color: " + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     ImGui::ColorPicker4(name.c_str(), (float*)&value);
 
@@ -66,7 +66,7 @@ void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
 
 void EngineDialog::input_dialog(std::string name, std::vector<InputPair> inputs)
 {
-    ImGui::Begin(std::string("Float: " + name).c_str());
+    ImGui::Begin(std::string("Float: " + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     for (int i = 0; i < inputs.size(); i++) {
         InputPair pair = inputs[i];
@@ -81,11 +81,13 @@ void EngineDialog::plot_demo() {
 }
 
 void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) {
-    ImGui::Begin("Diagnostics");
+    ImGui::Begin("Diagnostics", nullptr, EngineUI::windowFlags.fixed);
 
     ImGui::Text("Average FPS:");
     ImGui::SameLine();
+    ImGui::PushFont(EngineUI::fonts.uiBold);
     ImGui::Text("%.0f", averageFps);
+    ImGui::PopFont();
 
     const int values = 100;
     const float updateRate = 0.025f;
@@ -115,5 +117,36 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
 
     delete[] data;
 
+    ImGui::End();
+
+    if (ImGui::Begin("Tab Example"))  // Create a new window called "Tab Example"
+    {
+        // Create a tab bar
+        if (ImGui::BeginTabBar("Tabs"))
+        {
+            // Tab 1
+            if (ImGui::BeginTabItem("Tab 1"))
+            {
+                ImGui::Text("This is the content of Tab 1");
+                ImGui::EndTabItem();  // Close the first tab item
+            }
+
+            // Tab 2
+            if (ImGui::BeginTabItem("Tab 2"))
+            {
+                ImGui::Text("This is the content of Tab 2");
+                ImGui::EndTabItem();  // Close the second tab item
+            }
+
+            // Tab 3
+            if (ImGui::BeginTabItem("Tab 3"))
+            {
+                ImGui::Text("This is the content of Tab 3");
+                ImGui::EndTabItem();  // Close the third tab item
+            }
+
+            ImGui::EndTabBar();  // Close the tab bar
+        }
+    }
     ImGui::End();
 }

@@ -11,6 +11,8 @@
 #include "imgui_impl_opengl3.h"
 #include "implot.h"
 
+#include "../engine/engineui/engine_ui.h"
+
 #include <iostream>
 
 struct InputPair {
