@@ -27,7 +27,7 @@ void awake() {
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
-	sphere->position = glm::vec3(0.0f, 0.0f, 3.5f);
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 3.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS);
@@ -39,7 +39,7 @@ void awake() {
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
 	Entity* pbrSphere = new Entity();
 	pbrSphere->model = pbrSphereModel;
-	pbrSphere->position = glm::vec3(3.0f, 0.0f, 0.0f);
+	pbrSphere->transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO);
 	LitMaterial* plank = new LitMaterial();
@@ -50,7 +50,7 @@ void awake() {
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
 	cube = new Entity();
 	cube->model = cubeModel;
-	cube->position = glm::vec3(-3.0f, 1.5f, 0.0f);
+	cube->transform.position = glm::vec3(-3.0f, 1.5f, 0.0f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
@@ -58,8 +58,8 @@ void awake() {
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	Entity* floor = new Entity();
 	floor->model = floorModel;
-	floor->position = glm::vec3(0.0f, -1.0f, 0.0f);
-	floor->scale = glm::vec3(25.0f, 0.1f, 25.0f);
+	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
+	floor->transform.scale = glm::vec3(25.0f, 0.1f, 25.0f);
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
 	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);
@@ -73,12 +73,13 @@ void awake() {
 	Entity* mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->model = mannequinModel;
-	mannequin->position = glm::vec3(1.0f, -0.9f, 3.0f);
-	mannequin->rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	mannequin->transform.position = glm::vec3(2.0f, -0.9f, 1.0f);
+	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	mannequin->transform.scale = glm::vec3(2.0f);
 }
 
 void update() {
-	cube->rotation.y += 80.0f * Runtime::deltaTime;
+	cube->transform.rotation.y += 80.0f * Runtime::deltaTime;
 
 	sphereMaterial->roughness = Runtime::roughness;
 	sphereMaterial->metallic = Runtime::metallic;

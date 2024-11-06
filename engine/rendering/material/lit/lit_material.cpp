@@ -32,7 +32,7 @@ void LitMaterial::bind()
 
 	// Set scene data
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-	shader->setVec3("scene.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->position));
+	shader->setVec3("scene.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);

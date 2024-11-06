@@ -141,6 +141,9 @@
     <ClCompile Include="imgui\implot_demo.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\transform\transform.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -264,6 +267,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="imgui\implot_internal.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\transform\transform.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

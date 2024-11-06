@@ -2,13 +2,14 @@
 
 #include <glm.hpp>
 
+#include "../engine/transform/transform.h"
+
 class Camera
 {
 public:
 	Camera();
 
-	glm::vec3 position;
-	glm::vec3 rotation;
+	Transform transform;
 
 	float fov;
 	float nearClipping;

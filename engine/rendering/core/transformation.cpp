@@ -14,23 +14,23 @@ glm::mat4 Transformation::modelMatrix(Entity* entity) {
 	glm::mat4 model(1.0f);
 
 	// object position
-	glm::vec3 worldPosition = prepareWorldPosition(entity->position);
+	glm::vec3 worldPosition = prepareWorldPosition(entity->transform.position);
 	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
-	glm::vec3 worldRotation = prepareWorldRotation(entity->rotation);
+	glm::vec3 worldRotation = prepareWorldRotation(entity->transform.rotation);
 	model = glm::rotate(model, glm::radians(worldRotation.x), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, glm::radians(worldRotation.y), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(worldRotation.z), glm::vec3(0, 0, 1));
 
 	// object scale
-	model = glm::scale(model, entity->scale);
+	model = glm::scale(model, entity->transform.scale);
 
 	return model;
 }
 glm::mat4 Transformation::viewMatrix(Camera* camera) {
-	glm::vec3 camera_position = camera->position;
-	glm::vec3 camera_rotation = camera->rotation;
+	glm::vec3 camera_position = camera->transform.position;
+	glm::vec3 camera_rotation = camera->transform.rotation;
 
 	camera_position = glm::vec3(camera_position.x, camera_position.y, -camera_position.z);
 	camera_rotation = glm::vec3(-camera_rotation.x, -camera_rotation.y, camera_rotation.z);

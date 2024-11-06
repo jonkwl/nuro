@@ -161,6 +161,7 @@
     <ClCompile Include="imgui\implot.cpp" />
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
+    <ClCompile Include="engine\transform\transform.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -203,6 +204,7 @@
     <ClInclude Include="imgui\implot.h" />
     <ClInclude Include="imgui\implot_internal.h" />
     <ClInclude Include="stb\stb_image_write.h" />
+    <ClInclude Include="engine\transform\transform.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="engine\utils\iohandler.h" />
