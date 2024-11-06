@@ -67,8 +67,10 @@ public:
 	static Camera* getActiveCamera(); // Returns camera selected by user (active camera)
 	static Camera* getInspectorCamera();
 
-	static float lightIntensity;
-	static glm::vec3 lightPosition;
+	static float directionalIntensity;
+	static glm::vec3 directionalColor;
+	static glm::vec3 directionalDirection;
+	static glm::vec3 directionalPosition;
 
 	// Skybox settings
 	static void setSkybox(Skybox* skybox); // Set active skybox

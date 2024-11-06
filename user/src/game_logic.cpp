@@ -27,7 +27,7 @@ void awake() {
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 3.5f);
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 3.6f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS);

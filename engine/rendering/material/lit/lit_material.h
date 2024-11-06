@@ -45,6 +45,5 @@ private:
 	Texture* ambientOcclusionMap;
 
 	void syncStaticUniforms();
-	void syncSceneUniforms();
 	void syncLightUniforms();
 };

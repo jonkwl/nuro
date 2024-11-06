@@ -31,8 +31,10 @@ Skybox* Runtime::activeSkybox = nullptr;
 
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
-float Runtime::lightIntensity = 0.3f;
-glm::vec3 Runtime::lightPosition = glm::vec3(3.0f, 5.0f, -5.0f);
+float Runtime::directionalIntensity = 0.005f;
+glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
+glm::vec3 Runtime::directionalDirection = glm::vec3(0.0f, 0.4f, -0.6f);
+glm::vec3 Runtime::directionalPosition = glm::vec3(3.0f, 5.0f, -5.0f);
 
 float Runtime::roughness = 0.45f;
 float Runtime::metallic = 0.2f;
@@ -249,7 +251,7 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
 		//
 
-		mainShadowMap->render(lightPosition);
+		mainShadowMap->render(directionalPosition);
 
 		// Save depth map
 		if (!depth_map_saved) {
@@ -316,7 +318,7 @@ int Runtime::START_LOOP() {
 				EngineDialog::float_dialog("FOV", renderCamera->fov, 30, 90);
 				EngineDialog::bool_dialog("Wireframe", wireframe);
 
-				InputPair x = {"Light Intensity", lightIntensity, 0.0f, 5.0f};
+				InputPair x = {"Directional Intensity", directionalIntensity, 0.0f, 5.0f};
 				InputPair a = { "Exposure", PostProcessing::setup.exposure, 0.0f, 10.0f };
 				InputPair b = { "Contrast", PostProcessing::setup.contrast, 0.95f, 1.1f };
 				InputPair c = { "Gamma", PostProcessing::setup.gamma, 0.0f, 5.0f };

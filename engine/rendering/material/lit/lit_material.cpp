@@ -22,7 +22,6 @@ LitMaterial::LitMaterial()
 
 	shader->bind();
 	syncStaticUniforms();
-	syncSceneUniforms();
 	syncLightUniforms();
 }
 
@@ -70,6 +69,8 @@ void LitMaterial::bind()
 	if (enableAmbientOcclusionMap) {
 		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_MAP_UNIT);
 	}
+
+	shader->setFloat("directionalLight.intensity", Runtime::directionalIntensity);
 }
 
 Shader* LitMaterial::getShader()
@@ -117,15 +118,17 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
 }
 
-void LitMaterial::syncSceneUniforms()
-{
-	shader->setVec3("scene.ambientColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("scene.ambientStrength", 0.00001f);
-}
-
 void LitMaterial::syncLightUniforms()
 {
-	shader->setVec3("light.position", Transformation::prepareWorldPosition(Runtime::lightPosition));
-	shader->setVec3("light.color", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("light.intensity", Runtime::lightIntensity);
+	shader->setFloat("ambientLighting.intensity", 0.00001f);
+	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
+
+	shader->setFloat("directionalLight.intensity", Runtime::directionalIntensity);
+	shader->setVec3("directionalLight.color", Runtime::directionalColor);
+	shader->setVec3("directionalLight.direction", Transformation::prepareWorldPosition(Runtime::directionalDirection));
+	shader->setVec3("directionalLight.position", Transformation::prepareWorldPosition(Runtime::directionalPosition));
+
+	shader->setVec3("pointLight.position", glm::vec3(1.0f));
+	shader->setVec3("pointLight.color", glm::vec3(0.0f, 0.4f, 0.8f));
+	shader->setFloat("pointLight.intensity", 1.0f);
 }

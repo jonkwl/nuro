@@ -15,18 +15,29 @@ vec2 uv;
 struct Scene {
     sampler2D shadowMap;
     vec3 cameraPosition;
-
-    vec3 ambientColor;
-    float ambientStrength;
 };
 uniform Scene scene;
 
-struct Light {
+struct AmbientLighting {
+    float intensity;
+    vec3 color;
+};
+uniform AmbientLighting ambientLighting;
+
+struct DirectionalLight {
+    float intensity;
+    vec3 color;
+    vec3 direction;
+    vec3 position; // boilerplate for directional shadows
+};
+uniform DirectionalLight directionalLight;
+
+struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
 };
-uniform Light light;
+uniform PointLight pointLight;
 
 struct Material {
     vec4 baseColor;
@@ -89,7 +100,7 @@ float getShadow()
     float currentDepth = projectionCoordinates.z;
 
     vec3 normalDirection = normalize(v_normals);
-    vec3 lightDirection = normalize(light.position - v_fragmentPosition);
+    vec3 lightDirection = normalize(directionalLight.position - v_fragmentPosition);
 
     float maxBias = 0.01;
     float minBias = 0.005;
@@ -178,8 +189,44 @@ float getAmbientOcclusion()
 }
 
 vec3 getAmbient(vec3 albedo, float ambientOcclusion) {
-    vec3 ambient = vec3(scene.ambientStrength) * albedo * ambientOcclusion;
+    vec3 ambient = vec3(ambientLighting.intensity) * ambientLighting.color * albedo * ambientOcclusion;
     return ambient;
+}
+
+vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metallic, vec3 albedo, float attenuation, vec3 L, vec3 color, float intensity) {
+        vec3 H = normalize(V + L); // halfway direction
+
+        // cosine of angle between N and L, indicates effective light contribution from source
+        float NdotL = max(dot(N, L), 0.0);
+        if(NdotL == 0.0)
+        {
+            return vec3(0.0); // no light contribution from source, skip light
+        }
+
+        // per-light radiance
+        if(attenuation == 0.0) 
+        {
+            return vec3(0.0); // no light contribution from source, skip light
+        }
+        vec3 radiance = color * intensity * attenuation;
+        
+        // specular component
+        float NDF = distributionGGX(N, H, roughness);        
+        float G = geometrySmith(N, V, L, roughness);      
+        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);    
+        vec3 numerator = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+        float epsilon = 0.0001;
+        vec3 specular = numerator / max(denominator, epsilon);  
+        
+        // diffuse component (lambertian)
+        vec3 kD = vec3(1.0) - F;
+        kD *= 1.0 - metallic;
+        vec3 diffuse = kD * albedo / PI;
+            
+        // return light source contribution      
+        vec3 contribution = (diffuse + specular) * radiance * NdotL;
+        return contribution;
 }
 
 vec4 shadePBR() {
@@ -206,46 +253,28 @@ vec4 shadePBR() {
 
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
-    int iterations = shadow == 1.0 ? 0 : 1; // iterate over every light source, or none if object is in shadow
-    for(int i = 0; i < iterations; ++i)
+    int iterations = shadow == 1.0 ? 0 : 1; // iterate over every light source, or none if object is in full shadow
+    /* for(int i = 0; i < iterations; ++i)
     {
-        vec3 L = normalize(light.position - v_fragmentPosition); // light direction
-        vec3 H = normalize(V + L); // halfway direction
-
-        // cosine of angle between N and L, indicates effective light contribution from source
-        float NdotL = max(dot(N, L), 0.0);
-        if(NdotL == 0.0)
-        {
-            continue; // no light contribution from source, skip light
-        }
+        vec3 L = normalize(pointLight.position - v_fragmentPosition); // light direction
 
         // per-light radiance
-        // float distance = length(light.position - v_fragmentPosition);
+        // float distance = length(pointLight.position - v_fragmentPosition);
         // float attenuation = 1.0 / (distance * distance);
         float attenuation = 1.0; // full attenuation for directional lights
-        if(attenuation == 0.0) 
-        {
-            continue; // no light contribution from source, skip light
-        }
-        vec3 radiance = light.color * light.intensity * attenuation;
-        
-        // specular component
-        float NDF = distributionGGX(N, H, roughness);        
-        float G = geometrySmith(N, V, L, roughness);      
-        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);    
-        vec3 numerator = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        float epsilon = 0.0001;
-        vec3 specular = numerator / max(denominator, epsilon);  
-        
-        // diffuse component (lambertian)
-        vec3 kD = vec3(1.0) - F;
-        kD *= 1.0 - metallic;
-        vec3 diffuse = kD * albedo / PI;
-            
-        // add to outgoing radiance          
-        Lo += (diffuse + specular) * radiance * NdotL; 
-    }
+
+        // add to outgoing radiance 
+        vec3 contribution = evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);       
+        Lo += contribution;
+    } */
+
+    // Directional light
+    Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, 1.0, normalize(directionalLight.direction), directionalLight.color, directionalLight.intensity);
+
+    vec3 L = normalize(pointLight.position - v_fragmentPosition);
+    float distance = length(pointLight.position - v_fragmentPosition);
+    float attenuation = 1.0 / (distance * distance);
+    Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
   
     // get ambient
     vec3 ambient = getAmbient(albedo, ambientOcclusion);
