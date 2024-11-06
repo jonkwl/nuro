@@ -118,35 +118,4 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
     delete[] data;
 
     ImGui::End();
-
-    if (ImGui::Begin("Tab Example"))  // Create a new window called "Tab Example"
-    {
-        // Create a tab bar
-        if (ImGui::BeginTabBar("Tabs"))
-        {
-            // Tab 1
-            if (ImGui::BeginTabItem("Tab 1"))
-            {
-                ImGui::Text("This is the content of Tab 1");
-                ImGui::EndTabItem();  // Close the first tab item
-            }
-
-            // Tab 2
-            if (ImGui::BeginTabItem("Tab 2"))
-            {
-                ImGui::Text("This is the content of Tab 2");
-                ImGui::EndTabItem();  // Close the second tab item
-            }
-
-            // Tab 3
-            if (ImGui::BeginTabItem("Tab 3"))
-            {
-                ImGui::Text("This is the content of Tab 3");
-                ImGui::EndTabItem();  // Close the third tab item
-            }
-
-            ImGui::EndTabBar();  // Close the tab bar
-        }
-    }
-    ImGui::End();
 }
