@@ -15,7 +15,7 @@ LitMaterial* sphereMaterial = nullptr;
 
 void awake() {
 	// Set default skybox
-	// Runtime::setSkybox(Runtime::defaultSkybox);
+	Runtime::setSkybox(Runtime::defaultSkybox);
 
 	// Create camera
 	camera = new Camera();
@@ -54,12 +54,33 @@ void awake() {
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
-	floorMaterial->roughness = 0.6f;
+	floorMaterial->roughness = 0.0f;
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
+	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
 	floor->model = floorModel;
 	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
+	Entity* wall1 = new Entity();
+	wall1->model = floorModel;
+	wall1->transform.position = glm::vec3(-10.0f, -1.0f, 0.0f);
+	wall1->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
+	Entity* wall2 = new Entity();
+	wall2->model = floorModel;
+	wall2->transform.position = glm::vec3(10.0f, -1.0f, 0.0f);
+	wall2->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
+	Entity* wall3 = new Entity();
+	wall3->model = floorModel;
+	wall3->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
+	wall3->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
+	/*Entity* wall4 = new Entity();
+	wall4->model = floorModel;
+	wall4->transform.position = glm::vec3(0.0f, -1.0f, -10.0f);
+	wall4->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);*/
+	Entity* wall5 = new Entity();
+	wall5->model = floorModel;
+	wall5->transform.position = glm::vec3(0.0f, 3.9, 0.0f);
+	wall5->transform.scale = glm::vec3(10.0f, 0.1f, 10.0f);
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
 	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);
@@ -80,7 +101,4 @@ void awake() {
 
 void update() {
 	cube->transform.rotation.y += 80.0f * Runtime::deltaTime;
-
-	sphereMaterial->roughness = Runtime::roughness;
-	sphereMaterial->metallic = Runtime::metallic;
 }

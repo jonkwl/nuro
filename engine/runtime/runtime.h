@@ -99,8 +99,9 @@ public:
 	static std::vector<EntityProcessor*> getEntityLinks();
 
 	// tmp for material testing
-	static float roughness;
-	static float metallic;
+	static float intensity;
+	static float range;
+	static float falloff;
 private:
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 

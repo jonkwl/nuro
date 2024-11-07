@@ -45,6 +45,7 @@ struct PointLight {
     vec3 color;
     float intensity;
     float range;
+    float falloff;
 };
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
@@ -54,6 +55,7 @@ struct SpotLight {
     vec3 color;
     float intensity;
     float range;
+    float falloff;
     float innerCutoff;
     float outerCutoff;
 };
@@ -84,28 +86,54 @@ struct Material {
 };
 uniform Material material;
 
+float sqr(float x)
+{
+    return x * x;
+}
+
 float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius) 
 {
     float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(scene.shadowMap, 0);
+    vec2 texelSize = 1.0 / textureSize(scene.shadowMap, 0); // Pre-calculate texel size once
     
     int sampleCount = 0;
     float weightSum = 0.0;
 
+    // Precompute the smoothing factor as it doesn't change during iteration
+    float kernelRadiusSquared = float(kernelRadius) * float(kernelRadius);
+
+    // Loop over the kernel area
     for (int x = -kernelRadius; x <= kernelRadius; ++x) {
         for (int y = -kernelRadius; y <= kernelRadius; ++y) {
+            
+            // Calculate the offset for the sample
             vec2 offset = vec2(float(x), float(y)) * texelSize * smoothing;
+
+            // Fetch the depth from the shadow map
             float pcfDepth = texture(scene.shadowMap, projectionCoords.xy + offset).r;
-            float dist = length(vec2(x, y));
-            float weight = exp(-dist * dist / (2.0 * float(kernelRadius) * float(kernelRadius)));
-            shadow += weight * (currentDepth - bias > pcfDepth ? 1.0 : 0.0);
+
+            // Calculate the distance from the center of the kernel and apply Gaussian weight
+            float distSquared = float(x * x + y * y);
+            if (distSquared > kernelRadiusSquared) continue; // Skip unnecessary samples outside the kernel radius
+
+            float weight = exp(-distSquared / (2.0 * kernelRadiusSquared));
+
+            // Accumulate shadow result (use conditional logic to determine if it's shadowed)
+            if (currentDepth - bias > pcfDepth) {
+                shadow += weight;
+            }
+
+            // Accumulate weight sum
             weightSum += weight;
             sampleCount++;
         }
     }
 
-    shadow = shadow / weightSum;
-    
+    // Normalize the shadow result by the total weight sum
+    if (sampleCount > 0) {
+        shadow = shadow / weightSum;
+    }
+
     return shadow;
 }
 
@@ -249,16 +277,34 @@ vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metalli
         return contribution;
 }
 
-float getScaledAttenuation(float distance, float linear, float quadratic)
+float getAttenuation_linear_quadratic(float distance, float linear, float quadratic)
 {
     float attenuation = 1.0 / (1.0 + linear * distance + quadratic * (distance * distance));
     return attenuation;
 }
 
-float getRangeAttenuation(float distance, float range)
+float getAttenuation_range_infinite(float distance, float range)
 {
-    float attenuation = 1.0 / (1.0 + exp((distance / range)));
+    float attenuation = 1.0 / (1.0 + sqr((distance / range)));
     return attenuation;
+}
+
+float getAttenuation_range_falloff_no_cusp(float distance, float range, float falloff)
+{
+    float s = distance / range;
+    if (s >= 1.0)
+        return 0.0;
+    float s2 = sqr(s);
+    return sqr(1 - s2) / (1 + falloff * s2);
+}
+
+float getAttenuation_range_falloff_cusp(float distance, float range, float falloff)
+{
+    float s = distance / range;
+    if (s >= 1.0)
+        return 0.0;
+    float s2 = sqr(s);
+    return sqr(1 - s2) / (1 + falloff * s);
 }
 
 vec4 shadePBR() {
@@ -303,7 +349,7 @@ vec4 shadePBR() {
         PointLight pointLight = pointLights[i];
 
         float distance = length(pointLight.position - v_fragmentPosition);
-        float attenuation = getRangeAttenuation(distance, pointLight.range);
+        float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
         vec3 L = normalize(pointLight.position - v_fragmentPosition);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
@@ -314,7 +360,7 @@ vec4 shadePBR() {
         SpotLight spotLight = spotLights[i];
 
         float distance = length(spotLight.position - v_fragmentPosition);
-        float attenuation = getRangeAttenuation(distance, spotLight.range);
+        float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
         vec3 L = normalize(spotLight.position - v_fragmentPosition);
 
         float theta = dot(L, normalize(-spotLight.direction));

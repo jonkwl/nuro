@@ -88,6 +88,9 @@ void LitMaterial::bind()
 	}
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
+	shader->setFloat("pointLights[0].intensity", Runtime::intensity);
+	shader->setFloat("pointLights[0].range", Runtime::range);
+	shader->setFloat("pointLights[0].falloff", Runtime::falloff);
 }
 
 Shader* LitMaterial::getShader()
@@ -133,15 +136,18 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
 	shader->setInt("material.metallicMap", METALLIC_MAP_UNIT);
 	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
-} 
+}
 
 void LitMaterial::syncLightUniforms()
 {
-	shader->setInt("scene.numDirectionalLights", 0);
+	// tmp
+	bool nightMode = false;
+
+	shader->setInt("scene.numDirectionalLights", nightMode ? 0 : 1);
 	shader->setInt("scene.numPointLights", 1);
 	shader->setInt("scene.numSpotLights", 0);
 
-	shader->setFloat("ambientLighting.intensity", 0.00001f);
+	shader->setFloat("ambientLighting.intensity", nightMode ? 0 : 0.00001f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
@@ -149,16 +155,18 @@ void LitMaterial::syncLightUniforms()
 	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
 	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
 
-	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 0.0f, 0.0f)));
+	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 2.0f, 0.0f)));
 	shader->setVec3("pointLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader->setFloat("pointLights[0].intensity", 0.1f);
 	shader->setFloat("pointLights[0].range", 10.0f);
+	shader->setFloat("pointLights[0].falloff", 5.0f);
 
-	/* shader->setVec3("spotLights[0].position", worldPos(glm::vec3(0.0f, 3.3f, -10.0f)));
-	shader->setVec3("spotLights[0].direction", worldPos(glm::vec3(0.0f, -0.2f, 1.0f)));
+	/*shader->setVec3("spotLights[0].position", worldPos(glm::vec3(0.0f, 3.3f, -8.0f)));
+	shader->setVec3("spotLights[0].direction", worldPos(glm::vec3(0.0f, -0.3f, 1.0f)));
 	shader->setVec3("spotLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader->setFloat("spotLights[0].intensity", 1.0f);
-	shader->setFloat("spotLights[0].range", 0.5f);
+	shader->setFloat("spotLights[0].range", 15.0f);
+	shader->setFloat("spotLights[0].falloff", 1.0f);
 	shader->setFloat("spotLights[0].innerCutoff", glm::cos(glm::radians(12.5f)));
-	shader->setFloat("spotLights[0].outerCutoff", glm::cos(glm::radians(20.0f))); */
+	shader->setFloat("spotLights[0].outerCutoff", glm::cos(glm::radians(20.0f)));*/
 }
