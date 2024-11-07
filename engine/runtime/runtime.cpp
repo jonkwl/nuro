@@ -20,7 +20,7 @@ float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
-bool Runtime::vsync = false;
+bool Runtime::vsync = true;
 bool Runtime::wireframe = false;
 
 bool Runtime::inspectorMode = true;
@@ -33,7 +33,7 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 
 float Runtime::directionalIntensity = 0.005f;
 glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
-glm::vec3 Runtime::directionalDirection = glm::vec3(0.0f, 0.4f, -0.6f);
+glm::vec3 Runtime::directionalDirection = glm::vec3(0.0f, -0.5f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(3.0f, 5.0f, -5.0f);
 
 float Runtime::roughness = 0.45f;

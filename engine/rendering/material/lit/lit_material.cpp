@@ -74,7 +74,7 @@ void LitMaterial::bind()
 		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_MAP_UNIT);
 	}
 
-	shader->setFloat("directionalLight.intensity", Runtime::directionalIntensity);
+	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
 }
 
 Shader* LitMaterial::getShader()
@@ -135,7 +135,8 @@ void LitMaterial::syncLightUniforms()
 	shader->setVec3("directionalLights[0].direction", worldPos(Runtime::directionalDirection));
 	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
 
-	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 1.0f, 1.0f)));
+	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 1.5f, 0.5f)));
 	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.4f, 0.8f));
 	shader->setFloat("pointLights[0].intensity", 1.0f);
+	shader->setFloat("pointLights[0].range", 3.0f);
 }

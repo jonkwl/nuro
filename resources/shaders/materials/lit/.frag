@@ -42,6 +42,7 @@ struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
+    float range;
 };
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
@@ -267,7 +268,7 @@ vec4 shadePBR() {
         DirectionalLight directionalLight = directionalLights[i];
 
         float attenuation = 1.0;
-        vec3 L = normalize(directionalLight.direction);
+        vec3 L = normalize(-directionalLight.direction);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity);
     }
@@ -277,7 +278,9 @@ vec4 shadePBR() {
         PointLight pointLight = pointLights[i];
 
         float distance = length(pointLight.position - v_fragmentPosition);
-        float attenuation = 1.0 / (distance * distance);
+        float distanceRatio = distance / pointLight.range;
+
+        float attenuation = 1.0 / (1 + distanceRatio * distanceRatio);
         vec3 L = normalize(pointLight.position - v_fragmentPosition);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
