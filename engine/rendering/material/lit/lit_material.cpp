@@ -6,6 +6,19 @@ glm::vec3 worldPos(glm::vec3 pos) {
 	return Transformation::prepareWorldPosition(pos);
 }
 
+glm::vec3 eulerAnglesToDirection(float pitch, float yaw, float roll) {
+	// Step 1: Create a quaternion from Euler angles
+	glm::quat quaternion = glm::quat(glm::vec3(pitch, yaw, roll));
+
+	// Step 2: Define the default forward direction vector
+	glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
+
+	// Step 3: Rotate the forward vector by the quaternion
+	glm::vec3 direction = quaternion * forward;
+
+	return direction;
+}
+
 LitMaterial::LitMaterial()
 {
 	shader = ShaderBuilder::get("lit");
@@ -124,19 +137,28 @@ void LitMaterial::syncStaticUniforms()
 
 void LitMaterial::syncLightUniforms()
 {
-	shader->setInt("scene.numDirectionalLights", 1);
+	shader->setInt("scene.numDirectionalLights", 0);
 	shader->setInt("scene.numPointLights", 1);
+	shader->setInt("scene.numSpotLights", 0);
 
 	shader->setFloat("ambientLighting.intensity", 0.00001f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
-	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
 	shader->setVec3("directionalLights[0].direction", worldPos(Runtime::directionalDirection));
+	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
 	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
 
-	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 1.5f, 0.5f)));
-	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.4f, 0.8f));
+	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 0.0f, 0.0f)));
+	shader->setVec3("pointLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader->setFloat("pointLights[0].intensity", 1.0f);
-	shader->setFloat("pointLights[0].range", 3.0f);
+	shader->setFloat("pointLights[0].range", 1.0f);
+
+	/* shader->setVec3("spotLights[0].position", worldPos(glm::vec3(0.0f, 3.3f, -10.0f)));
+	shader->setVec3("spotLights[0].direction", worldPos(glm::vec3(0.0f, -0.2f, 1.0f)));
+	shader->setVec3("spotLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setFloat("spotLights[0].intensity", 1.0f);
+	shader->setFloat("spotLights[0].range", 0.5f);
+	shader->setFloat("spotLights[0].innerCutoff", glm::cos(glm::radians(12.5f)));
+	shader->setFloat("spotLights[0].outerCutoff", glm::cos(glm::radians(20.0f))); */
 }

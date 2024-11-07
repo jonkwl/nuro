@@ -15,7 +15,7 @@ LitMaterial* sphereMaterial = nullptr;
 
 void awake() {
 	// Set default skybox
-	Runtime::setSkybox(Runtime::defaultSkybox);
+	// Runtime::setSkybox(Runtime::defaultSkybox);
 
 	// Create camera
 	camera = new Camera();
@@ -59,7 +59,7 @@ void awake() {
 	Entity* floor = new Entity();
 	floor->model = floorModel;
 	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
-	floor->transform.scale = glm::vec3(25.0f, 0.1f, 25.0f);
+	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
 	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);

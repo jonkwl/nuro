@@ -2,6 +2,7 @@
 
 #define MAX_DIRECTIONAL_LIGHTS 1
 #define MAX_POINT_LIGHTS 5
+#define MAX_SPOT_LIGHTS 2
 
 out vec4 FragColor;
 
@@ -21,6 +22,7 @@ struct Scene {
 
     int numDirectionalLights;
     int numPointLights;
+    int numSpotLights;
 };
 uniform Scene scene;
 
@@ -32,8 +34,8 @@ uniform AmbientLighting ambientLighting;
 
 struct DirectionalLight {
     float intensity;
-    vec3 color;
     vec3 direction;
+    vec3 color;
     vec3 position; // boilerplate for directional shadows
 };
 uniform DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
@@ -45,6 +47,17 @@ struct PointLight {
     float range;
 };
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
+
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    vec3 color;
+    float intensity;
+    float range;
+    float innerCutoff;
+    float outerCutoff;
+};
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 struct Material {
     vec4 baseColor;
@@ -236,6 +249,18 @@ vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metalli
         return contribution;
 }
 
+float getScaledAttenuation(float distance, float linear, float quadratic)
+{
+    float attenuation = 1.0 / (1.0 + linear * distance + quadratic * (distance * distance));
+    return attenuation;
+}
+
+float getRangeAttenuation(float distance, float range)
+{
+    float attenuation = 1.0 / (1.0 + (distance / range) * (distance / range));
+    return attenuation;
+}
+
 vec4 shadePBR() {
     // get albedo
     vec3 albedo = getAlbedo();
@@ -278,12 +303,25 @@ vec4 shadePBR() {
         PointLight pointLight = pointLights[i];
 
         float distance = length(pointLight.position - v_fragmentPosition);
-        float distanceRatio = distance / pointLight.range;
-
-        float attenuation = 1.0 / (1 + distanceRatio * distanceRatio);
+        float attenuation = getRangeAttenuation(distance, pointLight.range);
         vec3 L = normalize(pointLight.position - v_fragmentPosition);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
+    }
+
+    // spot lights
+    for(int i = 0; i < scene.numSpotLights; i++){
+        SpotLight spotLight = spotLights[i];
+
+        float distance = length(spotLight.position - v_fragmentPosition);
+        float attenuation = getRangeAttenuation(distance, spotLight.range);
+        vec3 L = normalize(spotLight.position - v_fragmentPosition);
+
+        float theta = dot(L, normalize(-spotLight.direction));
+        float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
+        float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);  
+
+        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling);
     }
   
     // get ambient
