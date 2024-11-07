@@ -30,6 +30,8 @@ public:
 	std::vector<Mesh*> meshes;
 
 	std::vector<IMaterial*> materials;
+
+	bool castsShadow = true;
 private:
 	std::string directory;
 

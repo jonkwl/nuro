@@ -74,6 +74,9 @@ void EntityProcessor::shadowPass()
     // Get model
     Model* model = entity->model;
 
+    // Skip shadow pass if model doesnt cast shadows
+    if (!model->castsShadow) return;
+
     // Shadow pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {
         // Get current mesh
