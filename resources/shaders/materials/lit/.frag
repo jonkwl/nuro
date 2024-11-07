@@ -1,5 +1,8 @@
 #version 330 core
 
+#define MAX_DIRECTIONAL_LIGHTS 1
+#define MAX_POINT_LIGHTS 5
+
 out vec4 FragColor;
 
 in vec3 v_normals;
@@ -15,6 +18,9 @@ vec2 uv;
 struct Scene {
     sampler2D shadowMap;
     vec3 cameraPosition;
+
+    int numDirectionalLights;
+    int numPointLights;
 };
 uniform Scene scene;
 
@@ -30,14 +36,14 @@ struct DirectionalLight {
     vec3 direction;
     vec3 position; // boilerplate for directional shadows
 };
-uniform DirectionalLight directionalLight;
+uniform DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
 
 struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
 };
-uniform PointLight pointLight;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
 struct Material {
     vec4 baseColor;
@@ -100,7 +106,7 @@ float getShadow()
     float currentDepth = projectionCoordinates.z;
 
     vec3 normalDirection = normalize(v_normals);
-    vec3 lightDirection = normalize(directionalLight.position - v_fragmentPosition);
+    vec3 lightDirection = normalize(directionalLights[0].position - v_fragmentPosition);
 
     float maxBias = 0.01;
     float minBias = 0.005;
@@ -250,31 +256,32 @@ vec4 shadePBR() {
 
     // get shadow
     float shadow = getShadow();
+    bool fullyShadowed = shadow == 1.0 ? true : false;
 
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
-    int iterations = shadow == 1.0 ? 0 : 1; // iterate over every light source, or none if object is in full shadow
-    /* for(int i = 0; i < iterations; ++i)
+
+    // directional lights
+    for(int i = 0; i < scene.numDirectionalLights; i++)
     {
-        vec3 L = normalize(pointLight.position - v_fragmentPosition); // light direction
+        DirectionalLight directionalLight = directionalLights[i];
 
-        // per-light radiance
-        // float distance = length(pointLight.position - v_fragmentPosition);
-        // float attenuation = 1.0 / (distance * distance);
-        float attenuation = 1.0; // full attenuation for directional lights
+        float attenuation = 1.0;
+        vec3 L = normalize(directionalLight.direction);
 
-        // add to outgoing radiance 
-        vec3 contribution = evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);       
-        Lo += contribution;
-    } */
+        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity);
+    }
 
-    // Directional light
-    Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, 1.0, normalize(directionalLight.direction), directionalLight.color, directionalLight.intensity);
+    // point lights
+    for(int i = 0; i < scene.numPointLights; i++){
+        PointLight pointLight = pointLights[i];
 
-    vec3 L = normalize(pointLight.position - v_fragmentPosition);
-    float distance = length(pointLight.position - v_fragmentPosition);
-    float attenuation = 1.0 / (distance * distance);
-    Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
+        float distance = length(pointLight.position - v_fragmentPosition);
+        float attenuation = 1.0 / (distance * distance);
+        vec3 L = normalize(pointLight.position - v_fragmentPosition);
+
+        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
+    }
   
     // get ambient
     vec3 ambient = getAmbient(albedo, ambientOcclusion);

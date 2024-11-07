@@ -20,7 +20,7 @@ float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
-bool Runtime::vsync = true;
+bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
 
 bool Runtime::inspectorMode = true;

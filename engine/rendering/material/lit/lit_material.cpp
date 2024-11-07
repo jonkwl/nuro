@@ -2,6 +2,10 @@
 
 #include "../engine/runtime/runtime.h"
 
+glm::vec3 worldPos(glm::vec3 pos) {
+	return Transformation::prepareWorldPosition(pos);
+}
+
 LitMaterial::LitMaterial()
 {
 	shader = ShaderBuilder::get("lit");
@@ -116,19 +120,22 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
 	shader->setInt("material.metallicMap", METALLIC_MAP_UNIT);
 	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
-}
+} 
 
 void LitMaterial::syncLightUniforms()
 {
+	shader->setInt("scene.numDirectionalLights", 1);
+	shader->setInt("scene.numPointLights", 1);
+
 	shader->setFloat("ambientLighting.intensity", 0.00001f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
-	shader->setFloat("directionalLight.intensity", Runtime::directionalIntensity);
-	shader->setVec3("directionalLight.color", Runtime::directionalColor);
-	shader->setVec3("directionalLight.direction", Transformation::prepareWorldPosition(Runtime::directionalDirection));
-	shader->setVec3("directionalLight.position", Transformation::prepareWorldPosition(Runtime::directionalPosition));
+	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
+	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
+	shader->setVec3("directionalLights[0].direction", worldPos(Runtime::directionalDirection));
+	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
 
-	shader->setVec3("pointLight.position", glm::vec3(1.0f));
-	shader->setVec3("pointLight.color", glm::vec3(0.0f, 0.4f, 0.8f));
-	shader->setFloat("pointLight.intensity", 1.0f);
+	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 1.0f, 1.0f)));
+	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.4f, 0.8f));
+	shader->setFloat("pointLights[0].intensity", 1.0f);
 }
