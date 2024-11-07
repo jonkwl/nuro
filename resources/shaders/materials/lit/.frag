@@ -257,7 +257,7 @@ float getScaledAttenuation(float distance, float linear, float quadratic)
 
 float getRangeAttenuation(float distance, float range)
 {
-    float attenuation = 1.0 / (1.0 + (distance / range) * (distance / range));
+    float attenuation = 1.0 / (1.0 + exp((distance / range)));
     return attenuation;
 }
 

@@ -151,8 +151,8 @@ void LitMaterial::syncLightUniforms()
 
 	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 0.0f, 0.0f)));
 	shader->setVec3("pointLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("pointLights[0].intensity", 1.0f);
-	shader->setFloat("pointLights[0].range", 1.0f);
+	shader->setFloat("pointLights[0].intensity", 0.1f);
+	shader->setFloat("pointLights[0].range", 10.0f);
 
 	/* shader->setVec3("spotLights[0].position", worldPos(glm::vec3(0.0f, 3.3f, -10.0f)));
 	shader->setVec3("spotLights[0].direction", worldPos(glm::vec3(0.0f, -0.2f, 1.0f)));
