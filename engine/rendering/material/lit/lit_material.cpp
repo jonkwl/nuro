@@ -48,7 +48,7 @@ void LitMaterial::bind()
 
 	// Set scene data
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-	shader->setVec3("scene.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
+	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);
@@ -91,6 +91,8 @@ void LitMaterial::bind()
 	shader->setFloat("pointLights[0].intensity", Runtime::intensity);
 	shader->setFloat("pointLights[0].range", Runtime::range);
 	shader->setFloat("pointLights[0].falloff", Runtime::falloff);
+
+	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
 }
 
 Shader* LitMaterial::getShader()
@@ -130,7 +132,8 @@ void LitMaterial::setAmbientOcclusionMap(Texture* ambientOcclusionMap)
 
 void LitMaterial::syncStaticUniforms()
 {
-	shader->setInt("scene.shadowMap", SHADOW_MAP_UNIT);
+	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
+	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
 	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);
 	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
@@ -140,9 +143,9 @@ void LitMaterial::syncStaticUniforms()
 
 void LitMaterial::syncLightUniforms()
 {
-	shader->setInt("scene.numDirectionalLights", 1);
-	shader->setInt("scene.numPointLights", 1);
-	shader->setInt("scene.numSpotLights", 0);
+	shader->setInt("configuration.numDirectionalLights", 1);
+	shader->setInt("configuration.numPointLights", 1);
+	shader->setInt("configuration.numSpotLights", 0);
 
 	shader->setFloat("ambientLighting.intensity", 0.005f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));

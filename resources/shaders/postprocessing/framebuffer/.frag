@@ -67,7 +67,7 @@ void main()
     color = ((color - 0.5) * contrast) + 0.5;
     color = clamp(color, 0.0, 1.0);
 
-    // Exposure / Tone Mapping
+    // Exposure and Tone Mapping
     color = ACES(color * exposure);
 
     // Gamma

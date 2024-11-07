@@ -11,7 +11,7 @@
 struct PostProcessingSetup {
 	unsigned int msaaSamples = 2;
 
-	float exposure = 0.85f;
+	float exposure = 1.0f;
 	float contrast = 1.0f;
 	float gamma = 2.2f;
 

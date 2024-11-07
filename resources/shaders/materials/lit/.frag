@@ -11,12 +11,13 @@ in vec3 v_fragmentPosition;
 in vec4 v_fragmentLightSpacePosition;
 in vec2 v_textureCoords;
 
-const float gamma = 2.2;
 const float PI = 3.14159265359;
 
 vec2 uv;
 
-struct Scene {
+struct Configuration {
+    float gamma;
+
     sampler2D shadowMap;
     vec3 cameraPosition;
 
@@ -24,7 +25,7 @@ struct Scene {
     int numPointLights;
     int numSpotLights;
 };
-uniform Scene scene;
+uniform Configuration configuration;
 
 struct AmbientLighting {
     float intensity;
@@ -91,17 +92,10 @@ float sqr(float x)
     return x * x;
 }
 
-vec3 gammaCorrect(vec3 color)
-{
-    color = color / (color + vec3(1.0));
-    color = pow(color, vec3(1.0 / gamma));
-    return color;
-}
-
 float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius) 
 {
     float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(scene.shadowMap, 0); // Pre-calculate texel size once
+    vec2 texelSize = 1.0 / textureSize(configuration.shadowMap, 0); // Pre-calculate texel size once
     
     int sampleCount = 0;
     float weightSum = 0.0;
@@ -117,7 +111,7 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
             vec2 offset = vec2(float(x), float(y)) * texelSize * smoothing;
 
             // Fetch the depth from the shadow map
-            float pcfDepth = texture(scene.shadowMap, projectionCoords.xy + offset).r;
+            float pcfDepth = texture(configuration.shadowMap, projectionCoords.xy + offset).r;
 
             // Calculate the distance from the center of the kernel and apply Gaussian weight
             float distSquared = float(x * x + y * y);
@@ -151,7 +145,7 @@ float getShadow()
 
     if(projectionCoordinates.z > 1.0) return 0.0f;
 
-    float closestDepth = texture(scene.shadowMap, projectionCoordinates.xy).r;
+    float closestDepth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
     float currentDepth = projectionCoordinates.z;
 
     vec3 normalDirection = normalize(v_normals);
@@ -206,7 +200,7 @@ vec3 getAlbedo()
 {
     vec3 albedo = vec3(1.0);
     if (material.enableAlbedoMap) {
-        albedo = pow(texture(material.albedoMap, uv).rgb, vec3(gamma));
+        albedo = pow(texture(material.albedoMap, uv).rgb, vec3(configuration.gamma));
     }
     albedo *= vec3(material.baseColor);
     return albedo;
@@ -328,7 +322,7 @@ vec4 shadePBR() {
     float ambientOcclusion = getAmbientOcclusion();
 
     vec3 N = normalize(v_normals); // normal direction
-    vec3 V = normalize(scene.cameraPosition - v_fragmentPosition); // view direction
+    vec3 V = normalize(configuration.cameraPosition - v_fragmentPosition); // view direction
 
     float dialectricReflecitivity = 0.04;
     vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
@@ -341,7 +335,7 @@ vec4 shadePBR() {
     vec3 Lo = vec3(0.0);
 
     // directional lights
-    for(int i = 0; i < scene.numDirectionalLights; i++)
+    for(int i = 0; i < configuration.numDirectionalLights; i++)
     {
         DirectionalLight directionalLight = directionalLights[i];
 
@@ -352,7 +346,7 @@ vec4 shadePBR() {
     }
 
     // point lights
-    for(int i = 0; i < scene.numPointLights; i++){
+    for(int i = 0; i < configuration.numPointLights; i++){
         PointLight pointLight = pointLights[i];
 
         float distance = length(pointLight.position - v_fragmentPosition);
@@ -363,7 +357,7 @@ vec4 shadePBR() {
     }
 
     // spot lights
-    for(int i = 0; i < scene.numSpotLights; i++){
+    for(int i = 0; i < configuration.numSpotLights; i++){
         SpotLight spotLight = spotLights[i];
 
         float distance = length(spotLight.position - v_fragmentPosition);
@@ -382,7 +376,7 @@ vec4 shadePBR() {
 	
     // gamma correct if using albedo map
     if(material.enableAlbedoMap){
-        color = gammaCorrect(color);
+        color = pow(color, vec3(1.0 / configuration.gamma));
     }
 
     // get ambient

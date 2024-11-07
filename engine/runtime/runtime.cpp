@@ -336,7 +336,7 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
 
-				EngineDialog::float_dialog("intensity", intensity, 0.0f, 1.0f);
+				EngineDialog::float_dialog("intensity", intensity, 0.0f, 12.0f);
 				EngineDialog::float_dialog("range", range, 0.0f, 15.0f);
 				EngineDialog::float_dialog("falloff", falloff, 0.0f, 30.0f);
 			}

@@ -54,7 +54,7 @@ void awake() {
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 0.0f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
-	floorMaterial->baseColor = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
+	floorMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	floorMaterial->roughness = 0.0f;
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	floorModel->castsShadow = false;
@@ -62,24 +62,30 @@ void awake() {
 	floor->model = floorModel;
 	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
+
+	LitMaterial* wallMaterial = new LitMaterial();
+	wallMaterial->baseColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	wallMaterial->roughness = 0.0f;
+	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
+	wallModel->castsShadow = false;
 	Entity* wall1 = new Entity();
-	wall1->model = floorModel;
+	wall1->model = wallModel;
 	wall1->transform.position = glm::vec3(-10.0f, -1.0f, 0.0f);
 	wall1->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
 	Entity* wall2 = new Entity();
-	wall2->model = floorModel;
+	wall2->model = wallModel;
 	wall2->transform.position = glm::vec3(10.0f, -1.0f, 0.0f);
 	wall2->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
 	Entity* wall3 = new Entity();
-	wall3->model = floorModel;
+	wall3->model = wallModel;
 	wall3->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall3->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 	/*Entity* wall4 = new Entity();
-	wall4->model = floorModel;
+	wall4->model = wallModel;
 	wall4->transform.position = glm::vec3(0.0f, -1.0f, -10.0f);
 	wall4->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);*/
 	Entity* wall5 = new Entity();
-	wall5->model = floorModel;
+	wall5->model = wallModel;
 	wall5->transform.position = glm::vec3(0.0f, 3.9, 0.0f);
 	wall5->transform.scale = glm::vec3(10.0f, 0.1f, 10.0f);
 
