@@ -91,6 +91,13 @@ float sqr(float x)
     return x * x;
 }
 
+vec3 gammaCorrect(vec3 color)
+{
+    color = color / (color + vec3(1.0));
+    color = pow(color, vec3(1.0 / gamma));
+    return color;
+}
+
 float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius) 
 {
     float shadow = 0.0;
@@ -198,7 +205,7 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 vec3 getAlbedo() 
 {
     vec3 albedo = vec3(1.0);
-    if(material.enableAlbedoMap){
+    if (material.enableAlbedoMap) {
         albedo = pow(texture(material.albedoMap, uv).rgb, vec3(gamma));
     }
     albedo *= vec3(material.baseColor);
@@ -369,16 +376,18 @@ vec4 shadePBR() {
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling);
     }
-  
-    // get ambient
-    vec3 ambient = getAmbient(albedo, ambientOcclusion);
 
     // assemble shaded color
-    vec3 color = ambient + Lo * (1.0 - shadow);
+    vec3 color = Lo * (1.0 - shadow);
 	
-    // gamma correction
-    color = color / (color + vec3(1.0));
-    color = pow(color, vec3(1.0 / gamma));
+    // gamma correct if using albedo map
+    if(material.enableAlbedoMap){
+        color = gammaCorrect(color);
+    }
+
+    // get ambient
+    vec3 ambient = getAmbient(albedo, ambientOcclusion);
+    color += ambient;
 
     // return shaded color
     return vec4(color, 1.0);

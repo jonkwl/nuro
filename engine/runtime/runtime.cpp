@@ -31,7 +31,7 @@ Skybox* Runtime::activeSkybox = nullptr;
 
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
-float Runtime::directionalIntensity = 0.005f;
+float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
 glm::vec3 Runtime::directionalDirection = glm::vec3(0.0f, -0.5f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(3.0f, 5.0f, -5.0f);
@@ -336,7 +336,7 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
 
-				EngineDialog::float_dialog("intensity", intensity, 0.0f, 0.1f);
+				EngineDialog::float_dialog("intensity", intensity, 0.0f, 1.0f);
 				EngineDialog::float_dialog("range", range, 0.0f, 15.0f);
 				EngineDialog::float_dialog("falloff", falloff, 0.0f, 30.0f);
 			}

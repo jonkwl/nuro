@@ -140,14 +140,11 @@ void LitMaterial::syncStaticUniforms()
 
 void LitMaterial::syncLightUniforms()
 {
-	// tmp
-	bool nightMode = false;
-
-	shader->setInt("scene.numDirectionalLights", nightMode ? 0 : 1);
+	shader->setInt("scene.numDirectionalLights", 1);
 	shader->setInt("scene.numPointLights", 1);
 	shader->setInt("scene.numSpotLights", 0);
 
-	shader->setFloat("ambientLighting.intensity", nightMode ? 0 : 0.00001f);
+	shader->setFloat("ambientLighting.intensity", 0.005f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
@@ -156,7 +153,7 @@ void LitMaterial::syncLightUniforms()
 	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
 
 	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 2.0f, 0.0f)));
-	shader->setVec3("pointLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.6f, 1.0f));
 	shader->setFloat("pointLights[0].intensity", 0.1f);
 	shader->setFloat("pointLights[0].range", 10.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);

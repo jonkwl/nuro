@@ -24,6 +24,7 @@ void awake() {
 	// Create all entities
 	sphereMaterial = new LitMaterial();
 	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	sphereMaterial->roughness = 0.2f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
