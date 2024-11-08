@@ -67,11 +67,11 @@ void awake() {
 	wallMaterial->baseColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	wallMaterial->roughness = 0.0f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
-	wallModel->castsShadow = false;
-	Entity* wall1 = new Entity();
+	wallModel->castsShadow = true;
+	/*Entity* wall1 = new Entity();
 	wall1->model = wallModel;
 	wall1->transform.position = glm::vec3(-10.0f, -1.0f, 0.0f);
-	wall1->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
+	wall1->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);*/
 	Entity* wall2 = new Entity();
 	wall2->model = wallModel;
 	wall2->transform.position = glm::vec3(10.0f, -1.0f, 0.0f);
@@ -84,10 +84,10 @@ void awake() {
 	wall4->model = wallModel;
 	wall4->transform.position = glm::vec3(0.0f, -1.0f, -10.0f);
 	wall4->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);*/
-	Entity* wall5 = new Entity();
+	/*Entity* wall5 = new Entity();
 	wall5->model = wallModel;
 	wall5->transform.position = glm::vec3(0.0f, 3.9, 0.0f);
-	wall5->transform.scale = glm::vec3(10.0f, 0.1f, 10.0f);
+	wall5->transform.scale = glm::vec3(10.0f, 0.1f, 10.0f);*/
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
 	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);

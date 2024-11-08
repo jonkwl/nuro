@@ -344,9 +344,8 @@ vec4 shadePBR() {
 
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
-
-        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentPosition);
-        float shadow = getDirectionalShadow(shadowDirection);
+        
+        float shadow = getDirectionalShadow(L);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
     }

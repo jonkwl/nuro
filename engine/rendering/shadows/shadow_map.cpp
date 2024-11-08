@@ -31,7 +31,7 @@ ShadowMap::ShadowMap(unsigned int size, Shader* shader)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::render(glm::vec3 lightPosition)
+void ShadowMap::render(glm::vec3 lightPosition, glm::vec3 lightDirection)
 {
 	// Set viewport and bind shadow map framebuffer
 	glViewport(0, 0, size, size);
@@ -40,7 +40,7 @@ void ShadowMap::render(glm::vec3 lightPosition)
 
 	// Get shadow map transformation matrices
 	glm::mat4 lightProjection = Transformation::lightProjectionMatrix(Runtime::getCameraRendering());
-	glm::mat4 lightView = Transformation::lightViewMatrix(lightPosition);
+	glm::mat4 lightView = Transformation::lightViewMatrix(lightPosition, lightDirection);
 	glm::mat4 lightSpace = lightProjection * lightView;
 	EntityProcessor::currentLightSpace = lightSpace;
 

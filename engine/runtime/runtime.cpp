@@ -34,8 +34,8 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 
 float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
-glm::vec3 Runtime::directionalDirection = glm::vec3(0.0f, -0.5f, 1.0f);
-glm::vec3 Runtime::directionalPosition = glm::vec3(3.0f, 5.0f, -5.0f);
+glm::vec3 Runtime::directionalDirection = glm::vec3(-0.3f, -0.5f, 1.0f);
+glm::vec3 Runtime::directionalPosition = glm::vec3(0.0f, 5.0f, -5.0f);
 
 float Runtime::intensity = 0.5f;
 float Runtime::range = 15.0f;
@@ -217,9 +217,10 @@ int Runtime::START_LOOP() {
 		unsigned int width = Window::width, height = Window::height;
 
 		//
-		// UPDATE PHASE 1: UPDATE GLOBAL TIMES
+		// UPDATE PHASE 1: PREPARE COMING RENDER PASS
 		//
 
+		// Update times
 		time = glfwGetTime();
 		deltaTime = time - lastTime;
 		lastTime = time;
@@ -231,6 +232,15 @@ int Runtime::START_LOOP() {
 			averageFps = static_cast<float>(averageFpsFrameCount) / averageFpsElapsedTime;
 			averageFpsElapsedTime = 0.0f;
 			averageFpsFrameCount = 0;
+		}
+
+		// Select camera to be rendered (depending on whether inspector mode is activated)
+		if (!inspectorMode) {
+			renderCamera = activeCamera;
+		}
+		else {
+			renderCamera = inspectorCamera;
+			InspectorMode::refreshInspector();
 		}
 
 		//
@@ -253,7 +263,8 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
 		//
 
-		mainShadowMap->render(directionalPosition);
+		// directionalPosition = renderCamera->transform.position;
+		mainShadowMap->render(directionalPosition, directionalDirection);
 
 		// Save depth map
 		if (!depth_map_saved) {
@@ -273,15 +284,6 @@ int Runtime::START_LOOP() {
 
 		// Render wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		// Select camera to be rendered (depending on whether inspector mode is activated)
-		if (!inspectorMode) {
-			renderCamera = activeCamera;
-		}
-		else {
-			renderCamera = inspectorCamera;
-			InspectorMode::refreshInspector();
-		}
 
 		// Get view and projection matrices
 		glm::mat4 view = Transformation::viewMatrix(renderCamera);
@@ -315,6 +317,8 @@ int Runtime::START_LOOP() {
 		// Inspector mode ui
 		if (inspectorMode) {
 			if (showEngineUI) {
+				EngineDialog::vec3_dialog("Directional Light: Direction", directionalDirection);
+
 				EngineDialog::bool_dialog("Wireframe", wireframe);
 
 				InputPair x = {"Directional Intensity", directionalIntensity, 0.0f, 5.0f};

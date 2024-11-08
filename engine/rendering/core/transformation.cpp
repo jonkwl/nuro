@@ -64,12 +64,13 @@ glm::mat4 Transformation::projectionMatrix(Camera* camera, int width, int height
 	return glm::perspective(glm::radians(camera->fov), (float)width / (float)height, camera->nearClipping, camera->farClipping);
 }
 
-glm::mat4 Transformation::lightViewMatrix(glm::vec3 lightPosition)
+glm::mat4 Transformation::lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection)
 {
 	glm::vec3 position = prepareWorldPosition(lightPosition);
+	glm::vec3 target = position + glm::normalize(prepareWorldPosition(lightDirection));
 	glm::mat4 view = glm::lookAt(
 		position,
-		glm::vec3(0.0f, 0.0f, 0.0f),
+		target,
 		glm::vec3(0.0f, 1.0f, 0.0f)
 	);
 	return view;
