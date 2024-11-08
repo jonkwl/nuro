@@ -118,6 +118,8 @@ void EngineUI::render() {
 	/* CREATE MAIN VIEWPORT DOCKSPACE */
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
+	ImGui::PushFont(fonts.uiHeadline);
+
 	ImGui::SetNextWindowPos(viewport->Pos);
 	ImGui::SetNextWindowSize(viewport->Size);
 	ImGui::SetNextWindowViewport(viewport->ID);
@@ -125,12 +127,13 @@ void EngineUI::render() {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin("Fullscreen Dockspace", nullptr, EngineUI::windowFlags.viewport);
+	ImGui::Begin("Engine", nullptr, windowFlags.viewport);
 
-	ImGuiID dockspace_id = ImGui::GetID("MyFullscreenDockspace");
+	ImGuiID dockspace_id = ImGui::GetID("ViewportDockspace");
 	ImGui::DockSpace(dockspace_id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruCentralNode);
 
 	ImGui::End();
+	ImGui::PopFont();
 	ImGui::PopStyleVar(3);
 
 	/* PREPARE ALL WINDOWS */

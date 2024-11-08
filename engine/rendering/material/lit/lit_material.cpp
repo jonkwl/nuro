@@ -155,7 +155,7 @@ void LitMaterial::syncLightUniforms()
 	shader->setInt("configuration.numPointLights", 1);
 	shader->setInt("configuration.numSpotLights", 1);
 
-	shader->setFloat("ambientLighting.intensity", 0.005f);
+	shader->setFloat("ambientLighting.intensity", 0.0025f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);

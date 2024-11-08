@@ -315,9 +315,6 @@ int Runtime::START_LOOP() {
 		// Inspector mode ui
 		if (inspectorMode) {
 			if (showEngineUI) {
-				EngineDialog::vec3_dialog("Camera Position", renderCamera->transform.position);
-				EngineDialog::vec3_dialog("Camera Rotation", renderCamera->transform.rotation, -360.0f, 360.0f);
-				EngineDialog::float_dialog("FOV", renderCamera->fov, 30, 90);
 				EngineDialog::bool_dialog("Wireframe", wireframe);
 
 				InputPair x = {"Directional Intensity", directionalIntensity, 0.0f, 5.0f};
