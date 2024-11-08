@@ -2,7 +2,7 @@
 
 void SceneView::prepare()
 {
-	ImGui::Begin("Scene View", nullptr, EngineUI::windowFlags.standard);
+	ImGui::Begin("  Scene View  ", nullptr, EngineUI::windowFlags.standard);
 
 	UIComponents::headline("Scene View", ICON_FA_MAP);
 

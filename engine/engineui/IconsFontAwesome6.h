@@ -1411,8 +1411,6 @@
 // CUSTOM DEFINITIONS
 #define ICON_FA_FRAME "\xee\x92\x95"  // U+e495
 #define ICON_FA_EMPTY_SET "\xEF\x99\x96" // U+f656
-#define ICON_FA_CUBE "\xEF\x86\xB2" // U+f1b2
 #define ICON_FA_ECLIPSE "\xEF\x9D\x89" // U+f749
 #define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
-#define ICON_FA_VECTOR_SQUARE "\xEF\x97\x8B" // U+f5cb
 #define ICON_FA_MONITOR_WAVEFORM "\xEF\x98\x91" // U+f611

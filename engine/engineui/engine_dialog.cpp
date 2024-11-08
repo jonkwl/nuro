@@ -31,7 +31,7 @@ float remap(float old_min, float old_max, float new_min, float new_max, float va
 }
 
 void EngineDialog::vec3_dialog(std::string name, glm::vec3& value, float min, float max) {
-    ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
+    ImGui::Begin(name.c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     UIComponents::headline(std::string("Vector3: " + name));
 
@@ -43,7 +43,7 @@ void EngineDialog::vec3_dialog(std::string name, glm::vec3& value, float min, fl
 }
 
 void EngineDialog::float_dialog(std::string name, float& value, float min, float max) {
-    ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
+    ImGui::Begin(name.c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     UIComponents::headline(std::string("Float: " + name));
 
@@ -53,7 +53,7 @@ void EngineDialog::float_dialog(std::string name, float& value, float min, float
 }
 
 void EngineDialog::bool_dialog(std::string name, bool& value) {
-    ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
+    ImGui::Begin(name.c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     UIComponents::headline(std::string("Bool: " + name));
 
@@ -63,7 +63,7 @@ void EngineDialog::bool_dialog(std::string name, bool& value) {
 }
 
 void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
-    ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
+    ImGui::Begin(name.c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     UIComponents::headline(std::string("Color: " + name));
 
@@ -74,7 +74,7 @@ void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
 
 void EngineDialog::input_dialog(std::string name, std::vector<InputPair> inputs)
 {
-    ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
+    ImGui::Begin(name.c_str(), nullptr, EngineUI::windowFlags.fixed);
 
     UIComponents::headline(std::string("Float: " + name));
 

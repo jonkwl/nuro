@@ -16,6 +16,7 @@ void EngineUI::setup() {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	// Load default font
 	fonts.uiRegular = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", sizing.regularFontSize);
@@ -54,6 +55,8 @@ void EngineUI::setup() {
 	style.GrabMinSize = 5.0f;
 	style.GrabRounding = 0.0f;
 
+	style.TabRounding = 1.0f;
+
 	style.ItemSpacing = ImVec2(4.0f, 8.0f);
 
 	ImVec4* imguiColors = style.Colors;
@@ -72,6 +75,7 @@ void EngineUI::setup() {
 	imguiColors[ImGuiCol_FrameBg] = colors.element;
 	imguiColors[ImGuiCol_FrameBgHovered] = colors.elementHovered;
 	imguiColors[ImGuiCol_FrameBgActive] = colors.elementActive;
+
 	imguiColors[ImGuiCol_SliderGrab] = colors.elementComponent;
 	imguiColors[ImGuiCol_SliderGrabActive] = colors.elementComponent;
 	imguiColors[ImGuiCol_CheckMark] = colors.elementComponent;
@@ -85,8 +89,19 @@ void EngineUI::setup() {
 
 	imguiColors[ImGuiCol_Border] = colors.borderColor;
 
+	imguiColors[ImGuiCol_Tab] = colors.elementActive;
+	imguiColors[ImGuiCol_TabHovered] = colors.elementActive;
+	imguiColors[ImGuiCol_TabActive] = colors.elementActive;
+
+	imguiColors[ImGuiCol_TabDimmed] = colors.elementActive;
+	imguiColors[ImGuiCol_TabDimmedSelected] = colors.elementActive;
+	imguiColors[ImGuiCol_TabDimmedSelectedOverline] = colors.elementActive;
+
+	imguiColors[ImGuiCol_DockingPreview] = colors.elementActive;
+	imguiColors[ImGuiCol_DockingEmptyBg] = colors.elementActive;
+
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
-	ImGui_ImplOpenGL3_Init("#version 130");
+	ImGui_ImplOpenGL3_Init("#version 460");
 
 	SceneView* sceneView = new SceneView();
 	windows.push_back(sceneView);

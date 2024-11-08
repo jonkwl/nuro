@@ -32,6 +32,8 @@ struct Colors {
 	ImVec4 elementComponent = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
 
 	ImVec4 borderColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	ImVec4 selection = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 };
 
 struct WindowFlags {
