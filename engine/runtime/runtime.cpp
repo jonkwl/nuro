@@ -22,6 +22,7 @@ bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;
 bool Runtime::shadows = true;
+bool Runtime::postProcessingEffects = true;
 
 bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;

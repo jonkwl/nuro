@@ -35,6 +35,7 @@ struct Colors {
 };
 
 struct WindowFlags {
+	ImGuiWindowFlags standard = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
 	ImGuiWindowFlags fixed = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar;
 };
 
@@ -51,9 +52,6 @@ public:
 	static void setup();
 	static void newFrame();
 	static void render();
-
-	static void spacing();
-	static void headline(std::string title);
 
 	static ImVec4 lighten(ImVec4 color, float amount);
 	static ImVec4 darken(ImVec4 color, float amount);

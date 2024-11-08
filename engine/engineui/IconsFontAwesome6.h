@@ -1405,5 +1405,14 @@
 #define ICON_FA_XMARKS_LINES "\xee\x96\x9a"	// U+e59a
 #define ICON_FA_Y "Y"	// U+0059
 #define ICON_FA_YEN_SIGN "\xef\x85\x97"	// U+f157
-#define ICON_FA_YIN_YANG "\xef\x9a\xad"	// U+f6ad
+#define ICON_FA_YIN_YANG "\xef\x9a\xad" // U+f6ad
 #define ICON_FA_Z "Z"	// U+005a
+
+// CUSTOM DEFINITIONS
+#define ICON_FA_FRAME "\xee\x92\x95"  // U+e495
+#define ICON_FA_EMPTY_SET "\xEF\x99\x96" // U+f656
+#define ICON_FA_CUBE "\xEF\x86\xB2" // U+f1b2
+#define ICON_FA_ECLIPSE "\xEF\x9D\x89" // U+f749
+#define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
+#define ICON_FA_VECTOR_SQUARE "\xEF\x97\x8B" // U+f5cb
+#define ICON_FA_MONITOR_WAVEFORM "\xEF\x98\x91" // U+f611

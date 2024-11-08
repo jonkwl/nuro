@@ -76,6 +76,13 @@ void EngineUI::setup() {
 	imguiColors[ImGuiCol_SliderGrabActive] = colors.elementComponent;
 	imguiColors[ImGuiCol_CheckMark] = colors.elementComponent;
 
+	imguiColors[ImGuiCol_ResizeGrip] = colors.element;
+	imguiColors[ImGuiCol_ResizeGripActive] = colors.elementActive;
+	imguiColors[ImGuiCol_ResizeGripHovered] = colors.elementHovered;
+
+	imguiColors[ImGuiCol_SeparatorHovered] = colors.element;
+	imguiColors[ImGuiCol_SeparatorActive] = colors.elementActive;
+
 	imguiColors[ImGuiCol_Border] = colors.borderColor;
 
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
@@ -100,17 +107,6 @@ void EngineUI::render() {
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void EngineUI::spacing() {
-	ImGui::Dummy(ImVec2(0.0f, 0.5f));
-}
-
-void EngineUI::headline(std::string title) {
-	ImGui::PushFont(EngineUI::fonts.uiHeadline);
-	ImGui::Text(title.c_str());
-	spacing();
-	ImGui::PopFont();
 }
 
 ImVec4 EngineUI::lighten(ImVec4 color, float amount) {

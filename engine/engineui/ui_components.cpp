@@ -2,6 +2,22 @@
 
 #include "../engineui/engine_ui.h"
 
+void UIComponents::spacing() {
+    ImGui::Dummy(ImVec2(0.0f, 0.5f));
+}
+
+void UIComponents::headline(std::string title, const char* icon) {
+
+    if (icon && icon[0] != '\0') {
+        ImGui::Text(icon);
+        ImGui::SameLine();
+    }
+    ImGui::PushFont(EngineUI::fonts.uiHeadline);
+    ImGui::Text(title.c_str());
+    spacing();
+    ImGui::PopFont();
+}
+
 void UIComponents::tooltip(const char* tooltip)
 {
     if (tooltip && tooltip[0] != '\0') {
@@ -20,8 +36,8 @@ void UIComponents::tooltip(const char* tooltip)
 
 void UIComponents::toggleButton(bool& value, const char* label, unsigned int id, const char* tooltip)
 {
-    ImVec4 inactiveButtonColor = EngineUI::colors.elementActive;
-    ImVec4 activeButtonColor = EngineUI::darken(inactiveButtonColor, 0.6f);
+    ImVec4 inactiveButtonColor = EngineUI::darken(EngineUI::colors.elementActive, 0.6f);
+    ImVec4 activeButtonColor = EngineUI::colors.elementActive;
     ImVec4 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));

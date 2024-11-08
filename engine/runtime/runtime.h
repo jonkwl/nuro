@@ -89,6 +89,7 @@ public:
 	static bool wireframe; // Wireframe option
 	static bool solidMode; // Solid mode option (simple render)
 	static bool shadows; // Enable or disable rendering for all shadows
+	static bool postProcessingEffects; // Enable or disable non-mandatory post processing effects
 
 	// Engine settings
 	static bool inspectorMode; // Activates engines inspector mode
