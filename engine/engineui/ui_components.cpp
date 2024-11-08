@@ -21,10 +21,14 @@ void UIComponents::tooltip(const char* tooltip)
 void UIComponents::toggleButton(bool& value, const char* label, unsigned int id, const char* tooltip)
 {
     ImVec4 inactiveButtonColor = EngineUI::colors.elementActive;
-    ImVec4 activeButtonColor = EngineUI::darken(inactiveButtonColor, 0.4f);
+    ImVec4 activeButtonColor = EngineUI::darken(inactiveButtonColor, 0.6f);
     ImVec4 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
+
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 1.0f, 0.1f));
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
 
     ImGui::PushStyleColor(ImGuiCol_Button, currentButtonColor);
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, currentButtonColor);
@@ -40,6 +44,6 @@ void UIComponents::toggleButton(bool& value, const char* label, unsigned int id,
     UIComponents::tooltip(tooltip);
 
     ImGui::PopID();
-    ImGui::PopStyleVar(1);
-    ImGui::PopStyleColor(3);
+    ImGui::PopStyleVar(3);
+    ImGui::PopStyleColor(4);
 }
