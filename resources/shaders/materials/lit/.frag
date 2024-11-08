@@ -138,7 +138,7 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
     return shadow;
 }
 
-float getShadow()
+float getDirectionalShadow(vec3 lightDirection)
 {
     vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
     projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
@@ -149,7 +149,6 @@ float getShadow()
     float currentDepth = projectionCoordinates.z;
 
     vec3 normalDirection = normalize(v_normals);
-    vec3 lightDirection = normalize(directionalLights[0].position - v_fragmentPosition);
 
     float maxBias = 0.01;
     float minBias = 0.005;
@@ -242,7 +241,7 @@ vec3 getAmbient(vec3 albedo, float ambientOcclusion) {
     return ambient;
 }
 
-vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metallic, vec3 albedo, float attenuation, vec3 L, vec3 color, float intensity) {
+vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metallic, vec3 albedo, float attenuation, vec3 L, vec3 color, float intensity, float shadow) {
         vec3 H = normalize(V + L); // halfway direction
 
         // cosine of angle between N and L, indicates effective light contribution from source
@@ -275,6 +274,7 @@ vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metalli
             
         // return light source contribution      
         vec3 contribution = (diffuse + specular) * radiance * NdotL;
+        contribution *= (1.0 - shadow);
         return contribution;
 }
 
@@ -327,10 +327,6 @@ vec4 shadePBR() {
     float dialectricReflecitivity = 0.04;
     vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
 
-    // get shadow
-    float shadow = getShadow();
-    bool fullyShadowed = shadow == 1.0 ? true : false;
-
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
 
@@ -342,7 +338,11 @@ vec4 shadePBR() {
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
 
-        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity);
+        // get shadow
+        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentPosition);
+        float shadow = getDirectionalShadow(shadowDirection);
+
+        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
     }
 
     // point lights
@@ -353,7 +353,7 @@ vec4 shadePBR() {
         float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
         vec3 L = normalize(pointLight.position - v_fragmentPosition);
 
-        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity);
+        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity, 0.0);
     }
 
     // spot lights
@@ -368,11 +368,11 @@ vec4 shadePBR() {
         float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
         float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);  
 
-        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling);
+        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
     }
 
     // assemble shaded color
-    vec3 color = Lo * (1.0 - shadow);
+    vec3 color = Lo;
 	
     // gamma correct if using albedo map
     if(material.enableAlbedoMap){
