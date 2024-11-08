@@ -9,6 +9,7 @@
 
 #include "../engine/window/window.h"
 #include "../engine/engineui/ui_components.h"
+#include "../engine/engineui/ui_layout.h"
 #include "../engine/engineui/engine_window.h"
 #include "../engine/engineui/windows/scene_view.h"
 

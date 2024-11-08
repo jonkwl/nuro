@@ -93,7 +93,7 @@ void EngineDialog::plot_demo() {
 void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) {
     ImGui::Begin("Diagnostics", nullptr, EngineUI::windowFlags.fixed);
 
-    UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM);
+    UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HEADLINE_LEFT);
 
     ImGui::Text("Average FPS:");
     ImGui::SameLine();

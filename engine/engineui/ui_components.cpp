@@ -2,20 +2,30 @@
 
 #include "../engineui/engine_ui.h"
 
-void UIComponents::spacing() {
-    ImGui::Dummy(ImVec2(0.0f, 0.5f));
+std::string getId(const char* name) {
+    return "##" + std::string(name);
 }
 
-void UIComponents::headline(std::string title, const char* icon) {
+void UIComponents::headline(std::string title, const char* icon, HeadlineAlignment alignment) {
 
-    if (icon && icon[0] != '\0') {
-        ImGui::Text(icon);
-        ImGui::SameLine();
-    }
-    ImGui::PushFont(EngineUI::fonts.uiHeadline);
-    ImGui::Text(title.c_str());
-    spacing();
-    ImGui::PopFont();
+    UILayout::beginRow("example", FULL_WIDTH, 20.0f, (ItemAlignment)alignment, 0.5f, 10.0f);
+
+        // Icon
+        if (icon && icon[0] != '\0') {
+            float currentY = ImGui::GetCursorPosY();
+            float padding = 2.5f;
+            ImGui::SetCursorPosY(currentY + padding);
+            ImGui::Text(icon);
+            ImGui::SetCursorPosY(currentY);
+        }
+
+        // Label
+        ImGui::PushFont(EngineUI::fonts.uiHeadline);
+        ImGui::Text(title.c_str());
+        ImGui::PopFont();
+
+    UILayout::endRow();
+
 }
 
 void UIComponents::tooltip(const char* tooltip)
@@ -34,7 +44,7 @@ void UIComponents::tooltip(const char* tooltip)
     }
 }
 
-void UIComponents::toggleButton(bool& value, const char* label, unsigned int id, const char* tooltip)
+void UIComponents::toggleButton(const char* label, bool& value, const char* tooltip)
 {
     ImVec4 inactiveButtonColor = EngineUI::darken(EngineUI::colors.elementActive, 0.6f);
     ImVec4 activeButtonColor = EngineUI::colors.elementActive;
@@ -50,7 +60,7 @@ void UIComponents::toggleButton(bool& value, const char* label, unsigned int id,
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, currentButtonColor);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, currentButtonColor);
 
-    ImGui::PushID(id);
+    ImGui::PushID(label);
 
     if (ImGui::Button(label))
     {
@@ -62,4 +72,22 @@ void UIComponents::toggleButton(bool& value, const char* label, unsigned int id,
     ImGui::PopID();
     ImGui::PopStyleVar(3);
     ImGui::PopStyleColor(4);
+}
+
+void UIComponents::input(const char* label, int& value)
+{
+    UILayout::beginRow(label, FULL_WIDTH, 30.0f, ITEMS_SPREAD, 0.5f, 4.0f, false);
+        ImGui::Text(label);
+        ImGui::Spring(1.0f);
+        ImGui::InputInt(getId(label).c_str(), &value);
+    UILayout::endRow();
+}
+
+void UIComponents::input(const char* label, float& value)
+{
+    UILayout::beginRow(label, FULL_WIDTH, 30.0f, ITEMS_SPREAD, 0.5f, 4.0f, false);
+        ImGui::Text(label);
+        ImGui::Spring(1.0f);
+        ImGui::InputFloat(getId(label).c_str(), &value);
+    UILayout::endRow();
 }

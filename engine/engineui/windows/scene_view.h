@@ -13,4 +13,3 @@ private:
 	bool solidMode;
 	bool shadows;
 };
-

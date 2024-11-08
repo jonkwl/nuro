@@ -164,6 +164,7 @@
     <ClCompile Include="engine\transform\transform.cpp" />
     <ClCompile Include="engine\engineui\windows\scene_view.cpp" />
     <ClCompile Include="engine\engineui\ui_components.cpp" />
+    <ClCompile Include="engine\engineui\ui_layout.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -210,6 +211,7 @@
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="engine\transform\transform.h" />
     <ClInclude Include="engine\engineui\ui_components.h" />
+    <ClInclude Include="engine\engineui\ui_layout.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="engine\utils\iohandler.h" />

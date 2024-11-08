@@ -147,6 +147,9 @@
     <ClCompile Include="engine\engineui\ui_components.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\engineui\ui_layout.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -282,6 +285,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\engineui\ui_components.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\ui_layout.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
