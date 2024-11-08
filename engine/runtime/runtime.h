@@ -86,6 +86,8 @@ public:
 	// Render settings
 	static bool vsync; // V-Sync option
 	static bool wireframe; // Wireframe option
+	static bool solidMode; // Solid mode option (simple render)
+	static bool shadows; // Enable or disable rendering for all shadows
 
 	// Engine settings
 	static bool inspectorMode; // Activates engines inspector mode

@@ -18,6 +18,9 @@ vec2 uv;
 struct Configuration {
     float gamma;
 
+    bool solidMode;
+    bool castShadows;
+
     sampler2D shadowMap;
     vec3 cameraPosition;
 
@@ -140,6 +143,10 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
 
 float getDirectionalShadow(vec3 lightDirection)
 {
+    if(!configuration.castShadows){
+        return 0.0f;
+    }
+
     vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
     projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
 
@@ -338,7 +345,6 @@ vec4 shadePBR() {
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
 
-        // get shadow
         vec3 shadowDirection = normalize(directionalLight.position - v_fragmentPosition);
         float shadow = getDirectionalShadow(shadowDirection);
 
@@ -387,8 +393,56 @@ vec4 shadePBR() {
     return vec4(color, 1.0);
 }
 
+vec4 shadeSolid()
+{
+    vec3 ambient = ambientLighting.intensity * ambientLighting.color;
+    vec3 diffuse = vec3(0.0);
+
+    vec3 N = normalize(v_normals);
+
+    for(int i = 0; i < configuration.numDirectionalLights; i++)
+    {
+        DirectionalLight directionalLight = directionalLights[i];
+
+        float attenuation = 1.0;
+        vec3 L = normalize(-directionalLight.direction);
+
+        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentPosition);
+        float shadow = getDirectionalShadow(shadowDirection);
+
+        diffuse += max(dot(N, L), 0.0) * directionalLight.color * directionalLight.intensity * attenuation * (1.0 - shadow);
+    }
+
+    for(int i = 0; i < configuration.numPointLights; i++)
+    {
+        PointLight pointLight = pointLights[i];
+
+        float distance = length(pointLight.position - v_fragmentPosition);
+        float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
+        vec3 L = normalize(pointLight.position - v_fragmentPosition);
+
+        float shadow = 0.0;
+
+        diffuse += max(dot(N, L), 0.0) * pointLight.color * pointLight.intensity * attenuation * (1.0 - shadow);
+    }
+
+    vec3 albedo = vec3(1.0);
+    if(material.enableAlbedoMap){
+        albedo = texture(material.albedoMap, uv).rgb;
+    }
+    albedo *= vec3(material.baseColor);
+
+    vec3 color = (ambient + diffuse) * albedo;
+
+    return vec4(color, 1.0);
+}
+
 void main()
 {
     uv = v_textureCoords * material.tiling + material.offset;
-    FragColor = shadePBR();
+    if(!configuration.solidMode){
+        FragColor = shadePBR();
+    } else {
+        FragColor = shadeSolid();
+    }
 }

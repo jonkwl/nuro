@@ -50,6 +50,11 @@ void LitMaterial::bind()
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
 	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
+	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
+
+	shader->setBool("configuration.solidMode", Runtime::solidMode);
+	shader->setBool("configuration.castShadows", Runtime::shadows);
+
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);
 
@@ -87,12 +92,11 @@ void LitMaterial::bind()
 		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_MAP_UNIT);
 	}
 
+	// tmp debug
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
 	shader->setFloat("pointLights[0].intensity", Runtime::intensity);
 	shader->setFloat("pointLights[0].range", Runtime::range);
 	shader->setFloat("pointLights[0].falloff", Runtime::falloff);
-
-	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
 }
 
 Shader* LitMaterial::getShader()
@@ -133,6 +137,10 @@ void LitMaterial::setAmbientOcclusionMap(Texture* ambientOcclusionMap)
 void LitMaterial::syncStaticUniforms()
 {
 	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
+
+	shader->setBool("configuration.solidMode", Runtime::solidMode);
+	shader->setBool("configuration.castShadows", Runtime::shadows);
+
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
 	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);

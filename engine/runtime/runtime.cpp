@@ -20,8 +20,10 @@ float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
-bool Runtime::vsync = true;
+bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
+bool Runtime::solidMode = true;
+bool Runtime::shadows = true;
 
 bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
@@ -339,6 +341,9 @@ int Runtime::START_LOOP() {
 				EngineDialog::float_dialog("intensity", intensity, 0.0f, 12.0f);
 				EngineDialog::float_dialog("range", range, 0.0f, 15.0f);
 				EngineDialog::float_dialog("falloff", falloff, 0.0f, 30.0f);
+
+				EngineDialog::bool_dialog("Solid Mode", solidMode);
+				EngineDialog::bool_dialog("Shadows", shadows);
 			}
 		}
 
