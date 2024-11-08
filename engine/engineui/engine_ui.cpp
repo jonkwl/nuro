@@ -1,5 +1,8 @@
 #include "engine_ui.h"
 
+std::vector<EngineWindow*> EngineUI::windows = std::vector<EngineWindow*>();
+
+Sizing EngineUI::sizing;
 Colors EngineUI::colors;
 WindowFlags EngineUI::windowFlags;
 Fonts EngineUI::fonts;
@@ -14,9 +17,21 @@ void EngineUI::setup() {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-	fonts.uiRegular = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", 14);
-	fonts.uiBold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", 14);
-	fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", 15);
+	// Load default font
+	fonts.uiRegular = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", sizing.regularFontSize);
+
+	// Merge icons into regularFontSize font
+	float iconFontSize = sizing.iconFontSize * 2.0f / 3.0f;
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	ImFontConfig icons_config;
+	icons_config.MergeMode = true;
+	icons_config.PixelSnapH = true;
+	icons_config.GlyphMinAdvanceX = iconFontSize;
+	fonts.uiIcons = io.Fonts->AddFontFromFileTTF("./resources/fonts/fa-solid-900.ttf", iconFontSize, &icons_config, icons_ranges);
+
+	// Load other fonts
+	fonts.uiBold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", sizing.regularFontSize);
+	fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", sizing.headlineFontSize);
 
 	ImGui::StyleColorsDark();
 
@@ -59,6 +74,9 @@ void EngineUI::setup() {
 
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
+
+	SceneView* sceneView = new SceneView();
+	windows.push_back(sceneView);
 }
 
 void EngineUI::newFrame() {
@@ -68,6 +86,33 @@ void EngineUI::newFrame() {
 }
 
 void EngineUI::render() {
+	// ImGui::ShowMetricsWindow();
+
+	for (int i = 0; i < windows.size(); i++) {
+		windows[i]->prepare();
+	}
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void EngineUI::spacing() {
+	ImGui::Dummy(ImVec2(0.0f, 0.5f));
+}
+
+void EngineUI::headline(std::string title) {
+	ImGui::PushFont(EngineUI::fonts.uiHeadline);
+	ImGui::Text(title.c_str());
+	spacing();
+	ImGui::PopFont();
+}
+
+ImVec4 EngineUI::lighten(ImVec4 color, float amount) {
+	float factor = 1.0f + amount;
+	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
+}
+
+ImVec4 EngineUI::darken(ImVec4 color, float amount) {
+	float factor = 1.0f - amount;
+	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 }

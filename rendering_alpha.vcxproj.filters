@@ -141,6 +141,9 @@
     <ClCompile Include="engine\transform\transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\engineui\windows\scene_view.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -264,6 +267,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\transform\transform.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\engine_window.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\windows\scene_view.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\IconsFontAwesome6.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

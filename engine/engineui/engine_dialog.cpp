@@ -30,21 +30,10 @@ float remap(float old_min, float old_max, float new_min, float new_max, float va
     return new_min + (value - old_min) * (new_max - new_min) / (old_max - old_min);
 }
 
-void spacing() {
-    ImGui::Dummy(ImVec2(0.0f, 0.5f));
-}
-
-void headline(std::string title) {
-    ImGui::PushFont(EngineUI::fonts.uiHeadline);
-    ImGui::Text(title.c_str());
-    spacing();
-    ImGui::PopFont();
-}
-
 void EngineDialog::vec3_dialog(std::string name, glm::vec3& value, float min, float max) {
     ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
-    headline(std::string("Vector3: " + name));
+    EngineUI::headline(std::string("Vector3: " + name));
 
     ImGui::SliderFloat("X", &value.x, min, max);
     ImGui::SliderFloat("Y", &value.y, min, max);
@@ -56,7 +45,7 @@ void EngineDialog::vec3_dialog(std::string name, glm::vec3& value, float min, fl
 void EngineDialog::float_dialog(std::string name, float& value, float min, float max) {
     ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
-    headline(std::string("Float: " + name));
+    EngineUI::headline(std::string("Float: " + name));
 
     ImGui::SliderFloat(name.c_str(), &value, min, max);
 
@@ -66,7 +55,7 @@ void EngineDialog::float_dialog(std::string name, float& value, float min, float
 void EngineDialog::bool_dialog(std::string name, bool& value) {
     ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
-    headline(std::string("Bool: " + name));
+    EngineUI::headline(std::string("Bool: " + name));
 
     ImGui::Checkbox(name.c_str(), &value);
 
@@ -76,7 +65,7 @@ void EngineDialog::bool_dialog(std::string name, bool& value) {
 void EngineDialog::color_dialog(std::string name, glm::vec4& value) {
     ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
-    headline(std::string("Color: " + name));
+    EngineUI::headline(std::string("Color: " + name));
 
     ImGui::ColorPicker4(name.c_str(), (float*)&value);
 
@@ -87,7 +76,7 @@ void EngineDialog::input_dialog(std::string name, std::vector<InputPair> inputs)
 {
     ImGui::Begin(("##" + name).c_str(), nullptr, EngineUI::windowFlags.fixed);
 
-    headline(std::string("Float: " + name));
+    EngineUI::headline(std::string("Float: " + name));
 
     for (int i = 0; i < inputs.size(); i++) {
         InputPair pair = inputs[i];
@@ -104,7 +93,7 @@ void EngineDialog::plot_demo() {
 void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) {
     ImGui::Begin("Diagnostics", nullptr, EngineUI::windowFlags.fixed);
 
-    headline("Diagnostics");
+    EngineUI::headline("Diagnostics");
 
     ImGui::Text("Average FPS:");
     ImGui::SameLine();

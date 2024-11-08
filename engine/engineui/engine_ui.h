@@ -6,8 +6,18 @@
 #include "implot.h"
 
 #include "../engine/window/window.h"
+#include "../engine/engineui/engine_window.h"
+#include "../engine/engineui/windows/scene_view.h"
 
-#include <iostream>
+#include "IconsFontAwesome6.h"
+
+#include <vector>
+
+struct Sizing {
+	float regularFontSize = 14.0f;
+	float iconFontSize = 24.0f;
+	float headlineFontSize = 15.0f;
+};
 
 struct Colors {
 	ImVec4 background = ImVec4(0.1f, 0.1f, 0.1f, 0.95f);
@@ -29,6 +39,7 @@ struct Fonts {
 	ImFont* uiRegular;
 	ImFont* uiBold;
 	ImFont* uiHeadline;
+	ImFont* uiIcons;
 };
 
 class EngineUI
@@ -38,6 +49,15 @@ public:
 	static void newFrame();
 	static void render();
 
+	static void spacing();
+	static void headline(std::string title);
+
+	static ImVec4 lighten(ImVec4 color, float amount);
+	static ImVec4 darken(ImVec4 color, float amount);
+
+	static std::vector<EngineWindow*> windows;
+
+	static Sizing sizing;
 	static Colors colors;
 	static WindowFlags windowFlags;
 	static Fonts fonts;

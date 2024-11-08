@@ -22,7 +22,7 @@ float Runtime::averageFps = 0.0f;
 
 bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
-bool Runtime::solidMode = true;
+bool Runtime::solidMode = false;
 bool Runtime::shadows = true;
 
 bool Runtime::inspectorMode = true;
