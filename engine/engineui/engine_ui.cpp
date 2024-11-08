@@ -37,6 +37,12 @@ void EngineUI::setup() {
 
 	ImGuiStyle& style = ImGui::GetStyle();
 
+	style.ButtonTextAlign = ImVec2(0.0f, 0.0f);
+	style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
+	style.SeparatorTextAlign = ImVec2(0.0f, 0.0f);
+	style.TableAngledHeadersTextAlign = ImVec2(0.0f, 0.0f);
+	style.WindowTitleAlign = ImVec2(0.0f, 0.0f);
+
 	style.WindowPadding = ImVec2(20.0f, 20.0f);
 	style.WindowRounding = 4.0f;
 	style.WindowMenuButtonPosition = ImGuiDir_None;

@@ -1,7 +1,5 @@
 #include "runtime.h"
 
-#include <stb_image_write.h>
-
 // Default runtime values
 
 std::vector<EntityProcessor*> Runtime::entityLinks;
@@ -341,9 +339,6 @@ int Runtime::START_LOOP() {
 				EngineDialog::float_dialog("intensity", intensity, 0.0f, 12.0f);
 				EngineDialog::float_dialog("range", range, 0.0f, 15.0f);
 				EngineDialog::float_dialog("falloff", falloff, 0.0f, 30.0f);
-
-				EngineDialog::bool_dialog("Solid Mode", solidMode);
-				EngineDialog::bool_dialog("Shadows", shadows);
 			}
 		}
 

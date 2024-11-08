@@ -5,6 +5,8 @@
 #include "imgui_impl_opengl3.h"
 #include "implot.h"
 
+#include "../engine/runtime/runtime.h"
+
 #include "../engine/window/window.h"
 #include "../engine/engineui/ui_components.h"
 #include "../engine/engineui/engine_window.h"
@@ -16,7 +18,7 @@
 
 struct Sizing {
 	float regularFontSize = 14.0f;
-	float iconFontSize = 24.0f;
+	float iconFontSize = 22.0f;
 	float headlineFontSize = 15.0f;
 };
 

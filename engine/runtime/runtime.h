@@ -11,6 +11,7 @@
 #include <map>
 
 #include <stb_image.h>
+#include <stb_image_write.h>
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
