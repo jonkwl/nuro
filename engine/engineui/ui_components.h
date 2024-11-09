@@ -21,4 +21,6 @@ public:
 	static void input(const char* label, float& value);
 
 	static bool extendableSettings(const char* label, bool& value, const char* icon = "");
+
+	static void space(float width, float height);
 };

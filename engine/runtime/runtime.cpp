@@ -48,7 +48,10 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
-bool ambientOcclusion = false;
+bool settingA = false;
+bool settingB = false;
+bool settingC = false;
+bool settingD = false;
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -364,14 +367,42 @@ int Runtime::START_LOOP() {
 				ImGui::End();
 
 				ImGui::Begin("  Post Processing  ", nullptr, EngineUI::windowFlags.standard);
-					UIComponents::headline("Post Processing", ICON_FA_SPARKLES);
+					UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HEADLINE_LEFT);
 
-					if (UIComponents::extendableSettings("Ambient Occlusion", ambientOcclusion, ICON_FA_PROJECTOR)) {
+					if (UIComponents::extendableSettings("Ambient Occlusion", settingA, ICON_FA_PROJECTOR)) {
 						ImGui::Text("Ambient Occlusion Option 1");
 						ImGui::Text("Ambient Occlusion Option 2");
 						ImGui::Text("Ambient Occlusion Option 3");
 						ImGui::Text("Ambient Occlusion Option 4");
 						ImGui::Text("Ambient Occlusion Option 5");
+						UIComponents::space(0.0f, 2.5f);
+					}
+
+					if (UIComponents::extendableSettings("Vignette", settingB, ICON_FA_BAG_SHOPPING)) {
+						ImGui::Text("Vignette Option 1");
+						ImGui::Text("Vignette Option 2");
+						ImGui::Text("Vignette Option 3");
+						ImGui::Text("Vignette Option 4");
+						ImGui::Text("Vignette Option 5");
+						UIComponents::space(0.0f, 2.5f);
+					}
+
+					if (UIComponents::extendableSettings("Color Correction", settingC, ICON_FA_COMMENT)) {
+						ImGui::Text("Color Correction Option 1");
+						ImGui::Text("Color Correction Option 2");
+						ImGui::Text("Color Correction Option 3");
+						ImGui::Text("Color Correction Option 4");
+						ImGui::Text("Color Correction Option 5");
+						UIComponents::space(0.0f, 2.5f);
+					}
+
+					if (UIComponents::extendableSettings("Depth Of Field", settingD, ICON_FA_PRINT)) {
+						ImGui::Text("Depth Of Field Option 1");
+						ImGui::Text("Depth Of Field Option 2");
+						ImGui::Text("Depth Of Field Option 3");
+						ImGui::Text("Depth Of Field Option 4");
+						ImGui::Text("Depth Of Field Option 5");
+						UIComponents::space(0.0f, 2.5f);
 					}
 
 				ImGui::End();

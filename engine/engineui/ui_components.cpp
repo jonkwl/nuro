@@ -96,16 +96,17 @@ void UIComponents::input(const char* label, float& value)
 
 bool UIComponents::extendableSettings(const char* label, bool& value, const char* icon)
 {
-    UILayout::beginFlex(getId(label, "flex").c_str(), ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER, 5.0f, Margin(10.0f, 0.0f, 5.0f, 0.0f));
+    UILayout::beginFlex(getId(label, "flex").c_str(), ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER, 5.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
     
         ImGui::Checkbox(getId(label, "enable").c_str(), &value);
         if (value) {
 
-            ImGui::Dummy(ImVec2(4.0f, 0.0f));
+            UIComponents::space(4.0f, 2.5f);
             bool extended = ImGui::CollapsingHeader(label);
             UILayout::endFlex();
 
             if (extended) {
+                UIComponents::space(0.0f, 2.5f);
                 UIComponents::headline((std::string(label) + " Settings:").c_str(), ICON_FA_PROJECTOR, HEADLINE_LEFT, true);
                 return true;
             }
@@ -116,15 +117,18 @@ bool UIComponents::extendableSettings(const char* label, bool& value, const char
         }
         else {
 
-            ImGui::Dummy(ImVec2(1.0f, 0.0f));
+            UIComponents::space(1.0f, 2.5f);
             tryIcon(icon);
-            ImGui::PushFont(EngineUI::fonts.uiHeadline);
             ImGui::Text(label);
-            ImGui::PopFont();
 
         }
 
     UILayout::endFlex();
     
     return false;
+}
+
+void UIComponents::space(float width, float height)
+{
+    ImGui::Dummy(ImVec2(width, height));
 }
