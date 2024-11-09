@@ -22,8 +22,10 @@ void Model::resolveModel(std::string path)
 {
     Log::printProcessStart("Model", "Starting to build model " + IOHandler::GetFilename(path) + "...");
 
+    unsigned int importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path, importSettings);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -66,17 +68,26 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         VertexData vertex;
-        vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-        
-        vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
+        // Define unconditional vertex data
+        glm::vec3 position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+        glm::vec3 normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+        glm::vec2 uv = glm::vec2(0.0f, 0.0f);
+        glm::vec3 tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+        glm::vec3 bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+
+        // Set conditional vertex data
         if (mesh->mTextureCoords[0])
         {
-            vertex.textureCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+            uv = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
         }
-        else {
-            vertex.textureCoords = glm::vec2(0.0f, 0.0f);
-        }
+
+        // Assign data to vertex
+        vertex.position = position;
+        vertex.normal = normal;
+        vertex.uv = uv;
+        vertex.tangent = tangent;
+        vertex.bitangent = bitangent;
 
         vertices.push_back(vertex);
     }

@@ -17,10 +17,6 @@
 #include "../engine/rendering/model/mesh.h"
 #include "../engine/rendering/material/imaterial.h"
 
-struct Face {
-	glm::ivec3 vertice_coords_index;
-};
-
 class Model
 {
 public:

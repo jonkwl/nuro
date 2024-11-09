@@ -33,10 +33,12 @@ void awake() {
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS);
 	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", METALLIC);
+	Texture* sphereNormal = new Texture("./user/assets/textures/mat_normal.jpg", NORMAL);
 	LitMaterial* pbrSphereMaterial = new LitMaterial();
 	pbrSphereMaterial->setAlbedoMap(sphereAlbedo);
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
 	pbrSphereMaterial->setMetallicMap(sphereMetallic);
+	pbrSphereMaterial->setNormalMap(sphereNormal);
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
 	Entity* pbrSphere = new Entity();
 	pbrSphere->model = pbrSphereModel;
@@ -44,7 +46,7 @@ void awake() {
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO);
 	LitMaterial* plank = new LitMaterial();
-	plank->tiling = glm::vec2(2.0f, 2.0f);
+	plank->tiling = glm::vec2(2.0f,  2.0f);
 	plank->setAlbedoMap(plankAlbedo);
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
@@ -76,10 +78,10 @@ void awake() {
 	wall2->model = wallModel;
 	wall2->transform.position = glm::vec3(10.0f, -1.0f, 0.0f);
 	wall2->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
-	Entity* wall3 = new Entity();
+	/*Entity* wall3 = new Entity();
 	wall3->model = wallModel;
 	wall3->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
-	wall3->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
+	wall3->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);*/
 	/*Entity* wall4 = new Entity();
 	wall4->model = wallModel;
 	wall4->transform.position = glm::vec3(0.0f, -1.0f, -10.0f);
@@ -88,6 +90,25 @@ void awake() {
 	wall5->model = wallModel;
 	wall5->transform.position = glm::vec3(0.0f, 3.9, 0.0f);
 	wall5->transform.scale = glm::vec3(10.0f, 0.1f, 10.0f);*/
+
+	Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", ALBEDO);
+	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", ROUGHNESS);
+	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", NORMAL);
+
+	LitMaterial* smearedWallMaterial = new LitMaterial();
+	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.96f, 0.86f, 1.0f);
+	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	smearedWallMaterial->setAlbedoMap(smearedWallAlbedo);
+	smearedWallMaterial->roughness = 0.48f;
+	smearedWallMaterial->setMetallicMap(smearedWallRoughness);
+	smearedWallMaterial->setNormalMap(smearedWallNormal);
+	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
+	Model* smearedWallModel = new Model("./user/assets/models/cube.obj", { smearedWallMaterial, smearedWallMaterial });
+
+	Entity* smearedWall = new Entity();
+	smearedWall->model = smearedWallModel;
+	smearedWall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
+	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
 	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);
@@ -107,5 +128,6 @@ void awake() {
 }
 
 void update() {
-	cube->transform.rotation.y += 80.0f * Runtime::deltaTime;
+	// cube->transform.rotation.y += 80.0f * Runtime::deltaTime;
+	cube->transform.rotation.y += 20.0f * Runtime::deltaTime;
 }

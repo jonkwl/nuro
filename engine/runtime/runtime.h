@@ -106,6 +106,9 @@ public:
 	static float intensity;
 	static float range;
 	static float falloff;
+
+	static bool normalMapping;
+	static float normalMappingIntensity;
 private:
 	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
 

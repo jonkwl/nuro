@@ -26,6 +26,7 @@ public:
 	void setVec2(const std::string& name, glm::vec2 value);
 	void setVec3(const std::string& name, glm::vec3 value);
 	void setVec4(const std::string& name, glm::vec4 value);
+	void setMatrix3(const std::string& name, glm::mat3 value);
 	void setMatrix4(const std::string& name, glm::mat4 value);
 private:
 	unsigned int id;

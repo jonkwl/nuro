@@ -18,9 +18,10 @@ void EntityProcessor::render()
     // No model to render available -> cancel
     if (entity->model == nullptr) return;
 
-    // Calculate mvp
+    // Calculate matrices
     glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
-    glm::mat4 mvp = currentProjection * currentView * modelMatrix;
+    glm::mat4 mvpMatrix = currentProjection * currentView * modelMatrix;
+    glm::mat3 normalMatrix = glm::transpose(glm::inverse(modelMatrix));
 
     // Get model
     Model* model = entity->model;
@@ -54,9 +55,10 @@ void EntityProcessor::render()
         material->bind();
 
         // Set shader uniforms
-        material->getShader()->setMatrix4("mvp", mvp);
-        material->getShader()->setMatrix4("model", modelMatrix);
-        material->getShader()->setMatrix4("lightSpace", currentLightSpace);
+        material->getShader()->setMatrix4("mvpMatrix", mvpMatrix);
+        material->getShader()->setMatrix4("modelMatrix", modelMatrix);
+        material->getShader()->setMatrix3("normalMatrix", modelMatrix);
+        material->getShader()->setMatrix4("lightSpaceMatrix", currentLightSpace);
 
         // Render mesh
         mesh->render();

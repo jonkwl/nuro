@@ -66,10 +66,11 @@ void LitMaterial::bind()
 		albedoMap->bind(ALBEDO_MAP_UNIT);
 	}
 
-	shader->setBool("material.enableNormalMap", enableNormalMap);
-	if (enableNormalMap) {
+	shader->setBool("material.enableNormalMap", enableNormalMap && Runtime::normalMapping);
+	if (enableNormalMap && Runtime::normalMapping) {
 		normalMap->bind(NORMAL_MAP_UNIT);
 	}
+	shader->setFloat("material.normalMapIntensity", Runtime::normalMappingIntensity);
 
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
 	if (enableRoughnessMap) {
