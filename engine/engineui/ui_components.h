@@ -2,7 +2,7 @@
 
 #include <string>
 
-enum HeadlineAlignment {
+enum HeadlineJustification {
 	HEADLINE_LEFT,
 	HEADLINE_CENTERED,
 	HEADLINE_RIGHT
@@ -11,7 +11,7 @@ enum HeadlineAlignment {
 class UIComponents
 {
 public:
-	static void headline(std::string title, const char* icon = "", HeadlineAlignment alignment = HEADLINE_LEFT);
+	static void headline(std::string title, const char* icon = "", HeadlineJustification alignment = HEADLINE_LEFT);
 	static void tooltip(const char* tooltip);
 	static void toggleButton(const char* label, bool& value, const char* tooltip = "");
 	

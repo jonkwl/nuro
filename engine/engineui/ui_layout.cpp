@@ -2,9 +2,20 @@
 
 #include "../engineui/engine_ui.h"
 
-LayoutElementBuffer UILayout::lastLayoutElement;
+float UILayout::defaultWidth = -1.0f;
+float UILayout::defaultHeight = -1.0f;
+Justification UILayout::defaultJustification = JUSTIFY_CENTER;
+Alignment UILayout::defaultAlignment = ALIGN_CENTER;
+float UILayout::defaultSpacing = 0.0f;
+Margin UILayout::defaultMargin = Margin();
 
-ImVec2 UILayout::getRowSize(float width, float height) {
+FlexBuffer UILayout::lastFlex;
+
+float UILayout::mapAlignment(Alignment alignment) {
+    return ((int)alignment - 1) / 2;
+}
+
+ImVec2 UILayout::getFlexRowSize(float width, float height) {
     float windowWidth = ImGui::GetWindowWidth();
     float contentWidth = ImGui::GetContentRegionAvail().x;
     float rightPadding = windowWidth - contentWidth;
@@ -13,36 +24,51 @@ ImVec2 UILayout::getRowSize(float width, float height) {
     return layoutSize;
 }
 
-void UILayout::setLastLayoutElement(ItemAlignment itemAlignment, bool showBoundaries) {
-    lastLayoutElement.itemAlignment = itemAlignment;
-    lastLayoutElement.showBoundaries = showBoundaries;
+void UILayout::beginFlex(const char* name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
+{
+    if (type == ROW) {
+        static ImVec2 itemSpacing = ImVec2(spacing, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(floorf(itemSpacing.x), floorf(itemSpacing.y)));
+
+        ImGui::Dummy(ImVec2(0.0f, margin.top));
+
+        ImVec2 rowSize = getFlexRowSize(width, height);
+        ImGui::BeginHorizontal(name, rowSize, mapAlignment(alignment));
+
+        ImGui::Dummy(ImVec2(margin.left, 0.0f));
+
+        if (justification == JUSTIFY_CENTER || justification == JUSTIFY_END) {
+            ImGui::Spring(0.5f);
+        }
+
+        lastFlex.type = type;
+        lastFlex.width = width;
+        lastFlex.height = height;
+        lastFlex.justification = justification;
+        lastFlex.alignment = alignment;
+        lastFlex.spacing = spacing;
+        lastFlex.margin = margin;
+        lastFlex.showBoundaries = false;
+    }
 }
 
-void UILayout::beginRow(const char* name, float width, float height, ItemAlignment itemAlignment, float verticalAlignment, float spacing, bool showBoundaries)
+void UILayout::endFlex()
 {
-    static ImVec2 itemSpacing = ImVec2(spacing, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(floorf(itemSpacing.x), floorf(itemSpacing.y)));
+    if (lastFlex.type == ROW) {
+        if (lastFlex.justification == JUSTIFY_CENTER || lastFlex.justification == JUSITFY_START) {
+            ImGui::Spring(0.5f);
+        }
 
-    ImVec2 rowSize = getRowSize(width, height);
-    ImGui::BeginHorizontal(name, rowSize, verticalAlignment);
+        ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
 
-    if (itemAlignment == ITEMS_CENTERED ||  itemAlignment == ITEMS_RIGHT) {
-        ImGui::Spring(0.5f);
-    }
+        ImGui::EndHorizontal();
+        ImGui::PopStyleVar();
 
-    setLastLayoutElement(itemAlignment, showBoundaries);
-}
+        ImGui::Dummy(ImVec2(0.0f, lastFlex.margin.bottom));
 
-void UILayout::endRow()
-{
-    if (lastLayoutElement.itemAlignment == ITEMS_CENTERED || lastLayoutElement.itemAlignment == ITEMS_LEFT) {
-        ImGui::Spring(0.5f);
-    }
-    ImGui::EndHorizontal();
-    ImGui::PopStyleVar();
-
-    if (lastLayoutElement.showBoundaries) {
-        ImDrawList* draw_list = ImGui::GetWindowDrawList();
-        draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), ImGui::GetColorU32(ImGuiCol_Border));
+        if (lastFlex.showBoundaries) {
+            ImDrawList* draw_list = ImGui::GetWindowDrawList();
+            draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), ImGui::GetColorU32(ImGuiCol_Border));
+        }
     }
 }

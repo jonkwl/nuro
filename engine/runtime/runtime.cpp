@@ -346,15 +346,16 @@ int Runtime::START_LOOP() {
 				EngineDialog::float_dialog("PL1 Falloff", falloff, 0.0f, 30.0f);
 
 				ImGui::Begin("Normal Mapping", nullptr, EngineUI::windowFlags.fixed);
-				UIComponents::headline("Normal Mapping", ICON_FA_CUBES);
-				UILayout::beginRow("Normal Mapping Settings", FULL_WIDTH, 45.0f, ITEMS_LEFT, 0.5f, 5.0f);
-				if (ImGui::Button(normalMapping ? "Disable Normal Mapping" : "Enable Normal Mapping")) {
-					normalMapping = !normalMapping;
-				}
-				if (normalMapping) {
-					ImGui::SliderFloat("Intensity", &normalMappingIntensity, 0.0f, 10.0f);
-				}
-				UILayout::endRow();
+					UIComponents::headline("Normal Mapping", ICON_FA_CUBES);
+
+					UILayout::beginFlex("Normal Mapping Settings", ROW, FULL_WIDTH, 45.0f, JUSITFY_START, ALIGN_CENTER, 5.0f);
+					if (ImGui::Button(normalMapping ? "Disable Normal Mapping" : "Enable Normal Mapping")) {
+						normalMapping = !normalMapping;
+					}
+					if (normalMapping) {
+						ImGui::SliderFloat("Intensity", &normalMappingIntensity, 0.0f, 10.0f);
+					}
+					UILayout::endFlex();
 				ImGui::End();
 			}
 		}

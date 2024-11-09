@@ -6,9 +6,9 @@ std::string getId(const char* name) {
     return "##" + std::string(name);
 }
 
-void UIComponents::headline(std::string title, const char* icon, HeadlineAlignment alignment) {
+void UIComponents::headline(std::string title, const char* icon, HeadlineJustification justification) {
 
-    UILayout::beginRow("example", FULL_WIDTH, 20.0f, (ItemAlignment)alignment, 0.5f, 10.0f);
+    UILayout::beginFlex("example", ROW, FULL_WIDTH, 20.0f, (Justification)justification, ALIGN_CENTER, 10.0f, Margin{0.0f, 0.0f, 5.0f, 0.0f});
 
         // Icon
         if (icon && icon[0] != '\0') {
@@ -24,7 +24,7 @@ void UIComponents::headline(std::string title, const char* icon, HeadlineAlignme
         ImGui::Text(title.c_str());
         ImGui::PopFont();
 
-    UILayout::endRow();
+    UILayout::endFlex();
 
 }
 
@@ -76,18 +76,18 @@ void UIComponents::toggleButton(const char* label, bool& value, const char* tool
 
 void UIComponents::input(const char* label, int& value)
 {
-    UILayout::beginRow(label, FULL_WIDTH, 30.0f, ITEMS_SPREAD, 0.5f, 4.0f, false);
+    UILayout::beginFlex(label, ROW, FULL_WIDTH, 30.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
         ImGui::InputInt(getId(label).c_str(), &value);
-    UILayout::endRow();
+    UILayout::endFlex();
 }
 
 void UIComponents::input(const char* label, float& value)
 {
-    UILayout::beginRow(label, FULL_WIDTH, 30.0f, ITEMS_SPREAD, 0.5f, 4.0f, false);
+    UILayout::beginFlex(label, ROW, FULL_WIDTH, 30.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
         ImGui::InputFloat(getId(label).c_str(), &value);
-    UILayout::endRow();
+    UILayout::endFlex();
 }
