@@ -97,7 +97,6 @@ void awake() {
 
 	LitMaterial* smearedWallMaterial = new LitMaterial();
 	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.96f, 0.86f, 1.0f);
-	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	smearedWallMaterial->setAlbedoMap(smearedWallAlbedo);
 	smearedWallMaterial->roughness = 0.48f;
 	smearedWallMaterial->setMetallicMap(smearedWallRoughness);

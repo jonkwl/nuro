@@ -8,8 +8,7 @@ out vec4 FragColor;
 
 in vec3 v_normal;
 in vec2 v_uv;
-in vec3 v_tangent;
-in vec3 v_bitangent;
+in mat3 v_tbnMatrix;
 in vec3 v_fragmentPosition;
 in vec4 v_fragmentLightSpacePosition;
 
@@ -100,20 +99,14 @@ float sqr(float x)
 
 vec3 getNormals(){
     if (!material.enableNormalMap){
-        return normalize(v_normal);
+        return v_normal;
     }
 
-    vec3 normalSample = texture(material.normalMap, uv).rgb;
-    normalSample = normalSample * 2.0 - vec3(1.0);
-    normalSample.xy *= material.normalMapIntensity;
-    normalSample = normalize(normalSample);
-
-    vec3 tangent = normalize(v_tangent);
-    vec3 bitangent = normalize(v_bitangent);
-    vec3 normal = normalize(v_normal);
-    mat3 TBN = mat3(tangent, bitangent, normal);
-
-    return normalize(TBN * normalSample);
+    vec3 normal = texture(material.normalMap, uv).rgb;
+    normal = normal * 2.0 - vec3(1.0);
+    normal.xy *= material.normalMapIntensity;
+    normal = normalize(v_tbnMatrix * normal);
+    return normal;
 }
 
 float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius)

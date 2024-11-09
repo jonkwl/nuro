@@ -37,4 +37,3 @@ private:
 	bool shader_compiled(std::string type, int shader);
 	bool program_linked(int program);
 };
-
