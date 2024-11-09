@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../engine/utils/log.h"
-
 struct ImVec2;
 
 enum FlexType {
@@ -32,6 +30,8 @@ struct Margin {
 	float right = 0.0f;
 	float bottom = 0.0f;
 	float left = 0.0f;
+
+	Margin(float top = 0.0f, float right = 0.0f, float bottom = 0.0f, float left = 0.0f) : top(top), right(right), bottom(bottom), left(left) {}
 };
 
 struct FlexBuffer {
@@ -42,12 +42,13 @@ struct FlexBuffer {
 	Alignment alignment;
 	float spacing;
 	Margin margin;
-	bool showBoundaries;
 };
 
 class UILayout
 {
 public:
+	static bool debugMode;
+
 	static float defaultWidth;
 	static float defaultHeight;
 	static Justification defaultJustification;

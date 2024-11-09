@@ -49,7 +49,6 @@ bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
 bool ambientOcclusion = false;
-bool ambientOcclusionSettings = false;
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -367,24 +366,14 @@ int Runtime::START_LOOP() {
 				ImGui::Begin("  Post Processing  ", nullptr, EngineUI::windowFlags.standard);
 					UIComponents::headline("Post Processing", ICON_FA_SPARKLES);
 
-					UILayout::beginFlex("ambient_occlusion_flex", ROW, FULL_WIDTH, 45.0f, JUSTIFY_START, ALIGN_CENTER, 5.0f, Margin{10.0f, 0.0f, 10.0f, 0.0f});
-						ImGui::Checkbox("##ambient_occlusion_enable", &ambientOcclusion);
-						if (ambientOcclusion) {
-							ImGui::Dummy(ImVec2(2.5f, 0.0f));
-							ambientOcclusionSettings = ImGui::CollapsingHeader("Ambient Occlusion");
-						}
-						else {
-							ImGui::Text("Ambient Occlusion");
-						}
-					UILayout::endFlex();
-
-					if (ambientOcclusionSettings) {
+					if (UIComponents::extendableSettings("Ambient Occlusion", ambientOcclusion, ICON_FA_PROJECTOR)) {
 						ImGui::Text("Ambient Occlusion Option 1");
 						ImGui::Text("Ambient Occlusion Option 2");
 						ImGui::Text("Ambient Occlusion Option 3");
 						ImGui::Text("Ambient Occlusion Option 4");
 						ImGui::Text("Ambient Occlusion Option 5");
 					}
+
 				ImGui::End();
 			}
 		}

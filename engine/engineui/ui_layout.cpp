@@ -2,6 +2,8 @@
 
 #include "../engineui/engine_ui.h"
 
+bool UILayout::debugMode = true;
+
 float UILayout::defaultWidth = -1.0f;
 float UILayout::defaultHeight = -1.0f;
 Justification UILayout::defaultJustification = JUSTIFY_CENTER;
@@ -48,7 +50,6 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
         lastFlex.alignment = alignment;
         lastFlex.spacing = spacing;
         lastFlex.margin = margin;
-        lastFlex.showBoundaries = false;
     }
 }
 
@@ -66,7 +67,7 @@ void UILayout::endFlex()
 
         ImGui::Dummy(ImVec2(0.0f, lastFlex.margin.bottom));
 
-        if (lastFlex.showBoundaries) {
+        if (debugMode) {
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
             draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), ImGui::GetColorU32(ImGuiCol_Border));
         }

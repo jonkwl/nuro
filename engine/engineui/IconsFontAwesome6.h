@@ -1415,3 +1415,4 @@
 #define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
 #define ICON_FA_MONITOR_WAVEFORM "\xEF\x98\x91" // U+f611
 #define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
+#define ICON_FA_PROJECTOR "\xEF\xA3\x96" // U+f8d6

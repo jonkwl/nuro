@@ -84,6 +84,10 @@ void EngineUI::setup() {
 	imguiColors[ImGuiCol_ResizeGripActive] = colors.elementActive;
 	imguiColors[ImGuiCol_ResizeGripHovered] = colors.elementHovered;
 
+	imguiColors[ImGuiCol_Header] = colors.element;
+	imguiColors[ImGuiCol_HeaderHovered] = colors.elementHovered;
+	imguiColors[ImGuiCol_HeaderActive] = colors.elementActive;
+
 	imguiColors[ImGuiCol_SeparatorHovered] = colors.element;
 	imguiColors[ImGuiCol_SeparatorActive] = colors.elementActive;
 

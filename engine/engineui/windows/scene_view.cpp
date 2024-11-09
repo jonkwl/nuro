@@ -4,7 +4,7 @@ void SceneView::prepare()
 {
 	ImGui::Begin("  Scene View  ", nullptr, EngineUI::windowFlags.standard);
 
-        UIComponents::headline("Scene View", ICON_FA_MAP, HEADLINE_CENTERED);
+        UIComponents::headline("Scene View", ICON_FA_MAP, HEADLINE_CENTER);
 
         UILayout::beginFlex("toggles", ROW, FULL_WIDTH, 60.0f, JUSTIFY_START, ALIGN_CENTER, 1.0f);
 
