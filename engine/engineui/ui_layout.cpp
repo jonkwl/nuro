@@ -35,7 +35,7 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
         ImVec2 rowSize = getFlexRowSize(width, height);
         ImGui::BeginHorizontal(name, rowSize, mapAlignment(alignment));
 
-        ImGui::Dummy(ImVec2(margin.left, 0.0f));
+        if(margin.left != 0) ImGui::Dummy(ImVec2(margin.left, 0.0f));
 
         if (justification == JUSTIFY_CENTER || justification == JUSTIFY_END) {
             ImGui::Spring(0.5f);
@@ -55,11 +55,11 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
 void UILayout::endFlex()
 {
     if (lastFlex.type == ROW) {
+        if(lastFlex.margin.right != 0) ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
+
         if (lastFlex.justification == JUSTIFY_CENTER || lastFlex.justification == JUSITFY_START) {
             ImGui::Spring(0.5f);
         }
-
-        ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
 
         ImGui::EndHorizontal();
         ImGui::PopStyleVar();

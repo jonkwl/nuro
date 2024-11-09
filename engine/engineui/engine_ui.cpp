@@ -44,7 +44,7 @@ void EngineUI::setup() {
 	style.TableAngledHeadersTextAlign = ImVec2(0.0f, 0.0f);
 	style.WindowTitleAlign = ImVec2(0.0f, 0.0f);
 
-	style.WindowPadding = ImVec2(20.0f, 30.0f);
+	style.WindowPadding = ImVec2(30.0f, 30.0f);
 	style.WindowRounding = 4.0f;
 	style.WindowMenuButtonPosition = ImGuiDir_None;
 	style.WindowBorderSize = 0.5f;
