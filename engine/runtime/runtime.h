@@ -85,6 +85,7 @@ public:
 	static float averageFps; // averaged current fps
 
 	// Render settings
+	static glm::vec4 clearColor;
 	static bool vsync; // V-Sync option
 	static bool wireframe; // Wireframe option
 	static bool solidMode; // Solid mode option (simple render)

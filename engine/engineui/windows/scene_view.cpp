@@ -6,7 +6,7 @@ void SceneView::prepare()
 
         UIComponents::headline("Scene View", ICON_FA_MAP, HEADLINE_CENTERED);
 
-        UILayout::beginFlex("toggles", ROW, FULL_WIDTH, 60.0f, JUSITFY_START, ALIGN_CENTER, 1.0f);
+        UILayout::beginFlex("toggles", ROW, FULL_WIDTH, 60.0f, JUSTIFY_START, ALIGN_CENTER, 1.0f);
 
             UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, Runtime::wireframe, "Wireframe");
             UIComponents::toggleButton(ICON_FA_CUBE, Runtime::solidMode, "Solid Mode");

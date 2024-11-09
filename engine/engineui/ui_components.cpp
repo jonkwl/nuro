@@ -8,7 +8,7 @@ std::string getId(const char* name) {
 
 void UIComponents::headline(std::string title, const char* icon, HeadlineJustification justification) {
 
-    UILayout::beginFlex("example", ROW, FULL_WIDTH, 20.0f, (Justification)justification, ALIGN_CENTER, 10.0f, Margin{0.0f, 0.0f, 5.0f, 0.0f});
+    UILayout::beginFlex(title.c_str(), ROW, FULL_WIDTH, 20.0f, (Justification)justification, ALIGN_CENTER, 10.0f, Margin{0.0f, 0.0f, 5.0f, 0.0f});
 
         // Icon
         if (icon && icon[0] != '\0') {

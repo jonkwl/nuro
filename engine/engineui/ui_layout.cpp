@@ -57,7 +57,7 @@ void UILayout::endFlex()
     if (lastFlex.type == ROW) {
         if(lastFlex.margin.right != 0) ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
 
-        if (lastFlex.justification == JUSTIFY_CENTER || lastFlex.justification == JUSITFY_START) {
+        if (lastFlex.justification == JUSTIFY_CENTER || lastFlex.justification == JUSTIFY_START) {
             ImGui::Spring(0.5f);
         }
 

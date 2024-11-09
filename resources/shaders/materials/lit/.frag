@@ -66,6 +66,18 @@ struct SpotLight {
 };
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+const int NO_FOG = 0;
+const int LINEAR_FOG = 1;
+const int EXPONENTIAL_FOG = 2;
+const int EXPONENTIAL_SQUARED_FOG = 3;
+
+struct Fog {
+    int type;
+    vec3 color;
+    float data[2];
+};
+uniform Fog fog;
+
 struct Material {
     vec4 baseColor;
 
@@ -179,6 +191,26 @@ float getDirectionalShadow(vec3 lightDirection)
     float shadow = pcf(projectionCoordinates, currentDepth, bias, 1.0, 3);
 
     return shadow;
+}
+
+float getLinearFog(float start, float end){
+    float depth = length(v_fragmentPosition - configuration.cameraPosition);
+    float fogRange = end - start;
+    float fogDistance = end - depth;
+    float factor = clamp(fogDistance / fogRange, 0.0, 1.0);
+    return factor;
+}
+
+float getExponentialFog(float density){
+    float depth = length(v_fragmentPosition - configuration.cameraPosition);
+    float factor = 1 / exp(depth * density);
+    return factor;
+}
+
+float getExponentialSquaredFog(float density){
+    float depth = length(v_fragmentPosition - configuration.cameraPosition);
+    float factor = 1 / exp(sqr(depth * density));
+    return factor;
 }
 
 vec3 fresnelSchlick(float VdotN, vec3 F0)
@@ -402,6 +434,21 @@ vec4 shadePBR() {
     vec3 ambient = getAmbient(albedo, ambientOcclusion);
     color += ambient;
 
+    // get fog
+    float fogFactor = 1.0;
+    switch(fog.type){
+        case LINEAR_FOG:
+            fogFactor = getLinearFog(fog.data[0], fog.data[1]);
+            break;
+        case EXPONENTIAL_FOG:
+            fogFactor = getExponentialFog(fog.data[0]);
+            break;
+        case EXPONENTIAL_SQUARED_FOG:
+            fogFactor = getExponentialSquaredFog(fog.data[0]);
+            break;
+    }
+    color = mix(fog.color, color, fogFactor);
+
     // return shaded color
     return vec4(color, 1.0);
 }
@@ -469,6 +516,16 @@ vec3 InverseACES(vec3 y) {
 vec4 shadeNormals() {
     vec3 normals = getNormals();
     return vec4(normals, 1.0);
+}
+
+vec4 shadeDepth() {
+    float near = 0.3;
+    float far = 1000;
+
+    float z = gl_FragCoord.z * 2.0 - 1.0;
+    float depth = ((2.0 * near * far) / (far + near - z * (far - near))) / far;
+
+    return vec4(vec3(depth), 1.0);
 }
 
 void main()

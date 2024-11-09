@@ -18,6 +18,7 @@ float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
+glm::vec4 Runtime::clearColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 bool Runtime::vsync = true;
 bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;
@@ -46,6 +47,9 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 
 bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
+
+bool ambientOcclusion = false;
+bool ambientOcclusionSettings = false;
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -282,6 +286,8 @@ int Runtime::START_LOOP() {
 		//
 		
 		// Set viewport and bind post processing framebuffer
+		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+		glClear(GL_COLOR_BUFFER_BIT);
 		glViewport(0, 0, width, height);
 		PostProcessing::bind();
 
@@ -336,7 +342,7 @@ int Runtime::START_LOOP() {
 				InputPair i = { "Vignette Radius", PostProcessing::setup.vignetteRadius, 0.0f, 1.0f };
 				InputPair j = { "Vignette Softness", PostProcessing::setup.vignetteSoftness, 0.0f, 1.0f };
 				InputPair k = { "Vignette Roundness", PostProcessing::setup.vignetteRoundness, 0.0f, 2.0f };
-				EngineDialog::input_dialog("Post Processing", { x, a, b, c, d, e, f, g, h, i, j, k });
+				EngineDialog::input_dialog("Basic Settings @ Post Processing", { x, a, b, c, d, e, f, g, h, i, j, k });
 
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
@@ -348,14 +354,37 @@ int Runtime::START_LOOP() {
 				ImGui::Begin("Normal Mapping", nullptr, EngineUI::windowFlags.fixed);
 					UIComponents::headline("Normal Mapping", ICON_FA_CUBES);
 
-					UILayout::beginFlex("Normal Mapping Settings", ROW, FULL_WIDTH, 45.0f, JUSITFY_START, ALIGN_CENTER, 5.0f);
-					if (ImGui::Button(normalMapping ? "Disable Normal Mapping" : "Enable Normal Mapping")) {
-						normalMapping = !normalMapping;
-					}
-					if (normalMapping) {
-						ImGui::SliderFloat("Intensity", &normalMappingIntensity, 0.0f, 10.0f);
-					}
+					UILayout::beginFlex("Normal Mapping Settings", ROW, FULL_WIDTH, 45.0f, JUSTIFY_START, ALIGN_CENTER, 5.0f);
+						if (ImGui::Button(normalMapping ? "Disable Normal Mapping" : "Enable Normal Mapping")) {
+							normalMapping = !normalMapping;
+						}
+						if (normalMapping) {
+							ImGui::SliderFloat("Intensity", &normalMappingIntensity, 0.0f, 10.0f);
+						}
 					UILayout::endFlex();
+				ImGui::End();
+
+				ImGui::Begin("  Post Processing  ", nullptr, EngineUI::windowFlags.standard);
+					UIComponents::headline("Post Processing", ICON_FA_SPARKLES);
+
+					UILayout::beginFlex("ambient_occlusion_flex", ROW, FULL_WIDTH, 45.0f, JUSTIFY_START, ALIGN_CENTER, 5.0f, Margin{10.0f, 0.0f, 10.0f, 0.0f});
+						ImGui::Checkbox("##ambient_occlusion_enable", &ambientOcclusion);
+						if (ambientOcclusion) {
+							ImGui::Dummy(ImVec2(2.5f, 0.0f));
+							ambientOcclusionSettings = ImGui::CollapsingHeader("Ambient Occlusion");
+						}
+						else {
+							ImGui::Text("Ambient Occlusion");
+						}
+					UILayout::endFlex();
+
+					if (ambientOcclusionSettings) {
+						ImGui::Text("Ambient Occlusion Option 1");
+						ImGui::Text("Ambient Occlusion Option 2");
+						ImGui::Text("Ambient Occlusion Option 3");
+						ImGui::Text("Ambient Occlusion Option 4");
+						ImGui::Text("Ambient Occlusion Option 5");
+					}
 				ImGui::End();
 			}
 		}

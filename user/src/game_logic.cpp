@@ -15,7 +15,8 @@ LitMaterial* sphereMaterial = nullptr;
 
 void awake() {
 	// Set default skybox
-	Runtime::setSkybox(Runtime::defaultSkybox);
+	// Runtime::setSkybox(Runtime::defaultSkybox);
+	Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Create camera
 	camera = new Camera();

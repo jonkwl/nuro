@@ -10,7 +10,7 @@ enum FlexType {
 };
 
 enum Justification {
-	JUSITFY_START,
+	JUSTIFY_START,
 	JUSTIFY_CENTER,
 	JUSTIFY_END,
 	JUSTIFY_EVEN
