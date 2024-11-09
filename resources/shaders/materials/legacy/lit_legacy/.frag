@@ -37,11 +37,11 @@ struct Material {
 };
 uniform Material material;
 
-float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius) 
+float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius)
 {
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(scene.shadowMap, 0);
-    
+
     int sampleCount = 0;
     float weightSum = 0.0;
 
@@ -58,7 +58,7 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
     }
 
     shadow = shadow / weightSum;
-    
+
     return shadow;
 }
 
@@ -67,7 +67,7 @@ float getShadow()
     vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
     projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
 
-    if(projectionCoordinates.z > 1.0) return 0.0f;
+    if (projectionCoordinates.z > 1.0) return 0.0f;
 
     float closestDepth = texture(scene.shadowMap, projectionCoordinates.xy).r;
     float currentDepth = projectionCoordinates.z;
@@ -138,8 +138,8 @@ void main()
 
     // get diffuse map value
     vec3 diffuseColor = vec3(1.0);
-    if(material.legacy.enableDiffuseMap){
-        diffuseColor = texture(material.legacy.diffuseMap, uv).rgb;
+    if (material.enableDiffuseMap) {
+        diffuseColor = texture(material.diffuseMap, uv).rgb;
     }
 
     // calculate final color

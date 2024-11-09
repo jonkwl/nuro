@@ -35,7 +35,7 @@ vec3 ACES(vec3 x) {
     return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
 }
 
-void main() 
+void main()
 {
     vec2 uv = textureCoords;
     vec3 color = texture(screenTexture, uv).rgb;
@@ -44,7 +44,7 @@ void main()
     float aspectRatio = screenResolution.x / screenResolution.y;
 
     // Chromatic Aberration
-    if(chromaticAberration){
+    if (chromaticAberration) {
         float dist = length(toCenter);
         float aberration = smoothstep(chromaticAberrationRange, 1.0, dist) * chromaticAberrationStrength;
         vec2 redOffset = uv + toCenter * aberration * chromaticAberrationRedOffset;
@@ -56,7 +56,7 @@ void main()
     }
 
     // Vignette
-    if(vignette){
+    if (vignette) {
         vec2 scaledUV = vec2((uv.x - center.x) / vignetteRoundness, uv.y - center.y);
         float vignetteDist = length(scaledUV);
         float vignetteFactor = smoothstep(vignetteRadius, vignetteRadius - vignetteSoftness, vignetteDist);

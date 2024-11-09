@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 #define MAX_DIRECTIONAL_LIGHTS 1
 #define MAX_POINT_LIGHTS 5
@@ -95,11 +95,11 @@ float sqr(float x)
     return x * x;
 }
 
-float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius) 
+float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius)
 {
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(configuration.shadowMap, 0); // Pre-calculate texel size once
-    
+
     int sampleCount = 0;
     float weightSum = 0.0;
 
@@ -109,7 +109,7 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
     // Loop over the kernel area
     for (int x = -kernelRadius; x <= kernelRadius; ++x) {
         for (int y = -kernelRadius; y <= kernelRadius; ++y) {
-            
+
             // Calculate the offset for the sample
             vec2 offset = vec2(float(x), float(y)) * texelSize * smoothing;
 
@@ -143,14 +143,14 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
 
 float getDirectionalShadow(vec3 lightDirection)
 {
-    if(!configuration.castShadows){
+    if (!configuration.castShadows) {
         return 0.0f;
     }
 
     vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
     projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
 
-    if(projectionCoordinates.z > 1.0) return 0.0f;
+    if (projectionCoordinates.z > 1.0) return 0.0f;
 
     float closestDepth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
     float currentDepth = projectionCoordinates.z;
@@ -202,7 +202,7 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec3 getAlbedo() 
+vec3 getAlbedo()
 {
     vec3 albedo = vec3(1.0);
     if (material.enableAlbedoMap) {
@@ -212,32 +212,32 @@ vec3 getAlbedo()
     return albedo;
 }
 
-float getRoughness() 
+float getRoughness()
 {
     float roughness = 0.0;
-    if(material.enableRoughnessMap){
+    if (material.enableRoughnessMap) {
         roughness = texture(material.roughnessMap, uv).r;
-    } else{
+    } else {
         roughness = material.roughness;
     }
     return roughness;
 }
 
-float getMetallic() 
+float getMetallic()
 {
     float metallic = 0.0;
-    if(material.enableMetallicMap){
+    if (material.enableMetallicMap) {
         metallic = texture(material.metallicMap, uv).r;
-    } else{
+    } else {
         metallic = material.metallic;
     }
     return metallic;
 }
 
-float getAmbientOcclusion() 
+float getAmbientOcclusion()
 {
     float ambientOcclusion = 1.0;
-    if(material.enableAmbientOcclusionMap){
+    if (material.enableAmbientOcclusionMap) {
         ambientOcclusion = texture(material.ambientOcclusionMap, uv).r;
     }
     return ambientOcclusion;
@@ -249,40 +249,40 @@ vec3 getAmbient(vec3 albedo, float ambientOcclusion) {
 }
 
 vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metallic, vec3 albedo, float attenuation, vec3 L, vec3 color, float intensity, float shadow) {
-        vec3 H = normalize(V + L); // halfway direction
+    vec3 H = normalize(V + L); // halfway direction
 
-        // cosine of angle between N and L, indicates effective light contribution from source
-        float NdotL = max(dot(N, L), 0.0);
-        if(NdotL == 0.0)
-        {
-            return vec3(0.0); // no light contribution from source, skip light
-        }
+    // cosine of angle between N and L, indicates effective light contribution from source
+    float NdotL = max(dot(N, L), 0.0);
+    if (NdotL == 0.0)
+    {
+        return vec3(0.0); // no light contribution from source, skip light
+    }
 
-        // per-light radiance
-        if(attenuation == 0.0) 
-        {
-            return vec3(0.0); // no light contribution from source, skip light
-        }
-        vec3 radiance = color * intensity * attenuation;
-        
-        // specular component
-        float NDF = distributionGGX(N, H, roughness);        
-        float G = geometrySmith(N, V, L, roughness);      
-        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);    
-        vec3 numerator = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        float epsilon = 0.0001;
-        vec3 specular = numerator / max(denominator, epsilon);  
-        
-        // diffuse component (lambertian)
-        vec3 kD = vec3(1.0) - F;
-        kD *= 1.0 - metallic;
-        vec3 diffuse = kD * albedo / PI;
-            
-        // return light source contribution      
-        vec3 contribution = (diffuse + specular) * radiance * NdotL;
-        contribution *= (1.0 - shadow);
-        return contribution;
+    // per-light radiance
+    if (attenuation == 0.0)
+    {
+        return vec3(0.0); // no light contribution from source, skip light
+    }
+    vec3 radiance = color * intensity * attenuation;
+
+    // specular component
+    float NDF = distributionGGX(N, H, roughness);
+    float G = geometrySmith(N, V, L, roughness);
+    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    vec3 numerator = NDF * G * F;
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+    float epsilon = 0.0001;
+    vec3 specular = numerator / max(denominator, epsilon);
+
+    // diffuse component (lambertian)
+    vec3 kD = vec3(1.0) - F;
+    kD *= 1.0 - metallic;
+    vec3 diffuse = kD * albedo / PI;
+
+    // return light source contribution
+    vec3 contribution = (diffuse + specular) * radiance * NdotL;
+    contribution *= (1.0 - shadow);
+    return contribution;
 }
 
 float getAttenuation_linear_quadratic(float distance, float linear, float quadratic)
@@ -338,20 +338,20 @@ vec4 shadePBR() {
     vec3 Lo = vec3(0.0);
 
     // directional lights
-    for(int i = 0; i < configuration.numDirectionalLights; i++)
+    for (int i = 0; i < configuration.numDirectionalLights; i++)
     {
         DirectionalLight directionalLight = directionalLights[i];
 
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
-        
+
         float shadow = getDirectionalShadow(L);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
     }
 
     // point lights
-    for(int i = 0; i < configuration.numPointLights; i++){
+    for (int i = 0; i < configuration.numPointLights; i++) {
         PointLight pointLight = pointLights[i];
 
         float distance = length(pointLight.position - v_fragmentPosition);
@@ -362,7 +362,7 @@ vec4 shadePBR() {
     }
 
     // spot lights
-    for(int i = 0; i < configuration.numSpotLights; i++){
+    for (int i = 0; i < configuration.numSpotLights; i++) {
         SpotLight spotLight = spotLights[i];
 
         float distance = length(spotLight.position - v_fragmentPosition);
@@ -371,16 +371,16 @@ vec4 shadePBR() {
 
         float theta = dot(L, normalize(-spotLight.direction));
         float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
-        float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);  
+        float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
     }
 
     // assemble shaded color
     vec3 color = Lo;
-	
+
     // gamma correct if using albedo map
-    if(material.enableAlbedoMap){
+    if (material.enableAlbedoMap) {
         color = pow(color, vec3(1.0 / configuration.gamma));
     }
 
@@ -399,7 +399,7 @@ vec4 shadeSolid()
 
     vec3 N = normalize(v_normals);
 
-    for(int i = 0; i < configuration.numDirectionalLights; i++)
+    for (int i = 0; i < configuration.numDirectionalLights; i++)
     {
         DirectionalLight directionalLight = directionalLights[i];
 
@@ -412,7 +412,7 @@ vec4 shadeSolid()
         diffuse += max(dot(N, L), 0.0) * directionalLight.color * directionalLight.intensity * attenuation * (1.0 - shadow);
     }
 
-    for(int i = 0; i < configuration.numPointLights; i++)
+    for (int i = 0; i < configuration.numPointLights; i++)
     {
         PointLight pointLight = pointLights[i];
 
@@ -426,7 +426,7 @@ vec4 shadeSolid()
     }
 
     vec3 albedo = vec3(1.0);
-    if(material.enableAlbedoMap){
+    if (material.enableAlbedoMap) {
         albedo = texture(material.albedoMap, uv).rgb;
     }
     albedo *= vec3(material.baseColor);
@@ -439,7 +439,7 @@ vec4 shadeSolid()
 void main()
 {
     uv = v_textureCoords * material.tiling + material.offset;
-    if(!configuration.solidMode){
+    if (!configuration.solidMode) {
         FragColor = shadePBR();
     } else {
         FragColor = shadeSolid();

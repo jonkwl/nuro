@@ -18,7 +18,7 @@ void main()
     vec2 uv = textureCoords * tiling + offset;
     vec4 color = baseColor;
 
-    if(enableTexture){
+    if (enableTexture) {
         color = texture(baseTexture, uv) * color;
     }
 

@@ -78,6 +78,7 @@ glm::mat4 Transformation::lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lig
 
 glm::mat4 Transformation::lightProjectionMatrix(Camera* camera)
 {
-	glm::mat4 projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, camera->nearClipping, camera->farClipping);
+	glm::mat4 projection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, camera->nearClipping, camera->farClipping);
 	return projection;
 }
+
