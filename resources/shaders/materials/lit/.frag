@@ -109,7 +109,7 @@ float sqr(float x)
     return x * x;
 }
 
-vec3 getNormals(){
+vec3 getNormal(){
     if (!material.enableNormalMap){
         return v_normal;
     }
@@ -181,7 +181,7 @@ float getDirectionalShadow(vec3 lightDirection)
     float closestDepth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
     float currentDepth = projectionCoordinates.z;
 
-    vec3 normalDirection = getNormals();
+    vec3 normalDirection = getNormal();
 
     float maxBias = 0.01;
     float minBias = 0.005;
@@ -374,7 +374,7 @@ vec4 shadePBR() {
     // get ambient occlusion
     float ambientOcclusion = getAmbientOcclusion();
 
-    vec3 N = getNormals();
+    vec3 N = getNormal();
     vec3 V = normalize(configuration.cameraPosition - v_fragmentPosition); // view direction
 
     float dialectricReflecitivity = 0.04;
@@ -458,7 +458,7 @@ vec4 shadeSolid()
     vec3 ambient = ambientLighting.intensity * ambientLighting.color;
     vec3 diffuse = vec3(0.0);
 
-    vec3 N = getNormals();
+    vec3 N = getNormal();
 
     for (int i = 0; i < configuration.numDirectionalLights; i++)
     {
@@ -497,34 +497,48 @@ vec4 shadeSolid()
     return vec4(color, 1.0);
 }
 
-vec3 InverseACES(vec3 y) {
-    const float a = 2.51;
-    const float b = 0.03;
-    const float c = 2.43;
-    const float d = 0.59;
-    const float e = 0.14;
-    vec3 x = y;
-    for (int i = 0; i < 5; ++i) {
-        vec3 num = y * (x * (c * x + d) + e);
-        vec3 den = x * (a * x + b);
-        vec3 f_x = num / den - 1.0;
-        x = x - f_x / (a * x + b);
-    }
-    return clamp(x, 0.0, 1.0);
-}
+vec4 shadeNormal() {
+    // get normal
+    vec3 normal = getNormal();
 
-vec4 shadeNormals() {
-    vec3 normals = getNormals();
-    return vec4(normals, 1.0);
+    // remap normal range from [-1, 1] to [0, 1]
+    normal = (normal + 1.0) * 0.5;
+
+    // if available, sample diffuse lighting and shadow from first directional light for depth enhancement
+    vec3 diffuse = vec3(1.0);
+    float diffuseFactor = 0.3;
+    float shadow = 0.0;
+    float shadowIntensity = 0.5;
+
+    for(int i = 0; i < configuration.numDirectionalLights; i++){
+        DirectionalLight directionalLight = directionalLights[i];
+        vec3 L = normalize(-directionalLight.direction);
+
+        diffuse = vec3(max(dot(normal, L), 0.0));
+        diffuse = mix(diffuse, vec3(0.0), diffuseFactor);
+ 
+        shadow = getDirectionalShadow(L) * shadowIntensity;
+
+        break;
+    }
+
+    // get color from normal and shadow
+    vec3 color = normal * diffuse * (1.0 - shadow);
+
+    // return normal as color
+    return vec4(color, 1.0);
 }
 
 vec4 shadeDepth() {
+    // camera clipping default variables
     float near = 0.3;
     float far = 1000;
 
+    // get depth
     float z = gl_FragCoord.z * 2.0 - 1.0;
     float depth = ((2.0 * near * far) / (far + near - z * (far - near))) / far;
 
+    // retun depth as color
     return vec4(vec3(depth), 1.0);
 }
 
