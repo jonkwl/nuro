@@ -8,7 +8,7 @@ class EntityProcessor
 {
 public:
 	EntityProcessor(Entity* entity);
-	void render();
+	void forwardPass();
 	void shadowPass();
 
 	static void linkDefaults(IMaterial* _defaultMaterial, Shader* _shadowPassShader);

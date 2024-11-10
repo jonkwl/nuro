@@ -51,11 +51,6 @@ void Mesh::bind()
     glBindVertexArray(vao);
 }
 
-void Mesh::render()
-{
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-}
-
 unsigned int Mesh::getMaterialIndex()
 {
     return materialIndex;

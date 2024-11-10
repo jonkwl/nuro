@@ -18,6 +18,8 @@
 #include <gtc/type_ptr.hpp>
 #include <gtc/quaternion.hpp>
 
+#include <chrono>
+
 #include <json/json.hpp>
 using json = nlohmann::json;
 
@@ -102,6 +104,14 @@ public:
 
 	// Return data
 	static std::vector<EntityProcessor*> getEntityLinks();
+
+	// Diagnostics
+	static unsigned int currentDrawCalls;
+	static unsigned int currentVertices;
+	static unsigned int currentPolygons;
+	static double depthPrePassDuration;
+	static double shadowPassDuration;
+	static double forwardPassDuration;
 
 	// tmp for material testing
 	static float intensity;

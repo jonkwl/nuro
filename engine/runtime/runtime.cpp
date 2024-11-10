@@ -19,7 +19,7 @@ int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
 glm::vec4 Runtime::clearColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-bool Runtime::vsync = true;
+bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;
 bool Runtime::shadows = true;
@@ -32,6 +32,13 @@ bool Runtime::showDiagnostics = true;
 Skybox* Runtime::activeSkybox = nullptr;
 
 ShadowMap* Runtime::mainShadowMap = nullptr;
+
+unsigned int Runtime::currentDrawCalls = 0;
+unsigned int Runtime::currentVertices = 0;
+unsigned int Runtime::currentPolygons = 0;
+double Runtime::depthPrePassDuration = 0.0;
+double Runtime::shadowPassDuration = 0.0;
+double Runtime::forwardPassDuration = 0.0;
 
 float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
@@ -226,7 +233,7 @@ int Runtime::START_LOOP() {
 		unsigned int width = Window::width, height = Window::height;
 
 		//
-		// UPDATE PHASE 1: PREPARE COMING RENDER PASS
+		// UPDATE PHASE 1: PREPARE COMING RENDER PASSES
 		//
 
 		// Update times
@@ -252,6 +259,11 @@ int Runtime::START_LOOP() {
 			InspectorMode::refreshInspector();
 		}
 
+		// Reset diagnostics
+		currentDrawCalls = 0;
+		currentVertices = 0;
+		currentPolygons = 0;
+
 		//
 		// UPDATE PHASE 2: UPDATE ANY SCRIPTS NEEDING UPDATE
 		//
@@ -272,8 +284,13 @@ int Runtime::START_LOOP() {
 		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
 		//
 
+		auto shadowPassStart = std::chrono::high_resolution_clock::now();
+
 		// directionalPosition = renderCamera->transform.position;
 		mainShadowMap->render(directionalPosition, directionalDirection);
+
+		auto shadowPassEnd = std::chrono::high_resolution_clock::now();
+		shadowPassDuration = std::chrono::duration<double, std::milli>(shadowPassEnd - shadowPassStart).count();
 
 		// Save depth map
 		if (!depth_map_saved) {
@@ -286,6 +303,8 @@ int Runtime::START_LOOP() {
 		//
 		// UPDATE PHASE 6: FORWARD RENDERING PASS: Render next frame
 		//
+
+		auto forwardPassStart = std::chrono::high_resolution_clock::now();
 		
 		// Set viewport and bind post processing framebuffer
 		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
@@ -305,7 +324,7 @@ int Runtime::START_LOOP() {
 		// Render each linked entity
 		glEnable(GL_DEPTH_TEST);
 		for (int i = 0; i < entityLinks.size(); i++) {
-			entityLinks.at(i)->render();
+			entityLinks.at(i)->forwardPass();
 		}
 
 		// Disable wireframe if enabled
@@ -318,6 +337,9 @@ int Runtime::START_LOOP() {
 
 		// Render framebuffer
 		PostProcessing::render();
+
+		auto forwardPassEnd = std::chrono::high_resolution_clock::now();
+		forwardPassDuration = std::chrono::duration<double, std::milli>(forwardPassEnd - forwardPassStart).count();
 		
 		//
 		// UPDATE PHASE 7: RENDER ENGINE UI

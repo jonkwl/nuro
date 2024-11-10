@@ -20,6 +20,12 @@ public:
 	static void input(const char* label, int& value);
 	static void input(const char* label, float& value);
 
+	static void indicatorLabel(const char* label, const char* value, const char* additional = "");
+	static void indicatorLabel(const char* label, int value, const char* additional = "");
+	static void indicatorLabel(const char* label, unsigned int value, const char* additional = "");
+	static void indicatorLabel(const char* label, float value, const char* additional = "");
+	static void indicatorLabel(const char* label, double value, const char* additional = "");
+
 	static bool extendableSettings(const char* label, bool& value, const char* icon = "");
 
 	static void space(float width, float height);

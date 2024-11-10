@@ -6,6 +6,18 @@ std::string getId(const char* name, const char* identifier) {
     return "##" + std::string(name) + "_" + std::string(identifier);
 }
 
+std::string formatInteger(int number) {
+    std::string numStr = std::to_string(number);
+    int insertPosition = numStr.length() - 3;
+
+    while (insertPosition > 0) {
+        numStr.insert(insertPosition, ".");
+        insertPosition -= 3;
+    }
+
+    return numStr;
+}
+
 void UIComponents::headline(std::string title, const char* icon, HeadlineJustification justification, bool zeroMargin) {
     Margin margin = zeroMargin ? Margin() : Margin(0.0f, 0.0f, 5.0f, 0.0f);
     UILayout::beginFlex(title.c_str(), ROW, FULL_WIDTH, 20.0f, (Justification)justification, ALIGN_CENTER, 10.0f, margin);
@@ -92,6 +104,47 @@ void UIComponents::input(const char* label, float& value)
         ImGui::Spring(1.0f);
         ImGui::InputFloat(getId(label, "input").c_str(), &value);
     UILayout::endFlex();
+}
+
+void UIComponents::indicatorLabel(const char* label, const char* value, const char* additional)
+{
+    ImGui::Text(label);
+    ImGui::SameLine();
+    ImGui::PushFont(EngineUI::fonts.uiBold);
+    ImGui::Text(value);
+    ImGui::PopFont();
+    if (additional && additional[0] != '\0') {
+        ImGui::SameLine();
+        ImGui::Text(additional);
+    }
+}
+
+void UIComponents::indicatorLabel(const char* label, int value, const char* additional)
+{
+    indicatorLabel(label, formatInteger(value).c_str(), additional);
+}
+
+void UIComponents::indicatorLabel(const char* label, unsigned int value, const char* additional)
+{
+    indicatorLabel(label, formatInteger(value).c_str(), additional);
+}
+
+void UIComponents::indicatorLabel(const char* label, float value, const char* additional)
+{
+    char buffer[32];
+    snprintf(buffer, sizeof(buffer), "%.0f", value);
+    indicatorLabel(label, buffer, additional);
+}
+
+void UIComponents::indicatorLabel(const char* label, double value, const char* additional)
+{
+    char buffer[32];
+    snprintf(buffer, sizeof(buffer), "%.2f", value);
+    if (buffer[strlen(buffer) - 1] == '0' && buffer[strlen(buffer) - 2] == '.')
+    {
+        buffer[strlen(buffer) - 2] = '\0';
+    }
+    indicatorLabel(label, buffer, additional);
 }
 
 bool UIComponents::extendableSettings(const char* label, bool& value, const char* icon)

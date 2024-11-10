@@ -121,7 +121,7 @@ vec3 getNormal(){
     return normal;
 }
 
-float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing, int kernelRadius)
+float pcf(vec3 projectionCoordinates, float currentDepth, float bias, float smoothing, int kernelRadius)
 {
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(configuration.shadowMap, 0); // Pre-calculate texel size once
@@ -140,7 +140,7 @@ float pcf(vec3 projectionCoords, float currentDepth, float bias, float smoothing
             vec2 offset = vec2(float(x), float(y)) * texelSize * smoothing;
 
             // Fetch the depth from the shadow map
-            float pcfDepth = texture(configuration.shadowMap, projectionCoords.xy + offset).r;
+            float pcfDepth = texture(configuration.shadowMap, projectionCoordinates.xy + offset).r;
 
             // Calculate the distance from the center of the kernel and apply Gaussian weight
             float distSquared = float(x * x + y * y);
@@ -188,7 +188,12 @@ float getDirectionalShadow(vec3 lightDirection)
     float bias = max(maxBias * dot(normalDirection, lightDirection), minBias);
     bias = 0.0001f;
 
+    // with pcf
     float shadow = pcf(projectionCoordinates, currentDepth, bias, 1.0, 3);
+
+    // without pcf
+    /*float shadowDepth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
+    float shadow = currentDepth - bias > shadowDepth ? 1.0 : 0.0;*/
 
     return shadow;
 }

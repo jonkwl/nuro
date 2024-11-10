@@ -22,7 +22,6 @@ public:
     std::vector<Texture*> textures;
 
     void bind();
-    void render();
 
     unsigned int getMaterialIndex();
 private:

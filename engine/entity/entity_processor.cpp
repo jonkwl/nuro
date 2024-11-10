@@ -8,12 +8,14 @@ IMaterial* EntityProcessor::defaultMaterial = nullptr;
 
 Shader* EntityProcessor::shadowPassShader = nullptr;
 
+#include "../engine/runtime/runtime.h" // For diagnostics
+
 EntityProcessor::EntityProcessor(Entity* entity)
 {
 	this->entity = entity;
 }
 
-void EntityProcessor::render()
+void EntityProcessor::forwardPass()
 {
     // No model to render available -> cancel
     if (entity->model == nullptr) return;
@@ -61,7 +63,12 @@ void EntityProcessor::render()
         material->getShader()->setMatrix4("lightSpaceMatrix", currentLightSpace);
 
         // Render mesh
-        mesh->render();
+        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        
+        // Update diagnostics
+        Runtime::currentDrawCalls++;
+        Runtime::currentVertices += mesh->vertices.size();
+        Runtime::currentPolygons += mesh->indices.size() / 3;
     }
 }
 
@@ -92,7 +99,10 @@ void EntityProcessor::shadowPass()
         shadowPassShader->setMatrix4("lightSpace", currentLightSpace);
 
         // Render mesh
-        mesh->render();
+        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+
+        // Update diagnostics
+        Runtime::currentDrawCalls++;
     }
 }
 

@@ -95,11 +95,7 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
 
     UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HEADLINE_LEFT);
 
-    ImGui::Text("Average FPS:");
-    ImGui::SameLine();
-    ImGui::PushFont(EngineUI::fonts.uiBold);
-    ImGui::Text("%.0f", averageFps);
-    ImGui::PopFont();
+    UIComponents::indicatorLabel("Average FPS:", averageFps);
 
     const int values = 100;
     const float updateRate = 0.025f;
@@ -128,6 +124,18 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
     sparkline("##spark", data, values, 0, maxValue, 0, color, ImVec2(120, 40));
 
     delete[] data;
+
+    UIComponents::space(0.0f, 5.0f);
+
+    UIComponents::indicatorLabel("Current Draw Calls:", Runtime::currentDrawCalls);
+    UIComponents::indicatorLabel("Current Vertices:", Runtime::currentVertices);
+    UIComponents::indicatorLabel("Current Polygons:", Runtime::currentPolygons);
+
+    UIComponents::space(0.0f, 5.0f);
+
+    UIComponents::indicatorLabel("Depth Pre-Pass:", Runtime::depthPrePassDuration, "ms");
+    UIComponents::indicatorLabel("Shadow Pass:", Runtime::shadowPassDuration, "ms");
+    UIComponents::indicatorLabel("Forward Pass:", Runtime::forwardPassDuration, "ms");
 
     ImGui::End();
 }
