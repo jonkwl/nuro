@@ -47,13 +47,19 @@ void LitMaterial::bind()
 	shader->bind();
 
 	// Set scene data
-	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
+	shader->setInt("configuration.width", Window::width);
+	shader->setInt("configuration.height", Window::height);
 
 	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
 
+	Runtime::depthPrePass->bind(DEPTH_PRE_PASS_UNIT);
+
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
+
 	shader->setBool("configuration.castShadows", Runtime::shadows);
+	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
+
+	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);
@@ -142,6 +148,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);
 
+	shader->setInt("configuration.depthPrePass", DEPTH_PRE_PASS_UNIT);
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
 	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);

@@ -40,14 +40,31 @@ void DepthPrePass::render()
 
 	Runtime::depthPrePassShader->bind();
 
-	/*std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
+	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->shadowPass();
-	}*/
+		entityLinks.at(i)->depthPrePass();
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void DepthPrePass::bind(unsigned int slot)
 {
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, texture);
+}
+
+unsigned int DepthPrePass::getWidth() const
+{
+	return width;
+}
+
+unsigned int DepthPrePass::getHeight() const
+{
+	return height;
+}
+
+unsigned int DepthPrePass::getFramebuffer() const
+{
+	return framebuffer;
 }

@@ -70,6 +70,35 @@ void EntityProcessor::forwardPass()
 
 void EntityProcessor::depthPrePass()
 {
+    // No model to render available -> cancel
+    if (entity->model == nullptr) return;
+
+    // Calculate model matrix
+    glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
+
+    // Get model
+    Model* model = entity->model;
+
+    // Depth pre pass each mesh of entity
+    for (int a = 0; a < model->meshes.size(); a++) {
+        // Get current mesh
+        Mesh* mesh = model->meshes.at(a);
+
+        // Bind mesh
+        mesh->bind();
+
+        // Set depth pre pass shader uniforms
+        Shader* depthPrePassShader = Runtime::depthPrePassShader;
+        depthPrePassShader->setMatrix4("modelMatrix", modelMatrix);
+        depthPrePassShader->setMatrix4("viewMatrix", currentViewMatrix);
+        depthPrePassShader->setMatrix4("projectionMatrix", currentProjectionMatrix);
+
+        // Render mesh
+        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+
+        // Update diagnostics
+        Runtime::currentDrawCalls++;
+    }
 }
 
 void EntityProcessor::shadowPass()

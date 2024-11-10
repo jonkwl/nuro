@@ -47,14 +47,15 @@ void ShadowMap::render()
 
 	// Bind shadow pass shader and render each objects depth on shadow map
 	glEnable(GL_DEPTH_TEST);
-	glCullFace(GL_FRONT);
+	// glCullFace(GL_FRONT);
+
 	Runtime::shadowPassShader->bind();
 
 	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->shadowPass();
 	}
-	glCullFace(GL_BACK);
+	// glCullFace(GL_BACK);
 
 	// Unbind shadow map framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -66,12 +67,12 @@ void ShadowMap::bind(unsigned int slot)
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-unsigned int ShadowMap::getSize()
+unsigned int ShadowMap::getSize() const
 {
 	return size;
 }
 
-unsigned int ShadowMap::getFramebuffer()
+unsigned int ShadowMap::getFramebuffer() const
 {
 	return framebuffer;
 }

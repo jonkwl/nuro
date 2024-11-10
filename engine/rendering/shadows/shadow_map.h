@@ -14,8 +14,8 @@ public:
 	void render();
 	void bind(unsigned int slot);
 
-	unsigned int getSize();
-	unsigned int getFramebuffer();
+	unsigned int getSize() const;
+	unsigned int getFramebuffer() const;
 private:
 	unsigned int size;
 

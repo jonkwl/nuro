@@ -34,6 +34,8 @@ bool Runtime::showDiagnostics = true;
 
 Skybox* Runtime::activeSkybox = nullptr;
 
+DepthPrePass* Runtime::depthPrePass = nullptr;
+
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
 unsigned int Runtime::currentDrawCalls = 0;
@@ -230,10 +232,11 @@ int Runtime::START_LOOP() {
 	awake();
 
 	// Create shadow map
-	bool depth_map_saved = false;
+	bool shadow_map_saved = false;
 	mainShadowMap = new ShadowMap(4096);
 
-	DepthPrePass* depthPrePass = new DepthPrePass(Window::width, Window::height);
+	bool depth_pre_pass_saved = false;
+	depthPrePass = new DepthPrePass(Window::width, Window::height);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		auto renderStart = std::chrono::high_resolution_clock::now();
@@ -309,6 +312,13 @@ int Runtime::START_LOOP() {
 		auto depthPrePassEnd = std::chrono::high_resolution_clock::now();
 		depthPrePassDuration = std::chrono::duration<double, std::milli>(depthPrePassEnd - depthPrePassStart).count();
 
+		if (!depth_pre_pass_saved) {
+			glBindFramebuffer(GL_FRAMEBUFFER, depthPrePass->getFramebuffer());
+			saveDepthMapAsImage(depthPrePass->getWidth(), depthPrePass->getHeight(), "./depth_pre_pass.png");
+			depth_pre_pass_saved = true;
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
 		//
 		// SHADOW PASS: Render shadow map
 		//
@@ -321,10 +331,10 @@ int Runtime::START_LOOP() {
 		shadowPassDuration = std::chrono::duration<double, std::milli>(shadowPassEnd - shadowPassStart).count();
 
 		// Save depth map
-		if (!depth_map_saved) {
+		if (!shadow_map_saved) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
-			saveDepthMapAsImage(mainShadowMap->getSize(), mainShadowMap->getSize(), "./depth_map.png");
-			depth_map_saved = true;
+			saveDepthMapAsImage(mainShadowMap->getSize(), mainShadowMap->getSize(), "./shadow_map.png");
+			shadow_map_saved = true;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 

@@ -14,7 +14,7 @@ uniform mat4 lightSpaceMatrix;
 out vec3 v_normal;
 out vec2 v_uv;
 out mat3 v_tbnMatrix;
-out vec3 v_fragmentPosition;
+out vec3 v_fragmentWorldPosition;
 out vec4 v_fragmentLightSpacePosition;
 
 vec3 getNormal() {
@@ -28,12 +28,12 @@ mat3 getTBNMatrix(){
     return mat3(t, b, n);
 }
 
-vec3 getFragmentPosition(){
+vec3 getFragmentWorldPosition(){
     return vec3(modelMatrix * vec4(position_in, 1.0));
 }
 
 vec4 getFragmentLightSpacePosition() {
-    return lightSpaceMatrix * vec4(v_fragmentPosition, 1.0);
+    return lightSpaceMatrix * vec4(v_fragmentWorldPosition, 1.0);
 }
 
 void main()
@@ -41,7 +41,7 @@ void main()
     v_normal = getNormal();
     v_uv = uv_in;
     v_tbnMatrix = getTBNMatrix();
-    v_fragmentPosition = getFragmentPosition();
+    v_fragmentWorldPosition = getFragmentWorldPosition();
     v_fragmentLightSpacePosition = getFragmentLightSpacePosition();
 
     gl_Position = mvpMatrix * vec4(position_in, 1.0);

@@ -9,20 +9,27 @@ out vec4 FragColor;
 in vec3 v_normal;
 in vec2 v_uv;
 in mat3 v_tbnMatrix;
-in vec3 v_fragmentPosition;
+in vec3 v_fragmentWorldPosition;
 in vec4 v_fragmentLightSpacePosition;
 
 const float PI = 3.14159265359;
 
 vec2 uv;
+vec2 fragmentScreenPosition;
 
 struct Configuration {
+    int width;
+    int height;
+    
     float gamma;
 
-    bool solidMode;
-    bool castShadows;
+    sampler2D depthPrePass;
 
+    bool solidMode;
+
+    bool castShadows;
     sampler2D shadowMap;
+
     vec3 cameraPosition;
 
     int numDirectionalLights;
@@ -199,7 +206,7 @@ float getDirectionalShadow(vec3 lightDirection)
 }
 
 float getLinearFog(float start, float end){
-    float depth = length(v_fragmentPosition - configuration.cameraPosition);
+    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float fogRange = end - start;
     float fogDistance = end - depth;
     float factor = clamp(fogDistance / fogRange, 0.0, 1.0);
@@ -207,13 +214,13 @@ float getLinearFog(float start, float end){
 }
 
 float getExponentialFog(float density){
-    float depth = length(v_fragmentPosition - configuration.cameraPosition);
+    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(depth * density);
     return factor;
 }
 
 float getExponentialSquaredFog(float density){
-    float depth = length(v_fragmentPosition - configuration.cameraPosition);
+    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(sqr(depth * density));
     return factor;
 }
@@ -380,7 +387,7 @@ vec4 shadePBR() {
     float ambientOcclusion = getAmbientOcclusion();
 
     vec3 N = getNormal();
-    vec3 V = normalize(configuration.cameraPosition - v_fragmentPosition); // view direction
+    vec3 V = normalize(configuration.cameraPosition - v_fragmentWorldPosition); // view direction
 
     float dialectricReflecitivity = 0.04;
     vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
@@ -405,9 +412,9 @@ vec4 shadePBR() {
     for (int i = 0; i < configuration.numPointLights; i++) {
         PointLight pointLight = pointLights[i];
 
-        float distance = length(pointLight.position - v_fragmentPosition);
+        float distance = length(pointLight.position - v_fragmentWorldPosition);
         float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-        vec3 L = normalize(pointLight.position - v_fragmentPosition);
+        vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
 
         Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity, 0.0);
     }
@@ -416,9 +423,9 @@ vec4 shadePBR() {
     for (int i = 0; i < configuration.numSpotLights; i++) {
         SpotLight spotLight = spotLights[i];
 
-        float distance = length(spotLight.position - v_fragmentPosition);
+        float distance = length(spotLight.position - v_fragmentWorldPosition);
         float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
-        vec3 L = normalize(spotLight.position - v_fragmentPosition);
+        vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
 
         float theta = dot(L, normalize(-spotLight.direction));
         float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
@@ -472,7 +479,7 @@ vec4 shadeSolid()
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
 
-        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentPosition);
+        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentWorldPosition);
         float shadow = getDirectionalShadow(shadowDirection);
 
         diffuse += max(dot(N, L), 0.0) * directionalLight.color * directionalLight.intensity * attenuation * (1.0 - shadow);
@@ -482,9 +489,9 @@ vec4 shadeSolid()
     {
         PointLight pointLight = pointLights[i];
 
-        float distance = length(pointLight.position - v_fragmentPosition);
+        float distance = length(pointLight.position - v_fragmentWorldPosition);
         float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-        vec3 L = normalize(pointLight.position - v_fragmentPosition);
+        vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
 
         float shadow = 0.0;
 
@@ -547,9 +554,22 @@ vec4 shadeDepth() {
     return vec4(vec3(depth), 1.0);
 }
 
+vec4 shadeShadowMap() {
+    vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
+    projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
+    float depth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
+    return vec4(vec3(depth), 1.0);
+}
+
+vec4 shadeScreenSpace() {
+    return vec4(vec2(fragmentScreenPosition), 0.0, 1.0);
+}
+
 void main()
 {
     uv = v_uv * material.tiling + material.offset;
+    fragmentScreenPosition = gl_FragCoord.xy / vec2(configuration.width, configuration.height);
+
     if (!configuration.solidMode) {
         FragColor = shadePBR();
     } else {

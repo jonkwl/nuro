@@ -9,6 +9,10 @@ public:
 
 	void render();
 	void bind(unsigned int slot);
+
+	unsigned int getWidth() const;
+	unsigned int getHeight() const;
+	unsigned int getFramebuffer() const;
 private:
 	unsigned int width;
 	unsigned int height;

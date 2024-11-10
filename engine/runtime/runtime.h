@@ -98,6 +98,9 @@ public:
 	static bool showEngineUI; // Shows engine ui (only available in inspector mode)
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
+	// Pre Pass
+	static DepthPrePass* depthPrePass;
+
 	// Shadow settings
 	static ShadowMap* mainShadowMap; // Default shadow map
 

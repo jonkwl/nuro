@@ -438,3 +438,6 @@ depth_map.png
 /user/assets
 
 **/fa-solid-900.ttf
+
+**/shadow_map.png
+**/depth_pre_pass.png
