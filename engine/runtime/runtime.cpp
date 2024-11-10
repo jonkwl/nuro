@@ -46,7 +46,7 @@ double Runtime::shadowPassDuration = 0.0;
 double Runtime::forwardPassDuration = 0.0;
 double Runtime::uiPassDuration = 0.0;
 
-float Runtime::directionalIntensity = 0.15f;
+float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
@@ -206,7 +206,7 @@ int Runtime::START_LOOP() {
 	mainShadowMap = new ShadowMap(4096);
 
 	// Creating default skybox
-	defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_mini.png");
+	defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_night.png");
 	/*defaultSky = Cubemap::GetByFaces(
 		"./resources/skybox/environment/right.jpg",
 		"./resources/skybox/environment/left.jpg",
