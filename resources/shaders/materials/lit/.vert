@@ -17,7 +17,7 @@ out mat3 v_tbnMatrix;
 out vec3 v_fragmentPosition;
 out vec4 v_fragmentLightSpacePosition;
 
-vec3 getNormals() {
+vec3 getNormal() {
     return normalize(normalMatrix * normal_in);
 }
 
@@ -38,7 +38,7 @@ vec4 getFragmentLightSpacePosition() {
 
 void main()
 {
-    v_normal = getNormals();
+    v_normal = getNormal();
     v_uv = uv_in;
     v_tbnMatrix = getTBNMatrix();
     v_fragmentPosition = getFragmentPosition();

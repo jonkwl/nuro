@@ -36,9 +36,11 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 unsigned int Runtime::currentDrawCalls = 0;
 unsigned int Runtime::currentVertices = 0;
 unsigned int Runtime::currentPolygons = 0;
+double Runtime::renderDuration = 0.0;
 double Runtime::depthPrePassDuration = 0.0;
 double Runtime::shadowPassDuration = 0.0;
 double Runtime::forwardPassDuration = 0.0;
+double Runtime::uiPassDuration = 0.0;
 
 float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
@@ -230,6 +232,8 @@ int Runtime::START_LOOP() {
 	mainShadowMap = new ShadowMap(2048, shadowPassShader);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
+		auto renderStart = std::chrono::high_resolution_clock::now();
+
 		unsigned int width = Window::width, height = Window::height;
 
 		//
@@ -273,7 +277,7 @@ int Runtime::START_LOOP() {
 		//
 		// UPDATE PHASE 3: EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
 		// (NONE)
-		//
+		// 
 
 		//
 		// UPDATE PHASE 4: UPDATE GAME LOGIC
@@ -344,6 +348,8 @@ int Runtime::START_LOOP() {
 		//
 		// UPDATE PHASE 7: RENDER ENGINE UI
 		//
+
+		auto uiPassStart = std::chrono::high_resolution_clock::now();
 
 		EngineUI::newFrame();
 
@@ -438,12 +444,18 @@ int Runtime::START_LOOP() {
 
 		EngineUI::render();
 
+		auto uiPassEnd = std::chrono::high_resolution_clock::now();
+		uiPassDuration = std::chrono::duration<double, std::milli>(uiPassEnd - uiPassStart).count();
+
 		//
 		// UPDATE PHASE 8: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
 		//
 
 		glfwSwapBuffers(Window::glfw);
 		glfwPollEvents();
+
+		auto renderEnd = std::chrono::high_resolution_clock::now();
+		renderDuration = std::chrono::duration<double, std::milli>(renderEnd - renderStart).count();
 	}
 
 	// Exit application

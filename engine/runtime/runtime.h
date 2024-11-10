@@ -109,9 +109,11 @@ public:
 	static unsigned int currentDrawCalls;
 	static unsigned int currentVertices;
 	static unsigned int currentPolygons;
+	static double renderDuration;
 	static double depthPrePassDuration;
 	static double shadowPassDuration;
 	static double forwardPassDuration;
+	static double uiPassDuration;
 
 	// tmp for material testing
 	static float intensity;
