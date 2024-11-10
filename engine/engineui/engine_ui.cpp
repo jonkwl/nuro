@@ -142,7 +142,9 @@ void EngineUI::render() {
 
 	/* PREPARE ALL WINDOWS */
 	for (int i = 0; i < windows.size(); i++) {
-		// windows[i]->prepare();
+		if (Runtime::inspectorMode && Runtime::showEngineUI) {
+			windows[i]->prepare();
+		}
 	}
 
 	/* RENDERING AND DRAW CALLS */

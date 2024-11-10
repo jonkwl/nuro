@@ -46,10 +46,10 @@ double Runtime::shadowPassDuration = 0.0;
 double Runtime::forwardPassDuration = 0.0;
 double Runtime::uiPassDuration = 0.0;
 
-float Runtime::directionalIntensity = 0.1f;
-glm::vec3 Runtime::directionalColor = glm::vec3(1.0f, 0.86f, 0.51f);
-glm::vec3 Runtime::directionalDirection = glm::vec3(-0.3f, -0.5f, 1.0f);
-glm::vec3 Runtime::directionalPosition = glm::vec3(0.0f, 5.0f, -5.0f);
+float Runtime::directionalIntensity = 0.2f;
+glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
+glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
+glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
 float Runtime::intensity = 0.5f;
 float Runtime::range = 15.0f;
@@ -201,8 +201,12 @@ int Runtime::START_LOOP() {
 	defaultMaterial = new UnlitMaterial();
 	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
+	// Create default shadow map
+	bool shadow_map_saved = false;
+	mainShadowMap = new ShadowMap(4096);
+
 	// Creating default skybox
-	defaultSky = Cubemap::GetBySingle("./resources/skybox/test.png");
+	defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_mini.png");
 	/*defaultSky = Cubemap::GetByFaces(
 		"./resources/skybox/environment/right.jpg",
 		"./resources/skybox/environment/left.jpg",
@@ -215,6 +219,10 @@ int Runtime::START_LOOP() {
 
 	// Setup post processing
 	PostProcessing::initialize();
+
+	// Set inspector camera data
+	inspectorCamera->transform.position.y = 2.0f;
+	inspectorCamera->transform.rotation.x = 22.0f;
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -229,10 +237,6 @@ int Runtime::START_LOOP() {
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
 	//
 	awake();
-
-	// Create shadow map
-	bool shadow_map_saved = false;
-	mainShadowMap = new ShadowMap(4096);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		auto renderStart = std::chrono::high_resolution_clock::now();

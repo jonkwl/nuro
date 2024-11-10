@@ -24,12 +24,12 @@ void awake() {
 
 	// Create all entities
 	sphereMaterial = new LitMaterial();
-	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	sphereMaterial->roughness = 0.2f;
+	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	sphereMaterial->roughness = 0.34f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 3.6f);
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS);
@@ -43,7 +43,7 @@ void awake() {
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
 	Entity* pbrSphere = new Entity();
 	pbrSphere->model = pbrSphereModel;
-	pbrSphere->transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
+	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO);
 	LitMaterial* plank = new LitMaterial();
@@ -54,11 +54,11 @@ void awake() {
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
 	cube = new Entity();
 	cube->model = cubeModel;
-	cube->transform.position = glm::vec3(-3.0f, 1.5f, 0.0f);
+	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	floorMaterial->roughness = 0.0f;
+	floorMaterial->roughness = 0.4f;
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
@@ -67,22 +67,23 @@ void awake() {
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
 	LitMaterial* wallMaterial = new LitMaterial();
-	wallMaterial->baseColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-	wallMaterial->roughness = 0.0f;
+	wallMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	wallMaterial->roughness = 0.19f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
 	wallModel->castsShadow = true;
 	/*Entity* wall1 = new Entity();
 	wall1->model = wallModel;
 	wall1->transform.position = glm::vec3(-10.0f, -1.0f, 0.0f);
 	wall1->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);*/
-	Entity* wall2 = new Entity();
+	/*Entity* wall2 = new Entity();
 	wall2->model = wallModel;
-	wall2->transform.position = glm::vec3(10.0f, -1.0f, 0.0f);
+	wall2->transform.position = glm::vec3(15.0f, -1.0f, 5.0f);
 	wall2->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
-	/*Entity* wall3 = new Entity();
+	wall2->transform.rotation = glm::vec3(0.0f, -45.0f, 0.0f);*/
+	Entity* wall3 = new Entity();
 	wall3->model = wallModel;
 	wall3->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
-	wall3->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);*/
+	wall3->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 	/*Entity* wall4 = new Entity();
 	wall4->model = wallModel;
 	wall4->transform.position = glm::vec3(0.0f, -1.0f, -10.0f);
@@ -107,7 +108,7 @@ void awake() {
 
 	Entity* smearedWall = new Entity();
 	smearedWall->model = smearedWallModel;
-	smearedWall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
+	smearedWall->transform.position = glm::vec3(17.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
@@ -122,9 +123,9 @@ void awake() {
 	Entity* mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->model = mannequinModel;
-	mannequin->transform.position = glm::vec3(2.0f, -0.9f, 1.0f);
+	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	mannequin->transform.scale = glm::vec3(2.0f);
+	mannequin->transform.scale = glm::vec3(1.4f);
 }
 
 void update() {

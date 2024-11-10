@@ -112,7 +112,7 @@ float sqr(float x)
 
 vec3 getNormal(){
     if (!material.enableNormalMap){
-        return v_normal;
+        return normalize(v_normal);
     }
 
     vec3 normal = texture(material.normalMap, uv).rgb;
