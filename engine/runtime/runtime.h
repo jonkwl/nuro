@@ -99,7 +99,7 @@ public:
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
 	// Pre Pass
-	static DepthPrePass* depthPrePass;
+	static DepthPrePass* depthPrePass; // Will always be nullptr, not doing any depth pre pass anymore
 
 	// Shadow settings
 	static ShadowMap* mainShadowMap; // Default shadow map
@@ -111,8 +111,8 @@ public:
 	static unsigned int currentDrawCalls;
 	static unsigned int currentVertices;
 	static unsigned int currentPolygons;
+
 	static double renderDuration;
-	static double depthPrePassDuration;
 	static double shadowPassDuration;
 	static double forwardPassDuration;
 	static double uiPassDuration;

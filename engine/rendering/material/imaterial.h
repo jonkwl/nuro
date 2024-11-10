@@ -3,7 +3,6 @@
 #include "../engine/rendering/shader/shader.h"
 
 enum TextureUnit {
-    DEPTH_PRE_PASS_UNIT,
     SHADOW_MAP_UNIT,
     ALBEDO_MAP_UNIT,
     NORMAL_MAP_UNIT,

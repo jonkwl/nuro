@@ -15,15 +15,9 @@ in vec4 v_fragmentLightSpacePosition;
 const float PI = 3.14159265359;
 
 vec2 uv;
-vec2 fragmentScreenPosition;
 
 struct Configuration {
-    int width;
-    int height;
-    
     float gamma;
-
-    sampler2D depthPrePass;
 
     bool solidMode;
 
@@ -561,14 +555,9 @@ vec4 shadeShadowMap() {
     return vec4(vec3(depth), 1.0);
 }
 
-vec4 shadeScreenSpace() {
-    return vec4(vec2(fragmentScreenPosition), 0.0, 1.0);
-}
-
 void main()
 {
     uv = v_uv * material.tiling + material.offset;
-    fragmentScreenPosition = gl_FragCoord.xy / vec2(configuration.width, configuration.height);
 
     if (!configuration.solidMode) {
         FragColor = shadePBR();

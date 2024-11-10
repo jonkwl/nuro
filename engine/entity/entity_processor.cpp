@@ -75,6 +75,7 @@ void EntityProcessor::depthPrePass()
 
     // Calculate model matrix
     glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
+    glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * modelMatrix;
 
     // Get model
     Model* model = entity->model;
@@ -89,9 +90,7 @@ void EntityProcessor::depthPrePass()
 
         // Set depth pre pass shader uniforms
         Shader* depthPrePassShader = Runtime::depthPrePassShader;
-        depthPrePassShader->setMatrix4("modelMatrix", modelMatrix);
-        depthPrePassShader->setMatrix4("viewMatrix", currentViewMatrix);
-        depthPrePassShader->setMatrix4("projectionMatrix", currentProjectionMatrix);
+        depthPrePassShader->setMatrix4("mvp", mvpMatrix);
 
         // Render mesh
         glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);

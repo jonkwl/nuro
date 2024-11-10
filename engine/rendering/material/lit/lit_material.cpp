@@ -47,17 +47,13 @@ void LitMaterial::bind()
 	shader->bind();
 
 	// Set scene data
-	shader->setInt("configuration.width", Window::width);
-	shader->setInt("configuration.height", Window::height);
+	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
 
 	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
-
-	Runtime::depthPrePass->bind(DEPTH_PRE_PASS_UNIT);
 
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 
 	shader->setBool("configuration.castShadows", Runtime::shadows);
-	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
 
 	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
@@ -148,7 +144,6 @@ void LitMaterial::syncStaticUniforms()
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);
 
-	shader->setInt("configuration.depthPrePass", DEPTH_PRE_PASS_UNIT);
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
 	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);
@@ -186,7 +181,8 @@ void LitMaterial::syncLightUniforms()
 	shader->setFloat("spotLights[0].innerCutoff", glm::cos(glm::radians(12.5f)));
 	shader->setFloat("spotLights[0].outerCutoff", glm::cos(glm::radians(20.0f)));
 
-	shader->setInt("fog.type", 3);
+	shader->setInt("fog.type", 0);
+	/*shader->setInt("fog.type", 3);
 	shader->setVec3("fog.color", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("fog.data[0]", 0.01);
+	shader->setFloat("fog.data[0]", 0.01);*/
 }

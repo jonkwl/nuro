@@ -134,7 +134,6 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
     UIComponents::space(0.0f, 5.0f);
 
     UIComponents::indicatorLabel("Render:", Runtime::renderDuration, "ms");
-    UIComponents::indicatorLabel("Depth Pre-Pass:", Runtime::depthPrePassDuration, "ms");
     UIComponents::indicatorLabel("Shadow Pass:", Runtime::shadowPassDuration, "ms");
     UIComponents::indicatorLabel("Forward Pass:", Runtime::forwardPassDuration, "ms");
     UIComponents::indicatorLabel("UI Pass:", Runtime::uiPassDuration, "ms");

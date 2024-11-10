@@ -42,7 +42,6 @@ unsigned int Runtime::currentDrawCalls = 0;
 unsigned int Runtime::currentVertices = 0;
 unsigned int Runtime::currentPolygons = 0;
 double Runtime::renderDuration = 0.0;
-double Runtime::depthPrePassDuration = 0.0;
 double Runtime::shadowPassDuration = 0.0;
 double Runtime::forwardPassDuration = 0.0;
 double Runtime::uiPassDuration = 0.0;
@@ -203,15 +202,15 @@ int Runtime::START_LOOP() {
 	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
-	// defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default.jpg");
-	defaultSky = Cubemap::GetByFaces(
+	defaultSky = Cubemap::GetBySingle("./resources/skybox/test/test.hdr");
+	/*defaultSky = Cubemap::GetByFaces(
 		"./resources/skybox/environment/right.jpg",
 		"./resources/skybox/environment/left.jpg",
 		"./resources/skybox/environment/top.jpg",
 		"./resources/skybox/environment/bottom.jpg",
 		"./resources/skybox/environment/front.jpg",
 		"./resources/skybox/environment/back.jpg"
-	);
+	);*/
 	defaultSkybox = new Skybox(defaultSky);
 
 	// Setup post processing
@@ -234,9 +233,6 @@ int Runtime::START_LOOP() {
 	// Create shadow map
 	bool shadow_map_saved = false;
 	mainShadowMap = new ShadowMap(4096);
-
-	bool depth_pre_pass_saved = false;
-	depthPrePass = new DepthPrePass(Window::width, Window::height);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		auto renderStart = std::chrono::high_resolution_clock::now();
@@ -300,24 +296,6 @@ int Runtime::START_LOOP() {
 		glm::mat4 projection = Transformation::projectionMatrix(renderCamera, width, height);
 		EntityProcessor::currentViewMatrix = view;
 		EntityProcessor::currentProjectionMatrix = projection;
-
-		//
-		// DEPTH PRE PASS: Render view space depth map
-		//
-
-		auto depthPrePassStart = std::chrono::high_resolution_clock::now();
-
-		depthPrePass->render();
-
-		auto depthPrePassEnd = std::chrono::high_resolution_clock::now();
-		depthPrePassDuration = std::chrono::duration<double, std::milli>(depthPrePassEnd - depthPrePassStart).count();
-
-		if (!depth_pre_pass_saved) {
-			glBindFramebuffer(GL_FRAMEBUFFER, depthPrePass->getFramebuffer());
-			saveDepthMapAsImage(depthPrePass->getWidth(), depthPrePass->getHeight(), "./depth_pre_pass.png");
-			depth_pre_pass_saved = true;
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
 
 		//
 		// SHADOW PASS: Render shadow map
