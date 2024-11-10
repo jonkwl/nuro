@@ -435,6 +435,7 @@ FodyWeavers.xsd
 
 depth_map.png
 
+/resources/skybox/default
 /user/assets
 
 **/fa-solid-900.ttf

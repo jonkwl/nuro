@@ -202,7 +202,7 @@ int Runtime::START_LOOP() {
 	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Creating default skybox
-	defaultSky = Cubemap::GetBySingle("./resources/skybox/test/test.hdr");
+	defaultSky = Cubemap::GetBySingle("./resources/skybox/test.png");
 	/*defaultSky = Cubemap::GetByFaces(
 		"./resources/skybox/environment/right.jpg",
 		"./resources/skybox/environment/left.jpg",

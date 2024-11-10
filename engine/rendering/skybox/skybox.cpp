@@ -61,7 +61,13 @@ bool Skybox::create_textures()
     Log::printProcessInfo("Loading textures...");
 	for (int i = 0; i < cubemap->faces.size(); i++) {
         CubemapFace face = cubemap->faces[i];
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, face.width, face.height, 0, GL_RGB, GL_UNSIGNED_BYTE, face.data.data());
+
+        GLenum format = GL_RGB;
+        if (face.channels == 4) {
+            format = GL_RGBA;
+        }
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, face.width, face.height, 0, format, GL_UNSIGNED_BYTE, face.data.data());
 	}
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
