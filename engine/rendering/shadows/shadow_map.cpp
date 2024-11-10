@@ -2,10 +2,9 @@
 
 #include "../engine/runtime/runtime.h"
 
-ShadowMap::ShadowMap(unsigned int size, Shader* shader)
+ShadowMap::ShadowMap(unsigned int size)
 {
 	this->size = size;
-	this->shader = shader;
 
 	this->framebuffer = 0;
 	this->texture = 0;
@@ -17,10 +16,12 @@ ShadowMap::ShadowMap(unsigned int size, Shader* shader)
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
 	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
@@ -31,7 +32,7 @@ ShadowMap::ShadowMap(unsigned int size, Shader* shader)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::render(glm::vec3 lightPosition, glm::vec3 lightDirection)
+void ShadowMap::render()
 {
 	// Set viewport and bind shadow map framebuffer
 	glViewport(0, 0, size, size);
@@ -39,15 +40,15 @@ void ShadowMap::render(glm::vec3 lightPosition, glm::vec3 lightDirection)
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Get shadow map transformation matrices
-	glm::mat4 lightProjection = Transformation::lightProjectionMatrix(Runtime::getCameraRendering());
-	glm::mat4 lightView = Transformation::lightViewMatrix(lightPosition, lightDirection);
-	glm::mat4 lightSpace = lightProjection * lightView;
-	EntityProcessor::currentLightSpace = lightSpace;
+	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering());
+	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
+	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
+	EntityProcessor::currentLightSpaceMatrix = lightSpaceMatrix;
 
 	// Bind shadow pass shader and render each objects depth on shadow map
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
-	shader->bind();
+	Runtime::shadowPassShader->bind();
 
 	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {

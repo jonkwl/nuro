@@ -150,6 +150,9 @@
     <ClCompile Include="engine\engineui\ui_layout.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\rendering\prepass\depth_pre_pass.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -557,6 +560,9 @@
     <ClInclude Include="dependencies\include\assimp\Compiler\pushpack1.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="engine\rendering\prepass\depth_pre_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\environment\top.jpg">
@@ -622,6 +628,8 @@
     <None Include="dependencies\include\assimp\vector3.inl">
       <Filter>Headerdateien</Filter>
     </None>
+    <None Include="resources\shaders\prepass\depth_pre_pass\.frag" />
+    <None Include="resources\shaders\prepass\depth_pre_pass\.vert" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\fonts\Inter_18pt-Regular.ttf" />

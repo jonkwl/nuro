@@ -8,6 +8,9 @@ UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Cubemap* Runtime::defaultSky = nullptr;
 Skybox* Runtime::defaultSkybox = nullptr;
 
+Shader* Runtime::depthPrePassShader = nullptr;
+Shader* Runtime::shadowPassShader = nullptr;
+
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
 Camera* Runtime::inspectorCamera = new Camera();
@@ -186,10 +189,12 @@ int Runtime::START_LOOP() {
 	std::vector<std::string> shader_paths = { 
 		"./resources/shaders/materials", 
 		"./resources/shaders/postprocessing",
+		"./resources/shaders/prepass",
 		"./resources/shaders/shadows" };
 	ShaderBuilder::loadAndCompile(shader_paths);
 
-	Shader* shadowPassShader = ShaderBuilder::get("shadow_pass");
+	depthPrePassShader = ShaderBuilder::get("depth_pre_pass");
+	shadowPassShader = ShaderBuilder::get("shadow_pass");
 
 	// Creating default material
 	defaultMaterial = new UnlitMaterial();
@@ -206,9 +211,6 @@ int Runtime::START_LOOP() {
 		"./resources/skybox/environment/back.jpg"
 	);
 	defaultSkybox = new Skybox(defaultSky);
-
-	// Initialize entity processor default fields
-	EntityProcessor::linkDefaults(defaultMaterial, shadowPassShader);
 
 	// Setup post processing
 	PostProcessing::initialize();
@@ -229,7 +231,9 @@ int Runtime::START_LOOP() {
 
 	// Create shadow map
 	bool depth_map_saved = false;
-	mainShadowMap = new ShadowMap(2048, shadowPassShader);
+	mainShadowMap = new ShadowMap(4096);
+
+	DepthPrePass* depthPrePass = new DepthPrePass(Window::width, Window::height);
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 		auto renderStart = std::chrono::high_resolution_clock::now();
@@ -237,7 +241,7 @@ int Runtime::START_LOOP() {
 		unsigned int width = Window::width, height = Window::height;
 
 		//
-		// UPDATE PHASE 1: PREPARE COMING RENDER PASSES
+		// PREPARE COMING RENDER PASSES
 		//
 
 		// Update times
@@ -254,6 +258,31 @@ int Runtime::START_LOOP() {
 			averageFpsFrameCount = 0;
 		}
 
+		// Reset diagnostics
+		currentDrawCalls = 0;
+		currentVertices = 0;
+		currentPolygons = 0;
+
+		//
+		// UPDATE ANY SCRIPTS NEEDING UPDATE
+		//
+
+		Input::updateInputs();
+
+		//
+		// EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
+		// (NONE)
+		// 
+
+		//
+		// UPDATE GAME LOGIC
+		//
+		update();
+
+		//
+		// SELECT CAMERA TO BE RENDERED AND CALCULATE VIEW & PROJECTION MATRICES
+		//
+
 		// Select camera to be rendered (depending on whether inspector mode is activated)
 		if (!inspectorMode) {
 			renderCamera = activeCamera;
@@ -263,35 +292,30 @@ int Runtime::START_LOOP() {
 			InspectorMode::refreshInspector();
 		}
 
-		// Reset diagnostics
-		currentDrawCalls = 0;
-		currentVertices = 0;
-		currentPolygons = 0;
+		// Get view and projection matrices
+		glm::mat4 view = Transformation::viewMatrix(renderCamera);
+		glm::mat4 projection = Transformation::projectionMatrix(renderCamera, width, height);
+		EntityProcessor::currentViewMatrix = view;
+		EntityProcessor::currentProjectionMatrix = projection;
 
 		//
-		// UPDATE PHASE 2: UPDATE ANY SCRIPTS NEEDING UPDATE
+		// DEPTH PRE PASS: Render view space depth map
 		//
 
-		Input::updateInputs();
+		auto depthPrePassStart = std::chrono::high_resolution_clock::now();
+
+		depthPrePass->render();
+
+		auto depthPrePassEnd = std::chrono::high_resolution_clock::now();
+		depthPrePassDuration = std::chrono::duration<double, std::milli>(depthPrePassEnd - depthPrePassStart).count();
 
 		//
-		// UPDATE PHASE 3: EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
-		// (NONE)
-		// 
-
-		//
-		// UPDATE PHASE 4: UPDATE GAME LOGIC
-		//
-		update();
-
-		//
-		// UPDATE PHASE 5: SHADOW PASS: Render shadow map
+		// SHADOW PASS: Render shadow map
 		//
 
 		auto shadowPassStart = std::chrono::high_resolution_clock::now();
 
-		// directionalPosition = renderCamera->transform.position;
-		mainShadowMap->render(directionalPosition, directionalDirection);
+		mainShadowMap->render();
 
 		auto shadowPassEnd = std::chrono::high_resolution_clock::now();
 		shadowPassDuration = std::chrono::duration<double, std::milli>(shadowPassEnd - shadowPassStart).count();
@@ -303,9 +327,9 @@ int Runtime::START_LOOP() {
 			depth_map_saved = true;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-		  
+
 		//
-		// UPDATE PHASE 6: FORWARD RENDERING PASS: Render next frame
+		// FORWARD RENDERING PASS: Render next frame
 		//
 
 		auto forwardPassStart = std::chrono::high_resolution_clock::now();
@@ -318,12 +342,6 @@ int Runtime::START_LOOP() {
 
 		// Render wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		// Get view and projection matrices
-		glm::mat4 view = Transformation::viewMatrix(renderCamera);
-		glm::mat4 projection = Transformation::projectionMatrix(renderCamera, width, height);
-		EntityProcessor::currentView = view;
-		EntityProcessor::currentProjection = projection;
 
 		// Render each linked entity
 		glEnable(GL_DEPTH_TEST);
@@ -344,7 +362,7 @@ int Runtime::START_LOOP() {
 
 		auto forwardPassEnd = std::chrono::high_resolution_clock::now();
 		forwardPassDuration = std::chrono::duration<double, std::milli>(forwardPassEnd - forwardPassStart).count();
-		
+
 		//
 		// UPDATE PHASE 7: RENDER ENGINE UI
 		//

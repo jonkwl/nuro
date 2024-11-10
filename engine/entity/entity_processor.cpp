@@ -1,14 +1,10 @@
 #include "entity_processor.h"
 
-glm::mat4 EntityProcessor::currentView = glm::mat4(1.0);
-glm::mat4 EntityProcessor::currentProjection = glm::mat4(1.0);
-glm::mat4 EntityProcessor::currentLightSpace = glm::mat4(1.0);
+glm::mat4 EntityProcessor::currentViewMatrix = glm::mat4(1.0);
+glm::mat4 EntityProcessor::currentProjectionMatrix = glm::mat4(1.0);
+glm::mat4 EntityProcessor::currentLightSpaceMatrix = glm::mat4(1.0);
 
-IMaterial* EntityProcessor::defaultMaterial = nullptr;
-
-Shader* EntityProcessor::shadowPassShader = nullptr;
-
-#include "../engine/runtime/runtime.h" // For diagnostics
+#include "../engine/runtime/runtime.h"
 
 EntityProcessor::EntityProcessor(Entity* entity)
 {
@@ -22,7 +18,7 @@ void EntityProcessor::forwardPass()
 
     // Calculate matrices
     glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
-    glm::mat4 mvpMatrix = currentProjection * currentView * modelMatrix;
+    glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * modelMatrix;
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(modelMatrix));
 
     // Get model
@@ -50,7 +46,7 @@ void EntityProcessor::forwardPass()
         else {
 
             // No available material found -> use default material
-            material = defaultMaterial;
+            material = Runtime::defaultMaterial;
         }
 
         // Bind material
@@ -60,7 +56,7 @@ void EntityProcessor::forwardPass()
         material->getShader()->setMatrix4("mvpMatrix", mvpMatrix);
         material->getShader()->setMatrix4("modelMatrix", modelMatrix);
         material->getShader()->setMatrix3("normalMatrix", modelMatrix);
-        material->getShader()->setMatrix4("lightSpaceMatrix", currentLightSpace);
+        material->getShader()->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
         glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
@@ -70,6 +66,10 @@ void EntityProcessor::forwardPass()
         Runtime::currentVertices += mesh->vertices.size();
         Runtime::currentPolygons += mesh->indices.size() / 3;
     }
+}
+
+void EntityProcessor::depthPrePass()
+{
 }
 
 void EntityProcessor::shadowPass()
@@ -95,8 +95,9 @@ void EntityProcessor::shadowPass()
         mesh->bind();
 
         // Set shadow pass shader uniforms
-        shadowPassShader->setMatrix4("model", modelMatrix);
-        shadowPassShader->setMatrix4("lightSpace", currentLightSpace);
+        Shader* shadowPassShader = Runtime::shadowPassShader;
+        shadowPassShader->setMatrix4("modelMatrix", modelMatrix);
+        shadowPassShader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
         glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
@@ -104,10 +105,4 @@ void EntityProcessor::shadowPass()
         // Update diagnostics
         Runtime::currentDrawCalls++;
     }
-}
-
-void EntityProcessor::linkDefaults(IMaterial* _defaultMaterial, Shader* _shadowPassShader)
-{
-    defaultMaterial = _defaultMaterial;
-    shadowPassShader = _shadowPassShader;
 }

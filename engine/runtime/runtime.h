@@ -34,21 +34,16 @@ using json = nlohmann::json;
 #include "../engine/rendering/skybox/skybox.h"
 #include "../engine/rendering/skybox/cubemap.h"
 #include "../engine/rendering/postprocessing/post_processing.h"
+#include "../engine/rendering/prepass/depth_pre_pass.h"
 #include "../engine/rendering/shadows/shadow_map.h"
-
 #include "../engine/entity/entity.h"
 #include "../engine/camera/camera.h"
-
 #include "../engine/utils/log.h"
 #include "../engine/utils/inspector_mode.h"
-
 #include "../engine/engineui/engine_ui.h"
 #include "../engine/engineui/engine_dialog.h"
-
 #include "../engine/window/window.h"
-
 #include "../engine/input/input.h"
-
 #include "../user/src/game_logic.h"
 
 class Runtime {
@@ -63,6 +58,10 @@ public:
 	static UnlitMaterial* defaultMaterial;
 	static Cubemap* defaultSky;
 	static Skybox* defaultSkybox;
+
+	// Default shaders
+	static Shader* depthPrePassShader;
+	static Shader* shadowPassShader;
 
 	// Camera settings
 	static void useCamera(Camera* camera);

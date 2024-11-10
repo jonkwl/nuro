@@ -9,16 +9,15 @@
 class ShadowMap
 {
 public:
-	ShadowMap(unsigned int size, Shader* shader);
+	ShadowMap(unsigned int size);
 
-	void render(glm::vec3 lightPosition, glm::vec3 lightDirection);
+	void render();
 	void bind(unsigned int slot);
 
 	unsigned int getSize();
 	unsigned int getFramebuffer();
 private:
 	unsigned int size;
-	Shader* shader;
 
 	unsigned int texture;
 	unsigned int framebuffer;

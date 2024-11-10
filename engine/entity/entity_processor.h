@@ -9,16 +9,13 @@ class EntityProcessor
 public:
 	EntityProcessor(Entity* entity);
 	void forwardPass();
+	void depthPrePass();
 	void shadowPass();
 
-	static void linkDefaults(IMaterial* _defaultMaterial, Shader* _shadowPassShader);
-
-	static glm::mat4 currentView;
-	static glm::mat4 currentProjection;
-	static glm::mat4 currentLightSpace;
+	static glm::mat4 currentViewMatrix;
+	static glm::mat4 currentProjectionMatrix;
+	static glm::mat4 currentLightSpaceMatrix;
 private:
 	Entity* entity;
-
-	static IMaterial* defaultMaterial;
-	static Shader* shadowPassShader;
 };
+ 
