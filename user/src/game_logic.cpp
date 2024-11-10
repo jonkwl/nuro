@@ -25,7 +25,8 @@ void awake() {
 	// Create all entities
 	sphereMaterial = new LitMaterial();
 	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	sphereMaterial->roughness = 0.34f;
+	sphereMaterial->roughness = 0.16f;
+	sphereMaterial->metallic = 0.04f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
@@ -57,8 +58,8 @@ void awake() {
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
-	floorMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	floorMaterial->roughness = 0.4f;
+	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	floorMaterial->roughness = 0.35f;
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
@@ -67,8 +68,8 @@ void awake() {
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
 	LitMaterial* wallMaterial = new LitMaterial();
-	wallMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	wallMaterial->roughness = 0.19f;
+	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
 	wallModel->castsShadow = true;
 	/*Entity* wall1 = new Entity();
@@ -108,7 +109,7 @@ void awake() {
 
 	Entity* smearedWall = new Entity();
 	smearedWall->model = smearedWallModel;
-	smearedWall->transform.position = glm::vec3(17.0f, -1.0f, 10.0f);
+	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
 	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);

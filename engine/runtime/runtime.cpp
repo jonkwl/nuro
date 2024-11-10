@@ -46,7 +46,7 @@ double Runtime::shadowPassDuration = 0.0;
 double Runtime::forwardPassDuration = 0.0;
 double Runtime::uiPassDuration = 0.0;
 
-float Runtime::directionalIntensity = 0.2f;
+float Runtime::directionalIntensity = 0.15f;
 glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
