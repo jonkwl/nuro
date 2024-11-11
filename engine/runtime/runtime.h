@@ -99,7 +99,7 @@ public:
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
 	// Pre Pass
-	static DepthPrePass* depthPrePass; // Will always be nullptr, not doing any depth pre pass anymore
+	static DepthPrePass* depthPrePass; // Unused render pipeline depth pre pass
 
 	// Shadow settings
 	static ShadowMap* mainShadowMap; // Default shadow map

@@ -12,6 +12,10 @@ void PostProcessing::setup()
 
 void PostProcessing::render(unsigned int input)
 {
+	// Bind default framebuffer to render to screen
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Bind input texture
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, input);
 

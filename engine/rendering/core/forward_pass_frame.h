@@ -7,9 +7,7 @@ class ForwardPassFrame
 public:
 	static void setup(unsigned int msaaSamples);
 	static void bind();
-	static void render();
-
-	static unsigned int getOutput();
+	static unsigned int blit();
 private:
 	static unsigned int output; // Output texture
 

@@ -316,7 +316,7 @@ int Runtime::START_LOOP() {
 
 		Profiler::stop("shadow_pass");
 
-		// Save depth map
+		// Save shadow map
 		if (!shadow_map_saved) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
 			saveDepthMapAsImage(mainShadowMap->getSize(), mainShadowMap->getSize(), "./shadow_map.png");
@@ -329,7 +329,10 @@ int Runtime::START_LOOP() {
 		//
 
 		Profiler::start("forward_pass");
-		
+
+		// Bind forward pass framebuffer
+		ForwardPassFrame::bind();
+
 		// Set viewport and bind post processing framebuffer
 		if (!wireframe) {
 			glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
@@ -337,11 +340,8 @@ int Runtime::START_LOOP() {
 		else {
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		}
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, width, height);
-
-		// Bind forward pass framebuffer
-		ForwardPassFrame::bind();
 
 		// Set wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -360,10 +360,8 @@ int Runtime::START_LOOP() {
 			activeSkybox->render(view, projection);
 		}
 
-		// Render forward pass framebuffer
-		ForwardPassFrame::render();
-
-		unsigned int forwardOutput = ForwardPassFrame::getOutput();
+		// Bilt forward pass framebuffer
+		unsigned int FORWARD_PASS_OUTPUT = ForwardPassFrame::blit();
 
 		Profiler::stop("forward_pass");
 
@@ -371,7 +369,8 @@ int Runtime::START_LOOP() {
 		// POST PROCESSING PASS
 		//
 
-		PostProcessing::render(forwardOutput);
+		// Render post processing pass using forward pass output as input
+		PostProcessing::render(FORWARD_PASS_OUTPUT);
 
 		//
 		// RENDER ENGINE UI

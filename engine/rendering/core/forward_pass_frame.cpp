@@ -70,23 +70,15 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 void ForwardPassFrame::bind()
 {
 	// Bind framebuffer
-	// glBindFramebuffer(GL_FRAMEBUFFER, ppFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, msaaFbo);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void ForwardPassFrame::render()
+unsigned int ForwardPassFrame::blit()
 {
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, ppFbo);
 	glBlitFramebuffer(0, 0, Window::width, Window::height, 0, 0, Window::width, Window::height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-	// Unbind framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-unsigned int ForwardPassFrame::getOutput()
-{
 	return output;
 }
