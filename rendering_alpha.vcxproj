@@ -135,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\rendering\prepass\depth_pre_pass.cpp" />
+    <ClCompile Include="engine\rendering\core\depth_pre_pass.cpp" />
     <ClCompile Include="engine\rendering\material\lit\lit_material.cpp" />
     <ClCompile Include="engine\rendering\material\unlit\unlit_material.cpp" />
     <ClCompile Include="engine\rendering\skybox\cubemap.cpp" />
@@ -272,7 +272,7 @@
     <ClInclude Include="dependencies\include\GLFW\glfw3native.h" />
     <ClInclude Include="dependencies\include\json\json.hpp" />
     <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
-    <ClInclude Include="engine\rendering\prepass\depth_pre_pass.h" />
+    <ClInclude Include="engine\rendering\core\depth_pre_pass.h" />
     <ClInclude Include="engine\engineui\IconsFontAwesome6.h" />
     <ClInclude Include="engine\rendering\skybox\cubemap.h" />
     <ClInclude Include="engine\rendering\material\lit\lit_material.h" />

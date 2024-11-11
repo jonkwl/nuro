@@ -147,7 +147,7 @@
     <ClCompile Include="engine\engineui\ui_layout.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\prepass\depth_pre_pass.cpp">
+    <ClCompile Include="engine\rendering\core\depth_pre_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\utils\profiler.cpp">
@@ -563,7 +563,7 @@
     <ClInclude Include="dependencies\include\assimp\Compiler\pushpack1.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\prepass\depth_pre_pass.h">
+    <ClInclude Include="engine\rendering\core\depth_pre_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\utils\profiler.h">

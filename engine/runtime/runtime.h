@@ -31,7 +31,7 @@ using json = nlohmann::json;
 #include "../engine/rendering/skybox/cubemap.h"
 #include "../engine/rendering/core/forward_pass_frame.h"
 #include "../engine/rendering/postprocessing/post_processing.h"
-#include "../engine/rendering/prepass/depth_pre_pass.h"
+#include "../engine/rendering/core/depth_pre_pass.h"
 #include "../engine/rendering/shadows/shadow_map.h"
 #include "../engine/rendering/primitives/quad.h"
 #include "../engine/entity/entity.h"
