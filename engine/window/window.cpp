@@ -11,6 +11,11 @@ bool Window::fullscreen = true;
 
 GLenum Window::cursorMode = GLFW_CURSOR_DISABLED;
 
+glm::vec2 Window::getSize()
+{
+	return glm::vec2(width, height);
+}
+
 void Window::setCursor(GLenum cusor_mode) {
 	cursorMode = cusor_mode;
 	glfwSetInputMode(Window::glfw, GLFW_CURSOR, cursorMode);

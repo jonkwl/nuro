@@ -22,18 +22,18 @@
 using json = nlohmann::json;
 
 #include "../engine/entity/entity_processor.h"
-
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/material/unlit/unlit_material.h"
 #include "../engine/rendering/texture/texture.h"
-#include "../engine/rendering/model/cube_model.h"
 #include "../engine/rendering/model/model.h"
 #include "../engine/rendering/skybox/skybox.h"
 #include "../engine/rendering/skybox/cubemap.h"
+#include "../engine/rendering/core/forward_pass_frame.h"
 #include "../engine/rendering/postprocessing/post_processing.h"
 #include "../engine/rendering/prepass/depth_pre_pass.h"
 #include "../engine/rendering/shadows/shadow_map.h"
+#include "../engine/rendering/primitives/quad.h"
 #include "../engine/entity/entity.h"
 #include "../engine/camera/camera.h"
 #include "../engine/utils/log.h"
@@ -86,6 +86,7 @@ public:
 
 	// Render settings
 	static glm::vec4 clearColor; // buffer clearing color
+	static unsigned int msaaSamples; // MSAA Samples
 	static bool vsync; // V-Sync option
 	static bool wireframe; // Wireframe option
 	static bool solidMode; // Solid mode option (simple render)

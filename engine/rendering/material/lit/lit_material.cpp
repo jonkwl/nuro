@@ -49,7 +49,7 @@ void LitMaterial::bind()
 	// Set scene data
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
 
-	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
+	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
 
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 
@@ -139,7 +139,7 @@ void LitMaterial::setAmbientOcclusionMap(Texture* ambientOcclusionMap)
 
 void LitMaterial::syncStaticUniforms()
 {
-	shader->setFloat("configuration.gamma", PostProcessing::setup.gamma);
+	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
 
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);

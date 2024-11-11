@@ -7,10 +7,9 @@
 #include "../engine/utils/log.h"
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
+#include "../engine/rendering/primitives/quad.h"
 
-struct PostProcessingSetup {
-	unsigned int msaaSamples = 2;
-
+struct PostProcessingConfiguration {
 	float exposure = 1.0f;
 	float contrast = 1.0f;
 	float gamma = 2.2f;
@@ -32,24 +31,12 @@ struct PostProcessingSetup {
 class PostProcessing
 {
 public:
-	static void initialize();
-	static void bind();
-	static void render();
+	static void setup();
+	static void render(unsigned int input);
 
-	static PostProcessingSetup setup;
+	static PostProcessingConfiguration configuration;
 private:
-	static unsigned int screenTexture; // Texture to be rendered on screen
+	static void syncConfiguration();
 
-	static unsigned int ppFbo; // Post processing framebuffer
-	static unsigned int ppRbo; // Post processing renderbuffer
-
-	static unsigned int msaaFbo; // Anti-Aliasing framebuffer
-	static unsigned int msaaRbo; // Anti-Aliasing renderbuffer
-	static unsigned int msaaColorBuffer; // Anti-Aliasing color buffer texture
-
-	static unsigned int renderVao; // Rendered quad vertex array object
-	static unsigned int renderVbo; // Rendered quad vertex buffer object
-
-	static Shader* shader;
+	static Shader* finalPassShader;
 };
-

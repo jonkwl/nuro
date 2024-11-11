@@ -21,7 +21,8 @@ float Runtime::deltaTime = 0.0f;
 int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
-glm::vec4 Runtime::clearColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+glm::vec4 Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+unsigned int Runtime::msaaSamples = 4;
 bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;
@@ -57,6 +58,8 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
+// more tmp
+bool skipSkyboxLoad = true;
 bool settingA = false;
 bool settingB = false;
 bool settingC = false;
@@ -202,19 +205,20 @@ int Runtime::START_LOOP() {
 	mainShadowMap = new ShadowMap(4096);
 
 	// Creating default skybox
-	defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_night.png");
-	/*defaultSky = Cubemap::GetByFaces(
-		"./resources/skybox/environment/right.jpg",
-		"./resources/skybox/environment/left.jpg",
-		"./resources/skybox/environment/top.jpg",
-		"./resources/skybox/environment/bottom.jpg",
-		"./resources/skybox/environment/front.jpg",
-		"./resources/skybox/environment/back.jpg"
-	);*/
-	defaultSkybox = new Skybox(defaultSky);
+	if (!skipSkyboxLoad) {
 
-	// Setup post processing
-	PostProcessing::initialize();
+		defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_night.png");
+		/*defaultSky = Cubemap::GetByFaces(
+			"./resources/skybox/environment/right.jpg",
+			"./resources/skybox/environment/left.jpg",
+			"./resources/skybox/environment/top.jpg",
+			"./resources/skybox/environment/bottom.jpg",
+			"./resources/skybox/environment/front.jpg",
+			"./resources/skybox/environment/back.jpg"
+		);*/
+		defaultSkybox = new Skybox(defaultSky);
+
+	}
 
 	// Set inspector camera data
 	inspectorCamera->transform.position.y = 2.0f;
@@ -226,8 +230,12 @@ int Runtime::START_LOOP() {
 
 	Window::setCursor(Window::cursorMode);
 
+	ForwardPassFrame::setup(msaaSamples);
+	PostProcessing::setup();
 	EngineUI::setup();
 	Input::setupInputs();
+
+	Quad::create();
 
 	//
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
@@ -323,15 +331,22 @@ int Runtime::START_LOOP() {
 		Profiler::start("forward_pass");
 		
 		// Set viewport and bind post processing framebuffer
-		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+		if (!wireframe) {
+			glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+		}
+		else {
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
 		glClear(GL_COLOR_BUFFER_BIT);
 		glViewport(0, 0, width, height);
-		PostProcessing::bind();
 
-		// Render wireframe if enabled
+		// Bind forward pass framebuffer
+		ForwardPassFrame::bind();
+
+		// Set wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		// Render each linked entity
+		// Forward pass each linked entity
 		glEnable(GL_DEPTH_TEST);
 		for (int i = 0; i < entityLinks.size(); i++) {
 			entityLinks.at(i)->forwardPass();
@@ -341,17 +356,25 @@ int Runtime::START_LOOP() {
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		// Render skybox
-		if (activeSkybox != nullptr) {
+		if (activeSkybox != nullptr && !wireframe) {
 			activeSkybox->render(view, projection);
 		}
 
-		// Render framebuffer
-		PostProcessing::render();
+		// Render forward pass framebuffer
+		ForwardPassFrame::render();
+
+		unsigned int forwardOutput = ForwardPassFrame::getOutput();
 
 		Profiler::stop("forward_pass");
 
 		//
-		// UPDATE PHASE 7: RENDER ENGINE UI
+		// POST PROCESSING PASS
+		//
+
+		PostProcessing::render(forwardOutput);
+
+		//
+		// RENDER ENGINE UI
 		//
 
 		Profiler::start("ui_pass");
@@ -366,21 +389,21 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Wireframe", wireframe);
 
 				InputPair x = {"Directional Intensity", directionalIntensity, 0.0f, 5.0f};
-				InputPair a = { "Exposure", PostProcessing::setup.exposure, 0.0f, 10.0f };
-				InputPair b = { "Contrast", PostProcessing::setup.contrast, 0.95f, 1.1f };
-				InputPair c = { "Gamma", PostProcessing::setup.gamma, 0.0f, 5.0f };
-				InputPair d = { "Chromatic Aberration Strength", PostProcessing::setup.chromaticAberrationStrength, 0.0f, 5.0f };
-				InputPair e = { "Chromatic Aberration Range", PostProcessing::setup.chromaticAberrationRange, 0.0f, 1.0f };
-				InputPair f = { "Chromatic Aberration Red Offset", PostProcessing::setup.chromaticAberrationRedOffset, -0.1f, 0.1f };
-				InputPair g = { "Chromatic Aberration Blue Offset", PostProcessing::setup.chromaticAberrationBlueOffset, -0.1f, 0.1f };
-				InputPair h = { "Vignette Strength", PostProcessing::setup.vignetteStrength, 0.0f, 1.0f };
-				InputPair i = { "Vignette Radius", PostProcessing::setup.vignetteRadius, 0.0f, 1.0f };
-				InputPair j = { "Vignette Softness", PostProcessing::setup.vignetteSoftness, 0.0f, 1.0f };
-				InputPair k = { "Vignette Roundness", PostProcessing::setup.vignetteRoundness, 0.0f, 2.0f };
+				InputPair a = { "Exposure", PostProcessing::configuration.exposure, 0.0f, 10.0f };
+				InputPair b = { "Contrast", PostProcessing::configuration.contrast, 0.95f, 1.1f };
+				InputPair c = { "Gamma", PostProcessing::configuration.gamma, 0.0f, 5.0f };
+				InputPair d = { "Chromatic Aberration Strength", PostProcessing::configuration.chromaticAberrationStrength, 0.0f, 5.0f };
+				InputPair e = { "Chromatic Aberration Range", PostProcessing::configuration.chromaticAberrationRange, 0.0f, 1.0f };
+				InputPair f = { "Chromatic Aberration Red Offset", PostProcessing::configuration.chromaticAberrationRedOffset, -0.1f, 0.1f };
+				InputPair g = { "Chromatic Aberration Blue Offset", PostProcessing::configuration.chromaticAberrationBlueOffset, -0.1f, 0.1f };
+				InputPair h = { "Vignette Strength", PostProcessing::configuration.vignetteStrength, 0.0f, 1.0f };
+				InputPair i = { "Vignette Radius", PostProcessing::configuration.vignetteRadius, 0.0f, 1.0f };
+				InputPair j = { "Vignette Softness", PostProcessing::configuration.vignetteSoftness, 0.0f, 1.0f };
+				InputPair k = { "Vignette Roundness", PostProcessing::configuration.vignetteRoundness, 0.0f, 2.0f };
 				EngineDialog::input_dialog("Basic Settings @ Post Processing", { x, a, b, c, d, e, f, g, h, i, j, k });
 
-				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::setup.chromaticAberration);
-				EngineDialog::bool_dialog("Vignette", PostProcessing::setup.vignette);
+				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::configuration.chromaticAberration);
+				EngineDialog::bool_dialog("Vignette", PostProcessing::configuration.vignette);
 
 				EngineDialog::float_dialog("PL1 Intensity", intensity, 0.0f, 12.0f);
 				EngineDialog::float_dialog("PL1 Range", range, 0.0f, 15.0f);

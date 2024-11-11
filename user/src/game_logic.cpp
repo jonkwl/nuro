@@ -15,8 +15,7 @@ LitMaterial* sphereMaterial = nullptr;
 
 void awake() {
 	// Set default skybox
-	Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	Runtime::setSkybox(Runtime::defaultSkybox);
+	// Runtime::setSkybox(Runtime::defaultSkybox);
 
 	// Create camera
 	camera = new Camera();
@@ -72,32 +71,14 @@ void awake() {
 	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
 	wallModel->castsShadow = true;
-	/*Entity* wall1 = new Entity();
-	wall1->model = wallModel;
-	wall1->transform.position = glm::vec3(-10.0f, -1.0f, 0.0f);
-	wall1->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);*/
-	/*Entity* wall2 = new Entity();
-	wall2->model = wallModel;
-	wall2->transform.position = glm::vec3(15.0f, -1.0f, 5.0f);
-	wall2->transform.scale = glm::vec3(0.1f, 5.0f, 10.0f);
-	wall2->transform.rotation = glm::vec3(0.0f, -45.0f, 0.0f);*/
-	Entity* wall3 = new Entity();
-	wall3->model = wallModel;
-	wall3->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
-	wall3->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
-	/*Entity* wall4 = new Entity();
-	wall4->model = wallModel;
-	wall4->transform.position = glm::vec3(0.0f, -1.0f, -10.0f);
-	wall4->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);*/
-	/*Entity* wall5 = new Entity();
-	wall5->model = wallModel;
-	wall5->transform.position = glm::vec3(0.0f, 3.9, 0.0f);
-	wall5->transform.scale = glm::vec3(10.0f, 0.1f, 10.0f);*/
+	Entity* wall = new Entity();
+	wall->model = wallModel;
+	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
+	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
-	Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", ALBEDO);
+	/*Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", ALBEDO);
 	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", ROUGHNESS);
 	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", NORMAL);
-
 	LitMaterial* smearedWallMaterial = new LitMaterial();
 	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.96f, 0.86f, 1.0f);
 	smearedWallMaterial->setAlbedoMap(smearedWallAlbedo);
@@ -106,7 +87,6 @@ void awake() {
 	smearedWallMaterial->setNormalMap(smearedWallNormal);
 	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
 	Model* smearedWallModel = new Model("./user/assets/models/cube.obj", { smearedWallMaterial, smearedWallMaterial });
-
 	Entity* smearedWall = new Entity();
 	smearedWall->model = smearedWallModel;
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
@@ -126,7 +106,7 @@ void awake() {
 	mannequin->model = mannequinModel;
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	mannequin->transform.scale = glm::vec3(1.4f);
+	mannequin->transform.scale = glm::vec3(1.4f);*/
 }
 
 void update() {

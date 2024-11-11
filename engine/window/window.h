@@ -2,6 +2,7 @@
 
 #include <string>
 #include <GLFW/glfw3.h>
+#include <glm.hpp>
 
 class Window
 {
@@ -10,6 +11,8 @@ public:
 
 	static int width;
 	static int height;
+
+	static glm::vec2 getSize();
 
 	static std::string title;
 

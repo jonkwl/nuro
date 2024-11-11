@@ -1,0 +1,77 @@
+#version 330 core
+
+out vec4 FragColor;
+
+in vec2 uv;
+
+uniform sampler2D inputTexture;
+uniform vec2 resolution;
+
+struct Configuration {
+    float exposure;
+    float contrast;
+    float gamma;
+
+    bool chromaticAberration;
+    float chromaticAberrationStrength;
+    float chromaticAberrationRange;
+    float chromaticAberrationRedOffset;
+    float chromaticAberrationBlueOffset;
+
+    bool vignette;
+    float vignetteStrength;
+    vec3 vignetteColor;
+    float vignetteRadius;
+    float vignetteSoftness;
+    float vignetteRoundness;
+};
+uniform Configuration configuration;
+
+vec3 ACES(vec3 x) {
+    const float a = 2.51;
+    const float b = 0.03;
+    const float c = 2.43;
+    const float d = 0.59;
+    const float e = 0.14;
+    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+}
+
+void main()
+{
+    vec3 color = texture(inputTexture, uv).rgb;
+    vec2 center = vec2(0.5, 0.5);
+    vec2 toCenter = uv - center;
+    float aspectRatio = resolution.x / resolution.y;
+
+    // Chromatic Aberration
+    if (configuration.chromaticAberration) {
+        float dist = length(toCenter);
+        float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationStrength;
+        vec2 redOffset = uv + toCenter * aberration * configuration.chromaticAberrationRedOffset;
+        vec2 greenOffset = uv;
+        vec2 blueOffset = uv - toCenter * aberration * configuration.chromaticAberrationBlueOffset;
+        color.r = texture2D(inputTexture, redOffset).r;
+        color.g = texture2D(inputTexture, greenOffset).g;
+        color.b = texture2D(inputTexture, blueOffset).b;
+    }
+
+    // Vignette
+    if (configuration.vignette) {
+        vec2 scaledUV = vec2((uv.x - center.x) / configuration.vignetteRoundness, uv.y - center.y);
+        float vignetteDist = length(scaledUV);
+        float vignetteFactor = smoothstep(configuration.vignetteRadius, configuration.vignetteRadius - configuration.vignetteSoftness, vignetteDist);
+        color *= mix(configuration.vignetteColor, vec3(1.0), vignetteFactor);
+    }
+
+    // Contrast
+    color = ((color - 0.5) * configuration.contrast) + 0.5;
+    color = clamp(color, 0.0, 1.0);
+
+    // Exposure and Tone Mapping
+    color = ACES(color * configuration.exposure);
+
+    // Gamma
+    color = pow(color, vec3(1.0 / configuration.gamma));
+
+    FragColor = vec4(color, 1.0);
+}

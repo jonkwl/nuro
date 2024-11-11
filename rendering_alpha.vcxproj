@@ -140,7 +140,6 @@
     <ClCompile Include="engine\rendering\material\unlit\unlit_material.cpp" />
     <ClCompile Include="engine\rendering\skybox\cubemap.cpp" />
     <ClCompile Include="engine\main.cpp" />
-    <ClCompile Include="engine\rendering\model\cube_model.cpp" />
     <ClCompile Include="engine\window\window.cpp" />
     <ClCompile Include="engine\camera\camera.cpp" />
     <ClCompile Include="engine\entity\entity.cpp" />
@@ -159,6 +158,7 @@
     <ClCompile Include="engine\rendering\skybox\skybox.cpp" />
     <ClCompile Include="engine\rendering\postprocessing\post_processing.cpp" />
     <ClCompile Include="engine\rendering\shadows\shadow_map.cpp" />
+    <ClCompile Include="engine\rendering\core\forward_pass_frame.cpp" />
     <ClCompile Include="imgui\implot.cpp" />
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
@@ -167,6 +167,7 @@
     <ClCompile Include="engine\engineui\ui_components.cpp" />
     <ClCompile Include="engine\engineui\ui_layout.cpp" />
     <ClCompile Include="engine\utils\profiler.cpp" />
+    <ClCompile Include="engine\rendering\primitives\quad.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -275,7 +276,6 @@
     <ClInclude Include="engine\engineui\IconsFontAwesome6.h" />
     <ClInclude Include="engine\rendering\skybox\cubemap.h" />
     <ClInclude Include="engine\rendering\material\lit\lit_material.h" />
-    <ClInclude Include="engine\rendering\model\cube_model.h" />
     <ClInclude Include="engine\window\window.h" />
     <ClInclude Include="engine\camera\camera.h" />
     <ClInclude Include="engine\rendering\material\imaterial.h" />
@@ -297,10 +297,12 @@
     <ClInclude Include="engine\rendering\postprocessing\post_processing.h" />
     <ClInclude Include="engine\rendering\shadows\shadow_map.h" />
     <ClInclude Include="engine\engineui\engine_window.h" />
+    <ClInclude Include="engine\rendering\core\forward_pass_frame.h" />
     <ClInclude Include="imgui\implot.h" />
     <ClInclude Include="imgui\implot_internal.h" />
     <ClInclude Include="engine\engineui\windows\scene_view.h" />
     <ClInclude Include="engine\utils\profiler.h" />
+    <ClInclude Include="engine\rendering\primitives\quad.h" />
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="engine\transform\transform.h" />
     <ClInclude Include="engine\engineui\ui_components.h" />

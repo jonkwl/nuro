@@ -96,9 +96,6 @@
     <ClCompile Include="engine\rendering\model\model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\model\cube_model.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="engine\utils\string_helper.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -154,6 +151,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\utils\profiler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\core\forward_pass_frame.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\rendering\primitives\quad.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -240,9 +243,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\model\model.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\model\cube_model.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\utils\string_helper.h">
@@ -567,6 +567,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\utils\profiler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\core\forward_pass_frame.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\primitives\quad.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
