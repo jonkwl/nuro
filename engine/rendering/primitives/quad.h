@@ -7,7 +7,7 @@ class Quad
 public:
 	static void create();
 	static void bind();
-	static void draw();
+	static void render();
 
 	static unsigned int getVBO();
 	static unsigned int getVAO();

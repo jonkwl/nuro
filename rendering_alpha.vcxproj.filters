@@ -159,6 +159,9 @@
     <ClCompile Include="engine\rendering\primitives\quad.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\rendering\postprocessing\debug\debug_pass.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -573,6 +576,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\primitives\quad.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\rendering\postprocessing\debug\debug_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

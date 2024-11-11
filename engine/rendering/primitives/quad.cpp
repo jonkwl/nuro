@@ -33,7 +33,7 @@ void Quad::bind()
 	glBindVertexArray(vao);
 }
 
-void Quad::draw()
+void Quad::render()
 {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }

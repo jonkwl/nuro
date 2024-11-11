@@ -8,34 +8,41 @@ void PostProcessing::setup()
 {
 	// Get default post processing finalPassShader
 	finalPassShader = ShaderBuilder::get("final_pass");
+
+	// Setup post processing pipeline
+	DebugPass::setup();
 }
 
 void PostProcessing::render(unsigned int input)
 {
+	// Disable any depth testing for whole post processing pass
+	glDisable(GL_DEPTH_TEST);
+
+	// Pass input through post processing pipeline
+	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = DebugPass::render(input);
+
 	// Bind default framebuffer to render to screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Bind input texture
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, input);
+	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_OUTPUT);
 
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
+	finalPassShader->setInt("inputTexture", 0);
+	finalPassShader->setVec2("resolution", Window::getSize());
+
+	// Sync post processing configuration with shader
 	syncConfiguration();
 
-	// Bind vao and texture and render framebuffer to screen
+	// Bind quad and render to screen
 	Quad::bind();
-
-	glDisable(GL_DEPTH_TEST);
-	Quad::draw();
-	glEnable(GL_DEPTH_TEST);
+	Quad::render();
 }
 
 void PostProcessing::syncConfiguration()
 {
-	finalPassShader->setInt("inputTexture", 0);
-	finalPassShader->setVec2("resolution", Window::getSize());
-
 	finalPassShader->setFloat("configuration.exposure", configuration.exposure);
 	finalPassShader->setFloat("configuration.contrast", configuration.contrast);
 	finalPassShader->setFloat("configuration.gamma", configuration.gamma);

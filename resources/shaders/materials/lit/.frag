@@ -1,4 +1,4 @@
-#version 460 core
+#version 330 core
 
 #define MAX_DIRECTIONAL_LIGHTS 1
 #define MAX_POINT_LIGHTS 5

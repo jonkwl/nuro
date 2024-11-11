@@ -136,6 +136,7 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
     UIComponents::indicatorLabel("Render:", Profiler::get("render"), "ms");
     UIComponents::indicatorLabel("Shadow Pass:", Profiler::get("shadow_pass"), "ms");
     UIComponents::indicatorLabel("Forward Pass:", Profiler::get("forward_pass"), "ms");
+    UIComponents::indicatorLabel("PP Pass:", Profiler::get("post_processing"), "ms");
     UIComponents::indicatorLabel("UI Pass:", Profiler::get("ui_pass"), "ms");
 
     ImGui::End();

@@ -8,6 +8,7 @@
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/primitives/quad.h"
+#include "../engine/rendering/postprocessing/debug/debug_pass.h"
 
 struct PostProcessingConfiguration {
 	float exposure = 1.0f;

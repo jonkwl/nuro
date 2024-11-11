@@ -5,8 +5,8 @@
 
 unsigned int ForwardPassFrame::output = 0;
 
-unsigned int ForwardPassFrame::ppFbo = 0;
-unsigned int ForwardPassFrame::ppRbo = 0;
+unsigned int ForwardPassFrame::fbo = 0;
+unsigned int ForwardPassFrame::rbo = 0;
 
 unsigned int ForwardPassFrame::msaaFbo = 0;
 unsigned int ForwardPassFrame::msaaRbo = 0;
@@ -14,11 +14,11 @@ unsigned int ForwardPassFrame::msaaColorBuffer = 0;
 
 void ForwardPassFrame::setup(unsigned int msaaSamples)
 {
-	// Create post processing framebuffer
-	glGenFramebuffers(1, &ppFbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, ppFbo);
+	// Create forward pass framebuffer
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	// Create post processing framebuffer texture
+	// Create forward pass framebuffer texture
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
@@ -28,13 +28,13 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
 
-	// Create post processing render buffer
-	glGenRenderbuffers(1, &ppRbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, ppRbo);
+	// Create forward pass render buffer
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::width, Window::height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ppRbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-	// Check for post processing framebuffer error
+	// Check for forward pass framebuffer error
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
 		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
@@ -77,7 +77,7 @@ unsigned int ForwardPassFrame::blit()
 {
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFbo);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, ppFbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glBlitFramebuffer(0, 0, Window::width, Window::height, 0, 0, Window::width, Window::height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	return output;

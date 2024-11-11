@@ -22,7 +22,7 @@ int Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
 glm::vec4 Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-unsigned int Runtime::msaaSamples = 4;
+unsigned int Runtime::msaaSamples = 8;
 bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;
@@ -346,7 +346,7 @@ int Runtime::START_LOOP() {
 		// Set wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		// Forward pass each linked entity
+		// Render each linked entity to bound forward pass frame
 		glEnable(GL_DEPTH_TEST);
 		for (int i = 0; i < entityLinks.size(); i++) {
 			entityLinks.at(i)->forwardPass();
@@ -355,7 +355,7 @@ int Runtime::START_LOOP() {
 		// Disable wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		// Render skybox
+		// Render skybox to bound forward pass frame
 		if (activeSkybox != nullptr && !wireframe) {
 			activeSkybox->render(view, projection);
 		}
@@ -369,8 +369,12 @@ int Runtime::START_LOOP() {
 		// POST PROCESSING PASS
 		//
 
-		// Render post processing pass using forward pass output as input
+		Profiler::start("post_processing");
+
+		// Render post processing pass to screen using forward pass output as input
 		PostProcessing::render(FORWARD_PASS_OUTPUT);
+
+		Profiler::stop("post_processing");
 
 		//
 		// RENDER ENGINE UI
