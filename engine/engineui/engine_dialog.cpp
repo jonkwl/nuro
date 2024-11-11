@@ -133,10 +133,10 @@ void EngineDialog::show_diagnostics(float deltaTime, int fps, float averageFps) 
 
     UIComponents::space(0.0f, 5.0f);
 
-    UIComponents::indicatorLabel("Render:", Runtime::renderDuration, "ms");
-    UIComponents::indicatorLabel("Shadow Pass:", Runtime::shadowPassDuration, "ms");
-    UIComponents::indicatorLabel("Forward Pass:", Runtime::forwardPassDuration, "ms");
-    UIComponents::indicatorLabel("UI Pass:", Runtime::uiPassDuration, "ms");
+    UIComponents::indicatorLabel("Render:", Profiler::get("render"), "ms");
+    UIComponents::indicatorLabel("Shadow Pass:", Profiler::get("shadow_pass"), "ms");
+    UIComponents::indicatorLabel("Forward Pass:", Profiler::get("forward_pass"), "ms");
+    UIComponents::indicatorLabel("UI Pass:", Profiler::get("ui_pass"), "ms");
 
     ImGui::End();
 }

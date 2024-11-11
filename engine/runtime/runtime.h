@@ -18,8 +18,6 @@
 #include <gtc/type_ptr.hpp>
 #include <gtc/quaternion.hpp>
 
-#include <chrono>
-
 #include <json/json.hpp>
 using json = nlohmann::json;
 
@@ -40,6 +38,7 @@ using json = nlohmann::json;
 #include "../engine/camera/camera.h"
 #include "../engine/utils/log.h"
 #include "../engine/utils/inspector_mode.h"
+#include "../engine/utils/profiler.h"
 #include "../engine/engineui/engine_ui.h"
 #include "../engine/engineui/engine_dialog.h"
 #include "../engine/window/window.h"
@@ -111,11 +110,6 @@ public:
 	static unsigned int currentDrawCalls;
 	static unsigned int currentVertices;
 	static unsigned int currentPolygons;
-
-	static double renderDuration;
-	static double shadowPassDuration;
-	static double forwardPassDuration;
-	static double uiPassDuration;
 
 	// tmp for material testing
 	static float intensity;

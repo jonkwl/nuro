@@ -153,6 +153,9 @@
     <ClCompile Include="engine\rendering\prepass\depth_pre_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="engine\utils\profiler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -561,6 +564,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\prepass\depth_pre_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utils\profiler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

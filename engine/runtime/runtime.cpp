@@ -41,10 +41,6 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 unsigned int Runtime::currentDrawCalls = 0;
 unsigned int Runtime::currentVertices = 0;
 unsigned int Runtime::currentPolygons = 0;
-double Runtime::renderDuration = 0.0;
-double Runtime::shadowPassDuration = 0.0;
-double Runtime::forwardPassDuration = 0.0;
-double Runtime::uiPassDuration = 0.0;
 
 float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
@@ -239,7 +235,8 @@ int Runtime::START_LOOP() {
 	awake();
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
-		auto renderStart = std::chrono::high_resolution_clock::now();
+
+		Profiler::start("render");
 
 		unsigned int width = Window::width, height = Window::height;
 
@@ -305,12 +302,11 @@ int Runtime::START_LOOP() {
 		// SHADOW PASS: Render shadow map
 		//
 
-		auto shadowPassStart = std::chrono::high_resolution_clock::now();
+		Profiler::start("shadow_pass");
 
 		mainShadowMap->render();
 
-		auto shadowPassEnd = std::chrono::high_resolution_clock::now();
-		shadowPassDuration = std::chrono::duration<double, std::milli>(shadowPassEnd - shadowPassStart).count();
+		Profiler::stop("shadow_pass");
 
 		// Save depth map
 		if (!shadow_map_saved) {
@@ -324,7 +320,7 @@ int Runtime::START_LOOP() {
 		// FORWARD RENDERING PASS: Render next frame
 		//
 
-		auto forwardPassStart = std::chrono::high_resolution_clock::now();
+		Profiler::start("forward_pass");
 		
 		// Set viewport and bind post processing framebuffer
 		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
@@ -352,14 +348,13 @@ int Runtime::START_LOOP() {
 		// Render framebuffer
 		PostProcessing::render();
 
-		auto forwardPassEnd = std::chrono::high_resolution_clock::now();
-		forwardPassDuration = std::chrono::duration<double, std::milli>(forwardPassEnd - forwardPassStart).count();
+		Profiler::stop("forward_pass");
 
 		//
 		// UPDATE PHASE 7: RENDER ENGINE UI
 		//
 
-		auto uiPassStart = std::chrono::high_resolution_clock::now();
+		Profiler::start("ui_pass");
 
 		EngineUI::newFrame();
 
@@ -454,8 +449,7 @@ int Runtime::START_LOOP() {
 
 		EngineUI::render();
 
-		auto uiPassEnd = std::chrono::high_resolution_clock::now();
-		uiPassDuration = std::chrono::duration<double, std::milli>(uiPassEnd - uiPassStart).count();
+		Profiler::stop("ui_pass");
 
 		//
 		// UPDATE PHASE 8: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
@@ -464,8 +458,7 @@ int Runtime::START_LOOP() {
 		glfwSwapBuffers(Window::glfw);
 		glfwPollEvents();
 
-		auto renderEnd = std::chrono::high_resolution_clock::now();
-		renderDuration = std::chrono::duration<double, std::milli>(renderEnd - renderStart).count();
+		Profiler::stop("render");
 	}
 
 	// Exit application
