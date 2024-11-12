@@ -5,6 +5,7 @@
 
 #include "../engine/window/window.h"
 #include "../engine/utils/log.h"
+#include "../engine/rendering/texture/texture.h"
 #include "../engine/rendering/shader/shader.h"
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/primitives/quad.h"
@@ -13,7 +14,8 @@
 
 enum FinalPassTextureSlots {
 	HDR_BUFFER_UNIT,
-	BLOOM_BUFFER_UNIT
+	BLOOM_BUFFER_UNIT,
+	LENS_DIRT_UNIT
 };
 
 struct PostProcessingConfiguration {
@@ -27,6 +29,10 @@ struct PostProcessingConfiguration {
 	float bloomThreshold = 0.02;
 	float bloomSoftThreshold = 0.0f;
 	float bloomFilterRadius = 0.0f;
+
+	bool lensDirt = false;
+	Texture* lensDirtTexture = nullptr;
+	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;
 	float chromaticAberrationStrength = 0.5f;

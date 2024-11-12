@@ -5,8 +5,9 @@
 #include "../engine/rendering/primitives/quad.h"
 #include "../engine/rendering/postprocessing/bloom/bloom_frame.h"
 
-glm::vec2 BloomPass::fViewportSize = glm::vec2(0.0f, 0.0f);
 glm::ivec2 BloomPass::iViewportSize = glm::ivec2(0, 0);
+glm::vec2 BloomPass::fViewportSize = glm::vec2(0.0f, 0.0f);
+glm::vec2 BloomPass::inversedViewportSize = glm::ivec2(0, 0);
 
 float BloomPass::threshold = 0.0f;
 float BloomPass::softThreshold = 0.0f;
@@ -20,6 +21,7 @@ void BloomPass::setup()
 {
 	iViewportSize = glm::ivec2(Window::width, Window::height);
 	fViewportSize = glm::vec2((float)Window::width, (float)Window::height);
+	inversedViewportSize = 1.0f / fViewportSize;
 
 	prefilterShader = ShaderBuilder::get("bloom_prefilter");
 	downsamplingShader = ShaderBuilder::get("bloom_downsampling");
@@ -79,7 +81,7 @@ void BloomPass::downsamplingPass(unsigned int input)
 	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
 
 	downsamplingShader->bind();
-	downsamplingShader->setVec2("resolution", fViewportSize);
+	downsamplingShader->setVec2("inversedResolution", inversedViewportSize);
 
 	// Bind input as initial texture input
 	glActiveTexture(GL_TEXTURE0);
@@ -95,7 +97,7 @@ void BloomPass::downsamplingPass(unsigned int input)
 		Quad::bind();
 		Quad::render();
 
-		downsamplingShader->setVec2("resolution", mip.fSize);
+		downsamplingShader->setVec2("inversedResolution", mip.inversedSize);
 		
 		glBindTexture(GL_TEXTURE_2D, mip.texture);
 	}
@@ -104,9 +106,11 @@ void BloomPass::downsamplingPass(unsigned int input)
 void BloomPass::upsamplingPass()
 {
 	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
+	const float aspectRatio = fViewportSize.x / fViewportSize.y;
 
 	upsamplingShader->bind();
 	upsamplingShader->setFloat("filterRadius", filterRadius);
+	upsamplingShader->setFloat("aspectRatio", aspectRatio);
 
 	// Set additive blending to enabled
 	glEnable(GL_BLEND);

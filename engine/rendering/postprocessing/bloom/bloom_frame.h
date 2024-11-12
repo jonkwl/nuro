@@ -5,8 +5,9 @@
 #include <glad/glad.h>
 
 struct BloomMip {
-	glm::vec2 fSize;
 	glm::ivec2 iSize;
+	glm::vec2 fSize;
+	glm::vec2 inversedSize;
 	unsigned int texture;
 };
 

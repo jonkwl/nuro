@@ -13,6 +13,7 @@ void PostProcessing::setup()
 	finalPassShader->bind();
 	finalPassShader->setInt("hdrBuffer", HDR_BUFFER_UNIT);
 	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER_UNIT);
+	finalPassShader->setInt("configuration.lensDirtTexture", LENS_DIRT_UNIT);
 
 	// Setup post processing pipeline
 	BloomPass::setup();
@@ -50,6 +51,10 @@ void PostProcessing::render(unsigned int input)
 	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
 
+	if (configuration.lensDirt) {
+		configuration.lensDirtTexture->bind(LENS_DIRT_UNIT);
+	}
+
 	// Bind quad and render to screen
 	Quad::bind();
 	Quad::render();
@@ -65,6 +70,9 @@ void PostProcessing::syncConfiguration()
 	finalPassShader->setVec3("configuration.bloomColor", configuration.bloomColor);
 	finalPassShader->setFloat("configuration.bloomBlend", configuration.bloomBlend);
 	finalPassShader->setFloat("configuration.bloomThreshold", configuration.bloomThreshold);
+
+	finalPassShader->setFloat("configuration.lensDirt", configuration.lensDirt);
+	finalPassShader->setFloat("configuration.lensDirtIntensity", configuration.lensDirtIntensity);
 
 	finalPassShader->setBool("configuration.chromaticAberration", configuration.chromaticAberration);
 	finalPassShader->setFloat("configuration.chromaticAberrationStrength", configuration.chromaticAberrationStrength);

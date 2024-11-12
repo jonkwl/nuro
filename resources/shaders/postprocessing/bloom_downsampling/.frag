@@ -3,15 +3,14 @@
 out vec3 FragColor;
 
 uniform sampler2D inputTexture;
-uniform vec2 resolution;
+uniform vec2 inversedResolution;
 
 in vec2 uv;
 
 void main()
 {
-    vec2 srcTexelSize = 1.0 / resolution;
-    float x = srcTexelSize.x;
-    float y = srcTexelSize.y;
+    float x = inversedResolution.x;
+    float y = inversedResolution.y;
 
     vec3 a = texture(inputTexture, vec2(uv.x - 2*x, uv.y + 2*y)).rgb;
     vec3 b = texture(inputTexture, vec2(uv.x,       uv.y + 2*y)).rgb;

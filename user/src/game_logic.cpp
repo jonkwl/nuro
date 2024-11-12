@@ -24,6 +24,11 @@ void awake() {
 	camera = new Camera();
 	Runtime::useCamera(camera);
 
+	// Post Processing Lens Dirt
+	Texture* lensDirt = new Texture("./user/assets/textures/lens_dirt.jpg", ALBEDO_MAP);
+	PostProcessing::configuration.lensDirtTexture = lensDirt;
+	PostProcessing::configuration.lensDirt = true;
+
 	// Create all entities
 	Texture* exampleEmissionMap = new Texture("./user/assets/textures/example_emission_map.jpg", EMISSION_MAP);
 	sphereMaterial = new LitMaterial();
@@ -31,7 +36,7 @@ void awake() {
 	sphereMaterial->roughness = 0.2f;
 	sphereMaterial->metallic = 1.0f;
 	sphereMaterial->setEmissionMap(exampleEmissionMap);
-	sphereMaterial->emissionIntensity = 5.0f;
+	sphereMaterial->emissionIntensity = 7.0f;
 	sphereMaterial->emissionColor = glm::vec3(0.88f, 0.38f, 0.0f);
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();

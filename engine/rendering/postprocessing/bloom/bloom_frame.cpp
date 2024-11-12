@@ -9,8 +9,8 @@ std::vector<BloomMip> BloomFrame::mipChain = std::vector<BloomMip>();
 
 void BloomFrame::setup(unsigned int mipDepth)
 {
-	glm::vec2 fMipSize = glm::vec2((float)Window::width, (float)Window::height);
 	glm::ivec2 iMipSize = glm::ivec2((int)Window::width, (int)Window::height);
+	glm::vec2 fMipSize = glm::vec2((float)Window::width, (float)Window::height);
 
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -26,11 +26,12 @@ void BloomFrame::setup(unsigned int mipDepth)
 	for (unsigned int i = 0; i < mipDepth; i++) {
 		BloomMip mip;
 
-		fMipSize *= 0.5f;
 		iMipSize /= 2;
+		fMipSize *= 0.5f;
 
-		mip.fSize = fMipSize;
 		mip.iSize = iMipSize;
+		mip.fSize = fMipSize;
+		mip.inversedSize = 1.0f / fMipSize;
 
 		glGenTextures(1, &mip.texture);
 		glBindTexture(GL_TEXTURE_2D, mip.texture);

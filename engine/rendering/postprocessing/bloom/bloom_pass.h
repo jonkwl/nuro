@@ -16,8 +16,9 @@ private:
 	static void downsamplingPass(unsigned int input);
 	static void upsamplingPass();
 
-	static glm::vec2 fViewportSize;
 	static glm::ivec2 iViewportSize;
+	static glm::vec2 fViewportSize;
+	static glm::vec2 inversedViewportSize;
 
 	static Shader* prefilterShader;
 	static Shader* downsamplingShader;

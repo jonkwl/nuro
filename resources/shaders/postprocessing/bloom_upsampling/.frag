@@ -4,13 +4,14 @@ out vec3 FragColor;
 
 uniform sampler2D inputTexture;
 uniform float filterRadius;
+uniform float aspectRatio;
 
 in vec2 uv;
 
 void main()
 {
     float x = filterRadius;
-    float y = filterRadius;
+    float y = filterRadius * aspectRatio;
 
     vec3 a = texture(inputTexture, vec2(uv.x - x, uv.y + y)).rgb;
     vec3 b = texture(inputTexture, vec2(uv.x,     uv.y + y)).rgb;
