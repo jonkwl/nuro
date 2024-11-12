@@ -103,7 +103,10 @@ struct Material {
     bool enableAmbientOcclusionMap;
     sampler2D ambientOcclusionMap;
 
-    float emission;
+    float emissionIntensity;
+    vec3 emissionColor;
+    bool enableEmissionMap;
+    sampler2D emissionMap;
 };
 uniform Material material;
 
@@ -297,6 +300,14 @@ float getAmbientOcclusion()
     return ambientOcclusion;
 }
 
+vec3 getEmission() {
+    vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
+    if(material.enableEmissionMap){
+        emission *= texture(material.emissionMap, uv).rgb;
+    }
+    return emission;
+}
+
 vec3 getAmbient(vec3 albedo, float ambientOcclusion) {
     vec3 ambient = vec3(ambientLighting.intensity) * ambientLighting.color * albedo * ambientOcclusion;
     return ambient;
@@ -391,7 +402,12 @@ vec4 shadePBR() {
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
 
-    if (material.emission == 0.0) {
+    vec3 emission = getEmission();
+    bool hasEmission = length(emission) > 1;
+
+    if (!hasEmission) {
+        // fragment doesnt have emission and therefore reflects light from light sources
+
         // directional lights
         for (int i = 0; i < configuration.numDirectionalLights; i++)
         {
@@ -431,7 +447,9 @@ vec4 shadePBR() {
             Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
         }
     } else {
-        Lo = material.baseColor.rgb * material.emission;
+        // fragment has emission and therefore emits light
+
+        Lo = emission;
     }
 
     // assemble shaded color

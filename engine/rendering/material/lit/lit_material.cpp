@@ -37,6 +37,10 @@ LitMaterial::LitMaterial()
 
 	ambientOcclusionMap = nullptr;
 
+	emissionIntensity = 0.0f;
+	emissionColor = glm::vec3(1.0f);
+	emissionMap = nullptr;
+
 	shader->bind();
 	syncStaticUniforms();
 	syncLightUniforms();
@@ -62,6 +66,9 @@ void LitMaterial::bind()
 
 	shader->setVec2("material.tiling", tiling);
 	shader->setVec2("material.offset", offset);
+
+	shader->setFloat("material.emissionIntensity", emissionIntensity);
+	shader->setVec3("material.emissionColor", emissionColor);
 
 	shader->setBool("material.enableAlbedoMap", enableAlbedoMap);
 	if (enableAlbedoMap) {
@@ -95,13 +102,16 @@ void LitMaterial::bind()
 		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_MAP_UNIT);
 	}
 
+	shader->setBool("material.enableEmissionMap", enableEmissionMap);
+	if (enableEmissionMap) {
+		emissionMap->bind(EMISSION_MAP_UNIT);
+	}
+
 	// tmp debug
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
 	shader->setFloat("pointLights[0].intensity", Runtime::intensity);
 	shader->setFloat("pointLights[0].range", Runtime::range);
 	shader->setFloat("pointLights[0].falloff", Runtime::falloff);
-
-	shader->setFloat("material.emission", emission);
 }
 
 Shader* LitMaterial::getShader()
@@ -139,6 +149,12 @@ void LitMaterial::setAmbientOcclusionMap(Texture* ambientOcclusionMap)
 	this->ambientOcclusionMap = ambientOcclusionMap;
 }
 
+void LitMaterial::setEmissionMap(Texture* emissionMap)
+{
+	enableEmissionMap = true;
+	this->emissionMap = emissionMap;
+}
+
 void LitMaterial::syncStaticUniforms()
 {
 	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
@@ -152,6 +168,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
 	shader->setInt("material.metallicMap", METALLIC_MAP_UNIT);
 	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
+	shader->setInt("material.emissionMap", EMISSION_MAP_UNIT);
 }
 
 void LitMaterial::syncLightUniforms()

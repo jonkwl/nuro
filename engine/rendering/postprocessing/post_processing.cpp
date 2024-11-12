@@ -4,8 +4,6 @@ PostProcessingConfiguration PostProcessing::configuration = PostProcessingConfig
 
 Shader* PostProcessing::finalPassShader = nullptr;
 
-BloomPass* PostProcessing::bloomPass = new BloomPass();
-
 void PostProcessing::setup()
 {
 	// Get default post processing final pass shader
@@ -13,14 +11,12 @@ void PostProcessing::setup()
 
 	// Bind final pass shader and set static uniforms
 	finalPassShader->bind();
-	finalPassShader->setInt("hdrBuffer", HDR_BUFFER);
-	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER);
+	finalPassShader->setInt("hdrBuffer", HDR_BUFFER_UNIT);
+	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER_UNIT);
 
 	// Setup post processing pipeline
+	BloomPass::setup();
 	DebugPass::setup();
-
-	// Setup bloom pass
-	bloomPass->setup();
 }
 
 void PostProcessing::render(unsigned int input)
@@ -29,7 +25,10 @@ void PostProcessing::render(unsigned int input)
 	glDisable(GL_DEPTH_TEST);
 
 	// Seperate bloom pass
-	unsigned int BLOOM_PASS_OUTPUT = bloomPass->render(input, configuration.bloomThreshold, configuration.bloomSoftThreshold, configuration.bloomFilterRadius);
+	BloomPass::threshold = configuration.bloomThreshold;
+	BloomPass::softThreshold = configuration.bloomSoftThreshold;
+	BloomPass::filterRadius = configuration.bloomFilterRadius;
+	unsigned int BLOOM_PASS_OUTPUT = BloomPass::render(input);
 
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = input;
@@ -45,10 +44,10 @@ void PostProcessing::render(unsigned int input)
 	syncConfiguration();
 
 	// Bind textures for final post processing pass render
-	glActiveTexture(GL_TEXTURE0 + HDR_BUFFER);
+	glActiveTexture(GL_TEXTURE0 + HDR_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_OUTPUT);
 
-	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER);
+	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
 
 	// Bind quad and render to screen
@@ -63,6 +62,8 @@ void PostProcessing::syncConfiguration()
 	finalPassShader->setFloat("configuration.gamma", configuration.gamma);
 
 	finalPassShader->setFloat("configuration.bloomIntensity", configuration.bloomIntensity);
+	finalPassShader->setVec3("configuration.bloomColor", configuration.bloomColor);
+	finalPassShader->setFloat("configuration.bloomBlend", configuration.bloomBlend);
 	finalPassShader->setFloat("configuration.bloomThreshold", configuration.bloomThreshold);
 
 	finalPassShader->setBool("configuration.chromaticAberration", configuration.chromaticAberration);

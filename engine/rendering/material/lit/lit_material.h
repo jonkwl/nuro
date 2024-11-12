@@ -21,13 +21,15 @@ public:
 	float roughness = 0.0f;
 	float metallic = 0.0f;
 
+	float emissionIntensity;
+	glm::vec3 emissionColor;
+
 	void setAlbedoMap(Texture* albedoMap);
 	void setNormalMap(Texture* normalMap);
 	void setRoughnessMap(Texture* roughnessMap);
 	void setMetallicMap(Texture* metallicMap);
 	void setAmbientOcclusionMap(Texture* ambientOcclusionMap);
-
-	float emission;
+	void setEmissionMap(Texture* emissionMap);
 private:
 	Shader* shader;
 
@@ -45,6 +47,9 @@ private:
 
 	bool enableAmbientOcclusionMap;
 	Texture* ambientOcclusionMap;
+
+	bool enableEmissionMap;
+	Texture* emissionMap;
 
 	void syncStaticUniforms();
 	void syncLightUniforms();

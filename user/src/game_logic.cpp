@@ -15,28 +15,33 @@ LitMaterial* sphereMaterial = nullptr;
 
 void awake() {
 	// Set default skybox
-	// Runtime::setSkybox(Runtime::defaultSkybox);
-	// Runtime::defaultSkybox->emission = 6.0f;
-	Runtime::clearColor = glm::vec4(0.01f, 0.01f, 0.01f, 1.0f);
+	Runtime::setSkybox(Runtime::defaultSkybox);
+	if (Runtime::defaultSkybox != nullptr) {
+		Runtime::defaultSkybox->emission = 3.0f;
+	}
 
 	// Create camera
 	camera = new Camera();
 	Runtime::useCamera(camera);
 
 	// Create all entities
+	Texture* exampleEmissionMap = new Texture("./user/assets/textures/example_emission_map.jpg", EMISSION_MAP);
 	sphereMaterial = new LitMaterial();
-	sphereMaterial->baseColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	sphereMaterial->roughness = 0.16f;
-	sphereMaterial->metallic = 0.04f;
+	sphereMaterial->baseColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+	sphereMaterial->roughness = 0.2f;
+	sphereMaterial->metallic = 1.0f;
+	sphereMaterial->setEmissionMap(exampleEmissionMap);
+	sphereMaterial->emissionIntensity = 5.0f;
+	sphereMaterial->emissionColor = glm::vec3(0.88f, 0.38f, 0.0f);
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
 	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
 
-	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO);
-	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS);
-	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", METALLIC);
-	Texture* sphereNormal = new Texture("./user/assets/textures/mat_normal.jpg", NORMAL);
+	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
+	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
+	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", METALLIC_MAP);
+	Texture* sphereNormal = new Texture("./user/assets/textures/mat_normal.jpg", NORMAL_MAP);
 	LitMaterial* pbrSphereMaterial = new LitMaterial();
 	pbrSphereMaterial->setAlbedoMap(sphereAlbedo);
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
@@ -47,7 +52,7 @@ void awake() {
 	pbrSphere->model = pbrSphereModel;
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
 
-	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO);
+	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
 	LitMaterial* plank = new LitMaterial();
 	plank->tiling = glm::vec2(2.0f,  2.0f);
 	plank->setAlbedoMap(plankAlbedo);
@@ -78,9 +83,9 @@ void awake() {
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
-	/*Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", ALBEDO);
-	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", ROUGHNESS);
-	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", NORMAL);
+	Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", ALBEDO_MAP);
+	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", ROUGHNESS_MAP);
+	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", NORMAL_MAP);
 	LitMaterial* smearedWallMaterial = new LitMaterial();
 	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.96f, 0.86f, 1.0f);
 	smearedWallMaterial->setAlbedoMap(smearedWallAlbedo);
@@ -94,9 +99,9 @@ void awake() {
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
-	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO);
-	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS);
-	Texture* mannequinMetallic = new Texture("./user/assets/textures/mannequin_metallic.jpg", METALLIC);
+	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO_MAP);
+	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS_MAP);
+	Texture* mannequinMetallic = new Texture("./user/assets/textures/mannequin_metallic.jpg", METALLIC_MAP);
 	LitMaterial* mannequinMaterial = new LitMaterial();
 	mannequinMaterial->setAlbedoMap(mannequinAlbedo);
 	mannequinMaterial->setRoughnessMap(mannequinRoughness);
@@ -108,7 +113,7 @@ void awake() {
 	mannequin->model = mannequinModel;
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	mannequin->transform.scale = glm::vec3(1.4f);*/
+	mannequin->transform.scale = glm::vec3(1.4f);
 }
 
 void update() {

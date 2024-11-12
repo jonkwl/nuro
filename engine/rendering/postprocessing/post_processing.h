@@ -12,17 +12,19 @@
 #include "../engine/rendering/postprocessing/bloom/bloom_pass.h"
 
 enum FinalPassTextureSlots {
-	HDR_BUFFER,
-	BLOOM_BUFFER
+	HDR_BUFFER_UNIT,
+	BLOOM_BUFFER_UNIT
 };
 
 struct PostProcessingConfiguration {
 	float exposure = 1.0f;
-	float contrast = 1.0f;
+	float contrast = 1.006f;
 	float gamma = 2.2f;
 
-	float bloomIntensity = 0.03f;
-	float bloomThreshold = 0.0f;
+	float bloomIntensity = 1.0f;
+	glm::vec3 bloomColor = glm::vec3(1.0, 1.0, 1.0);
+	float bloomBlend = 0.015;
+	float bloomThreshold = 0.02;
 	float bloomSoftThreshold = 0.0f;
 	float bloomFilterRadius = 0.0f;
 
@@ -51,6 +53,4 @@ private:
 	static void syncConfiguration();
 
 	static Shader* finalPassShader;
-
-	static BloomPass* bloomPass;
 };

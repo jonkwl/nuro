@@ -3,6 +3,10 @@
 #include "../engine/window/window.h"
 #include "../engine/utils/log.h"
 
+unsigned int BloomFrame::fbo = 0;
+unsigned int BloomFrame::prefilterTexture = 0;
+std::vector<BloomMip> BloomFrame::mipChain = std::vector<BloomMip>();
+
 void BloomFrame::setup(unsigned int mipDepth)
 {
 	glm::vec2 fMipSize = glm::vec2((float)Window::width, (float)Window::height);
@@ -57,12 +61,12 @@ void BloomFrame::bind()
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
 
-const unsigned int BloomFrame::getPrefilterTexture() const
+unsigned int BloomFrame::getPrefilterTexture()
 {
 	return prefilterTexture;
 }
 
-const std::vector<BloomMip>& BloomFrame::getMipChain() const
+std::vector<BloomMip>& BloomFrame::getMipChain()
 {
 	return mipChain;
 }

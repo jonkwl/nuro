@@ -7,11 +7,12 @@
 #include "../engine/utils/log.h"
 
 enum TextureType {
-	ALBEDO,
-	NORMAL,
-	ROUGHNESS,
-	METALLIC,
-	AMBIENT_OCCLUSION
+	ALBEDO_MAP,
+	NORMAL_MAP,
+	ROUGHNESS_MAP,
+	METALLIC_MAP,
+	AMBIENT_OCCLUSION_MAP,
+	EMISSION_MAP
 };
 
 class Texture

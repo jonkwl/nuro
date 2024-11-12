@@ -13,14 +13,14 @@ struct BloomMip {
 class BloomFrame
 {
 public:
-	void setup(unsigned int mipDepth);
-	void bind();
+	static void setup(unsigned int mipDepth);
+	static void bind();
 
-	const unsigned int getPrefilterTexture() const;
-	const std::vector<BloomMip>& getMipChain() const;
+	static unsigned int getPrefilterTexture();
+	static std::vector<BloomMip>& getMipChain();
 private:
-	unsigned int fbo;
-	unsigned int prefilterTexture;
-	std::vector<BloomMip> mipChain;
+	static unsigned int fbo;
+	static unsigned int prefilterTexture;
+	static std::vector<BloomMip> mipChain;
 };
 

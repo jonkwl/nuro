@@ -15,7 +15,8 @@ struct Configuration {
     float gamma;
 
     float bloomIntensity;
-    float bloomThreshold;
+    vec3 bloomColor;
+    float bloomBlend;
 
     bool chromaticAberration;
     float chromaticAberrationStrength;
@@ -50,8 +51,8 @@ void main()
     vec3 color = texture(hdrBuffer, uv).rgb;
 
     // Bloom
-    vec3 bloom = texture(bloomBuffer, uv).rgb;
-    color = mix(color, bloom, vec3(configuration.bloomIntensity));
+    vec3 bloom = texture(bloomBuffer, uv).rgb * configuration.bloomIntensity * configuration.bloomColor;
+    color = mix(color, bloom, vec3(configuration.bloomBlend));
  
     // Not compatible with bloom yet
     /* // Chromatic Aberration

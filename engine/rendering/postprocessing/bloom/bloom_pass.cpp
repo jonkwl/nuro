@@ -3,6 +3,18 @@
 #include "../engine/window/window.h"
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/primitives/quad.h"
+#include "../engine/rendering/postprocessing/bloom/bloom_frame.h"
+
+glm::vec2 BloomPass::fViewportSize = glm::vec2(0.0f, 0.0f);
+glm::ivec2 BloomPass::iViewportSize = glm::ivec2(0, 0);
+
+float BloomPass::threshold = 0.0f;
+float BloomPass::softThreshold = 0.0f;
+float BloomPass::filterRadius = 0.0f;
+
+Shader* BloomPass::prefilterShader = nullptr;
+Shader* BloomPass::downsamplingShader = nullptr;
+Shader* BloomPass::upsamplingShader = nullptr;
 
 void BloomPass::setup()
 {
@@ -14,7 +26,7 @@ void BloomPass::setup()
 	upsamplingShader = ShaderBuilder::get("bloom_upsampling");
 
 	const unsigned int mipDepth = 8;
-	bloomFrame.setup(mipDepth);
+	BloomFrame::setup(mipDepth);
 
 	prefilterShader->bind();
 	prefilterShader->setInt("inputTexture", 0);
@@ -26,24 +38,24 @@ void BloomPass::setup()
 	upsamplingShader->setInt("inputTexture", 0);
 }
 
-unsigned int BloomPass::render(unsigned int input, float threshold, float softThreshold, float filterRadius)
+unsigned int BloomPass::render(unsigned int input)
 {
-	bloomFrame.bind();
+	BloomFrame::bind();
 
-	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(input, threshold, softThreshold);
+	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(input);
 	downsamplingPass(PREFILTERING_PASS_OUTPUT);
-	upsamplingPass(filterRadius);
+	upsamplingPass();
 
 	// Unbind framebuffer to restore original viewport
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, iViewportSize.x, iViewportSize.y);
 
-	return bloomFrame.getMipChain()[0].texture;
+	return BloomFrame::getMipChain()[0].texture;
 }
 
-unsigned int BloomPass::prefilteringPass(unsigned int input, float threshold, float softThreshold)
+unsigned int BloomPass::prefilteringPass(unsigned int input)
 {
-	unsigned int prefilterTarget = bloomFrame.getPrefilterTexture();
+	unsigned int prefilterTarget = BloomFrame::getPrefilterTexture();
 
 	prefilterShader->bind();
 	prefilterShader->setFloat("threshold", threshold);
@@ -64,7 +76,7 @@ unsigned int BloomPass::prefilteringPass(unsigned int input, float threshold, fl
 
 void BloomPass::downsamplingPass(unsigned int input)
 {
-	const std::vector<BloomMip>& mipChain = bloomFrame.getMipChain();
+	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
 
 	downsamplingShader->bind();
 	downsamplingShader->setVec2("resolution", fViewportSize);
@@ -89,9 +101,9 @@ void BloomPass::downsamplingPass(unsigned int input)
 	}
 }
 
-void BloomPass::upsamplingPass(float filterRadius)
+void BloomPass::upsamplingPass()
 {
-	const std::vector<BloomMip>& mipChain = bloomFrame.getMipChain();
+	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
 
 	upsamplingShader->bind();
 	upsamplingShader->setFloat("filterRadius", filterRadius);

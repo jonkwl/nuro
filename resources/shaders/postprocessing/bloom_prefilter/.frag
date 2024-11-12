@@ -21,7 +21,6 @@ vec3 applyThreshold(vec3 color) {
 
 void main()
 {
-    //vec3 color = texture(inputTexture, uv).rgb;
-    //FragColor = vec4(applyThreshold(color), 1.0);
-    FragColor = vec4(vec3(softThreshold), 1.0);
+    vec3 color = texture(inputTexture, uv).rgb;
+    FragColor = vec4(applyThreshold(color), 1.0);
 }
