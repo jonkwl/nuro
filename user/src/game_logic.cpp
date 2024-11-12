@@ -17,7 +17,7 @@ void awake() {
 	// Set default skybox
 	Runtime::setSkybox(Runtime::defaultSkybox);
 	if (Runtime::defaultSkybox != nullptr) {
-		Runtime::defaultSkybox->emission = 0.9f;
+		Runtime::defaultSkybox->emission = 1.0f;
 	}
 
 	// Create camera
@@ -46,7 +46,7 @@ void awake() {
 	sphereMaterial->roughness = 0.2f;
 	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
 	sphereMaterial->setEmissionMap(emission);
-	sphereMaterial->emissionIntensity = 9.0f;
+	sphereMaterial->emissionIntensity = 11.0f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;

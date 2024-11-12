@@ -20,7 +20,7 @@ enum FinalPassTextureSlots {
 
 struct PostProcessingConfiguration {
 	float exposure = 1.0f;
-	float contrast = 1.006f;
+	float contrast = 1.004f;
 	float gamma = 2.2f;
 
 	float bloomIntensity = 0.2f;
