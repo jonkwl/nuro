@@ -4,13 +4,18 @@ out vec4 FragColor;
 
 in vec2 uv;
 
-uniform sampler2D inputTexture;
+uniform sampler2D hdrBuffer;
+uniform sampler2D bloomBuffer;
+
 uniform vec2 resolution;
 
 struct Configuration {
     float exposure;
     float contrast;
     float gamma;
+
+    float bloomIntensity;
+    float bloomThreshold;
 
     bool chromaticAberration;
     float chromaticAberrationStrength;
@@ -38,22 +43,28 @@ vec3 ACES(vec3 x) {
 
 void main()
 {
-    vec3 color = texture(inputTexture, uv).rgb;
     vec2 center = vec2(0.5, 0.5);
     vec2 toCenter = uv - center;
     float aspectRatio = resolution.x / resolution.y;
 
-    // Chromatic Aberration
+    vec3 color = texture(hdrBuffer, uv).rgb;
+
+    // Bloom
+    vec3 bloom = texture(bloomBuffer, uv).rgb;
+    color = mix(color, bloom, vec3(configuration.bloomIntensity));
+
+    // Not compatible with bloom yet
+    /* // Chromatic Aberration
     if (configuration.chromaticAberration) {
         float dist = length(toCenter);
         float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationStrength;
         vec2 redOffset = uv + toCenter * aberration * configuration.chromaticAberrationRedOffset;
         vec2 greenOffset = uv;
         vec2 blueOffset = uv - toCenter * aberration * configuration.chromaticAberrationBlueOffset;
-        color.r = texture2D(inputTexture, redOffset).r;
-        color.g = texture2D(inputTexture, greenOffset).g;
-        color.b = texture2D(inputTexture, blueOffset).b;
-    }
+        color.r = texture2D(hdrBuffer, redOffset).r;
+        color.g = texture2D(hdrBuffer, greenOffset).g;
+        color.b = texture2D(hdrBuffer, blueOffset).b;
+    } */
 
     // Vignette
     if (configuration.vignette) {

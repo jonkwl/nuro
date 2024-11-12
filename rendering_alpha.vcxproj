@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_pass.cpp" />
+    <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_frame.cpp" />
     <ClCompile Include="engine\rendering\postprocessing\debug\debug_pass.cpp" />
     <ClCompile Include="engine\rendering\core\depth_pre_pass.cpp" />
     <ClCompile Include="engine\rendering\material\lit\lit_material.cpp" />
@@ -184,6 +186,8 @@
     <ClCompile Include="engine\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_pass.h" />
+    <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_frame.h" />
     <ClInclude Include="engine\rendering\postprocessing\debug\debug_pass.h" />
     <ClInclude Include="dependencies\include\assimp\aabb.h" />
     <ClInclude Include="dependencies\include\assimp\ai_assert.h" />

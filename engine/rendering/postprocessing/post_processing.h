@@ -9,11 +9,16 @@
 #include "../engine/rendering/shader/shader_builder.h"
 #include "../engine/rendering/primitives/quad.h"
 #include "../engine/rendering/postprocessing/debug/debug_pass.h"
+#include "../engine/rendering/postprocessing/bloom/bloom_pass.h"
 
 struct PostProcessingConfiguration {
 	float exposure = 1.0f;
 	float contrast = 1.0f;
 	float gamma = 2.2f;
+
+	float bloomIntensity = 0.08f;
+	float bloomThreshold = 0.0f;
+	float bloomFilterRadius = 0.0f;
 
 	bool chromaticAberration = true;
 	float chromaticAberrationStrength = 0.5f;
@@ -40,4 +45,6 @@ private:
 	static void syncConfiguration();
 
 	static Shader* finalPassShader;
+
+	static BloomPass* bloomPass;
 };

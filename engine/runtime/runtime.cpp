@@ -59,7 +59,7 @@ bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
 // more tmp
-bool skipSkyboxLoad = true;
+bool skipSkyboxLoad = false;
 bool settingA = false;
 bool settingB = false;
 bool settingC = false;
@@ -392,23 +392,31 @@ int Runtime::START_LOOP() {
 				EngineDialog::bool_dialog("Wireframe", wireframe);
 
 				InputPair x = {"Directional Intensity", directionalIntensity, 0.0f, 5.0f};
+
 				InputPair a = { "Exposure", PostProcessing::configuration.exposure, 0.0f, 10.0f };
 				InputPair b = { "Contrast", PostProcessing::configuration.contrast, 0.95f, 1.1f };
 				InputPair c = { "Gamma", PostProcessing::configuration.gamma, 0.0f, 5.0f };
+
+				InputPair b1 = { "Bloom Intensity", PostProcessing::configuration.bloomIntensity, 0.0f, 1.0f };
+				InputPair b2 = { "Bloom Threshold", PostProcessing::configuration.bloomThreshold, 0.0f, 1.0f };
+				InputPair b3 = { "Bloom Filter Radius", PostProcessing::configuration.bloomFilterRadius, 0.0f, 0.1f };
+
 				InputPair d = { "Chromatic Aberration Strength", PostProcessing::configuration.chromaticAberrationStrength, 0.0f, 5.0f };
 				InputPair e = { "Chromatic Aberration Range", PostProcessing::configuration.chromaticAberrationRange, 0.0f, 1.0f };
 				InputPair f = { "Chromatic Aberration Red Offset", PostProcessing::configuration.chromaticAberrationRedOffset, -0.1f, 0.1f };
 				InputPair g = { "Chromatic Aberration Blue Offset", PostProcessing::configuration.chromaticAberrationBlueOffset, -0.1f, 0.1f };
+				
 				InputPair h = { "Vignette Strength", PostProcessing::configuration.vignetteStrength, 0.0f, 1.0f };
 				InputPair i = { "Vignette Radius", PostProcessing::configuration.vignetteRadius, 0.0f, 1.0f };
 				InputPair j = { "Vignette Softness", PostProcessing::configuration.vignetteSoftness, 0.0f, 1.0f };
 				InputPair k = { "Vignette Roundness", PostProcessing::configuration.vignetteRoundness, 0.0f, 2.0f };
-				EngineDialog::input_dialog("Basic Settings @ Post Processing", { x, a, b, c, d, e, f, g, h, i, j, k });
+
+				EngineDialog::input_dialog("Basic Settings @ Post Processing", { x, a, b, c, b1, b2, b3, d, e, f, g, h, i, j, k });
 
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::configuration.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::configuration.vignette);
 
-				EngineDialog::float_dialog("PL1 Intensity", intensity, 0.0f, 12.0f);
+				EngineDialog::float_dialog("PL1 Intensity", intensity, 0.0f, 100.0f);
 				EngineDialog::float_dialog("PL1 Range", range, 0.0f, 15.0f);
 				EngineDialog::float_dialog("PL1 Falloff", falloff, 0.0f, 30.0f);
 
