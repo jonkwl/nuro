@@ -100,6 +100,8 @@ void LitMaterial::bind()
 	shader->setFloat("pointLights[0].intensity", Runtime::intensity);
 	shader->setFloat("pointLights[0].range", Runtime::range);
 	shader->setFloat("pointLights[0].falloff", Runtime::falloff);
+
+	shader->setFloat("material.emission", emission);
 }
 
 Shader* LitMaterial::getShader()
@@ -158,7 +160,7 @@ void LitMaterial::syncLightUniforms()
 	shader->setInt("configuration.numPointLights", 1);
 	shader->setInt("configuration.numSpotLights", 1);
 
-	shader->setFloat("ambientLighting.intensity", 0.008f);
+	shader->setFloat("ambientLighting.intensity", 0.002f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);

@@ -59,7 +59,7 @@ bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
 // more tmp
-bool skipSkyboxLoad = false;
+bool skipSkyboxLoad = true;
 bool settingA = false;
 bool settingB = false;
 bool settingC = false;
@@ -399,7 +399,8 @@ int Runtime::START_LOOP() {
 
 				InputPair b1 = { "Bloom Intensity", PostProcessing::configuration.bloomIntensity, 0.0f, 1.0f };
 				InputPair b2 = { "Bloom Threshold", PostProcessing::configuration.bloomThreshold, 0.0f, 1.0f };
-				InputPair b3 = { "Bloom Filter Radius", PostProcessing::configuration.bloomFilterRadius, 0.0f, 0.1f };
+				InputPair b3 = { "Bloom Soft Threshold", PostProcessing::configuration.bloomSoftThreshold, 0.0f, 1.0f };
+				InputPair b4 = { "Bloom Filter Radius", PostProcessing::configuration.bloomFilterRadius, 0.0f, 0.1f };
 
 				InputPair d = { "Chromatic Aberration Strength", PostProcessing::configuration.chromaticAberrationStrength, 0.0f, 5.0f };
 				InputPair e = { "Chromatic Aberration Range", PostProcessing::configuration.chromaticAberrationRange, 0.0f, 1.0f };
@@ -411,7 +412,7 @@ int Runtime::START_LOOP() {
 				InputPair j = { "Vignette Softness", PostProcessing::configuration.vignetteSoftness, 0.0f, 1.0f };
 				InputPair k = { "Vignette Roundness", PostProcessing::configuration.vignetteRoundness, 0.0f, 2.0f };
 
-				EngineDialog::input_dialog("Basic Settings @ Post Processing", { x, a, b, c, b1, b2, b3, d, e, f, g, h, i, j, k });
+				EngineDialog::input_dialog("Basic Settings @ Post Processing", { x, a, b, c, b1, b2, b3, b4, d, e, f, g, h, i, j, k });
 
 				EngineDialog::bool_dialog("Chromatic Aberration", PostProcessing::configuration.chromaticAberration);
 				EngineDialog::bool_dialog("Vignette", PostProcessing::configuration.vignette);

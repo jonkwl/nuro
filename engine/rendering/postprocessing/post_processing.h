@@ -11,13 +11,19 @@
 #include "../engine/rendering/postprocessing/debug/debug_pass.h"
 #include "../engine/rendering/postprocessing/bloom/bloom_pass.h"
 
+enum FinalPassTextureSlots {
+	HDR_BUFFER,
+	BLOOM_BUFFER
+};
+
 struct PostProcessingConfiguration {
 	float exposure = 1.0f;
 	float contrast = 1.0f;
 	float gamma = 2.2f;
 
-	float bloomIntensity = 0.08f;
+	float bloomIntensity = 0.03f;
 	float bloomThreshold = 0.0f;
+	float bloomSoftThreshold = 0.0f;
 	float bloomFilterRadius = 0.0f;
 
 	bool chromaticAberration = true;

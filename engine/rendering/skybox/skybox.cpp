@@ -28,6 +28,8 @@ void Skybox::render(glm::mat4 view, glm::mat4 projection)
     shader->bind();
     shader->setMatrix4("view", view);
     shader->setMatrix4("projection", projection);
+    shader->setInt("skybox", 0);
+    shader->setFloat("emission", emission);
 
     // Bind skybox vao
     glBindVertexArray(vao);
@@ -45,6 +47,8 @@ void Skybox::render(glm::mat4 view, glm::mat4 projection)
 
 void Skybox::generate()
 {
+    emission = 1.0f;
+
     Log::printProcessStart("Skybox", "Generating skybox from cubemap " + cubemap->name + "...");
 
     if (!create_textures()) return;

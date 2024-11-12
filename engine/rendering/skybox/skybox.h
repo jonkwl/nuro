@@ -19,6 +19,8 @@ public:
 	
 	void render(glm::mat4 view, glm::mat4 projection);
 
+	float emission;
+
 	Cubemap* cubemap;
 	Shader* shader;
 private:

@@ -52,7 +52,7 @@ void main()
     // Bloom
     vec3 bloom = texture(bloomBuffer, uv).rgb;
     color = mix(color, bloom, vec3(configuration.bloomIntensity));
-
+ 
     // Not compatible with bloom yet
     /* // Chromatic Aberration
     if (configuration.chromaticAberration) {

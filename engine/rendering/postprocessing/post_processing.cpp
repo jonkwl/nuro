@@ -8,8 +8,13 @@ BloomPass* PostProcessing::bloomPass = new BloomPass();
 
 void PostProcessing::setup()
 {
-	// Get default post processing finalPassShader
+	// Get default post processing final pass shader
 	finalPassShader = ShaderBuilder::get("final_pass");
+
+	// Bind final pass shader and set static uniforms
+	finalPassShader->bind();
+	finalPassShader->setInt("hdrBuffer", HDR_BUFFER);
+	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER);
 
 	// Setup post processing pipeline
 	DebugPass::setup();
@@ -23,29 +28,27 @@ void PostProcessing::render(unsigned int input)
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
 
+	// Seperate bloom pass
+	unsigned int BLOOM_PASS_OUTPUT = bloomPass->render(input, configuration.bloomThreshold, configuration.bloomSoftThreshold, configuration.bloomFilterRadius);
+
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = input;
-
-	// Seperate bloom pass
-	unsigned int BLOOM_PASS_OUTPUT = bloomPass->render(input, configuration.bloomFilterRadius);
 
 	// Bind default framebuffer to render to screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
-	finalPassShader->setInt("hdrBuffer", 0);
-	finalPassShader->setInt("bloomBuffer", 1);
 	finalPassShader->setVec2("resolution", Window::getSize());
 
 	// Sync post processing configuration with shader
 	syncConfiguration();
 
 	// Bind textures for final post processing pass render
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + HDR_BUFFER);
 	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_OUTPUT);
 
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER);
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
 
 	// Bind quad and render to screen

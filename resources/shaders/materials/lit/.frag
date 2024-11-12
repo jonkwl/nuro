@@ -102,6 +102,8 @@ struct Material {
 
     bool enableAmbientOcclusionMap;
     sampler2D ambientOcclusionMap;
+
+    float emission;
 };
 uniform Material material;
 
@@ -110,8 +112,8 @@ float sqr(float x)
     return x * x;
 }
 
-vec3 getNormal(){
-    if (!material.enableNormalMap){
+vec3 getNormal() {
+    if (!material.enableNormalMap) {
         return normalize(v_normal);
     }
 
@@ -194,12 +196,12 @@ float getDirectionalShadow(vec3 lightDirection)
 
     // without pcf
     /*float shadowDepth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
-    float shadow = currentDepth - bias > shadowDepth ? 1.0 : 0.0;*/
+        float shadow = currentDepth - bias > shadowDepth ? 1.0 : 0.0;*/
 
     return shadow;
 }
 
-float getLinearFog(float start, float end){
+float getLinearFog(float start, float end) {
     float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float fogRange = end - start;
     float fogDistance = end - depth;
@@ -207,13 +209,13 @@ float getLinearFog(float start, float end){
     return factor;
 }
 
-float getExponentialFog(float density){
+float getExponentialFog(float density) {
     float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(depth * density);
     return factor;
 }
 
-float getExponentialSquaredFog(float density){
+float getExponentialSquaredFog(float density) {
     float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(sqr(depth * density));
     return factor;
@@ -389,43 +391,47 @@ vec4 shadePBR() {
     // calculate each lights impact on object
     vec3 Lo = vec3(0.0);
 
-    // directional lights
-    for (int i = 0; i < configuration.numDirectionalLights; i++)
-    {
-        DirectionalLight directionalLight = directionalLights[i];
+    if (material.emission == 0.0) {
+        // directional lights
+        for (int i = 0; i < configuration.numDirectionalLights; i++)
+        {
+            DirectionalLight directionalLight = directionalLights[i];
 
-        float attenuation = 1.0;
-        vec3 L = normalize(-directionalLight.direction);
+            float attenuation = 1.0;
+            vec3 L = normalize(-directionalLight.direction);
 
-        float shadow = getDirectionalShadow(L);
+            float shadow = getDirectionalShadow(L);
 
-        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
-    }
+            Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
+        }
 
-    // point lights
-    for (int i = 0; i < configuration.numPointLights; i++) {
-        PointLight pointLight = pointLights[i];
+        // point lights
+        for (int i = 0; i < configuration.numPointLights; i++) {
+            PointLight pointLight = pointLights[i];
 
-        float distance = length(pointLight.position - v_fragmentWorldPosition);
-        float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-        vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
+            float distance = length(pointLight.position - v_fragmentWorldPosition);
+            float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
+            vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
 
-        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity, 0.0);
-    }
+            Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity, 0.0);
+        }
 
-    // spot lights
-    for (int i = 0; i < configuration.numSpotLights; i++) {
-        SpotLight spotLight = spotLights[i];
+        // spot lights
+        for (int i = 0; i < configuration.numSpotLights; i++) {
+            SpotLight spotLight = spotLights[i];
 
-        float distance = length(spotLight.position - v_fragmentWorldPosition);
-        float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
-        vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
+            float distance = length(spotLight.position - v_fragmentWorldPosition);
+            float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
+            vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
 
-        float theta = dot(L, normalize(-spotLight.direction));
-        float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
-        float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
+            float theta = dot(L, normalize(-spotLight.direction));
+            float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
+            float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
 
-        Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
+            Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
+        }
+    } else {
+        Lo = material.baseColor.rgb * material.emission;
     }
 
     // assemble shaded color
@@ -442,16 +448,16 @@ vec4 shadePBR() {
 
     // get fog
     float fogFactor = 1.0;
-    switch(fog.type){
+    switch (fog.type) {
         case LINEAR_FOG:
-            fogFactor = getLinearFog(fog.data[0], fog.data[1]);
-            break;
+        fogFactor = getLinearFog(fog.data[0], fog.data[1]);
+        break;
         case EXPONENTIAL_FOG:
-            fogFactor = getExponentialFog(fog.data[0]);
-            break;
+        fogFactor = getExponentialFog(fog.data[0]);
+        break;
         case EXPONENTIAL_SQUARED_FOG:
-            fogFactor = getExponentialSquaredFog(fog.data[0]);
-            break;
+        fogFactor = getExponentialSquaredFog(fog.data[0]);
+        break;
     }
     color = mix(fog.color, color, fogFactor);
 
@@ -516,13 +522,13 @@ vec4 shadeNormal() {
     float shadow = 0.0;
     float shadowIntensity = 0.5;
 
-    for(int i = 0; i < configuration.numDirectionalLights; i++){
+    for (int i = 0; i < configuration.numDirectionalLights; i++) {
         DirectionalLight directionalLight = directionalLights[i];
         vec3 L = normalize(-directionalLight.direction);
 
         diffuse = vec3(max(dot(normal, L), 0.0));
         diffuse = mix(diffuse, vec3(0.0), diffuseFactor);
- 
+
         shadow = getDirectionalShadow(L) * shadowIntensity;
 
         break;

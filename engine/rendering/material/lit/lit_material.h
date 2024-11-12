@@ -26,6 +26,8 @@ public:
 	void setRoughnessMap(Texture* roughnessMap);
 	void setMetallicMap(Texture* metallicMap);
 	void setAmbientOcclusionMap(Texture* ambientOcclusionMap);
+
+	float emission;
 private:
 	Shader* shader;
 

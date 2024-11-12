@@ -1,10 +1,11 @@
 #version 330 core
 
+out vec3 FragColor;
+
 uniform sampler2D inputTexture;
 uniform vec2 resolution;
 
 in vec2 uv;
-layout (location = 0) out vec3 downsample;
 
 void main()
 {
@@ -29,9 +30,9 @@ void main()
     vec3 l = texture(inputTexture, vec2(uv.x - x, uv.y - y)).rgb;
     vec3 m = texture(inputTexture, vec2(uv.x + x, uv.y - y)).rgb;
 
-    downsample = e*0.125;
-    downsample += (a+c+g+i)*0.03125;
-    downsample += (b+d+f+h)*0.0625;
-    downsample += (j+k+l+m)*0.125;
-    downsample = max(downsample, 0.0001f);
+    FragColor = e*0.125;
+    FragColor += (a+c+g+i)*0.03125;
+    FragColor += (b+d+f+h)*0.0625;
+    FragColor += (j+k+l+m)*0.125;
+    FragColor = max(FragColor, 0.0001f);
 }

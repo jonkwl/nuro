@@ -1,16 +1,11 @@
 #version 330 core
 
-// This shader performs upsampling on a texture,
-// as taken from Call Of Duty method, presented at ACM Siggraph 2014.
+out vec3 FragColor;
 
-// Remember to add bilinear minification filter for this texture!
-// Remember to use a floating-point texture format (for HDR)!
-// Remember to use edge clamping for this texture!
 uniform sampler2D inputTexture;
 uniform float filterRadius;
 
 in vec2 uv;
-layout (location = 0) out vec3 upsample;
 
 void main()
 {
@@ -29,8 +24,8 @@ void main()
     vec3 h = texture(inputTexture, vec2(uv.x,     uv.y - y)).rgb;
     vec3 i = texture(inputTexture, vec2(uv.x + x, uv.y - y)).rgb;
 
-    upsample = e*4.0;
-    upsample += (b+d+f+h)*2.0;
-    upsample += (a+c+g+i);
-    upsample *= 1.0 / 16.0;
+    FragColor = e*4.0;
+    FragColor += (b+d+f+h)*2.0;
+    FragColor += (a+c+g+i);
+    FragColor *= 1.0 / 16.0;
 }

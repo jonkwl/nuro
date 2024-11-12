@@ -9,11 +9,15 @@ void BloomPass::setup()
 	iViewportSize = glm::ivec2(Window::width, Window::height);
 	fViewportSize = glm::vec2((float)Window::width, (float)Window::height);
 
+	prefilterShader = ShaderBuilder::get("bloom_prefilter");
 	downsamplingShader = ShaderBuilder::get("bloom_downsampling");
 	upsamplingShader = ShaderBuilder::get("bloom_upsampling");
 
 	const unsigned int mipDepth = 8;
 	bloomFrame.setup(mipDepth);
+
+	prefilterShader->bind();
+	prefilterShader->setInt("inputTexture", 0);
 
 	downsamplingShader->bind();
 	downsamplingShader->setInt("inputTexture", 0);
@@ -22,11 +26,12 @@ void BloomPass::setup()
 	upsamplingShader->setInt("inputTexture", 0);
 }
 
-unsigned int BloomPass::render(unsigned int input, float filterRadius)
+unsigned int BloomPass::render(unsigned int input, float threshold, float softThreshold, float filterRadius)
 {
 	bloomFrame.bind();
 
-	downsamplingPass(input);
+	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(input, threshold, softThreshold);
+	downsamplingPass(PREFILTERING_PASS_OUTPUT);
 	upsamplingPass(filterRadius);
 
 	// Unbind framebuffer to restore original viewport
@@ -34,6 +39,27 @@ unsigned int BloomPass::render(unsigned int input, float filterRadius)
 	glViewport(0, 0, iViewportSize.x, iViewportSize.y);
 
 	return bloomFrame.getMipChain()[0].texture;
+}
+
+unsigned int BloomPass::prefilteringPass(unsigned int input, float threshold, float softThreshold)
+{
+	unsigned int prefilterTarget = bloomFrame.getPrefilterTexture();
+
+	prefilterShader->bind();
+	prefilterShader->setFloat("threshold", threshold);
+	prefilterShader->setFloat("softThreshold", softThreshold);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, input);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, prefilterTarget, 0);
+
+	Quad::bind();
+	Quad::render();
+
+	glBindTexture(GL_TEXTURE_2D, prefilterTarget);
+
+	return prefilterTarget;
 }
 
 void BloomPass::downsamplingPass(unsigned int input)

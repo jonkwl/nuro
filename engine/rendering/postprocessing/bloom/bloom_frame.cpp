@@ -11,6 +11,14 @@ void BloomFrame::setup(unsigned int mipDepth)
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
+	glGenTextures(1, &prefilterTexture);
+	glBindTexture(GL_TEXTURE_2D, prefilterTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	for (unsigned int i = 0; i < mipDepth; i++) {
 		BloomMip mip;
 
@@ -22,7 +30,7 @@ void BloomFrame::setup(unsigned int mipDepth)
 
 		glGenTextures(1, &mip.texture);
 		glBindTexture(GL_TEXTURE_2D, mip.texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, iMipSize.x, iMipSize.y, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, iMipSize.x, iMipSize.y, 0, GL_RGBA, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -42,22 +50,16 @@ void BloomFrame::setup(unsigned int mipDepth)
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
 		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
-
-	/*
-	BloomMip mip;
-	glGenTextures(1, &mip.texture);
-	glBindTexture(GL_TEXTURE_2D, mip.texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, GL_NONE, GL_RGBA, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.texture, 0);*/
 }
 
 void BloomFrame::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+}
+
+const unsigned int BloomFrame::getPrefilterTexture() const
+{
+	return prefilterTexture;
 }
 
 const std::vector<BloomMip>& BloomFrame::getMipChain() const
