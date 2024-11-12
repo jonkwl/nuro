@@ -23,10 +23,9 @@ struct PostProcessingConfiguration {
 	float contrast = 1.006f;
 	float gamma = 2.2f;
 
-	float bloomIntensity = 1.0f;
-	glm::vec3 bloomColor = glm::vec3(1.0, 1.0, 1.0);
-	float bloomBlend = 0.015;
-	float bloomThreshold = 0.02;
+	float bloomIntensity = 0.015f;
+	glm::vec3 bloomColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	float bloomThreshold = 0.25f;
 	float bloomSoftThreshold = 0.0f;
 	float bloomFilterRadius = 0.0f;
 

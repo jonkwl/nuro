@@ -16,8 +16,6 @@ struct Configuration {
 
     float bloomIntensity;
     vec3 bloomColor;
-    float bloomBlend;
-
     bool lensDirt;
     sampler2D lensDirtTexture;
     float lensDirtIntensity;
@@ -60,7 +58,7 @@ void main()
     if(configuration.lensDirt){
         lensDirt = texture(configuration.lensDirtTexture, vec2(uv.x, 1.0 - uv.y)).rgb * configuration.lensDirtIntensity;
     }
-    color = mix(color, bloom + bloom * lensDirt, vec3(configuration.bloomBlend));
+    color = mix(color, color + bloom + bloom * lensDirt, vec3(1.0));
  
     // Not compatible with bloom yet
     /* // Chromatic Aberration
