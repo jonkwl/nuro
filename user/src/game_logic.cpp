@@ -17,7 +17,7 @@ void awake() {
 	// Set default skybox
 	Runtime::setSkybox(Runtime::defaultSkybox);
 	if (Runtime::defaultSkybox != nullptr) {
-		Runtime::defaultSkybox->emission = 3.0f;
+		Runtime::defaultSkybox->emission = 0.9f;
 	}
 
 	// Create camera
@@ -30,14 +30,23 @@ void awake() {
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	Texture* exampleEmissionMap = new Texture("./user/assets/textures/example_emission_map.jpg", EMISSION_MAP);
+	Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
+	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
+	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
+	Texture* ambient_occlusion = new Texture("./user/assets/textures/sci-fi/ambient_occlusion.jpg", AMBIENT_OCCLUSION_MAP);
+	Texture* emission = new Texture("./user/assets/textures/sci-fi/emission.jpg", EMISSION_MAP);
+
 	sphereMaterial = new LitMaterial();
-	sphereMaterial->baseColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+	sphereMaterial->setAlbedoMap(albedo);
+	sphereMaterial->setNormalMap(normal);
+	// sphereMaterial->setMetallicMap(metallic);
+	// sphereMaterial->setRoughnessMap(roughness);
+	sphereMaterial->metallic = 0.8f;
 	sphereMaterial->roughness = 0.2f;
-	sphereMaterial->metallic = 1.0f;
-	sphereMaterial->setEmissionMap(exampleEmissionMap);
-	sphereMaterial->emissionIntensity = 7.0f;
-	sphereMaterial->emissionColor = glm::vec3(0.88f, 0.38f, 0.0f);
+	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
+	sphereMaterial->setEmissionMap(emission);
+	sphereMaterial->emissionIntensity = 9.0f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;

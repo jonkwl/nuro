@@ -177,7 +177,8 @@ void LitMaterial::syncLightUniforms()
 	shader->setInt("configuration.numPointLights", 1);
 	shader->setInt("configuration.numSpotLights", 1);
 
-	shader->setFloat("ambientLighting.intensity", 0.002f);
+	// shader->setFloat("ambientLighting.intensity", 0.002f);
+	shader->setFloat("ambientLighting.intensity", 0.0f);
 	shader->setVec3("ambientLighting.color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
@@ -185,9 +186,9 @@ void LitMaterial::syncLightUniforms()
 	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
 	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
 
-	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 2.0f, 4.0f)));
-	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.6f, 1.0f));
-	shader->setFloat("pointLights[0].intensity", 1.5f);
+	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 0.0f, 6.5f)));
+	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.78f, 0.95f));
+	shader->setFloat("pointLights[0].intensity", 2.0f);
 	shader->setFloat("pointLights[0].range", 10.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);
 

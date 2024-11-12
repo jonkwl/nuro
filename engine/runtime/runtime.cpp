@@ -59,7 +59,7 @@ bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
 // more tmp
-bool skipSkyboxLoad = true;
+bool skipSkyboxLoad = false;
 bool settingA = false;
 bool settingB = false;
 bool settingC = false;

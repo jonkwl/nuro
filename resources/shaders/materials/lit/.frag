@@ -346,7 +346,7 @@ vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metalli
 
     // return light source contribution
     vec3 contribution = (diffuse + specular) * radiance * NdotL;
-    contribution *= (1.0 - shadow);
+    // contribution *= (1.0 - shadow);
     return contribution;
 }
 
@@ -409,6 +409,7 @@ vec4 shadePBR() {
         // fragment doesnt have emission and therefore reflects light from light sources
 
         // directional lights
+        float tmp_shadow = 0.0;
         for (int i = 0; i < configuration.numDirectionalLights; i++)
         {
             DirectionalLight directionalLight = directionalLights[i];
@@ -417,6 +418,8 @@ vec4 shadePBR() {
             vec3 L = normalize(-directionalLight.direction);
 
             float shadow = getDirectionalShadow(L);
+
+            tmp_shadow = shadow;
 
             Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
         }
@@ -446,6 +449,8 @@ vec4 shadePBR() {
 
             Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
         }
+
+        Lo *= 1.0 - tmp_shadow; // tmp
     } else {
         // fragment has emission and therefore emits light
 
