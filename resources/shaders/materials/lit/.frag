@@ -32,12 +32,6 @@ struct Configuration {
 };
 uniform Configuration configuration;
 
-struct AmbientLighting {
-    float intensity;
-    vec3 color;
-};
-uniform AmbientLighting ambientLighting;
-
 struct DirectionalLight {
     float intensity;
     vec3 direction;
@@ -199,7 +193,7 @@ float getDirectionalShadow(vec3 lightDirection)
 
     // without pcf
     /*float shadowDepth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
-        float shadow = currentDepth - bias > shadowDepth ? 1.0 : 0.0;*/
+                            float shadow = currentDepth - bias > shadowDepth ? 1.0 : 0.0;*/
 
     return shadow;
 }
@@ -291,43 +285,60 @@ float getMetallic()
     return metallic;
 }
 
-float getAmbientOcclusion()
+float getAmbientOcclusionMapSample()
 {
-    float ambientOcclusion = 1.0;
+    float ambientOcclusionMapSample = 1.0;
     if (material.enableAmbientOcclusionMap) {
-        ambientOcclusion = texture(material.ambientOcclusionMap, uv).r;
+        ambientOcclusionMapSample = texture(material.ambientOcclusionMap, uv).r;
     }
-    return ambientOcclusion;
+    return ambientOcclusionMapSample;
 }
 
 vec3 getEmission() {
     vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
-    if(material.enableEmissionMap){
+    if (material.enableEmissionMap) {
         emission *= texture(material.emissionMap, uv).rgb;
     }
     return emission;
 }
 
-vec3 getAmbient(vec3 albedo, float ambientOcclusion) {
-    vec3 ambient = vec3(ambientLighting.intensity) * ambientLighting.color * albedo * ambientOcclusion;
-    return ambient;
-}
+vec3 evaluateLightSource(
+    vec3 V, 
+    vec3 N, 
+    vec3 F0, 
+    float roughness, 
+    float metallic, 
+    vec3 albedo, 
+    float attenuation, 
+    vec3 L, 
+    vec3 color, 
+    float intensity, 
+    float shadow) {
 
-vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metallic, vec3 albedo, float attenuation, vec3 L, vec3 color, float intensity, float shadow) {
-    vec3 H = normalize(V + L); // halfway direction
+    // fragment is fully in light sources shadow, no light source contribution
+    if (shadow == 1.0) {
+        return vec3(0.0);
+    }
+
+    // halfway direction
+    vec3 H = normalize(V + L);
 
     // cosine of angle between N and L, indicates effective light contribution from source
     float NdotL = max(dot(N, L), 0.0);
+
+    // no light contribution from source, no light source contribution
     if (NdotL == 0.0)
     {
-        return vec3(0.0); // no light contribution from source, skip light
+        return vec3(0.0);
+    }
+
+    // no light contribution from source, no light source contribution
+    if (attenuation == 0.0)
+    {
+        return vec3(0.0);
     }
 
     // per-light radiance
-    if (attenuation == 0.0)
-    {
-        return vec3(0.0); // no light contribution from source, skip light
-    }
     vec3 radiance = color * intensity * attenuation;
 
     // specular component
@@ -346,7 +357,7 @@ vec3 evaluateLightSource(vec3 V, vec3 N, vec3 F0, float roughness, float metalli
 
     // return light source contribution
     vec3 contribution = (diffuse + specular) * radiance * NdotL;
-    // contribution *= (1.0 - shadow);
+    contribution *= (1.0 - shadow);
     return contribution;
 }
 
@@ -391,7 +402,7 @@ vec4 shadePBR() {
     float metallic = getMetallic();
 
     // get ambient occlusion
-    float ambientOcclusion = getAmbientOcclusion();
+    float ambientOcclusionMapSample = getAmbientOcclusionMapSample();
 
     vec3 N = getNormal();
     vec3 V = normalize(configuration.cameraPosition - v_fragmentWorldPosition); // view direction
@@ -399,75 +410,104 @@ vec4 shadePBR() {
     float dialectricReflecitivity = 0.04;
     vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
 
-    // calculate each lights impact on object
+    // final light reflection or emission of fragment
     vec3 Lo = vec3(0.0);
 
+    // get emission and check if fragment has emission
     vec3 emission = getEmission();
-    bool hasEmission = length(emission) > 1;
+    bool hasEmission = length(emission) > 0.001;
 
-    if (!hasEmission) {
+    // fragment has emission and therefore emits light
+        if (hasEmission) {
+            Lo = emission;
+        }
+
         // fragment doesnt have emission and therefore reflects light from light sources
+        else {
 
-        // directional lights
-        float tmp_shadow = 0.0;
-        for (int i = 0; i < configuration.numDirectionalLights; i++)
-        {
-            DirectionalLight directionalLight = directionalLights[i];
+            // directional lights
+            for (int i = 0; i < configuration.numDirectionalLights; i++)
+            {
+                DirectionalLight directionalLight = directionalLights[i];
 
-            float attenuation = 1.0;
-            vec3 L = normalize(-directionalLight.direction);
+                float attenuation = 1.0;
+                vec3 L = normalize(-directionalLight.direction);
 
-            float shadow = getDirectionalShadow(L);
+                float shadow = getDirectionalShadow(L);
 
-            tmp_shadow = shadow;
+                Lo += evaluateLightSource(
+                        V,
+                        N,
+                        F0,
+                        roughness,
+                        metallic,
+                        albedo,
+                        attenuation,
+                        L,
+                        directionalLight.color,
+                        directionalLight.intensity,
+                        shadow);
+            }
 
-            Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, directionalLight.color, directionalLight.intensity, shadow);
+            // point lights
+            for (int i = 0; i < configuration.numPointLights; i++) {
+                PointLight pointLight = pointLights[i];
+
+                float distance = length(pointLight.position - v_fragmentWorldPosition);
+                float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
+                vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
+
+                Lo += evaluateLightSource(
+                        V,
+                        N,
+                        F0,
+                        roughness,
+                        metallic,
+                        albedo,
+                        attenuation,
+                        L,
+                        pointLight.color,
+                        pointLight.intensity,
+                        0.0);
+            }
+
+            // spot lights
+            for (int i = 0; i < configuration.numSpotLights; i++) {
+                SpotLight spotLight = spotLights[i];
+
+                float distance = length(spotLight.position - v_fragmentWorldPosition);
+                float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
+                vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
+
+                float theta = dot(L, normalize(-spotLight.direction));
+                float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
+                float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
+
+                Lo += evaluateLightSource(
+                        V,
+                        N,
+                        F0,
+                        roughness,
+                        metallic,
+                        albedo,
+                        attenuation,
+                        L,
+                        spotLight.color,
+                        spotLight.intensity * intensityScaling,
+                        0.0);
+            }
         }
-
-        // point lights
-        for (int i = 0; i < configuration.numPointLights; i++) {
-            PointLight pointLight = pointLights[i];
-
-            float distance = length(pointLight.position - v_fragmentWorldPosition);
-            float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-            vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
-
-            Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, pointLight.color, pointLight.intensity, 0.0);
-        }
-
-        // spot lights
-        for (int i = 0; i < configuration.numSpotLights; i++) {
-            SpotLight spotLight = spotLights[i];
-
-            float distance = length(spotLight.position - v_fragmentWorldPosition);
-            float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
-            vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
-
-            float theta = dot(L, normalize(-spotLight.direction));
-            float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
-            float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
-
-            Lo += evaluateLightSource(V, N, F0, roughness, metallic, albedo, attenuation, L, spotLight.color, spotLight.intensity * intensityScaling, 0.0);
-        }
-
-        Lo *= 1.0 - tmp_shadow; // tmp
-    } else {
-        // fragment has emission and therefore emits light
-
-        Lo = emission;
-    }
 
     // assemble shaded color
     vec3 color = Lo;
+    
+    // modulate color by ambient occlusion map sample
+    color *= ambientOcclusionMapSample;
 
     // gamma correct if using albedo map
     if (material.enableAlbedoMap) {
         color = pow(color, vec3(1.0 / configuration.gamma));
     }
-
-    // get ambient
-    vec3 ambient = getAmbient(albedo, ambientOcclusion);
-    color += ambient;
 
     // get fog
     float fogFactor = 1.0;
@@ -490,7 +530,6 @@ vec4 shadePBR() {
 
 vec4 shadeSolid()
 {
-    vec3 ambient = ambientLighting.intensity * ambientLighting.color;
     vec3 diffuse = vec3(0.0);
 
     vec3 N = getNormal();
@@ -527,7 +566,7 @@ vec4 shadeSolid()
     }
     albedo *= vec3(material.baseColor);
 
-    vec3 color = (ambient + diffuse) * albedo;
+    vec3 color = diffuse * albedo;
 
     return vec4(color, 1.0);
 }

@@ -40,10 +40,8 @@ void awake() {
 	sphereMaterial = new LitMaterial();
 	sphereMaterial->setAlbedoMap(albedo);
 	sphereMaterial->setNormalMap(normal);
-	// sphereMaterial->setMetallicMap(metallic);
-	// sphereMaterial->setRoughnessMap(roughness);
-	sphereMaterial->metallic = 0.8f;
-	sphereMaterial->roughness = 0.2f;
+	sphereMaterial->setMetallicMap(metallic);
+	sphereMaterial->setRoughnessMap(roughness);
 	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
 	sphereMaterial->setEmissionMap(emission);
 	sphereMaterial->emissionIntensity = 11.0f;
