@@ -6,8 +6,27 @@ Shader* PostProcessing::finalPassShader = nullptr;
 
 PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessingConfiguration();
 
+unsigned int PostProcessing::fbo = 0;
+unsigned int PostProcessing::output = 0;
+
 void PostProcessing::setup()
 {
+	// Create post processing framebuffer
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	glGenTextures(1, &output);
+	glBindTexture(GL_TEXTURE_2D, output);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
+
+	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
+	}
+
 	// Get default post processing final pass shader
 	finalPassShader = ShaderBuilder::get("final_pass");
 
@@ -43,8 +62,8 @@ void PostProcessing::render(unsigned int input)
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = input;
 
-	// Bind default framebuffer to render to screen
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// glBindFramebuffer(GL_FRAMEBUFFER, fbo); // Bind post processing framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind default framebuffer
 
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
@@ -74,6 +93,14 @@ void PostProcessing::render(unsigned int input)
 	// Bind quad and render to screen
 	Quad::bind();
 	Quad::render();
+
+	// Unbind post processing framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+unsigned int PostProcessing::getOutput()
+{
+	return output;
 }
 
 void PostProcessing::syncConfiguration()

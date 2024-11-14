@@ -14,6 +14,13 @@ struct CubemapFace {
 	int channels;
 };
 
+struct Image {
+	int width;
+	int height;
+	int channels;
+	unsigned char* data;
+};
+
 class Cubemap
 {
 public:
@@ -23,6 +30,7 @@ public:
 	std::string name;
 	std::vector<CubemapFace> faces;
 private:
+	Image loadImage(std::string path);
 	void extractFaces(std::string path);
 	void loadFace(std::string path);
 };

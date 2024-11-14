@@ -59,10 +59,15 @@ public:
 	static void render(unsigned int input);
 
 	static PostProcessingConfiguration configuration;
+
+	static unsigned int getOutput();
 private:
 	static void syncConfiguration();
 
 	static Shader* finalPassShader;
 
 	static PostProcessingConfiguration defaultConfiguration;
+
+	static unsigned int fbo;
+	static unsigned int output;
 };

@@ -59,7 +59,7 @@ bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
 // more tmp
-bool skipSkyboxLoad = true;
+bool skipSkyboxLoad = false;
 bool settingA = false;
 bool settingB = false;
 bool settingC = false;
@@ -139,6 +139,7 @@ int Runtime::START_LOOP() {
 	// Set error callback and initialize context
 	glfwSetErrorCallback(glfw_error_callback);
 	glfwInit();
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

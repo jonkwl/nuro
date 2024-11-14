@@ -53,7 +53,7 @@ void BloomFrame::setup(unsigned int mipDepth)
 
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
-		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Framebuffer", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
 	}
 }
 

@@ -33,7 +33,7 @@ Cubemap* Cubemap::GetByFaces(std::string right, std::string left, std::string to
     return cubemap;
 }
 
-void Cubemap::extractFaces(std::string path)
+Image Cubemap::loadImage(std::string path)
 {
     stbi_set_flip_vertically_on_load(false);
 
@@ -41,12 +41,19 @@ void Cubemap::extractFaces(std::string path)
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
     if (!data) {
         Log::printError("Cubemap", "Failed to load cubemap at " + path);
-        return;
+        return Image();
     }
 
+    return Image{ width, height, channels, data };
+}
+
+void Cubemap::extractFaces(std::string path)
+{
+    Image image = loadImage(path);
+
     // Calculate dimensions of each face (assuming default 4x3 layout)
-    int faceWidth = width / 4;
-    int faceHeight = height / 3;
+    int faceWidth = image.width / 4;
+    int faceHeight = image.height / 3;
 
     // Resize faces vector to hold 6 faces
     faces.resize(6);
@@ -67,42 +74,35 @@ void Cubemap::extractFaces(std::string path)
         int yOffset = offsets[i].second;
 
         // Allocate memory for face data
-        faces[i].data.resize(faceWidth * faceHeight * channels);
+        faces[i].data.resize(faceWidth * faceHeight * image.channels);
         faces[i].width = faceWidth;
         faces[i].height = faceHeight;
-        faces[i].channels = channels;
+        faces[i].channels = image.channels;
 
         // Copy pixel data for each face
         for (int y = 0; y < faceHeight; ++y) {
             for (int x = 0; x < faceWidth; ++x) {
-                int srcIndex = ((yOffset + y) * width + (xOffset + x)) * channels;
-                int dstIndex = (y * faceWidth + x) * channels;
-                memcpy(&faces[i].data[dstIndex], &data[srcIndex], channels);
+                int srcIndex = ((yOffset + y) * image.width + (xOffset + x)) * image.channels;
+                int dstIndex = (y * faceWidth + x) * image.channels;
+                memcpy(&faces[i].data[dstIndex], &image.data[srcIndex], image.channels);
             }
         }
     }
 
     // Free loaded image data
-    stbi_image_free(data);
+    stbi_image_free(image.data);
 }
 
 void Cubemap::loadFace(std::string path)
 {
-    stbi_set_flip_vertically_on_load(false);
+    Image image = loadImage(path);
 
-    int width, height, channels;
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-    if (!data) {
-        Log::printError("Cubemap", "Failed to load cubemap at " + path);
-        return;
-    }
-
-    std::vector<unsigned char> faceData(data, data + (width * height * channels));
+    std::vector<unsigned char> faceData(image.data, image.data + (image.width * image.height * image.channels));
 
     CubemapFace face;
     face.data = faceData;
-    face.width = width;
-    face.height = height;
-    face.channels = channels;
+    face.width = image.width;
+    face.height = image.height;
+    face.channels = image.channels;
     faces.push_back(face);
 }
