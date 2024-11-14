@@ -2,7 +2,7 @@
 
 #include "../engineui/engine_ui.h"
 
-bool UILayout::debugMode = true;
+bool UILayout::debugMode = false;
 
 float UILayout::defaultWidth = -1.0f;
 float UILayout::defaultHeight = -1.0f;

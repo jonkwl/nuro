@@ -17,8 +17,9 @@ public:
 
 	static void tryIcon(const char* icon);
 	
-	static void input(const char* label, int& value);
-	static void input(const char* label, float& value);
+	static void input(const char* label, bool& value);
+	static void input(const char* label, int& value, float speed = 0.1f);
+	static void input(const char* label, float& value, float speed = 0.1f);
 
 	static void indicatorLabel(const char* label, const char* value, const char* additional = "");
 	static void indicatorLabel(const char* label, int value, const char* additional = "");
@@ -29,4 +30,8 @@ public:
 	static bool extendableSettings(const char* label, bool& value, const char* icon = "");
 
 	static void space(float width, float height);
+
+	static bool header(const char* label);
+
+	static void colorPicker(const char* label, float value[3]);
 };

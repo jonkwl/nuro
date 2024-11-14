@@ -11,7 +11,10 @@
 #include "../engine/engineui/ui_components.h"
 #include "../engine/engineui/ui_layout.h"
 #include "../engine/engineui/engine_window.h"
-#include "../engine/engineui/windows/scene_view.h"
+
+#include "../engine/engineui/windows/scene_window.h"
+#include "../engine/engineui/windows/post_processing_window.h"
+#include "../engine/engineui/windows/diagnostics_window.h"
 
 #include "IconsFontAwesome6.h"
 
@@ -66,4 +69,8 @@ public:
 	static Colors colors;
 	static WindowFlags windowFlags;
 	static Fonts fonts;
+
+	static std::string getId();
+private:
+	static unsigned int idCounter;
 };

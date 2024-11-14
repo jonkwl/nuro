@@ -2,10 +2,6 @@
 
 #include "../engineui/engine_ui.h"
 
-std::string getId(const char* name, const char* identifier) {
-    return "##" + std::string(name) + "_" + std::string(identifier);
-}
-
 std::string formatInteger(int number) {
     std::string numStr = std::to_string(number);
     int insertPosition = numStr.length() - 3;
@@ -88,22 +84,34 @@ void UIComponents::tryIcon(const char* icon)
     }
 }
 
-void UIComponents::input(const char* label, int& value)
+void UIComponents::input(const char* label, bool& value)
 {
-    UILayout::beginFlex(label, ROW, FULL_WIDTH, 30.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
+    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 18.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
-        ImGui::InputInt(getId(label, "input").c_str(), &value);
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+        ImGui::Checkbox(EngineUI::getId().c_str(), &value);
+        ImGui::PopStyleVar();
     UILayout::endFlex();
 }
 
-void UIComponents::input(const char* label, float& value)
+void UIComponents::input(const char* label, int& value, float speed)
 {
-    UILayout::beginFlex(label, ROW, FULL_WIDTH, 30.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
+    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 18.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
-        ImGui::InputFloat(getId(label, "input").c_str(), &value);
+        ImGui::DragInt(EngineUI::getId().c_str(), &value, speed);
     UILayout::endFlex();
+}
+
+void UIComponents::input(const char* label, float& value, float speed)
+{
+    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 18.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
+        ImGui::Text(label);
+        ImGui::Spring(1.0f);
+        ImGui::DragFloat(EngineUI::getId().c_str(), &value, speed);
+    UILayout::endFlex();
+    // ImGui::DragFloat(std::string(label + EngineUI::getId()).c_str(), &value, speed);
 }
 
 void UIComponents::indicatorLabel(const char* label, const char* value, const char* additional)
@@ -149,9 +157,12 @@ void UIComponents::indicatorLabel(const char* label, double value, const char* a
 
 bool UIComponents::extendableSettings(const char* label, bool& value, const char* icon)
 {
-    UILayout::beginFlex(getId(label, "flex").c_str(), ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER, 5.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
+    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
     
-        ImGui::Checkbox(getId(label, "enable").c_str(), &value);
+        ImGui::Checkbox(EngineUI::getId().c_str(), &value);
+        UIComponents::space(1.0f, 1.5f);
+        tryIcon(icon);
+
         if (value) {
 
             UIComponents::space(4.0f, 2.5f);
@@ -159,8 +170,9 @@ bool UIComponents::extendableSettings(const char* label, bool& value, const char
             UILayout::endFlex();
 
             if (extended) {
-                UIComponents::space(0.0f, 2.5f);
-                UIComponents::headline((std::string(label) + " Settings:").c_str(), ICON_FA_PROJECTOR, HEADLINE_LEFT, true);
+                // UIComponents::space(0.0f, 2.5f);
+                // UIComponents::headline((std::string(label) + " Settings:").c_str(), ICON_FA_PROJECTOR, HEADLINE_LEFT, true);
+                UIComponents::space(0.0f, 8.0f);
                 return true;
             }
             else {
@@ -170,8 +182,6 @@ bool UIComponents::extendableSettings(const char* label, bool& value, const char
         }
         else {
 
-            UIComponents::space(1.0f, 2.5f);
-            tryIcon(icon);
             ImGui::Text(label);
 
         }
@@ -184,4 +194,18 @@ bool UIComponents::extendableSettings(const char* label, bool& value, const char
 void UIComponents::space(float width, float height)
 {
     ImGui::Dummy(ImVec2(width, height));
+}
+
+bool UIComponents::header(const char* label)
+{
+    return ImGui::CollapsingHeader(std::string(label + EngineUI::getId()).c_str());
+}
+
+void UIComponents::colorPicker(const char* label, float value[3])
+{
+    if (ImGui::CollapsingHeader(std::string(label + EngineUI::getId()).c_str())) {
+        ImGui::PushItemWidth(140);
+        ImGui::ColorPicker3(EngineUI::getId().c_str(), value, ImGuiColorEditFlags_NoSidePreview);
+        ImGui::PopItemWidth();
+    }
 }

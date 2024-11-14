@@ -7,6 +7,8 @@ Colors EngineUI::colors;
 WindowFlags EngineUI::windowFlags;
 Fonts EngineUI::fonts;
 
+unsigned int EngineUI::idCounter = 0;
+
 void EngineUI::setup() {
 	IMGUI_CHECKVERSION();
 
@@ -107,11 +109,21 @@ void EngineUI::setup() {
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	SceneView* sceneView = new SceneView();
-	windows.push_back(sceneView);
+	SceneWindow* sceneWindow = new SceneWindow();
+	windows.push_back(sceneWindow);
+
+	PostProcessingWindow* postProcessingWindow = new PostProcessingWindow();
+	windows.push_back(postProcessingWindow);
+
+	DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
+	windows.push_back(diagnosticsWindow);
 }
 
 void EngineUI::newFrame() {
+	// Reset id counter for new frame
+	idCounter = 0;
+
+	// Create new imgui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -160,4 +172,8 @@ ImVec4 EngineUI::lighten(ImVec4 color, float amount) {
 ImVec4 EngineUI::darken(ImVec4 color, float amount) {
 	float factor = 1.0f - amount;
 	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
+}
+
+std::string EngineUI::getId() {
+	return ("##" + std::to_string(++idCounter));
 }

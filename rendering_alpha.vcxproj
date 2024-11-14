@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\engineui\windows\diagnostics_window.cpp" />
     <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_pass.cpp" />
     <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_frame.cpp" />
     <ClCompile Include="engine\rendering\postprocessing\debug\debug_pass.cpp" />
@@ -151,7 +152,6 @@
     <ClCompile Include="engine\utils\log.cpp" />
     <ClCompile Include="engine\rendering\core\transformation.cpp" />
     <ClCompile Include="engine\input\input.cpp" />
-    <ClCompile Include="engine\engineui\engine_dialog.cpp" />
     <ClCompile Include="engine\engineui\engine_ui.cpp" />
     <ClCompile Include="engine\utils\inspector_mode.cpp" />
     <ClCompile Include="engine\rendering\model\model.cpp" />
@@ -166,11 +166,12 @@
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
     <ClCompile Include="engine\transform\transform.cpp" />
-    <ClCompile Include="engine\engineui\windows\scene_view.cpp" />
+    <ClCompile Include="engine\engineui\windows\scene_window.cpp" />
     <ClCompile Include="engine\engineui\ui_components.cpp" />
     <ClCompile Include="engine\engineui\ui_layout.cpp" />
     <ClCompile Include="engine\utils\profiler.cpp" />
     <ClCompile Include="engine\rendering\primitives\quad.cpp" />
+    <ClCompile Include="engine\engineui\windows\post_processing_window.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -186,6 +187,7 @@
     <ClCompile Include="engine\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\engineui\windows\diagnostics_window.h" />
     <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_pass.h" />
     <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_frame.h" />
     <ClInclude Include="engine\rendering\postprocessing\debug\debug_pass.h" />
@@ -291,7 +293,6 @@
     <ClInclude Include="engine\entity\entity.h" />
     <ClInclude Include="engine\rendering\core\transformation.h" />
     <ClInclude Include="engine\input\input.h" />
-    <ClInclude Include="engine\engineui\engine_dialog.h" />
     <ClInclude Include="engine\engineui\engine_ui.h" />
     <ClInclude Include="engine\utils\inspector_mode.h" />
     <ClInclude Include="engine\rendering\material\unlit\unlit_material.h" />
@@ -306,9 +307,10 @@
     <ClInclude Include="engine\rendering\core\forward_pass_frame.h" />
     <ClInclude Include="imgui\implot.h" />
     <ClInclude Include="imgui\implot_internal.h" />
-    <ClInclude Include="engine\engineui\windows\scene_view.h" />
+    <ClInclude Include="engine\engineui\windows\scene_window.h" />
     <ClInclude Include="engine\utils\profiler.h" />
     <ClInclude Include="engine\rendering\primitives\quad.h" />
+    <ClInclude Include="engine\engineui\windows\post_processing_window.h" />
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="engine\transform\transform.h" />
     <ClInclude Include="engine\engineui\ui_components.h" />

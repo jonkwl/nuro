@@ -4,6 +4,8 @@ PostProcessingConfiguration PostProcessing::configuration = PostProcessingConfig
 
 Shader* PostProcessing::finalPassShader = nullptr;
 
+PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessingConfiguration();
+
 void PostProcessing::setup()
 {
 	// Get default post processing final pass shader
@@ -14,6 +16,9 @@ void PostProcessing::setup()
 	finalPassShader->setInt("hdrBuffer", HDR_BUFFER_UNIT);
 	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER_UNIT);
 	finalPassShader->setInt("configuration.lensDirtTexture", LENS_DIRT_UNIT);
+
+	// Cache default post processing configuration
+	defaultConfiguration = configuration;
 
 	// Setup post processing pipeline
 	BloomPass::setup();
@@ -26,10 +31,14 @@ void PostProcessing::render(unsigned int input)
 	glDisable(GL_DEPTH_TEST);
 
 	// Seperate bloom pass
-	BloomPass::threshold = configuration.bloomThreshold;
-	BloomPass::softThreshold = configuration.bloomSoftThreshold;
-	BloomPass::filterRadius = configuration.bloomFilterRadius;
-	unsigned int BLOOM_PASS_OUTPUT = BloomPass::render(input);
+	unsigned int BLOOM_PASS_OUTPUT = 0;
+	if (configuration.bloom) {
+		BloomPass::threshold = configuration.bloomThreshold;
+		BloomPass::softThreshold = configuration.bloomSoftThreshold;
+		BloomPass::filterRadius = configuration.bloomFilterRadius;
+		BloomPass::mipDepth = configuration.bloomMipDepth;
+		BLOOM_PASS_OUTPUT = BloomPass::render(input);
+	}
 
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = input;
@@ -40,6 +49,13 @@ void PostProcessing::render(unsigned int input)
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
 	finalPassShader->setVec2("resolution", Window::getSize());
+
+	// check for default configurations
+	if (!configuration.colorGrading) {
+		configuration.contrast = defaultConfiguration.contrast;
+		configuration.exposure = defaultConfiguration.exposure;
+		configuration.gamma = defaultConfiguration.gamma;
+	}
 
 	// Sync post processing configuration with shader
 	syncConfiguration();
@@ -66,21 +82,22 @@ void PostProcessing::syncConfiguration()
 	finalPassShader->setFloat("configuration.contrast", configuration.contrast);
 	finalPassShader->setFloat("configuration.gamma", configuration.gamma);
 
+	finalPassShader->setFloat("configuration.bloom", configuration.bloom);
 	finalPassShader->setFloat("configuration.bloomIntensity", configuration.bloomIntensity);
-	finalPassShader->setVec3("configuration.bloomColor", configuration.bloomColor);
+	finalPassShader->setVec3("configuration.bloomColor", glm::vec3(configuration.bloomColor[0], configuration.bloomColor[1], configuration.bloomColor[2]));
 	finalPassShader->setFloat("configuration.bloomThreshold", configuration.bloomThreshold);
 	finalPassShader->setFloat("configuration.lensDirt", configuration.lensDirt);
 	finalPassShader->setFloat("configuration.lensDirtIntensity", configuration.lensDirtIntensity);
 
 	finalPassShader->setBool("configuration.chromaticAberration", configuration.chromaticAberration);
-	finalPassShader->setFloat("configuration.chromaticAberrationStrength", configuration.chromaticAberrationStrength);
+	finalPassShader->setFloat("configuration.chromaticAberrationIntensity", configuration.chromaticAberrationIntensity);
 	finalPassShader->setFloat("configuration.chromaticAberrationRange", configuration.chromaticAberrationRange);
 	finalPassShader->setFloat("configuration.chromaticAberrationRedOffset", configuration.chromaticAberrationRedOffset);
 	finalPassShader->setFloat("configuration.chromaticAberrationBlueOffset", configuration.chromaticAberrationBlueOffset);
 
 	finalPassShader->setBool("configuration.vignette", configuration.vignette);
-	finalPassShader->setFloat("configuration.vignetteStrength", configuration.vignetteStrength);
-	finalPassShader->setVec3("configuration.vignetteColor", configuration.vignetteColor);
+	finalPassShader->setFloat("configuration.vignetteIntensity", configuration.vignetteIntensity);
+	finalPassShader->setVec3("configuration.vignetteColor", glm::vec3(configuration.vignetteColor[0], configuration.vignetteColor[1], configuration.vignetteColor[2]));
 	finalPassShader->setFloat("configuration.vignetteRadius", configuration.vignetteRadius);
 	finalPassShader->setFloat("configuration.vignetteSoftness", configuration.vignetteSoftness);
 	finalPassShader->setFloat("configuration.vignetteRoundness", configuration.vignetteRoundness);

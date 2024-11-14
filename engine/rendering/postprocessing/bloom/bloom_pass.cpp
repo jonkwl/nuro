@@ -12,6 +12,7 @@ glm::vec2 BloomPass::inversedViewportSize = glm::ivec2(0, 0);
 float BloomPass::threshold = 0.0f;
 float BloomPass::softThreshold = 0.0f;
 float BloomPass::filterRadius = 0.0f;
+unsigned int BloomPass::mipDepth = 16;
 
 Shader* BloomPass::prefilterShader = nullptr;
 Shader* BloomPass::downsamplingShader = nullptr;
@@ -27,7 +28,6 @@ void BloomPass::setup()
 	downsamplingShader = ShaderBuilder::get("bloom_downsampling");
 	upsamplingShader = ShaderBuilder::get("bloom_upsampling");
 
-	const unsigned int mipDepth = 8;
 	BloomFrame::setup(mipDepth);
 
 	prefilterShader->bind();

@@ -19,32 +19,37 @@ enum FinalPassTextureSlots {
 };
 
 struct PostProcessingConfiguration {
+	bool colorGrading = false;
+
 	float exposure = 1.0f;
 	float contrast = 1.004f;
 	float gamma = 2.2f;
 
-	float bloomIntensity = 0.2f;
-	glm::vec3 bloomColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	bool bloom = true;
+	float bloomIntensity = 0.25f;
+	float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
 	float bloomThreshold = 0.2f;
 	float bloomSoftThreshold = 0.0f;
 	float bloomFilterRadius = 0.0f;
-
+	unsigned int bloomMipDepth = 16;
 	bool lensDirt = false;
 	Texture* lensDirtTexture = nullptr;
 	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;
-	float chromaticAberrationStrength = 0.5f;
+	float chromaticAberrationIntensity = 0.5f;
 	float chromaticAberrationRange = 0.2f;
 	float chromaticAberrationRedOffset = 0.01f;
 	float chromaticAberrationBlueOffset = 0.01f;
 
 	bool vignette = true;
-	float vignetteStrength = 1.0f;
-	glm::vec3 vignetteColor = glm::vec3(0.0f, 0.0f, 0.0);
+	float vignetteIntensity = 1.0f;
+	float vignetteColor[3] = { 0.0f, 0.0f, 0.0f };
 	float vignetteRadius = 0.68f;
 	float vignetteSoftness = 0.35f;
 	float vignetteRoundness = 1.8f;
+
+	bool ambientOcclusion = false;
 };
 
 class PostProcessing
@@ -58,4 +63,6 @@ private:
 	static void syncConfiguration();
 
 	static Shader* finalPassShader;
+
+	static PostProcessingConfiguration defaultConfiguration;
 };

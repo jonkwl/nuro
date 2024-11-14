@@ -40,7 +40,6 @@ using json = nlohmann::json;
 #include "../engine/utils/inspector_mode.h"
 #include "../engine/utils/profiler.h"
 #include "../engine/engineui/engine_ui.h"
-#include "../engine/engineui/engine_dialog.h"
 #include "../engine/window/window.h"
 #include "../engine/input/input.h"
 #include "../user/src/game_logic.h"

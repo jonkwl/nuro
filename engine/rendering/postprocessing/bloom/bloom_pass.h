@@ -11,6 +11,7 @@ public:
 	static float threshold;
 	static float softThreshold;
 	static float filterRadius;
+	static unsigned int mipDepth;
 private:
 	static unsigned int prefilteringPass(unsigned int input);
 	static void downsamplingPass(unsigned int input);

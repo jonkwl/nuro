@@ -84,9 +84,6 @@
     <ClCompile Include="engine\window\window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\engineui\engine_dialog.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="engine\engineui\engine_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -138,7 +135,7 @@
     <ClCompile Include="engine\transform\transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\engineui\windows\scene_view.cpp">
+    <ClCompile Include="engine\engineui\windows\scene_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\engineui\ui_components.cpp">
@@ -166,6 +163,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_pass.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\engineui\windows\post_processing_window.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\engineui\windows\diagnostics_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,9 +239,6 @@
     <ClInclude Include="engine\window\window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engineui\engine_dialog.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="engine\engineui\engine_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -293,7 +293,7 @@
     <ClInclude Include="engine\engineui\engine_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engineui\windows\scene_view.h">
+    <ClInclude Include="engine\engineui\windows\scene_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\engineui\IconsFontAwesome6.h">
@@ -591,6 +591,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\windows\post_processing_window.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engineui\windows\diagnostics_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

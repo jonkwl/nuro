@@ -14,6 +14,7 @@ struct Configuration {
     float contrast;
     float gamma;
 
+    bool bloom;
     float bloomIntensity;
     vec3 bloomColor;
     bool lensDirt;
@@ -21,13 +22,13 @@ struct Configuration {
     float lensDirtIntensity;
 
     bool chromaticAberration;
-    float chromaticAberrationStrength;
+    float chromaticAberrationIntensity;
     float chromaticAberrationRange;
     float chromaticAberrationRedOffset;
     float chromaticAberrationBlueOffset;
 
     bool vignette;
-    float vignetteStrength;
+    float vignetteIntensity;
     vec3 vignetteColor;
     float vignetteRadius;
     float vignetteSoftness;
@@ -52,26 +53,27 @@ void main()
 
     vec3 color = texture(hdrBuffer, uv).rgb;
 
-    // Bloom
-    vec3 bloom = texture(bloomBuffer, uv).rgb * configuration.bloomIntensity * configuration.bloomColor;
-    vec3 lensDirt = vec3(0.0);
-    if(configuration.lensDirt){
-        lensDirt = texture(configuration.lensDirtTexture, vec2(uv.x, 1.0 - uv.y)).rgb * configuration.lensDirtIntensity;
-    }
-    color = mix(color, color + bloom + bloom * lensDirt, vec3(1.0));
- 
-    // Not compatible with bloom yet
-    /* // Chromatic Aberration
+    // Chromatic Aberration
     if (configuration.chromaticAberration) {
         float dist = length(toCenter);
-        float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationStrength;
+        float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationIntensity;
         vec2 redOffset = uv + toCenter * aberration * configuration.chromaticAberrationRedOffset;
         vec2 greenOffset = uv;
         vec2 blueOffset = uv - toCenter * aberration * configuration.chromaticAberrationBlueOffset;
         color.r = texture2D(hdrBuffer, redOffset).r;
         color.g = texture2D(hdrBuffer, greenOffset).g;
         color.b = texture2D(hdrBuffer, blueOffset).b;
-    } */
+    }
+
+    // Bloom
+    if (configuration.bloom) {
+        vec3 bloomSample = texture(bloomBuffer, uv).rgb * configuration.bloomIntensity * configuration.bloomColor;
+        vec3 lensDirtSample = vec3(0.0);
+        if (configuration.lensDirt) {
+            lensDirtSample = texture(configuration.lensDirtTexture, vec2(uv.x, 1.0 - uv.y)).rgb * configuration.lensDirtIntensity;
+        }
+        color = mix(color, color + bloomSample + bloomSample * lensDirtSample, vec3(1.0));
+    }
 
     // Vignette
     if (configuration.vignette) {

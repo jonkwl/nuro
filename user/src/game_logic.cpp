@@ -37,18 +37,18 @@ void awake() {
 	Texture* ambient_occlusion = new Texture("./user/assets/textures/sci-fi/ambient_occlusion.jpg", AMBIENT_OCCLUSION_MAP);
 	Texture* emission = new Texture("./user/assets/textures/sci-fi/emission.jpg", EMISSION_MAP);
 
-	sphereMaterial = new LitMaterial();
+	/*sphereMaterial = new LitMaterial();
 	sphereMaterial->setAlbedoMap(albedo);
 	sphereMaterial->setNormalMap(normal);
 	sphereMaterial->setMetallicMap(metallic);
 	sphereMaterial->setRoughnessMap(roughness);
 	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
 	sphereMaterial->setEmissionMap(emission);
-	sphereMaterial->emissionIntensity = 11.0f;
+	sphereMaterial->emissionIntensity = 12.5f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);*/
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
