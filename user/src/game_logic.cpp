@@ -126,6 +126,17 @@ void awake() {
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
+
+	for (int i = 0; i < 40; i++) {
+		Entity* x = new Entity();
+		x = new Entity();
+		x->model = mannequinModel;
+		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
+		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+		x->transform.scale = glm::vec3(1.4f);
+
+		x->transform.position.x += 2.5f * i;
+	}
 }
 
 void update() {

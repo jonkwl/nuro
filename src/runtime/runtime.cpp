@@ -307,6 +307,12 @@ int Runtime::START_LOOP() {
 		EntityProcessor::currentViewMatrix = view;
 		EntityProcessor::currentProjectionMatrix = projection;
 
+		// Update cameras frustum
+		renderCamera->updateFrustum(view * projection); 
+
+		// Enable culling
+		glEnable(GL_CULL_FACE);
+
 		//
 		// SHADOW PASS: Render shadow map
 		//
@@ -334,6 +340,9 @@ int Runtime::START_LOOP() {
 		// Bind forward pass framebuffer
 		ForwardPassFrame::bind();
 
+		// Set culling to back face
+		glCullFace(GL_BACK);
+
 		// Set viewport and bind post processing framebuffer
 		if (!wireframe) {
 			glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
@@ -355,6 +364,9 @@ int Runtime::START_LOOP() {
 
 		// Disable wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		// Disable culling before rendering skybox
+		glDisable(GL_CULL_FACE);
 
 		// Render skybox to bound forward pass frame
 		if (activeSkybox != nullptr && !wireframe) {

@@ -61,7 +61,7 @@ glm::mat4 Transformation::viewMatrix(Camera* camera) {
 	return viewMatrix;
 }
 glm::mat4 Transformation::projectionMatrix(Camera* camera, int width, int height) {
-	return glm::perspective(glm::radians(camera->fov), (float)width / (float)height, camera->nearClipping, camera->farClipping);
+	return glm::perspective(glm::radians(camera->fov), (float)width / (float)height, camera->near, camera->far);
 }
 
 glm::mat4 Transformation::lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection)
@@ -78,7 +78,7 @@ glm::mat4 Transformation::lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lig
 
 glm::mat4 Transformation::lightProjectionMatrix(Camera* camera)
 {
-	glm::mat4 projection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, camera->nearClipping, camera->farClipping);
+	glm::mat4 projection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, camera->near, camera->far);
 	return projection;
 }
 

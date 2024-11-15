@@ -47,7 +47,9 @@ void ShadowMap::render()
 
 	// Bind shadow pass shader and render each objects depth on shadow map
 	glEnable(GL_DEPTH_TEST);
-	// glCullFace(GL_FRONT);
+
+	// Set culling to front face
+	glCullFace(GL_FRONT);
 
 	Runtime::shadowPassShader->bind();
 
@@ -55,7 +57,6 @@ void ShadowMap::render()
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->shadowPass();
 	}
-	// glCullFace(GL_BACK);
 
 	// Unbind shadow map framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
