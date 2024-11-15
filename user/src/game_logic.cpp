@@ -2,11 +2,11 @@
 
 #include <iostream>
 
-#include "../engine/runtime/runtime.h"
-#include "../engine/entity/entity.h"
-#include "../engine/camera/camera.h"
-#include "../engine/rendering/material/unlit/unlit_material.h"
-#include "../engine/rendering/material/lit/lit_material.h"
+#include "../src/runtime/runtime.h"
+#include "../src/entity/entity.h"
+#include "../src/camera/camera.h"
+#include "../src/rendering/material/unlit/unlit_material.h"
+#include "../src/rendering/material/lit/lit_material.h"
 
 Camera* camera = nullptr;
 Entity* cube = nullptr;

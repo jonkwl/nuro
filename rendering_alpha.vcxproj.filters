@@ -21,264 +21,300 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine\runtime\runtime.cpp">
+    <ClCompile Include="src\runtime\runtime.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_glfw.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Quelldateien\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\shader\shader.cpp">
+    <ClCompile Include="src\rendering\shader\shader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="stb\stb_image.cpp">
+    <ClCompile Include="dependencies\vendor\stb\stb_image.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\shader\shader_builder.cpp">
+    <ClCompile Include="src\rendering\shader\shader_builder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\iohandler.cpp">
+    <ClCompile Include="src\utils\iohandler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\log.cpp">
+    <ClCompile Include="src\utils\log.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\texture\texture.cpp">
+    <ClCompile Include="src\rendering\texture\texture.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="user\src\game_logic.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\entity\entity.cpp">
+    <ClCompile Include="src\entity\entity.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\camera\camera.cpp">
+    <ClCompile Include="src\camera\camera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\core\transformation.cpp">
+    <ClCompile Include="src\rendering\core\transformation.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\input\input.cpp">
+    <ClCompile Include="src\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\window\window.cpp">
+    <ClCompile Include="src\window\window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\engineui\engine_ui.cpp">
+    <ClCompile Include="src\engineui\engine_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\inspector_mode.cpp">
+    <ClCompile Include="src\utils\inspector_mode.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\model\model.cpp">
+    <ClCompile Include="src\rendering\model\model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\utils\string_helper.cpp">
+    <ClCompile Include="src\utils\string_helper.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\model\mesh.cpp">
+    <ClCompile Include="src\rendering\model\mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\entity\entity_processor.cpp">
+    <ClCompile Include="src\entity\entity_processor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\skybox\skybox.cpp">
+    <ClCompile Include="src\rendering\skybox\skybox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\skybox\cubemap.cpp">
+    <ClCompile Include="src\rendering\skybox\cubemap.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\postprocessing\post_processing.cpp">
+    <ClCompile Include="src\rendering\postprocessing\post_processing.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\shadows\shadow_map.cpp">
+    <ClCompile Include="src\rendering\shadows\shadow_map.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\material\lit\lit_material.cpp">
+    <ClCompile Include="src\rendering\material\lit\lit_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\rendering\material\unlit\unlit_material.cpp">
+    <ClCompile Include="src\rendering\material\unlit\unlit_material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transform\transform.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineui\windows\scene_window.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineui\ui_components.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineui\ui_layout.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\core\depth_pre_pass.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\profiler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\core\forward_pass_frame.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\primitives\quad.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\postprocessing\debug\debug_pass.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\postprocessing\bloom\bloom_frame.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\postprocessing\bloom\bloom_pass.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineui\windows\post_processing_window.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineui\windows\diagnostics_window.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="imgui\implot.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\implot_items.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\implot_demo.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="engine\transform\transform.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\engineui\windows\scene_window.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\engineui\ui_components.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\engineui\ui_layout.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\core\depth_pre_pass.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\utils\profiler.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\core\forward_pass_frame.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\primitives\quad.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\postprocessing\debug\debug_pass.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_frame.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\rendering\postprocessing\bloom\bloom_pass.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\engineui\windows\post_processing_window.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\engineui\windows\diagnostics_window.cpp">
+    <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="imgui\imconfig.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_glfw.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_opengl3.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Headerdateien\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\shader\shader.h">
+    <ClInclude Include="src\rendering\shader\shader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\iohandler.h">
+    <ClInclude Include="src\utils\iohandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="stb\stb_image.h">
+    <ClInclude Include="dependencies\vendor\stb\stb_image.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\shader\shader_builder.h">
+    <ClInclude Include="src\rendering\shader\shader_builder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\log.h">
+    <ClInclude Include="src\utils\log.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\texture\texture.h">
+    <ClInclude Include="src\rendering\texture\texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="user\src\game_logic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\runtime\runtime.h">
+    <ClInclude Include="src\runtime\runtime.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\entity\entity.h">
+    <ClInclude Include="src\entity\entity.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\camera\camera.h">
+    <ClInclude Include="src\camera\camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\core\transformation.h">
+    <ClInclude Include="src\rendering\core\transformation.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\input\input.h">
+    <ClInclude Include="src\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\window\window.h">
+    <ClInclude Include="src\window\window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engineui\engine_ui.h">
+    <ClInclude Include="src\engineui\engine_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\inspector_mode.h">
+    <ClInclude Include="src\utils\inspector_mode.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\material\imaterial.h">
+    <ClInclude Include="src\rendering\material\imaterial.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\material\unlit\unlit_material.h">
+    <ClInclude Include="src\rendering\material\unlit\unlit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\model\model.h">
+    <ClInclude Include="src\rendering\model\model.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\utils\string_helper.h">
+    <ClInclude Include="src\utils\string_helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\model\mesh.h">
+    <ClInclude Include="src\rendering\model\mesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\entity\entity_processor.h">
+    <ClInclude Include="src\entity\entity_processor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\material\lit\lit_material.h">
+    <ClInclude Include="src\rendering\material\lit\lit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\skybox\skybox.h">
+    <ClInclude Include="src\rendering\skybox\skybox.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="stb\stb_image_write.h">
+    <ClInclude Include="dependencies\vendor\stb\stb_image_write.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\skybox\cubemap.h">
+    <ClInclude Include="src\rendering\skybox\cubemap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\postprocessing\post_processing.h">
+    <ClInclude Include="src\rendering\postprocessing\post_processing.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\rendering\shadows\shadow_map.h">
+    <ClInclude Include="src\rendering\shadows\shadow_map.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\transform\transform.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\engine_window.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\windows\scene_window.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\IconsFontAwesome6.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\ui_components.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\ui_layout.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\core\depth_pre_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\profiler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\core\forward_pass_frame.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\primitives\quad.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\postprocessing\debug\debug_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\postprocessing\bloom\bloom_frame.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\postprocessing\bloom\bloom_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\windows\post_processing_window.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineui\windows\diagnostics_window.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_glfw.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_opengl3.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="imgui\implot.h">
@@ -287,316 +323,13 @@
     <ClInclude Include="imgui\implot_internal.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\transform\transform.h">
+    <ClInclude Include="imgui\imstb_rectpack.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engineui\engine_window.h">
+    <ClInclude Include="imgui\imstb_textedit.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engineui\windows\scene_window.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\engineui\IconsFontAwesome6.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\engineui\ui_components.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\engineui\ui_layout.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\json\json.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\GLFW\glfw3.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\GLFW\glfw3native.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\glad\glad.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\KHR\khrplatform.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\aabb.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ai_assert.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\anim.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\AssertHandler.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Base64.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\BaseImporter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Bitmap.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\BlobIOSystem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ByteSwapper.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\camera.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\cexport.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\cfileio.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\cimport.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ColladaMetaData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\color4.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\commonMetaData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\config.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\CreateAnimMesh.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\DefaultIOStream.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\DefaultIOSystem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\DefaultLogger.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\defs.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Exceptional.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Exporter.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\fast_atof.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\GenericProperty.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\GltfMaterial.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Hash.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Importer.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\importerdesc.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\IOStream.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\IOStreamBuffer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\IOSystem.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\light.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\LineSplitter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\LogAux.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Logger.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\LogStream.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\material.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\MathFunctions.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\matrix3x3.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\matrix4x4.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\MemoryIOWrapper.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\mesh.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\metadata.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\NullLogger.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ObjMaterial.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ParsingUtils.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\pbrmaterial.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\postprocess.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Profiler.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ProgressHandler.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\qnan.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\quaternion.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\RemoveComments.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\revision.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\scene.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\SceneCombiner.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\SGSpatialSort.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\SkeletonMeshBuilder.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\SmallVector.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\SmoothingGroups.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\SpatialSort.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\StandardShapes.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\StreamReader.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\StreamWriter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\StringComparison.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\StringUtils.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Subdivision.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\texture.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\TinyFormatter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\types.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\vector2.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\vector3.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\version.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Vertex.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\XmlParser.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\XMLTools.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\ZipArchiveIOSystem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\port\AndroidJNI\AndroidJNIIOSystem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\port\AndroidJNI\BundledAssetIOSystem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Compiler\poppack1.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Compiler\pstdint.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\assimp\Compiler\pushpack1.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\core\depth_pre_pass.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\utils\profiler.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\core\forward_pass_frame.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\primitives\quad.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\postprocessing\debug\debug_pass.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_frame.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\rendering\postprocessing\bloom\bloom_pass.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\engineui\windows\post_processing_window.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\engineui\windows\diagnostics_window.h">
+    <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -636,36 +369,9 @@
     <None Include="resources\shaders\postprocessing\framebuffer\.frag" />
     <None Include="resources\shaders\shadows\shadow_pass\.vert" />
     <None Include="resources\shaders\shadows\shadow_pass\.frag" />
-    <None Include="dependencies\include\assimp\.editorconfig" />
-    <None Include="dependencies\include\assimp\color4.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\config.h.in" />
-    <None Include="dependencies\include\assimp\material.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\matrix3x3.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\matrix4x4.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\module.modulemap" />
-    <None Include="dependencies\include\assimp\quaternion.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\revision.h.in" />
-    <None Include="dependencies\include\assimp\SmoothingGroups.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\vector2.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
-    <None Include="dependencies\include\assimp\vector3.inl">
-      <Filter>Headerdateien</Filter>
-    </None>
     <None Include="resources\shaders\prepass\depth_pre_pass\.frag" />
     <None Include="resources\shaders\prepass\depth_pre_pass\.vert" />
+    <None Include="dependencies\dll\assimp-vc143-mt.dll" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\fonts\Inter_18pt-Regular.ttf" />
