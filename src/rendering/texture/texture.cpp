@@ -61,7 +61,7 @@ Texture::Texture(std::string path, TextureType type)
 	stbi_image_free(data);
 }
 
-void Texture::bind(unsigned int slot) {
-	glActiveTexture(GL_TEXTURE0 + slot);
+void Texture::bind(unsigned int unit) {
+	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
 }

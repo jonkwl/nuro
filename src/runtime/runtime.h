@@ -33,6 +33,7 @@ using json = nlohmann::json;
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/core/depth_pre_pass.h"
 #include "../src/rendering/shadows/shadow_map.h"
+#include "../src/rendering/shadows/shadow_disk.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/entity/entity.h"
 #include "../src/camera/camera.h"

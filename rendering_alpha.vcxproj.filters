@@ -171,6 +171,9 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\shadows\shadow_disk.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\shader\shader.h">
@@ -330,6 +333,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\shadows\shadow_disk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

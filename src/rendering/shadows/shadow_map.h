@@ -9,15 +9,17 @@
 class ShadowMap
 {
 public:
-	ShadowMap(unsigned int size);
+	ShadowMap(unsigned int width, unsigned int height);
 
 	void render();
-	void bind(unsigned int slot);
+	void bind(unsigned int unit);
 
-	unsigned int getSize() const;
+	unsigned int getWidth() const;
+	unsigned int getHeight() const;
 	unsigned int getFramebuffer() const;
 private:
-	unsigned int size;
+	unsigned int width;
+	unsigned int height;
 
 	unsigned int texture;
 	unsigned int framebuffer;

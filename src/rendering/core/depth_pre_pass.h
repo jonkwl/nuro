@@ -8,7 +8,7 @@ public:
 	DepthPrePass(unsigned int width, unsigned int height);
 
 	void render();
-	void bind(unsigned int slot);
+	void bind(unsigned int unit);
 
 	unsigned int getWidth() const;
 	unsigned int getHeight() const;

@@ -48,9 +48,9 @@ void DepthPrePass::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void DepthPrePass::bind(unsigned int slot)
+void DepthPrePass::bind(unsigned int unit)
 {
-	glActiveTexture(GL_TEXTURE0 + slot);
+	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 

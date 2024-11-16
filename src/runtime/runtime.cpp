@@ -48,7 +48,8 @@ glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
-float Runtime::intensity = 0.5f;
+// float Runtime::intensity = 0.5f;
+float Runtime::intensity = 0.0f;
 float Runtime::range = 15.0f;
 float Runtime::falloff = 7.5f;
 
@@ -58,12 +59,7 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
-// more tmp
-bool skipSkyboxLoad = false;
-bool settingA = false;
-bool settingB = false;
-bool settingC = false;
-bool settingD = false;
+bool skipSkyboxLoad = true; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -203,7 +199,7 @@ int Runtime::START_LOOP() {
 
 	// Create default shadow map
 	bool shadow_map_saved = false;
-	mainShadowMap = new ShadowMap(4096);
+	mainShadowMap = new ShadowMap(4096, 4096);
 
 	// Creating default skybox
 	if (!skipSkyboxLoad) {
@@ -229,14 +225,29 @@ int Runtime::START_LOOP() {
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
 	//
 
+	// Set defualt window cursor
 	Window::setCursor(Window::cursorMode);
 
+	// Setup forward pass fbo
 	ForwardPassFrame::setup(msaaSamples);
+
+	// Setup post processing
 	PostProcessing::setup();
+
+	// Setup engine ui
 	EngineUI::setup();
+
+	// Setup input system
 	Input::setupInputs();
 
+	// Create primitives
 	Quad::create();
+
+	// Create shadow disk
+	unsigned int diskWindowSize = 4;
+	unsigned int diskFilterSize = 8;
+	unsigned int diskRadius = 7;
+	ShadowDisk::setup(diskWindowSize, diskFilterSize, diskRadius);
 
 	//
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
@@ -326,7 +337,7 @@ int Runtime::START_LOOP() {
 		// Save shadow map
 		if (!shadow_map_saved) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
-			saveDepthMapAsImage(mainShadowMap->getSize(), mainShadowMap->getSize(), "./shadow_map.png");
+			saveDepthMapAsImage(mainShadowMap->getWidth(), mainShadowMap->getHeight(), "./shadow_map.png");
 			shadow_map_saved = true;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}

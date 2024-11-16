@@ -20,12 +20,11 @@ enum FinalPassTextureSlots {
 
 struct PostProcessingConfiguration {
 	bool colorGrading = false;
-
 	float exposure = 1.0f;
 	float contrast = 1.004f;
 	float gamma = 2.2f;
 
-	bool bloom = true;
+	bool bloom = false;
 	float bloomIntensity = 0.25f;
 	float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
 	float bloomThreshold = 0.2f;
@@ -36,13 +35,13 @@ struct PostProcessingConfiguration {
 	Texture* lensDirtTexture = nullptr;
 	float lensDirtIntensity = 0.0f;
 
-	bool chromaticAberration = true;
+	bool chromaticAberration = false;
 	float chromaticAberrationIntensity = 0.5f;
 	float chromaticAberrationRange = 0.2f;
 	float chromaticAberrationRedOffset = 0.01f;
 	float chromaticAberrationBlueOffset = 0.01f;
 
-	bool vignette = true;
+	bool vignette = false;
 	float vignetteIntensity = 1.0f;
 	float vignetteColor[3] = { 0.0f, 0.0f, 0.0f };
 	float vignetteRadius = 0.68f;

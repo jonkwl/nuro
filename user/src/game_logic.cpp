@@ -30,14 +30,14 @@ void awake() {
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	/*Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
 	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
 	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
 	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
 	Texture* ambient_occlusion = new Texture("./user/assets/textures/sci-fi/ambient_occlusion.jpg", AMBIENT_OCCLUSION_MAP);
 	Texture* emission = new Texture("./user/assets/textures/sci-fi/emission.jpg", EMISSION_MAP);
 
-	/*sphereMaterial = new LitMaterial();
+	sphereMaterial = new LitMaterial();
 	sphereMaterial->setAlbedoMap(albedo);
 	sphereMaterial->setNormalMap(normal);
 	sphereMaterial->setMetallicMap(metallic);
@@ -63,6 +63,7 @@ void awake() {
 	Entity* pbrSphere = new Entity();
 	pbrSphere->model = pbrSphereModel;
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
+	pbrSphere->transform.position = glm::vec3(3.0f, 1.5f, 7.0f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
 	LitMaterial* plank = new LitMaterial();
@@ -87,6 +88,7 @@ void awake() {
 
 	LitMaterial* wallMaterial = new LitMaterial();
 	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	wallMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
 	wallModel->castsShadow = true;
@@ -140,6 +142,5 @@ void awake() {
 }
 
 void update() {
-	// cube->transform.rotation.y += 80.0f * Runtime::deltaTime;
 	cube->transform.rotation.y += 20.0f * Runtime::deltaTime;
 }

@@ -2,23 +2,6 @@
 
 #include "../src/runtime/runtime.h"
 
-glm::vec3 worldPos(glm::vec3 pos) {
-	return Transformation::prepareWorldPosition(pos);
-}
-
-glm::vec3 eulerAnglesToDirection(float pitch, float yaw, float roll) {
-	// Step 1: Create a quaternion from Euler angles
-	glm::quat quaternion = glm::quat(glm::vec3(pitch, yaw, roll));
-
-	// Step 2: Define the default forward direction vector
-	glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
-
-	// Step 3: Rotate the forward vector by the quaternion
-	glm::vec3 direction = quaternion * forward;
-
-	return direction;
-}
-
 LitMaterial::LitMaterial()
 {
 	shader = ShaderBuilder::get("lit");
@@ -50,15 +33,22 @@ void LitMaterial::bind()
 {
 	shader->bind();
 
-	// Set scene data
-	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-
+	// General parameters
 	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
-
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 
+	// Shadow parameters
 	shader->setBool("configuration.castShadows", Runtime::shadows);
+	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
+	shader->setFloat("configuration.shadowMapWidth", Runtime::mainShadowMap->getWidth());
+	shader->setFloat("configuration.shadowMapHeight", Runtime::mainShadowMap->getHeight());
 
+	ShadowDisk::bind(SHADOW_DISK_UNIT);
+	shader->setFloat("configuration.shadowDiskWindowSize", ShadowDisk::getWindowSize());
+	shader->setFloat("configuration.shadowDiskFilterSize", ShadowDisk::getFilterSize());
+	shader->setFloat("configuration.shadowDiskRadius", ShadowDisk::getRadius());
+
+	// World parameters
 	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
 	// Set material data
@@ -162,34 +152,36 @@ void LitMaterial::syncStaticUniforms()
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);
 
-	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
 	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);
 	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
 	shader->setInt("material.metallicMap", METALLIC_MAP_UNIT);
 	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
 	shader->setInt("material.emissionMap", EMISSION_MAP_UNIT);
+	shader->setInt("configuration.shadowDisk", SHADOW_DISK_UNIT);
+	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 }
 
 void LitMaterial::syncLightUniforms()
 {
+	// Lighting parameters
 	shader->setInt("configuration.numDirectionalLights", 1);
 	shader->setInt("configuration.numPointLights", 1);
 	shader->setInt("configuration.numSpotLights", 1);
 
 	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
-	shader->setVec3("directionalLights[0].direction", worldPos(Runtime::directionalDirection));
+	shader->setVec3("directionalLights[0].direction", Transformation::prepareWorldPosition(Runtime::directionalDirection));
 	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
-	shader->setVec3("directionalLights[0].position", worldPos(Runtime::directionalPosition));
+	shader->setVec3("directionalLights[0].position", Transformation::prepareWorldPosition(Runtime::directionalPosition));
 
-	shader->setVec3("pointLights[0].position", worldPos(glm::vec3(0.0f, 0.0f, 6.5f)));
+	shader->setVec3("pointLights[0].position", Transformation::prepareWorldPosition(glm::vec3(0.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.78f, 0.95f));
 	shader->setFloat("pointLights[0].intensity", 2.0f);
 	shader->setFloat("pointLights[0].range", 10.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);
 
-	shader->setVec3("spotLights[0].position", worldPos(glm::vec3(12.0f, 1.9f, -4.0f)));
-	shader->setVec3("spotLights[0].direction", worldPos(glm::vec3(-0.4, -0.2f, 1.0f)));
+	shader->setVec3("spotLights[0].position", Transformation::prepareWorldPosition(glm::vec3(12.0f, 1.9f, -4.0f)));
+	shader->setVec3("spotLights[0].direction", Transformation::prepareWorldPosition(glm::vec3(-0.4, -0.2f, 1.0f)));
 	shader->setVec3("spotLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader->setFloat("spotLights[0].intensity", 3.5f);
 	shader->setFloat("spotLights[0].range", 25.0f);

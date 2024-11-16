@@ -2,20 +2,19 @@
 
 #include "../src/runtime/runtime.h"
 
-ShadowMap::ShadowMap(unsigned int size)
+ShadowMap::ShadowMap(unsigned int width, unsigned int height)
 {
-	this->size = size;
+	this->width = width;
+	this->height = height;
 
 	this->framebuffer = 0;
 	this->texture = 0;
 
 	glGenFramebuffers(1, &framebuffer);
 
-	const unsigned int SHADOW_MAP_WIDTH = size, SHADOW_MAP_HEIGHT = size;
-
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -35,7 +34,7 @@ ShadowMap::ShadowMap(unsigned int size)
 void ShadowMap::render()
 {
 	// Set viewport and bind shadow map framebuffer
-	glViewport(0, 0, size, size);
+	glViewport(0, 0, width, height);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -62,15 +61,20 @@ void ShadowMap::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::bind(unsigned int slot)
+void ShadowMap::bind(unsigned int unit)
 {
-	glActiveTexture(GL_TEXTURE0 + slot);
+	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-unsigned int ShadowMap::getSize() const
+unsigned int ShadowMap::getWidth() const
 {
-	return size;
+	return width;
+}
+
+unsigned int ShadowMap::getHeight() const
+{
+	return height;
 }
 
 unsigned int ShadowMap::getFramebuffer() const
