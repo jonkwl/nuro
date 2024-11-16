@@ -10,6 +10,7 @@
 
 Camera* camera = nullptr;
 Entity* cube = nullptr;
+Entity* mannequin = nullptr;
 
 LitMaterial* sphereMaterial = nullptr;
 
@@ -77,7 +78,8 @@ void awake() {
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
-	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	// floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	floorMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	floorMaterial->roughness = 0.35f;
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	floorModel->castsShadow = false;
@@ -87,7 +89,7 @@ void awake() {
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
 	LitMaterial* wallMaterial = new LitMaterial();
-	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	// wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	wallMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
@@ -122,12 +124,20 @@ void awake() {
 	mannequinMaterial->setMetallicMap(mannequinMetallic);
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", mannequinMaterial);
-	Entity* mannequin = new Entity();
+	mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->model = mannequinModel;
-	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
+	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.0f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
+
+	LitMaterial* whiteMaterial = new LitMaterial();
+	whiteMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	whiteMaterial->roughness = 0.2f;
+	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx", { whiteMaterial });
+	Entity* shadowedSphere = new Entity();
+	shadowedSphere->model = shadowedSphereModel;
+	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
 
 	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
@@ -137,10 +147,11 @@ void awake() {
 		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);
 
-		x->transform.position.x += 2.5f * i;
+		x->transform.position.x += 2.5f * (i + 1);
 	}
 }
 
 void update() {
 	cube->transform.rotation.y += 20.0f * Runtime::deltaTime;
+	mannequin->transform.rotation.z += 30.0f * Runtime::deltaTime;
 }

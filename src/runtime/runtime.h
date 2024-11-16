@@ -102,6 +102,7 @@ public:
 	static DepthPrePass* depthPrePass; // Unused render pipeline depth pre pass
 
 	// Shadow settings
+	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap; // Default shadow map
 
 	// Return data

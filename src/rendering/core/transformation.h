@@ -21,5 +21,5 @@ public:
 	static glm::mat4 projectionMatrix(Camera* camera, int width, int height); // Projection matrix
 	  
 	static glm::mat4 lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection);
-	static glm::mat4 lightProjectionMatrix(Camera* camera);
+	static glm::mat4 lightProjectionMatrix(Camera* camera, float boundsWidth, float boundsHeight);
 };

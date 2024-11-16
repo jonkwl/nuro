@@ -40,13 +40,13 @@ void LitMaterial::bind()
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", Runtime::shadows);
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-	shader->setFloat("configuration.shadowMapWidth", Runtime::mainShadowMap->getWidth());
-	shader->setFloat("configuration.shadowMapHeight", Runtime::mainShadowMap->getHeight());
+	shader->setFloat("configuration.shadowMapResolutionWidth", Runtime::mainShadowMap->getResolutionWidth());
+	shader->setFloat("configuration.shadowMapResolutionHeight", Runtime::mainShadowMap->getResolutionHeight());
 
-	ShadowDisk::bind(SHADOW_DISK_UNIT);
-	shader->setFloat("configuration.shadowDiskWindowSize", ShadowDisk::getWindowSize());
-	shader->setFloat("configuration.shadowDiskFilterSize", ShadowDisk::getFilterSize());
-	shader->setFloat("configuration.shadowDiskRadius", ShadowDisk::getRadius());
+	Runtime::mainShadowDisk->bind(SHADOW_DISK_UNIT);
+	shader->setFloat("configuration.shadowDiskWindowSize", Runtime::mainShadowDisk->getWindowSize());
+	shader->setFloat("configuration.shadowDiskFilterSize", Runtime::mainShadowDisk->getFilterSize());
+	shader->setFloat("configuration.shadowDiskRadius", Runtime::mainShadowDisk->getRadius());
 
 	// World parameters
 	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));

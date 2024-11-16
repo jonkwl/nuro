@@ -2,11 +2,14 @@
 
 #include "../src/runtime/runtime.h"
 
-ShadowMap::ShadowMap(unsigned int width, unsigned int height)
+ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight)
 {
 	// Set script parameters
-	this->width = width;
-	this->height = height;
+	this->resolutionWidth = resolutionWidth;
+	this->resolutionHeight = resolutionHeight;
+
+	this->boundsWidth = boundsWidth;
+	this->boundsHeight = boundsHeight;
 
 	this->framebuffer = 0;
 	this->texture = 0;
@@ -17,7 +20,7 @@ ShadowMap::ShadowMap(unsigned int width, unsigned int height)
 	// Generate texture
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, resolutionWidth, resolutionHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -42,12 +45,12 @@ ShadowMap::ShadowMap(unsigned int width, unsigned int height)
 void ShadowMap::render()
 {
 	// Set viewport and bind shadow map framebuffer
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, resolutionWidth, resolutionHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Get shadow map transformation matrices
-	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering());
+	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering(), Runtime::mainShadowMap->boundsWidth, Runtime::mainShadowMap->boundsHeight);
 	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
 	EntityProcessor::currentLightSpaceMatrix = lightSpaceMatrix;
@@ -75,14 +78,24 @@ void ShadowMap::bind(unsigned int unit)
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-unsigned int ShadowMap::getWidth() const
+unsigned int ShadowMap::getResolutionWidth() const
 {
-	return width;
+	return resolutionWidth;
 }
 
-unsigned int ShadowMap::getHeight() const
+unsigned int ShadowMap::getResolutionHeight() const
 {
-	return height;
+	return resolutionHeight;
+}
+
+float ShadowMap::getBoundsWidth() const
+{
+	return boundsWidth;
+}
+
+float ShadowMap::getBoundsHeight() const
+{
+	return boundsHeight;
 }
 
 unsigned int ShadowMap::getFramebuffer() const

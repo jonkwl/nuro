@@ -25,8 +25,8 @@ struct Configuration {
     // Shadow parameters
     bool castShadows;
     sampler2D shadowMap;
-    float shadowMapWidth;
-    float shadowMapHeight;
+    float shadowMapResolutionWidth;
+    float shadowMapResolutionHeight;
 
     sampler3D shadowDisk;
     float shadowDiskWindowSize;
@@ -199,8 +199,8 @@ float getDirectionalSoftShadow(vec3 lightDirection)
     int samplesDiv2 = int(configuration.shadowDiskFilterSize * configuration.shadowDiskFilterSize / 2.0);
 
     // calculate texel size for shadow map based on its dimensions
-    float texelWidth = 1.0 / configuration.shadowMapWidth;
-    float texelHeight = 1.0 / configuration.shadowMapHeight;
+    float texelWidth = 1.0 / configuration.shadowMapResolutionWidth;
+    float texelHeight = 1.0 / configuration.shadowMapResolutionHeight;
 
     // store texel size in a vec2
     vec2 texelSize = vec2(texelWidth, texelHeight);

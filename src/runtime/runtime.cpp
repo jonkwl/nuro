@@ -37,6 +37,7 @@ Skybox* Runtime::activeSkybox = nullptr;
 
 DepthPrePass* Runtime::depthPrePass = nullptr;
 
+ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
 unsigned int Runtime::currentDrawCalls = 0;
@@ -199,7 +200,8 @@ int Runtime::START_LOOP() {
 
 	// Create default shadow map
 	bool shadow_map_saved = false;
-	mainShadowMap = new ShadowMap(4096, 4096);
+	// mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
+	mainShadowMap = new ShadowMap(8192, 8192, 40.0f, 40.0f);
 
 	// Creating default skybox
 	if (!skipSkyboxLoad) {
@@ -246,8 +248,8 @@ int Runtime::START_LOOP() {
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;
 	unsigned int diskFilterSize = 8;
-	unsigned int diskRadius = 7;
-	ShadowDisk::setup(diskWindowSize, diskFilterSize, diskRadius);
+	unsigned int diskRadius = 9;
+	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 	//
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
@@ -337,7 +339,7 @@ int Runtime::START_LOOP() {
 		// Save shadow map
 		if (!shadow_map_saved) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
-			saveDepthMapAsImage(mainShadowMap->getWidth(), mainShadowMap->getHeight(), "./shadow_map.png");
+			// saveDepthMapAsImage(mainShadowMap->getWidth(), mainShadowMap->getHeight(), "./shadow_map.png");
 			shadow_map_saved = true;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
