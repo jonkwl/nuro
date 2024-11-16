@@ -198,10 +198,15 @@ int Runtime::START_LOOP() {
 	defaultMaterial = new UnlitMaterial();
 	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
+	// Create shadow disk
+	unsigned int diskWindowSize = 4;
+	unsigned int diskFilterSize = 8;
+	unsigned int diskRadius = 7;
+	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
+
 	// Create default shadow map
 	bool shadow_map_saved = false;
-	// mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
-	mainShadowMap = new ShadowMap(8192, 8192, 40.0f, 40.0f);
+	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
 
 	// Creating default skybox
 	if (!skipSkyboxLoad) {
@@ -244,12 +249,6 @@ int Runtime::START_LOOP() {
 
 	// Create primitives
 	Quad::create(); 
-
-	// Create shadow disk
-	unsigned int diskWindowSize = 4;
-	unsigned int diskFilterSize = 8;
-	unsigned int diskRadius = 9;
-	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 	//
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
