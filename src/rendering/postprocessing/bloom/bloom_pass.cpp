@@ -20,66 +20,85 @@ Shader* BloomPass::upsamplingShader = nullptr;
 
 void BloomPass::setup()
 {
+	// Get initial viewport size
 	iViewportSize = glm::ivec2(Window::width, Window::height);
 	fViewportSize = glm::vec2((float)Window::width, (float)Window::height);
 	inversedViewportSize = 1.0f / fViewportSize;
 
+	// Get shaders
 	prefilterShader = ShaderBuilder::get("bloom_prefilter");
 	downsamplingShader = ShaderBuilder::get("bloom_downsampling");
 	upsamplingShader = ShaderBuilder::get("bloom_upsampling");
 
+	// Setup bloom frame
 	BloomFrame::setup(mipDepth);
 
+	// Set static prefilter uniforms
 	prefilterShader->bind();
 	prefilterShader->setInt("inputTexture", 0);
 
+	// Set static downsampling uniforms
 	downsamplingShader->bind();
 	downsamplingShader->setInt("inputTexture", 0);
 	
+	// Set static upsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setInt("inputTexture", 0);
 }
 
 unsigned int BloomPass::render(unsigned int input)
 {
+	// Bind bloom framebuffer
 	BloomFrame::bind();
 
+	// Perform prefiltering pass
 	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(input);
+
+	// Perform downsampling pass
 	downsamplingPass(PREFILTERING_PASS_OUTPUT);
+
+	// Perform upsampling pass
 	upsamplingPass();
 
 	// Unbind framebuffer to restore original viewport
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, iViewportSize.x, iViewportSize.y);
 
+	// Return texture of first bloom mip (the texture being rendered to)
 	return BloomFrame::getMipChain()[0].texture;
 }
 
 unsigned int BloomPass::prefilteringPass(unsigned int input)
 {
+	// Get target texture for prefiltering pass
 	unsigned int prefilterTarget = BloomFrame::getPrefilterTexture();
 
+	// Set prefilter uniforms
 	prefilterShader->bind();
 	prefilterShader->setFloat("threshold", threshold);
 	prefilterShader->setFloat("softThreshold", softThreshold);
 
+	// Bind input texture for prefilter pass
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, input);
 
+	// Set prefilter target texture as framebuffer render target
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, prefilterTarget, 0);
 
+	// Bind and render to quad
 	Quad::bind();
 	Quad::render();
 
-	glBindTexture(GL_TEXTURE_2D, prefilterTarget);
-
+	// Return prefiltering pass target (now the output after rendering)
 	return prefilterTarget;
 }
 
 void BloomPass::downsamplingPass(unsigned int input)
 {
+	// Get bloom mip chain
 	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
 
+	// Set downsampling uniforms
 	downsamplingShader->bind();
 	downsamplingShader->setVec2("inversedResolution", inversedViewportSize);
 
@@ -89,30 +108,39 @@ void BloomPass::downsamplingPass(unsigned int input)
 
 	// Downsample through mip chain
 	for (int i = 0; i < mipChain.size(); i++) {
+		// Get current mip
 		const BloomMip& mip = mipChain[i];
 		
+		// Set viewport and framebuffer rendering target according to current mip
 		glViewport(0, 0, mip.fSize.x, mip.fSize.y);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.texture, 0);
 
+		// Bind and render to quad
 		Quad::bind();
 		Quad::render();
 
+		// Set inversed resolution for next downsample iteration
 		downsamplingShader->setVec2("inversedResolution", mip.inversedSize);
 		
+		// Bind mip texture for next downsample iteration
 		glBindTexture(GL_TEXTURE_2D, mip.texture);
 	}
 }
 
 void BloomPass::upsamplingPass()
 {
+	// Get bloom mip chain
 	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
+
+	// Get viewport aspect ratio
 	const float aspectRatio = fViewportSize.x / fViewportSize.y;
 
+	// Set downsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setFloat("filterRadius", filterRadius);
 	upsamplingShader->setFloat("aspectRatio", aspectRatio);
 
-	// Set additive blending to enabled
+	// Enable additive blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glBlendEquation(GL_FUNC_ADD);
@@ -120,17 +148,19 @@ void BloomPass::upsamplingPass()
 	// Upsample through mip chain
 	for (int i = mipChain.size() - 1; i > 0; i--)
 	{
+		// Get current mip and target mip for current downsampling iteration
 		const BloomMip& mip = mipChain[i];
-		const BloomMip& forwardMip = mipChain[i - 1];
+		const BloomMip& targetMip = mipChain[i - 1];
 
 		// Set input texture for next render to be current mips texture
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mip.texture);
 
 		// Set viewport and set render target
-		glViewport(0, 0, forwardMip.fSize.x, forwardMip.fSize.y);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, forwardMip.texture, 0);
+		glViewport(0, 0, targetMip.fSize.x, targetMip.fSize.y);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, targetMip.texture, 0);
 
+		// Bind and render to quad
 		Quad::bind();
 		Quad::render();
 	}

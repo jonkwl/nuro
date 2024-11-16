@@ -44,13 +44,18 @@ void ShadowDisk::setup(unsigned int windowSize, unsigned int filterSize, unsigne
 
 	// Generate 3D sample disk texture
 	int nFilterSamples = filterSize * filterSize;
-	glActiveTexture(GL_TEXTURE1);
+	
+	// Generate texture
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_3D, texture);
 	glTexStorage3D(GL_TEXTURE_3D, 1, GL_RGBA32F, nFilterSamples / 2, windowSize, windowSize);
 	glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, nFilterSamples / 2, windowSize, windowSize, GL_RGBA, GL_FLOAT, &data[0]);
+	
+	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	
+	// Unbind texture
 	glBindTexture(GL_TEXTURE_3D, 0);
 }
 

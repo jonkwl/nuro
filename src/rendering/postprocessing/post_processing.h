@@ -67,6 +67,6 @@ private:
 
 	static PostProcessingConfiguration defaultConfiguration;
 
-	static unsigned int fbo;
+	static unsigned int framebuffer;
 	static unsigned int output;
 };

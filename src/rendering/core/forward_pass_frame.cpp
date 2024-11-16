@@ -5,7 +5,7 @@
 
 unsigned int ForwardPassFrame::output = 0;
 
-unsigned int ForwardPassFrame::fbo = 0;
+unsigned int ForwardPassFrame::framebuffer = 0;
 unsigned int ForwardPassFrame::rbo = 0;
 
 unsigned int ForwardPassFrame::msaaFbo = 0;
@@ -15,8 +15,8 @@ unsigned int ForwardPassFrame::msaaColorBuffer = 0;
 void ForwardPassFrame::setup(unsigned int msaaSamples)
 {
 	// Create forward pass framebuffer
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	// Create forward pass framebuffer texture
 	glGenTextures(1, &output);
@@ -77,7 +77,7 @@ unsigned int ForwardPassFrame::blit()
 {
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFbo);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 	glBlitFramebuffer(0, 0, Window::width, Window::height, 0, 0, Window::width, Window::height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	return output;

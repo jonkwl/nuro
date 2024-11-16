@@ -20,7 +20,7 @@ public:
 	static unsigned int getPrefilterTexture();
 	static std::vector<BloomMip>& getMipChain();
 private:
-	static unsigned int fbo;
+	static unsigned int framebuffer;
 	static unsigned int prefilterTexture;
 	static std::vector<BloomMip> mipChain;
 };

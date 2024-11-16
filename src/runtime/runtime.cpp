@@ -228,7 +228,7 @@ int Runtime::START_LOOP() {
 	// Set defualt window cursor
 	Window::setCursor(Window::cursorMode);
 
-	// Setup forward pass fbo
+	// Setup forward pass framebuffer
 	ForwardPassFrame::setup(msaaSamples);
 
 	// Setup post processing
@@ -241,7 +241,7 @@ int Runtime::START_LOOP() {
 	Input::setupInputs();
 
 	// Create primitives
-	Quad::create();
+	Quad::create(); 
 
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;

@@ -6,18 +6,21 @@ Shader* PostProcessing::finalPassShader = nullptr;
 
 PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessingConfiguration();
 
-unsigned int PostProcessing::fbo = 0;
+unsigned int PostProcessing::framebuffer = 0;
 unsigned int PostProcessing::output = 0;
 
 void PostProcessing::setup()
 {
-	// Create post processing framebuffer
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	// Generate framebuffer
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
+	// Generate output texture
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
+
+	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
@@ -62,7 +65,7 @@ void PostProcessing::render(unsigned int input)
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = input;
 
-	// glBindFramebuffer(GL_FRAMEBUFFER, fbo); // Bind post processing framebuffer
+	// glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); // Bind post processing framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind default framebuffer
 
 	// Bind finalPassShader and set uniforms

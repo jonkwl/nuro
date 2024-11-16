@@ -11,7 +11,7 @@ public:
 private:
 	static unsigned int output; // Output texture
 
-	static unsigned int fbo; // Forward pass framebuffer
+	static unsigned int framebuffer; // Forward pass framebuffer
 	static unsigned int rbo; // Forward pass renderbuffer
 
 	static unsigned int msaaFbo; // Anti-Aliasing framebuffer
