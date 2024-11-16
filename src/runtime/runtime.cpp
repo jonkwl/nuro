@@ -49,8 +49,7 @@ glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
-// float Runtime::intensity = 0.5f;
-float Runtime::intensity = 0.0f;
+float Runtime::intensity = 0.5f;
 float Runtime::range = 15.0f;
 float Runtime::falloff = 7.5f;
 
@@ -60,7 +59,7 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
-bool skipSkyboxLoad = true; // tmp
+bool skipSkyboxLoad = false; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {

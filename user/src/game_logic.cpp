@@ -31,7 +31,7 @@ void awake() {
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	/*Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
 	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
 	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
 	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
@@ -49,7 +49,7 @@ void awake() {
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->model = sphereModel;
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);*/
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
@@ -78,8 +78,7 @@ void awake() {
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
-	// floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
-	floorMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	floorMaterial->roughness = 0.35f;
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	floorModel->castsShadow = false;
@@ -89,8 +88,7 @@ void awake() {
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
 	LitMaterial* wallMaterial = new LitMaterial();
-	// wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
-	wallMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
 	wallModel->castsShadow = true;
@@ -133,7 +131,7 @@ void awake() {
 
 	LitMaterial* whiteMaterial = new LitMaterial();
 	whiteMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	whiteMaterial->roughness = 0.2f;
+	whiteMaterial->roughness = 0.15f;
 	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx", { whiteMaterial });
 	Entity* shadowedSphere = new Entity();
 	shadowedSphere->model = shadowedSphereModel;
