@@ -2,8 +2,7 @@
 
 out vec4 FragColor;
 
-in vec3 normals;
-in vec2 textureCoords;
+in vec2 v_uv;
 
 uniform vec4 baseColor;
 
@@ -15,7 +14,7 @@ uniform sampler2D baseTexture;
 
 void main()
 {
-    vec2 uv = textureCoords * tiling + offset;
+    vec2 uv = v_uv * tiling + offset;
     vec4 color = baseColor;
 
     if (enableTexture) {

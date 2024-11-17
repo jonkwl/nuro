@@ -6,7 +6,7 @@ Entity::Entity()
 {
 	transform = Transform();
 
-	model = nullptr;
+	meshRenderer = nullptr;
 
 	Runtime::linkEntity(this);
 }

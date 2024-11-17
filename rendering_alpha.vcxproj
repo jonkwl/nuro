@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\core\mesh_renderer.cpp" />
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="src\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\core\mesh_renderer.h" />
     <ClInclude Include="src\rendering\culling\bounding_volume.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

@@ -14,7 +14,8 @@ EntityProcessor::EntityProcessor(Entity* entity)
 void EntityProcessor::forwardPass()
 {
     // No model to render available -> cancel
-    if (entity->model == nullptr) return;
+    if (entity->meshRenderer == nullptr) return;
+    if (entity->meshRenderer->model == nullptr) return;
 
     // Calculate matrices
     glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
@@ -22,10 +23,10 @@ void EntityProcessor::forwardPass()
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(modelMatrix));
 
     // Get model
-    Model* model = entity->model;
+    Model* model = entity->meshRenderer->model;
 
     // Render each mesh of entity
-    for (int i = 0; i < entity->model->meshes.size(); i++) {
+    for (int i = 0; i < entity->meshRenderer->model->meshes.size(); i++) {
         // Get current mesh
         Mesh* mesh = model->meshes[i];
 
@@ -33,19 +34,29 @@ void EntityProcessor::forwardPass()
         mesh->bind();
 
         // Get mesh material by index
-        IMaterial* material;
+        IMaterial* material = nullptr;
 
-        // Try find material by models material index
         unsigned int materialIndex = mesh->getMaterialIndex();
-        if (materialIndex < model->materials.size()) {
 
-            // Available material found -> use material
-            material = model->materials.at(materialIndex);
-
+        // Mesh renderer doesnt contain custom overwrite materials, use models default materials 
+        if (!entity->meshRenderer->overwriteMaterials) {
+            // Try find material by models material index
+            if (materialIndex < model->defaultMaterials.size()) {
+                // Available material found -> use material
+                material = model->defaultMaterials.at(materialIndex);
+            }
         }
+        // Mesh renderer contains custom materials
         else {
+            // Try find material by models material index
+            if (materialIndex < entity->meshRenderer->materials.size()) {
+                // Available material found -> use material
+                material = entity->meshRenderer->materials.at(materialIndex);
+            }
+        }
 
-            // No available material found -> use default material
+        // No available material found -> use default material
+        if (material == nullptr) {
             material = Runtime::defaultMaterial;
         }
 
@@ -68,17 +79,18 @@ void EntityProcessor::forwardPass()
     }
 }
 
-void EntityProcessor::depthPrePass()
+void EntityProcessor::prePass()
 {
     // No model to render available -> cancel
-    if (entity->model == nullptr) return;
+    if (entity->meshRenderer == nullptr) return;
+    if (entity->meshRenderer->model == nullptr) return;
 
     // Calculate model matrix
     glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
     glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * modelMatrix;
 
     // Get model
-    Model* model = entity->model;
+    Model* model = entity->meshRenderer->model;
 
     // Depth pre pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {
@@ -103,13 +115,14 @@ void EntityProcessor::depthPrePass()
 void EntityProcessor::shadowPass()
 {
     // No model to render available -> cancel
-    if (entity->model == nullptr) return;
+    if (entity->meshRenderer == nullptr) return;
+    if (entity->meshRenderer->model == nullptr) return;
 
     // Calculate model matrix
     glm::mat4 modelMatrix = Transformation::modelMatrix(entity);
 
     // Get model
-    Model* model = entity->model;
+    Model* model = entity->meshRenderer->model;
 
     // Skip shadow pass if model doesnt cast shadows
     if (!model->castsShadow) return;

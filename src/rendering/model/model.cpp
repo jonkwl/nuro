@@ -5,16 +5,16 @@ Model::Model(std::string path)
     resolveModel(path);
 }
 
-Model::Model(std::string path, IMaterial* material)
+Model::Model(std::string path, IMaterial* defaultMaterial)
 {
-    std::vector<IMaterial*> materials = { material };
-    this->materials = materials;
+    std::vector<IMaterial*> defaultMaterials = { defaultMaterial };
+    this->defaultMaterials = defaultMaterials;
 	resolveModel(path);
 }
 
-Model::Model(std::string path, std::vector<IMaterial*> materials)
+Model::Model(std::string path, std::vector<IMaterial*> defaultMaterials)
 {
-    this->materials = materials;
+    this->defaultMaterials = defaultMaterials;
     resolveModel(path);
 }
 

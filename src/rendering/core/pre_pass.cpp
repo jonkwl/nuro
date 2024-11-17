@@ -42,7 +42,7 @@ void PrePass::render()
 
 	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->depthPrePass();
+		entityLinks.at(i)->prePass();
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

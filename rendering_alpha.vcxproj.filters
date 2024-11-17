@@ -177,6 +177,9 @@
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\core\mesh_renderer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\shader\shader.h">
@@ -342,6 +345,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\culling\bounding_volume.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\core\mesh_renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

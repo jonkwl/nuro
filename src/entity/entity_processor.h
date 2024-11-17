@@ -9,7 +9,7 @@ class EntityProcessor
 public:
 	EntityProcessor(Entity* entity);
 	void forwardPass();
-	void depthPrePass();
+	void prePass();
 	void shadowPass();
 
 	static glm::mat4 currentViewMatrix;

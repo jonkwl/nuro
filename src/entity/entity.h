@@ -5,7 +5,7 @@
 #include "../src/transform/transform.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/material/imaterial.h"
-#include "../src/rendering/model/model.h"
+#include "../src/rendering/core/mesh_renderer.h"
 
 class Entity
 {
@@ -14,5 +14,5 @@ public:
 
 	Transform transform;
 
-	Model* model;
+	MeshRenderer* meshRenderer;
 };
