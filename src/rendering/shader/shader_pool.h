@@ -8,7 +8,7 @@
 #include "../src/utils/log.h"
 #include "../src/utils/iohandler.h"
 
-class ShaderBuilder
+class ShaderPool
 {
 public:
 	static void loadAndCompile(std::vector<std::string> path);

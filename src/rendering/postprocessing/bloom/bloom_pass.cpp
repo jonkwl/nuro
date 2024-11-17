@@ -1,7 +1,7 @@
 #include "bloom_pass.h"
 
 #include "../src/window/window.h"
-#include "../src/rendering/shader/shader_builder.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/postprocessing/bloom/bloom_frame.h"
 
@@ -26,9 +26,9 @@ void BloomPass::setup()
 	inversedViewportSize = 1.0f / fViewportSize;
 
 	// Get shaders
-	prefilterShader = ShaderBuilder::get("bloom_prefilter");
-	downsamplingShader = ShaderBuilder::get("bloom_downsampling");
-	upsamplingShader = ShaderBuilder::get("bloom_upsampling");
+	prefilterShader = ShaderPool::get("bloom_prefilter");
+	downsamplingShader = ShaderPool::get("bloom_downsampling");
+	upsamplingShader = ShaderPool::get("bloom_upsampling");
 
 	// Setup bloom frame
 	BloomFrame::setup(mipDepth);

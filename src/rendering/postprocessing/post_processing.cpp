@@ -31,7 +31,7 @@ void PostProcessing::setup()
 	}
 
 	// Get default post processing final pass shader
-	finalPassShader = ShaderBuilder::get("final_pass");
+	finalPassShader = ShaderPool::get("final_pass");
 
 	// Bind final pass shader and set static uniforms
 	finalPassShader->bind();

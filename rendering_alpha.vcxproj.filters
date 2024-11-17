@@ -33,7 +33,7 @@
     <ClCompile Include="dependencies\vendor\stb\stb_image.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\shader\shader_builder.cpp">
+    <ClCompile Include="src\rendering\shader\shader_pool.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\iohandler.cpp">
@@ -177,6 +177,12 @@
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\camera\frustum.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\shader\shader.h">
@@ -188,7 +194,7 @@
     <ClInclude Include="dependencies\vendor\stb\stb_image.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\shader\shader_builder.h">
+    <ClInclude Include="src\rendering\shader\shader_pool.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\log.h">
@@ -342,6 +348,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\core\mesh_renderer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\frustum.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\gizmos\quick_gizmo.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

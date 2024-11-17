@@ -59,7 +59,7 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 bool Runtime::normalMapping = true;
 float Runtime::normalMappingIntensity = 1.0f;
 
-bool skipSkyboxLoad = false; // tmp
+bool skipSkyboxLoad = true; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -187,10 +187,10 @@ int Runtime::START_LOOP() {
 		"./resources/shaders/postprocessing",
 		"./resources/shaders/passes",
 		"./resources/shaders/shadows" };
-	ShaderBuilder::loadAndCompile(shader_paths);
+	ShaderPool::loadAndCompile(shader_paths);
 
-	prePassShader = ShaderBuilder::get("pre_pass");
-	shadowPassShader = ShaderBuilder::get("shadow_pass");
+	prePassShader = ShaderPool::get("pre_pass");
+	shadowPassShader = ShaderPool::get("shadow_pass");
 
 	// Creating default material
 	defaultMaterial = new UnlitMaterial();
@@ -248,6 +248,9 @@ int Runtime::START_LOOP() {
 	// Create primitives
 	Quad::create(); 
 
+	// Setup quick gizmo
+	QuickGizmo::setup();
+
 	//
 	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
 	//
@@ -286,7 +289,11 @@ int Runtime::START_LOOP() {
 		// UPDATE ANY SCRIPTS NEEDING UPDATE
 		//
 
+		// Update input system
 		Input::updateInputs();
+
+		// Start new frame for quick gizmos
+		QuickGizmo::newFrame();
 
 		//
 		// EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
@@ -386,6 +393,9 @@ int Runtime::START_LOOP() {
 		if (activeSkybox != nullptr && !wireframe) {
 			activeSkybox->render(viewMatrix, projectionMatrix);
 		}
+
+		// Render quick gizmos
+		QuickGizmo::render();
 
 		// Bilt forward pass framebuffer
 		unsigned int FORWARD_PASS_OUTPUT = ForwardPassFrame::blit();

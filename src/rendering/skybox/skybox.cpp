@@ -3,7 +3,7 @@
 Skybox::Skybox(Cubemap* cubemap)
 {
     this->cubemap = cubemap;
-    this->shader = ShaderBuilder::get("skybox");
+    this->shader = ShaderPool::get("skybox");
     generate();
 }
 

@@ -31,7 +31,7 @@ void awake() {
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	/*Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
 	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
 	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
 	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
@@ -49,7 +49,7 @@ void awake() {
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
 	sphere->meshRenderer->model = sphereModel;
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);*/
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
@@ -64,7 +64,6 @@ void awake() {
 	Entity* pbrSphere = new Entity();
 	pbrSphere->meshRenderer->model = pbrSphereModel;
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
-	pbrSphere->transform.position = glm::vec3(3.0f, 1.5f, 7.0f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
 	LitMaterial* plank = new LitMaterial();

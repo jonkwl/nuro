@@ -6,7 +6,7 @@
 
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/shader/shader.h"
-#include "../src/rendering/shader/shader_builder.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/skybox/cubemap.h"
 #include "../src/utils/log.h"
 

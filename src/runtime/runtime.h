@@ -22,7 +22,7 @@
 using json = nlohmann::json;
 
 #include "../src/rendering/shader/shader.h"
-#include "../src/rendering/shader/shader_builder.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/model/model.h"
@@ -43,6 +43,7 @@ using json = nlohmann::json;
 #include "../src/engineui/engine_ui.h"
 #include "../src/window/window.h"
 #include "../src/input/input.h"
+#include "../src/rendering/gizmos/quick_gizmo.h"
 #include "../user/src/game_logic.h"
 
 class Runtime {

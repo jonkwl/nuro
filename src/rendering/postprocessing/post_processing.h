@@ -7,7 +7,7 @@
 #include "../src/utils/log.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/shader/shader.h"
-#include "../src/rendering/shader/shader_builder.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/postprocessing/debug/debug_pass.h"
 #include "../src/rendering/postprocessing/bloom/bloom_pass.h"
@@ -24,7 +24,7 @@ struct PostProcessingConfiguration {
 	float contrast = 1.004f;
 	float gamma = 2.2f;
 
-	bool bloom = true;
+	bool bloom = false;
 	float bloomIntensity = 0.25f;
 	float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
 	float bloomThreshold = 0.2f;

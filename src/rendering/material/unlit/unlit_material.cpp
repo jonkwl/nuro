@@ -4,7 +4,7 @@
 
 UnlitMaterial::UnlitMaterial()
 {
-	shader = ShaderBuilder::get("unlit");
+	shader = ShaderPool::get("unlit");
 	baseColor = glm::vec4(1.0f);
 	tiling = glm::vec2(1.0f);
 	offset = glm::vec2(0.0f);

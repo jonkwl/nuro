@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp" />
+    <ClCompile Include="src\camera\frustum.cpp" />
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp" />
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -160,7 +162,7 @@
     <ClCompile Include="src\window\window.cpp" />
     <ClCompile Include="src\camera\camera.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
-    <ClCompile Include="src\rendering\shader\shader_builder.cpp" />
+    <ClCompile Include="src\rendering\shader\shader_pool.cpp" />
     <ClCompile Include="src\utils\iohandler.cpp" />
     <ClCompile Include="src\utils\log.cpp" />
     <ClCompile Include="src\rendering\core\transformation.cpp" />
@@ -189,6 +191,8 @@
     <ClCompile Include="src\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\gizmos\quick_gizmo.h" />
+    <ClInclude Include="src\camera\frustum.h" />
     <ClInclude Include="src\rendering\core\mesh_renderer.h" />
     <ClInclude Include="src\rendering\culling\bounding_volume.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -214,7 +218,7 @@
     <ClInclude Include="src\window\window.h" />
     <ClInclude Include="src\camera\camera.h" />
     <ClInclude Include="src\rendering\material\imaterial.h" />
-    <ClInclude Include="src\rendering\shader\shader_builder.h" />
+    <ClInclude Include="src\rendering\shader\shader_pool.h" />
     <ClInclude Include="src\runtime\runtime.h" />
     <ClInclude Include="src\utils\log.h" />
     <ClInclude Include="src\entity\entity.h" />
