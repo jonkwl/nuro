@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -150,7 +151,7 @@
     <ClCompile Include="src\rendering\postprocessing\bloom\bloom_pass.cpp" />
     <ClCompile Include="src\rendering\postprocessing\bloom\bloom_frame.cpp" />
     <ClCompile Include="src\rendering\postprocessing\debug\debug_pass.cpp" />
-    <ClCompile Include="src\rendering\core\depth_pre_pass.cpp" />
+    <ClCompile Include="src\rendering\core\pre_pass.cpp" />
     <ClCompile Include="src\rendering\material\lit\lit_material.cpp" />
     <ClCompile Include="src\rendering\material\unlit\unlit_material.cpp" />
     <ClCompile Include="src\rendering\skybox\cubemap.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="src\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\culling\bounding_volume.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
@@ -204,7 +206,7 @@
     <ClInclude Include="src\rendering\postprocessing\bloom\bloom_pass.h" />
     <ClInclude Include="src\rendering\postprocessing\bloom\bloom_frame.h" />
     <ClInclude Include="src\rendering\postprocessing\debug\debug_pass.h" />
-    <ClInclude Include="src\rendering\core\depth_pre_pass.h" />
+    <ClInclude Include="src\rendering\core\pre_pass.h" />
     <ClInclude Include="src\engineui\IconsFontAwesome6.h" />
     <ClInclude Include="src\rendering\skybox\cubemap.h" />
     <ClInclude Include="src\rendering\material\lit\lit_material.h" />

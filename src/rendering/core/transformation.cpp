@@ -33,8 +33,8 @@ glm::mat4 Transformation::viewMatrix(Camera* camera) {
 	glm::vec3 camera_position = camera->transform.position;
 	glm::vec3 camera_rotation = camera->transform.rotation;
 
-	camera_position = glm::vec3(camera_position.x, camera_position.y, -camera_position.z);
-	camera_rotation = glm::vec3(-camera_rotation.x, -camera_rotation.y, camera_rotation.z);
+	camera_position = prepareWorldPosition(camera_position);
+	camera_rotation = prepareWorldRotation(camera_rotation);
 
 	glm::vec3 radRotation = glm::radians(camera_rotation);
 

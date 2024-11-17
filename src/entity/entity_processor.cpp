@@ -89,7 +89,7 @@ void EntityProcessor::depthPrePass()
         mesh->bind();
 
         // Set depth pre pass shader uniforms
-        Shader* depthPrePassShader = Runtime::depthPrePassShader;
+        Shader* depthPrePassShader = Runtime::prePassShader;
         depthPrePassShader->setMatrix4("mvp", mvpMatrix);
 
         // Render mesh

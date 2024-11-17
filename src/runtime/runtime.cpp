@@ -8,7 +8,7 @@ UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Cubemap* Runtime::defaultSky = nullptr;
 Skybox* Runtime::defaultSkybox = nullptr;
 
-Shader* Runtime::depthPrePassShader = nullptr;
+Shader* Runtime::prePassShader = nullptr;
 Shader* Runtime::shadowPassShader = nullptr;
 
 Camera* Runtime::renderCamera = new Camera();
@@ -35,7 +35,7 @@ bool Runtime::showDiagnostics = true;
 
 Skybox* Runtime::activeSkybox = nullptr;
 
-DepthPrePass* Runtime::depthPrePass = nullptr;
+PrePass* Runtime::prePass = nullptr;
 
 ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
@@ -186,11 +186,11 @@ int Runtime::START_LOOP() {
 	std::vector<std::string> shader_paths = { 
 		"./resources/shaders/materials", 
 		"./resources/shaders/postprocessing",
-		"./resources/shaders/prepass",
+		"./resources/shaders/passes",
 		"./resources/shaders/shadows" };
 	ShaderBuilder::loadAndCompile(shader_paths);
 
-	depthPrePassShader = ShaderBuilder::get("depth_pre_pass");
+	prePassShader = ShaderBuilder::get("pre_pass");
 	shadowPassShader = ShaderBuilder::get("shadow_pass");
 
 	// Creating default material
@@ -313,13 +313,13 @@ int Runtime::START_LOOP() {
 		}
 
 		// Get view and projection matrices
-		glm::mat4 view = Transformation::viewMatrix(renderCamera);
-		glm::mat4 projection = Transformation::projectionMatrix(renderCamera, width, height);
-		EntityProcessor::currentViewMatrix = view;
-		EntityProcessor::currentProjectionMatrix = projection;
+		glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
+		glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, width, height);
+		EntityProcessor::currentViewMatrix = viewMatrix;
+		EntityProcessor::currentProjectionMatrix = projectionMatrix;
 
 		// Update cameras frustum
-		renderCamera->updateFrustum(view * projection); 
+		renderCamera->updateFrustum(viewMatrix * projectionMatrix);
 
 		// Enable culling
 		glEnable(GL_CULL_FACE);
@@ -381,7 +381,7 @@ int Runtime::START_LOOP() {
 
 		// Render skybox to bound forward pass frame
 		if (activeSkybox != nullptr && !wireframe) {
-			activeSkybox->render(view, projection);
+			activeSkybox->render(viewMatrix, projectionMatrix);
 		}
 
 		// Bilt forward pass framebuffer

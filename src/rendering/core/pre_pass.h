@@ -2,10 +2,10 @@
 
 #include "../src/rendering/shader/Shader.h"
 
-class DepthPrePass
+class PrePass
 {
 public:
-	DepthPrePass(unsigned int width, unsigned int height);
+	PrePass(unsigned int width, unsigned int height);
 
 	void render();
 	void bind(unsigned int unit);

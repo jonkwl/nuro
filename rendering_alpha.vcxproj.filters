@@ -114,7 +114,7 @@
     <ClCompile Include="src\engineui\ui_layout.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\core\depth_pre_pass.cpp">
+    <ClCompile Include="src\rendering\core\pre_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\profiler.cpp">
@@ -172,6 +172,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\shadows\shadow_disk.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\culling\bounding_volume.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -275,7 +278,7 @@
     <ClInclude Include="src\engineui\ui_layout.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\core\depth_pre_pass.h">
+    <ClInclude Include="src\rendering\core\pre_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\profiler.h">
@@ -336,6 +339,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\shadows\shadow_disk.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\culling\bounding_volume.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

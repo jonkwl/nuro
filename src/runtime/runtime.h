@@ -31,7 +31,7 @@ using json = nlohmann::json;
 #include "../src/rendering/skybox/cubemap.h"
 #include "../src/rendering/core/forward_pass_frame.h"
 #include "../src/rendering/postprocessing/post_processing.h"
-#include "../src/rendering/core/depth_pre_pass.h"
+#include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/shadows/shadow_map.h"
 #include "../src/rendering/shadows/shadow_disk.h"
 #include "../src/rendering/primitives/quad.h"
@@ -59,7 +59,7 @@ public:
 	static Skybox* defaultSkybox;
 
 	// Default shaders
-	static Shader* depthPrePassShader;
+	static Shader* prePassShader;
 	static Shader* shadowPassShader;
 
 	// Camera settings
@@ -99,7 +99,7 @@ public:
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
 	// Pre Pass
-	static DepthPrePass* depthPrePass; // Unused render pipeline depth pre pass
+	static PrePass* prePass; // (Unused) Render pipeline pre pass
 
 	// Shadow settings
 	static ShadowDisk* mainShadowDisk; // Default shadow disk

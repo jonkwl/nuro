@@ -1,8 +1,8 @@
-#include "depth_pre_pass.h"
+#include "pre_pass.h"
 
 #include "../src/runtime/runtime.h"
 
-DepthPrePass::DepthPrePass(unsigned int width, unsigned int height)
+PrePass::PrePass(unsigned int width, unsigned int height)
 {
 	this->width = width;
 	this->height = height;
@@ -30,7 +30,7 @@ DepthPrePass::DepthPrePass(unsigned int width, unsigned int height)
 	glReadBuffer(GL_NONE);
 }
 
-void DepthPrePass::render()
+void PrePass::render()
 {
 	glViewport(0, 0, width, height);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -38,7 +38,7 @@ void DepthPrePass::render()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Runtime::depthPrePassShader->bind();
+	Runtime::prePassShader->bind();
 
 	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
@@ -48,23 +48,23 @@ void DepthPrePass::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void DepthPrePass::bind(unsigned int unit)
+void PrePass::bind(unsigned int unit)
 {
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-unsigned int DepthPrePass::getWidth() const
+unsigned int PrePass::getWidth() const
 {
 	return width;
 }
 
-unsigned int DepthPrePass::getHeight() const
+unsigned int PrePass::getHeight() const
 {
 	return height;
 }
 
-unsigned int DepthPrePass::getFramebuffer() const
+unsigned int PrePass::getFramebuffer() const
 {
 	return framebuffer;
 }
