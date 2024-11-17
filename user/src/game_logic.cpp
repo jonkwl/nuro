@@ -147,8 +147,7 @@ void awake() {
 		Entity* x = new Entity();
 		x = new Entity();
 		x->meshRenderer->model = mannequinModel;
-		x->meshRenderer->overwriteMaterials = true;
-		x->meshRenderer->materials.push_back(pbrSphereMaterial);
+		x->meshRenderer->materials.push_back(mannequinMaterial);
 		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);

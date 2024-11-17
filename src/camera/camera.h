@@ -2,8 +2,17 @@
 
 #include <glm.hpp>
 
-#include "../src/camera/frustum.h"
 #include "../src/transform/transform.h"
+
+struct Frustum
+{
+	glm::vec4 leftPlane;
+	glm::vec4 rightPlane;
+	glm::vec4 bottomPlane;
+	glm::vec4 topPlane;
+	glm::vec4 nearPlane;
+	glm::vec4 farPlane;
+};
 
 class Camera
 {
@@ -17,4 +26,6 @@ public:
 	float fov;
 	float near;
 	float far;
+
+	void updateFrustum(glm::mat4 viewProjectionMatrix);
 };

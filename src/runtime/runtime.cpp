@@ -52,12 +52,13 @@ glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 float Runtime::intensity = 0.5f;
 float Runtime::range = 15.0f;
 float Runtime::falloff = 7.5f;
+bool Runtime::normalMapping = true;
+float Runtime::normalMappingIntensity = 1.0f;
+unsigned int Runtime::nCPUEntities = 0;
+unsigned int Runtime::nGPUEntities = 0;
 
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
-
-bool Runtime::normalMapping = true;
-float Runtime::normalMappingIntensity = 1.0f;
 
 bool skipSkyboxLoad = true; // tmp
 
@@ -327,7 +328,10 @@ int Runtime::START_LOOP() {
 		MeshRenderer::currentProjectionMatrix = projectionMatrix;
 
 		// Update cameras frustum
-		renderCamera->frustum.update(viewMatrix * projectionMatrix);
+		renderCamera->updateFrustum(viewMatrix * projectionMatrix);
+
+		nCPUEntities = 0;
+		nGPUEntities = 0;
 
 		// Enable culling
 		glEnable(GL_CULL_FACE);
@@ -418,6 +422,18 @@ int Runtime::START_LOOP() {
 		Profiler::start("ui_pass");
 
 		EngineUI::newFrame();
+
+		ImGui::Begin("tmp_diagnostics");
+		ImGui::Text("CPU Entities:"); 
+		ImGui::SameLine(); 
+		ImGui::Text(std::to_string(nCPUEntities).c_str());
+		ImGui::Text("GPU Entities:"); 
+		ImGui::SameLine(); 
+		ImGui::Text(std::to_string(nGPUEntities).c_str());
+		ImGui::Text("FPS:");
+		ImGui::SameLine();
+		ImGui::Text(std::to_string((int)averageFps).c_str());
+		ImGui::End();
 
 		EngineUI::render();
 

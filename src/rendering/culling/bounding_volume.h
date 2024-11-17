@@ -1,7 +1,8 @@
 #pragma once
 
 #include <glm.hpp>
-#include "../src/camera/frustum.h"
+
+#include "../src/camera/camera.h"
 
 class BoundingVolume
 {

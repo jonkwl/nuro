@@ -174,9 +174,6 @@
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\camera\frustum.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -348,9 +345,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\core\mesh_renderer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\camera\frustum.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\gizmos\quick_gizmo.h">

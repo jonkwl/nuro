@@ -114,13 +114,14 @@ public:
 	static unsigned int currentVertices;
 	static unsigned int currentPolygons;
 
-	// tmp for material testing
+	// tmp for testing
 	static float intensity;
 	static float range;
 	static float falloff;
-
 	static bool normalMapping;
 	static float normalMappingIntensity;
+	static unsigned int nCPUEntities;
+	static unsigned int nGPUEntities;
 private:
 	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
 

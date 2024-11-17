@@ -10,30 +10,23 @@ glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
 MeshRenderer::MeshRenderer(Entity* parentEntity)
 {
-    this->parentEntity = parentEntity;
-
     model = nullptr;
-
     volume = new BoundingSphere();
 
-	overwriteMaterials = false;
+    this->parentEntity = parentEntity;
+    intersectsFrustum = true;
 }
 
 void MeshRenderer::forwardPass()
 {
+    // Frustum culling
+    performFrustumCulling();
+
+    // Check if render target was culled this frame -> cancel
+    if (isCulled()) return;
+
     // No model to render available -> cancel
     if (model == nullptr) return;
-
-    volume->update(parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
-
-    // Get rendering camera
-    Camera* camera = Runtime::getCameraRendering();
-
-    // Frustum culling
-    // Make sure render target is within camera frustum
-    if (!volume->intersectsFrustum(camera->frustum)) {
-        return;
-    }
 
     // Calculate matrices
     currentModelMatrix = Transformation::modelMatrix(parentEntity);
@@ -84,6 +77,8 @@ void MeshRenderer::forwardPass()
 
 void MeshRenderer::prePass()
 {
+    // Do frustum culling here
+
     // No model to render available -> cancel
     if (model == nullptr) return;
 
@@ -113,6 +108,9 @@ void MeshRenderer::prePass()
 
 void MeshRenderer::shadowPass()
 {
+    // Check if render target was culled this frame -> cancel
+    if (isCulled()) return;
+
     // No model to render available -> cancel
     if (model == nullptr) return;
 
@@ -141,4 +139,31 @@ void MeshRenderer::shadowPass()
         // Update diagnostics
         Runtime::currentDrawCalls++;
     }
+}
+
+void MeshRenderer::performFrustumCulling()
+{
+    // No culling by default
+    intersectsFrustum = true;
+    
+    // Update bounding volume
+    volume->update(parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
+
+    // Tmp, Add to cpu entities
+    Runtime::nCPUEntities++;
+
+    // Render target is not within frustum, cull it
+    if (!volume->intersectsFrustum(Runtime::getCameraRendering()->frustum)) {
+        intersectsFrustum = false;
+        return;
+    }
+
+    // Tmp, Add to gpu entities
+    Runtime::nGPUEntities++;
+}
+
+bool MeshRenderer::isCulled()
+{
+    // Check if render target was culled
+    return !intersectsFrustum;
 }
