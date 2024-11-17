@@ -1,11 +1,13 @@
 #include "../src/rendering/model/model.h"
 #include "../src/rendering/culling/bounding_volume.h"
 
+class Entity;
+
 #pragma once
 class MeshRenderer
 {
 public:
-	MeshRenderer();
+	MeshRenderer(Entity* parentEntity);
 
 	Model* model; // Linked model, rendering target
 
@@ -23,4 +25,6 @@ public:
 	static glm::mat4 currentProjectionMatrix;
 
 	static glm::mat4 currentLightSpaceMatrix;
+private:
+	Entity* parentEntity; // Linked parent entity
 };

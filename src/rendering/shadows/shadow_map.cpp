@@ -67,9 +67,7 @@ void ShadowMap::render()
 
 	std::vector<Entity*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
-		Entity* entity = entityLinks.at(i);
-		entity->meshRenderer->currentModelMatrix = Transformation::modelMatrix(entity);
-		entity->meshRenderer->shadowPass();
+		entityLinks.at(i)->meshRenderer->shadowPass();
 	}
 
 	// Unbind shadow map framebuffer

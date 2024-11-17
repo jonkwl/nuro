@@ -1,17 +1,20 @@
 #include "mesh_renderer.h"
 
 #include "../src/runtime/runtime.h"
+#include "../src/entity/entity.h"
 
 glm::mat4 MeshRenderer::currentModelMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
-MeshRenderer::MeshRenderer()
+MeshRenderer::MeshRenderer(Entity* parentEntity)
 {
+    this->parentEntity = parentEntity;
+
     model = nullptr;
 
-    volume = new BV_Sphere();
+    volume = new BoundingSphere();
 
 	overwriteMaterials = false;
 }
@@ -20,6 +23,8 @@ void MeshRenderer::forwardPass()
 {
     // No model to render available -> cancel
     if (model == nullptr) return;
+
+    volume->update(parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
 
     // Get rendering camera
     Camera* camera = Runtime::getCameraRendering();
@@ -31,6 +36,7 @@ void MeshRenderer::forwardPass()
     }
 
     // Calculate matrices
+    currentModelMatrix = Transformation::modelMatrix(parentEntity);
     glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
@@ -81,7 +87,8 @@ void MeshRenderer::prePass()
     // No model to render available -> cancel
     if (model == nullptr) return;
 
-    // Calculate model matrix
+    // Calculate model and mvp matrix
+    currentModelMatrix = Transformation::modelMatrix(parentEntity);
     glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
 
     // Depth pre pass each mesh of entity
@@ -111,6 +118,9 @@ void MeshRenderer::shadowPass()
 
     // Skip shadow pass if model doesnt cast shadows
     if (!model->castsShadow) return;
+
+    // Calculate current model matrix
+    currentModelMatrix = Transformation::modelMatrix(parentEntity);
 
     // Shadow pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {

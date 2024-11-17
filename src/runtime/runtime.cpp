@@ -378,9 +378,7 @@ int Runtime::START_LOOP() {
 		// Render each linked entity to bound forward pass frame
 		glEnable(GL_DEPTH_TEST);
 		for (int i = 0; i < entityLinks.size(); i++) {
-			Entity* entity = entityLinks.at(i);
-			entity->meshRenderer->currentModelMatrix = Transformation::modelMatrix(entity);
-			entity->meshRenderer->forwardPass();
+			entityLinks.at(i)->meshRenderer->forwardPass();
 		}
 
 		// Disable wireframe if enabled
