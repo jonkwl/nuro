@@ -48,8 +48,7 @@ void awake() {
 	sphereMaterial->emissionIntensity = 12.5f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
 	Entity* sphere = new Entity();
-	MeshRenderer* sphereRenderer = new MeshRenderer(sphereModel);
-	sphere->meshRenderer = sphereRenderer;
+	sphere->meshRenderer->model = sphereModel;
 	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
@@ -63,8 +62,7 @@ void awake() {
 	pbrSphereMaterial->setNormalMap(sphereNormal);
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
 	Entity* pbrSphere = new Entity();
-	MeshRenderer* pbrSphereRenderer = new MeshRenderer(pbrSphereModel);
-	pbrSphere->meshRenderer = pbrSphereRenderer;
+	pbrSphere->meshRenderer->model = pbrSphereModel;
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
 	pbrSphere->transform.position = glm::vec3(3.0f, 1.5f, 7.0f);
 
@@ -76,8 +74,7 @@ void awake() {
 	plank->metallic = 0.0f;
 	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
 	cube = new Entity();
-	MeshRenderer* cubeRenderer = new MeshRenderer(cubeModel);
-	cube->meshRenderer = cubeRenderer;
+	cube->meshRenderer->model = cubeModel;
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
@@ -86,8 +83,7 @@ void awake() {
 	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
 	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
-	MeshRenderer* floorRenderer = new MeshRenderer(floorModel);
-	floor->meshRenderer = floorRenderer;
+	floor->meshRenderer->model = floorModel;
 	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
@@ -97,8 +93,7 @@ void awake() {
 	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
 	wallModel->castsShadow = true;
 	Entity* wall = new Entity();
-	MeshRenderer* wallRenderer = new MeshRenderer(wallModel);
-	wall->meshRenderer = wallRenderer;
+	wall->meshRenderer->model = wallModel;
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
@@ -114,8 +109,7 @@ void awake() {
 	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
 	Model* smearedWallModel = new Model("./user/assets/models/cube.obj", { smearedWallMaterial, smearedWallMaterial });
 	Entity* smearedWall = new Entity();
-	MeshRenderer* smearedWallRenderer = new MeshRenderer(smearedWallModel);
-	smearedWall->meshRenderer = smearedWallRenderer;
+	smearedWall->meshRenderer->model = smearedWallModel;
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
@@ -130,8 +124,7 @@ void awake() {
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", mannequinMaterial);
 	mannequin = new Entity();
 	mannequin = new Entity();
-	MeshRenderer* mannequinRenderer = new MeshRenderer(mannequinModel);
-	mannequin->meshRenderer = mannequinRenderer;
+	mannequin->meshRenderer->model = mannequinModel;
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.0f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
@@ -141,14 +134,13 @@ void awake() {
 	whiteMaterial->roughness = 0.15f;
 	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx", { whiteMaterial });
 	Entity* shadowedSphere = new Entity();
-	MeshRenderer* shadowedSphereRenderer = new MeshRenderer(shadowedSphereModel);
-	shadowedSphere->meshRenderer = shadowedSphereRenderer;
+	shadowedSphere->meshRenderer->model = shadowedSphereModel;
 	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
 
 	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
 		x = new Entity();
-		x->meshRenderer = mannequinRenderer;
+		x->meshRenderer->model = mannequinModel;
 		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);

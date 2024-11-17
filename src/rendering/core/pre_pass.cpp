@@ -40,9 +40,11 @@ void PrePass::render()
 
 	Runtime::prePassShader->bind();
 
-	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
+	std::vector<Entity*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->prePass();
+		Entity* entity = entityLinks.at(i);
+		entity->meshRenderer->currentModelMatrix = Transformation::modelMatrix(entity);
+		entity->meshRenderer->prePass();
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

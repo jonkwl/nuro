@@ -21,7 +21,6 @@
 #include <json/json.hpp>
 using json = nlohmann::json;
 
-#include "../src/entity/entity_processor.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/shader/shader_builder.h"
 #include "../src/rendering/material/unlit/unlit_material.h"
@@ -31,6 +30,7 @@ using json = nlohmann::json;
 #include "../src/rendering/skybox/cubemap.h"
 #include "../src/rendering/core/forward_pass_frame.h"
 #include "../src/rendering/postprocessing/post_processing.h"
+#include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/shadows/shadow_map.h"
 #include "../src/rendering/shadows/shadow_disk.h"
@@ -106,7 +106,7 @@ public:
 	static ShadowMap* mainShadowMap; // Default shadow map
 
 	// Return data
-	static std::vector<EntityProcessor*> getEntityLinks();
+	static std::vector<Entity*> getEntityLinks();
 
 	// Diagnostics
 	static unsigned int currentDrawCalls;
@@ -121,7 +121,7 @@ public:
 	static bool normalMapping;
 	static float normalMappingIntensity;
 private:
-	static std::vector<EntityProcessor*> entityLinks; // All entities that will be processed by the runtime
+	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
 
 	static Camera* renderCamera; // This camera gets rendered to the screen
 	static Camera* activeCamera; // Container camera; Sets render camera value if inspector mode is OFF

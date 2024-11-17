@@ -170,7 +170,6 @@
     <ClCompile Include="src\rendering\model\model.cpp" />
     <ClCompile Include="src\utils\string_helper.cpp" />
     <ClCompile Include="src\rendering\model\mesh.cpp" />
-    <ClCompile Include="src\entity\entity_processor.cpp" />
     <ClCompile Include="src\rendering\skybox\skybox.cpp" />
     <ClCompile Include="src\rendering\postprocessing\post_processing.cpp" />
     <ClCompile Include="src\rendering\shadows\shadow_map.cpp" />
@@ -227,7 +226,6 @@
     <ClInclude Include="src\rendering\model\model.h" />
     <ClInclude Include="src\utils\string_helper.h" />
     <ClInclude Include="src\rendering\model\mesh.h" />
-    <ClInclude Include="src\entity\entity_processor.h" />
     <ClInclude Include="src\rendering\skybox\skybox.h" />
     <ClInclude Include="src\rendering\postprocessing\post_processing.h" />
     <ClInclude Include="src\rendering\shadows\shadow_map.h" />

@@ -53,7 +53,9 @@ void ShadowMap::render()
 	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering(), Runtime::mainShadowMap->boundsWidth, Runtime::mainShadowMap->boundsHeight);
 	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
-	EntityProcessor::currentLightSpaceMatrix = lightSpaceMatrix;
+	
+	// Set mesh renderers light space matrix for upcoming shadow pass
+	MeshRenderer::currentLightSpaceMatrix = lightSpaceMatrix;
 
 	// Bind shadow pass shader and render each objects depth on shadow map
 	glEnable(GL_DEPTH_TEST);
@@ -63,9 +65,11 @@ void ShadowMap::render()
 
 	Runtime::shadowPassShader->bind();
 
-	std::vector<EntityProcessor*> entityLinks = Runtime::getEntityLinks();
+	std::vector<Entity*> entityLinks = Runtime::getEntityLinks();
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->shadowPass();
+		Entity* entity = entityLinks.at(i);
+		entity->meshRenderer->currentModelMatrix = Transformation::modelMatrix(entity);
+		entity->meshRenderer->shadowPass();
 	}
 
 	// Unbind shadow map framebuffer

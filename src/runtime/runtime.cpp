@@ -2,7 +2,7 @@
 
 // Default runtime values
 
-std::vector<EntityProcessor*> Runtime::entityLinks;
+std::vector<Entity*> Runtime::entityLinks;
 
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Cubemap* Runtime::defaultSky = nullptr;
@@ -63,8 +63,7 @@ bool skipSkyboxLoad = false; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {
-	EntityProcessor* entityLink = new EntityProcessor(entity);
-	entityLinks.push_back(entityLink);
+	entityLinks.push_back(entity);
 }
 
 void Runtime::useCamera(Camera* camera) {
@@ -96,7 +95,7 @@ Skybox* Runtime::getActiveSkybox()
 	return activeSkybox;
 }
 
-std::vector<EntityProcessor*> Runtime::getEntityLinks()
+std::vector<Entity*> Runtime::getEntityLinks()
 {
 	return entityLinks;
 }
@@ -315,8 +314,10 @@ int Runtime::START_LOOP() {
 		// Get view and projection matrices
 		glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
 		glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, width, height);
-		EntityProcessor::currentViewMatrix = viewMatrix;
-		EntityProcessor::currentProjectionMatrix = projectionMatrix;
+
+		// Set mesh renderers view and projection matrix for upcomming render passes
+		MeshRenderer::currentViewMatrix = viewMatrix;
+		MeshRenderer::currentProjectionMatrix = projectionMatrix;
 
 		// Update cameras frustum
 		renderCamera->updateFrustum(viewMatrix * projectionMatrix);
@@ -370,7 +371,9 @@ int Runtime::START_LOOP() {
 		// Render each linked entity to bound forward pass frame
 		glEnable(GL_DEPTH_TEST);
 		for (int i = 0; i < entityLinks.size(); i++) {
-			entityLinks.at(i)->forwardPass();
+			Entity* entity = entityLinks.at(i);
+			entity->meshRenderer->currentModelMatrix = Transformation::modelMatrix(entity);
+			entity->meshRenderer->forwardPass();
 		}
 
 		// Disable wireframe if enabled
