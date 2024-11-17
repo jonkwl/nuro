@@ -135,10 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp" />
     <ClCompile Include="src\camera\frustum.cpp" />
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp" />
-    <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -191,10 +191,11 @@
     <ClCompile Include="src\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\culling\bounding_volume.h" />
     <ClInclude Include="src\rendering\gizmos\quick_gizmo.h" />
     <ClInclude Include="src\camera\frustum.h" />
     <ClInclude Include="src\rendering\core\mesh_renderer.h" />
-    <ClInclude Include="src\rendering\culling\bounding_volume.h" />
+    <ClInclude Include="src\rendering\culling\bounding_volumes.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />

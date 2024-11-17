@@ -171,9 +171,6 @@
     <ClCompile Include="src\rendering\shadows\shadow_disk.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\culling\bounding_volume.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -181,6 +178,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\culling\bounding_volume.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,7 +344,7 @@
     <ClInclude Include="src\rendering\shadows\shadow_disk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\culling\bounding_volume.h">
+    <ClInclude Include="src\rendering\culling\bounding_volumes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\core\mesh_renderer.h">
@@ -354,6 +354,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\gizmos\quick_gizmo.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\culling\bounding_volume.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

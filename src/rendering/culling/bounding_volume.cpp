@@ -1,6 +1,12 @@
 #include "bounding_volume.h"
 
-bool AABB::intersectsFrustum()
+BV_Sphere::BV_Sphere()
 {
-	return false;
+	center = glm::vec3(0.0f);
+	radius = 0.0f;
+}
+
+bool BV_Sphere::intersectsFrustum(Frustum frustum)
+{
+	return true;
 }

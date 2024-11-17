@@ -60,9 +60,10 @@ void awake() {
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
 	pbrSphereMaterial->setMetallicMap(sphereMetallic);
 	pbrSphereMaterial->setNormalMap(sphereNormal);
-	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx", { pbrSphereMaterial });
+	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* pbrSphere = new Entity();
 	pbrSphere->meshRenderer->model = pbrSphereModel;
+	pbrSphere->meshRenderer->materials.push_back(pbrSphereMaterial);
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
@@ -71,28 +72,31 @@ void awake() {
 	plank->setAlbedoMap(plankAlbedo);
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
-	Model* cubeModel = new Model("./user/assets/models/cube.fbx", plank);
+	Model* cubeModel = new Model("./user/assets/models/cube.fbx");
 	cube = new Entity();
 	cube->meshRenderer->model = cubeModel;
+	cube->meshRenderer->materials.push_back(plank);
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	floorMaterial->roughness = 0.35f;
-	Model* floorModel = new Model("./user/assets/models/cube.fbx", floorMaterial);
+	Model* floorModel = new Model("./user/assets/models/cube.fbx");
 	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
 	floor->meshRenderer->model = floorModel;
+	floor->meshRenderer->materials.push_back(floorMaterial);
 	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
 	LitMaterial* wallMaterial = new LitMaterial();
 	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	wallMaterial->roughness = 0.35f;
-	Model* wallModel = new Model("./user/assets/models/cube.fbx", wallMaterial);
+	Model* wallModel = new Model("./user/assets/models/cube.fbx");
 	wallModel->castsShadow = true;
 	Entity* wall = new Entity();
 	wall->meshRenderer->model = wallModel;
+	wall->meshRenderer->materials.push_back(wallMaterial);
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
@@ -106,9 +110,10 @@ void awake() {
 	smearedWallMaterial->setMetallicMap(smearedWallRoughness);
 	smearedWallMaterial->setNormalMap(smearedWallNormal);
 	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
-	Model* smearedWallModel = new Model("./user/assets/models/cube.fbx", smearedWallMaterial);
+	Model* smearedWallModel = new Model("./user/assets/models/cube.fbx");
 	Entity* smearedWall = new Entity();
 	smearedWall->meshRenderer->model = smearedWallModel;
+	smearedWall->meshRenderer->materials.push_back(smearedWallMaterial);
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
@@ -120,10 +125,11 @@ void awake() {
 	mannequinMaterial->setRoughnessMap(mannequinRoughness);
 	mannequinMaterial->setMetallicMap(mannequinMetallic);
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
-	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx", mannequinMaterial);
+	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx");
 	mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->meshRenderer->model = mannequinModel;
+	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.0f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
@@ -131,9 +137,10 @@ void awake() {
 	LitMaterial* whiteMaterial = new LitMaterial();
 	whiteMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	whiteMaterial->roughness = 0.15f;
-	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx", { whiteMaterial });
+	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* shadowedSphere = new Entity();
 	shadowedSphere->meshRenderer->model = shadowedSphereModel;
+	shadowedSphere->meshRenderer->materials.push_back(whiteMaterial);
 	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
 
 	for (int i = 0; i < 40; i++) {
@@ -142,11 +149,11 @@ void awake() {
 		x->meshRenderer->model = mannequinModel;
 		x->meshRenderer->overwriteMaterials = true;
 		x->meshRenderer->materials.push_back(pbrSphereMaterial);
-		x->transform.position = glm::vec3(14.0f, 0.0f, 8.5f);
+		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);
 
-		x->transform.position.x += 5.0f * (i + 1);
+		x->transform.position.x += 3.0f * (i + 1);
 	}
 }
 

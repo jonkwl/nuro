@@ -5,19 +5,6 @@ Model::Model(std::string path)
     resolveModel(path);
 }
 
-Model::Model(std::string path, IMaterial* defaultMaterial)
-{
-    std::vector<IMaterial*> defaultMaterials = { defaultMaterial };
-    this->defaultMaterials = defaultMaterials;
-	resolveModel(path);
-}
-
-Model::Model(std::string path, std::vector<IMaterial*> defaultMaterials)
-{
-    this->defaultMaterials = defaultMaterials;
-    resolveModel(path);
-}
-
 void Model::resolveModel(std::string path)
 {
     Log::printProcessStart("Model", "Starting to build model " + IOHandler::GetFilename(path) + "...");

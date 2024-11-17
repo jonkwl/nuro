@@ -9,7 +9,9 @@ glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
 MeshRenderer::MeshRenderer()
 {
-	this->model = nullptr;
+    model = nullptr;
+
+    volume = new BV_Sphere();
 
 	overwriteMaterials = false;
 }
@@ -18,6 +20,15 @@ void MeshRenderer::forwardPass()
 {
     // No model to render available -> cancel
     if (model == nullptr) return;
+
+    // Get rendering camera
+    Camera* camera = Runtime::getCameraRendering();
+
+    // Frustum culling
+    // Make sure render target is within camera frustum
+    if (!volume->intersectsFrustum(camera->frustum)) {
+        return;
+    }
 
     // Calculate matrices
     glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
@@ -35,22 +46,10 @@ void MeshRenderer::forwardPass()
         IMaterial* material = nullptr;
 
         unsigned int materialIndex = mesh->getMaterialIndex();
-
-        // Mesh renderer doesnt contain custom overwrite materials, use models default materials 
-        if (!overwriteMaterials) {
-            // Try find material by models material index
-            if (materialIndex < model->defaultMaterials.size()) {
-                // Available material found -> use material
-                material = model->defaultMaterials.at(materialIndex);
-            }
-        }
-        // Mesh renderer contains custom materials
-        else {
-            // Try find material by models material index
-            if (materialIndex < materials.size()) {
-                // Available material found -> use material
-                material = materials.at(materialIndex);
-            }
+        // Try find material by models material index
+        if (materialIndex < materials.size()) {
+            // Available material found -> use material
+            material = materials.at(materialIndex);
         }
 
         // No available material found -> use default material

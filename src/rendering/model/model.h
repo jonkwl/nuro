@@ -20,11 +20,7 @@ class Model
 {
 public:
 	Model(std::string path);
-	Model(std::string path, IMaterial* defaultMaterial);
-	Model(std::string path, std::vector<IMaterial*> defaultMaterials);
 	std::vector<Mesh*> meshes;
-
-	std::vector<IMaterial*> defaultMaterials;
 
 	bool castsShadow = true;
 private:
