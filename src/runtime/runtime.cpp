@@ -320,7 +320,7 @@ int Runtime::START_LOOP() {
 		MeshRenderer::currentProjectionMatrix = projectionMatrix;
 
 		// Update cameras frustum
-		renderCamera->updateFrustum(viewMatrix * projectionMatrix);
+		renderCamera->frustum.update(viewMatrix * projectionMatrix);
 
 		// Enable culling
 		glEnable(GL_CULL_FACE);
