@@ -60,7 +60,7 @@ unsigned int Runtime::nGPUEntities = 0;
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
-bool skipSkyboxLoad = true; // tmp
+bool skipSkyboxLoad = false; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -186,8 +186,7 @@ int Runtime::START_LOOP() {
 	std::vector<std::string> shader_paths = { 
 		"./resources/shaders/materials", 
 		"./resources/shaders/postprocessing",
-		"./resources/shaders/passes",
-		"./resources/shaders/shadows" };
+		"./resources/shaders/passes" };
 	ShaderPool::loadAndCompile(shader_paths);
 
 	prePassShader = ShaderPool::get("pre_pass");
@@ -328,7 +327,7 @@ int Runtime::START_LOOP() {
 		MeshRenderer::currentProjectionMatrix = projectionMatrix;
 
 		// Update cameras frustum
-		renderCamera->updateFrustum(viewMatrix * projectionMatrix);
+		renderCamera->updateFrustum(viewMatrix, projectionMatrix);
 
 		nCPUEntities = 0;
 		nGPUEntities = 0;
@@ -423,7 +422,7 @@ int Runtime::START_LOOP() {
 
 		EngineUI::newFrame();
 
-		ImGui::Begin("tmp_diagnostics");
+		/*ImGui::Begin("tmp_diagnostics");
 		ImGui::Text("CPU Entities:"); 
 		ImGui::SameLine(); 
 		ImGui::Text(std::to_string(nCPUEntities).c_str());
@@ -433,7 +432,7 @@ int Runtime::START_LOOP() {
 		ImGui::Text("FPS:");
 		ImGui::SameLine();
 		ImGui::Text(std::to_string((int)averageFps).c_str());
-		ImGui::End();
+		ImGui::End();*/
 
 		EngineUI::render();
 

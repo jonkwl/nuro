@@ -1,8 +1,16 @@
 #include "model.h"
 
+#include "../src/rendering/core/transformation.h"
+
 Model::Model(std::string path)
 {
     resolveModel(path);
+    calculateModelMetrics();
+}
+
+ModelMetrics Model::getMetrics() const
+{
+    return metrics;
 }
 
 void Model::resolveModel(std::string path)
@@ -47,6 +55,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     Log::printProcessInfo("- Building mesh " + std::to_string(meshes.size() + 1));
 
+    // Initialize mesh buffers
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture*> textures;
@@ -77,6 +86,9 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertex.bitangent = bitangent;
 
         vertices.push_back(vertex);
+
+        // Add to total vertices metric
+        metrics.nVertices++;
     }
 
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -85,11 +97,51 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
             indices.push_back(face.mIndices[j]);
         }
+
+        // Add to total faces metric
+        metrics.nFaces++;
     }
 
-    // Texture loading can be implemented here
+    // Texture name linking can be implemented here
 
+    // Get meshes material index
     materialIndex = mesh->mMaterialIndex;
+
+    // Add to total materials metric if current index is the highest index
+    metrics.nMaterials = std::max(metrics.nMaterials, materialIndex + 1);
     
     return new Mesh(vertices, indices, textures, materialIndex);
+}
+
+void Model::calculateModelMetrics()
+{
+    // Loop through all meshes
+    for (int i = 0; i < meshes.size(); i++) {
+        // Get current mesh
+        Mesh* mesh = meshes[i];
+
+        // Loop through all mesh vertices
+        for (int i = 0; i < mesh->vertices.size(); i++) {
+            // Get current vertex
+            VertexData vertex = mesh->vertices[i];
+
+            // Update min and max point
+            metrics.minPoint = glm::min(metrics.minPoint, vertex.position);
+            metrics.maxPoint = glm::max(metrics.maxPoint, vertex.position);
+
+            // Add vertex position to centroid
+            metrics.centroid += vertex.position;
+
+            // Calculate furthest distance
+            metrics.furthest = glm::max(metrics.furthest, glm::distance(glm::vec3(0.0f), vertex.position));
+        }
+    }
+
+    // Calculate models center and transform to world space
+    metrics.origin = (metrics.minPoint + metrics.maxPoint) * 0.5f;
+    metrics.origin = Transformation::prepareWorldPosition(metrics.origin);
+
+    // Average centroid and transform to world space
+    metrics.centroid /= metrics.nVertices;
+    metrics.centroid = Transformation::prepareWorldPosition(metrics.centroid);
 }

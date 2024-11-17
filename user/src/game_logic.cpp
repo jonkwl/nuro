@@ -31,7 +31,7 @@ void awake() {
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	/*Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
 	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
 	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
 	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
@@ -46,10 +46,11 @@ void awake() {
 	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
 	sphereMaterial->setEmissionMap(emission);
 	sphereMaterial->emissionIntensity = 12.5f;
-	Model* sphereModel = new Model("./user/assets/models/sphere.fbx", { sphereMaterial });
+	Model* sphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* sphere = new Entity();
 	sphere->meshRenderer->model = sphereModel;
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);*/
+	sphere->meshRenderer->materials.push_back(sphereMaterial);
+	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
@@ -130,7 +131,7 @@ void awake() {
 	mannequin = new Entity();
 	mannequin->meshRenderer->model = mannequinModel;
 	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
-	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.0f);
+	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.4f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
 
@@ -142,6 +143,16 @@ void awake() {
 	shadowedSphere->meshRenderer->model = shadowedSphereModel;
 	shadowedSphere->meshRenderer->materials.push_back(whiteMaterial);
 	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
+
+	LitMaterial* neon = new LitMaterial();
+	neon->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
+	neon->emissionIntensity = 0.8f;
+	Model* neonModel = new Model("./user/assets/models/pacman_neon_lights.fbx");
+	Entity* neonLight = new Entity();
+	neonLight->transform.position = glm::vec3(14.5f, 2.5f, 9.5f);
+	neonLight->transform.scale = glm::vec3(5.0f, 5.0f, 5.0f);
+	neonLight->meshRenderer->model = neonModel;
+	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
 
 	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();

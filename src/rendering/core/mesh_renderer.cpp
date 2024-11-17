@@ -19,14 +19,14 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
 
 void MeshRenderer::forwardPass()
 {
+    // No model to render available -> cancel
+    if (model == nullptr) return;
+
     // Frustum culling
     performFrustumCulling();
 
     // Check if render target was culled this frame -> cancel
     if (isCulled()) return;
-
-    // No model to render available -> cancel
-    if (model == nullptr) return;
 
     // Calculate matrices
     currentModelMatrix = Transformation::modelMatrix(parentEntity);
@@ -77,10 +77,10 @@ void MeshRenderer::forwardPass()
 
 void MeshRenderer::prePass()
 {
-    // Do frustum culling here
-
     // No model to render available -> cancel
     if (model == nullptr) return;
+
+    // Perform frustum culling here
 
     // Calculate model and mvp matrix
     currentModelMatrix = Transformation::modelMatrix(parentEntity);
@@ -147,7 +147,7 @@ void MeshRenderer::performFrustumCulling()
     intersectsFrustum = true;
     
     // Update bounding volume
-    volume->update(parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
+    volume->update(model, parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
 
     // Tmp, Add to cpu entities
     Runtime::nCPUEntities++;

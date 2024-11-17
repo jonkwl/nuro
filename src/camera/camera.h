@@ -1,17 +1,14 @@
 #pragma once
 
 #include <glm.hpp>
+#include <gtc/matrix_access.hpp>
+#include <gtc/type_ptr.hpp>
 
 #include "../src/transform/transform.h"
 
 struct Frustum
 {
-	glm::vec4 leftPlane;
-	glm::vec4 rightPlane;
-	glm::vec4 bottomPlane;
-	glm::vec4 topPlane;
-	glm::vec4 nearPlane;
-	glm::vec4 farPlane;
+	glm::vec4 planes[6];
 };
 
 class Camera
@@ -27,5 +24,5 @@ public:
 	float near;
 	float far;
 
-	void updateFrustum(glm::mat4 viewProjectionMatrix);
+	void updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 };

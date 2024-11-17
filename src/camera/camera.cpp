@@ -12,61 +12,27 @@ Camera::Camera() {
 	far = 1000.0f;
 }
 
-void Camera::updateFrustum(glm::mat4 viewProjectionMatrix)
+void Camera::updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
-    // Left
-    frustum.leftPlane = glm::vec4(
-        viewProjectionMatrix[0][3] + viewProjectionMatrix[0][0],
-        viewProjectionMatrix[1][3] + viewProjectionMatrix[1][0],
-        viewProjectionMatrix[2][3] + viewProjectionMatrix[2][0],
-        viewProjectionMatrix[3][3] + viewProjectionMatrix[3][0]
-    );
+    glm::mat4 frustumMatrix = projectionMatrix * viewMatrix;
 
-    // Right
-    frustum.rightPlane = glm::vec4(
-        viewProjectionMatrix[0][3] - viewProjectionMatrix[0][0],
-        viewProjectionMatrix[1][3] - viewProjectionMatrix[1][0],
-        viewProjectionMatrix[2][3] - viewProjectionMatrix[2][0],
-        viewProjectionMatrix[3][3] - viewProjectionMatrix[3][0]
-    );
+    // Extract columns of the matrix
+    glm::vec4 col0 = glm::column(frustumMatrix, 0);
+    glm::vec4 col1 = glm::column(frustumMatrix, 1);
+    glm::vec4 col2 = glm::column(frustumMatrix, 2);
+    glm::vec4 col3 = glm::column(frustumMatrix, 3);
 
-    // Bottom
-    frustum.bottomPlane = glm::vec4(
-        viewProjectionMatrix[0][3] + viewProjectionMatrix[0][1],
-        viewProjectionMatrix[1][3] + viewProjectionMatrix[1][1],
-        viewProjectionMatrix[2][3] + viewProjectionMatrix[2][1],
-        viewProjectionMatrix[3][3] + viewProjectionMatrix[3][1]
-    );
+    // Compute planes
+    frustum.planes[0] = col3 + col0; // Left
+    frustum.planes[1] = col3 - col0; // Right
+    frustum.planes[2] = col3 + col1; // Bottom
+    frustum.planes[3] = col3 - col1; // Top
+    frustum.planes[4] = col3 + col2; // Near
+    frustum.planes[5] = col3 - col2; // Far
 
-    // Top
-    frustum.topPlane = glm::vec4(
-        viewProjectionMatrix[0][3] - viewProjectionMatrix[0][1],
-        viewProjectionMatrix[1][3] - viewProjectionMatrix[1][1],
-        viewProjectionMatrix[2][3] - viewProjectionMatrix[2][1],
-        viewProjectionMatrix[3][3] - viewProjectionMatrix[3][1]
-    );
-
-    // Near
-    frustum.nearPlane = glm::vec4(
-        viewProjectionMatrix[0][3] + viewProjectionMatrix[0][2],
-        viewProjectionMatrix[1][3] + viewProjectionMatrix[1][2],
-        viewProjectionMatrix[2][3] + viewProjectionMatrix[2][2],
-        viewProjectionMatrix[3][3] + viewProjectionMatrix[3][2]
-    );
-
-    // Far
-    frustum.farPlane = glm::vec4(
-        viewProjectionMatrix[0][3] - viewProjectionMatrix[0][2],
-        viewProjectionMatrix[1][3] - viewProjectionMatrix[1][2],
-        viewProjectionMatrix[2][3] - viewProjectionMatrix[2][2],
-        viewProjectionMatrix[3][3] - viewProjectionMatrix[3][2]
-    );
-
-    // Normalize all planes
-    frustum.leftPlane /= glm::length(glm::vec3(frustum.leftPlane));
-    frustum.rightPlane /= glm::length(glm::vec3(frustum.rightPlane));
-    frustum.bottomPlane /= glm::length(glm::vec3(frustum.bottomPlane));
-    frustum.topPlane /= glm::length(glm::vec3(frustum.topPlane));
-    frustum.nearPlane /= glm::length(glm::vec3(frustum.nearPlane));
-    frustum.farPlane /= glm::length(glm::vec3(frustum.farPlane));
+    // Normalize planes
+    for (int i = 0; i < 6; i++) {
+        float length = glm::length(glm::vec3(frustum.planes[i]));
+        frustum.planes[i] /= length;
+    }
 }
