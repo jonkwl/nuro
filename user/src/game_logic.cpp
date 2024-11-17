@@ -71,7 +71,7 @@ void awake() {
 	plank->setAlbedoMap(plankAlbedo);
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
-	Model* cubeModel = new Model("./user/assets/models/cube.obj", { plank, plank });
+	Model* cubeModel = new Model("./user/assets/models/cube.fbx", plank);
 	cube = new Entity();
 	cube->meshRenderer->model = cubeModel;
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
@@ -79,7 +79,7 @@ void awake() {
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	floorMaterial->roughness = 0.35f;
-	Model* floorModel = new Model("./user/assets/models/cube.obj", { floorMaterial, floorMaterial });
+	Model* floorModel = new Model("./user/assets/models/cube.fbx", floorMaterial);
 	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
 	floor->meshRenderer->model = floorModel;
@@ -89,7 +89,7 @@ void awake() {
 	LitMaterial* wallMaterial = new LitMaterial();
 	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	wallMaterial->roughness = 0.35f;
-	Model* wallModel = new Model("./user/assets/models/cube.obj", { wallMaterial, wallMaterial });
+	Model* wallModel = new Model("./user/assets/models/cube.fbx", wallMaterial);
 	wallModel->castsShadow = true;
 	Entity* wall = new Entity();
 	wall->meshRenderer->model = wallModel;
@@ -106,7 +106,7 @@ void awake() {
 	smearedWallMaterial->setMetallicMap(smearedWallRoughness);
 	smearedWallMaterial->setNormalMap(smearedWallNormal);
 	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
-	Model* smearedWallModel = new Model("./user/assets/models/cube.obj", { smearedWallMaterial, smearedWallMaterial });
+	Model* smearedWallModel = new Model("./user/assets/models/cube.fbx", smearedWallMaterial);
 	Entity* smearedWall = new Entity();
 	smearedWall->meshRenderer->model = smearedWallModel;
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
@@ -140,11 +140,13 @@ void awake() {
 		Entity* x = new Entity();
 		x = new Entity();
 		x->meshRenderer->model = mannequinModel;
-		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
+		x->meshRenderer->overwriteMaterials = true;
+		x->meshRenderer->materials.push_back(pbrSphereMaterial);
+		x->transform.position = glm::vec3(14.0f, 0.0f, 8.5f);
 		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);
 
-		x->transform.position.x += 2.5f * (i + 1);
+		x->transform.position.x += 5.0f * (i + 1);
 	}
 }
 

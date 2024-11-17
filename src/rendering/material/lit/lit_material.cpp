@@ -4,7 +4,7 @@
 
 LitMaterial::LitMaterial()
 {
-	shader = ShaderBuilder::get("lit");
+	shader = ShaderPool::get("lit");
 
 	tiling = glm::vec2(1.0f);
 	offset = glm::vec2(0.0f);
