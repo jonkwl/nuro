@@ -108,6 +108,7 @@ struct Material {
     bool enableAmbientOcclusionMap;
     sampler2D ambientOcclusionMap;
 
+    bool emission;
     float emissionIntensity;
     vec3 emissionColor;
     bool enableEmissionMap;
@@ -140,7 +141,7 @@ vec3 getShadowCoords() {
 
 float getDirectionalShadowBias(vec3 lightDirection) {
     /* float diffuseFactor = dot(normal, -lightDirection);
-            float bias = mix(0.0001, 0.0, diffuseFactor); */
+                float bias = mix(0.0001, 0.0, diffuseFactor); */
     float bias = 0.0;
     return bias;
 }
@@ -483,10 +484,9 @@ vec4 shadePBR() {
 
     // get emission and check if fragment has emission
     vec3 emission = getEmission();
-    bool hasEmission = length(emission) > 0.001;
 
     // fragment has emission and therefore emits light
-    if (hasEmission) {
+    if (material.emission || material.enableEmissionMap) {
         Lo = emission;
     }
 

@@ -20,6 +20,7 @@ LitMaterial::LitMaterial()
 
 	ambientOcclusionMap = nullptr;
 
+	emission = false;
 	emissionIntensity = 0.0f;
 	emissionColor = glm::vec3(1.0f);
 	emissionMap = nullptr;
@@ -57,6 +58,7 @@ void LitMaterial::bind()
 	shader->setVec2("material.tiling", tiling);
 	shader->setVec2("material.offset", offset);
 
+	shader->setBool("material.emission", emission);
 	shader->setFloat("material.emissionIntensity", emissionIntensity);
 	shader->setVec3("material.emissionColor", emissionColor);
 

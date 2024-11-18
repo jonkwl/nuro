@@ -48,6 +48,7 @@ void awake() {
 	sphereMaterial->setMetallicMap(metallic);
 	sphereMaterial->setRoughnessMap(roughness);
 	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
+	sphereMaterial->emission = true;
 	sphereMaterial->setEmissionMap(emission);
 	sphereMaterial->emissionIntensity = 12.5f;*/
 	sphereMaterial = new LitMaterial();
@@ -156,6 +157,7 @@ void awake() {
 	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
 
 	LitMaterial* neon = new LitMaterial();
+	neon->emission = true;
 	neon->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
 	neon->emissionIntensity = 0.8f;
 	Model* neonModel = new Model("./user/assets/models/pacman_neon_lights.fbx");
@@ -165,7 +167,7 @@ void awake() {
 	neonLight->meshRenderer->model = neonModel;
 	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
 
-	for (int i = 0; i < 40; i++) {
+	/*for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
 		x = new Entity();
 		x->meshRenderer->model = mannequinModel;
@@ -175,7 +177,7 @@ void awake() {
 		x->transform.scale = glm::vec3(1.4f);
 
 		x->transform.position.x += 3.0f * (i + 1);
-	}
+	}*/
 }
 
 void update() {

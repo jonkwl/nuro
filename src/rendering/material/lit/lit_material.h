@@ -21,6 +21,7 @@ public:
 	float roughness = 0.0f;
 	float metallic = 0.0f;
 
+	bool emission;
 	float emissionIntensity;
 	glm::vec3 emissionColor;
 
