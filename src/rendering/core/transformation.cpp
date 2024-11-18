@@ -19,9 +19,9 @@ glm::mat4 Transformation::modelMatrix(Entity* entity) {
 
 	// object rotation
 	glm::vec3 worldRotation = prepareWorldRotation(entity->transform.rotation);
-	model = glm::rotate(model, glm::radians(worldRotation.x), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(worldRotation.y), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, glm::radians(worldRotation.z), glm::vec3(0, 0, 1));
+	glm::quat quaternion = glm::quat(glm::radians(worldRotation));
+	glm::mat4 rotationMatrix = glm::mat4_cast(quaternion);
+	model = model * rotationMatrix;
 
 	// object scale
 	model = glm::scale(model, entity->transform.scale);

@@ -5,19 +5,19 @@
 class PrePass
 {
 public:
-	PrePass(unsigned int width, unsigned int height);
+	static void setup(unsigned int width, unsigned int height);
 
-	void render();
-	void bind(unsigned int unit);
+	static void render();
+	static void bind(unsigned int unit);
 
-	unsigned int getWidth() const;
-	unsigned int getHeight() const;
-	unsigned int getFramebuffer() const;
+	static unsigned int getWidth();
+	static unsigned int getHeight();
+	static unsigned int getFramebuffer();
 private:
-	unsigned int width;
-	unsigned int height;
+	static unsigned int width;
+	static unsigned int height;
 
-	unsigned int texture;
-	unsigned int framebuffer;
+	static unsigned int texture;
+	static unsigned int framebuffer;
 };
 

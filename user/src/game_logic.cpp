@@ -14,6 +14,10 @@ Entity* mannequin = nullptr;
 
 LitMaterial* sphereMaterial = nullptr;
 
+Entity* collisionSphere = nullptr;
+
+Entity* wall = nullptr;
+
 void awake() {
 	// Set default skybox
 	Runtime::setSkybox(Runtime::defaultSkybox);
@@ -31,7 +35,7 @@ void awake() {
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	/*Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
 	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
 	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
 	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
@@ -45,12 +49,19 @@ void awake() {
 	sphereMaterial->setRoughnessMap(roughness);
 	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
 	sphereMaterial->setEmissionMap(emission);
-	sphereMaterial->emissionIntensity = 12.5f;
+	sphereMaterial->emissionIntensity = 12.5f;*/
+	sphereMaterial = new LitMaterial();
+	sphereMaterial->roughness = 0.15f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* sphere = new Entity();
 	sphere->meshRenderer->model = sphereModel;
 	sphere->meshRenderer->materials.push_back(sphereMaterial);
 	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
+
+	collisionSphere = new Entity();
+	collisionSphere->meshRenderer->model = sphereModel;
+	collisionSphere->meshRenderer->materials.push_back(sphereMaterial);
+	collisionSphere->transform.position = glm::vec3(5.0f, 0.0f, 6.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
@@ -95,7 +106,7 @@ void awake() {
 	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.fbx");
 	wallModel->castsShadow = true;
-	Entity* wall = new Entity();
+	wall = new Entity();
 	wall->meshRenderer->model = wallModel;
 	wall->meshRenderer->materials.push_back(wallMaterial);
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
@@ -169,5 +180,8 @@ void awake() {
 
 void update() {
 	cube->transform.rotation.y += 20.0f * Runtime::deltaTime;
-	mannequin->transform.rotation.z += 30.0f * Runtime::deltaTime;
+	mannequin->transform.rotation.y += 30.0f * Runtime::deltaTime;
+	wall->transform.rotation.y += 20.0f * Runtime::deltaTime;
+
+	collisionSphere->transform.position.x -= 0.4f * Runtime::deltaTime;
 }

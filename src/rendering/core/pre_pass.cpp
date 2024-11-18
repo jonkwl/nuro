@@ -2,13 +2,19 @@
 
 #include "../src/runtime/runtime.h"
 
-PrePass::PrePass(unsigned int width, unsigned int height)
-{
-	this->width = width;
-	this->height = height;
+unsigned int PrePass::width = 0;
+unsigned int PrePass::height = 0;
 
-	this->texture = 0;
-	this->framebuffer = 0;
+unsigned int PrePass::texture = 0;
+unsigned int PrePass::framebuffer = 0;
+
+void PrePass::setup(unsigned int width, unsigned int height)
+{
+	PrePass::width = width;
+	PrePass::height = height;
+
+	PrePass::texture = 0;
+	PrePass::framebuffer = 0;
 
 	glGenFramebuffers(1, &framebuffer);
 
@@ -54,17 +60,17 @@ void PrePass::bind(unsigned int unit)
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-unsigned int PrePass::getWidth() const
+unsigned int PrePass::getWidth()
 {
 	return width;
 }
 
-unsigned int PrePass::getHeight() const
+unsigned int PrePass::getHeight()
 {
 	return height;
 }
 
-unsigned int PrePass::getFramebuffer() const
+unsigned int PrePass::getFramebuffer()
 {
 	return framebuffer;
 }

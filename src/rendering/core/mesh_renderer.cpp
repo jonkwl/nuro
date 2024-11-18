@@ -11,7 +11,7 @@ glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 MeshRenderer::MeshRenderer(Entity* parentEntity)
 {
     model = nullptr;
-    volume = new BoundingSphere();
+    volume = new BoundingAABB();
 
     this->parentEntity = parentEntity;
     intersectsFrustum = true;

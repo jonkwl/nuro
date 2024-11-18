@@ -60,7 +60,7 @@ unsigned int Runtime::nGPUEntities = 0;
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
-bool skipSkyboxLoad = false; // tmp
+bool skipSkyboxLoad = true; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -199,7 +199,7 @@ int Runtime::START_LOOP() {
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;
 	unsigned int diskFilterSize = 8;
-	unsigned int diskRadius = 7;
+	unsigned int diskRadius = 5;
 	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 	// Create default shadow map
@@ -235,6 +235,9 @@ int Runtime::START_LOOP() {
 
 	// Setup forward pass framebuffer
 	ForwardPassFrame::setup(msaaSamples);
+
+	// Setup pre pass
+	PrePass::setup(Window::width, Window::height);
 
 	// Setup post processing
 	PostProcessing::setup();
@@ -336,6 +339,16 @@ int Runtime::START_LOOP() {
 		glEnable(GL_CULL_FACE);
 
 		//
+		// PRE PASS: Render Z-Buffer Pre Pass
+		//
+
+		Profiler::start("pre_pass");
+
+		PrePass::render();
+
+		Profiler::stop("pre_pass");
+
+		//
 		// SHADOW PASS: Render shadow map
 		//
 
@@ -422,7 +435,7 @@ int Runtime::START_LOOP() {
 
 		EngineUI::newFrame();
 
-		/*ImGui::Begin("tmp_diagnostics");
+		ImGui::Begin("tmp_diagnostics");
 		ImGui::Text("CPU Entities:"); 
 		ImGui::SameLine(); 
 		ImGui::Text(std::to_string(nCPUEntities).c_str());
@@ -432,7 +445,10 @@ int Runtime::START_LOOP() {
 		ImGui::Text("FPS:");
 		ImGui::SameLine();
 		ImGui::Text(std::to_string((int)averageFps).c_str());
-		ImGui::End();*/
+		ImGui::Text("Distance to camera:");
+		ImGui::SameLine();
+		ImGui::Text(std::to_string(entityLinks.at(0)->meshRenderer->volume->getDistance(entityLinks.at(1)->transform.position)).c_str());
+		ImGui::End();
 
 		EngineUI::render();
 

@@ -115,6 +115,13 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 void Model::calculateModelMetrics()
 {
+    // Initialize metrics
+    metrics.minPoint = glm::vec3(FLT_MAX);
+    metrics.maxPoint = glm::vec3(-FLT_MAX);
+    metrics.origin = glm::vec3(0.0f);
+    metrics.centroid = glm::vec3(0.0f);
+    metrics.furthest = 0.0f;
+
     // Loop through all meshes
     for (int i = 0; i < meshes.size(); i++) {
         // Get current mesh

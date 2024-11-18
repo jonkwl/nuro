@@ -24,7 +24,7 @@ struct PostProcessingConfiguration {
 	float contrast = 1.004f;
 	float gamma = 2.2f;
 
-	bool bloom = true;
+	bool bloom = false;
 	float bloomIntensity = 0.25f;
 	float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
 	float bloomThreshold = 0.2f;
