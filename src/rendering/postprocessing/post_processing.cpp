@@ -1,5 +1,7 @@
 #include "post_processing.h"
 
+#include "../src/rendering/core/pre_pass.h"
+
 PostProcessingConfiguration PostProcessing::configuration = PostProcessingConfiguration();
 
 Shader* PostProcessing::finalPassShader = nullptr;
@@ -38,6 +40,7 @@ void PostProcessing::setup()
 	finalPassShader->setInt("hdrBuffer", HDR_BUFFER_UNIT);
 	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER_UNIT);
 	finalPassShader->setInt("configuration.lensDirtTexture", LENS_DIRT_UNIT);
+	finalPassShader->setInt("prePassBuffer", PRE_PASS_UNIT);
 
 	// Cache default post processing configuration
 	defaultConfiguration = configuration;
@@ -82,16 +85,21 @@ void PostProcessing::render(unsigned int input)
 	// Sync post processing configuration with shader
 	syncConfiguration();
 
-	// Bind textures for final post processing pass render
+	// Bind forward pass hdr color buffer
 	glActiveTexture(GL_TEXTURE0 + HDR_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_OUTPUT);
 
+	// Bind bloom buffer
 	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
 
+	// Bind lens dirt texture
 	if (configuration.lensDirt) {
 		configuration.lensDirtTexture->bind(LENS_DIRT_UNIT);
 	}
+
+	// Bind pre pass depth buffer
+	PrePass::bind(PRE_PASS_UNIT);
 
 	// Bind quad and render to screen
 	Quad::bind();

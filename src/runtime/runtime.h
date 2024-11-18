@@ -99,9 +99,6 @@ public:
 	static bool showEngineUI; // Shows engine ui (only available in inspector mode)
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
-	// Pre Pass
-	static PrePass* prePass; // (Unused) Render pipeline pre pass
-
 	// Shadow settings
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap; // Default shadow map

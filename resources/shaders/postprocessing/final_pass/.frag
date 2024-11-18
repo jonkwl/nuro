@@ -6,6 +6,7 @@ in vec2 uv;
 
 uniform sampler2D hdrBuffer;
 uniform sampler2D bloomBuffer;
+uniform sampler2D prePassBuffer;
 
 uniform vec2 resolution;
 
@@ -36,6 +37,9 @@ struct Configuration {
 };
 uniform Configuration configuration;
 
+float near = 0.3;
+float far = 100.0;
+
 vec3 ACES(vec3 x) {
     const float a = 2.51;
     const float b = 0.03;
@@ -45,42 +49,71 @@ vec3 ACES(vec3 x) {
     return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
 }
 
-void main()
+float LinearizeDepth(float depth)
 {
+    float z = depth * 2.0 - 1.0;
+    return (2.0 * near * far) / (far + near - z * (far - near));
+}
+
+vec4 DepthColor() {
+    float depth = texture(prePassBuffer, uv).r;
+    float linearDepth = LinearizeDepth(depth);
+    float normalizedDepth = (linearDepth - near) / (far - near);
+    return vec4(vec3(normalizedDepth), 1.0);
+}
+
+vec3 chromaticAberration(vec3 color) {
     vec2 center = vec2(0.5, 0.5);
     vec2 toCenter = uv - center;
+    float dist = length(toCenter);
+    float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationIntensity;
+    vec2 redOffset = uv + toCenter * aberration * configuration.chromaticAberrationRedOffset;
+    vec2 greenOffset = uv;
+    vec2 blueOffset = uv - toCenter * aberration * configuration.chromaticAberrationBlueOffset;
+    color.r = texture2D(hdrBuffer, redOffset).r;
+    color.g = texture2D(hdrBuffer, greenOffset).g;
+    color.b = texture2D(hdrBuffer, blueOffset).b;
+    return color;
+}
+
+vec3 bloom(vec3 color) {
+    vec3 bloomSample = texture(bloomBuffer, uv).rgb * configuration.bloomIntensity * configuration.bloomColor;
+    vec3 lensDirtSample = vec3(0.0);
+    if (configuration.lensDirt) {
+        lensDirtSample = texture(configuration.lensDirtTexture, vec2(uv.x, 1.0 - uv.y)).rgb * configuration.lensDirtIntensity;
+    }
+    color = mix(color, color + bloomSample + bloomSample * lensDirtSample, vec3(1.0));
+    return color;
+}
+
+vec3 vignette(vec3 color) {
+    vec2 center = vec2(0.5, 0.5);
+    vec2 scaledUV = vec2((uv.x - center.x) / configuration.vignetteRoundness, uv.y - center.y);
+    float vignetteDist = length(scaledUV);
+    float vignetteFactor = smoothstep(configuration.vignetteRadius, configuration.vignetteRadius - configuration.vignetteSoftness, vignetteDist);
+    color *= mix(configuration.vignetteColor, vec3(1.0), vignetteFactor);
+    return color;
+}
+
+void main()
+{
     float aspectRatio = resolution.x / resolution.y;
 
     vec3 color = texture(hdrBuffer, uv).rgb;
 
     // Chromatic Aberration
     if (configuration.chromaticAberration) {
-        float dist = length(toCenter);
-        float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationIntensity;
-        vec2 redOffset = uv + toCenter * aberration * configuration.chromaticAberrationRedOffset;
-        vec2 greenOffset = uv;
-        vec2 blueOffset = uv - toCenter * aberration * configuration.chromaticAberrationBlueOffset;
-        color.r = texture2D(hdrBuffer, redOffset).r;
-        color.g = texture2D(hdrBuffer, greenOffset).g;
-        color.b = texture2D(hdrBuffer, blueOffset).b;
+        color = chromaticAberration(color);
     }
 
     // Bloom
     if (configuration.bloom) {
-        vec3 bloomSample = texture(bloomBuffer, uv).rgb * configuration.bloomIntensity * configuration.bloomColor;
-        vec3 lensDirtSample = vec3(0.0);
-        if (configuration.lensDirt) {
-            lensDirtSample = texture(configuration.lensDirtTexture, vec2(uv.x, 1.0 - uv.y)).rgb * configuration.lensDirtIntensity;
-        }
-        color = mix(color, color + bloomSample + bloomSample * lensDirtSample, vec3(1.0));
+        color = bloom(color);
     }
 
     // Vignette
     if (configuration.vignette) {
-        vec2 scaledUV = vec2((uv.x - center.x) / configuration.vignetteRoundness, uv.y - center.y);
-        float vignetteDist = length(scaledUV);
-        float vignetteFactor = smoothstep(configuration.vignetteRadius, configuration.vignetteRadius - configuration.vignetteSoftness, vignetteDist);
-        color *= mix(configuration.vignetteColor, vec3(1.0), vignetteFactor);
+        color = vignette(color);
     }
 
     // Contrast

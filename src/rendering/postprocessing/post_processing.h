@@ -15,7 +15,8 @@
 enum FinalPassTextureSlots {
 	HDR_BUFFER_UNIT,
 	BLOOM_BUFFER_UNIT,
-	LENS_DIRT_UNIT
+	LENS_DIRT_UNIT,
+	PRE_PASS_UNIT
 };
 
 struct PostProcessingConfiguration {
@@ -24,7 +25,7 @@ struct PostProcessingConfiguration {
 	float contrast = 1.004f;
 	float gamma = 2.2f;
 
-	bool bloom = false;
+	bool bloom = true;
 	float bloomIntensity = 0.25f;
 	float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
 	float bloomThreshold = 0.2f;

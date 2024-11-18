@@ -35,8 +35,6 @@ bool Runtime::showDiagnostics = true;
 
 Skybox* Runtime::activeSkybox = nullptr;
 
-PrePass* Runtime::prePass = nullptr;
-
 ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
@@ -60,7 +58,7 @@ unsigned int Runtime::nGPUEntities = 0;
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
-bool skipSkyboxLoad = true; // tmp
+bool skipSkyboxLoad = false; // tmp
 
 void Runtime::linkEntity(Entity* entity)
 {
@@ -339,16 +337,6 @@ int Runtime::START_LOOP() {
 		glEnable(GL_CULL_FACE);
 
 		//
-		// PRE PASS: Render Z-Buffer Pre Pass
-		//
-
-		Profiler::start("pre_pass");
-
-		PrePass::render();
-
-		Profiler::stop("pre_pass");
-
-		//
 		// SHADOW PASS: Render shadow map
 		//
 
@@ -367,6 +355,16 @@ int Runtime::START_LOOP() {
 		}
 
 		//
+		// PRE PASS: Render depth buffer before forward pass
+		//
+
+		Profiler::start("pre_pass");
+
+		// PrePass::render();
+
+		Profiler::stop("pre_pass");
+
+		//
 		// FORWARD RENDERING PASS: Render next frame
 		//
 
@@ -374,9 +372,6 @@ int Runtime::START_LOOP() {
 
 		// Bind forward pass framebuffer
 		ForwardPassFrame::bind();
-
-		// Set culling to back face
-		glCullFace(GL_BACK);
 
 		// Set viewport and bind post processing framebuffer
 		if (!wireframe) {
@@ -391,11 +386,23 @@ int Runtime::START_LOOP() {
 		// Set wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		// Render each linked entity to bound forward pass frame
+		// Set culling to back face
+		glCullFace(GL_BACK);
+
+		// Enable depth testing
 		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
+		// Disable depth buffer writes (prevent pre-pass depth buffer overwriting)
+		// glDepthMask(GL_FALSE);
+
+		// Render each linked entity to bound forward pass frame
 		for (int i = 0; i < entityLinks.size(); i++) {
 			entityLinks.at(i)->meshRenderer->forwardPass();
 		}
+
+		// Re-enable depth writes
+		// glDepthMask(GL_TRUE);
 
 		// Disable wireframe if enabled
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -404,9 +411,11 @@ int Runtime::START_LOOP() {
 		glDisable(GL_CULL_FACE);
 
 		// Render skybox to bound forward pass frame
+		glDepthFunc(GL_LEQUAL);
 		if (activeSkybox != nullptr && !wireframe) {
 			activeSkybox->render(viewMatrix, projectionMatrix);
 		}
+		glDepthFunc(GL_LESS);
 
 		// Render quick gizmos
 		QuickGizmo::render();

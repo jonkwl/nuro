@@ -68,6 +68,9 @@ void BloomFrame::setup(unsigned int mipDepth)
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
 		Log::printError("Framebuffer", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
 	}
+
+	// Unbind framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void BloomFrame::bind()
