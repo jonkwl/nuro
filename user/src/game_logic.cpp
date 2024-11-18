@@ -166,7 +166,7 @@ void awake() {
 	neonLight->meshRenderer->model = neonModel;
 	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
 
-	/*for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
 		x = new Entity();
 		x->meshRenderer->model = mannequinModel;
@@ -176,7 +176,7 @@ void awake() {
 		x->transform.scale = glm::vec3(1.4f);
 
 		x->transform.position.x += 3.0f * (i + 1);
-	}*/
+	}
 }
 
 void update() {

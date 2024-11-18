@@ -250,12 +250,10 @@ int Runtime::START_LOOP() {
 
 	while (!glfwWindowShouldClose(Window::glfw)) {
 
-		Profiler::start("render");
-
 		unsigned int width = Window::width, height = Window::height;
 
 		//
-		// PREPARE COMING RENDER PASSES
+		// PREPARE COMING FRAME UPDATE
 		//
 
 		// Update times
@@ -298,8 +296,10 @@ int Runtime::START_LOOP() {
 		update();
 
 		//
-		// SELECT CAMERA TO BE RENDERED AND CALCULATE VIEW & PROJECTION MATRICES
+		// RENDER NEXT FRAME (full render pipeline pass)
 		//
+
+		Profiler::start("render");
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)
 		if (!inspectorMode) {
@@ -328,9 +328,9 @@ int Runtime::START_LOOP() {
 		glEnable(GL_CULL_FACE);
 
 		//
-		// SHADOW PASS: Render shadow map
+		// SHADOW PASS
+		// Render shadow map
 		//
-
 		Profiler::start("shadow_pass");
 		mainShadowMap->render();
 		Profiler::stop("shadow_pass");
@@ -344,46 +344,41 @@ int Runtime::START_LOOP() {
 		} */
 
 		//
-		// PRE PASS: Render depth buffer before forward pass
+		// PRE PASS
+		// Create geometry pass with depth buffer before forward pass
 		//
-
 		// Not needed in current pipeline
-		// Profiler::start("pre_pass");
-		// PrePass::render();
-		// Profiler::stop("pre_pass");
+		/*Profiler::start("pre_pass");
+		PrePass::render();
+		Profiler::stop("pre_pass");*/
 
 		//
-		// FORWARD RENDERING PASS: Render next frame
+		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
 		//
-
-		// Perform forward pass
 		Profiler::start("forward_pass");
 		unsigned int FORWARD_PASS_OUTPUT = ForwardPass::render();
 		Profiler::stop("forward_pass");
 
 		//
 		// POST PROCESSING PASS
-		//
-
 		// Render post processing pass to screen using forward pass output as input
+		//
 		Profiler::start("post_processing");
 		PostProcessing::render(FORWARD_PASS_OUTPUT);
 		Profiler::stop("post_processing");
 
 		//
-		// RENDER ENGINE UI
+		// ENGINE UI PASS
+		// Render engine ui to screen
 		//
-
-		//  Render engine ui
 		Profiler::start("ui_pass");
 		EngineUI::newFrame();
 		EngineUI::render();
 		Profiler::stop("ui_pass");
 
 		//
-		// UPDATE PHASE 8: MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
+		// MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
 		//
-
 		glfwSwapBuffers(Window::glfw);
 		glfwPollEvents();
 
