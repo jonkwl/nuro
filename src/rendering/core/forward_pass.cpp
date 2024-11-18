@@ -1,19 +1,25 @@
-#include "forward_pass_frame.h"
+#include "forward_pass.h"
 
+#include "../src/runtime/runtime.h"
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
+#include "../src/rendering/gizmos/quick_gizmo.h"
 
-unsigned int ForwardPassFrame::output = 0;
+unsigned int ForwardPass::output = 0;
 
-unsigned int ForwardPassFrame::framebuffer = 0;
-unsigned int ForwardPassFrame::rbo = 0;
+unsigned int ForwardPass::framebuffer = 0;
+unsigned int ForwardPass::rbo = 0;
 
-unsigned int ForwardPassFrame::msaaFbo = 0;
-unsigned int ForwardPassFrame::msaaRbo = 0;
-unsigned int ForwardPassFrame::msaaColorBuffer = 0;
+unsigned int ForwardPass::msaaFbo = 0;
+unsigned int ForwardPass::msaaRbo = 0;
+unsigned int ForwardPass::msaaColorBuffer = 0;
 
-void ForwardPassFrame::setup(unsigned int msaaSamples)
+void ForwardPass::setup(unsigned int msaaSamples)
 {
+	// Initialize parameters needed
+	int width = Window::width;
+	int height = Window::height;
+
 	// Create forward pass framebuffer
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -21,7 +27,7 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 	// Create forward pass framebuffer texture
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -31,7 +37,7 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 	// Create forward pass render buffer
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::width, Window::height);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	// Check for forward pass framebuffer error
@@ -47,7 +53,7 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 	// Create multi-sampled color buffer texture
 	glGenTextures(1, &msaaColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msaaColorBuffer);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, Window::width, Window::height, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, width, height, GL_TRUE);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, msaaColorBuffer, 0);
@@ -55,7 +61,7 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 	// Create multi-sampled renderbuffer for depth and stencil
 	glGenRenderbuffers(1, &msaaRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, msaaRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, Window::width, Window::height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, msaaRbo);
 
 	// Check for multi-sampled framebuffer error
@@ -67,18 +73,65 @@ void ForwardPassFrame::setup(unsigned int msaaSamples)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ForwardPassFrame::bind()
+unsigned int ForwardPass::render()
 {
+	// Initialize parameters needed
+	bool wireframe = Runtime::wireframe;
+
+	int width = Window::width;
+	int height = Window::height;
+
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, msaaFbo);
-}
 
-unsigned int ForwardPassFrame::blit()
-{
+	// Set viewport and bind post processing framebuffer
+	if (!wireframe) {
+		glm::vec4 clearColor = Runtime::clearColor;
+		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+	}
+	else {
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, width, height);
+
+	// Set wireframe if enabled
+	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// Set culling to back face
+	glCullFace(GL_BACK);
+
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	// Render each linked entity to bound forward pass frame
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
+	for (int i = 0; i < entityLinks.size(); i++) {
+		entityLinks.at(i)->meshRenderer->forwardPass();
+	}
+
+	// Disable wireframe if enabled
+	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	// Disable culling before rendering skybox
+	glDisable(GL_CULL_FACE);
+
+	// Render skybox to bound forward pass frame
+	glDepthFunc(GL_LEQUAL);
+	Skybox* activeSkybox = Runtime::activeSkybox;
+	if (activeSkybox != nullptr && !wireframe) {
+		activeSkybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
+	}
+	glDepthFunc(GL_LESS);
+
+	// Render quick gizmos
+	QuickGizmo::render();
+
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
-	glBlitFramebuffer(0, 0, Window::width, Window::height, 0, 0, Window::width, Window::height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	return output;
 }

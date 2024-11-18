@@ -174,7 +174,7 @@
     <ClCompile Include="src\rendering\skybox\skybox.cpp" />
     <ClCompile Include="src\rendering\postprocessing\post_processing.cpp" />
     <ClCompile Include="src\rendering\shadows\shadow_map.cpp" />
-    <ClCompile Include="src\rendering\core\forward_pass_frame.cpp" />
+    <ClCompile Include="src\rendering\core\forward_pass.cpp" />
     <ClCompile Include="src\transform\transform.cpp" />
     <ClCompile Include="src\engineui\windows\scene_window.cpp" />
     <ClCompile Include="src\engineui\ui_components.cpp" />
@@ -233,7 +233,7 @@
     <ClInclude Include="src\rendering\postprocessing\post_processing.h" />
     <ClInclude Include="src\rendering\shadows\shadow_map.h" />
     <ClInclude Include="src\engineui\engine_window.h" />
-    <ClInclude Include="src\rendering\core\forward_pass_frame.h" />
+    <ClInclude Include="src\rendering\core\forward_pass.h" />
     <ClInclude Include="src\engineui\windows\scene_window.h" />
     <ClInclude Include="src\utils\profiler.h" />
     <ClInclude Include="src\rendering\primitives\quad.h" />

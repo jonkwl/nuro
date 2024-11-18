@@ -84,21 +84,6 @@ Camera* Runtime::getInspectorCamera()
 	return inspectorCamera;
 }
 
-void Runtime::setSkybox(Skybox* skybox)
-{
-	activeSkybox = skybox;
-}
-
-Skybox* Runtime::getActiveSkybox()
-{
-	return activeSkybox;
-}
-
-std::vector<Entity*> Runtime::getEntityLinks()
-{
-	return entityLinks;
-}
-
 void glfw_error_callback(int error, const char* description)
 {
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);
@@ -207,6 +192,7 @@ int Runtime::START_LOOP() {
 	// Creating default skybox
 	if (!skipSkyboxLoad) {
 
+		// Load default sky cubemap
 		defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_night.png");
 		/*defaultSky = Cubemap::GetByFaces(
 			"./resources/skybox/environment/right.jpg",
@@ -216,7 +202,12 @@ int Runtime::START_LOOP() {
 			"./resources/skybox/environment/front.jpg",
 			"./resources/skybox/environment/back.jpg"
 		);*/
+
+		// Create default skybox
 		defaultSkybox = new Skybox(defaultSky);
+		
+		// Set defaultr skybox as active
+		activeSkybox = defaultSkybox;
 
 	}
 
@@ -232,7 +223,7 @@ int Runtime::START_LOOP() {
 	Window::setCursor(Window::cursorMode);
 
 	// Setup forward pass framebuffer
-	ForwardPassFrame::setup(msaaSamples);
+	ForwardPass::setup(msaaSamples);
 
 	// Setup pre pass
 	PrePass::setup(Window::width, Window::height);
@@ -341,126 +332,52 @@ int Runtime::START_LOOP() {
 		//
 
 		Profiler::start("shadow_pass");
-
 		mainShadowMap->render();
-
 		Profiler::stop("shadow_pass");
 
-		// Save shadow map
-		if (!shadow_map_saved) {
+		// Save shadow map (tmp)
+		/* if (!shadow_map_saved) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
-			// saveDepthMapAsImage(mainShadowMap->getWidth(), mainShadowMap->getHeight(), "./shadow_map.png");
+			saveDepthMapAsImage(mainShadowMap->getWidth(), mainShadowMap->getHeight(), "./shadow_map.png");
 			shadow_map_saved = true;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
+		} */
 
 		//
 		// PRE PASS: Render depth buffer before forward pass
 		//
 
-		Profiler::start("pre_pass");
-
+		// Not needed in current pipeline
+		// Profiler::start("pre_pass");
 		// PrePass::render();
-
-		Profiler::stop("pre_pass");
+		// Profiler::stop("pre_pass");
 
 		//
 		// FORWARD RENDERING PASS: Render next frame
 		//
 
+		// Perform forward pass
 		Profiler::start("forward_pass");
-
-		// Bind forward pass framebuffer
-		ForwardPassFrame::bind();
-
-		// Set viewport and bind post processing framebuffer
-		if (!wireframe) {
-			glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-		}
-		else {
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, width, height);
-
-		// Set wireframe if enabled
-		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		// Set culling to back face
-		glCullFace(GL_BACK);
-
-		// Enable depth testing
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-
-		// Disable depth buffer writes (prevent pre-pass depth buffer overwriting)
-		// glDepthMask(GL_FALSE);
-
-		// Render each linked entity to bound forward pass frame
-		for (int i = 0; i < entityLinks.size(); i++) {
-			entityLinks.at(i)->meshRenderer->forwardPass();
-		}
-
-		// Re-enable depth writes
-		// glDepthMask(GL_TRUE);
-
-		// Disable wireframe if enabled
-		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		// Disable culling before rendering skybox
-		glDisable(GL_CULL_FACE);
-
-		// Render skybox to bound forward pass frame
-		glDepthFunc(GL_LEQUAL);
-		if (activeSkybox != nullptr && !wireframe) {
-			activeSkybox->render(viewMatrix, projectionMatrix);
-		}
-		glDepthFunc(GL_LESS);
-
-		// Render quick gizmos
-		QuickGizmo::render();
-
-		// Bilt forward pass framebuffer
-		unsigned int FORWARD_PASS_OUTPUT = ForwardPassFrame::blit();
-
+		unsigned int FORWARD_PASS_OUTPUT = ForwardPass::render();
 		Profiler::stop("forward_pass");
 
 		//
 		// POST PROCESSING PASS
 		//
 
-		Profiler::start("post_processing");
-
 		// Render post processing pass to screen using forward pass output as input
+		Profiler::start("post_processing");
 		PostProcessing::render(FORWARD_PASS_OUTPUT);
-
 		Profiler::stop("post_processing");
 
 		//
 		// RENDER ENGINE UI
 		//
 
+		//  Render engine ui
 		Profiler::start("ui_pass");
-
 		EngineUI::newFrame();
-
-		ImGui::Begin("tmp_diagnostics");
-		ImGui::Text("CPU Entities:"); 
-		ImGui::SameLine(); 
-		ImGui::Text(std::to_string(nCPUEntities).c_str());
-		ImGui::Text("GPU Entities:"); 
-		ImGui::SameLine(); 
-		ImGui::Text(std::to_string(nGPUEntities).c_str());
-		ImGui::Text("FPS:");
-		ImGui::SameLine();
-		ImGui::Text(std::to_string((int)averageFps).c_str());
-		ImGui::Text("Distance to camera:");
-		ImGui::SameLine();
-		ImGui::Text(std::to_string(entityLinks.at(0)->meshRenderer->volume->getDistance(entityLinks.at(1)->transform.position)).c_str());
-		ImGui::End();
-
 		EngineUI::render();
-
 		Profiler::stop("ui_pass");
 
 		//

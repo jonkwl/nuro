@@ -68,7 +68,7 @@ void PrePass::render()
 	Runtime::prePassShader->bind();
 
 	// Pre pass render each entity
-	std::vector<Entity*> entityLinks = Runtime::getEntityLinks();
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->meshRenderer->prePass();
 	}

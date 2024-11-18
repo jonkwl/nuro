@@ -2,12 +2,11 @@
 
 #include <glad/glad.h>
 
-class ForwardPassFrame
+class ForwardPass
 {
 public:
 	static void setup(unsigned int msaaSamples);
-	static void bind();
-	static unsigned int blit();
+	static unsigned int render();
 private:
 	static unsigned int output; // Output texture
 

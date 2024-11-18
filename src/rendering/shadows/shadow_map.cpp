@@ -65,7 +65,7 @@ void ShadowMap::render()
 
 	Runtime::shadowPassShader->bind();
 
-	std::vector<Entity*> entityLinks = Runtime::getEntityLinks();
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->meshRenderer->shadowPass();
 	}

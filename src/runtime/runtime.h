@@ -28,7 +28,7 @@ using json = nlohmann::json;
 #include "../src/rendering/model/model.h"
 #include "../src/rendering/skybox/skybox.h"
 #include "../src/rendering/skybox/cubemap.h"
-#include "../src/rendering/core/forward_pass_frame.h"
+#include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/pre_pass.h"
@@ -75,8 +75,7 @@ public:
 	static glm::vec3 directionalPosition;
 
 	// Skybox settings
-	static void setSkybox(Skybox* skybox); // Set active skybox
-	static Skybox* getActiveSkybox(); // Get active skybox
+	static Skybox* activeSkybox; // Currently selected skybox
 
 	// Time & frames
 	static float time; // Time passed since application beginning
@@ -103,8 +102,8 @@ public:
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap; // Default shadow map
 
-	// Return data
-	static std::vector<Entity*> getEntityLinks();
+	// Entity links
+	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
 
 	// Diagnostics
 	static unsigned int currentDrawCalls;
@@ -120,13 +119,11 @@ public:
 	static unsigned int nCPUEntities;
 	static unsigned int nGPUEntities;
 private:
-	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
+	// Values that only need to be accessed by the runtime itself (eg preprocessors)
 
 	static Camera* renderCamera; // This camera gets rendered to the screen
 	static Camera* activeCamera; // Container camera; Sets render camera value if inspector mode is OFF
 	static Camera* inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
-
-	static Skybox* activeSkybox; // Currently selected skybox
 
 	// Averaged fps calculations
 	static int averageFpsFrameCount; // Count of frames in the current second

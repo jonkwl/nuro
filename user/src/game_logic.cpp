@@ -20,7 +20,6 @@ Entity* wall = nullptr;
 
 void awake() {
 	// Set default skybox
-	Runtime::setSkybox(Runtime::defaultSkybox);
 	if (Runtime::defaultSkybox != nullptr) {
 		Runtime::defaultSkybox->emission = 1.0f;
 	}

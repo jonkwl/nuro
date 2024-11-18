@@ -74,6 +74,11 @@ void DiagnosticsWindow::prepare()
 
     UIComponents::space(0.0f, 5.0f);
 
+    UIComponents::indicatorLabel("CPU Entities:", Runtime::nCPUEntities);
+    UIComponents::indicatorLabel("GPU Entities:", Runtime::nGPUEntities);
+
+    UIComponents::space(0.0f, 5.0f);
+
     UIComponents::indicatorLabel("Render:", Profiler::get("render"), "ms");
     UIComponents::indicatorLabel("Pre Pass:", Profiler::get("pre_pass"), "ms");
     UIComponents::indicatorLabel("Shadow Pass:", Profiler::get("shadow_pass"), "ms");
