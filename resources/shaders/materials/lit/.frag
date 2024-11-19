@@ -3,7 +3,7 @@
 #define PI 3.14159265359
 
 #define MAX_DIRECTIONAL_LIGHTS 1
-#define MAX_POINT_LIGHTS 5
+#define MAX_POINT_LIGHTS 15
 #define MAX_SPOT_LIGHTS 2
 
 out vec4 FragColor;
