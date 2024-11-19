@@ -189,7 +189,7 @@ int Runtime::START_LOOP() {
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;
 	unsigned int diskFilterSize = 8;
-	unsigned int diskRadius = 3;
+	unsigned int diskRadius = 5;
 	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 	// Create default shadow map
