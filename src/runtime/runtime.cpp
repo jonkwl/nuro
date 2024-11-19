@@ -119,9 +119,16 @@ int Runtime::START_LOOP() {
 	glfwSetErrorCallback(glfw_error_callback);
 	glfwInit();
 
+	// Set versions
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	// Enable HDR output
+	glfwWindowHint(GLFW_RED_BITS, 10);
+	glfwWindowHint(GLFW_GREEN_BITS, 10);
+	glfwWindowHint(GLFW_BLUE_BITS, 10);
+	glfwWindowHint(GLFW_ALPHA_BITS, 2);
 
 	// Check for fullscreen
 	if (Window::fullscreen) {
@@ -182,7 +189,7 @@ int Runtime::START_LOOP() {
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;
 	unsigned int diskFilterSize = 8;
-	unsigned int diskRadius = 5;
+	unsigned int diskRadius = 3;
 	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 	// Create default shadow map
@@ -347,10 +354,9 @@ int Runtime::START_LOOP() {
 		// PRE PASS
 		// Create geometry pass with depth buffer before forward pass
 		//
-		// Not needed in current pipeline
-		/*Profiler::start("pre_pass");
+		Profiler::start("pre_pass");
 		PrePass::render();
-		Profiler::stop("pre_pass");*/
+		Profiler::stop("pre_pass");
 
 		//
 		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.

@@ -98,23 +98,6 @@ void LitMaterial::bind()
 	if (enableEmissionMap) {
 		emissionMap->bind(EMISSION_MAP_UNIT);
 	}
-
-	// tmp
-	shader->setVec3("pointLights[0].position", Transformation::prepareWorldPosition(glm::vec3(0.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 2))));
-	shader->setVec3("pointLights[1].position", Transformation::prepareWorldPosition(glm::vec3(4.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 3))));
-	shader->setVec3("pointLights[2].position", Transformation::prepareWorldPosition(glm::vec3(8.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 5))));
-	shader->setVec3("pointLights[3].position", Transformation::prepareWorldPosition(glm::vec3(12.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 8))));
-	shader->setVec3("pointLights[4].position", Transformation::prepareWorldPosition(glm::vec3(16.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 12))));
-	shader->setVec3("pointLights[5].position", Transformation::prepareWorldPosition(glm::vec3(20.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 4))));
-	shader->setVec3("pointLights[6].position", Transformation::prepareWorldPosition(glm::vec3(24.0, 0.0f, 6.5f + glm::sin(Runtime::time * 9))));
-	shader->setVec3("pointLights[7].position", Transformation::prepareWorldPosition(glm::vec3(28.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 12))));
-	shader->setVec3("pointLights[8].position", Transformation::prepareWorldPosition(glm::vec3(32.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 4))));
-	shader->setVec3("pointLights[9].position", Transformation::prepareWorldPosition(glm::vec3(36.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 5))));
-	shader->setVec3("pointLights[10].position", Transformation::prepareWorldPosition(glm::vec3(40.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 2))));
-	shader->setVec3("pointLights[11].position", Transformation::prepareWorldPosition(glm::vec3(44.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 1))));
-	shader->setVec3("pointLights[12].position", Transformation::prepareWorldPosition(glm::vec3(48.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 6))));
-	shader->setVec3("pointLights[13].position", Transformation::prepareWorldPosition(glm::vec3(52.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 14))));
-	shader->setVec3("pointLights[14].position", Transformation::prepareWorldPosition(glm::vec3(56.0f, 0.0f, 6.5f + glm::sin(Runtime::time * 8))));
 }
 
 Shader* LitMaterial::getShader()
@@ -189,18 +172,18 @@ void LitMaterial::syncLightUniforms()
 
 	shader->setVec3("pointLights[0].position", Transformation::prepareWorldPosition(glm::vec3(0.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.78f, 0.95f));
-	shader->setFloat("pointLights[0].intensity", 2.0f);
+	shader->setFloat("pointLights[0].intensity", 0.25f);
 	shader->setFloat("pointLights[0].range", 10.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);
 
 	shader->setVec3("spotLights[0].position", Transformation::prepareWorldPosition(glm::vec3(12.0f, 1.9f, -4.0f)));
 	shader->setVec3("spotLights[0].direction", Transformation::prepareWorldPosition(glm::vec3(-0.4, -0.2f, 1.0f)));
 	shader->setVec3("spotLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("spotLights[0].intensity", 3.5f);
+	shader->setFloat("spotLights[0].intensity", 5.0);
 	shader->setFloat("spotLights[0].range", 25.0f);
 	shader->setFloat("spotLights[0].falloff", 10.0f);
-	shader->setFloat("spotLights[0].innerCutoff", glm::cos(glm::radians(12.5f)));
-	shader->setFloat("spotLights[0].outerCutoff", glm::cos(glm::radians(20.0f)));
+	shader->setFloat("spotLights[0].innerCutoff", glm::cos(glm::radians(9.0f)));
+	shader->setFloat("spotLights[0].outerCutoff", glm::cos(glm::radians(16.0f)));
 
 	shader->setInt("fog.type", 0);
 	/*shader->setInt("fog.type", 3);
@@ -209,44 +192,44 @@ void LitMaterial::syncLightUniforms()
 
 	shader->setVec3("pointLights[1].position", Transformation::prepareWorldPosition(glm::vec3(4.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[1].color", glm::vec3(0.78f, 0.0f, 0.95f));
-	shader->setFloat("pointLights[1].intensity", 2.0f);
+	shader->setFloat("pointLights[1].intensity", 0.25f);
 	shader->setFloat("pointLights[1].range", 10.0f);
 	shader->setFloat("pointLights[1].falloff", 5.0f);
 
 	shader->setVec3("pointLights[2].position", Transformation::prepareWorldPosition(glm::vec3(8.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[2].color", glm::vec3(0.2f, 0.8f, 0.3f));
-	shader->setFloat("pointLights[2].intensity", 1.0f);
+	shader->setFloat("pointLights[2].intensity", 0.25f);
 	shader->setFloat("pointLights[2].range", 10.0f);
 	shader->setFloat("pointLights[2].falloff", 5.0f);
 
 	shader->setVec3("pointLights[3].position", Transformation::prepareWorldPosition(glm::vec3(12.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[3].color", glm::vec3(0.6f, 0.2f, 0.9f));
-	shader->setFloat("pointLights[3].intensity", 3.0f);
+	shader->setFloat("pointLights[3].intensity", 0.25f);
 	shader->setFloat("pointLights[3].range", 10.0f);
 	shader->setFloat("pointLights[3].falloff", 5.0f);
 
 	shader->setVec3("pointLights[4].position", Transformation::prepareWorldPosition(glm::vec3(16.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[4].color", glm::vec3(0.1f, 0.35f, 0.7f));
-	shader->setFloat("pointLights[4].intensity", 4.0f);
+	shader->setFloat("pointLights[4].intensity", 0.25f);
 	shader->setFloat("pointLights[4].range", 10.0f);
 	shader->setFloat("pointLights[4].falloff", 5.0f);
 
 	shader->setVec3("pointLights[5].position", Transformation::prepareWorldPosition(glm::vec3(20.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[5].color", glm::vec3(0.78f, 0.0f, 0.95f));
-	shader->setFloat("pointLights[5].intensity", 2.0f);
+	shader->setFloat("pointLights[5].intensity", 0.25f);
 	shader->setFloat("pointLights[5].range", 10.0f);
 	shader->setFloat("pointLights[5].falloff", 5.0f);
 
 	shader->setVec3("pointLights[6].position", Transformation::prepareWorldPosition(glm::vec3(24.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[6].color", glm::vec3(0.2f, 0.8f, 0.3f));
-	shader->setFloat("pointLights[6].intensity", 1.0f);
+	shader->setFloat("pointLights[6].intensity", 0.25f);
 	shader->setFloat("pointLights[6].range", 10.0f);
 	shader->setFloat("pointLights[6].falloff", 5.0f);
 
 	shader->setVec3("pointLights[7].position", Transformation::prepareWorldPosition(glm::vec3(28.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[7].color", glm::vec3(0.6f, 0.2f, 0.9f));
-	shader->setFloat("pointLights[7].intensity", 3.0f);
-	shader->setFloat("pointLights[7].range", 10.0f);
+	shader->setFloat("pointLights[7].intensity", 4.0f);
+	shader->setFloat("pointLights[7].range", 3.0f);
 	shader->setFloat("pointLights[7].falloff", 5.0f);
 
 	shader->setVec3("pointLights[8].position", Transformation::prepareWorldPosition(glm::vec3(32.0f, 0.0f, 6.5f)));

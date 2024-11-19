@@ -19,12 +19,14 @@ public:
 	void prePass();
 	void shadowPass();
 
-	static glm::mat4 currentModelMatrix;
-	static glm::mat4 currentViewMatrix;
-	static glm::mat4 currentProjectionMatrix;
+	static glm::mat4 currentViewMatrix; // Static view matrix cache for current frame
+	static glm::mat4 currentProjectionMatrix; // Static projection matrix cache for current frame
 
-	static glm::mat4 currentLightSpaceMatrix;
+	static glm::mat4 currentLightSpaceMatrix; // Static light space matrix cache for current frame
 private:
+	glm::mat4 currentModelMatrix; // Model matrix cache for current frame
+	glm::mat4 currentMvpMatrix; // MVP matrix cache for current frame
+
 	Entity* parentEntity; // Linked parent entity
 
 	void performFrustumCulling();

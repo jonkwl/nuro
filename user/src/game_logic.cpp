@@ -8,24 +8,14 @@
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/rendering/material/lit/lit_material.h"
 
-Camera* camera = nullptr;
-Entity* cube = nullptr;
-Entity* mannequin = nullptr;
-
-LitMaterial* sphereMaterial = nullptr;
-
-Entity* collisionSphere = nullptr;
-
-Entity* wall = nullptr;
-
-void awake() {
+void defaultScene() {
 	// Set default skybox
 	if (Runtime::defaultSkybox != nullptr) {
 		Runtime::defaultSkybox->emission = 1.0f;
 	}
 
 	// Create camera
-	camera = new Camera();
+	Camera* camera = new Camera();
 	Runtime::useCamera(camera);
 
 	// Post Processing Lens Dirt
@@ -50,7 +40,7 @@ void awake() {
 	sphereMaterial->emission = true;
 	sphereMaterial->setEmissionMap(emission);
 	sphereMaterial->emissionIntensity = 12.5f;*/
-	sphereMaterial = new LitMaterial();
+	LitMaterial* sphereMaterial = new LitMaterial();
 	sphereMaterial->roughness = 0.15f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* sphere = new Entity();
@@ -58,7 +48,7 @@ void awake() {
 	sphere->meshRenderer->materials.push_back(sphereMaterial);
 	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
 
-	collisionSphere = new Entity();
+	Entity* collisionSphere = new Entity();
 	collisionSphere->meshRenderer->model = sphereModel;
 	collisionSphere->meshRenderer->materials.push_back(sphereMaterial);
 	collisionSphere->transform.position = glm::vec3(5.0f, 0.0f, 6.5f);
@@ -80,12 +70,12 @@ void awake() {
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
 	LitMaterial* plank = new LitMaterial();
-	plank->tiling = glm::vec2(2.0f,  2.0f);
+	plank->tiling = glm::vec2(2.0f, 2.0f);
 	plank->setAlbedoMap(plankAlbedo);
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
 	Model* cubeModel = new Model("./user/assets/models/cube.fbx");
-	cube = new Entity();
+	Entity* cube = new Entity();
 	cube->meshRenderer->model = cubeModel;
 	cube->meshRenderer->materials.push_back(plank);
 	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
@@ -106,7 +96,7 @@ void awake() {
 	wallMaterial->roughness = 0.35f;
 	Model* wallModel = new Model("./user/assets/models/cube.fbx");
 	wallModel->castsShadow = true;
-	wall = new Entity();
+	Entity* wall = new Entity();
 	wall->meshRenderer->model = wallModel;
 	wall->meshRenderer->materials.push_back(wallMaterial);
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
@@ -138,7 +128,7 @@ void awake() {
 	mannequinMaterial->setMetallicMap(mannequinMetallic);
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx");
-	mannequin = new Entity();
+	Entity* mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->meshRenderer->model = mannequinModel;
 	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
@@ -179,10 +169,43 @@ void awake() {
 	}
 }
 
-void update() {
-	cube->transform.rotation.y += 20.0f * Runtime::deltaTime;
-	mannequin->transform.rotation.y += 30.0f * Runtime::deltaTime;
-	wall->transform.rotation.y += 20.0f * Runtime::deltaTime;
+void performanceScene() {
+	int gridX = 10;
+	int gridZ = 10;
+	float offset = 3.0f;
 
-	collisionSphere->transform.position.x -= 0.4f * Runtime::deltaTime;
+	Model* cube = new Model("./user/assets/models/cube.fbx");
+	
+	LitMaterial* material = new LitMaterial();
+	material->baseColor = glm::vec4(1.0f);
+	material->roughness = 0.1f;
+	material->metallic = 0.0f;
+
+	Runtime::directionalIntensity = 3.0f;
+	PostProcessing::configuration.bloomIntensity = 0.25f;
+
+	glm::vec2 halfSize = glm::vec2(gridX * offset, gridZ * offset);
+
+	for (int x = 1; x < gridX + 1; x++) {
+		for (int z = 1; z < gridZ + 1; z++) {
+			Entity* entity = new Entity();
+			entity = new Entity();
+			entity->meshRenderer->model = cube;
+			entity->meshRenderer->materials.push_back(material);
+			entity->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
+			entity->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+			entity->transform.scale = glm::vec3(1.0f);
+			entity->transform.position.x += offset * x - halfSize.x;
+			entity->transform.position.y = -3.5f;
+			entity->transform.position.z += offset * z - halfSize.y;
+		}
+	}
+}
+
+void awake() {
+	defaultScene();
+}
+
+void update() {
+	//
 }

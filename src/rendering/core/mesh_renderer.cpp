@@ -3,7 +3,6 @@
 #include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
 
-glm::mat4 MeshRenderer::currentModelMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
@@ -12,6 +11,9 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
 {
     model = nullptr;
     volume = new BoundingAABB();
+
+    currentModelMatrix = glm::mat4(1.0f);
+    currentMvpMatrix = glm::mat4(1.0f);
 
     this->parentEntity = parentEntity;
     intersectsFrustum = true;
@@ -28,10 +30,12 @@ void MeshRenderer::forwardPass()
     // Check if render target was culled this frame -> cancel
     if (isCulled()) return;
 
-    // Calculate matrices
-    currentModelMatrix = Transformation::modelMatrix(parentEntity);
-    glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
-    glm::mat3 normalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
+    // Calculate model and mvp matrix (cached already from pre pass)
+    // glm::mat4 currentModelMatrix = Transformation::modelMatrix(parentEntity);
+    // glm::mat4 currentMvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
+    
+    // Calculate normal matrix
+    glm::mat4 currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
     // Render each mesh of entity
     for (int i = 0; i < model->meshes.size(); i++) {
@@ -60,9 +64,9 @@ void MeshRenderer::forwardPass()
         material->bind();
 
         // Set shader uniforms
-        material->getShader()->setMatrix4("mvpMatrix", mvpMatrix);
+        material->getShader()->setMatrix4("mvpMatrix", currentMvpMatrix);
         material->getShader()->setMatrix4("modelMatrix", currentModelMatrix);
-        material->getShader()->setMatrix3("normalMatrix", normalMatrix);
+        material->getShader()->setMatrix3("normalMatrix", currentNormalMatrix);
         material->getShader()->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
@@ -82,9 +86,9 @@ void MeshRenderer::prePass()
 
     // Perform frustum culling here
 
-    // Calculate model and mvp matrix
+    // Calculate and cache model and mvp matrix for current frame
     currentModelMatrix = Transformation::modelMatrix(parentEntity);
-    glm::mat4 mvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
+    currentMvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
 
     // Depth pre pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {
@@ -96,7 +100,7 @@ void MeshRenderer::prePass()
 
         // Set depth pre pass shader uniforms
         Shader* depthPrePassShader = Runtime::prePassShader;
-        depthPrePassShader->setMatrix4("mvp", mvpMatrix);
+        depthPrePassShader->setMatrix4("mvp", currentMvpMatrix);
 
         // Render mesh
         glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
@@ -117,8 +121,8 @@ void MeshRenderer::shadowPass()
     // Skip shadow pass if model doesnt cast shadows
     if (!model->castsShadow) return;
 
-    // Calculate current model matrix
-    currentModelMatrix = Transformation::modelMatrix(parentEntity);
+    // Calculate model matrix (cached already from pre pass)
+    // glm::mat4 currentModelMatrix = Transformation::modelMatrix(parentEntity);
 
     // Shadow pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {
