@@ -1,6 +1,7 @@
 #include "post_processing.h"
 
 #include "../src/rendering/core/pre_pass.h"
+#include "../src/rendering/core/forward_pass.h"
 
 PostProcessingConfiguration PostProcessing::configuration = PostProcessingConfiguration();
 
@@ -92,6 +93,10 @@ void PostProcessing::render(unsigned int input)
 	// Bind bloom buffer
 	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
+
+	// Bind pre pass
+	glActiveTexture(GL_TEXTURE0 + PRE_PASS_UNIT);
+	glBindTexture(GL_TEXTURE_2D, ForwardPass::getDepthOutput());
 
 	// Bind lens dirt texture
 	if (configuration.lensDirt) {

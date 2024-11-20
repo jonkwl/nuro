@@ -5,14 +5,13 @@
 #include "../src/utils/log.h"
 #include "../src/rendering/gizmos/quick_gizmo.h"
 
-unsigned int ForwardPass::output = 0;
+unsigned int ForwardPass::outputColor = 0;
 
-unsigned int ForwardPass::framebuffer = 0;
-unsigned int ForwardPass::rbo = 0;
+unsigned int ForwardPass::outputFbo = 0;
 
-unsigned int ForwardPass::msaaFbo = 0;
-unsigned int ForwardPass::msaaRbo = 0;
-unsigned int ForwardPass::msaaColorBuffer = 0;
+unsigned int ForwardPass::multisampledFbo = 0;
+unsigned int ForwardPass::multisampledRbo = 0;
+unsigned int ForwardPass::multisampledColorBuffer = 0;
 
 void ForwardPass::setup(unsigned int msaaSamples)
 {
@@ -21,24 +20,18 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	int height = Window::height;
 
 	// Create forward pass framebuffer
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glGenFramebuffers(1, &outputFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, outputFbo);
 
-	// Create forward pass framebuffer texture
-	glGenTextures(1, &output);
-	glBindTexture(GL_TEXTURE_2D, output);
+	// Create color output texture
+	glGenTextures(1, &outputColor);
+	glBindTexture(GL_TEXTURE_2D, outputColor);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
-
-	// Create forward pass render buffer
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputColor, 0);
 
 	// Check for forward pass framebuffer error
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -47,22 +40,22 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	}
 
 	// Create anti-aliasing framebuffer
-	glGenFramebuffers(1, &msaaFbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, msaaFbo);
+	glGenFramebuffers(1, &multisampledFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
 	// Create multi-sampled color buffer texture
-	glGenTextures(1, &msaaColorBuffer);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msaaColorBuffer);
+	glGenTextures(1, &multisampledColorBuffer);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
 	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, width, height, GL_TRUE);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, msaaColorBuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
 
 	// Create multi-sampled renderbuffer for depth and stencil
-	glGenRenderbuffers(1, &msaaRbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, msaaRbo);
+	glGenRenderbuffers(1, &multisampledRbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, msaaRbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multi-sampled framebuffer error
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -84,7 +77,7 @@ unsigned int ForwardPass::render()
 	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 
 	// Bind framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, msaaFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
 	// Set viewport and bind post processing framebuffer
 	if (!wireframe) {
@@ -150,9 +143,14 @@ unsigned int ForwardPass::render()
 	QuickGizmo::render();
 
 	// Bilt multi-sampled framebuffer to post processing framebuffer
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFbo);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFbo);
 	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-	return output;
+	return outputColor;
+}
+
+unsigned int ForwardPass::getDepthOutput()
+{
+	return outputDepth;
 }

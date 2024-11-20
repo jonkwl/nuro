@@ -97,6 +97,8 @@ vec3 vignette(vec3 color) {
 
 void main()
 {
+    // FragColor = DepthColor(); return;
+
     float aspectRatio = resolution.x / resolution.y;
 
     vec3 color = texture(hdrBuffer, uv).rgb;
