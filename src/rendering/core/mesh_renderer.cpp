@@ -19,20 +19,26 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
     intersectsFrustum = true;
 }
 
+void MeshRenderer::prepareNextFrame()
+{
+    // No model to render available -> cancel
+    if (model == nullptr) return;
+
+    // Calculate and cache model and mvp matrix for current frame
+    currentModelMatrix = Transformation::modelMatrix(parentEntity);
+    currentMvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
+
+    // Frustum culling
+    performFrustumCulling();
+}
+
 void MeshRenderer::forwardPass()
 {
     // No model to render available -> cancel
     if (model == nullptr) return;
 
-    // Frustum culling
-    performFrustumCulling();
-
     // Check if render target was culled this frame -> cancel
     if (isCulled()) return;
-
-    // Calculate model and mvp matrix (cached already from pre pass)
-    // glm::mat4 currentModelMatrix = Transformation::modelMatrix(parentEntity);
-    // glm::mat4 currentMvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
     
     // Calculate normal matrix
     glm::mat4 currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
@@ -84,11 +90,8 @@ void MeshRenderer::prePass()
     // No model to render available -> cancel
     if (model == nullptr) return;
 
-    // Perform frustum culling here
-
-    // Calculate and cache model and mvp matrix for current frame
-    currentModelMatrix = Transformation::modelMatrix(parentEntity);
-    currentMvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
+    // Check if render target was culled this frame -> cancel
+    if (isCulled()) return;
 
     // Depth pre pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {
@@ -112,17 +115,11 @@ void MeshRenderer::prePass()
 
 void MeshRenderer::shadowPass()
 {
-    // Check if render target was culled this frame -> cancel
-    if (isCulled()) return;
-
     // No model to render available -> cancel
     if (model == nullptr) return;
 
     // Skip shadow pass if model doesnt cast shadows
     if (!model->castsShadow) return;
-
-    // Calculate model matrix (cached already from pre pass)
-    // glm::mat4 currentModelMatrix = Transformation::modelMatrix(parentEntity);
 
     // Shadow pass each mesh of entity
     for (int a = 0; a < model->meshes.size(); a++) {

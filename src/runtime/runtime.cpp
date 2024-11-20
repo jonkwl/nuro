@@ -89,25 +89,6 @@ void glfw_error_callback(int error, const char* description)
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);
 }
 
-void saveDepthMapAsImage(int width, int height, const std::string& filename) {
-	std::vector<float> depthData(width * height);
-	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
-	std::vector<unsigned char> depthImage(width * height);
-	for (int i = 0; i < width * height; ++i) {
-		depthImage[i] = static_cast<unsigned char>(depthData[i] * 255.0f);
-	}
-	std::vector<unsigned char> flippedImage(width * height);
-	for (int y = 0; y < height; ++y) {
-		memcpy(&flippedImage[y * width], &depthImage[(height - 1 - y) * width], width);
-	}
-	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0) {
-		Log::printProcessDone("Depth Map", "Depth map saved as " + filename);
-	}
-	else {
-		Log::printError("Depth Map", "Failed to save depth map at " + filename);
-	}
-}
-
 int Runtime::START_LOOP() {
 	//
 	// SETUP PHASE 1: CREATE CONTEXT AND LOAD GRAPHICS API //
@@ -328,11 +309,19 @@ int Runtime::START_LOOP() {
 		// Update cameras frustum
 		renderCamera->updateFrustum(viewMatrix, projectionMatrix);
 
+		// Reset entity metrics
 		nCPUEntities = 0;
 		nGPUEntities = 0;
 
-		// Enable culling
-		glEnable(GL_CULL_FACE);
+		//
+		// PREPARATION PASS
+		// Prepare each mesh for upcoming render passes
+		//
+		for (int i = 0; i < entityLinks.size(); i++) {
+			// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
+			// Here for now to ensure preparation despite further pipeline changes
+			entityLinks.at(i)->meshRenderer->prepareNextFrame();
+		}
 
 		//
 		// SHADOW PASS
@@ -342,24 +331,18 @@ int Runtime::START_LOOP() {
 		mainShadowMap->render();
 		Profiler::stop("shadow_pass");
 
-		// Save shadow map (tmp)
-		/* if (!shadow_map_saved) {
-			glBindFramebuffer(GL_FRAMEBUFFER, mainShadowMap->getFramebuffer());
-			saveDepthMapAsImage(mainShadowMap->getWidth(), mainShadowMap->getHeight(), "./shadow_map.png");
-			shadow_map_saved = true;
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		} */
-
 		//
 		// PRE PASS
 		// Create geometry pass with depth buffer before forward pass
 		//
-		Profiler::start("pre_pass");
+		/*Profiler::start("pre_pass");
 		PrePass::render();
-		Profiler::stop("pre_pass");
+		Profiler::stop("pre_pass");*/
+		// NOT NEEDED ATM: PRE PASS IS INJECTED IN FORWARD PASS
 
 		//
 		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
+		// Includes injected pre pass
 		//
 		Profiler::start("forward_pass");
 		unsigned int FORWARD_PASS_OUTPUT = ForwardPass::render();

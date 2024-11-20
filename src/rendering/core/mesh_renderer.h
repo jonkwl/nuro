@@ -14,7 +14,11 @@ public:
 	BoundingVolume* volume; // Bounding volume for the mesh renderer
 
 	std::vector<IMaterial*> materials; // Container for mesh renderers materials
+	
+	// Prepare each mesh for upcoming passes for next frame (calculate and cache matrices, perform culling etc.)
+	void prepareNextFrame();
 
+	// Mesh needs to be prepared using prepare() before any pass for current frame is performed
 	void forwardPass();
 	void prePass();
 	void shadowPass();

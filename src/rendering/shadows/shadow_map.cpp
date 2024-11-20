@@ -2,6 +2,27 @@
 
 #include "../src/runtime/runtime.h"
 
+bool shadowMapSaved = false;
+
+void saveDepthMapAsImage(int width, int height, const std::string& filename) {
+	std::vector<float> depthData(width * height);
+	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
+	std::vector<unsigned char> depthImage(width * height);
+	for (int i = 0; i < width * height; ++i) {
+		depthImage[i] = static_cast<unsigned char>(depthData[i] * 255.0f);
+	}
+	std::vector<unsigned char> flippedImage(width * height);
+	for (int y = 0; y < height; ++y) {
+		memcpy(&flippedImage[y * width], &depthImage[(height - 1 - y) * width], width);
+	}
+	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0) {
+		Log::printProcessDone("Depth Map", "Depth map saved as " + filename);
+	}
+	else {
+		Log::printError("Depth Map", "Failed to save depth map at " + filename);
+	}
+}
+
 ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight)
 {
 	// Set script parameters
@@ -61,6 +82,7 @@ void ShadowMap::render()
 	glEnable(GL_DEPTH_TEST);
 
 	// Set culling to front face
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 
 	Runtime::shadowPassShader->bind();
@@ -72,6 +94,14 @@ void ShadowMap::render()
 
 	// Unbind shadow map framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Save shadow map (tmp)
+	if (!shadowMapSaved) {
+		glBindFramebuffer(GL_FRAMEBUFFER, getFramebuffer());
+		saveDepthMapAsImage(resolutionWidth, resolutionHeight, "./shadow_map.png");
+		shadowMapSaved = true;
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
 void ShadowMap::bind(unsigned int unit)

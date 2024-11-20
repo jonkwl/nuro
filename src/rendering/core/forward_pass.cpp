@@ -81,6 +81,8 @@ unsigned int ForwardPass::render()
 	int width = Window::width;
 	int height = Window::height;
 
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
+
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, msaaFbo);
 
@@ -99,14 +101,33 @@ unsigned int ForwardPass::render()
 	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Set culling to back face
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+
+	// INJECTED PRE PASS START
+	
+	// Disable color writing
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	// Bind pre pass shader
+	Runtime::prePassShader->bind();
+	// Pre pass render each entity
+	for (int i = 0; i < entityLinks.size(); i++) {
+		entityLinks.at(i)->meshRenderer->prePass();
+	}
+	// Re-enable color writing after pre pass
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	// GL_EQUAL depth testing for upcoming forward pass to use pre pass depth data
+	glDepthFunc(GL_EQUAL);
+
+	// INJECTED PRE PASS END
+
+
 	// Render each linked entity to bound forward pass frame
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->meshRenderer->forwardPass();
 	}
