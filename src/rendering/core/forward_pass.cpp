@@ -5,9 +5,9 @@
 #include "../src/utils/log.h"
 #include "../src/rendering/gizmos/quick_gizmo.h"
 
-unsigned int ForwardPass::outputColor = 0;
-
 unsigned int ForwardPass::outputFbo = 0;
+unsigned int ForwardPass::outputColor = 0;
+unsigned int ForwardPass::outputDepth = 0;
 
 unsigned int ForwardPass::multisampledFbo = 0;
 unsigned int ForwardPass::multisampledRbo = 0;
@@ -51,11 +51,11 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
 
-	// Create multi-sampled renderbuffer for depth and stencil
+	// Create multi-sampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multi-sampled framebuffer error
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
