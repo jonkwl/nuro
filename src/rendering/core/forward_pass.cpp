@@ -13,6 +13,8 @@ unsigned int ForwardPass::multisampledFbo = 0;
 unsigned int ForwardPass::multisampledRbo = 0;
 unsigned int ForwardPass::multisampledColorBuffer = 0;
 
+#include <cstdlib>
+
 void ForwardPass::setup(unsigned int msaaSamples)
 {
 	// Initialize parameters needed
@@ -39,7 +41,7 @@ void ForwardPass::setup(unsigned int msaaSamples)
 		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
-	// Create anti-aliasing framebuffer
+	// Create multi-sampled framebuffer
 	glGenFramebuffers(1, &multisampledFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
@@ -54,7 +56,7 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	// Create multi-sampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, width, height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT32F, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multi-sampled framebuffer error
@@ -103,7 +105,7 @@ unsigned int ForwardPass::render()
 
 
 	// INJECTED PRE PASS START
-	
+	/*
 	// Disable color writing
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	// Bind pre pass shader
@@ -116,7 +118,7 @@ unsigned int ForwardPass::render()
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	// GL_EQUAL depth testing for upcoming forward pass to use pre pass depth data
 	glDepthFunc(GL_EQUAL);
-
+	*/
 	// INJECTED PRE PASS END
 
 

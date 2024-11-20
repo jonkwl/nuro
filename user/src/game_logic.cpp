@@ -200,6 +200,12 @@ void performanceScene() {
 			entity->transform.position.z += offset * z - halfSize.y;
 		}
 	}
+
+	Entity* entity = new Entity();
+	entity = new Entity();
+	entity->meshRenderer->model = cube;
+	entity->meshRenderer->materials.push_back(material);
+	entity->transform.position = glm::vec3(0.0f, 1.5f, 4.0f);
 }
 
 void awake() {
