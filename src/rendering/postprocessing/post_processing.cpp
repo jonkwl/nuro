@@ -39,9 +39,9 @@ void PostProcessing::setup()
 	// Bind final pass shader and set static uniforms
 	finalPassShader->bind();
 	finalPassShader->setInt("hdrBuffer", HDR_BUFFER_UNIT);
+	finalPassShader->setInt("depthBuffer", DEPTH_BUFFER);
 	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER_UNIT);
 	finalPassShader->setInt("configuration.lensDirtTexture", LENS_DIRT_UNIT);
-	finalPassShader->setInt("prePassBuffer", PRE_PASS_UNIT);
 
 	// Cache default post processing configuration
 	defaultConfiguration = configuration;
@@ -51,10 +51,20 @@ void PostProcessing::setup()
 	DebugPass::setup();
 }
 
-void PostProcessing::render(unsigned int input)
+void PostProcessing::render(unsigned int hdrInput)
 {
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
+
+	// Pass input through post processing pipeline
+	unsigned int POST_PROCESSING_PIPELINE_HDR = hdrInput;
+	unsigned int POST_PROCESSING_PIPELINE_DEPTH = PrePass::getOutput();
+
+	// Motion blur pass
+	if (configuration.motionBlur) {
+		// Apply motion blur on post processing hdr input
+		POST_PROCESSING_PIPELINE_HDR = MotionBlurPass::render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
+	}
 
 	// Seperate bloom pass
 	unsigned int BLOOM_PASS_OUTPUT = 0;
@@ -63,11 +73,8 @@ void PostProcessing::render(unsigned int input)
 		BloomPass::softThreshold = configuration.bloomSoftThreshold;
 		BloomPass::filterRadius = configuration.bloomFilterRadius;
 		BloomPass::mipDepth = configuration.bloomMipDepth;
-		BLOOM_PASS_OUTPUT = BloomPass::render(input);
+		BLOOM_PASS_OUTPUT = BloomPass::render(POST_PROCESSING_PIPELINE_HDR);
 	}
-
-	// Pass input through post processing pipeline
-	unsigned int POST_PROCESSING_PIPELINE_OUTPUT = input;
 
 	// glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); // Bind post processing framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind default framebuffer
@@ -88,30 +95,27 @@ void PostProcessing::render(unsigned int input)
 
 	// Bind forward pass hdr color buffer
 	glActiveTexture(GL_TEXTURE0 + HDR_BUFFER_UNIT);
-	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_OUTPUT);
+	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_HDR);
+
+	// Bind pre pass depth buffer
+	glActiveTexture(GL_TEXTURE0 + DEPTH_BUFFER);
+	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_DEPTH);
 
 	// Bind bloom buffer
 	glActiveTexture(GL_TEXTURE0 + BLOOM_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
-
-	// Bind pre pass
-	glActiveTexture(GL_TEXTURE0 + PRE_PASS_UNIT);
-	glBindTexture(GL_TEXTURE_2D, ForwardPass::getDepthOutput());
 
 	// Bind lens dirt texture
 	if (configuration.lensDirt) {
 		configuration.lensDirtTexture->bind(LENS_DIRT_UNIT);
 	}
 
-	// Bind pre pass depth buffer
-	PrePass::bind(PRE_PASS_UNIT);
-
 	// Bind quad and render to screen
 	Quad::bind();
 	Quad::render();
 
-	// Unbind post processing framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// Unbind post processing framebuffer (rendering to screen at the moment)
+	// glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int PostProcessing::getOutput()

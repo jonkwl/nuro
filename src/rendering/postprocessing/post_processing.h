@@ -11,12 +11,13 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/postprocessing/debug/debug_pass.h"
 #include "../src/rendering/postprocessing/bloom/bloom_pass.h"
+#include "../src/rendering/postprocessing/motionblur/motion_blur_pass.h"
 
 enum FinalPassTextureSlots {
 	HDR_BUFFER_UNIT,
+	DEPTH_BUFFER,
 	BLOOM_BUFFER_UNIT,
-	LENS_DIRT_UNIT,
-	PRE_PASS_UNIT
+	LENS_DIRT_UNIT
 };
 
 struct PostProcessingConfiguration {
@@ -24,6 +25,8 @@ struct PostProcessingConfiguration {
 	float exposure = 1.0f;
 	float contrast = 1.004f;
 	float gamma = 2.2f;
+
+	bool motionBlur = true;
 
 	bool bloom = true;
 	float bloomIntensity = 0.35f;
@@ -56,7 +59,7 @@ class PostProcessing
 {
 public:
 	static void setup();
-	static void render(unsigned int input);
+	static void render(unsigned int hdrInput);
 
 	static PostProcessingConfiguration configuration;
 

@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\postprocessing\motionblur\motion_blur_pass.cpp" />
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp" />
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="src\rendering\texture\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\postprocessing\motionblur\motion_blur_pass.h" />
     <ClInclude Include="src\rendering\culling\bounding_volume.h" />
     <ClInclude Include="src\rendering\gizmos\quick_gizmo.h" />
     <ClInclude Include="src\rendering\core\mesh_renderer.h" />

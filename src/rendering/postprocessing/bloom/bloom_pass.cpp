@@ -46,13 +46,13 @@ void BloomPass::setup()
 	upsamplingShader->setInt("inputTexture", 0);
 }
 
-unsigned int BloomPass::render(unsigned int input)
+unsigned int BloomPass::render(unsigned int hdrInput)
 {
 	// Bind bloom framebuffer
 	BloomFrame::bind();
 
 	// Perform prefiltering pass
-	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(input);
+	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(hdrInput);
 
 	// Perform downsampling pass
 	downsamplingPass(PREFILTERING_PASS_OUTPUT);
@@ -68,7 +68,7 @@ unsigned int BloomPass::render(unsigned int input)
 	return BloomFrame::getMipChain()[0].texture;
 }
 
-unsigned int BloomPass::prefilteringPass(unsigned int input)
+unsigned int BloomPass::prefilteringPass(unsigned int hdrInput)
 {
 	// Get target texture for prefiltering pass
 	unsigned int prefilterTarget = BloomFrame::getPrefilterTexture();
@@ -80,7 +80,7 @@ unsigned int BloomPass::prefilteringPass(unsigned int input)
 
 	// Bind input texture for prefilter pass
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, input);
+	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
 	// Set prefilter target texture as framebuffer render target
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, prefilterTarget, 0);
@@ -93,7 +93,7 @@ unsigned int BloomPass::prefilteringPass(unsigned int input)
 	return prefilterTarget;
 }
 
-void BloomPass::downsamplingPass(unsigned int input)
+void BloomPass::downsamplingPass(unsigned int hdrInput)
 {
 	// Get bloom mip chain
 	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
@@ -104,7 +104,7 @@ void BloomPass::downsamplingPass(unsigned int input)
 
 	// Bind input as initial texture input
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, input);
+	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
 	// Downsample through mip chain
 	for (int i = 0; i < mipChain.size(); i++) {

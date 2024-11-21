@@ -335,10 +335,9 @@ int Runtime::START_LOOP() {
 		// PRE PASS
 		// Create geometry pass with depth buffer before forward pass
 		//
-		/*Profiler::start("pre_pass");
+		Profiler::start("pre_pass");
 		PrePass::render();
-		Profiler::stop("pre_pass");*/
-		// NOT NEEDED ATM: PRE PASS IS INJECTED IN FORWARD PASS
+		Profiler::stop("pre_pass");
 
 		//
 		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.

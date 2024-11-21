@@ -5,8 +5,8 @@ out vec4 FragColor;
 in vec2 uv;
 
 uniform sampler2D hdrBuffer;
+uniform sampler2D depthBuffer;
 uniform sampler2D bloomBuffer;
-uniform sampler2D prePassBuffer;
 
 uniform vec2 resolution;
 
@@ -56,7 +56,7 @@ float LinearizeDepth(float depth)
 }
 
 vec4 DepthColor() {
-    float depth = texture(prePassBuffer, uv).r;
+    float depth = texture(depthBuffer, uv).r;
     float linearDepth = LinearizeDepth(depth);
     float normalizedDepth = (linearDepth - near) / (far - near);
     return vec4(vec3(normalizedDepth), 1.0);
