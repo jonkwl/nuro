@@ -16,6 +16,15 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
+	if (UIComponents::extendableSettings("Motion Blur", PostProcessing::configuration.motionBlur, ICON_FA_PROJECTOR)) {
+
+		UIComponents::headline("Camera Motion Blur Settings");
+		UIComponents::input("Intensity:", PostProcessing::configuration.motionBlurIntensity, 0.001f);
+		UIComponents::input("Samples:", PostProcessing::configuration.motionBlurSamples, 0.1f);
+
+		UIComponents::space(0.0f, 8.0f);
+	}
+
 	if (UIComponents::extendableSettings("Bloom", PostProcessing::configuration.bloom, ICON_FA_PROJECTOR)) {
 		
 		UIComponents::headline("Bloom Settings");

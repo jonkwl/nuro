@@ -12,6 +12,24 @@ Camera::Camera() {
 	far = 1000.0f;
 }
 
+float Camera::getFov()
+{
+    // Return y fov
+    return fov;
+}
+
+float Camera::getNear()
+{
+    // Return near plane
+    return near;
+}
+
+float Camera::getFar()
+{
+    // Return far plane
+    return far;
+}
+
 void Camera::updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
     glm::mat4 frustumMatrix = projectionMatrix * viewMatrix;

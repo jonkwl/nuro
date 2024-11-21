@@ -170,8 +170,8 @@ void defaultScene() {
 }
 
 void performanceScene() {
-	int gridX = 10;
-	int gridZ = 10;
+	int gridX = 5;
+	int gridZ = 5;
 	float offset = 3.0f;
 
 	Model* cube = new Model("./user/assets/models/cube.fbx");
@@ -206,10 +206,11 @@ void performanceScene() {
 	entity->meshRenderer->model = cube;
 	entity->meshRenderer->materials.push_back(material);
 	entity->transform.position = glm::vec3(0.0f, 1.5f, 4.0f);
+	entity->transform.scale.x = 2.0f;
 }
 
 void awake() {
-	performanceScene();
+	defaultScene();
 }
 
 void update() {

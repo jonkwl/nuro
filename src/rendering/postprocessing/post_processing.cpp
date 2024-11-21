@@ -26,6 +26,8 @@ void PostProcessing::setup()
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Attach output texture to framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
 
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -47,6 +49,7 @@ void PostProcessing::setup()
 	defaultConfiguration = configuration;
 
 	// Setup post processing pipeline
+	MotionBlurPass::setup();
 	BloomPass::setup();
 	DebugPass::setup();
 }

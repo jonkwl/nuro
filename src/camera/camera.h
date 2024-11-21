@@ -20,9 +20,13 @@ public:
 
 	Frustum frustum;
 
+	float getFov();
+	float getNear();
+	float getFar();
+
+	void updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+private:
 	float fov;
 	float near;
 	float far;
-
-	void updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 };
