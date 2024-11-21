@@ -1,6 +1,6 @@
 #version 330 core
 
-out vec3 FragColor;
+out vec4 FragColor;
 
 uniform sampler2D hdrInput;
 uniform sampler2D depthInput;
@@ -36,7 +36,7 @@ vec3 getWorldPosition(float depth) {
     return worldSpacePosition.xyz;
 }
 
-vec3 cameraMotionBlur(vec3 color) {
+vec4 cameraMotionBlur(vec4 color) {
     // get fragments current position in world space
     vec3 currentWorldPosition = getWorldPosition(texture(depthInput, uv).r);
 
@@ -57,7 +57,7 @@ vec3 cameraMotionBlur(vec3 color) {
         // get blur offset
         vec2 offset = blurDirection * (float(i) / float(nSamples - 1) - 0.5) * intensity;
         // sample iteration
-        color += texture(hdrInput, uv + offset).rgb;
+        color += texture(hdrInput, uv + offset);
     }
     // average accumulated samples to motion blur input
     color /= float(nSamples);
@@ -67,7 +67,7 @@ vec3 cameraMotionBlur(vec3 color) {
 }
 
 void main() {
-    vec3 color = texture(hdrInput, uv).rgb;
+    vec4 color = texture(hdrInput, uv);
 
     // perform camera motion blur
     color = cameraMotionBlur(color);
