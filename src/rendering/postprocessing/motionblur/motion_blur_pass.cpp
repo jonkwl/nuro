@@ -71,6 +71,8 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	shader->bind();
 
 	// Set shader uniforms
+	shader->setFloat("fps", Runtime::fps);
+
 	shader->setFloat("intensity", PostProcessing::configuration.motionBlurIntensity);
 	shader->setInt("nSamples", PostProcessing::configuration.motionBlurSamples);
 

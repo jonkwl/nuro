@@ -8,6 +8,8 @@ uniform sampler2D depthInput;
 uniform float near;
 uniform float far;
 
+uniform float fps;
+
 uniform float intensity;
 uniform int nSamples;
 
@@ -47,8 +49,12 @@ vec3 cameraMotionBlur(vec3 color) {
     previousScreenPosition.xyz /= previousScreenPosition.w;
     previousScreenPosition.xy = previousScreenPosition.xy * 0.5 + 0.5;
 
+    // calculate scale for blur direction to compensate varying framerates
+    float blurScale = fps / 60;
+
     // calculate direction for motion blur
     vec2 blurDirection = previousScreenPosition.xy - uv;
+    blurDirection *= blurScale;
 
     // perform motion blur on input
     for (int i = 1; i < nSamples; ++i) {

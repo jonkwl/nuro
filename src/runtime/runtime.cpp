@@ -18,7 +18,7 @@ Camera* Runtime::inspectorCamera = new Camera();
 float Runtime::time = 0.0f;
 float Runtime::lastTime = 0.0f;
 float Runtime::deltaTime = 0.0f;
-int Runtime::fps = 0;
+float Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
 glm::vec4 Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -248,7 +248,7 @@ int Runtime::START_LOOP() {
 		time = glfwGetTime();
 		deltaTime = time - lastTime;
 		lastTime = time;
-		fps = static_cast<int>(1.0f / deltaTime);
+		fps = 1.0f / deltaTime;
 
 		averageFpsElapsedTime += deltaTime;
 		averageFpsFrameCount++;

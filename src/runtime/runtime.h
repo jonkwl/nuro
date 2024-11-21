@@ -81,7 +81,7 @@ public:
 	static float time; // Time passed since application beginning
 	static float lastTime; // Time passed since application beginning of last frame
 	static float deltaTime; // Frame delta time
-	static int fps; // current fps
+	static float fps; // current fps
 	static float averageFps; // averaged current fps
 
 	// Render settings
