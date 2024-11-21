@@ -19,10 +19,6 @@ uniform mat4 inverseProjectionMatrix;
 
 in vec2 uv;
 
-float linearizeDepth(float depth) {
-    return (2.0 * near * far) / (far + near - depth * (far - near));
-}
-
 vec3 getWorldPosition(float depth) {
     // get fragment position in clip space (normalize texture coordinates and depth to NDC)
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);

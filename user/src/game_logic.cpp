@@ -210,7 +210,7 @@ void performanceScene() {
 }
 
 void awake() {
-	performanceScene();
+	defaultScene();
 }
 
 void update() {
