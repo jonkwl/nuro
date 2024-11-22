@@ -62,6 +62,7 @@ public:
 	// Default shaders
 	static Shader* prePassShader;
 	static Shader* shadowPassShader;
+	static Shader* velocityPassShader;
 
 	// Camera settings
 	static void useCamera(Camera* camera);

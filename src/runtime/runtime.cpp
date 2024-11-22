@@ -10,6 +10,7 @@ Skybox* Runtime::defaultSkybox = nullptr;
 
 Shader* Runtime::prePassShader = nullptr;
 Shader* Runtime::shadowPassShader = nullptr;
+Shader* Runtime::velocityPassShader = nullptr;
 
 Camera* Runtime::renderCamera = new Camera();
 Camera* Runtime::activeCamera = new Camera();
@@ -162,6 +163,7 @@ int Runtime::START_LOOP() {
 
 	prePassShader = ShaderPool::get("pre_pass");
 	shadowPassShader = ShaderPool::get("shadow_pass");
+	velocityPassShader = ShaderPool::get("velocity_pass");
 
 	// Creating default material
 	defaultMaterial = new UnlitMaterial();

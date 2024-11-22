@@ -22,6 +22,7 @@ public:
 	void forwardPass();
 	void prePass();
 	void shadowPass();
+	void velocityPass();
 
 	static glm::mat4 currentViewMatrix; // Static view matrix cache for current frame
 	static glm::mat4 currentProjectionMatrix; // Static projection matrix cache for current frame
@@ -31,8 +32,12 @@ public:
 private:
 	glm::mat4 currentModelMatrix; // Model matrix cache for current frame
 	glm::mat4 currentMvpMatrix; // MVP matrix cache for current frame
+	
+	glm::mat4 previousMvpMatrix; // MVP matrix cache of previous frame (only needed for velocity pass, set after velocity pass)
 
 	Entity* parentEntity; // Linked parent entity
+
+	void render(unsigned int nElements); // Issues draw call
 
 	void performFrustumCulling();
 	bool intersectsFrustum;

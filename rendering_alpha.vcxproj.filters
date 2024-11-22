@@ -183,6 +183,9 @@
     <ClCompile Include="src\rendering\postprocessing\motionblur\motion_blur_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\postprocessing\motionblur\velocity_buffer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\shader\shader.h">
@@ -357,6 +360,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\postprocessing\motionblur\motion_blur_pass.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\postprocessing\motionblur\velocity_buffer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -189,6 +189,7 @@
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\rendering\shader\shader.cpp" />
     <ClCompile Include="src\rendering\texture\texture.cpp" />
+    <ClCompile Include="src\rendering\postprocessing\motionblur\velocity_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\postprocessing\motionblur\motion_blur_pass.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="src\utils\iohandler.h" />
     <ClInclude Include="src\rendering\shader\shader.h" />
     <ClInclude Include="src\rendering\texture\texture.h" />
+    <ClInclude Include="src\rendering\postprocessing\motionblur\velocity_buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\default\default.jpg" />

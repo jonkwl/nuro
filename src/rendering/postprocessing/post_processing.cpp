@@ -41,7 +41,7 @@ void PostProcessing::setup()
 	// Bind final pass shader and set static uniforms
 	finalPassShader->bind();
 	finalPassShader->setInt("hdrBuffer", HDR_BUFFER_UNIT);
-	finalPassShader->setInt("depthBuffer", DEPTH_BUFFER);
+	finalPassShader->setInt("depthBuffer", DEPTH_BUFFER_UNIT);
 	finalPassShader->setInt("bloomBuffer", BLOOM_BUFFER_UNIT);
 	finalPassShader->setInt("configuration.lensDirtTexture", LENS_DIRT_UNIT);
 
@@ -101,7 +101,7 @@ void PostProcessing::render(unsigned int hdrInput)
 	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_HDR);
 
 	// Bind pre pass depth buffer
-	glActiveTexture(GL_TEXTURE0 + DEPTH_BUFFER);
+	glActiveTexture(GL_TEXTURE0 + DEPTH_BUFFER_UNIT);
 	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_DEPTH);
 
 	// Bind bloom buffer

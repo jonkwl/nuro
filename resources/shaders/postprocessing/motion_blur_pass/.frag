@@ -14,8 +14,8 @@ uniform bool camera;
 uniform float cameraIntensity;
 uniform int cameraSamples;
 
-uniform mat4 previousViewProjectionMatrix;
 uniform mat4 inverseViewProjectionMatrix;
+uniform mat4 previousViewProjectionMatrix;
 
 in vec2 uv;
 
@@ -67,7 +67,7 @@ void main() {
     vec4 color = texture(hdrInput, uv);
 
     // perform camera motion blur
-    if(camera){
+    if (camera) {
         color = cameraMotionBlur(color);
     }
 

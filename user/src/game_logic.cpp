@@ -169,6 +169,7 @@ void defaultScene() {
 	}
 }
 
+std::vector<Entity*> cubes = std::vector<Entity*>();
 void performanceScene() {
 	int gridX = 5;
 	int gridZ = 5;
@@ -198,6 +199,7 @@ void performanceScene() {
 			entity->transform.position.x += offset * x - halfSize.x;
 			entity->transform.position.y = -3.5f;
 			entity->transform.position.z += offset * z - halfSize.y;
+			cubes.push_back(entity);
 		}
 	}
 
@@ -214,5 +216,8 @@ void awake() {
 }
 
 void update() {
-	//
+	float range = 1.0f;
+	for (int i = 0; i < cubes.size(); i++) {
+		cubes.at(i)->transform.position.y = range * std::sin(Runtime::time * (float)i);
+	}
 }

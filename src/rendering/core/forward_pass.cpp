@@ -81,7 +81,7 @@ unsigned int ForwardPass::render()
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
-	// Set viewport and bind post processing framebuffer
+	// Clear framebuffer
 	if (!wireframe) {
 		glm::vec4 clearColor = Runtime::clearColor;
 		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
@@ -90,6 +90,8 @@ unsigned int ForwardPass::render()
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	 // Set viewport
 	glViewport(0, 0, width, height);
 
 	// Set wireframe if enabled

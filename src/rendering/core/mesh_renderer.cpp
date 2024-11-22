@@ -17,6 +17,8 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
     currentModelMatrix = glm::mat4(1.0f);
     currentMvpMatrix = glm::mat4(1.0f);
 
+    previousMvpMatrix = glm::mat4(1.0f);
+
     this->parentEntity = parentEntity;
     intersectsFrustum = true;
 }
@@ -72,13 +74,14 @@ void MeshRenderer::forwardPass()
         material->bind();
 
         // Set shader uniforms
-        material->getShader()->setMatrix4("mvpMatrix", currentMvpMatrix);
-        material->getShader()->setMatrix4("modelMatrix", currentModelMatrix);
-        material->getShader()->setMatrix3("normalMatrix", currentNormalMatrix);
-        material->getShader()->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
+        Shader* shader = material->getShader();
+        shader->setMatrix4("mvpMatrix", currentMvpMatrix);
+        shader->setMatrix4("modelMatrix", currentModelMatrix);
+        shader->setMatrix3("normalMatrix", currentNormalMatrix);
+        shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
-        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        render(mesh->indices.size());
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
@@ -104,11 +107,11 @@ void MeshRenderer::prePass()
         mesh->bind();
 
         // Set depth pre pass shader uniforms
-        Shader* depthPrePassShader = Runtime::prePassShader;
-        depthPrePassShader->setMatrix4("mvp", currentMvpMatrix);
+        Shader* shader = Runtime::prePassShader;
+        shader->setMatrix4("mvpMatrix", currentMvpMatrix);
 
         // Render mesh
-        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        render(mesh->indices.size());
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
@@ -124,24 +127,54 @@ void MeshRenderer::shadowPass()
     if (!model->castsShadow) return;
 
     // Shadow pass each mesh of entity
-    for (int a = 0; a < model->meshes.size(); a++) {
+    for (int i = 0; i < model->meshes.size(); i++) {
         // Get current mesh
-        Mesh* mesh = model->meshes.at(a);
+        Mesh* mesh = model->meshes.at(i);
 
         // Bind mesh
         mesh->bind();
 
         // Set shadow pass shader uniforms
-        Shader* shadowPassShader = Runtime::shadowPassShader;
-        shadowPassShader->setMatrix4("modelMatrix", currentModelMatrix);
-        shadowPassShader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
+        Shader* shader = Runtime::shadowPassShader;
+        shader->setMatrix4("modelMatrix", currentModelMatrix);
+        shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
-        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        render(mesh->indices.size());
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
     }
+}
+
+void MeshRenderer::velocityPass()
+{
+    // No model to render available -> cancel
+    if (model == nullptr) return;
+
+    for (int i = 0; i < model->meshes.size(); i++) {
+        // Get current mesh
+        Mesh* mesh = model->meshes.at(i);
+
+        // Bind mesh
+        mesh->bind();
+
+        // Set velocity pass shader uniforms
+        Shader* shader = Runtime::velocityPassShader;
+        shader->setMatrix4("mvpMatrix", currentMvpMatrix);
+        shader->setMatrix4("previousMvpMatrix", previousMvpMatrix);
+
+        // Render mesh
+        render(mesh->indices.size());
+    }
+
+    // Cache mvp matrix
+    previousMvpMatrix = currentMvpMatrix;
+}
+
+void MeshRenderer::render(unsigned int nElements)
+{
+    glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
 }
 
 void MeshRenderer::performFrustumCulling()

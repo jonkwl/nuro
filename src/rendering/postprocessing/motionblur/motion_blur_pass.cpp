@@ -6,6 +6,7 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/postprocessing/motionblur/velocity_buffer.h"
 
 unsigned int MotionBlurPass::fbo = 0;
 unsigned int MotionBlurPass::output = 0;
@@ -51,10 +52,17 @@ void MotionBlurPass::setup()
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
 		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
 	}
+
+	// Setup velocity buffer
+	VelocityBuffer::setup();
 }
 
 unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInput)
 {
+	// tmp
+	PostProcessing::configuration.bloomIntensity = 0.025f;
+	return VelocityBuffer::render();
+
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -78,8 +86,8 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	shader->setFloat("cameraIntensity", PostProcessing::configuration.motionBlurCameraIntensity);
 	shader->setInt("cameraSamples", PostProcessing::configuration.motionBlurCameraSamples);
 
-	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);
 	shader->setMatrix4("inverseViewProjectionMatrix", glm::inverse(currentViewProjectionMatrix));
+	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);
 
 	// Bind and render to quad
 	Quad::bind();
