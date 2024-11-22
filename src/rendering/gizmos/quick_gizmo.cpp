@@ -75,7 +75,7 @@ void QuickGizmo::render()
 
         // Calculate mvp
         glm::mat4 modelMatrix = getModelMatrix(gizmo.position, gizmo.rotation, gizmo.scale);
-        glm::mat4 mvpMatrix = MeshRenderer::currentProjectionMatrix * MeshRenderer::currentViewMatrix * modelMatrix;
+        glm::mat4 mvpMatrix = MeshRenderer::currentViewProjectionMatrix * modelMatrix;
 
         // Set material uniforms
         material->getShader()->setMatrix4("mvpMatrix", mvpMatrix);

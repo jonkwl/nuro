@@ -24,7 +24,7 @@ public:
 	float getNear();
 	float getFar();
 
-	void updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	void updateFrustum(glm::mat4 viewProjectionMatrix);
 private:
 	float fov;
 	float near;

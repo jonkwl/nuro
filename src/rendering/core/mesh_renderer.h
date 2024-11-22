@@ -25,6 +25,7 @@ public:
 
 	static glm::mat4 currentViewMatrix; // Static view matrix cache for current frame
 	static glm::mat4 currentProjectionMatrix; // Static projection matrix cache for current frame
+	static glm::mat4 currentViewProjectionMatrix; // Static projection matrix * view matrix cache for current frame
 
 	static glm::mat4 currentLightSpaceMatrix; // Static light space matrix cache for current frame
 private:

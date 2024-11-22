@@ -66,28 +66,27 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	glBindTexture(GL_TEXTURE_2D, depthInput);
 
 	// Get current matrices
-	glm::mat4 viewMatrix = MeshRenderer::currentViewMatrix;
-	glm::mat4 projectionMatrix = MeshRenderer::currentProjectionMatrix;
+	glm::mat4 currentViewProjectionMatrix = MeshRenderer::currentViewProjectionMatrix;
 
 	// Bind shader
 	shader->bind();
-
+	
 	// Set shader uniforms
 	shader->setFloat("fps", Runtime::fps);
 
-	shader->setFloat("intensity", PostProcessing::configuration.motionBlurIntensity);
-	shader->setInt("nSamples", PostProcessing::configuration.motionBlurSamples);
+	shader->setBool("camera", PostProcessing::configuration.motionBlurCamera);
+	shader->setFloat("cameraIntensity", PostProcessing::configuration.motionBlurCameraIntensity);
+	shader->setInt("cameraSamples", PostProcessing::configuration.motionBlurCameraSamples);
 
 	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);
-	shader->setMatrix4("inverseViewMatrix", glm::inverse(viewMatrix));
-	shader->setMatrix4("inverseProjectionMatrix", glm::inverse(projectionMatrix));
+	shader->setMatrix4("inverseViewProjectionMatrix", glm::inverse(currentViewProjectionMatrix));
 
 	// Bind and render to quad
 	Quad::bind();
 	Quad::render();
 
-	// Cache view projection matrix
-	previousViewProjectionMatrix = projectionMatrix * viewMatrix;
+	// Cache current view projection matrix
+	previousViewProjectionMatrix = currentViewProjectionMatrix;
 
 	// Return output
 	return output;

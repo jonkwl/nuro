@@ -10,12 +10,12 @@ uniform float far;
 
 uniform float fps;
 
-uniform float intensity;
-uniform int nSamples;
+uniform bool camera;
+uniform float cameraIntensity;
+uniform int cameraSamples;
 
 uniform mat4 previousViewProjectionMatrix;
-uniform mat4 inverseViewMatrix;
-uniform mat4 inverseProjectionMatrix;
+uniform mat4 inverseViewProjectionMatrix;
 
 in vec2 uv;
 
@@ -23,14 +23,11 @@ vec3 getWorldPosition(float depth) {
     // get fragment position in clip space (normalize texture coordinates and depth to NDC)
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
 
-    // transform clip space position to view space position
-    vec4 viewSpacePosition = inverseProjectionMatrix * clipSpacePosition;
+    // transform clip space position to world space position
+    vec4 worldSpacePosition = inverseViewProjectionMatrix * clipSpacePosition;
 
     // perspective division
-    viewSpacePosition /= viewSpacePosition.w;
-
-    // transform view space position to world space position
-    vec4 worldSpacePosition = inverseViewMatrix * viewSpacePosition;
+    worldSpacePosition /= worldSpacePosition.w;
 
     // return world space position
     return worldSpacePosition.xyz;
@@ -53,14 +50,14 @@ vec4 cameraMotionBlur(vec4 color) {
     blurDirection *= blurScale;
 
     // perform motion blur on input
-    for (int i = 1; i < nSamples; ++i) {
+    for (int i = 1; i < cameraSamples; ++i) {
         // get blur offset
-        vec2 offset = blurDirection * (float(i) / float(nSamples - 1) - 0.5) * intensity;
+        vec2 offset = blurDirection * (float(i) / float(cameraSamples - 1) - 0.5) * cameraIntensity;
         // sample iteration
         color += texture(hdrInput, uv + offset);
     }
     // average accumulated samples to motion blur input
-    color /= float(nSamples);
+    color /= float(cameraSamples);
 
     // return motion blurred input
     return color;
@@ -70,7 +67,9 @@ void main() {
     vec4 color = texture(hdrInput, uv);
 
     // perform camera motion blur
-    color = cameraMotionBlur(color);
+    if(camera){
+        color = cameraMotionBlur(color);
+    }
 
     FragColor = color;
 }

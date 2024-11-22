@@ -5,6 +5,8 @@
 
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
+glm::mat4 MeshRenderer::currentViewProjectionMatrix = glm::mat4(1.0);
+
 glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
 MeshRenderer::MeshRenderer(Entity* parentEntity)
@@ -26,7 +28,7 @@ void MeshRenderer::prepareNextFrame()
 
     // Calculate and cache model and mvp matrix for current frame
     currentModelMatrix = Transformation::modelMatrix(parentEntity);
-    currentMvpMatrix = currentProjectionMatrix * currentViewMatrix * currentModelMatrix;
+    currentMvpMatrix = currentViewProjectionMatrix * currentModelMatrix;
 
     // Frustum culling
     performFrustumCulling();

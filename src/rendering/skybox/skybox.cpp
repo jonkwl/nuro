@@ -14,15 +14,17 @@ Skybox::Skybox(Cubemap* cubemap, Shader* custom_shader)
     generate();
 }
 
-void Skybox::render(glm::mat4 view, glm::mat4 projection)
+void Skybox::render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
     // DEPTH FUNCTION NEEDS TO BE GL_LEQUAL!
+
+    // Calculate skybox transformation matrices
+    glm::mat4 adjustedViewMatrix = glm::mat4(glm::mat3(viewMatrix));
+    glm::mat4 viewProjectionMatrix = projectionMatrix * adjustedViewMatrix;
      
     // Set skyvbox shader transformation matrices
-    view = glm::mat4(glm::mat3(view));
     shader->bind();
-    shader->setMatrix4("view", view);
-    shader->setMatrix4("projection", projection);
+    shader->setMatrix4("viewProjectionMatrix", viewProjectionMatrix);
     shader->setInt("skybox", 0);
     shader->setFloat("emission", emission);
 

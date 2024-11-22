@@ -298,17 +298,19 @@ int Runtime::START_LOOP() {
 			InspectorMode::refreshInspector();
 		}
 
-		// Get view and projection matrices
+		// Get transformation matrices
 		glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
 		glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, width, height);
+		glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 
-		// Set mesh renderers view and projection matrix for upcomming render passes
+		// Set mesh renderers transformation matrix caches for upcomming render passes
 		MeshRenderer::currentViewMatrix = viewMatrix;
 		MeshRenderer::currentProjectionMatrix = projectionMatrix;
+		MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
 
 		// Update cameras frustum
-		renderCamera->updateFrustum(viewMatrix, projectionMatrix);
-
+		renderCamera->updateFrustum(viewProjectionMatrix);
+		
 		// Reset entity metrics
 		nCPUEntities = 0;
 		nGPUEntities = 0;

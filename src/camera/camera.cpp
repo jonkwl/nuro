@@ -30,15 +30,13 @@ float Camera::getFar()
     return far;
 }
 
-void Camera::updateFrustum(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+void Camera::updateFrustum(glm::mat4 viewProjectionMatrix)
 {
-    glm::mat4 frustumMatrix = projectionMatrix * viewMatrix;
-
     // Extract columns of the matrix
-    glm::vec4 col0 = glm::column(frustumMatrix, 0);
-    glm::vec4 col1 = glm::column(frustumMatrix, 1);
-    glm::vec4 col2 = glm::column(frustumMatrix, 2);
-    glm::vec4 col3 = glm::column(frustumMatrix, 3);
+    glm::vec4 col0 = glm::column(viewProjectionMatrix, 0);
+    glm::vec4 col1 = glm::column(viewProjectionMatrix, 1);
+    glm::vec4 col2 = glm::column(viewProjectionMatrix, 2);
+    glm::vec4 col3 = glm::column(viewProjectionMatrix, 3);
 
     // Compute planes
     frustum.planes[0] = col3 + col0; // Left
