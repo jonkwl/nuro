@@ -209,6 +209,7 @@ void performanceScene() {
 	entity->meshRenderer->materials.push_back(material);
 	entity->transform.position = glm::vec3(0.0f, 1.5f, 4.0f);
 	entity->transform.scale.x = 2.0f;
+	cubes.push_back(entity);
 }
 
 void awake() {
@@ -220,4 +221,5 @@ void update() {
 	for (int i = 0; i < cubes.size(); i++) {
 		cubes.at(i)->transform.position.y = range * std::sin(Runtime::time * (float)i);
 	}
+	cubes.at(cubes.size() - 1)->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;
 }

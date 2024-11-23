@@ -4,6 +4,12 @@
 #include <glad/glad.h>
 #include "../src/rendering/shader/Shader.h"
 
+enum MotionBlurPassUnits {
+	MOTION_BLUR_HDR_UNIT,
+	MOTION_BLUR_DEPTH_UNIT,
+	MOTION_BLUR_VELOCITY_UNIT
+};
+
 class MotionBlurPass
 {
 public:

@@ -17,7 +17,7 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
     currentModelMatrix = glm::mat4(1.0f);
     currentMvpMatrix = glm::mat4(1.0f);
 
-    previousMvpMatrix = glm::mat4(1.0f);
+    previousModelMatrix = glm::mat4(1.0f);
 
     this->parentEntity = parentEntity;
     intersectsFrustum = true;
@@ -161,15 +161,16 @@ void MeshRenderer::velocityPass()
 
         // Set velocity pass shader uniforms
         Shader* shader = Runtime::velocityPassShader;
-        shader->setMatrix4("mvpMatrix", currentMvpMatrix);
-        shader->setMatrix4("previousMvpMatrix", previousMvpMatrix);
+        shader->setMatrix4("modelMatrix", currentModelMatrix);
+        shader->setMatrix4("previousModelMatrix", previousModelMatrix);
+        shader->setMatrix4("viewProjectionMatrix", currentViewProjectionMatrix);
 
         // Render mesh
         render(mesh->indices.size());
     }
 
     // Cache mvp matrix
-    previousMvpMatrix = currentMvpMatrix;
+    previousModelMatrix = currentModelMatrix;
 }
 
 void MeshRenderer::render(unsigned int nElements)

@@ -11,5 +11,6 @@ public:
 	static unsigned int render();
 private:
 	static unsigned int fbo;
+	static unsigned int rbo;
 	static unsigned int output;
 };

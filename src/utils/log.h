@@ -36,10 +36,11 @@ public:
     static void printProcessInfo(std::string info);
     static void printProcessDone(std::string origin, std::string process);
 
+    static void printDepthState();
+
 private:
     static std::string getBuffer() {
         return "          ";
     }
     static void print(TextColor textColor, BackgroundColor bgColor, const std::string& text);
 };
-

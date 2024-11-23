@@ -27,9 +27,12 @@ struct PostProcessingConfiguration {
 	float gamma = 2.2f;
 
 	bool motionBlur = true;
-	bool motionBlurCamera = true;
+	bool motionBlurCamera = false;
 	float motionBlurCameraIntensity = 0.8f;
-	int motionBlurCameraSamples = 32;
+	int motionBlurCameraSamples = 64;
+	bool motionBlurObject = true;
+	float motionBlurObjectIntensity = 1.0f;
+	int motionBlurObjectSamples = 64;
 
 	bool bloom = true;
 	float bloomIntensity = 0.35f;

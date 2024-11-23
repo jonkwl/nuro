@@ -56,7 +56,7 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	// Create multi-sampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT32F, width, height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multi-sampled framebuffer error

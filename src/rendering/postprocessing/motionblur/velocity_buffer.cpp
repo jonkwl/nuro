@@ -6,6 +6,7 @@
 #include "../src/rendering/shader/Shader.h"
 
 unsigned int VelocityBuffer::fbo = 0;
+unsigned int VelocityBuffer::rbo = 0;
 unsigned int VelocityBuffer::output = 0;
 
 void VelocityBuffer::setup()
@@ -28,6 +29,12 @@ void VelocityBuffer::setup()
 	// Attach output texture to framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
 
+	// Create depth buffer
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, Window::width, Window::height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
 	// Check framebuffer status
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -42,7 +49,10 @@ unsigned int VelocityBuffer::render()
 
 	// Clear framebuffer
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
 
 	// Bind shader
 	Runtime::velocityPassShader->bind();
@@ -52,6 +62,9 @@ unsigned int VelocityBuffer::render()
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->meshRenderer->velocityPass();
 	}
+
+	// Disable depth testing
+	glDisable(GL_DEPTH_TEST);
 
 	// Return output
 	return output;

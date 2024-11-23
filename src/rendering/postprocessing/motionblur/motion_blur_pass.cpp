@@ -23,8 +23,9 @@ void MotionBlurPass::setup()
 	// Set static shader uniforms
 	shader->bind();
 
-	shader->setInt("hdrInput", 0);
-	shader->setInt("depthInput", 1);
+	shader->setInt("hdrInput", MOTION_BLUR_HDR_UNIT);
+	shader->setInt("depthInput", MOTION_BLUR_DEPTH_UNIT);
+	shader->setInt("velocityInput", MOTION_BLUR_VELOCITY_UNIT);
 
 	shader->setFloat("near", 0.3f);
 	shader->setFloat("far", 1000.0f);
@@ -59,19 +60,24 @@ void MotionBlurPass::setup()
 
 unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInput)
 {
-	// tmp
-	PostProcessing::configuration.bloomIntensity = 0.025f;
-	return VelocityBuffer::render();
+	// Render velocity buffer if object motion blur is active
+	unsigned int VELOCITY_BUFFER = 0;
+	if (PostProcessing::configuration.motionBlurObject) {
+		VELOCITY_BUFFER = VelocityBuffer::render();
+	}
 
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Bind textures
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + MOTION_BLUR_HDR_UNIT);
 	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE0 + MOTION_BLUR_DEPTH_UNIT);
 	glBindTexture(GL_TEXTURE_2D, depthInput);
+
+	glActiveTexture(GL_TEXTURE0 + MOTION_BLUR_VELOCITY_UNIT);
+	glBindTexture(GL_TEXTURE_2D, VELOCITY_BUFFER);
 
 	// Get current matrices
 	glm::mat4 currentViewProjectionMatrix = MeshRenderer::currentViewProjectionMatrix;
@@ -82,9 +88,19 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	// Set shader uniforms
 	shader->setFloat("fps", Runtime::fps);
 
-	shader->setBool("camera", PostProcessing::configuration.motionBlurCamera);
-	shader->setFloat("cameraIntensity", PostProcessing::configuration.motionBlurCameraIntensity);
-	shader->setInt("cameraSamples", PostProcessing::configuration.motionBlurCameraSamples);
+	bool camera = PostProcessing::configuration.motionBlurCamera;
+	shader->setBool("camera", camera);
+	if (camera) {
+		shader->setFloat("cameraIntensity", PostProcessing::configuration.motionBlurCameraIntensity);
+		shader->setInt("cameraSamples", PostProcessing::configuration.motionBlurCameraSamples);
+	}
+
+	bool object = PostProcessing::configuration.motionBlurObject;
+	shader->setBool("object", object);
+	if (object) {
+		shader->setFloat("objectIntensity", PostProcessing::configuration.motionBlurObjectIntensity);
+		shader->setInt("objectSamples", PostProcessing::configuration.motionBlurObjectSamples);
+	}
 
 	shader->setMatrix4("inverseViewProjectionMatrix", glm::inverse(currentViewProjectionMatrix));
 	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);
