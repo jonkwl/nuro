@@ -98,7 +98,6 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	bool object = PostProcessing::configuration.motionBlurObject;
 	shader->setBool("object", object);
 	if (object) {
-		shader->setFloat("objectIntensity", PostProcessing::configuration.motionBlurObjectIntensity);
 		shader->setInt("objectSamples", PostProcessing::configuration.motionBlurObjectSamples);
 	}
 

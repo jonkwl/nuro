@@ -14,6 +14,9 @@ public:
 	BoundingVolume* volume; // Bounding volume for the mesh renderer
 
 	std::vector<IMaterial*> materials; // Container for mesh renderers materials
+
+	bool useMotionBlur; // Enable object motion blur for mesh renderer
+	float motionBlurIntensity; // Set objects motion blur intensity
 	
 	// Prepare each mesh for upcoming passes for next frame (calculate and cache matrices, perform culling etc.)
 	void prepareNextFrame();

@@ -16,7 +16,6 @@ uniform float cameraIntensity;
 uniform int cameraSamples;
 
 uniform bool object;
-uniform float objectIntensity;
 uniform int objectSamples;
 
 uniform mat4 inverseViewProjectionMatrix;
@@ -84,7 +83,7 @@ vec4 objectMotionBlur(vec4 color) {
     color = texture(hdrInput, uv);
     for(int i = 1; i < objectSamples; ++i){
         // get blur offset
-        vec2 offset = velocity * (float(i) / float(objectSamples - 1) - 0.5) * objectIntensity;
+        vec2 offset = velocity * (float(i) / float(objectSamples - 1) - 0.5);
         // sample iteration
         color += texture(hdrInput, uv + offset);
     }
@@ -105,6 +104,7 @@ void main() {
     // perform object motion blur
     if(object){
         color = objectMotionBlur(color);
+        // color = vec4(texture(velocityInput, uv).rg, 0.0, 1.0); // Show velocity buffer
     }
 
     FragColor = color;

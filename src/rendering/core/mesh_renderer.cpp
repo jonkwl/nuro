@@ -12,7 +12,11 @@ glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 MeshRenderer::MeshRenderer(Entity* parentEntity)
 {
     model = nullptr;
+
     volume = new BoundingAABB();
+
+    useMotionBlur = false;
+    motionBlurIntensity = 1.0f;
 
     currentModelMatrix = glm::mat4(1.0f);
     currentMvpMatrix = glm::mat4(1.0f);
@@ -149,6 +153,9 @@ void MeshRenderer::shadowPass()
 
 void MeshRenderer::velocityPass()
 {
+    // No motion blur enabled -> cancel
+    if (!useMotionBlur) return;
+
     // No model to render available -> cancel
     if (model == nullptr) return;
 
@@ -164,6 +171,8 @@ void MeshRenderer::velocityPass()
         shader->setMatrix4("modelMatrix", currentModelMatrix);
         shader->setMatrix4("previousModelMatrix", previousModelMatrix);
         shader->setMatrix4("viewProjectionMatrix", currentViewProjectionMatrix);
+
+        shader->setFloat("intensity", motionBlurIntensity);
 
         // Render mesh
         render(mesh->indices.size());

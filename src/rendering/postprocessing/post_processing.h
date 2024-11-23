@@ -31,7 +31,6 @@ struct PostProcessingConfiguration {
 	float motionBlurCameraIntensity = 0.8f;
 	int motionBlurCameraSamples = 64;
 	bool motionBlurObject = true;
-	float motionBlurObjectIntensity = 2.0f;
 	int motionBlurObjectSamples = 64;
 
 	bool bloom = true;

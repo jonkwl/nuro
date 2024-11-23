@@ -26,7 +26,6 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 5.0f);
 		UIComponents::headline("Object Motion Blur Settings");
 		UIComponents::input("Enable Object Motion Blur", PostProcessing::configuration.motionBlurObject);
-		UIComponents::input("Intensity:", PostProcessing::configuration.motionBlurObjectIntensity, 0.001f);
 		UIComponents::input("Samples:", PostProcessing::configuration.motionBlurObjectSamples, 0.1f);
 
 		UIComponents::space(0.0f, 8.0f);

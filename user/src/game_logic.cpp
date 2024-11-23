@@ -130,9 +130,10 @@ void defaultScene() {
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx");
 	mannequin = new Entity();
-	mannequin = new Entity();
 	mannequin->meshRenderer->model = mannequinModel;
 	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
+	mannequin->meshRenderer->useMotionBlur = true;
+	mannequin->meshRenderer->motionBlurIntensity = 3.0f;
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.4f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
@@ -223,5 +224,5 @@ void update() {
 		cubes.at(i)->transform.position.y = range * std::sin(Runtime::time * (float)i);
 	}
 	cubes.at(cubes.size() - 1)->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;*/
-	mannequin->transform.rotation.y += 360.0f * Runtime::deltaTime;
+	mannequin->transform.rotation.y += 360.0f * 2.5f * Runtime::deltaTime;
 }
