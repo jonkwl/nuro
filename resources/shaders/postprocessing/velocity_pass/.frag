@@ -1,16 +1,23 @@
 #version 330 core
 
-out vec2 FragColor;
+out vec3 FragColor;
 
-smooth in vec4 v_position;
-smooth in vec4 v_previousPosition;
+in vec4 v_viewPosition;
+in vec4 v_position;
+in vec4 v_previousPosition;
 
 uniform float intensity;
 
 void main() {
+    // calculate velocity
     vec2 current = v_position.xy / v_position.w;
     vec2 previous = v_previousPosition.xy / v_previousPosition.w;
-    vec2 color = (current - previous) * 0.5;
-    color *= intensity;
-    FragColor = color;
+    vec2 velocity = (current - previous) * 0.5;
+    velocity *= intensity;
+
+    // get depth in view space
+    float viewSpaceDepth = v_viewPosition.z;
+    
+    // RED CHANNEL = x velocity | GREEN CHANNEL = y velocity | BLUE CHANNEL = view space depth
+    FragColor = vec3(velocity.x, velocity.y, viewSpaceDepth);
 }

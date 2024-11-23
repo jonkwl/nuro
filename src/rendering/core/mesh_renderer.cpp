@@ -170,7 +170,8 @@ void MeshRenderer::velocityPass()
         Shader* shader = Runtime::velocityPassShader;
         shader->setMatrix4("modelMatrix", currentModelMatrix);
         shader->setMatrix4("previousModelMatrix", previousModelMatrix);
-        shader->setMatrix4("viewProjectionMatrix", currentViewProjectionMatrix);
+        shader->setMatrix4("viewMatrix", currentViewMatrix);
+        shader->setMatrix4("projectionMatrix", currentProjectionMatrix);
 
         shader->setFloat("intensity", motionBlurIntensity);
 

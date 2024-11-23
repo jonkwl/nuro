@@ -18,31 +18,18 @@ uniform int cameraSamples;
 uniform bool object;
 uniform int objectSamples;
 
-uniform mat4 inverseViewProjectionMatrix;
+uniform mat4 inverseViewMatrix;
+uniform mat4 inverseProjectionMatrix;
 uniform mat4 previousViewProjectionMatrix;
 
 in vec2 uv;
 
-vec3 getWorldPosition(float depth) {
-    // get fragment position in clip space (normalize texture coordinates and depth to NDC)
-    vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
-
-    // transform clip space position to world space position
-    vec4 worldSpacePosition = inverseViewProjectionMatrix * clipSpacePosition;
-
-    // perspective division
-    worldSpacePosition /= worldSpacePosition.w;
-
-    // return world space position
-    return worldSpacePosition.xyz;
-}
+vec3 viewPosition;
+vec3 worldPosition;
 
 vec4 cameraMotionBlur(vec4 color) {
-    // get fragments current position in world space
-    vec3 currentWorldPosition = getWorldPosition(texture(depthInput, uv).r);
-
     // get fragments previous position in screen space
-    vec4 previousScreenPosition = previousViewProjectionMatrix * vec4(currentWorldPosition, 1.0);
+    vec4 previousScreenPosition = previousViewProjectionMatrix * vec4(worldPosition, 1.0);
     previousScreenPosition.xyz /= previousScreenPosition.w;
     previousScreenPosition.xy = previousScreenPosition.xy * 0.5 + 0.5;
 
@@ -54,7 +41,7 @@ vec4 cameraMotionBlur(vec4 color) {
     // scale direction
     blurDirection *= blurScale;
 
-    // perform motion blur on hdr input
+    // perform motion blur on hdr buffer
     for (int i = 1; i < cameraSamples; ++i) {
         // get blur offset
         vec2 offset = blurDirection * (float(i) / float(cameraSamples - 1) - 0.5) * cameraIntensity;
@@ -69,19 +56,28 @@ vec4 cameraMotionBlur(vec4 color) {
 }
 
 vec4 objectMotionBlur(vec4 color) {
-    // get velocity from velocity input
-    vec2 velocity = texture(velocityInput, uv).rg;
+    // sample velocity buffer
+    vec3 velocitySample = texture(velocityInput, uv).rgb;
+
+    // get objects view space depth from velocity buffer sample
+    float objectViewDepth = velocitySample.b;
+
+    // skip motion blur if object to be blurred is behind current fragment
+    if (objectViewDepth < viewPosition.z) return color;
+
+    // get velocity from velocity buffer sample
+    vec2 velocity = velocitySample.rg;
     // skip further calculations if there is no velocity
-    if(velocity == vec2(0.0)) return color;
+    if (velocity == vec2(0.0)) return color;
 
     // calculate scale for blur direction to compensate varying framerates
     float blurScale = fps / 60;
     // scale velocity
     velocity *= blurScale;
 
-    // perform motion blur on hdr input
+    // perform motion blur on hdr buffer
     color = texture(hdrInput, uv);
-    for(int i = 1; i < objectSamples; ++i){
+    for (int i = 1; i < objectSamples; ++i) {
         // get blur offset
         vec2 offset = velocity * (float(i) / float(objectSamples - 1) - 0.5);
         // sample iteration
@@ -93,8 +89,32 @@ vec4 objectMotionBlur(vec4 color) {
     return color;
 }
 
+void calculatePositions() {
+    // sample current fragment depth
+    float depth = texture(depthInput, uv).r;
+
+    // get fragment position in clip space (convert texture coordinates and depth to NDC)
+    vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
+
+    // transform clip space position to world space position
+    vec4 viewSpacePosition = inverseProjectionMatrix * clipSpacePosition;
+
+    // perspective division
+    viewSpacePosition /= viewSpacePosition.w;
+
+    vec4 worldSpacePosition = inverseViewMatrix * viewSpacePosition;
+
+    // set positions
+    viewPosition = vec3(viewSpacePosition);
+    worldPosition = vec3(worldSpacePosition);
+}
+
 void main() {
+    // sample current fragment color
     vec4 color = texture(hdrInput, uv);
+
+    // calculate fragments positions in view and world space
+    calculatePositions();
 
     // perform camera motion blur
     if (camera) {
@@ -102,9 +122,8 @@ void main() {
     }
 
     // perform object motion blur
-    if(object){
+    if (object) {
         color = objectMotionBlur(color);
-        // color = vec4(texture(velocityInput, uv).rg, 0.0, 1.0); // Show velocity buffer
     }
 
     FragColor = color;

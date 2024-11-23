@@ -134,7 +134,7 @@ void defaultScene() {
 	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
 	mannequin->meshRenderer->useMotionBlur = true;
 	mannequin->meshRenderer->motionBlurIntensity = 3.0f;
-	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.4f);
+	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.1f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
 
