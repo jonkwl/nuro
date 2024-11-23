@@ -8,6 +8,7 @@
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/rendering/material/lit/lit_material.h"
 
+Entity* mannequin = nullptr;
 void defaultScene() {
 	// Set default skybox
 	if (Runtime::defaultSkybox != nullptr) {
@@ -128,7 +129,7 @@ void defaultScene() {
 	mannequinMaterial->setMetallicMap(mannequinMetallic);
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx");
-	Entity* mannequin = new Entity();
+	mannequin = new Entity();
 	mannequin = new Entity();
 	mannequin->meshRenderer->model = mannequinModel;
 	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
@@ -213,13 +214,14 @@ void performanceScene() {
 }
 
 void awake() {
-	performanceScene();
+	defaultScene();
 }
 
 void update() {
-	float range = 1.0f;
+	/*float range = 1.0f;
 	for (int i = 0; i < cubes.size(); i++) {
 		cubes.at(i)->transform.position.y = range * std::sin(Runtime::time * (float)i);
 	}
-	cubes.at(cubes.size() - 1)->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;
+	cubes.at(cubes.size() - 1)->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;*/
+	mannequin->transform.rotation.y += 360.0f * Runtime::deltaTime;
 }
