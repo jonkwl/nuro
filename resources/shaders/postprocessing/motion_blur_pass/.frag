@@ -124,6 +124,7 @@ void main() {
     // perform object motion blur
     if (object) {
         color = objectMotionBlur(color);
+        // color = vec4(texture(velocityInput, uv).rgb, 1.0);
     }
 
     FragColor = color;

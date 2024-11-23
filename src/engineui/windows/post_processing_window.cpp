@@ -28,6 +28,23 @@ void PostProcessingWindow::prepare()
 		UIComponents::input("Enable Object Motion Blur", PostProcessing::configuration.motionBlurObject);
 		UIComponents::input("Samples:", PostProcessing::configuration.motionBlurObjectSamples, 0.1f);
 
+		/*UIComponents::space(0.0f, 2.0f);
+		UILayout::beginFlex("SilhouetteExtension", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
+		{
+			UIComponents::tryIcon(ICON_FA_FLASK);
+			UIComponents::labelBold("Experimental: ");
+			UIComponents::input("Extend Silhouettes", PostProcessing::configuration.motionBlurObjectSilhouetteExtension);
+		}
+		UILayout::endFlex();
+		if (PostProcessing::configuration.motionBlurObjectSilhouetteExtension) {
+			UILayout::beginFlex("SilhouetteExtensionWarning", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
+			{
+				UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION);
+				UIComponents::label("May introduce artifacts when blurred object is in background");
+			}
+			UILayout::endFlex();
+		}*/
+
 		UIComponents::space(0.0f, 8.0f);
 	}
 

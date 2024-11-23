@@ -15,7 +15,10 @@ public:
 	static void tooltip(const char* tooltip);
 	static void toggleButton(const char* label, bool& value, const char* tooltip = "");
 
-	static void tryIcon(const char* icon);
+	static void label(std::string text);
+	static void labelBold(std::string text);
+
+	static void tryIcon(const char* icon, float padding = 2.5f);
 	
 	static void input(const char* label, bool& value);
 	static void input(const char* label, int& value, float speed = 0.1f);

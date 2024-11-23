@@ -73,11 +73,22 @@ void UIComponents::toggleButton(const char* label, bool& value, const char* tool
     ImGui::PopStyleColor(4);
 }
 
-void UIComponents::tryIcon(const char* icon)
+void UIComponents::label(std::string text)
+{
+    ImGui::Text(text.c_str());
+}
+
+void UIComponents::labelBold(std::string text)
+{
+    ImGui::PushFont(EngineUI::fonts.uiBold);
+    ImGui::Text(text.c_str());
+    ImGui::PopFont();
+}
+
+void UIComponents::tryIcon(const char* icon, float padding)
 {
     if (icon && icon[0] != '\0') {
         float currentY = ImGui::GetCursorPosY();
-        float padding = 2.5f;
         ImGui::SetCursorPosY(currentY + padding);
         ImGui::Text(icon);
         ImGui::SetCursorPosY(currentY);
