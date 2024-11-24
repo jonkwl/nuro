@@ -24,9 +24,7 @@ struct Configuration {
 
     bool chromaticAberration;
     float chromaticAberrationIntensity;
-    float chromaticAberrationRange;
-    float chromaticAberrationRedOffset;
-    float chromaticAberrationBlueOffset;
+    int chromaticAberrationIterations;
 
     bool vignette;
     float vignetteIntensity;
@@ -43,7 +41,7 @@ float far = 100.0;
 float gamma;
 
 //
-// TONEMAPPING FUNCTIONS
+// TONEMAPPING
 //
 
 // Narkowicz 2015, "ACES Filmic Tone Mapping Curve"
@@ -317,19 +315,86 @@ float unreal(float x) {
     return x / (x + 0.155) * 1.019;
 }
 
-vec3 chromaticAberration(vec3 color) {
-    vec2 center = vec2(0.5, 0.5);
-    vec2 toCenter = uv - center;
-    float dist = length(toCenter);
-    float aberration = smoothstep(configuration.chromaticAberrationRange, 1.0, dist) * configuration.chromaticAberrationIntensity;
-    vec2 redOffset = uv + toCenter * aberration * configuration.chromaticAberrationRedOffset;
-    vec2 greenOffset = uv;
-    vec2 blueOffset = uv - toCenter * aberration * configuration.chromaticAberrationBlueOffset;
-    color.r = texture2D(hdrBuffer, redOffset).r;
-    color.g = texture2D(hdrBuffer, greenOffset).g;
-    color.b = texture2D(hdrBuffer, blueOffset).b;
+//
+// CHROMATIC ABERRATION
+//
+
+// Function to apply barrel distortion to texture coordinates
+vec2 applyBarrelDistortion(vec2 textureCoord, float distortionAmount) {
+    // Center coordinates by subtracting 0.5
+    vec2 centeredCoord = textureCoord - 0.5;
+    
+    // Calculate distance from the center
+    float distance = dot(centeredCoord, centeredCoord);
+    
+    // Apply barrel distortion by scaling the coordinates based on distance
+    return textureCoord + centeredCoord * distance * distortionAmount;
+}
+
+// Saturate value between 0 and 1
+float saturate(float value) {
+    return clamp(value, 0.0, 1.0);
+}
+
+// Linear interpolation function for smooth transition
+float lerp(float value) {
+    return saturate(1.0 - abs(2.0 * value - 1.0));
+}
+
+// Remap value to a new range [a, b]
+float remapValue(float value, float rangeStart, float rangeEnd) {
+    return saturate((value - rangeStart) / (rangeEnd - rangeStart));
+}
+
+// Generate color spectrum based on input value t
+vec4 generateSpectrumOffset(float value) {
+    vec4 color;
+    
+    // Check if value is below or above 0.5 to determine color balance
+    float low = step(value, 0.5);
+    float high = 1.0 - low;
+    
+    // Smooth weight transition between two colors
+    float weight = lerp(remapValue(value, 1.0 / 6.0, 5.0 / 6.0));
+    
+    // Create final color based on weight
+    color = vec4(low, 1.0, high, 1.0) * vec4(1.0 - weight, weight, 1.0 - weight, 1.0);
+
+    // Return color
     return color;
 }
+
+// Main chromatic aberration effect function
+vec3 chromaticAberration() {
+    // Initialize variables for accumulating color and weight
+    vec4 accumulatedColor = vec4(0.0);
+    vec4 accumulatedWeight = vec4(0.0);
+
+    // Inverse of number of iterations for use in loops
+    float inverseNumIterations = 1.0 / float(configuration.chromaticAberrationIterations);
+    
+    // Loop through each iteration to apply chromatic aberration
+    for (int i = 0; i < configuration.chromaticAberrationIterations; ++i) {
+        // Calculate normalized weight based on iteration index
+        float normalizedIndex = float(i) * inverseNumIterations;
+        
+        // Generate color offset for this iteration
+        vec4 weight = generateSpectrumOffset(normalizedIndex);
+        
+        // Accumulate color weights
+        accumulatedWeight += weight;
+        
+        // Apply distortion and accumulate resulting color
+        accumulatedColor += weight * texture2D(hdrBuffer, applyBarrelDistortion(uv, 0.6 * configuration.chromaticAberrationIntensity * normalizedIndex));
+    }
+    
+    // Return final chromatic aberration result by averaging accumulated colors and weights
+    return vec3(accumulatedColor / accumulatedWeight);
+}
+
+//
+// BLOOM
+//
 
 vec3 bloom(vec3 color) {
     vec3 bloomSample = texture(bloomBuffer, uv).rgb * configuration.bloomIntensity * configuration.bloomColor;
@@ -340,6 +405,10 @@ vec3 bloom(vec3 color) {
     color = mix(color, color + bloomSample + bloomSample * lensDirtSample, vec3(1.0));
     return color;
 }
+
+//
+// VIGNETTE
+//
 
 vec3 vignette(vec3 color) {
     vec2 center = vec2(0.5, 0.5);
@@ -360,7 +429,7 @@ void main()
 
     // Chromatic Aberration
     if (configuration.chromaticAberration) {
-        color = chromaticAberration(color);
+        color = chromaticAberration();
     }
 
     // Bloom

@@ -150,9 +150,7 @@ void PostProcessing::syncConfiguration()
 
 	finalPassShader->setBool("configuration.chromaticAberration", configuration.chromaticAberration);
 	finalPassShader->setFloat("configuration.chromaticAberrationIntensity", configuration.chromaticAberrationIntensity);
-	finalPassShader->setFloat("configuration.chromaticAberrationRange", configuration.chromaticAberrationRange);
-	finalPassShader->setFloat("configuration.chromaticAberrationRedOffset", configuration.chromaticAberrationRedOffset);
-	finalPassShader->setFloat("configuration.chromaticAberrationBlueOffset", configuration.chromaticAberrationBlueOffset);
+	finalPassShader->setInt("configuration.chromaticAberrationIterations", configuration.chromaticAberrationIterations);
 
 	finalPassShader->setBool("configuration.vignette", configuration.vignette);
 	finalPassShader->setFloat("configuration.vignetteIntensity", configuration.vignetteIntensity);

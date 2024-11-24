@@ -46,10 +46,8 @@ struct PostProcessingConfiguration {
 	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;
-	float chromaticAberrationIntensity = 0.5f;
-	float chromaticAberrationRange = 0.2f;
-	float chromaticAberrationRedOffset = 0.01f;
-	float chromaticAberrationBlueOffset = 0.01f;
+	float chromaticAberrationIntensity = 0.1f;
+	int chromaticAberrationIterations = 12;
 
 	bool vignette = true;
 	float vignetteIntensity = 1.0f;

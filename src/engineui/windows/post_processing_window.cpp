@@ -81,9 +81,7 @@ void PostProcessingWindow::prepare()
 
 		UIComponents::headline("Chromatic Aberration Settings");
 		UIComponents::input("Intensity:", PostProcessing::configuration.chromaticAberrationIntensity, 0.01f);
-		UIComponents::input("Range:", PostProcessing::configuration.chromaticAberrationRange, 0.01f);
-		UIComponents::input("Red Offset:", PostProcessing::configuration.chromaticAberrationRedOffset, 0.01f);
-		UIComponents::input("Blue Offset:", PostProcessing::configuration.chromaticAberrationBlueOffset, 0.01f);
+		UIComponents::input("Iterations:", PostProcessing::configuration.chromaticAberrationIterations, 0.1f);
 
 		UIComponents::space(0.0f, 8.0f);
 	}
