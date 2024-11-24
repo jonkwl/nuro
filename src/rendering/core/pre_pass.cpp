@@ -60,6 +60,10 @@ unsigned int PrePass::render()
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	// Cull backfaces
+	glCullFace(GL_BACK);
 
 	// Disable color writing
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
