@@ -58,7 +58,7 @@ struct PostProcessingConfiguration {
 	float vignetteSoftness = 0.35f;
 	float vignetteRoundness = 1.8f;
 
-	bool ambientOcclusion = true;
+	bool ambientOcclusion = false;
 };
 
 class PostProcessing
