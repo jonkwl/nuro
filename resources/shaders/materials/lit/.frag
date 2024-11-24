@@ -696,9 +696,6 @@ void main()
     uv = v_uv * material.tiling + material.offset;
     normal = getNormal();
 
-    FragColor = shadeNormal();
-    return;
-
     if (!configuration.solidMode) {
         FragColor = shadePBR();
     } else {

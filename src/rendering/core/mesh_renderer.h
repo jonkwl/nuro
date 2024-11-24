@@ -35,6 +35,7 @@ public:
 private:
 	glm::mat4 currentModelMatrix; // Model matrix cache for current frame
 	glm::mat4 currentMvpMatrix; // MVP matrix cache for current frame
+	glm::mat4 currentNormalMatrix; // Normal matrix cache for current frame
 	
 	glm::mat4 previousModelMatrix; // MVP matrix cache of previous frame (only needed for velocity pass, set after velocity pass)
 

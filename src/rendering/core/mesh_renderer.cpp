@@ -20,6 +20,7 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
 
     currentModelMatrix = glm::mat4(1.0f);
     currentMvpMatrix = glm::mat4(1.0f);
+    currentNormalMatrix = glm::mat4(1.0f);
 
     previousModelMatrix = glm::mat4(1.0f);
 
@@ -35,6 +36,7 @@ void MeshRenderer::prepareNextFrame()
     // Calculate and cache model and mvp matrix for current frame
     currentModelMatrix = Transformation::modelMatrix(parentEntity);
     currentMvpMatrix = currentViewProjectionMatrix * currentModelMatrix;
+    currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
     // Frustum culling
     performFrustumCulling();
@@ -47,9 +49,6 @@ void MeshRenderer::forwardPass()
 
     // Check if render target was culled this frame -> cancel
     if (isCulled()) return;
-    
-    // Calculate normal matrix
-    glm::mat4 currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
     // Render each mesh of entity
     for (int i = 0; i < model->meshes.size(); i++) {
@@ -113,6 +112,7 @@ void MeshRenderer::prePass()
         // Set depth pre pass shader uniforms
         Shader* shader = Runtime::prePassShader;
         shader->setMatrix4("mvpMatrix", currentMvpMatrix);
+        shader->setMatrix3("normalMatrix", currentNormalMatrix);
 
         // Render mesh
         render(mesh->indices.size());

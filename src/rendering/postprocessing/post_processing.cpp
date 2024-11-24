@@ -63,12 +63,13 @@ void PostProcessing::render(unsigned int hdrInput)
 
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_HDR = hdrInput;
-	unsigned int POST_PROCESSING_PIPELINE_DEPTH = PrePass::getOutput();
+	unsigned int POST_PROCESSING_PIPELINE_DEPTH = PrePass::getDepthOutput();
+	unsigned int POST_PROCESSING_PIPELINE_NORMAL = PrePass::getNormalOutput();
 
 	// Ambient occlusion pass
 	if (configuration.ambientOcclusion) {
 		// Apply ambient occlusion on post processing hdr input
-		POST_PROCESSING_PIPELINE_HDR = AmbientOcclusionPass::render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
+		POST_PROCESSING_PIPELINE_HDR = AmbientOcclusionPass::render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH, POST_PROCESSING_PIPELINE_NORMAL);
 	}
 
 	// Motion blur pass

@@ -21,7 +21,8 @@ void AmbientOcclusionPass::setup()
 
 	// Set ambient occlusion pass shaders static uniforms
 	aoPassShader->bind();
-	aoPassShader->setInt("depthInput", 0);
+	aoPassShader->setInt("depthInput", AMBIENT_OCCLUSION_DEPTH_UNIT);
+	aoPassShader->setInt("normalInput", AMBIENT_OCCLUSION_NORMAL_UNIT);
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
@@ -62,10 +63,10 @@ void AmbientOcclusionPass::setup()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-unsigned int AmbientOcclusionPass::render(unsigned int hdrInput, unsigned int depthInput)
+unsigned int AmbientOcclusionPass::render(unsigned int hdrInput, unsigned int depthInput, unsigned int normalInput)
 {
 	// Perform ambient occlusion pass
-	ambientOcclusionPass(depthInput);
+	ambientOcclusionPass(depthInput, normalInput);
 
 	// Perform composite pass: Apply ambient occlusion from previous pass to hdr input
 	compositePass(hdrInput);
@@ -74,7 +75,7 @@ unsigned int AmbientOcclusionPass::render(unsigned int hdrInput, unsigned int de
 	return compositeOutput;
 }
 
-void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput)
+void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -87,8 +88,12 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput)
 	aoPassShader->setMatrix4("inverseViewProjectionMatrix", glm::inverse(MeshRenderer::currentViewProjectionMatrix));
 
 	// Bind depth input
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_DEPTH_UNIT);
 	glBindTexture(GL_TEXTURE_2D, depthInput);
+
+	// Bind normal input
+	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_NORMAL_UNIT);
+	glBindTexture(GL_TEXTURE_2D, normalInput);
 
 	// Bind and render to quad
 	Quad::bind();

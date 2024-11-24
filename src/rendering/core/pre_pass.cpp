@@ -5,8 +5,10 @@
 unsigned int PrePass::width = 0;
 unsigned int PrePass::height = 0;
 
-unsigned int PrePass::output = 0;
 unsigned int PrePass::fbo = 0;
+
+unsigned int PrePass::depthOutput = 0;
+unsigned int PrePass::normalOutput = 0;
 
 void PrePass::setup(unsigned int width, unsigned int height)
 {
@@ -14,28 +16,37 @@ void PrePass::setup(unsigned int width, unsigned int height)
 	PrePass::width = width;
 	PrePass::height = height;
 
-	PrePass::output = 0;
-	PrePass::fbo = 0;
-
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Generate depth output
-	glGenTextures(1, &output);
-	glBindTexture(GL_TEXTURE_2D, output);
+	glGenTextures(1, &depthOutput);
+	glBindTexture(GL_TEXTURE_2D, depthOutput);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 	// Set depth output parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	// Bind framebuffer and set depth output as rendering target
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, output, 0);
+	// Set depth output as rendering target
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthOutput, 0);
 
-	// Deactivate framebuffer draw and read buffers
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
+	// Generate normal output
+	glGenTextures(1, &normalOutput);
+	glBindTexture(GL_TEXTURE_2D, normalOutput);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+
+	// Set normal output parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Set normal output as rendering target
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalOutput, 0);
 
 	// Check for framebuffer errors
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -47,7 +58,7 @@ void PrePass::setup(unsigned int width, unsigned int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-unsigned int PrePass::render()
+void PrePass::render()
 {
 	// Set viewport for upcoming pre pass
 	glViewport(0, 0, width, height);
@@ -55,8 +66,9 @@ unsigned int PrePass::render()
 	// Bind pre pass framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	// Clear depth buffer
-	glClear(GL_DEPTH_BUFFER_BIT);
+	// Clear color and depth buffer
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -64,9 +76,6 @@ unsigned int PrePass::render()
 
 	// Cull backfaces
 	glCullFace(GL_BACK);
-
-	// Disable color writing
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
 	// Bind pre pass shader
 	Runtime::prePassShader->bind();
@@ -76,18 +85,18 @@ unsigned int PrePass::render()
 	for (int i = 0; i < entityLinks.size(); i++) {
 		entityLinks.at(i)->meshRenderer->prePass();
 	}
-
-	// Re-enable color writing after pre pass
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-	// Return pre pass output
-	return output;
 }
 
-unsigned int PrePass::getOutput()
+unsigned int PrePass::getDepthOutput()
 {
-	// Return pre pass output
-	return output;
+	// Return pre pass depth output
+	return depthOutput;
+}
+
+unsigned int PrePass::getNormalOutput()
+{
+	// Return pre pass normal output
+	return normalOutput;
 }
 
 unsigned int PrePass::getWidth()
@@ -100,10 +109,4 @@ unsigned int PrePass::getHeight()
 {
 	// Return height
 	return height;
-}
-
-unsigned int PrePass::getFramebuffer()
-{
-	// Return fbo
-	return fbo;
 }
