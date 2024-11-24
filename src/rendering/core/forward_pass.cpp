@@ -21,11 +21,11 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	int width = Window::width;
 	int height = Window::height;
 
-	// Create forward pass framebuffer
+	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &outputFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, outputFbo);
 
-	// Create color output texture
+	// Generate color output texture
 	glGenTextures(1, &outputColor);
 	glBindTexture(GL_TEXTURE_2D, outputColor);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
@@ -41,11 +41,11 @@ void ForwardPass::setup(unsigned int msaaSamples)
 		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
-	// Create multi-sampled framebuffer
+	// Generate multi-sampled framebuffer
 	glGenFramebuffers(1, &multisampledFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
-	// Create multi-sampled color buffer texture
+	// Generate multi-sampled color buffer texture
 	glGenTextures(1, &multisampledColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
 	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, width, height, GL_TRUE);
@@ -53,7 +53,7 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
 
-	// Create multi-sampled depth buffer
+	// Generate multi-sampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, width, height);

@@ -9,7 +9,6 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
-#include "../src/rendering/postprocessing/debug/debug_pass.h"
 #include "../src/rendering/postprocessing/bloom/bloom_pass.h"
 #include "../src/rendering/postprocessing/motionblur/motion_blur_pass.h"
 

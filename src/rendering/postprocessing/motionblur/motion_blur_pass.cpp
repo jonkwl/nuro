@@ -54,6 +54,9 @@ void MotionBlurPass::setup()
 		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
 	}
 
+	// Unbind framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	// Setup velocity buffer
 	VelocityBuffer::setup();
 }

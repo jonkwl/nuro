@@ -23,7 +23,7 @@ float Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
 glm::vec4 Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-unsigned int Runtime::msaaSamples = 8;
+unsigned int Runtime::msaaSamples = 4;
 bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;

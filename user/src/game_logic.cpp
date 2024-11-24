@@ -9,6 +9,9 @@
 #include "../src/rendering/material/lit/lit_material.h"
 
 Entity* mannequin = nullptr;
+LitMaterial* neonA = nullptr;
+LitMaterial* neonB = nullptr;
+LitMaterial* neonC = nullptr;
 void defaultScene() {
 	// Set default skybox
 	if (Runtime::defaultSkybox != nullptr) {
@@ -147,16 +150,27 @@ void defaultScene() {
 	shadowedSphere->meshRenderer->materials.push_back(whiteMaterial);
 	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
 
-	LitMaterial* neon = new LitMaterial();
-	neon->emission = true;
-	neon->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
-	neon->emissionIntensity = 0.8f;
+	neonA = new LitMaterial();
+	neonA->emission = true;
+	neonA->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
+	neonA->emissionIntensity = 1.2f;
+
+	neonB = new LitMaterial();
+	neonB->emission = true;
+	neonB->emissionColor = glm::vec4(0.2f, 0.5f, 1.0f, 1.0f);
+	neonB->emissionIntensity = 1.2f;
+
+	neonC = new LitMaterial();
+	neonC->emission = true;
+	neonC->emissionColor = glm::vec4(0.3f, 0.6f, 0.8f, 1.0f);
+	neonC->emissionIntensity = 1.2f;
+
 	Model* neonModel = new Model("./user/assets/models/pacman_neon_lights.fbx");
 	Entity* neonLight = new Entity();
 	neonLight->transform.position = glm::vec3(14.5f, 2.5f, 9.5f);
 	neonLight->transform.scale = glm::vec3(5.0f, 5.0f, 5.0f);
 	neonLight->meshRenderer->model = neonModel;
-	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
+	neonLight->meshRenderer->materials = { neonA, neonA, neonA, neonA, neonA, neonA, neonA };
 
 	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
@@ -215,14 +229,19 @@ void performanceScene() {
 }
 
 void awake() {
-	performanceScene();
+	defaultScene();
 }
 
 void update() {
+	// Performance Scene
+	/*
 	float range = 1.0f;
 	for (int i = 0; i < cubes.size(); i++) {
 		cubes.at(i)->transform.position.y = range * std::sin(Runtime::time * (float)i);
 	}
 	cubes.at(cubes.size() - 1)->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;
-	// mannequin->transform.rotation.y += 360.0f * 2.5f * Runtime::deltaTime;
+	*/
+
+	// Default Scene
+	mannequin->transform.rotation.y += 360.0f * 2.5f * Runtime::deltaTime;
 }

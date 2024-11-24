@@ -51,7 +51,6 @@ void PostProcessing::setup()
 	// Setup post processing pipeline
 	MotionBlurPass::setup();
 	BloomPass::setup();
-	DebugPass::setup();
 }
 
 void PostProcessing::render(unsigned int hdrInput)

@@ -63,6 +63,9 @@ void VelocityBuffer::setup()
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
 		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
 	}
+
+	// Unbind framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int VelocityBuffer::render()
