@@ -114,7 +114,7 @@ unsigned int ForwardPass::render()
 	Runtime::prePassShader->bind();
 	// Pre pass render each entity
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->meshRenderer->prePass();
+		entityLinks[i]->meshRenderer->prePass();
 	}
 	// Re-enable color writing after pre pass
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -126,7 +126,7 @@ unsigned int ForwardPass::render()
 
 	// Render each linked entity to bound forward pass frame
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->meshRenderer->forwardPass();
+		entityLinks[i]->meshRenderer->forwardPass();
 	}
 
 	// Disable wireframe if enabled

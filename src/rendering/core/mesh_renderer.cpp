@@ -65,7 +65,7 @@ void MeshRenderer::forwardPass()
         // Try find material by models material index
         if (materialIndex < materials.size()) {
             // Available material found -> use material
-            material = materials.at(materialIndex);
+            material = materials[materialIndex];
         }
 
         // No available material found -> use default material
@@ -102,9 +102,9 @@ void MeshRenderer::prePass()
     if (isCulled()) return;
 
     // Depth pre pass each mesh of entity
-    for (int a = 0; a < model->meshes.size(); a++) {
+    for (int i = 0; i < model->meshes.size(); i++) {
         // Get current mesh
-        Mesh* mesh = model->meshes.at(a);
+        Mesh* mesh = model->meshes[i];
 
         // Bind mesh
         mesh->bind();
@@ -133,7 +133,7 @@ void MeshRenderer::shadowPass()
     // Shadow pass each mesh of entity
     for (int i = 0; i < model->meshes.size(); i++) {
         // Get current mesh
-        Mesh* mesh = model->meshes.at(i);
+        Mesh* mesh = model->meshes[i];
 
         // Bind mesh
         mesh->bind();
@@ -161,7 +161,7 @@ void MeshRenderer::velocityPass()
 
     for (int i = 0; i < model->meshes.size(); i++) {
         // Get current mesh
-        Mesh* mesh = model->meshes.at(i);
+        Mesh* mesh = model->meshes[i];
 
         // Bind mesh
         mesh->bind();

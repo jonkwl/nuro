@@ -14,15 +14,34 @@ unsigned int AmbientOcclusionPass::compositeOutput = 0;
 Shader* AmbientOcclusionPass::aoPassShader = nullptr;
 Shader* AmbientOcclusionPass::compositeShader = nullptr;
 
+std::vector<glm::vec3> AmbientOcclusionPass::kernel;
+unsigned int AmbientOcclusionPass::noiseTexture = 0;
+
 void AmbientOcclusionPass::setup()
 {
+	// Default kernel setup
+	unsigned int nSamples = 64;
+	float noiseSize = 4.0f;
+
+	// Get sample kernel and noise textures
+	kernel = generateKernel(nSamples);
+	noiseTexture = generateNoiseTexture(nSamples, noiseSize);
+
 	// Get shaders
 	aoPassShader = ShaderPool::get("ambient_occlusion_pass");
 
 	// Set ambient occlusion pass shaders static uniforms
 	aoPassShader->bind();
+
 	aoPassShader->setInt("depthInput", AMBIENT_OCCLUSION_DEPTH_UNIT);
 	aoPassShader->setInt("normalInput", AMBIENT_OCCLUSION_NORMAL_UNIT);
+	aoPassShader->setInt("noiseTexture", AMBIENT_OCCLUSION_NOISE_UNIT);
+
+	aoPassShader->setFloat("noiseSize", noiseSize);
+
+	for (int i = 0; i < nSamples; ++i) {
+		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
+	}
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
@@ -84,8 +103,9 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigne
 	aoPassShader->bind();
 
 	// Set ambient occlusion pass shader uniforms
-	aoPassShader->setVec2("depthResolution", glm::vec2(Window::width, Window::height));
-	aoPassShader->setMatrix4("inverseViewProjectionMatrix", glm::inverse(MeshRenderer::currentViewProjectionMatrix));
+	aoPassShader->setVec2("resolution", glm::vec2(Window::width, Window::height));
+	aoPassShader->setMatrix4("projectionMatrix", MeshRenderer::currentProjectionMatrix);
+	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
 
 	// Bind depth input
 	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_DEPTH_UNIT);
@@ -95,6 +115,10 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigne
 	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_NORMAL_UNIT);
 	glBindTexture(GL_TEXTURE_2D, normalInput);
 
+	// Bind noise texture
+	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_NOISE_UNIT);
+	glBindTexture(GL_TEXTURE_2D, noiseTexture);
+
 	// Bind and render to quad
 	Quad::bind();
 	Quad::render();
@@ -103,4 +127,68 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigne
 void AmbientOcclusionPass::compositePass(unsigned int hdrInput)
 {
 	compositeOutput = aoOutput;
+}
+
+std::vector<glm::vec3> AmbientOcclusionPass::generateKernel(unsigned int nSamples)
+{
+	std::vector<glm::vec3> kernel;
+
+	for (int i = 0; i < nSamples; ++i) {
+		// Generate raw sample with random values
+		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, random());
+
+		// Normalize sample
+		sample = glm::normalize(sample);
+
+		// Weight with random value
+		sample *= random();
+
+		// More weight to samples closer to the center
+		float scale = (float)i / (float)nSamples;
+		scale = lerp(0.1f, 1.0f, scale * scale);
+		sample *= scale;
+
+		// Add sample to kernel
+		kernel.push_back(sample);
+	}
+
+	return kernel;
+}
+
+unsigned int AmbientOcclusionPass::generateNoiseTexture(unsigned int nSamples, float size)
+{
+	// Generate noise samples
+	std::vector<glm::vec3> noiseSamples;
+
+	for (int i = 0; i < nSamples; i++) {
+		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, 0.0f);
+		noiseSamples.push_back(sample);
+	}
+
+	// Generate noise texture with noise samples
+	unsigned int output = 0;
+	glGenTextures(1, &output);
+	glBindTexture(GL_TEXTURE_2D, output);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, size, size, 0, GL_RGB, GL_FLOAT, &noiseSamples[0]);
+
+	// Set noise texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Return noise texture
+	return output;
+}
+
+float AmbientOcclusionPass::random()
+{
+	std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+	std::default_random_engine generator;
+	return distribution(generator);
+}
+
+float AmbientOcclusionPass::lerp(float start, float end, float value)
+{
+	return start + value * (end - start);
 }

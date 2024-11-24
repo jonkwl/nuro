@@ -237,9 +237,9 @@ void update() {
 	/*
 	float range = 1.0f;
 	for (int i = 0; i < cubes.size(); i++) {
-		cubes.at(i)->transform.position.y = range * std::sin(Runtime::time * (float)i);
+		cubes[i]->transform.position.y = range * std::sin(Runtime::time * (float)i);
 	}
-	cubes.at(cubes.size() - 1)->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;
+	cubes[cubes.size() - 1]->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;
 	*/
 
 	// Default Scene

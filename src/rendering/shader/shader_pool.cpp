@@ -19,7 +19,7 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
 
 			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
 			shader_names.push_back(shaders_in_folder[x]);
-			Log::printProcessInfo("- " + shader_names.at(shader_names.size() - 1));
+			Log::printProcessInfo("- " + shader_names[shader_names.size() - 1]);
 		}
 	}
 
@@ -31,7 +31,7 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
 		const char* fragment_src = fragment_code.c_str();
 
 		bool compiled = false;
-		std::string name = shader_names.at(i);
+		std::string name = shader_names[i];
 		Shader* shader = new Shader(vertex_src, fragment_src, compiled, name);
 		if (compiled) {
 			shaders.push_back(shader);
@@ -47,7 +47,7 @@ Shader* ShaderPool::get(std::string name) {
 	auto it = std::find(identifiers.begin(), identifiers.end(), name);
 	if (it != identifiers.end()) {
 		int index = std::distance(identifiers.begin(), it);
-		return shaders.at(index);
+		return shaders[index];
 	}
 	else {
 		Log::printError("ShaderPool", "Couldn't find shader " + name);

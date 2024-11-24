@@ -106,7 +106,7 @@ unsigned int VelocityBuffer::velocityPasses()
 	// Render velocity buffer by performing velocity pass on each object
 	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks.at(i)->meshRenderer->velocityPass();
+		entityLinks[i]->meshRenderer->velocityPass();
 	}
 
 	// Disable depth testing
