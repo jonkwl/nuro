@@ -9,14 +9,14 @@ Shader* PostProcessing::finalPassShader = nullptr;
 
 PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessingConfiguration();
 
-unsigned int PostProcessing::framebuffer = 0;
+unsigned int PostProcessing::fbo = 0;
 unsigned int PostProcessing::output = 0;
 
 void PostProcessing::setup()
 {
 	// Generate framebuffer
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Generate output texture
 	glGenTextures(1, &output);
@@ -26,6 +26,8 @@ void PostProcessing::setup()
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Attach output texture to framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
@@ -49,6 +51,7 @@ void PostProcessing::setup()
 	defaultConfiguration = configuration;
 
 	// Setup post processing pipeline
+	AmbientOcclusionPass::setup();
 	MotionBlurPass::setup();
 	BloomPass::setup();
 }
@@ -61,6 +64,12 @@ void PostProcessing::render(unsigned int hdrInput)
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_HDR = hdrInput;
 	unsigned int POST_PROCESSING_PIPELINE_DEPTH = PrePass::getOutput();
+
+	// Ambient occlusion pass
+	if (configuration.ambientOcclusion) {
+		// Apply ambient occlusion on post processing hdr input
+		POST_PROCESSING_PIPELINE_HDR = AmbientOcclusionPass::render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
+	}
 
 	// Motion blur pass
 	if (configuration.motionBlur) {
@@ -78,7 +87,7 @@ void PostProcessing::render(unsigned int hdrInput)
 		BLOOM_PASS_OUTPUT = BloomPass::render(POST_PROCESSING_PIPELINE_HDR);
 	}
 
-	// glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); // Bind post processing framebuffer
+	// glBindFramebuffer(GL_FRAMEBUFFER, fbo); // Bind post processing framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind default framebuffer
 
 	// Bind finalPassShader and set uniforms

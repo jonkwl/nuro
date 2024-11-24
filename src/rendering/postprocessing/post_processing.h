@@ -11,6 +11,7 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/postprocessing/bloom/bloom_pass.h"
 #include "../src/rendering/postprocessing/motionblur/motion_blur_pass.h"
+#include "../src/rendering/postprocessing/ambientocclusion/ambient_occlusion_pass.h"
 
 enum FinalPassTextureSlots {
 	HDR_BUFFER_UNIT,
@@ -57,25 +58,25 @@ struct PostProcessingConfiguration {
 	float vignetteSoftness = 0.35f;
 	float vignetteRoundness = 1.8f;
 
-	bool ambientOcclusion = false;
+	bool ambientOcclusion = true;
 };
 
 class PostProcessing
 {
 public:
-	static void setup();
-	static void render(unsigned int hdrInput);
+	static void setup(); // Setup post processing
+	static void render(unsigned int hdrInput); // Render post processing by performing all post processing passes on input
 
-	static PostProcessingConfiguration configuration;
+	static PostProcessingConfiguration configuration; // Current post processing configuration
 
-	static unsigned int getOutput();
+	static unsigned int getOutput(); // Get output of last post processing render
 private:
-	static void syncConfiguration();
+	static void syncConfiguration(); // Sync the post processing configuration with final pass shader
 
-	static Shader* finalPassShader;
+	static Shader* finalPassShader; // Post processing final pass shader
 
-	static PostProcessingConfiguration defaultConfiguration;
+	static PostProcessingConfiguration defaultConfiguration; // Default configuration cache
 
-	static unsigned int framebuffer;
-	static unsigned int output;
+	static unsigned int fbo; // Framebuffer
+	static unsigned int output; // Post processing output
 };

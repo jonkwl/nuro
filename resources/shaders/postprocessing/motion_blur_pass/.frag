@@ -96,12 +96,13 @@ void calculatePositions() {
     // get fragment position in clip space (convert texture coordinates and depth to NDC)
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
 
-    // transform clip space position to world space position
+    // transform clip space position to view space position
     vec4 viewSpacePosition = inverseProjectionMatrix * clipSpacePosition;
 
     // perspective division
     viewSpacePosition /= viewSpacePosition.w;
 
+    // transform view space position into world space position
     vec4 worldSpacePosition = inverseViewMatrix * viewSpacePosition;
 
     // set positions
