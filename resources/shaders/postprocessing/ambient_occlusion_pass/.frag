@@ -2,6 +2,8 @@
 
 out vec4 FragColor;
 
+in vec2 uv;
+
 uniform sampler2D depthInput;
 uniform sampler2D normalInput;
 uniform sampler2D noiseTexture;
@@ -13,8 +15,6 @@ uniform vec3 samples[N_MAX_SAMPLES];
 uniform vec2 resolution;
 uniform mat4 projectionMatrix;
 uniform mat4 inverseProjectionMatrix;
-
-in vec2 uv;
 
 vec3 normal;
 vec3 viewPosition;

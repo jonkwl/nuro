@@ -35,7 +35,7 @@ struct PostProcessingConfiguration {
 	bool motionBlurObjectSilhouetteExtension = false;
 
 	bool bloom = true;
-	float bloomIntensity = 0.35f;
+	float bloomIntensity = 0.38f;
 	float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
 	float bloomThreshold = 0.2f;
 	float bloomSoftThreshold = 0.0f;
@@ -46,8 +46,8 @@ struct PostProcessingConfiguration {
 	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;
-	float chromaticAberrationIntensity = 0.1f;
-	int chromaticAberrationIterations = 12;
+	float chromaticAberrationIntensity = 0.06f;
+	int chromaticAberrationIterations = 6;
 
 	bool vignette = true;
 	float vignetteIntensity = 1.0f;

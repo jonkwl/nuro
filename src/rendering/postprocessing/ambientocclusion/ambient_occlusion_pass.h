@@ -7,11 +7,12 @@
 
 #include "../src/rendering/shader/Shader.h"
 
-enum AmbientOcclusionPassUnits {
-	AMBIENT_OCCLUSION_HDR_UNIT,
+enum AmbientOcclusionUnits {
 	AMBIENT_OCCLUSION_DEPTH_UNIT,
 	AMBIENT_OCCLUSION_NORMAL_UNIT,
-	AMBIENT_OCCLUSION_NOISE_UNIT
+	AMBIENT_OCCLUSION_NOISE_UNIT,
+	AMBIENT_OCCLUSION_HDR_UNIT,
+	AMBIENT_OCCLUSION_AO_UNIT
 };
 
 class AmbientOcclusionPass
