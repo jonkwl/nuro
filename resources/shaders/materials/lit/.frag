@@ -15,12 +15,14 @@ in vec3 v_fragmentWorldPosition;
 in vec4 v_fragmentLightSpacePosition;
 
 vec2 uv;
+vec2 screenUV;
 vec3 normal;
 
 struct Configuration {
     // General parameters
     float gamma;
     bool solidMode;
+    vec2 screenResolution;
 
     // Shadow parameters
     bool castShadows;
@@ -40,6 +42,11 @@ struct Configuration {
     int numDirectionalLights;
     int numPointLights;
     int numSpotLights;
+
+    // SSAO
+    bool enableSSAO;
+    sampler2D ssaoBuffer;
+    float ssaoImpact;
 };
 uniform Configuration configuration;
 
@@ -72,10 +79,10 @@ struct SpotLight {
 };
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-const int NO_FOG = 0;
-const int LINEAR_FOG = 1;
-const int EXPONENTIAL_FOG = 2;
-const int EXPONENTIAL_SQUARED_FOG = 3;
+#define NO_FOG 0
+#define LINEAR_FOG 1
+#define EXPONENTIAL_FOG 2
+#define EXPONENTIAL_SQUARED_FOG 3
 
 struct Fog {
     int type;
@@ -363,6 +370,15 @@ float getAmbientOcclusionMapSample()
     return ambientOcclusionMapSample;
 }
 
+float getSSAO(){
+    float ssao = 1.0;
+    if(configuration.enableSSAO){
+        ssao = texture(configuration.ssaoBuffer, screenUV).r;
+        ssao = mix(1.0, ssao, configuration.ssaoImpact); // Needs better mixing algorithm
+    }
+    return ssao;
+}
+
 vec3 getEmission() {
     vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
     if (material.enableEmissionMap) {
@@ -475,6 +491,9 @@ vec4 shadePBR() {
     // get ambient occlusion
     float ambientOcclusionMapSample = getAmbientOcclusionMapSample();
 
+    // get ssao
+    float ssao = getSSAO();
+
     vec3 N = normal;
     vec3 V = normalize(configuration.cameraPosition - v_fragmentWorldPosition); // view direction
 
@@ -571,8 +590,8 @@ vec4 shadePBR() {
     // assemble shaded color
     vec3 color = Lo;
 
-    // modulate color by ambient occlusion map sample
-    color *= ambientOcclusionMapSample;
+    // apply ambient occlusion: modulate color by ambient occlusion map sample and ssao
+    color *= ambientOcclusionMapSample * ssao;
 
     // gamma correct if using albedo map
     if (material.enableAlbedoMap) {
@@ -696,6 +715,7 @@ vec4 shadeShadowMap() {
 void main()
 {
     uv = v_uv * material.tiling + material.offset;
+    screenUV = gl_FragCoord.xy / vec2(configuration.screenResolution.x, configuration.screenResolution.y);
     normal = getNormal();
 
     if (!configuration.solidMode) {

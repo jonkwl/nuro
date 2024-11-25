@@ -1,6 +1,6 @@
 #version 330 core
 
-out vec3 FragColor;
+out vec4 FragColor;
 
 in vec4 v_viewPosition;
 in vec4 v_position;
@@ -19,5 +19,5 @@ void main() {
     float viewSpaceDepth = v_viewPosition.z;
     
     // RED CHANNEL = x velocity | GREEN CHANNEL = y velocity | BLUE CHANNEL = view space depth
-    FragColor = vec3(velocity.x, velocity.y, viewSpaceDepth);
+    FragColor = vec4(velocity.x, velocity.y, viewSpaceDepth, 1.0);
 }

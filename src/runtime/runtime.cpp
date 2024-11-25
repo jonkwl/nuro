@@ -59,6 +59,9 @@ unsigned int Runtime::nGPUEntities = 0;
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
+unsigned int Runtime::ssaoBuffer = 0;
+float Runtime::ssaoImpact = 1.0f;
+
 bool skipSkyboxLoad = false; // tmp
 
 void Runtime::linkEntity(Entity* entity)
@@ -218,6 +221,9 @@ int Runtime::START_LOOP() {
 	// Setup pre pass
 	PrePass::setup(Window::width, Window::height);
 
+	// Setup ambient occlusion pass
+	SSAOPass::setup();
+
 	// Setup post processing
 	PostProcessing::setup();
 
@@ -344,6 +350,19 @@ int Runtime::START_LOOP() {
 		Profiler::start("pre_pass");
 		PrePass::render();
 		Profiler::stop("pre_pass");
+
+		unsigned int PRE_PASS_DEPTH_OUTPUT = PrePass::getDepthOutput();
+		unsigned int PRE_PASS_NORMAL_OUTPUT = PrePass::getNormalOutput();
+
+		//
+		// SCREEN SPACE AMBIENT OCCLUSION PASS
+		// Calculate screen space ambient occlusion if enabled
+		//
+		unsigned int SSAO_OUTPUT = 0;
+		if (PostProcessing::configuration.ambientOcclusion) {
+			SSAO_OUTPUT = SSAOPass::render(PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+		}
+		ssaoBuffer = SSAO_OUTPUT;
 
 		//
 		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.

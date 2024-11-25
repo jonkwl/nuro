@@ -11,13 +11,13 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/postprocessing/bloom/bloom_pass.h"
 #include "../src/rendering/postprocessing/motionblur/motion_blur_pass.h"
-#include "../src/rendering/postprocessing/ambientocclusion/ambient_occlusion_pass.h"
+#include "../src/rendering/ssao/ssao_pass.h"
 
 enum FinalPassTextureSlots {
-	HDR_BUFFER_UNIT,
-	DEPTH_BUFFER_UNIT,
-	BLOOM_BUFFER_UNIT,
-	LENS_DIRT_UNIT
+	FINAL_PASS_HDR_UNIT,
+	FINAL_PASS_DEPTH_UNIT,
+	FINAL_PASS_BLOOM_UNIT,
+	FINAL_PASS_LENS_DIRT_UNIT
 };
 
 struct PostProcessingConfiguration {
@@ -56,10 +56,10 @@ struct PostProcessingConfiguration {
 	float vignetteSoftness = 0.35f;
 	float vignetteRoundness = 1.8f;
 
-	bool ambientOcclusion = false;
+	bool ambientOcclusion = true;
 	float ambientOcclusionRadius = 0.2f;
 	int ambientOcclusionSamples = 64;
-	float ambientOcclusionPower = 10.0f;
+	float ambientOcclusionPower = 20.0f;
 	float ambientOcclusionBias = 0.03f;
 };
 

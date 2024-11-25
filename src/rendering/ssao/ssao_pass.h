@@ -7,31 +7,31 @@
 
 #include "../src/rendering/shader/Shader.h"
 
-enum AmbientOcclusionUnits {
-	AMBIENT_OCCLUSION_DEPTH_UNIT,
-	AMBIENT_OCCLUSION_NORMAL_UNIT,
-	AMBIENT_OCCLUSION_NOISE_UNIT,
-	AMBIENT_OCCLUSION_HDR_UNIT,
-	AMBIENT_OCCLUSION_AO_UNIT
+enum SSAOUnits {
+	SSAO_DEPTH_UNIT,
+	SSAO_NORMAL_UNIT,
+	SSAO_NOISE_UNIT,
+	SSAO_AO_UNIT
 };
 
-class AmbientOcclusionPass
+class SSAOPass
 {
 public:
 	static void setup(); // Setup ambient occlusion pass
-	static unsigned int render(unsigned int hdrInput, unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return output
+	static unsigned int render(unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return output
 private:
 	static unsigned int fbo; // Framebuffer
 
-	static unsigned int aoOutput; // Ambient occlusion output
-	static unsigned int compositeOutput; // Ambient occlusion applied on hdr input
+	static unsigned int rawOutput; // Raw ambient occlusion output
+	static unsigned int output; // Final blurred ambient occlusion output
 
 	static void ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput);
-	static void compositePass(unsigned int hdrInput);
+	static void blurPass();
 
 	static Shader* aoPassShader; // Ambient occlusion pass shader
-	static Shader* compositeShader; // Composite shader
+	static Shader* aoBlurShader; // Composite shader
 
+	static glm::vec2 aoResolution; // Height and width of ambient occlusion output
 	static const unsigned int nMaxSamples; // Fixed maximum kernel sample amount
 	static const float noiseSize; // Fixed noise size
 

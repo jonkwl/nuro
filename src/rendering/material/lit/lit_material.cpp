@@ -49,6 +49,11 @@ void LitMaterial::bind()
 	shader->setFloat("configuration.shadowDiskFilterSize", Runtime::mainShadowDisk->getFilterSize());
 	shader->setFloat("configuration.shadowDiskRadius", Runtime::mainShadowDisk->getRadius());
 
+	// SSAO
+	shader->setBool("configuration.enableSSAO", PostProcessing::configuration.ambientOcclusion);
+	glActiveTexture(GL_TEXTURE0 + SSAO_UNIT);
+	glBindTexture(GL_TEXTURE_2D, Runtime::ssaoBuffer);
+
 	// World parameters
 	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
 
@@ -144,6 +149,7 @@ void LitMaterial::setEmissionMap(Texture* emissionMap)
 void LitMaterial::syncStaticUniforms()
 {
 	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
+	shader->setVec2("configuration.screenResolution", glm::vec2(Window::width, Window::height));
 
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);
@@ -156,6 +162,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.emissionMap", EMISSION_MAP_UNIT);
 	shader->setInt("configuration.shadowDisk", SHADOW_DISK_UNIT);
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
+	shader->setInt("configuration.ssaoBuffer", SSAO_UNIT);
 }
 
 void LitMaterial::syncLightUniforms()

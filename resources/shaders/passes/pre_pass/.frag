@@ -1,6 +1,6 @@
 #version 330 core
 
-out vec3 FragColor;
+out vec4 FragColor;
 
 in vec3 v_viewNormal;
 
@@ -12,5 +12,5 @@ vec3 encodeNormalOutput(vec3 normal) {
 void main()
 {
     // encode view space normal as color and set as output
-    FragColor = encodeNormalOutput(v_viewNormal);
+    FragColor = vec4(encodeNormalOutput(v_viewNormal), 1.0);
 }

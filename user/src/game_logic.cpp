@@ -9,9 +9,8 @@
 #include "../src/rendering/material/lit/lit_material.h"
 
 Entity* mannequin = nullptr;
-LitMaterial* neonA = nullptr;
-LitMaterial* neonB = nullptr;
-LitMaterial* neonC = nullptr;
+LitMaterial* neon = nullptr;
+Entity* neonLight = nullptr;
 void defaultScene() {
 	// Set default skybox
 	if (Runtime::defaultSkybox != nullptr) {
@@ -50,12 +49,12 @@ void defaultScene() {
 	Entity* sphere = new Entity();
 	sphere->meshRenderer->model = sphereModel;
 	sphere->meshRenderer->materials.push_back(sphereMaterial);
-	sphere->transform.position = glm::vec3(0.0f, 0.0f, 6.5f);
+	sphere->transform.position = glm::vec3(0.0f, 0.6f, 6.5f);
 
 	Entity* collisionSphere = new Entity();
 	collisionSphere->meshRenderer->model = sphereModel;
 	collisionSphere->meshRenderer->materials.push_back(sphereMaterial);
-	collisionSphere->transform.position = glm::vec3(5.0f, 0.0f, 6.5f);
+	collisionSphere->transform.position = glm::vec3(5.0f, 0.6f, 6.5f);
 
 	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
 	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
@@ -70,7 +69,7 @@ void defaultScene() {
 	Entity* pbrSphere = new Entity();
 	pbrSphere->meshRenderer->model = pbrSphereModel;
 	pbrSphere->meshRenderer->materials.push_back(pbrSphereMaterial);
-	pbrSphere->transform.position = glm::vec3(3.0f, 0.0f, 6.5f);
+	pbrSphere->transform.position = glm::vec3(3.0f, 0.6f, 6.5f);
 
 	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
 	LitMaterial* plank = new LitMaterial();
@@ -82,7 +81,7 @@ void defaultScene() {
 	Entity* cube = new Entity();
 	cube->meshRenderer->model = cubeModel;
 	cube->meshRenderer->materials.push_back(plank);
-	cube->transform.position = glm::vec3(-3.0f, 1.5f, 6.5f);
+	cube->transform.position = glm::vec3(-3.0f, 1.0f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
@@ -148,29 +147,19 @@ void defaultScene() {
 	Entity* shadowedSphere = new Entity();
 	shadowedSphere->meshRenderer->model = shadowedSphereModel;
 	shadowedSphere->meshRenderer->materials.push_back(whiteMaterial);
-	shadowedSphere->transform.position = glm::vec3(12.5f, 0.4f, 8.0f);
+	shadowedSphere->transform.position = glm::vec3(12.5f, 0.6f, 8.0f);
 
-	neonA = new LitMaterial();
-	neonA->emission = true;
-	neonA->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
-	neonA->emissionIntensity = 1.2f;
-
-	neonB = new LitMaterial();
-	neonB->emission = true;
-	neonB->emissionColor = glm::vec4(0.2f, 0.5f, 1.0f, 1.0f);
-	neonB->emissionIntensity = 1.2f;
-
-	neonC = new LitMaterial();
-	neonC->emission = true;
-	neonC->emissionColor = glm::vec4(0.3f, 0.6f, 0.8f, 1.0f);
-	neonC->emissionIntensity = 1.2f;
+	neon = new LitMaterial();
+	neon->emission = true;
+	neon->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
+	neon->emissionIntensity = 1.2f;
 
 	Model* neonModel = new Model("./user/assets/models/pacman_neon_lights.fbx");
-	Entity* neonLight = new Entity();
+	neonLight = new Entity();
 	neonLight->transform.position = glm::vec3(14.5f, 2.5f, 9.5f);
 	neonLight->transform.scale = glm::vec3(5.0f, 5.0f, 5.0f);
 	neonLight->meshRenderer->model = neonModel;
-	neonLight->meshRenderer->materials = { neonA, neonA, neonA, neonA, neonA, neonA, neonA };
+	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
 
 	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
@@ -244,4 +233,6 @@ void update() {
 
 	// Default Scene
 	mannequin->transform.rotation.y += 360.0f * 2.5f * Runtime::deltaTime;
+
+	neonLight->meshRenderer->ambientOcclusionImpact = Runtime::ssaoImpact;
 }

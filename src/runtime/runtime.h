@@ -44,6 +44,7 @@ using json = nlohmann::json;
 #include "../src/window/window.h"
 #include "../src/input/input.h"
 #include "../src/rendering/gizmos/quick_gizmo.h"
+#include "../src/rendering/ssao/ssao_pass.h"
 #include "../user/src/game_logic.h"
 
 class Runtime {
@@ -110,6 +111,10 @@ public:
 	static unsigned int currentDrawCalls;
 	static unsigned int currentVertices;
 	static unsigned int currentPolygons;
+
+	// Screen space ambient occlusion
+	static unsigned int ssaoBuffer;
+	static float ssaoImpact;
 
 	// tmp for testing
 	static float intensity;

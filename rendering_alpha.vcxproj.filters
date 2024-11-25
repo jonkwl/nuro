@@ -186,7 +186,7 @@
     <ClCompile Include="src\rendering\postprocessing\motionblur\velocity_buffer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\ambientocclusion\ambient_occlusion_pass.cpp">
+    <ClCompile Include="src\rendering\ssao\ssao_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -368,7 +368,7 @@
     <ClInclude Include="src\rendering\postprocessing\motionblur\velocity_buffer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\ambientocclusion\ambient_occlusion_pass.h">
+    <ClInclude Include="src\rendering\ssao\ssao_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

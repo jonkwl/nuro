@@ -26,7 +26,10 @@ vec3 viewPosition;
 vec2 noiseScale;
 vec3 noiseSample;
 
-vec3 getViewPosition(float depth) {
+vec3 getViewPosition() {
+    // sample current fragments depth
+    float depth = texture(depthInput, uv).r;
+
     // get fragment position in clip space (convert texture coordinates and depth to NDC)
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
 
@@ -97,20 +100,11 @@ float calculateOcclusion(){
 
 void main()
 {
-    // sample current fragments depth
-    float depth = texture(depthInput, uv).r;
-
-    // skip occlusion calculation if depth is 1.0 (eg skybox)
-    if(depth == 1.0){
-        FragColor = vec4(1.0);
-        return;
-    }
-
     // get fragment normal
     normal = decodeNormalInput();
 
     // get fragment view position
-    viewPosition = getViewPosition(depth);
+    viewPosition = getViewPosition();
 
     // calculate noise scale
     noiseScale = vec2(resolution.x / noiseSize, resolution.y / noiseSize);
@@ -121,5 +115,5 @@ void main()
     // calculate occlusion factor
     float occlusion = calculateOcclusion();
 
-    FragColor = vec4(vec3(occlusion), 1.0);
+    FragColor = vec4(occlusion, 0.0, 0.0, 1.0);
 }

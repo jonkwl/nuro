@@ -1,6 +1,6 @@
 #version 330 core
 
-out vec3 FragColor;
+out vec4 FragColor;
 
 in vec2 uv;
 
@@ -11,5 +11,5 @@ void main() {
     vec3 bufferSample = texture(velocityBuffer, uv).rgb;
     vec2 velocitySample = bufferSample.rg;
 
-    FragColor = vec3(velocitySample, bufferSample.b);
+    FragColor = vec4(velocitySample, bufferSample.b, 1.0);
 }

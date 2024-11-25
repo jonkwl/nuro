@@ -1,4 +1,4 @@
-#include "ambient_occlusion_pass.h"
+#include "ssao_pass.h"
 
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/shader/shader_pool.h"
@@ -7,68 +7,72 @@
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 
-unsigned int AmbientOcclusionPass::fbo = 0;
+unsigned int SSAOPass::fbo = 0;
 
-unsigned int AmbientOcclusionPass::aoOutput = 0;
-unsigned int AmbientOcclusionPass::compositeOutput = 0;
+unsigned int SSAOPass::rawOutput = 0;
+unsigned int SSAOPass::output = 0;
 
-Shader* AmbientOcclusionPass::aoPassShader = nullptr;
-Shader* AmbientOcclusionPass::compositeShader = nullptr;
+Shader* SSAOPass::aoPassShader = nullptr;
+Shader* SSAOPass::aoBlurShader = nullptr;
 
-const unsigned int AmbientOcclusionPass::nMaxSamples = 64;
-const float AmbientOcclusionPass::noiseSize = 4.0f;
+glm::vec2 SSAOPass::aoResolution = glm::vec2(0.0);
+const unsigned int SSAOPass::nMaxSamples = 64;
+const float SSAOPass::noiseSize = 4.0f;
 
-std::vector<glm::vec3> AmbientOcclusionPass::kernel;
-unsigned int AmbientOcclusionPass::noiseTexture = 0;
+std::vector<glm::vec3> SSAOPass::kernel;
+unsigned int SSAOPass::noiseTexture = 0;
 
-void AmbientOcclusionPass::setup()
+void SSAOPass::setup()
 {
+	// Set width and height
+	const float aoScale = 1.0f; // Relative size of ambient occlusion output to screen size (0.5 = 50%)
+	aoResolution.x = (float)Window::width * aoScale;
+	aoResolution.y = (float)Window::height * aoScale;
+	
 	// Get sample kernel and noise textures
 	kernel = generateKernel(nMaxSamples);
 	noiseTexture = generateNoiseTexture(nMaxSamples, noiseSize);
 
 	// Set ambient occlusion pass shaders static uniforms
-	aoPassShader = ShaderPool::get("ambient_occlusion_pass");
+	aoPassShader = ShaderPool::get("ssao_pass");
 	aoPassShader->bind();
-	aoPassShader->setInt("depthInput", AMBIENT_OCCLUSION_DEPTH_UNIT);
-	aoPassShader->setInt("normalInput", AMBIENT_OCCLUSION_NORMAL_UNIT);
-	aoPassShader->setInt("noiseTexture", AMBIENT_OCCLUSION_NOISE_UNIT);
+	aoPassShader->setInt("depthInput", SSAO_DEPTH_UNIT);
+	aoPassShader->setInt("normalInput", SSAO_NORMAL_UNIT);
+	aoPassShader->setInt("noiseTexture", SSAO_NOISE_UNIT);
 	aoPassShader->setFloat("noiseSize", noiseSize);
 	for (int i = 0; i < nMaxSamples; ++i) {
 		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
 	}
 
-	// Set ambient occlusion composite shaders static uniforms
-	compositeShader = ShaderPool::get("ambient_occlusion_composite");
-	compositeShader->bind();
-	compositeShader->setInt("hdrInput", AMBIENT_OCCLUSION_HDR_UNIT);
-	compositeShader->setInt("aoInput", AMBIENT_OCCLUSION_AO_UNIT);
+	// Set ambient occlusion blur shaders static uniforms
+	aoBlurShader = ShaderPool::get("ssao_blur");
+	aoBlurShader->bind();
+	aoBlurShader->setInt("ssaoInput", SSAO_AO_UNIT);
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Generate ambient occlusion output texture
-	glGenTextures(1, &aoOutput);
-	glBindTexture(GL_TEXTURE_2D, aoOutput);
-	// IMPROVEMENT: Reduce to one channel R, as only one channel is needed for ambient occlusion value
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glGenTextures(1, &rawOutput);
+	glBindTexture(GL_TEXTURE_2D, rawOutput);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, aoResolution.x, aoResolution.y, 0, GL_RED, GL_FLOAT, nullptr);
 
-	// Set ambient occlusion output texture parameters
+	// Set raw ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	// Attach ambient occlusion output texture to framebuffer
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
+	// Attach raw ambient occlusion output texture to framebuffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rawOutput, 0);
 
-	// Generate composite output texture
-	glGenTextures(1, &compositeOutput);
-	glBindTexture(GL_TEXTURE_2D, compositeOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	// Generate final ambient occlusion output texture
+	glGenTextures(1, &output);
+	glBindTexture(GL_TEXTURE_2D, output);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width, Window::height, 0, GL_RED, GL_FLOAT, nullptr);
 
-	// Set composite output texture parameters
+	// Set final ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -84,25 +88,36 @@ void AmbientOcclusionPass::setup()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-unsigned int AmbientOcclusionPass::render(unsigned int hdrInput, unsigned int depthInput, unsigned int normalInput)
+unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
 {
+	// Disable depth testing and culling
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Perform ambient occlusion pass
 	ambientOcclusionPass(depthInput, normalInput);
 
-	// Perform composite pass: Apply ambient occlusion from previous pass to hdr input
-	compositePass(hdrInput);
+	// Perform blur pass: Blur ambient occlusion
+	blurPass();
+
+	// Re-Enable depth testing and culling
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	// Return output
-	return compositeOutput;
+	return output;
 }
 
-void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
+void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
 {
 	// Set render target to ao output
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rawOutput, 0);
+
+	// Set viewport size
+	glViewport(0, 0, aoResolution.x, aoResolution.y);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
 	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
@@ -124,15 +139,15 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigne
 	aoPassShader->setFloat("power", PostProcessing::configuration.ambientOcclusionPower);
 
 	// Bind depth input
-	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_DEPTH_UNIT);
+	glActiveTexture(GL_TEXTURE0 + SSAO_DEPTH_UNIT);
 	glBindTexture(GL_TEXTURE_2D, depthInput);
 
 	// Bind normal input
-	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_NORMAL_UNIT);
+	glActiveTexture(GL_TEXTURE0 + SSAO_NORMAL_UNIT);
 	glBindTexture(GL_TEXTURE_2D, normalInput);
 
 	// Bind noise texture
-	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_NOISE_UNIT);
+	glActiveTexture(GL_TEXTURE0 + SSAO_NOISE_UNIT);
 	glBindTexture(GL_TEXTURE_2D, noiseTexture);
 
 	// Bind and render to quad
@@ -140,29 +155,27 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigne
 	Quad::render();
 }
 
-// TEMPORARY DEBUGGING PASS!
-void AmbientOcclusionPass::compositePass(unsigned int hdrInput)
+void SSAOPass::blurPass()
 {
-	// Set render target to composite output
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, compositeOutput, 0);
+	// Set render target to final ambient occlusion output
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
 
-	// Bind composite shader
-	compositeShader->bind();
+	// Set viewport size
+	glViewport(0, 0, Window::width, Window::height);
 
-	// Bind hdr input
-	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_HDR_UNIT);
-	glBindTexture(GL_TEXTURE_2D, hdrInput);
+	// Bind blur shader
+	aoBlurShader->bind();
 
 	// Bind ao input
-	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_AO_UNIT);
-	glBindTexture(GL_TEXTURE_2D, aoOutput);
+	glActiveTexture(GL_TEXTURE0 + SSAO_AO_UNIT);
+	glBindTexture(GL_TEXTURE_2D, rawOutput);
 
 	// Bind and render to quad
 	Quad::bind();
 	Quad::render();
 }
 
-std::vector<glm::vec3> AmbientOcclusionPass::generateKernel(unsigned int nSamples)
+std::vector<glm::vec3> SSAOPass::generateKernel(unsigned int nSamples)
 {
 	std::vector<glm::vec3> kernel;
 
@@ -188,7 +201,7 @@ std::vector<glm::vec3> AmbientOcclusionPass::generateKernel(unsigned int nSample
 	return kernel;
 }
 
-unsigned int AmbientOcclusionPass::generateNoiseTexture(unsigned int nSamples, float size)
+unsigned int SSAOPass::generateNoiseTexture(unsigned int nSamples, float size)
 {
 	// Generate noise samples
 	std::vector<glm::vec3> noiseSamples;
@@ -214,14 +227,14 @@ unsigned int AmbientOcclusionPass::generateNoiseTexture(unsigned int nSamples, f
 	return output;
 }
 
-float AmbientOcclusionPass::random()
+float SSAOPass::random()
 {
 	std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
 	std::default_random_engine generator;
 	return distribution(generator);
 }
 
-float AmbientOcclusionPass::lerp(float start, float end, float value)
+float SSAOPass::lerp(float start, float end, float value)
 {
 	return start + value * (end - start);
 }

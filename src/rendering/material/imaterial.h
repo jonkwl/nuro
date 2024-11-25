@@ -10,7 +10,8 @@ enum TextureUnit {
     AMBIENT_OCCLUSION_MAP_UNIT,
     EMISSION_MAP_UNIT,
     SHADOW_DISK_UNIT,
-    SHADOW_MAP_UNIT
+    SHADOW_MAP_UNIT,
+    SSAO_UNIT
 };
 
 class IMaterial {

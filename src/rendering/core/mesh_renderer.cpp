@@ -18,6 +18,7 @@ MeshRenderer::MeshRenderer(Entity* parentEntity)
 
     useMotionBlur = false;
     motionBlurIntensity = 1.0f;
+    ambientOcclusionImpact = 1.0f;
 
     currentModelMatrix = glm::mat4(1.0f);
     currentMvpMatrix = glm::mat4(1.0f);
@@ -83,6 +84,9 @@ void MeshRenderer::forwardPass()
         shader->setMatrix4("modelMatrix", currentModelMatrix);
         shader->setMatrix3("normalMatrix", currentNormalMatrix);
         shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
+
+        // Optimization: Move to different place ensuring it only gets set if shader is lit shader and ssao is enabled
+        shader->setFloat("configuration.ssaoImpact", ambientOcclusionImpact);
 
         // Render mesh
         render(mesh->indices.size());
