@@ -46,7 +46,7 @@ struct PostProcessingConfiguration {
 	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;
-	float chromaticAberrationIntensity = 0.06f;
+	float chromaticAberrationIntensity = 0.055f;
 	int chromaticAberrationIterations = 6;
 
 	bool vignette = true;
@@ -57,6 +57,10 @@ struct PostProcessingConfiguration {
 	float vignetteRoundness = 1.8f;
 
 	bool ambientOcclusion = false;
+	float ambientOcclusionRadius = 0.2f;
+	int ambientOcclusionSamples = 64;
+	float ambientOcclusionPower = 10.0f;
+	float ambientOcclusionBias = 0.03f;
 };
 
 class PostProcessing

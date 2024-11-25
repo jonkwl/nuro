@@ -87,6 +87,12 @@ void PostProcessingWindow::prepare()
 	}
 
 	if (UIComponents::extendableSettings("Ambient Occlusion", PostProcessing::configuration.ambientOcclusion, ICON_FA_PROJECTOR)) {
+		UIComponents::headline("SSAO Settings");
+		UIComponents::input("Radius:", PostProcessing::configuration.ambientOcclusionRadius, 0.001f);
+		UIComponents::input("Samples:", PostProcessing::configuration.ambientOcclusionSamples, 0.1f);
+		UIComponents::input("Power:", PostProcessing::configuration.ambientOcclusionPower, 0.001f);
+		UIComponents::input("Bias:", PostProcessing::configuration.ambientOcclusionBias, 0.0001f);
+
 		UIComponents::space(0.0f, 8.0f);
 	}
 

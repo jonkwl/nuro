@@ -32,6 +32,9 @@ private:
 	static Shader* aoPassShader; // Ambient occlusion pass shader
 	static Shader* compositeShader; // Composite shader
 
+	static const unsigned int nMaxSamples; // Fixed maximum kernel sample amount
+	static const float noiseSize; // Fixed noise size
+
 	static std::vector<glm::vec3> kernel; // Sample kernel
 	static unsigned int noiseTexture; // Noise texture
 

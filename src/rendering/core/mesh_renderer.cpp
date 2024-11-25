@@ -6,6 +6,7 @@
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentViewProjectionMatrix = glm::mat4(1.0);
+glm::mat3 MeshRenderer::currentViewNormalMatrix = glm::mat3(1.0);
 
 glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
@@ -112,7 +113,7 @@ void MeshRenderer::prePass()
         // Set depth pre pass shader uniforms
         Shader* shader = Runtime::prePassShader;
         shader->setMatrix4("mvpMatrix", currentMvpMatrix);
-        shader->setMatrix3("normalMatrix", currentNormalMatrix);
+        shader->setMatrix3("viewNormalMatrix", currentViewNormalMatrix);
 
         // Render mesh
         render(mesh->indices.size());

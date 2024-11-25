@@ -1,5 +1,6 @@
 #include "ambient_occlusion_pass.h"
 
+#include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/primitives/quad.h"
@@ -14,18 +15,17 @@ unsigned int AmbientOcclusionPass::compositeOutput = 0;
 Shader* AmbientOcclusionPass::aoPassShader = nullptr;
 Shader* AmbientOcclusionPass::compositeShader = nullptr;
 
+const unsigned int AmbientOcclusionPass::nMaxSamples = 64;
+const float AmbientOcclusionPass::noiseSize = 4.0f;
+
 std::vector<glm::vec3> AmbientOcclusionPass::kernel;
 unsigned int AmbientOcclusionPass::noiseTexture = 0;
 
 void AmbientOcclusionPass::setup()
 {
-	// Default kernel setup
-	unsigned int nSamples = 64;
-	float noiseSize = 4.0f;
-
 	// Get sample kernel and noise textures
-	kernel = generateKernel(nSamples);
-	noiseTexture = generateNoiseTexture(nSamples, noiseSize);
+	kernel = generateKernel(nMaxSamples);
+	noiseTexture = generateNoiseTexture(nMaxSamples, noiseSize);
 
 	// Set ambient occlusion pass shaders static uniforms
 	aoPassShader = ShaderPool::get("ambient_occlusion_pass");
@@ -34,7 +34,7 @@ void AmbientOcclusionPass::setup()
 	aoPassShader->setInt("normalInput", AMBIENT_OCCLUSION_NORMAL_UNIT);
 	aoPassShader->setInt("noiseTexture", AMBIENT_OCCLUSION_NOISE_UNIT);
 	aoPassShader->setFloat("noiseSize", noiseSize);
-	for (int i = 0; i < nSamples; ++i) {
+	for (int i = 0; i < nMaxSamples; ++i) {
 		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
 	}
 
@@ -96,13 +96,19 @@ unsigned int AmbientOcclusionPass::render(unsigned int hdrInput, unsigned int de
 	compositePass(hdrInput);
 
 	// Return output
-	return aoOutput;
+	return compositeOutput;
 }
 
 void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
 {
 	// Set render target to ao output
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
+
+	// Get current sample amount, make sure its not higher than the maximum sample amount
+	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
+	if (nSamples > nMaxSamples) {
+		nSamples = nMaxSamples;
+	}
 
 	// Bind ambient occlusion pass shader
 	aoPassShader->bind();
@@ -111,6 +117,11 @@ void AmbientOcclusionPass::ambientOcclusionPass(unsigned int depthInput, unsigne
 	aoPassShader->setVec2("resolution", glm::vec2(Window::width, Window::height));
 	aoPassShader->setMatrix4("projectionMatrix", MeshRenderer::currentProjectionMatrix);
 	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
+
+	aoPassShader->setInt("nSamples", nSamples);
+	aoPassShader->setFloat("radius", PostProcessing::configuration.ambientOcclusionRadius);
+	aoPassShader->setFloat("bias", PostProcessing::configuration.ambientOcclusionBias);
+	aoPassShader->setFloat("power", PostProcessing::configuration.ambientOcclusionPower);
 
 	// Bind depth input
 	glActiveTexture(GL_TEXTURE0 + AMBIENT_OCCLUSION_DEPTH_UNIT);

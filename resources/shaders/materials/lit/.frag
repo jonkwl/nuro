@@ -445,8 +445,9 @@ float getAttenuation_range_infinite(float distance, float range)
 float getAttenuation_range_falloff_no_cusp(float distance, float range, float falloff)
 {
     float s = distance / range;
-    if (s >= 1.0)
+    if (s >= 1.0){
         return 0.0;
+    }
     float s2 = sqr(s);
     return sqr(1 - s2) / (1 + falloff * s2);
 }
@@ -454,8 +455,9 @@ float getAttenuation_range_falloff_no_cusp(float distance, float range, float fa
 float getAttenuation_range_falloff_cusp(float distance, float range, float falloff)
 {
     float s = distance / range;
-    if (s >= 1.0)
+    if (s >= 1.0){
         return 0.0;
+    }
     float s2 = sqr(s);
     return sqr(1 - s2) / (1 + falloff * s);
 }

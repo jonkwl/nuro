@@ -304,11 +304,13 @@ int Runtime::START_LOOP() {
 		glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
 		glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, width, height);
 		glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+		glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
 
 		// Set mesh renderers transformation matrix caches for upcomming render passes
 		MeshRenderer::currentViewMatrix = viewMatrix;
 		MeshRenderer::currentProjectionMatrix = projectionMatrix;
 		MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
+		MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 		// Update cameras frustum
 		renderCamera->updateFrustum(viewProjectionMatrix);

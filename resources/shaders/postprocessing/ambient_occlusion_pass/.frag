@@ -16,21 +16,17 @@ uniform vec2 resolution;
 uniform mat4 projectionMatrix;
 uniform mat4 inverseProjectionMatrix;
 
+uniform int nSamples;
+uniform float radius;
+uniform float bias;
+uniform float power;
+
 vec3 normal;
 vec3 viewPosition;
 vec2 noiseScale;
 vec3 noiseSample;
 
-int nSamples = 64;
-float radius = 0.5;
-// float bias = 0.025;
-float bias = 0.0;
-float power = 2.0;
-
-vec3 getViewPosition() {
-    // sample current fragments depth
-    float depth = texture(depthInput, uv).r;
-
+vec3 getViewPosition(float depth) {
     // get fragment position in clip space (convert texture coordinates and depth to NDC)
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
 
@@ -101,11 +97,20 @@ float calculateOcclusion(){
 
 void main()
 {
+    // sample current fragments depth
+    float depth = texture(depthInput, uv).r;
+
+    // skip occlusion calculation if depth is 1.0 (eg skybox)
+    if(depth == 1.0){
+        FragColor = vec4(1.0);
+        return;
+    }
+
     // get fragment normal
     normal = decodeNormalInput();
 
     // get fragment view position
-    viewPosition = getViewPosition();
+    viewPosition = getViewPosition(depth);
 
     // calculate noise scale
     noiseScale = vec2(resolution.x / noiseSize, resolution.y / noiseSize);
