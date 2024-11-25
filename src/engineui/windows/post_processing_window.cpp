@@ -93,10 +93,6 @@ void PostProcessingWindow::prepare()
 		UIComponents::input("Power:", PostProcessing::configuration.ambientOcclusionPower, 0.001f);
 		UIComponents::input("Bias:", PostProcessing::configuration.ambientOcclusionBias, 0.0001f);
 
-		UIComponents::space(0.0f, 5.0f);
-		UIComponents::label("Tmp: Pbject Based SSAO Impact");
-		UIComponents::input("SSAO Impact: ", Runtime::ssaoImpact, 0.01f);
-
 		UIComponents::space(0.0f, 8.0f);
 	}
 

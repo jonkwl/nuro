@@ -114,7 +114,6 @@ public:
 
 	// Screen space ambient occlusion
 	static unsigned int ssaoBuffer;
-	static float ssaoImpact;
 
 	// tmp for testing
 	static float intensity;

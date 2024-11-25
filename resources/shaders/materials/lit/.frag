@@ -46,7 +46,6 @@ struct Configuration {
     // SSAO
     bool enableSSAO;
     sampler2D ssaoBuffer;
-    float ssaoImpact;
 };
 uniform Configuration configuration;
 
@@ -374,7 +373,6 @@ float getSSAO(){
     float ssao = 1.0;
     if(configuration.enableSSAO){
         ssao = texture(configuration.ssaoBuffer, screenUV).r;
-        ssao = mix(1.0, ssao, configuration.ssaoImpact); // Needs better mixing algorithm
     }
     return ssao;
 }

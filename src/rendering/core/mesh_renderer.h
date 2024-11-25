@@ -18,7 +18,6 @@ public:
 	// Object related post processing settings
 	bool useMotionBlur; // Enable object motion blur for mesh renderer
 	float motionBlurIntensity; // Set objects motion blur intensity
-	float ambientOcclusionImpact; // Set impact ssao has on object
 	
 	// Prepare each mesh for upcoming passes for next frame (calculate and cache matrices, perform culling etc.)
 	void prepareNextFrame();

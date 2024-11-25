@@ -233,6 +233,4 @@ void update() {
 
 	// Default Scene
 	mannequin->transform.rotation.y += 360.0f * 2.5f * Runtime::deltaTime;
-
-	neonLight->meshRenderer->ambientOcclusionImpact = Runtime::ssaoImpact;
 }

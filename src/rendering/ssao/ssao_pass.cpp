@@ -25,7 +25,7 @@ unsigned int SSAOPass::noiseTexture = 0;
 void SSAOPass::setup()
 {
 	// Set width and height
-	const float aoScale = 1.0f; // Relative size of ambient occlusion output to screen size (0.5 = 50%)
+	const float aoScale = 0.5f; // Relative size of ambient occlusion output to screen size (0.5 = 50%)
 	aoResolution.x = (float)Window::width * aoScale;
 	aoResolution.y = (float)Window::height * aoScale;
 	

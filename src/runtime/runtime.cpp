@@ -60,7 +60,6 @@ int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
 unsigned int Runtime::ssaoBuffer = 0;
-float Runtime::ssaoImpact = 1.0f;
 
 bool skipSkyboxLoad = false; // tmp
 
@@ -152,6 +151,10 @@ int Runtime::START_LOOP() {
 	glfwSwapInterval(vsync ? 1 : 0); // V-Sync
 
 	Log::printProcessDone("Runtime", "Context created");
+
+	GLint maxColorAttachments;
+	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
+	printf("Maximum Color Attachments: %d\n", maxColorAttachments);
 
 	//
 	// SETUP PHASE 2: LOAD ASSETS, COMPILE SHADERS
