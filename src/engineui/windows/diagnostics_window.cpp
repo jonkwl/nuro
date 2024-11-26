@@ -6,7 +6,7 @@
 #include "../src/engineui/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
 
-std::deque<int> DiagnosticsWindow::fpsCache = std::deque<int>(100);
+std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
 float DiagnosticsWindow::fpsUpdateTimer = 0.0f;
 
 ImVec4 lerpColors(const ImVec4& a, const ImVec4& b, float t) {
@@ -47,7 +47,7 @@ void DiagnosticsWindow::prepare()
     const int values = 100;
     const float updateRate = 0.025f;
     int maxValue = 1;
-    if (fpsCache.size() > 0) maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
+    if (fpsCache.size() > 0.0f) maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
 
     fpsUpdateTimer += Runtime::deltaTime;
     if (fpsUpdateTimer >= updateRate) {
@@ -67,8 +67,8 @@ void DiagnosticsWindow::prepare()
 
     ImVec4 low = ImVec4(1.0f, 0.0f, 0.5f, 1.0f);
     ImVec4 high = ImVec4(0.0f, 1.0f, 0.5f, 1.0f);
-    ImVec4 color = lerpColors(low, high, remap(0, maxValue, 0, 1, Runtime::fps));
-    sparkline("##spark", data, values, 0, maxValue, 0, color, ImVec2(120, 40));
+    ImVec4 color = lerpColors(low, high, remap(0.0f, maxValue, 0.0f, 1.0f, Runtime::fps));
+    sparkline("##spark", data, values, 0.0f, maxValue, 0.0f, color, ImVec2(120.0f, 40.0f));
 
     delete[] data;
 

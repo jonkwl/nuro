@@ -250,7 +250,7 @@ int Runtime::START_LOOP() {
 		//
 
 		// Update times
-		time = glfwGetTime();
+		time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;
 		lastTime = time;
 		fps = 1.0f / deltaTime;

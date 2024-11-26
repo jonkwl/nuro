@@ -43,7 +43,7 @@ private:
 
 	Entity* parentEntity; // Linked parent entity
 
-	void render(unsigned int nElements); // Issues draw call
+	void render(GLsizei nElements); // Issues draw call
 
 	void performFrustumCulling();
 	bool intersectsFrustum;

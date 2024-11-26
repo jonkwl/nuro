@@ -15,7 +15,7 @@ ModelMetrics Model::getMetrics() const
 
 void Model::resolveModel(std::string path)
 {
-    Log::printProcessStart("Model", "Building model " + IOHandler::GetFilename(path) + "...");
+    Log::printProcessStart("Model", "Building model " + IOHandler::getFilename(path) + "...");
 
     unsigned int importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
@@ -35,7 +35,7 @@ void Model::resolveModel(std::string path)
 
     processNode(scene->mRootNode, scene);
 
-    Log::printProcessDone("Model", "Built model " + IOHandler::GetFilename(path));
+    Log::printProcessDone("Model", "Built model " + IOHandler::getFilename(path));
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)

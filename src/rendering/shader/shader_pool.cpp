@@ -14,7 +14,7 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
 
 		Log::printProcessInfo(paths[i] + ":");
 
-		std::vector<std::string> shaders_in_folder = IOHandler::GetFolders(paths[i]);
+		std::vector<std::string> shaders_in_folder = IOHandler::getFolders(paths[i]);
 		for (int x = 0; x < shaders_in_folder.size(); x++) {
 
 			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
@@ -25,8 +25,8 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
 
 	Log::printProcessState("ShaderPool", "Compiling shaders...");
 	for (int i = 0; i < shader_paths.size(); i++) {
-		std::string vertex_code = IOHandler::ReadFile(shader_paths[i] + "/.vert");
-		std::string fragment_code = IOHandler::ReadFile(shader_paths[i] + "/.frag");
+		std::string vertex_code = IOHandler::readFile(shader_paths[i] + "/.vert");
+		std::string fragment_code = IOHandler::readFile(shader_paths[i] + "/.frag");
 		const char* vertex_src = vertex_code.c_str();
 		const char* fragment_src = fragment_code.c_str();
 

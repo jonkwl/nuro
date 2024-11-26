@@ -89,8 +89,8 @@ void MeshRenderer::forwardPass()
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
-        Runtime::currentVertices += mesh->vertices.size();
-        Runtime::currentPolygons += mesh->indices.size() / 3;
+        Runtime::currentVertices += static_cast<unsigned int>(mesh->vertices.size());
+        Runtime::currentPolygons += static_cast<unsigned int>(mesh->indices.size()) / 3;
     }
 }
 
@@ -184,7 +184,7 @@ void MeshRenderer::velocityPass()
     previousModelMatrix = currentModelMatrix;
 }
 
-void MeshRenderer::render(unsigned int nElements)
+void MeshRenderer::render(GLsizei nElements)
 {
     glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
 }

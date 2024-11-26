@@ -3,7 +3,7 @@
 Cubemap* Cubemap::GetBySingle(std::string path)
 {
     Cubemap* cubemap = new Cubemap();
-    cubemap->name = IOHandler::GetFilenameRaw(path);
+    cubemap->name = IOHandler::getFilenameRaw(path);
 
     Log::printProcessStart("Cubemap", "Generating cubemap " + cubemap->name + "...");
 
@@ -17,7 +17,7 @@ Cubemap* Cubemap::GetBySingle(std::string path)
 Cubemap* Cubemap::GetByFaces(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back)
 {
     Cubemap* cubemap = new Cubemap();
-    cubemap->name = IOHandler::GetLastFolder(right);
+    cubemap->name = IOHandler::getLastFolder(right);
 
     Log::printProcessStart("Cubemap", "Generating cubemap " + cubemap->name + "...");
 

@@ -41,13 +41,13 @@ void LitMaterial::bind()
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", Runtime::shadows);
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-	shader->setFloat("configuration.shadowMapResolutionWidth", Runtime::mainShadowMap->getResolutionWidth());
-	shader->setFloat("configuration.shadowMapResolutionHeight", Runtime::mainShadowMap->getResolutionHeight());
+	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(Runtime::mainShadowMap->getResolutionWidth()));
+	shader->setFloat("configuration.shadowMapResolutionHeight", static_cast<float>(Runtime::mainShadowMap->getResolutionHeight()));
 
 	Runtime::mainShadowDisk->bind(SHADOW_DISK_UNIT);
-	shader->setFloat("configuration.shadowDiskWindowSize", Runtime::mainShadowDisk->getWindowSize());
-	shader->setFloat("configuration.shadowDiskFilterSize", Runtime::mainShadowDisk->getFilterSize());
-	shader->setFloat("configuration.shadowDiskRadius", Runtime::mainShadowDisk->getRadius());
+	shader->setFloat("configuration.shadowDiskWindowSize", static_cast<float>(Runtime::mainShadowDisk->getWindowSize()));
+	shader->setFloat("configuration.shadowDiskFilterSize", static_cast<float>(Runtime::mainShadowDisk->getFilterSize()));
+	shader->setFloat("configuration.shadowDiskRadius", static_cast<float>(Runtime::mainShadowDisk->getRadius()));
 
 	// SSAO
 	shader->setBool("configuration.enableSSAO", PostProcessing::configuration.ambientOcclusion);

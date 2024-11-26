@@ -1,11 +1,9 @@
 #pragma once
 
 #include <string>
-#include <iostream>
 
-class Log
+namespace Log
 {
-public:
     enum class TextColor {
         Black = 30,
         Red = 31,
@@ -28,19 +26,13 @@ public:
         White = 47,
     };
 
-    static void printError(std::string origin, std::string error, std::string additional_info = "");
-    static void printWarning(std::string origin, std::string warning, std::string additional_info = "");
+    void printError(std::string origin, std::string error, std::string additional_info = "");
+    void printWarning(std::string origin, std::string warning, std::string additional_info = "");
 
-    static void printProcessStart(std::string origin, std::string process);
-    static void printProcessState(std::string origin, std::string process);
-    static void printProcessInfo(std::string info);
-    static void printProcessDone(std::string origin, std::string process);
+    void printProcessStart(std::string origin, std::string process);
+    void printProcessState(std::string origin, std::string process);
+    void printProcessInfo(std::string info);
+    void printProcessDone(std::string origin, std::string process);
 
-    static void printDepthState();
-
-private:
-    static std::string getBuffer() {
-        return "          ";
-    }
-    static void print(TextColor textColor, BackgroundColor bgColor, const std::string& text);
+    void printDepthState();
 };
