@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../src/engineui/engine_ui.h"
+#include "../src/engineui/engine_window.h"
 
 class PostProcessingWindow : public EngineWindow
 {

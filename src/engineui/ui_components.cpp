@@ -1,6 +1,8 @@
 #include "ui_components.h"
 
-#include "../engineui/engine_ui.h"
+#include <imgui.h>
+#include "../src/engineui/engine_ui.h"
+#include "../src/engineui/ui_layout.h"
 
 std::string formatInteger(int number) {
     std::string numStr = std::to_string(number);

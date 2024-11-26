@@ -1,6 +1,7 @@
 #include "ui_layout.h"
 
-#include "../engineui/engine_ui.h"
+#include <imgui.h>
+#include <cmath>
 
 bool UILayout::debugMode = false;
 

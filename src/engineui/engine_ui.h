@@ -1,24 +1,11 @@
 #pragma once
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "implot.h"
-
-#include "../src/runtime/runtime.h"
-
-#include "../src/window/window.h"
-#include "../src/engineui/ui_components.h"
-#include "../src/engineui/ui_layout.h"
-#include "../src/engineui/engine_window.h"
-
-#include "../src/engineui/windows/scene_window.h"
-#include "../src/engineui/windows/post_processing_window.h"
-#include "../src/engineui/windows/diagnostics_window.h"
-
-#include "IconsFontAwesome6.h"
+#include <imgui.h>
 
 #include <vector>
+#include <string>
+
+class EngineWindow;
 
 struct Sizing {
 	float regularFontSize = 14.0f;

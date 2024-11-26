@@ -1,5 +1,20 @@
 #include "engine_ui.h"
 
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <implot.h>
+
+#include "IconsFontAwesome6.h"
+
+#include "../src/runtime/runtime.h"
+#include "../src/window/window.h"
+#include "../src/engineui/engine_window.h"
+#include "../src/engineui/ui_components.h"
+#include "../src/engineui/ui_layout.h"
+#include "../src/engineui/windows/scene_window.h"
+#include "../src/engineui/windows/post_processing_window.h"
+#include "../src/engineui/windows/diagnostics_window.h"
+
 std::vector<EngineWindow*> EngineUI::windows = std::vector<EngineWindow*>();
 
 Sizing EngineUI::sizing;

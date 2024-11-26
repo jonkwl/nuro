@@ -1,5 +1,10 @@
 #include "scene_window.h"
 
+#include "../src/engineui/ui_layout.h"
+#include "../src/engineui/ui_components.h"
+#include "../src/engineui/IconsFontAwesome6.h"
+#include "../src/runtime/runtime.h"
+
 void SceneWindow::prepare()
 {
 	ImGui::Begin("  Scene  ", nullptr, EngineUI::windowFlags.standard);

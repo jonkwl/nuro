@@ -1,7 +1,5 @@
 #include "runtime.h"
 
-// Default runtime values
-
 std::vector<Entity*> Runtime::entityLinks;
 
 UnlitMaterial* Runtime::defaultMaterial = nullptr;

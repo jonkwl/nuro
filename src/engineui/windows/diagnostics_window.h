@@ -2,7 +2,7 @@
 
 #include <deque>
 
-#include "../src/engineui/engine_ui.h"
+#include "../src/engineui/engine_window.h"
 
 class DiagnosticsWindow : public EngineWindow
 {

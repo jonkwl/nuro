@@ -1,6 +1,6 @@
 #include "camera.h"
 
-#include "../src/window/window.h"
+#include <gtc/matrix_access.hpp>
 
 Camera::Camera() {
     transform = Transform();

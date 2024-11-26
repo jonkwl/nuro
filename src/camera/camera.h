@@ -1,10 +1,10 @@
 #pragma once
 
 #include <glm.hpp>
-#include <gtc/matrix_access.hpp>
-#include <gtc/type_ptr.hpp>
 
 #include "../src/transform/transform.h"
+
+class Transform;
 
 struct Frustum
 {
