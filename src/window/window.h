@@ -1,8 +1,8 @@
 #pragma once
 
+#include <glm.hpp>
 #include <string>
 #include <GLFW/glfw3.h>
-#include <glm.hpp>
 
 class Window
 {
@@ -23,4 +23,4 @@ public:
 	static void setCursor(GLenum cusor_mode);
 
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-};
+}; 

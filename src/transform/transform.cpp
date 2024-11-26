@@ -1,5 +1,6 @@
 #include "transform.h"
 
+#include <gtc/quaternion.hpp>
 #include "../src/entity/entity.h"
 
 Transform::Transform()

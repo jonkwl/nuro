@@ -1,5 +1,8 @@
 #include "input.h"
 
+#include "../src/runtime/runtime.h"
+#include "../src/window/window.h"
+
 glm::vec2 Input::keyAxis = glm::vec2(0.0f);
 glm::vec2 Input::keyAxisSmooth = glm::vec2(0.0f);
 float Input::keyAxisSmoothingFactor = 5.0f;

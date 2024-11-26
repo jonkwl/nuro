@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glm.hpp>
-#include <gtc/quaternion.hpp>
 
 class Entity;
 
