@@ -7,7 +7,7 @@
 
 namespace Log {
 
-    void print(TextColor textColor, BackgroundColor bgColor, const std::string& text) {
+    void _print(TextColor textColor, BackgroundColor bgColor, const std::string& text) {
         // Constructing the ANSI escape code
         std::cout << "\033[" << static_cast<int>(textColor) << "m"
             << "\033[" << static_cast<int>(bgColor) << "m"
@@ -15,46 +15,46 @@ namespace Log {
             << "\033[0m" << std::endl;
     }
 
-    std::string getSpacing() {
+    std::string _getSpacing() {
         return "          ";
     }
 
     void printError(std::string origin, std::string error, std::string additional_info) {
-        print(TextColor::White, BackgroundColor::Red, getSpacing() + origin + " >>> ERROR: " + error + getSpacing());
+        _print(TextColor::White, BackgroundColor::Red, _getSpacing() + origin + " >>> ERROR: " + error + _getSpacing());
         if (additional_info != "") {
-            print(TextColor::White, BackgroundColor::Black, additional_info);
+            _print(TextColor::White, BackgroundColor::Black, additional_info);
         }
         Runtime::TERMINATE();
     }
 
     void printWarning(std::string origin, std::string warning, std::string additional_info) {
-        print(TextColor::White, BackgroundColor::Yellow, getSpacing() + origin + " >>> WARNING: " + warning + getSpacing());
+        _print(TextColor::White, BackgroundColor::Yellow, _getSpacing() + origin + " >>> WARNING: " + warning + _getSpacing());
         if (additional_info != "") {
-            print(TextColor::White, BackgroundColor::Black, additional_info);
+            _print(TextColor::White, BackgroundColor::Black, additional_info);
         }
     }
 
     void printProcessStart(std::string origin, std::string process)
     {
         std::cout << std::endl;
-        print(TextColor::White, BackgroundColor::Blue, getSpacing() + origin + " >>> " + process + getSpacing());
+        _print(TextColor::White, BackgroundColor::Blue, _getSpacing() + origin + " >>> " + process + _getSpacing());
         std::cout << std::endl;
     }
 
     void printProcessState(std::string origin, std::string process)
     {
-        print(TextColor::White, BackgroundColor::Cyan, getSpacing() + origin + " >>> " + process + getSpacing());
+        _print(TextColor::White, BackgroundColor::Cyan, _getSpacing() + origin + " >>> " + process + _getSpacing());
     }
 
     void printProcessInfo(std::string info)
     {
-        print(TextColor::White, BackgroundColor::Black, getSpacing() + info + getSpacing());
+        _print(TextColor::White, BackgroundColor::Black, _getSpacing() + info + _getSpacing());
     }
 
     void printProcessDone(std::string origin, std::string process)
     {
         std::cout << std::endl;
-        print(TextColor::White, BackgroundColor::Magenta, getSpacing() + origin + " >>> " + process + getSpacing());
+        _print(TextColor::White, BackgroundColor::Magenta, _getSpacing() + origin + " >>> " + process + _getSpacing());
         std::cout << std::endl;
     }
 
@@ -76,19 +76,19 @@ namespace Log {
     {
         // Check if GL_DEPTH_TEST is enabled
         GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
-        print(TextColor::Yellow, BackgroundColor::Black,
+        _print(TextColor::Yellow, BackgroundColor::Black,
             "GL_DEPTH_TEST: " + std::string(depthTestEnabled ? "Enabled" : "Disabled"));
 
         // Get the current depth function
         GLint depthFunc;
         glGetIntegerv(GL_DEPTH_FUNC, &depthFunc);
-        print(TextColor::Yellow, BackgroundColor::Black,
+        _print(TextColor::Yellow, BackgroundColor::Black,
             "Depth Function: " + getDepthFunctionName(depthFunc));
 
         // Check if depth mask (writing to depth buffer) is enabled
         GLboolean depthMask;
         glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
-        print(TextColor::Yellow, BackgroundColor::Black,
+        _print(TextColor::Yellow, BackgroundColor::Black,
             "GL_DEPTH_WRITEMASK: " + std::string(depthMask ? "Enabled" : "Disabled"));
     }
 

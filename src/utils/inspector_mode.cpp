@@ -6,10 +6,10 @@
 
 namespace InspectorMode {
 
-	float movementSpeed = 12.0f;
-	float sensitivity = 0.08f;
+	float _movementSpeed = 12.0f;
+	float _sensitivity = 0.08f;
 
-	void updateMovementMode(Camera* camera, float speed, float sensitivity) {
+	void _updateMovementMode(Camera* camera, float speed, float sensitivity) {
 		glm::vec3 cam_forward = camera->transform.forward();
 		glm::vec3 cam_right = camera->transform.right();
 
@@ -28,11 +28,11 @@ namespace InspectorMode {
 	}
 
 	// mode just for testing purposes
-	float currentAngle = 0.0f;
-	void updateRotationMode(Camera* camera, glm::vec3 centerPoint, float radius, float speed) {
-		currentAngle += speed * Runtime::deltaTime;
+	float _currentAngle = 0.0f;
+	void _updateRotationMode(Camera* camera, glm::vec3 centerPoint, float radius, float speed) {
+		_currentAngle += speed * Runtime::deltaTime;
 
-		float angleRadians = glm::radians(currentAngle);
+		float angleRadians = glm::radians(_currentAngle);
 
 		float x = centerPoint.x + radius * glm::cos(angleRadians);
 		float z = centerPoint.z + radius * glm::sin(angleRadians);
@@ -45,7 +45,7 @@ namespace InspectorMode {
 	void refreshInspector() {
 
 		Camera* camera = Runtime::getInspectorCamera();
-		updateMovementMode(camera, movementSpeed, sensitivity);
+		_updateMovementMode(camera, _movementSpeed, _sensitivity);
 	}
 
 }
