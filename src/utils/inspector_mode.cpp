@@ -2,6 +2,7 @@
 
 #include "../src/runtime/runtime.h"
 #include "../src/camera/camera.h"
+#include "../src/input/input.h"
 
 namespace InspectorMode {
 

@@ -1,6 +1,10 @@
 #include "shadow_map.h"
 
+#include <stb_image_write.h>
+
 #include "../src/runtime/runtime.h"
+#include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/core/transformation.h"
 
 bool shadowMapSaved = false;
 

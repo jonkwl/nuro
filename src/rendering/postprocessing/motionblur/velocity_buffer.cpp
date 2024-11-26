@@ -5,6 +5,9 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/shader/Shader.h"
 #include "../src/rendering/primitives/quad.h"
+#include "../src/entity/entity.h"
+#include "../src/rendering/shader/shader_pool.h"
+#include "../src/rendering/postprocessing/post_processing.h"
 
 unsigned int VelocityBuffer::fbo = 0;
 unsigned int VelocityBuffer::rbo = 0;

@@ -1,6 +1,8 @@
 #include "pre_pass.h"
 
 #include "../src/runtime/runtime.h"
+#include "../src/entity/entity.h"
+#include "../src/rendering/core/mesh_renderer.h"
 
 unsigned int PrePass::width = 0;
 unsigned int PrePass::height = 0;

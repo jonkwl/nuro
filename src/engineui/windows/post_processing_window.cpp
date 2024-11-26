@@ -1,9 +1,13 @@
 #include "post_processing_window.h"
 
+#include <imgui.h>
+
 #include "../src/engineui/ui_layout.h"
 #include "../src/engineui/ui_components.h"
 #include "../src/engineui/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
+#include "../src/engineui/engine_ui.h"
+#include "../src/rendering/postprocessing/post_processing.h"
 
 void PostProcessingWindow::prepare()
 {

@@ -1,6 +1,10 @@
 #include "lit_material.h"
 
 #include "../src/runtime/runtime.h"
+#include "../src/rendering/shadows/shadow_map.h"
+#include "../src/rendering/shadows/shadow_disk.h"
+#include "../src/rendering/core/transformation.h"
+#include "../src/rendering/postprocessing/post_processing.h"
 
 LitMaterial::LitMaterial()
 {

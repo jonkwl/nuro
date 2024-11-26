@@ -1,5 +1,48 @@
 #include "runtime.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+
+#include <stb_image.h>
+#include <stb_image_write.h>
+
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+#include <gtc/quaternion.hpp>
+
+#include "../src/rendering/shader/shader.h"
+#include "../src/rendering/shader/shader_pool.h"
+#include "../src/rendering/material/unlit/unlit_material.h"
+#include "../src/rendering/texture/texture.h"
+#include "../src/rendering/model/model.h"
+#include "../src/rendering/skybox/skybox.h"
+#include "../src/rendering/skybox/cubemap.h"
+#include "../src/rendering/core/forward_pass.h"
+#include "../src/rendering/postprocessing/post_processing.h"
+#include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/core/pre_pass.h"
+#include "../src/rendering/shadows/shadow_map.h"
+#include "../src/rendering/shadows/shadow_disk.h"
+#include "../src/rendering/primitives/quad.h"
+#include "../src/entity/entity.h"
+#include "../src/camera/camera.h"
+#include "../src/utils/log.h"
+#include "../src/utils/inspector_mode.h"
+#include "../src/utils/profiler.h"
+#include "../src/engineui/engine_ui.h"
+#include "../src/window/window.h"
+#include "../src/input/input.h"
+#include "../src/rendering/gizmos/quick_gizmo.h"
+#include "../src/rendering/ssao/ssao_pass.h"
+#include "../user/src/game_logic.h"
+
 std::vector<Entity*> Runtime::entityLinks;
 
 UnlitMaterial* Runtime::defaultMaterial = nullptr;

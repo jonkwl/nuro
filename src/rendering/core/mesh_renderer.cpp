@@ -2,6 +2,9 @@
 
 #include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
+#include "../src/rendering/core/transformation.h"
+#include "../src/rendering/material/imaterial.h"
+#include "../src/rendering/material/unlit/unlit_material.h"
 
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);

@@ -6,6 +6,7 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/postprocessing/motionblur/velocity_buffer.h"
 
 unsigned int MotionBlurPass::fbo = 0;

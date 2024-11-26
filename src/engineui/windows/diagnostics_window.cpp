@@ -5,6 +5,8 @@
 #include "../src/engineui/ui_components.h"
 #include "../src/engineui/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
+#include "../src/engineui/engine_ui.h"
+#include "../src/utils/profiler.h"
 
 std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
 float DiagnosticsWindow::fpsUpdateTimer = 0.0f;

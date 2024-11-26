@@ -4,6 +4,9 @@
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/gizmos/quick_gizmo.h"
+#include "../src/entity/entity.h"
+#include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/skybox/skybox.h"
 
 unsigned int ForwardPass::outputFbo = 0;
 unsigned int ForwardPass::outputColor = 0;

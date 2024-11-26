@@ -1,5 +1,6 @@
 #include "log.h"
 
+#include <glad/glad.h>
 #include <iostream>
 
 #include "../src/runtime/runtime.h"
