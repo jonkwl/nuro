@@ -34,7 +34,7 @@ void DiagnosticsWindow::prepare()
 {
     ImGui::Begin("Diagnostics", nullptr, EngineUI::windowFlags.fixed);
 
-    UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HEADLINE_LEFT);
+    UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
     UIComponents::indicatorLabel("Average FPS:", Runtime::averageFps);
 

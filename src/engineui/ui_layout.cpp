@@ -4,10 +4,10 @@
 
 bool UILayout::debugMode = false;
 
-float UILayout::defaultWidth = -1.0f;
-float UILayout::defaultHeight = -1.0f;
-Justification UILayout::defaultJustification = JUSTIFY_CENTER;
-Alignment UILayout::defaultAlignment = ALIGN_CENTER;
+float UILayout::defaultWidth = UILayout::FULL_WIDTH;
+float UILayout::defaultHeight = UILayout::FULL_HEIGHT;
+Justification UILayout::defaultJustification = Justification::CENTER;
+Alignment UILayout::defaultAlignment = Alignment::CENTER;
 float UILayout::defaultSpacing = 0.0f;
 Margin UILayout::defaultMargin = Margin();
 
@@ -28,7 +28,7 @@ ImVec2 UILayout::getFlexRowSize(float width, float height) {
 
 void UILayout::beginFlex(const char* name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
 {
-    if (type == ROW) {
+    if (type == FlexType::ROW) {
         static ImVec2 itemSpacing = ImVec2(spacing, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(floorf(itemSpacing.x), floorf(itemSpacing.y)));
 
@@ -39,7 +39,7 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
 
         if(margin.left != 0) ImGui::Dummy(ImVec2(margin.left, 0.0f));
 
-        if (justification == JUSTIFY_CENTER || justification == JUSTIFY_END) {
+        if (justification == Justification::CENTER || justification == Justification::END) {
             ImGui::Spring(0.5f);
         }
 
@@ -55,10 +55,10 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
 
 void UILayout::endFlex()
 {
-    if (lastFlex.type == ROW) {
+    if (lastFlex.type == FlexType::ROW) {
         if(lastFlex.margin.right != 0) ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
 
-        if (lastFlex.justification == JUSTIFY_CENTER || lastFlex.justification == JUSTIFY_START) {
+        if (lastFlex.justification == Justification::CENTER || lastFlex.justification == Justification::START) {
             ImGui::Spring(0.5f);
         }
 

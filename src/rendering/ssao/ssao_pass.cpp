@@ -9,70 +9,61 @@
 
 unsigned int SSAOPass::fbo = 0;
 
-unsigned int SSAOPass::rawOutput = 0;
-unsigned int SSAOPass::output = 0;
+unsigned int SSAOPass::aoOutput = 0;
+unsigned int SSAOPass::blurredOutput = 0;
 
 Shader* SSAOPass::aoPassShader = nullptr;
 Shader* SSAOPass::aoBlurShader = nullptr;
-
-glm::vec2 SSAOPass::aoResolution = glm::vec2(0.0);
-const unsigned int SSAOPass::nMaxSamples = 64;
-const float SSAOPass::noiseSize = 4.0f;
 
 std::vector<glm::vec3> SSAOPass::kernel;
 unsigned int SSAOPass::noiseTexture = 0;
 
 void SSAOPass::setup()
 {
-	// Set width and height
-	const float aoScale = 0.5f; // Relative size of ambient occlusion output to screen size (0.5 = 50%)
-	aoResolution.x = (float)Window::width * aoScale;
-	aoResolution.y = (float)Window::height * aoScale;
-	
 	// Get sample kernel and noise textures
-	kernel = generateKernel(nMaxSamples);
-	noiseTexture = generateNoiseTexture(nMaxSamples, noiseSize);
+	kernel = generateKernel();
+	noiseTexture = generateNoiseTexture();
 
 	// Set ambient occlusion pass shaders static uniforms
 	aoPassShader = ShaderPool::get("ssao_pass");
 	aoPassShader->bind();
-	aoPassShader->setInt("depthInput", SSAO_DEPTH_UNIT);
-	aoPassShader->setInt("normalInput", SSAO_NORMAL_UNIT);
-	aoPassShader->setInt("noiseTexture", SSAO_NOISE_UNIT);
-	aoPassShader->setFloat("noiseSize", noiseSize);
-	for (int i = 0; i < nMaxSamples; ++i) {
+	aoPassShader->setInt("depthInput", DEPTH_UNIT);
+	aoPassShader->setInt("normalInput", NORMAL_UNIT);
+	aoPassShader->setInt("noiseTexture", NOISE_UNIT);
+	aoPassShader->setFloat("noiseSize", NOISE_RESOLUTION);
+	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i) {
 		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
 	}
 
 	// Set ambient occlusion blur shaders static uniforms
 	aoBlurShader = ShaderPool::get("ssao_blur");
 	aoBlurShader->bind();
-	aoBlurShader->setInt("ssaoInput", SSAO_AO_UNIT);
+	aoBlurShader->setInt("ssaoInput", AO_UNIT);
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Generate ambient occlusion output texture
-	glGenTextures(1, &rawOutput);
-	glBindTexture(GL_TEXTURE_2D, rawOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, aoResolution.x, aoResolution.y, 0, GL_RED, GL_FLOAT, nullptr);
+	glGenTextures(1, &aoOutput);
+	glBindTexture(GL_TEXTURE_2D, aoOutput);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width * AO_SCALE, Window::height * AO_SCALE, 0, GL_RED, GL_FLOAT, nullptr);
 
-	// Set raw ambient occlusion output texture parameters
+	// Set ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	// Attach raw ambient occlusion output texture to framebuffer
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rawOutput, 0);
+	// Attach ambient occlusion output texture to framebuffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
 
-	// Generate final ambient occlusion output texture
-	glGenTextures(1, &output);
-	glBindTexture(GL_TEXTURE_2D, output);
+	// Generate blurred ambient occlusion output texture
+	glGenTextures(1, &blurredOutput);
+	glBindTexture(GL_TEXTURE_2D, blurredOutput);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width, Window::height, 0, GL_RED, GL_FLOAT, nullptr);
 
-	// Set final ambient occlusion output texture parameters
+	// Set blurred ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -107,22 +98,22 @@ unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	// Return output
-	return output;
+	// Return blurred output
+	return blurredOutput;
 }
 
 void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
 {
 	// Set render target to ao output
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rawOutput, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
 
 	// Set viewport size
-	glViewport(0, 0, aoResolution.x, aoResolution.y);
+	glViewport(0, 0, Window::width * AO_SCALE, Window::height * AO_SCALE);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
 	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
-	if (nSamples > nMaxSamples) {
-		nSamples = nMaxSamples;
+	if (nSamples > MAX_KERNEL_SAMPLES) {
+		nSamples = MAX_KERNEL_SAMPLES;
 	}
 
 	// Bind ambient occlusion pass shader
@@ -139,15 +130,15 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	aoPassShader->setFloat("power", PostProcessing::configuration.ambientOcclusionPower);
 
 	// Bind depth input
-	glActiveTexture(GL_TEXTURE0 + SSAO_DEPTH_UNIT);
+	glActiveTexture(GL_TEXTURE0 + DEPTH_UNIT);
 	glBindTexture(GL_TEXTURE_2D, depthInput);
 
 	// Bind normal input
-	glActiveTexture(GL_TEXTURE0 + SSAO_NORMAL_UNIT);
+	glActiveTexture(GL_TEXTURE0 + NORMAL_UNIT);
 	glBindTexture(GL_TEXTURE_2D, normalInput);
 
 	// Bind noise texture
-	glActiveTexture(GL_TEXTURE0 + SSAO_NOISE_UNIT);
+	glActiveTexture(GL_TEXTURE0 + NOISE_UNIT);
 	glBindTexture(GL_TEXTURE_2D, noiseTexture);
 
 	// Bind and render to quad
@@ -157,8 +148,8 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 
 void SSAOPass::blurPass()
 {
-	// Set render target to final ambient occlusion output
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
+	// Set render target to blurred ambient occlusion output
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurredOutput, 0);
 
 	// Set viewport size
 	glViewport(0, 0, Window::width, Window::height);
@@ -167,19 +158,19 @@ void SSAOPass::blurPass()
 	aoBlurShader->bind();
 
 	// Bind ao input
-	glActiveTexture(GL_TEXTURE0 + SSAO_AO_UNIT);
-	glBindTexture(GL_TEXTURE_2D, rawOutput);
+	glActiveTexture(GL_TEXTURE0 + AO_UNIT);
+	glBindTexture(GL_TEXTURE_2D, aoOutput);
 
 	// Bind and render to quad
 	Quad::bind();
 	Quad::render();
 }
 
-std::vector<glm::vec3> SSAOPass::generateKernel(unsigned int nSamples)
+std::vector<glm::vec3> SSAOPass::generateKernel()
 {
 	std::vector<glm::vec3> kernel;
 
-	for (int i = 0; i < nSamples; ++i) {
+	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i) {
 		// Generate raw sample with random values
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, random());
 
@@ -190,7 +181,7 @@ std::vector<glm::vec3> SSAOPass::generateKernel(unsigned int nSamples)
 		sample *= random();
 
 		// More weight to samples closer to the center
-		float scale = (float)i / (float)nSamples;
+		float scale = (float)i / (float)MAX_KERNEL_SAMPLES;
 		scale = lerp(0.1f, 1.0f, scale * scale);
 		sample *= scale;
 
@@ -201,12 +192,12 @@ std::vector<glm::vec3> SSAOPass::generateKernel(unsigned int nSamples)
 	return kernel;
 }
 
-unsigned int SSAOPass::generateNoiseTexture(unsigned int nSamples, float size)
+unsigned int SSAOPass::generateNoiseTexture()
 {
 	// Generate noise samples
 	std::vector<glm::vec3> noiseSamples;
 
-	for (int i = 0; i < nSamples; i++) {
+	for (int i = 0; i < MAX_KERNEL_SAMPLES; i++) {
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, 0.0f);
 		noiseSamples.push_back(sample);
 	}
@@ -215,7 +206,7 @@ unsigned int SSAOPass::generateNoiseTexture(unsigned int nSamples, float size)
 	unsigned int output = 0;
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, size, size, 0, GL_RGB, GL_FLOAT, &noiseSamples[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, NOISE_RESOLUTION, NOISE_RESOLUTION, 0, GL_RGB, GL_FLOAT, &noiseSamples[0]);
 
 	// Set noise texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

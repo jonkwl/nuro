@@ -69,18 +69,18 @@ void LitMaterial::bind()
 
 	shader->setBool("material.enableAlbedoMap", enableAlbedoMap);
 	if (enableAlbedoMap) {
-		albedoMap->bind(ALBEDO_MAP_UNIT);
+		albedoMap->bind(ALBEDO_UNIT);
 	}
 
 	shader->setBool("material.enableNormalMap", enableNormalMap && Runtime::normalMapping);
 	if (enableNormalMap && Runtime::normalMapping) {
-		normalMap->bind(NORMAL_MAP_UNIT);
+		normalMap->bind(NORMAL_UNIT);
 	}
 	shader->setFloat("material.normalMapIntensity", Runtime::normalMappingIntensity);
 
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
 	if (enableRoughnessMap) {
-		roughnessMap->bind(ROUGHNESS_MAP_UNIT);
+		roughnessMap->bind(ROUGHNESS_UNIT);
 	}
 	else {
 		shader->setFloat("material.roughness", roughness);
@@ -88,7 +88,7 @@ void LitMaterial::bind()
 
 	shader->setBool("material.enableMetallicMap", enableMetallicMap);
 	if (enableMetallicMap) {
-		metallicMap->bind(METALLIC_MAP_UNIT);
+		metallicMap->bind(METALLIC_UNIT);
 	}
 	else {
 		shader->setFloat("material.metallic", metallic);
@@ -96,12 +96,12 @@ void LitMaterial::bind()
 
 	shader->setBool("material.enableAmbientOcclusionMap", enableAmbientOcclusionMap);
 	if (enableAmbientOcclusionMap) {
-		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_MAP_UNIT);
+		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_UNIT);
 	}
 
 	shader->setBool("material.enableEmissionMap", enableEmissionMap);
 	if (enableEmissionMap) {
-		emissionMap->bind(EMISSION_MAP_UNIT);
+		emissionMap->bind(EMISSIVE_UNIT);
 	}
 }
 
@@ -154,12 +154,12 @@ void LitMaterial::syncStaticUniforms()
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);
 
-	shader->setInt("material.albedoMap", ALBEDO_MAP_UNIT);
-	shader->setInt("material.normalMap", NORMAL_MAP_UNIT);
-	shader->setInt("material.roughnessMap", ROUGHNESS_MAP_UNIT);
-	shader->setInt("material.metallicMap", METALLIC_MAP_UNIT);
-	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_MAP_UNIT);
-	shader->setInt("material.emissionMap", EMISSION_MAP_UNIT);
+	shader->setInt("material.albedoMap", ALBEDO_UNIT);
+	shader->setInt("material.normalMap", NORMAL_UNIT);
+	shader->setInt("material.roughnessMap", ROUGHNESS_UNIT);
+	shader->setInt("material.metallicMap", METALLIC_UNIT);
+	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_UNIT);
+	shader->setInt("material.emissionMap", EMISSIVE_UNIT);
 	shader->setInt("configuration.shadowDisk", SHADOW_DISK_UNIT);
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("configuration.ssaoBuffer", SSAO_UNIT);

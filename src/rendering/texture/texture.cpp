@@ -29,27 +29,27 @@ Texture::Texture(std::string path, TextureType type)
 	GLenum format = GL_RGB;
 
 	switch (type) {
-	case ALBEDO_MAP:
+	case TextureType::ALBEDO:
 		internalFormat = GL_SRGB;
 		format = GL_RGB;
 		break;
-	case NORMAL_MAP:
+	case TextureType::NORMAL:
 		internalFormat = GL_RGB;
 		format = GL_RGB;
 		break;
-	case ROUGHNESS_MAP:
+	case TextureType::ROUGHNESS:
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
-	case METALLIC_MAP:
+	case TextureType::METALLIC:
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
-	case AMBIENT_OCCLUSION_MAP:
+	case TextureType::AMBIENT_OCCLUSION:
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
-	case EMISSION_MAP:
+	case TextureType::EMISSIVE:
 		internalFormat = GL_RGB;
 		format = GL_RGB;
 	}

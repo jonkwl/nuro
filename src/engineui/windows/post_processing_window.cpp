@@ -4,7 +4,7 @@ void PostProcessingWindow::prepare()
 {
 	ImGui::Begin("  Post Processing  ", nullptr, EngineUI::windowFlags.standard);
 
-	UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HEADLINE_LEFT);
+	UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HeadlineJustification::LEFT);
 
 	if (UIComponents::extendableSettings("Color Grading", PostProcessing::configuration.colorGrading, ICON_FA_PROJECTOR)) {
 		

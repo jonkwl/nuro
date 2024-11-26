@@ -23,9 +23,9 @@ void MotionBlurPass::setup()
 	// Set static shader uniforms
 	shader->bind();
 
-	shader->setInt("hdrInput", MOTION_BLUR_HDR_UNIT);
-	shader->setInt("depthInput", MOTION_BLUR_DEPTH_UNIT);
-	shader->setInt("velocityInput", MOTION_BLUR_VELOCITY_UNIT);
+	shader->setInt("hdrInput", HDR_UNIT);
+	shader->setInt("depthInput", DEPTH_UNIT);
+	shader->setInt("velocityInput", VELOCITY_UNIT);
 
 	shader->setFloat("near", 0.3f);
 	shader->setFloat("far", 1000.0f);
@@ -73,13 +73,13 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Bind textures
-	glActiveTexture(GL_TEXTURE0 + MOTION_BLUR_HDR_UNIT);
+	glActiveTexture(GL_TEXTURE0 + HDR_UNIT);
 	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
-	glActiveTexture(GL_TEXTURE0 + MOTION_BLUR_DEPTH_UNIT);
+	glActiveTexture(GL_TEXTURE0 + DEPTH_UNIT);
 	glBindTexture(GL_TEXTURE_2D, depthInput);
 
-	glActiveTexture(GL_TEXTURE0 + MOTION_BLUR_VELOCITY_UNIT);
+	glActiveTexture(GL_TEXTURE0 + VELOCITY_UNIT);
 	glBindTexture(GL_TEXTURE_2D, VELOCITY_BUFFER);
 
 	// Bind shader

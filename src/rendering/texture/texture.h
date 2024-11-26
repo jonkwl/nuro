@@ -6,13 +6,13 @@
 
 #include "../src/utils/log.h"
 
-enum TextureType {
-	ALBEDO_MAP,
-	NORMAL_MAP,
-	ROUGHNESS_MAP,
-	METALLIC_MAP,
-	AMBIENT_OCCLUSION_MAP,
-	EMISSION_MAP
+enum class TextureType {
+	ALBEDO,
+	NORMAL,
+	ROUGHNESS,
+	METALLIC,
+	AMBIENT_OCCLUSION,
+	EMISSIVE
 };
 
 class Texture

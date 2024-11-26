@@ -16,7 +16,7 @@ std::string formatInteger(int number) {
 
 void UIComponents::headline(std::string title, const char* icon, HeadlineJustification justification, bool zeroMargin) {
     Margin margin = zeroMargin ? Margin() : Margin(0.0f, 0.0f, 5.0f, 0.0f);
-    UILayout::beginFlex(title.c_str(), ROW, FULL_WIDTH, 20.0f, (Justification)justification, ALIGN_CENTER, 10.0f, margin);
+    UILayout::beginFlex(title.c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, margin);
 
         tryIcon(icon);
         ImGui::PushFont(EngineUI::fonts.uiHeadline);
@@ -97,7 +97,7 @@ void UIComponents::tryIcon(const char* icon, float padding)
 
 void UIComponents::input(const char* label, bool& value)
 {
-    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 18.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
+    UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -108,7 +108,7 @@ void UIComponents::input(const char* label, bool& value)
 
 void UIComponents::input(const char* label, int& value, float speed)
 {
-    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 18.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
+    UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
         ImGui::DragInt(EngineUI::getId().c_str(), &value, speed);
@@ -117,7 +117,7 @@ void UIComponents::input(const char* label, int& value, float speed)
 
 void UIComponents::input(const char* label, float& value, float speed)
 {
-    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 18.0f, JUSTIFY_EVEN, ALIGN_CENTER, 4.0f);
+    UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
         ImGui::Text(label);
         ImGui::Spring(1.0f);
         ImGui::DragFloat(EngineUI::getId().c_str(), &value, speed);
@@ -168,7 +168,7 @@ void UIComponents::indicatorLabel(const char* label, double value, const char* a
 
 bool UIComponents::extendableSettings(const char* label, bool& value, const char* icon)
 {
-    UILayout::beginFlex(EngineUI::getId().c_str(), ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
+    UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
     
         ImGui::Checkbox(EngineUI::getId().c_str(), &value);
         UIComponents::space(1.0f, 1.5f);

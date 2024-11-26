@@ -34,21 +34,6 @@ struct GizmoColor {
     static const glm::vec3 DARK_PINK;
 };
 
-enum GizmoShape {
-    PLANE,
-    BOX,
-    SPHERE
-};
-
-struct GizmoRenderTarget {
-    GizmoShape shape;
-    glm::vec3 color;
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec3 scale;
-    bool wireframe;
-};
-
 class QuickGizmo
 {
 public:
@@ -66,15 +51,30 @@ public:
     static void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
     static void sphereWire(glm::vec3 position, float radius = 0.5f);
 private:
+    enum class Shape {
+        PLANE,
+        BOX,
+        SPHERE
+    };
+
+    struct RenderTarget {
+        Shape shape;
+        glm::vec3 color;
+        glm::vec3 position;
+        glm::vec3 rotation;
+        glm::vec3 scale;
+        bool wireframe;
+    };
+
 	static UnlitMaterial* material;
 	
 	static Model* planeModel;
 	static Model* cubeModel;
 	static Model* sphereModel;
 
-    static std::vector<GizmoRenderTarget> renderStack;
+    static std::vector<RenderTarget> renderStack;
 
-    static Model* getModel(GizmoShape shape);
+    static Model* getModel(Shape shape);
 	static glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 };
 

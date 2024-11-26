@@ -4,9 +4,9 @@ void SceneWindow::prepare()
 {
 	ImGui::Begin("  Scene  ", nullptr, EngineUI::windowFlags.standard);
     
-    UIComponents::headline("Scene", ICON_FA_MAP, HEADLINE_CENTER);
+    UIComponents::headline("Scene", ICON_FA_MAP, HeadlineJustification::CENTER);
     
-    UILayout::beginFlex("toggles", ROW, FULL_WIDTH, 60.0f, JUSTIFY_CENTER, ALIGN_CENTER, 1.0f);
+    UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 60.0f,Justification::CENTER, Alignment::CENTER, 1.0f);
     {
         
         UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, Runtime::wireframe, "Wireframe");

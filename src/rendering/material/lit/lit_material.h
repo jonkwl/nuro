@@ -32,6 +32,18 @@ public:
 	void setAmbientOcclusionMap(Texture* ambientOcclusionMap);
 	void setEmissionMap(Texture* emissionMap);
 private:
+	enum TextureUnits {
+		ALBEDO_UNIT,
+		NORMAL_UNIT,
+		ROUGHNESS_UNIT,
+		METALLIC_UNIT,
+		AMBIENT_OCCLUSION_UNIT,
+		EMISSIVE_UNIT,
+		SHADOW_DISK_UNIT,
+		SHADOW_MAP_UNIT,
+		SSAO_UNIT
+	};
+
 	Shader* shader;
 
 	bool enableAlbedoMap;

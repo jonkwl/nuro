@@ -2,16 +2,16 @@
 
 #include <string>
 
-enum HeadlineJustification {
-	HEADLINE_LEFT,
-	HEADLINE_CENTER,
-	HEADLINE_RIGHT
+enum class HeadlineJustification {
+	LEFT,
+	CENTER,
+	RIGHT
 };
 
 class UIComponents
 {
 public:
-	static void headline(std::string title, const char* icon = "", HeadlineJustification justification = HEADLINE_LEFT, bool zeroMargin = false);
+	static void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool zeroMargin = false);
 	static void tooltip(const char* tooltip);
 	static void toggleButton(const char* label, bool& value, const char* tooltip = "");
 

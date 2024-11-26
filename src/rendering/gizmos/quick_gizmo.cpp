@@ -41,7 +41,7 @@ Model* QuickGizmo::planeModel = nullptr;
 Model* QuickGizmo::cubeModel = nullptr;
 Model* QuickGizmo::sphereModel = nullptr;
 
-std::vector<GizmoRenderTarget> QuickGizmo::renderStack;
+std::vector<QuickGizmo::RenderTarget> QuickGizmo::renderStack;
 
 void QuickGizmo::setup()
 {
@@ -71,7 +71,7 @@ void QuickGizmo::render()
 
     for (int i = 0; i < renderStack.size(); i++) {
         // Get gizmo rendering target
-        GizmoRenderTarget gizmo = renderStack[i];
+        RenderTarget gizmo = renderStack[i];
 
         // Calculate mvp
         glm::mat4 modelMatrix = getModelMatrix(gizmo.position, gizmo.rotation, gizmo.scale);
@@ -106,9 +106,9 @@ void QuickGizmo::render()
 
 void QuickGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    GizmoRenderTarget gizmo;
+    RenderTarget gizmo;
     gizmo.color = color;
-    gizmo.shape = GizmoShape::PLANE;
+    gizmo.shape = Shape::PLANE;
     gizmo.position = position;
     gizmo.scale = scale;
     gizmo.rotation = rotation;
@@ -118,9 +118,9 @@ void QuickGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 
 void QuickGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    GizmoRenderTarget gizmo;
+    RenderTarget gizmo;
     gizmo.color = color;
-    gizmo.shape = GizmoShape::BOX;
+    gizmo.shape = Shape::BOX;
     gizmo.position = position;
     gizmo.scale = scale;
     gizmo.rotation = rotation;
@@ -129,9 +129,9 @@ void QuickGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 }
 
 void QuickGizmo::sphere(glm::vec3 position, float radius) {
-    GizmoRenderTarget gizmo;
+    RenderTarget gizmo;
     gizmo.color = color;
-    gizmo.shape = GizmoShape::SPHERE;
+    gizmo.shape = Shape::SPHERE;
     gizmo.position = position;
     gizmo.scale = glm::vec3(radius * 2);
     gizmo.rotation = glm::vec3(0.0f);
@@ -141,9 +141,9 @@ void QuickGizmo::sphere(glm::vec3 position, float radius) {
 
 void QuickGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    GizmoRenderTarget gizmo;
+    RenderTarget gizmo;
     gizmo.color = color;
-    gizmo.shape = GizmoShape::PLANE;
+    gizmo.shape = Shape::PLANE;
     gizmo.position = position;
     gizmo.scale = scale;
     gizmo.rotation = rotation;
@@ -153,9 +153,9 @@ void QuickGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotati
 
 void QuickGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    GizmoRenderTarget gizmo;
+    RenderTarget gizmo;
     gizmo.color = color;
-    gizmo.shape = GizmoShape::BOX;
+    gizmo.shape = Shape::BOX;
     gizmo.position = position;
     gizmo.scale = scale;
     gizmo.rotation = rotation;
@@ -164,9 +164,9 @@ void QuickGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation
 }
 
 void QuickGizmo::sphereWire(glm::vec3 position, float radius) {
-    GizmoRenderTarget gizmo;
+    RenderTarget gizmo;
     gizmo.color = color;
-    gizmo.shape = GizmoShape::SPHERE;
+    gizmo.shape = Shape::SPHERE;
     gizmo.position = position;
     gizmo.scale = glm::vec3(radius * 2);
     gizmo.rotation = glm::vec3(0.0f);
@@ -174,15 +174,15 @@ void QuickGizmo::sphereWire(glm::vec3 position, float radius) {
     renderStack.push_back(gizmo);
 }
 
-Model* QuickGizmo::getModel(GizmoShape shape)
+Model* QuickGizmo::getModel(Shape shape)
 {
     switch (shape) {
-    case PLANE:
+    case Shape::PLANE:
         return planeModel;
-    case BOX:
+    case Shape::BOX:
         return cubeModel;
         break;
-    case SPHERE:
+    case Shape::SPHERE:
         return sphereModel;
         break;
     }

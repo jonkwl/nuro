@@ -13,13 +13,6 @@
 #include "../src/rendering/postprocessing/motionblur/motion_blur_pass.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 
-enum FinalPassTextureSlots {
-	FINAL_PASS_HDR_UNIT,
-	FINAL_PASS_DEPTH_UNIT,
-	FINAL_PASS_BLOOM_UNIT,
-	FINAL_PASS_LENS_DIRT_UNIT
-};
-
 struct PostProcessingConfiguration {
 	bool colorGrading = false;
 	float exposure = 1.0f;
@@ -73,6 +66,13 @@ public:
 
 	static unsigned int getOutput(); // Get output of last post processing render
 private:
+	enum TextureUnits {
+		HDR_UNIT,
+		DEPTH_UNIT,
+		BLOOM_UNIT,
+		LENS_DIRT_UNIT
+	};
+
 	static void syncConfiguration(); // Sync the post processing configuration with final pass shader
 
 	static Shader* finalPassShader; // Post processing final pass shader

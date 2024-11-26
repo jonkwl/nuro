@@ -2,27 +2,22 @@
 
 struct ImVec2;
 
-enum FlexType {
+enum class FlexType {
 	ROW,
 	COLUMN
 };
 
-enum Justification {
-	JUSTIFY_START,
-	JUSTIFY_CENTER,
-	JUSTIFY_END,
-	JUSTIFY_EVEN
+enum class Justification {
+	START,
+	CENTER,
+	END,
+	EVEN
 };
 
-enum Alignment {
-	ALIGN_START,
-	ALIGN_CENTER,
-	ALIGN_END
-};
-
-enum SizeShortcut {
-	FULL_WIDTH = -1,
-	FULL_HEIGHT = -1
+enum class Alignment {
+	START,
+	CENTER,
+	END
 };
 
 struct Margin {
@@ -48,6 +43,9 @@ class UILayout
 {
 public:
 	static bool debugMode;
+
+	static constexpr float FULL_WIDTH = -1.0f;
+	static constexpr float FULL_HEIGHT = -1.0f;
 
 	static float defaultWidth;
 	static float defaultHeight;

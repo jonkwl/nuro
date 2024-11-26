@@ -22,7 +22,7 @@ void defaultScene() {
 	Runtime::useCamera(camera);
 
 	// Post Processing Lens Dirt
-	Texture* lensDirt = new Texture("./user/assets/textures/lens_dirt.jpg", ALBEDO_MAP);
+	Texture* lensDirt = new Texture("./user/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
 	PostProcessing::configuration.lensDirtTexture = lensDirt;
 	PostProcessing::configuration.lensDirt = true;
 
@@ -56,10 +56,10 @@ void defaultScene() {
 	collisionSphere->meshRenderer->materials.push_back(sphereMaterial);
 	collisionSphere->transform.position = glm::vec3(5.0f, 0.6f, 6.5f);
 
-	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", ALBEDO_MAP);
-	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", ROUGHNESS_MAP);
-	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", METALLIC_MAP);
-	Texture* sphereNormal = new Texture("./user/assets/textures/mat_normal.jpg", NORMAL_MAP);
+	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", TextureType::ALBEDO);
+	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", TextureType::ROUGHNESS);
+	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", TextureType::METALLIC);
+	Texture* sphereNormal = new Texture("./user/assets/textures/mat_normal.jpg", TextureType::NORMAL);
 	LitMaterial* pbrSphereMaterial = new LitMaterial();
 	pbrSphereMaterial->setAlbedoMap(sphereAlbedo);
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
@@ -71,7 +71,7 @@ void defaultScene() {
 	pbrSphere->meshRenderer->materials.push_back(pbrSphereMaterial);
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.6f, 6.5f);
 
-	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", ALBEDO_MAP);
+	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", TextureType::ALBEDO);
 	LitMaterial* plank = new LitMaterial();
 	plank->tiling = glm::vec2(2.0f, 2.0f);
 	plank->setAlbedoMap(plankAlbedo);
@@ -105,9 +105,9 @@ void defaultScene() {
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
-	Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", ALBEDO_MAP);
-	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", ROUGHNESS_MAP);
-	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", NORMAL_MAP);
+	Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", TextureType::ALBEDO);
+	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", TextureType::ROUGHNESS);
+	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", TextureType::NORMAL);
 	LitMaterial* smearedWallMaterial = new LitMaterial();
 	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.96f, 0.86f, 1.0f);
 	smearedWallMaterial->setAlbedoMap(smearedWallAlbedo);
@@ -122,9 +122,9 @@ void defaultScene() {
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
-	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", ALBEDO_MAP);
-	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", ROUGHNESS_MAP);
-	Texture* mannequinMetallic = new Texture("./user/assets/textures/mannequin_metallic.jpg", METALLIC_MAP);
+	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", TextureType::ALBEDO);
+	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", TextureType::ROUGHNESS);
+	Texture* mannequinMetallic = new Texture("./user/assets/textures/mannequin_metallic.jpg", TextureType::METALLIC);
 	LitMaterial* mannequinMaterial = new LitMaterial();
 	mannequinMaterial->setAlbedoMap(mannequinAlbedo);
 	mannequinMaterial->setRoughnessMap(mannequinRoughness);
@@ -161,7 +161,7 @@ void defaultScene() {
 	neonLight->meshRenderer->model = neonModel;
 	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
 
-	Model* dragonModel = new Model("./user/assets/models/dragon.fbx");
+	/*Model* dragonModel = new Model("./user/assets/models/dragon.fbx");
 	LitMaterial* dragonMaterial = new LitMaterial();
 	dragonMaterial->baseColor = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
 	dragonMaterial->roughness = 0.4f;
@@ -172,7 +172,7 @@ void defaultScene() {
 	dragon->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon->meshRenderer->model = dragonModel;
 	std::vector<IMaterial*> dragonMats(100, dragonMaterial);
-	dragon->meshRenderer->materials = dragonMats;
+	dragon->meshRenderer->materials = dragonMats;*/
 
 	/*Entity* dragon2 = new Entity();
 	dragon2->transform.position = glm::vec3(32.0f, 1.0f, 0.0f);
