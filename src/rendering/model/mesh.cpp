@@ -1,5 +1,9 @@
 #include "mesh.h"
 
+#include <glad/glad.h>
+
+#include "../src/rendering/texture/texture.h"
+
 Mesh::Mesh(std::vector<VertexData> _vertices, std::vector<unsigned int> _indices, std::vector<Texture*> _textures, int _materialIndex)
 {
 	vertices = _vertices;

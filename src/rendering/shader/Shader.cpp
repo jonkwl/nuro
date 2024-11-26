@@ -1,5 +1,11 @@
 #include "shader.h"
 
+#include <glad/glad.h>
+#include <gtc/type_ptr.hpp>
+
+#include "../../utils/log.h"
+#include "../../utils/iohandler.h"
+
 Shader::Shader(const char* vertex_src, const char* fragment_src, bool& compiled, const std::string name) {
 	shaderName = name;
 

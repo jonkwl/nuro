@@ -1,5 +1,10 @@
 #include "velocity_buffer.h"
 
+#include <glad/glad.h>
+#include <glm.hpp>
+#include <vector>
+
+#include "../src/utils/log.h"
 #include "../src/window/window.h"
 #include "../src/runtime/runtime.h"
 #include "../src/rendering/core/mesh_renderer.h"

@@ -1,5 +1,12 @@
 #include "skybox.h"
 
+#include <glad/glad.h>
+
+#include "../src/rendering/skybox/cubemap.h"
+#include "../src/rendering/shader/shader_pool.h"
+#include "../src/rendering/shader/shader.h"
+#include "../src/utils/log.h"
+
 Skybox::Skybox(Cubemap* cubemap)
 {
     this->cubemap = cubemap;

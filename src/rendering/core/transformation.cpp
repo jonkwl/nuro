@@ -1,5 +1,11 @@
 #include "transformation.h"
 
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+
+#include "../src/entity/entity.h"
+#include "../src/camera/camera.h"
+
 glm::vec3 Transformation::prepareWorldPosition(glm::vec3 position)
 {
 	return glm::vec3(position.x, position.y, -position.z);

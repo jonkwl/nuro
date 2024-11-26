@@ -2,13 +2,10 @@
 
 #include <string>
 #include <vector>
-#include <glad/glad.h>
+#include <glm.hpp>
 
-#include "../src/rendering/core/transformation.h"
-#include "../src/rendering/shader/shader.h"
-#include "../src/rendering/shader/shader_pool.h"
-#include "../src/rendering/skybox/cubemap.h"
-#include "../src/utils/log.h"
+class Cubemap;
+class Shader;
 
 class Skybox
 {

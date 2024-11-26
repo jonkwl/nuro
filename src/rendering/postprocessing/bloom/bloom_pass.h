@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../src/rendering/shader/Shader.h"
+#include <glm.hpp>
+
+class Shader;
 
 class BloomPass
 {

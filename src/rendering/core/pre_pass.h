@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../src/rendering/shader/Shader.h"
-
 class PrePass
 {
 public:
@@ -23,4 +21,3 @@ private:
 	static unsigned int width;
 	static unsigned int height;
 };
-

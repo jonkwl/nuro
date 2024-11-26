@@ -1,11 +1,9 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm.hpp>
 #include <vector>
-#include <random>
 
-#include "../src/rendering/shader/Shader.h"
+class Shader;
 
 class SSAOPass
 {

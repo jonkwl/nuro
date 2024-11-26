@@ -1,8 +1,7 @@
 #pragma once
 
-#include <vector> 
 #include <glm.hpp>
-#include <glad/glad.h>
+#include <vector> 
 
 struct BloomMip {
 	glm::ivec2 iSize;

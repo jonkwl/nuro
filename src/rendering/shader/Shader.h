@@ -1,14 +1,8 @@
 #pragma once
 
+#include <glm.hpp>
 #include <string>
 #include <unordered_map>
-
-#include <glad/glad.h>
-#include <glm.hpp>
-#include <gtc/type_ptr.hpp>
-
-#include "../../utils/log.h"
-#include "../../utils/iohandler.h"
 
 class Shader
 {

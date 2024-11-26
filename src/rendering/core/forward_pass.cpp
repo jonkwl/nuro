@@ -1,5 +1,7 @@
 #include "forward_pass.h"
 
+#include <glad/glad.h>
+
 #include "../src/runtime/runtime.h"
 #include "../src/window/window.h"
 #include "../src/utils/log.h"

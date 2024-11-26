@@ -1,5 +1,7 @@
 #include "bloom_frame.h"
 
+#include <glad/glad.h>
+
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 

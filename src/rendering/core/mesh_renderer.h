@@ -1,6 +1,9 @@
-#include "../src/rendering/model/model.h"
-#include "../src/rendering/culling/bounding_volume.h"
+#include <glm.hpp>
 
+#include "../src/rendering/material/imaterial.h"
+
+class Model;
+class BoundingVolume;
 class Entity;
 
 #pragma once
@@ -43,7 +46,7 @@ private:
 
 	Entity* parentEntity; // Linked parent entity
 
-	void render(GLsizei nElements); // Issues draw call
+	void render(unsigned int nElements); // Issues draw call
 
 	void performFrustumCulling();
 	bool intersectsFrustum;

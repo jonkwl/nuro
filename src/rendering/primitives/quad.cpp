@@ -1,5 +1,7 @@
 #include "quad.h"
 
+#include <glad/glad.h>
+
 unsigned int Quad::vbo = 0;
 unsigned int Quad::vao = 0;
 

@@ -1,10 +1,16 @@
 #include "shadow_map.h"
 
+#include <glad/glad.h>
+#include <glm.hpp>
+#include <vector>
 #include <stb_image_write.h>
 
 #include "../src/runtime/runtime.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/transformation.h"
+#include "../src/rendering/shader/Shader.h"
+#include "../src/entity/entity.h"
+#include "../src/utils/log.h"
 
 bool shadowMapSaved = false;
 

@@ -2,10 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <stb_image.h>
-
-#include "../src/utils/log.h"
-#include "../src/utils/iohandler.h"
 
 struct CubemapFace {
 	std::vector<unsigned char> data;

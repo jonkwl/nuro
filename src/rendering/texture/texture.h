@@ -1,10 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <stb_image.h>
 #include <string>
-
-#include "../src/utils/log.h"
 
 enum class TextureType {
 	ALBEDO,

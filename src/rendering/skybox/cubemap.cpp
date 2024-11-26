@@ -1,5 +1,10 @@
 #include "cubemap.h"
 
+#include <stb_image.h>
+
+#include "../src/utils/log.h"
+#include "../src/utils/iohandler.h"
+
 Cubemap* Cubemap::GetBySingle(std::string path)
 {
     Cubemap* cubemap = new Cubemap();

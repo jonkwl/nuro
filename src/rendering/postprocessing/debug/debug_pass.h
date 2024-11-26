@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../src/rendering/shader/shader_pool.h"
+class Shader;
 
 class DebugPass
 {

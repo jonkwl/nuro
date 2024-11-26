@@ -1,5 +1,10 @@
 #include "texture.h"
 
+#include <glad/glad.h>
+#include <stb_image.h>
+
+#include "../src/utils/log.h"
+
 Texture::Texture(std::string path, TextureType type)
 {
 	id = 0;

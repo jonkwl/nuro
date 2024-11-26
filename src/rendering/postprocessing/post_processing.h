@@ -1,17 +1,7 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm.hpp>
-
-#include "../src/window/window.h"
-#include "../src/utils/log.h"
-#include "../src/rendering/texture/texture.h"
-#include "../src/rendering/shader/shader.h"
-#include "../src/rendering/shader/shader_pool.h"
-#include "../src/rendering/primitives/quad.h"
-#include "../src/rendering/postprocessing/bloom/bloom_pass.h"
-#include "../src/rendering/postprocessing/motionblur/motion_blur_pass.h"
-#include "../src/rendering/ssao/ssao_pass.h"
+class Texture;
+class Shader;
 
 struct PostProcessingConfiguration {
 	bool colorGrading = false;

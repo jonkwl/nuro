@@ -2,11 +2,8 @@
 
 #include <string>
 #include <vector>
-#include <algorithm>
 
-#include "../src/rendering/shader/shader.h"
-#include "../src/utils/log.h"
-#include "../src/utils/iohandler.h"
+class Shader;
 
 class ShaderPool
 {

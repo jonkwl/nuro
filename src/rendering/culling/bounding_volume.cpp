@@ -1,5 +1,8 @@
 #include "bounding_volume.h"
 
+#include <glm.hpp>
+#include <gtc/type_ptr.hpp>
+
 #include "../src/rendering/gizmos/quick_gizmo.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/model/model.h"

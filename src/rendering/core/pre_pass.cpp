@@ -1,8 +1,12 @@
 #include "pre_pass.h"
 
+#include <glad/glad.h>
+
 #include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/shader/Shader.h"
+#include "../src/utils/log.h"
 
 unsigned int PrePass::width = 0;
 unsigned int PrePass::height = 0;

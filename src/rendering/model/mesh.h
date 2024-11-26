@@ -2,7 +2,8 @@
 
 #include <vector>
 #include <glm.hpp>
-#include "../src/rendering/texture/texture.h"
+
+class Texture;
 
 struct VertexData {
     glm::vec3 position;

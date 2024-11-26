@@ -1,8 +1,6 @@
 #pragma once
 
 #include <glm.hpp>
-#include <gtc/quaternion.hpp>
-#include <gtc/matrix_transform.hpp> 
 
 #include "../src/camera/camera.h"
 

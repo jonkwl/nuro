@@ -1,10 +1,17 @@
 #include "lit_material.h"
 
+#include <glad/glad.h>
+
 #include "../src/runtime/runtime.h"
+#include "../src/camera/camera.h"
+#include "../src/rendering/texture/texture.h"
 #include "../src/rendering/shadows/shadow_map.h"
 #include "../src/rendering/shadows/shadow_disk.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/postprocessing/post_processing.h"
+#include "../src/rendering/shader/shader_pool.h"
+#include "../src/window/window.h"
+#include "../src/utils/log.h"
 
 LitMaterial::LitMaterial()
 {

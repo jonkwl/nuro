@@ -1,37 +1,14 @@
 #include "quick_gizmo.h"
 
+#include <glad/glad.h>
+#include <glm.hpp>
+#include <gtc/type_ptr.hpp>
+
+#include "../src/rendering/material/unlit/unlit_material.h"
+#include "../src/rendering/model/model.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/transformation.h"
-
-// Initialize static gizmo colors
-
-const glm::vec3 GizmoColor::RED = { 1.0f, 0.0f, 0.0f };
-const glm::vec3 GizmoColor::GREEN = { 0.0f, 1.0f, 0.0f };
-const glm::vec3 GizmoColor::BLUE = { 0.0f, 0.0f, 1.0f };
-const glm::vec3 GizmoColor::YELLOW = { 1.0f, 1.0f, 0.0f };
-const glm::vec3 GizmoColor::CYAN = { 0.0f, 1.0f, 1.0f };
-const glm::vec3 GizmoColor::MAGENTA = { 1.0f, 0.0f, 1.0f };
-const glm::vec3 GizmoColor::WHITE = { 1.0f, 1.0f, 1.0f };
-const glm::vec3 GizmoColor::BLACK = { 0.0f, 0.0f, 0.0f };
-const glm::vec3 GizmoColor::GRAY = { 0.5f, 0.5f, 0.5f };
-const glm::vec3 GizmoColor::DARK_GRAY = { 0.25f, 0.25f, 0.25f };
-const glm::vec3 GizmoColor::LIGHT_GRAY = { 0.75f, 0.75f, 0.75f };
-const glm::vec3 GizmoColor::ORANGE = { 1.0f, 0.5f, 0.0f };
-const glm::vec3 GizmoColor::PURPLE = { 0.5f, 0.0f, 0.5f };
-const glm::vec3 GizmoColor::BROWN = { 0.6f, 0.3f, 0.1f };
-const glm::vec3 GizmoColor::PINK = { 1.0f, 0.75f, 0.8f };
-const glm::vec3 GizmoColor::DARK_RED = { 0.5f, 0.0f, 0.0f };
-const glm::vec3 GizmoColor::DARK_GREEN = { 0.0f, 0.5f, 0.0f };
-const glm::vec3 GizmoColor::DARK_BLUE = { 0.0f, 0.0f, 0.5f };
-const glm::vec3 GizmoColor::DARK_YELLOW = { 0.5f, 0.5f, 0.0f };
-const glm::vec3 GizmoColor::DARK_CYAN = { 0.0f, 0.5f, 0.5f };
-const glm::vec3 GizmoColor::DARK_MAGENTA = { 0.5f, 0.0f, 0.5f };
-const glm::vec3 GizmoColor::DARK_ORANGE = { 0.5f, 0.25f, 0.0f };
-const glm::vec3 GizmoColor::DARK_PURPLE = { 0.25f, 0.0f, 0.25f };
-const glm::vec3 GizmoColor::DARK_BROWN = { 0.3f, 0.15f, 0.05f };
-const glm::vec3 GizmoColor::DARK_PINK = { 0.5f, 0.375f, 0.4f };
-
-// Initialize quick gizmo members
+#include "../src/rendering/model/mesh.h"
 
 glm::vec3 QuickGizmo::color = glm::vec3(1.0f);
 

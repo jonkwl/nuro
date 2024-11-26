@@ -12,6 +12,7 @@
 #include "../src/rendering/model/model.h"
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/texture/texture.h"
 
 Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;

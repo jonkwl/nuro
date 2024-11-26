@@ -1,5 +1,9 @@
 #include "shader_pool.h"
 
+#include "../src/utils/log.h"
+#include "../src/utils/iohandler.h"
+#include "../src/rendering/shader/shader.h"
+
 std::vector<Shader*> ShaderPool::shaders;
 std::vector<std::string> ShaderPool::identifiers;
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glm.hpp>
-#include <glad/glad.h>
-#include "../src/rendering/shader/Shader.h"
+
+class Shader;
 
 class MotionBlurPass
 {

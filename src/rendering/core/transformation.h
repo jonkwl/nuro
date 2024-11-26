@@ -1,14 +1,10 @@
 #pragma once
 
 #include <vector>
-
 #include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
-#include <gtc/quaternion.hpp>
 
-#include "../src/entity/entity.h"
-#include "../src/camera/camera.h"
+class Entity;
+class Camera;
 
 class Transformation
 {

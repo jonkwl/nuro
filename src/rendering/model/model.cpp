@@ -1,6 +1,17 @@
 #include "model.h"
 
+#include <glad/glad.h>
+#include <sstream>
+#include <vector>
+
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
 #include "../src/rendering/core/transformation.h"
+#include "../src/utils/log.h"
+#include "../src/utils/iohandler.h"
+#include "../src/utils/string_helper.h"
+#include "../src/rendering/model/mesh.h"
 
 Model::Model(std::string path)
 {

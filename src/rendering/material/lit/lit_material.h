@@ -1,10 +1,8 @@
 #pragma once
 
-#include "../src/rendering/shader/shader.h"
-#include "../src/rendering/shader/shader_pool.h"
-#include "../src/rendering/texture/texture.h"
-#include "../src/utils/log.h"
 #include "../imaterial.h"
+
+class Texture;
 
 class LitMaterial : public IMaterial
 {

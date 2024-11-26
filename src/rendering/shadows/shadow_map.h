@@ -1,11 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm.hpp>
-#include <vector>
-
-#include "../src/rendering/shader/Shader.h"
-
 class ShadowMap
 {
 public:

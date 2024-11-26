@@ -42,6 +42,7 @@
 #include "../src/rendering/gizmos/quick_gizmo.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../user/src/game_logic.h"
+#include "../src/rendering/core/transformation.h"
 
 std::vector<Entity*> Runtime::entityLinks;
 

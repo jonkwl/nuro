@@ -1,9 +1,5 @@
 #pragma once
 
-#include <glm.hpp>
-#include <glad/glad.h>
-#include <vector>
-
 class Shader;
 
 class VelocityBuffer

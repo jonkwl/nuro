@@ -1,20 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm.hpp>
 #include <string>
-#include <sstream>
-#include <vector>
-
-#include <assimp/Importer.hpp>
+#include <glm.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
-#include "../src/utils/log.h"
-#include "../src/utils/iohandler.h"
-#include "../src/utils/string_helper.h"
-#include "../src/rendering/model/mesh.h"
-#include "../src/rendering/material/imaterial.h"
+class Mesh;
 
 struct ModelMetrics {
 	unsigned int nMeshes = 0; // Total number of meshes in model

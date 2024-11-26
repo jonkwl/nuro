@@ -1,7 +1,8 @@
 #include "shadow_disk.h"
 
+#include <vector>
+#include <random>
 #include <glad/glad.h>
-#include <cassert>
 
 #include "../src/utils/log.h"
 

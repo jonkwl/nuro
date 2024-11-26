@@ -1,9 +1,12 @@
 #include "motion_blur_pass.h"
 
+#include <glad/glad.h>
+
 #include "../src/runtime/runtime.h"
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/shader/shader_pool.h"
+#include "../src/rendering/shader/Shader.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/postprocessing/post_processing.h"
