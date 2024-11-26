@@ -161,6 +161,67 @@ void defaultScene() {
 	neonLight->meshRenderer->model = neonModel;
 	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
 
+	Model* dragonModel = new Model("./user/assets/models/dragon.fbx");
+	LitMaterial* dragonMaterial = new LitMaterial();
+	dragonMaterial->baseColor = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
+	dragonMaterial->roughness = 0.4f;
+	
+	Entity* dragon = new Entity();
+	dragon->transform.position = glm::vec3(9.7f, 1.0f, 0.0f);
+	dragon->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	dragon->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon->meshRenderer->model = dragonModel;
+	std::vector<IMaterial*> dragonMats(100, dragonMaterial);
+	dragon->meshRenderer->materials = dragonMats;
+
+	/*Entity* dragon2 = new Entity();
+	dragon2->transform.position = glm::vec3(32.0f, 1.0f, 0.0f);
+	dragon2->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	dragon2->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon2->meshRenderer->model = dragonModel;
+	dragon2->meshRenderer->materials = dragonMats;
+
+	Entity* dragon3 = new Entity();
+	dragon3->transform.position = glm::vec3(37.0f, 1.0f, 0.0f);
+	dragon3->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	dragon3->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon3->meshRenderer->model = dragonModel;
+	dragon3->meshRenderer->materials = dragonMats;
+
+	Entity* dragon4 = new Entity();
+	dragon4->transform.position = glm::vec3(42.0f, 1.0f, 0.0f);
+	dragon4->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	dragon4->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon4->meshRenderer->model = dragonModel;
+	dragon4->meshRenderer->materials = dragonMats;
+
+	Entity* dragon5 = new Entity();
+	dragon5->transform.position = glm::vec3(47.0f, 1.0f, 0.0f);
+	dragon5->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	dragon5->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon5->meshRenderer->model = dragonModel;
+	dragon5->meshRenderer->materials = dragonMats;
+
+	Entity* dragon6 = new Entity();
+	dragon6->transform.position = glm::vec3(52.0f, 1.0f, 0.0f);
+	dragon6->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	dragon6->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon6->meshRenderer->model = dragonModel;
+	dragon6->meshRenderer->materials = dragonMats;*/
+
+	/*Model* audiModel = new Model("./user/assets/models/audi.fbx");
+	LitMaterial* audiMaterial = new LitMaterial();
+	audiMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
+	audiMaterial->roughness = 0.2f;
+	audiMaterial->metallic = 1.0f;
+	Entity* audi = new Entity();
+	audi->transform.position = glm::vec3(-8.0f, 1.0f, 0.0f);
+	audi->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	audi->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	audi->meshRenderer->model = audiModel;
+	std::vector<IMaterial*> audiMats(100, audiMaterial);
+	audi->meshRenderer->materials = audiMats;*/
+
 	for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
 		x = new Entity();

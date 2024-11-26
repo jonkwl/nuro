@@ -152,10 +152,6 @@ int Runtime::START_LOOP() {
 
 	Log::printProcessDone("Runtime", "Context created");
 
-	GLint maxColorAttachments;
-	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
-	printf("Maximum Color Attachments: %d\n", maxColorAttachments);
-
 	//
 	// SETUP PHASE 2: LOAD ASSETS, COMPILE SHADERS
 	//
@@ -353,7 +349,6 @@ int Runtime::START_LOOP() {
 		Profiler::start("pre_pass");
 		PrePass::render();
 		Profiler::stop("pre_pass");
-
 		unsigned int PRE_PASS_DEPTH_OUTPUT = PrePass::getDepthOutput();
 		unsigned int PRE_PASS_NORMAL_OUTPUT = PrePass::getNormalOutput();
 

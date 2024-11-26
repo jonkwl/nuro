@@ -15,7 +15,7 @@ ModelMetrics Model::getMetrics() const
 
 void Model::resolveModel(std::string path)
 {
-    Log::printProcessStart("Model", "Starting to build model " + IOHandler::GetFilename(path) + "...");
+    Log::printProcessStart("Model", "Building model " + IOHandler::GetFilename(path) + "...");
 
     unsigned int importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
