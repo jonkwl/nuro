@@ -29,9 +29,9 @@ void UIComponents::headline(std::string title, const char* icon, HeadlineJustifi
 
 }
 
-void UIComponents::tooltip(const char* tooltip)
+void UIComponents::tooltip(std::string tooltip)
 {
-    if (tooltip && tooltip[0] != '\0') {
+    if (!tooltip.empty()) {
         if (ImGui::IsItemHovered()) {
             ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.5f));
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 0.8f));
@@ -45,7 +45,7 @@ void UIComponents::tooltip(const char* tooltip)
     }
 }
 
-void UIComponents::toggleButton(const char* label, bool& value, const char* tooltip)
+void UIComponents::toggleButton(std::string label, bool& value, std::string tooltip)
 {
     ImVec4 inactiveButtonColor = EngineUI::darken(EngineUI::colors.elementActive, 0.6f);
     ImVec4 activeButtonColor = EngineUI::colors.elementActive;
@@ -61,9 +61,9 @@ void UIComponents::toggleButton(const char* label, bool& value, const char* tool
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, currentButtonColor);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, currentButtonColor);
 
-    ImGui::PushID(label);
+    ImGui::PushID(label.c_str());
 
-    if (ImGui::Button(label))
+    if (ImGui::Button(label.c_str()))
     {
         value = !value;
     }
@@ -97,10 +97,10 @@ void UIComponents::tryIcon(const char* icon, float padding)
     }
 }
 
-void UIComponents::input(const char* label, bool& value)
+void UIComponents::input(std::string label, bool& value)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-        ImGui::Text(label);
+        ImGui::Text(label.c_str());
         ImGui::Spring(1.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
         ImGui::Checkbox(EngineUI::getId().c_str(), &value);
@@ -108,56 +108,56 @@ void UIComponents::input(const char* label, bool& value)
     UILayout::endFlex();
 }
 
-void UIComponents::input(const char* label, int& value, float speed)
+void UIComponents::input(std::string label, int& value, float speed)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-        ImGui::Text(label);
+        ImGui::Text(label.c_str());
         ImGui::Spring(1.0f);
         ImGui::DragInt(EngineUI::getId().c_str(), &value, speed);
     UILayout::endFlex();
 }
 
-void UIComponents::input(const char* label, float& value, float speed)
+void UIComponents::input(std::string label, float& value, float speed)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-        ImGui::Text(label);
+        ImGui::Text(label.c_str());
         ImGui::Spring(1.0f);
         ImGui::DragFloat(EngineUI::getId().c_str(), &value, speed);
     UILayout::endFlex();
     // ImGui::DragFloat(std::string(label + EngineUI::getId()).c_str(), &value, speed);
 }
 
-void UIComponents::indicatorLabel(const char* label, const char* value, const char* additional)
+void UIComponents::indicatorLabel(std::string label, std::string value, std::string additional)
 {
-    ImGui::Text(label);
+    ImGui::Text(label.c_str());
     ImGui::SameLine();
     ImGui::PushFont(EngineUI::fonts.uiBold);
-    ImGui::Text(value);
+    ImGui::Text(value.c_str());
     ImGui::PopFont();
-    if (additional && additional[0] != '\0') {
+    if (!additional.empty()) {
         ImGui::SameLine();
-        ImGui::Text(additional);
+        ImGui::Text(additional.c_str());
     }
 }
 
-void UIComponents::indicatorLabel(const char* label, int value, const char* additional)
+void UIComponents::indicatorLabel(std::string label, int value, std::string additional)
 {
     indicatorLabel(label, formatInteger(value).c_str(), additional);
 }
 
-void UIComponents::indicatorLabel(const char* label, unsigned int value, const char* additional)
+void UIComponents::indicatorLabel(std::string label, unsigned int value, std::string additional)
 {
     indicatorLabel(label, formatInteger(value).c_str(), additional);
 }
 
-void UIComponents::indicatorLabel(const char* label, float value, const char* additional)
+void UIComponents::indicatorLabel(std::string label, float value, std::string additional)
 {
     char buffer[32];
     snprintf(buffer, sizeof(buffer), "%.0f", value);
     indicatorLabel(label, buffer, additional);
 }
 
-void UIComponents::indicatorLabel(const char* label, double value, const char* additional)
+void UIComponents::indicatorLabel(std::string label, double value, std::string additional)
 {
     char buffer[32];
     snprintf(buffer, sizeof(buffer), "%.2f", value);
@@ -168,7 +168,7 @@ void UIComponents::indicatorLabel(const char* label, double value, const char* a
     indicatorLabel(label, buffer, additional);
 }
 
-bool UIComponents::extendableSettings(const char* label, bool& value, const char* icon)
+bool UIComponents::extendableSettings(std::string label, bool& value, const char* icon)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
     
@@ -179,7 +179,7 @@ bool UIComponents::extendableSettings(const char* label, bool& value, const char
         if (value) {
 
             UIComponents::space(4.0f, 2.5f);
-            bool extended = ImGui::CollapsingHeader(label);
+            bool extended = ImGui::CollapsingHeader(label.c_str());
             UILayout::endFlex();
 
             if (extended) {
@@ -193,7 +193,7 @@ bool UIComponents::extendableSettings(const char* label, bool& value, const char
         }
         else {
 
-            ImGui::Text(label);
+            ImGui::Text(label.c_str());
 
         }
 
@@ -207,12 +207,12 @@ void UIComponents::space(float width, float height)
     ImGui::Dummy(ImVec2(width, height));
 }
 
-bool UIComponents::header(const char* label)
+bool UIComponents::header(std::string label)
 {
     return ImGui::CollapsingHeader(std::string(label + EngineUI::getId()).c_str());
 }
 
-void UIComponents::colorPicker(const char* label, float value[3])
+void UIComponents::colorPicker(std::string label, float value[3])
 {
     if (ImGui::CollapsingHeader(std::string(label + EngineUI::getId()).c_str())) {
         ImGui::PushItemWidth(140);
