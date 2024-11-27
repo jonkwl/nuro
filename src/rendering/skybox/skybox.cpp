@@ -7,18 +7,16 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/utils/log.h"
 
-Skybox::Skybox(Cubemap *cubemap)
+Skybox::Skybox(Cubemap *cubemap) : emission(1.0f),
+                                   shader(ShaderPool::get("skybox"))
 {
-    this->cubemap = cubemap;
-    this->shader = ShaderPool::get("skybox");
-    generate();
+    generate(cubemap);
 }
 
-Skybox::Skybox(Cubemap *cubemap, Shader *custom_shader)
+Skybox::Skybox(Cubemap *cubemap, Shader *custom_shader) : emission(1.0f),
+                                                          shader(custom_shader)
 {
-    this->cubemap = cubemap;
-    this->shader = shader;
-    generate();
+    generate(cubemap);
 }
 
 void Skybox::render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
@@ -40,30 +38,26 @@ void Skybox::render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 
     // Bind cubemap texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
     // Draw skybox
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void Skybox::generate()
+void Skybox::generate(Cubemap *cubemap)
 {
-    emission = 1.0f;
-
     Log::printProcessStart("Skybox", "Generating skybox from cubemap " + cubemap->name + "...");
 
-    if (!create_textures())
-        return;
-    if (!create_buffers())
-        return;
+    create_textures(cubemap);
+    create_buffers();
 
     Log::printProcessDone("Skybox", "Skybox generated");
 }
 
-bool Skybox::create_textures()
+void Skybox::create_textures(Cubemap *cubemap)
 {
-    glGenTextures(1, &texture_id);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+    glGenTextures(1, &cubemapTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
     Log::printProcessInfo("Loading textures...");
     for (int i = 0; i < cubemap->faces.size(); i++)
@@ -86,15 +80,12 @@ bool Skybox::create_textures()
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-    return true;
 }
 
-bool Skybox::create_buffers()
+void Skybox::create_buffers()
 {
     Log::printProcessInfo("Generating sky...");
 
-    // std::vector<float> vertices = get_vertices();
     float vertices[] = {
         -1.0f, 1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -151,11 +142,4 @@ bool Skybox::create_buffers()
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    return true;
-}
-
-std::vector<float> Skybox::get_vertices()
-{
-    return std::vector<float>();
 }

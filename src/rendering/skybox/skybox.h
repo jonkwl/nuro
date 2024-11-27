@@ -10,26 +10,22 @@ class Shader;
 class Skybox
 {
 public:
-	Skybox(Cubemap *cubemap);
-	Skybox(Cubemap *cubemap, Shader *custom_shader);
+	explicit Skybox(Cubemap *cubemap);
+	explicit Skybox(Cubemap *cubemap, Shader *custom_shader);
 
 	void render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
 	float emission;
 
-	Cubemap *cubemap;
-	Shader *shader;
-
 private:
-	unsigned int texture_id;
-
+	unsigned int cubemapTexture;
 	unsigned int vao;
 	unsigned int vbo;
 
-	void generate();
+	void generate(Cubemap *cubemap);
 
-	bool create_textures();
-	bool create_buffers();
+	void create_textures(Cubemap *cubemap);
+	void create_buffers();
 
-	std::vector<float> get_vertices();
+	Shader *shader;
 };

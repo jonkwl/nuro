@@ -33,9 +33,9 @@ public:
 
 	// Camera settings
 	static void useCamera(Camera camera);
-	static Camera& getCameraRendering(); // Returns camera actually being rendered
-	static Camera& getActiveCamera();	 // Returns camera selected by user (active camera)
-	static Camera& getInspectorCamera();
+	static Camera &getCameraRendering(); // Returns camera actually being rendered
+	static Camera &getActiveCamera();	 // Returns camera selected by user (active camera)
+	static Camera &getInspectorCamera();
 
 	static float directionalIntensity;
 	static glm::vec3 directionalColor;
@@ -93,8 +93,8 @@ public:
 private:
 	// Values that only need to be accessed by the runtime itself (eg preprocessors)
 
-	static Camera renderCamera;	// This camera gets rendered to the screen
-	static Camera activeCamera;	// Container camera; Sets render camera value if inspector mode is OFF
+	static Camera renderCamera;	   // This camera gets rendered to the screen
+	static Camera activeCamera;	   // Container camera; Sets render camera value if inspector mode is OFF
 	static Camera inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 
 	// Averaged fps calculations

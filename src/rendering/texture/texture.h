@@ -17,7 +17,7 @@ enum class TextureType
 class Texture
 {
 public:
-	Texture() : id(0) {}								  // Construct with no backend texture attached
+	explicit Texture() : id(0) {}						  // Construct with no backend texture attached
 	explicit Texture(GLuint id) : id(id) {}				  // Construct with existing backend texture attached
 	explicit Texture(std::string path, TextureType type); // Construct with newly from image created backend texture attached
 

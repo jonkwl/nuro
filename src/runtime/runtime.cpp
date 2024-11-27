@@ -48,7 +48,7 @@ std::vector<Entity *> Runtime::entityLinks;
 
 UnlitMaterial *Runtime::defaultMaterial = nullptr;
 Cubemap *Runtime::defaultSky = nullptr;
-Skybox *Runtime::defaultSkybox = nullptr;
+Skybox *Runtime::defaultSkybox;
 
 Shader *Runtime::prePassShader = nullptr;
 Shader *Runtime::shadowPassShader = nullptr;
@@ -115,17 +115,17 @@ void Runtime::useCamera(Camera camera)
 	activeCamera = camera;
 }
 
-Camera& Runtime::getCameraRendering()
+Camera &Runtime::getCameraRendering()
 {
 	return renderCamera;
 }
 
-Camera& Runtime::getActiveCamera()
+Camera &Runtime::getActiveCamera()
 {
 	return activeCamera;
 }
 
-Camera& Runtime::getInspectorCamera()
+Camera &Runtime::getInspectorCamera()
 {
 	return inspectorCamera;
 }
