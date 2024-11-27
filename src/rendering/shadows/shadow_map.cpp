@@ -8,7 +8,7 @@
 #include "../src/runtime/runtime.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/transformation.h"
-#include "../src/rendering/shader/Shader.h"
+#include "../src/rendering/shader/shader.h"
 #include "../src/entity/entity.h"
 #include "../src/utils/log.h"
 

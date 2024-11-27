@@ -4,7 +4,7 @@
 
 #include "../src/window/window.h"
 #include "../src/rendering/shader/shader_pool.h"
-#include "../src/rendering/shader/Shader.h"
+#include "../src/rendering/shader/shader.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/postprocessing/bloom/bloom_frame.h"
 

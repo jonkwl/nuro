@@ -4,7 +4,7 @@
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/shader/shader_pool.h"
-#include "../src/rendering/shader/Shader.h"
+#include "../src/rendering/shader/shader.h"
 
 unsigned int DebugPass::fbo = 0;
 unsigned int DebugPass::output = 0;
