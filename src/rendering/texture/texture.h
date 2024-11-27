@@ -2,6 +2,8 @@
 
 #include <string>
 
+typedef unsigned int GLuint;
+
 enum class TextureType {
 	ALBEDO,
 	NORMAL,
@@ -11,14 +13,15 @@ enum class TextureType {
 	EMISSIVE
 };
 
-class Texture
-{
+class Texture {
 public:
-	Texture(std::string path, TextureType type);
+	Texture() : id(0) {} // Construct with no backend texture attached
+	Texture(GLuint id) : id(id) {} // Construct with existing backend texture attached
+	explicit Texture(std::string path, TextureType type); // Construct with newly from image created backend texture attached
 
-	TextureType type;
+	void bind(unsigned int unit); // Bind texture for backend
 
-	void bind(unsigned int unit);
+	void destroy(); // Delete texture in backend
 private:
-	unsigned int id;
+	GLuint id; // Backend texture id
 };

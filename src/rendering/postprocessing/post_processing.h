@@ -1,6 +1,7 @@
 #pragma once
 
-class Texture;
+#include "../src/rendering/texture/texture.h"
+
 class Shader;
 
 struct PostProcessingConfiguration {
@@ -25,7 +26,7 @@ struct PostProcessingConfiguration {
 	float bloomFilterRadius = 0.0f;
 	unsigned int bloomMipDepth = 16;
 	bool lensDirt = false;
-	Texture* lensDirtTexture = nullptr;
+	Texture lensDirtTexture = Texture();
 	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;

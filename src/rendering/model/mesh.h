@@ -3,8 +3,6 @@
 #include <vector>
 #include <glm.hpp>
 
-class Texture;
-
 struct VertexData {
     glm::vec3 position;
     glm::vec3 normal;
@@ -16,11 +14,10 @@ struct VertexData {
 class Mesh
 {
 public:
-    Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures, int materialIndex);
+    Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex);
 
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture*> textures;
 
     void bind();
 

@@ -4,13 +4,11 @@
 
 #include "../src/rendering/texture/texture.h"
 
-Mesh::Mesh(std::vector<VertexData> _vertices, std::vector<unsigned int> _indices, std::vector<Texture*> _textures, int _materialIndex)
+Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) :
+    vertices(vertices),
+    indices(indices),
+    materialIndex(materialIndex)
 {
-	vertices = _vertices;
-	indices = _indices;
-	textures = _textures;
-    materialIndex = _materialIndex;
-
     // Generate VAO, VBO and EBO
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);

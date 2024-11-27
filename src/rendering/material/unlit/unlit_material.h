@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../imaterial.h"
-
-class Texture;
+#include "../src/rendering/texture/texture.h"
 
 class UnlitMaterial : public IMaterial
 {
@@ -14,7 +13,9 @@ public:
 	glm::vec4 baseColor;
 	glm::vec2 tiling;
 	glm::vec2 offset;
-	Texture* texture;
+
+	bool useTexture;
+	Texture texture;
 private:
 	Shader* shader;
 };

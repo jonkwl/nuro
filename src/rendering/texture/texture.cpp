@@ -5,11 +5,8 @@
 
 #include "../src/utils/log.h"
 
-Texture::Texture(std::string path, TextureType type)
+Texture::Texture(std::string path, TextureType type) : id(0)
 {
-	id = 0;
-	this->type = type;
-
 	Log::printProcessInfo("Loading texture " + path + "...");
 
 	glGenTextures(1, &id);
@@ -69,4 +66,12 @@ Texture::Texture(std::string path, TextureType type)
 void Texture::bind(unsigned int unit) {
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Texture::destroy()
+{
+	if (id != 0) {
+		glDeleteTextures(1, &id);
+		id = 0;
+	}
 }

@@ -69,7 +69,6 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
     // Initialize mesh buffers
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture*> textures;
     unsigned int materialIndex;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -121,7 +120,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
     // Add to total materials metric if current index is the highest index
     metrics.nMaterials = std::max(metrics.nMaterials, materialIndex + 1);
     
-    return new Mesh(vertices, indices, textures, materialIndex);
+    return new Mesh(vertices, indices, materialIndex);
 }
 
 void Model::calculateModelMetrics()

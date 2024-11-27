@@ -28,17 +28,17 @@ void defaultScene() {
 	Runtime::useCamera(camera);
 
 	// Post Processing Lens Dirt
-	Texture* lensDirt = new Texture("./user/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
+	Texture lensDirt = Texture("./user/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
 	PostProcessing::configuration.lensDirtTexture = lensDirt;
 	PostProcessing::configuration.lensDirt = true;
 
 	// Create all entities
-	/*Texture* albedo = new Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
-	Texture* normal = new Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
-	Texture* metallic = new Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
-	Texture* roughness = new Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
-	Texture* ambient_occlusion = new Texture("./user/assets/textures/sci-fi/ambient_occlusion.jpg", AMBIENT_OCCLUSION_MAP);
-	Texture* emission = new Texture("./user/assets/textures/sci-fi/emission.jpg", EMISSION_MAP);
+	/*Texture albedo = Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
+	Texture normal = Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
+	Texture metallic = Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
+	Texture roughness = Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
+	Texture ambient_occlusion = Texture("./user/assets/textures/sci-fi/ambient_occlusion.jpg", AMBIENT_OCCLUSION_MAP);
+	Texture emission = Texture("./user/assets/textures/sci-fi/emission.jpg", EMISSION_MAP);
 
 	sphereMaterial = new LitMaterial();
 	sphereMaterial->setAlbedoMap(albedo);
@@ -62,10 +62,10 @@ void defaultScene() {
 	collisionSphere->meshRenderer->materials.push_back(sphereMaterial);
 	collisionSphere->transform.position = glm::vec3(5.0f, 0.6f, 6.5f);
 
-	Texture* sphereAlbedo = new Texture("./user/assets/textures/mat_albedo.jpg", TextureType::ALBEDO);
-	Texture* sphereRoughness = new Texture("./user/assets/textures/mat_roughness.jpg", TextureType::ROUGHNESS);
-	Texture* sphereMetallic = new Texture("./user/assets/textures/mat_metallic.jpg", TextureType::METALLIC);
-	Texture* sphereNormal = new Texture("./user/assets/textures/mat_normal.jpg", TextureType::NORMAL);
+	Texture sphereAlbedo = Texture("./user/assets/textures/mat_albedo.jpg", TextureType::ALBEDO);
+	Texture sphereRoughness = Texture("./user/assets/textures/mat_roughness.jpg", TextureType::ROUGHNESS);
+	Texture sphereMetallic = Texture("./user/assets/textures/mat_metallic.jpg", TextureType::METALLIC);
+	Texture sphereNormal = Texture("./user/assets/textures/mat_normal.jpg", TextureType::NORMAL);
 	LitMaterial* pbrSphereMaterial = new LitMaterial();
 	pbrSphereMaterial->setAlbedoMap(sphereAlbedo);
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
@@ -77,7 +77,7 @@ void defaultScene() {
 	pbrSphere->meshRenderer->materials.push_back(pbrSphereMaterial);
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.6f, 6.5f);
 
-	Texture* plankAlbedo = new Texture("./user/assets/textures/plank.jpg", TextureType::ALBEDO);
+	Texture plankAlbedo = Texture("./user/assets/textures/plank.jpg", TextureType::ALBEDO);
 	LitMaterial* plank = new LitMaterial();
 	plank->tiling = glm::vec2(2.0f, 2.0f);
 	plank->setAlbedoMap(plankAlbedo);
@@ -111,9 +111,9 @@ void defaultScene() {
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
-	Texture* smearedWallAlbedo = new Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", TextureType::ALBEDO);
-	Texture* smearedWallRoughness = new Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", TextureType::ROUGHNESS);
-	Texture* smearedWallNormal = new Texture("./user/assets/textures/Smeared Wall_Normal.jpg", TextureType::NORMAL);
+	Texture smearedWallAlbedo = Texture("./user/assets/textures/Smeared Wall_BaseColor.jpg", TextureType::ALBEDO);
+	Texture smearedWallRoughness = Texture("./user/assets/textures/Smeared Wall_Roughness.jpg", TextureType::ROUGHNESS);
+	Texture smearedWallNormal = Texture("./user/assets/textures/Smeared Wall_Normal.jpg", TextureType::NORMAL);
 	LitMaterial* smearedWallMaterial = new LitMaterial();
 	smearedWallMaterial->baseColor = glm::vec4(1.0f, 0.96f, 0.86f, 1.0f);
 	smearedWallMaterial->setAlbedoMap(smearedWallAlbedo);
@@ -128,9 +128,16 @@ void defaultScene() {
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
-	Texture* mannequinAlbedo = new Texture("./user/assets/textures/mannequin_albedo.jpg", TextureType::ALBEDO);
-	Texture* mannequinRoughness = new Texture("./user/assets/textures/mannequin_roughness.jpg", TextureType::ROUGHNESS);
-	Texture* mannequinMetallic = new Texture("./user/assets/textures/mannequin_metallic.jpg", TextureType::METALLIC);
+	Entity* smearedWall2 = new Entity();
+	smearedWall2->meshRenderer->model = smearedWallModel;
+	smearedWall2->meshRenderer->materials.push_back(smearedWallMaterial);
+	smearedWall2->transform.position = glm::vec3(23.0f, -1.0f, 10.0f);
+	smearedWall2->transform.rotation = glm::vec3(0.0, 90.0f, 0.0f);
+	smearedWall2->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
+
+	Texture mannequinAlbedo = Texture("./user/assets/textures/mannequin_albedo.jpg", TextureType::ALBEDO);
+	Texture mannequinRoughness = Texture("./user/assets/textures/mannequin_roughness.jpg", TextureType::ROUGHNESS);
+	Texture mannequinMetallic = Texture("./user/assets/textures/mannequin_metallic.jpg", TextureType::METALLIC);
 	LitMaterial* mannequinMaterial = new LitMaterial();
 	mannequinMaterial->setAlbedoMap(mannequinAlbedo);
 	mannequinMaterial->setRoughnessMap(mannequinRoughness);

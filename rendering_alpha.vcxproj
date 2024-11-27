@@ -160,6 +160,7 @@
     <ClCompile Include="src\rendering\material\unlit\unlit_material.cpp" />
     <ClCompile Include="src\rendering\skybox\cubemap.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\rendering\texture\texture.cpp" />
     <ClCompile Include="src\window\window.cpp" />
     <ClCompile Include="src\camera\camera.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
@@ -189,7 +190,6 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\rendering\shader\shader.cpp" />
-    <ClCompile Include="src\rendering\texture\texture.cpp" />
     <ClCompile Include="src\rendering\postprocessing\motionblur\velocity_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,6 @@
 
 #include "../src/runtime/runtime.h"
 #include "../src/camera/camera.h"
-#include "../src/rendering/texture/texture.h"
 #include "../src/rendering/shadows/shadow_map.h"
 #include "../src/rendering/shadows/shadow_disk.h"
 #include "../src/rendering/core/transformation.h"
@@ -13,29 +12,15 @@
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 
-LitMaterial::LitMaterial()
+LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
+							 tiling(1.0f, 1.0f),
+							 offset(0.0f, 0.0f),
+							 roughness(0.0f),
+							 metallic(0.0f),
+							 emission(false),
+							 emissionIntensity(0.0f),
+							 emissionColor(1.0f, 1.0f, 1.0f)
 {
-	shader = ShaderPool::get("lit");
-
-	tiling = glm::vec2(1.0f);
-	offset = glm::vec2(0.0f);
-
-	albedoMap = nullptr;
-	normalMap = nullptr;
-
-	roughness = 0.0f;
-	roughnessMap = nullptr;
-
-	metallic = 0.0f;
-	metallicMap = nullptr;
-
-	ambientOcclusionMap = nullptr;
-
-	emission = false;
-	emissionIntensity = 0.0f;
-	emissionColor = glm::vec3(1.0f);
-	emissionMap = nullptr;
-
 	shader->bind();
 	syncStaticUniforms();
 	syncLightUniforms();
@@ -79,82 +64,90 @@ void LitMaterial::bind()
 	shader->setVec3("material.emissionColor", emissionColor);
 
 	shader->setBool("material.enableAlbedoMap", enableAlbedoMap);
-	if (enableAlbedoMap) {
-		albedoMap->bind(ALBEDO_UNIT);
+	if (enableAlbedoMap)
+	{
+		albedoMap.bind(ALBEDO_UNIT);
 	}
 
 	shader->setBool("material.enableNormalMap", enableNormalMap && Runtime::normalMapping);
-	if (enableNormalMap && Runtime::normalMapping) {
-		normalMap->bind(NORMAL_UNIT);
+	if (enableNormalMap && Runtime::normalMapping)
+	{
+		normalMap.bind(NORMAL_UNIT);
 	}
 	shader->setFloat("material.normalMapIntensity", Runtime::normalMappingIntensity);
 
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
-	if (enableRoughnessMap) {
-		roughnessMap->bind(ROUGHNESS_UNIT);
+	if (enableRoughnessMap)
+	{
+		roughnessMap.bind(ROUGHNESS_UNIT);
 	}
-	else {
+	else
+	{
 		shader->setFloat("material.roughness", roughness);
 	}
 
 	shader->setBool("material.enableMetallicMap", enableMetallicMap);
-	if (enableMetallicMap) {
-		metallicMap->bind(METALLIC_UNIT);
+	if (enableMetallicMap)
+	{
+		metallicMap.bind(METALLIC_UNIT);
 	}
-	else {
+	else
+	{
 		shader->setFloat("material.metallic", metallic);
 	}
 
 	shader->setBool("material.enableAmbientOcclusionMap", enableAmbientOcclusionMap);
-	if (enableAmbientOcclusionMap) {
-		ambientOcclusionMap->bind(AMBIENT_OCCLUSION_UNIT);
+	if (enableAmbientOcclusionMap)
+	{
+		ambientOcclusionMap.bind(AMBIENT_OCCLUSION_UNIT);
 	}
 
 	shader->setBool("material.enableEmissionMap", enableEmissionMap);
-	if (enableEmissionMap) {
-		emissionMap->bind(EMISSIVE_UNIT);
+	if (enableEmissionMap)
+	{
+		emissionMap.bind(EMISSIVE_UNIT);
 	}
 }
 
-Shader* LitMaterial::getShader()
+Shader *LitMaterial::getShader()
 {
 	return shader;
 }
 
-void LitMaterial::setAlbedoMap(Texture* albedoMap)
+void LitMaterial::setAlbedoMap(Texture texture)
 {
 	enableAlbedoMap = true;
-	this->albedoMap = albedoMap;
+	albedoMap = texture;
 }
 
-void LitMaterial::setNormalMap(Texture* normalMap)
+void LitMaterial::setNormalMap(Texture texture)
 {
 	enableNormalMap = true;
-	this->normalMap = normalMap;
+	normalMap = texture;
 }
 
-void LitMaterial::setRoughnessMap(Texture* roughnessMap)
+void LitMaterial::setRoughnessMap(Texture texture)
 {
 	enableRoughnessMap = true;
-	this->roughnessMap = roughnessMap;
+	roughnessMap = texture;
 }
 
-void LitMaterial::setMetallicMap(Texture* metallicMap)
+void LitMaterial::setMetallicMap(Texture texture)
 {
 	enableMetallicMap = true;
-	this->metallicMap = metallicMap;
+	metallicMap = texture;
 }
 
-void LitMaterial::setAmbientOcclusionMap(Texture* ambientOcclusionMap)
+void LitMaterial::setAmbientOcclusionMap(Texture texture)
 {
 	enableAmbientOcclusionMap = true;
-	this->ambientOcclusionMap = ambientOcclusionMap;
+	ambientOcclusionMap = texture;
 }
 
-void LitMaterial::setEmissionMap(Texture* emissionMap)
+void LitMaterial::setEmissionMap(Texture texture)
 {
 	enableEmissionMap = true;
-	this->emissionMap = emissionMap;
+	emissionMap = texture;
 }
 
 void LitMaterial::syncStaticUniforms()

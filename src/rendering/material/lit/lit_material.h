@@ -2,7 +2,7 @@
 
 #include "../imaterial.h"
 
-class Texture;
+#include "../src/rendering/texture/texture.h"
 
 class LitMaterial : public IMaterial
 {
@@ -23,12 +23,12 @@ public:
 	float emissionIntensity;
 	glm::vec3 emissionColor;
 
-	void setAlbedoMap(Texture* albedoMap);
-	void setNormalMap(Texture* normalMap);
-	void setRoughnessMap(Texture* roughnessMap);
-	void setMetallicMap(Texture* metallicMap);
-	void setAmbientOcclusionMap(Texture* ambientOcclusionMap);
-	void setEmissionMap(Texture* emissionMap);
+	void setAlbedoMap(Texture texture);
+	void setNormalMap(Texture texture);
+	void setRoughnessMap(Texture texture);
+	void setMetallicMap(Texture texture);
+	void setAmbientOcclusionMap(Texture texture);
+	void setEmissionMap(Texture texture);
 private:
 	enum TextureUnits {
 		ALBEDO_UNIT,
@@ -45,22 +45,22 @@ private:
 	Shader* shader;
 
 	bool enableAlbedoMap;
-	Texture* albedoMap;
+	Texture albedoMap;
 
 	bool enableNormalMap;
-	Texture* normalMap;
+	Texture normalMap;
 
 	bool enableRoughnessMap;
-	Texture* roughnessMap;
+	Texture roughnessMap;
 
 	bool enableMetallicMap;
-	Texture* metallicMap;
+	Texture metallicMap;
 
 	bool enableAmbientOcclusionMap;
-	Texture* ambientOcclusionMap;
+	Texture ambientOcclusionMap;
 
 	bool enableEmissionMap;
-	Texture* emissionMap;
+	Texture emissionMap;
 
 	void syncStaticUniforms();
 	void syncLightUniforms();

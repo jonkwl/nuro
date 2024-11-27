@@ -124,7 +124,7 @@ void PostProcessing::render(unsigned int hdrInput)
 
 	// Bind lens dirt texture
 	if (configuration.lensDirt) {
-		configuration.lensDirtTexture->bind(LENS_DIRT_UNIT);
+		configuration.lensDirtTexture.bind(LENS_DIRT_UNIT);
 	}
 
 	// Bind quad and render to screen
