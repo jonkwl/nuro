@@ -3,7 +3,7 @@
 class ShadowMap
 {
 public:
-	ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight);
+	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight);
 
 	void render();
 	void bind(unsigned int unit);

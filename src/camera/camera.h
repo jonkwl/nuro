@@ -12,11 +12,10 @@ struct Frustum
 class Camera
 {
 public:
-	Camera();
-
-	Transform transform;
+	explicit Camera(float fov = 70.0f, float near = 0.3f, float far = 1000.0f);
 
 	Frustum frustum;
+	Transform transform;
 
 	float getFov();
 	float getNear();

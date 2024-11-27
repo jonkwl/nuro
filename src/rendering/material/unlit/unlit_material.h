@@ -7,6 +7,7 @@ class UnlitMaterial : public IMaterial
 {
 public:
 	UnlitMaterial();
+
 	void bind();
 	Shader *getShader();
 

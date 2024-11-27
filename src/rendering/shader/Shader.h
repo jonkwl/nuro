@@ -7,7 +7,7 @@
 class Shader
 {
 public:
-	Shader(const char *vertex_src, const char *fragment_src, bool &compiled, const std::string name);
+	explicit Shader(const char *vertex_src, const char *fragment_src, bool &compiled, const std::string name);
 
 	void bind();
 

@@ -38,18 +38,14 @@ void saveDepthMapAsImage(int width, int height, const std::string &filename)
 	}
 }
 
-ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight)
+ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight) :
+	resolutionWidth(resolutionWidth),
+	resolutionHeight(resolutionHeight),
+	boundsWidth(boundsWidth),
+	boundsHeight(boundsHeight),
+	framebuffer(0),
+	texture(0)
 {
-	// Set script parameters
-	this->resolutionWidth = resolutionWidth;
-	this->resolutionHeight = resolutionHeight;
-
-	this->boundsWidth = boundsWidth;
-	this->boundsHeight = boundsHeight;
-
-	this->framebuffer = 0;
-	this->texture = 0;
-
 	// Generate framebuffer
 	glGenFramebuffers(1, &framebuffer);
 

@@ -10,7 +10,7 @@ class Entity;
 class MeshRenderer
 {
 public:
-	MeshRenderer(Entity *parentEntity);
+	explicit MeshRenderer(Entity *parentEntity);
 
 	Model *model; // Linked model, rendering target
 

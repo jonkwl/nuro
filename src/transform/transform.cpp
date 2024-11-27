@@ -3,11 +3,11 @@
 #include <gtc/quaternion.hpp>
 #include "../src/entity/entity.h"
 
-Transform::Transform()
+Transform::Transform() :
+	position(glm::vec3(0.0f)),
+	rotation(glm::vec3(0.0f)),
+	scale(glm::vec3(1.0f))
 {
-	position = glm::vec3(0.0f);
-	rotation = glm::vec3(0.0f);
-	scale = glm::vec3(1.0f);
 }
 
 glm::vec3 Transform::forward()

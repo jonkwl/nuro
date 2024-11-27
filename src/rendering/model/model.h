@@ -23,10 +23,11 @@ struct ModelMetrics
 class Model
 {
 public:
-	Model(std::string path);
-	std::vector<Mesh *> meshes;
+	explicit Model(std::string path);
 
-	bool castsShadow = true;
+	bool castsShadow;
+
+	std::vector<Mesh *> meshes;
 
 	ModelMetrics getMetrics() const; // Returns the model metrics
 private:

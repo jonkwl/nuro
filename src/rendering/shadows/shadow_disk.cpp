@@ -8,14 +8,12 @@
 
 #define M_PI 3.14159265358979323846
 
-ShadowDisk::ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigned int radius)
+ShadowDisk::ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigned int radius) :
+	texture(0),
+	windowSize(windowSize),
+	filterSize(filterSize),
+	radius(radius)
 {
-	// Set shadow disk parameters
-	this->texture = 0;
-	this->windowSize = windowSize;
-	this->filterSize = filterSize;
-	this->radius = radius;
-
 	// Create data buffer
 	std::vector<float> data;
 

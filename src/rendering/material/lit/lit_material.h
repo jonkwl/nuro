@@ -8,6 +8,7 @@ class LitMaterial : public IMaterial
 {
 public:
 	LitMaterial();
+
 	void bind();
 	Shader *getShader();
 

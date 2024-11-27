@@ -6,6 +6,9 @@
 
 Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) : vertices(vertices),
                                                                                                      indices(indices),
+    vao(0),
+    vbo(0),
+    ebo(0),
                                                                                                      materialIndex(materialIndex)
 {
     // Generate VAO, VBO and EBO

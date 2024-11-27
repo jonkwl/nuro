@@ -18,6 +18,7 @@ class BoundingSphere : public BoundingVolume
 {
 public:
 	BoundingSphere();
+
 	void update(Model *model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 	bool intersectsFrustum(Frustum frustum);
 	float getDistance(glm::vec3 point);
@@ -30,6 +31,7 @@ class BoundingAABB : public BoundingVolume
 {
 public:
 	BoundingAABB();
+
 	void update(Model *model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 	bool intersectsFrustum(Frustum frustum);
 	float getDistance(glm::vec3 point);

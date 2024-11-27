@@ -3,7 +3,7 @@
 class ShadowDisk
 {
 public:
-	ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigned int radius);
+	explicit ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigned int radius);
 	void bind(unsigned int unit);
 
 	unsigned int getWindowSize();

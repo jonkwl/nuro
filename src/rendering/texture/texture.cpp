@@ -5,6 +5,14 @@
 
 #include "../src/utils/log.h"
 
+Texture::Texture() : id(0)
+{
+}
+
+Texture::Texture(GLuint id) : id(id)
+{
+}
+
 Texture::Texture(std::string path, TextureType type) : id(0)
 {
 	Log::printProcessInfo("Loading texture " + path + "...");

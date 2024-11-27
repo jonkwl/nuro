@@ -15,7 +15,7 @@ struct VertexData
 class Mesh
 {
 public:
-    Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex);
+    explicit Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex);
 
     std::vector<VertexData> vertices;
     std::vector<unsigned int> indices;
