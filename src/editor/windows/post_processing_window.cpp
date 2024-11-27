@@ -2,16 +2,16 @@
 
 #include <imgui.h>
 
-#include "../src/engineui/ui_layout.h"
-#include "../src/engineui/ui_components.h"
-#include "../src/engineui/IconsFontAwesome6.h"
+#include "../src/editor/ui_layout.h"
+#include "../src/editor/ui_components.h"
+#include "../src/editor/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
-#include "../src/engineui/engine_ui.h"
+#include "../src/editor/engine_ui.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
 void PostProcessingWindow::prepare()
 {
-	ImGui::Begin("  Post Processing  ", nullptr, EngineUI::windowFlags.standard);
+	ImGui::Begin("  Post Processing  ", nullptr, EditorUI::windowFlags.standard);
 
 	UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HeadlineJustification::LEFT);
 

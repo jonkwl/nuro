@@ -6,10 +6,9 @@
 #include "../../utils/log.h"
 #include "../../utils/iohandler.h"
 
-Shader::Shader(const char *vertex_src, const char *fragment_src, bool &compiled, const std::string name):
-	id(0),
-	shaderName(name),
-	uniformCache()
+Shader::Shader(const char *vertex_src, const char *fragment_src, bool &compiled, const std::string name) : id(0),
+																										   shaderName(name),
+																										   uniformCache()
 {
 	shaderName = name;
 

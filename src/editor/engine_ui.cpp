@@ -8,23 +8,23 @@
 
 #include "../src/runtime/runtime.h"
 #include "../src/window/window.h"
-#include "../src/engineui/engine_window.h"
-#include "../src/engineui/ui_components.h"
-#include "../src/engineui/ui_layout.h"
-#include "../src/engineui/windows/scene_window.h"
-#include "../src/engineui/windows/post_processing_window.h"
-#include "../src/engineui/windows/diagnostics_window.h"
+#include "../src/editor/editor_window.h"
+#include "../src/editor/ui_components.h"
+#include "../src/editor/ui_layout.h"
+#include "../src/editor/windows/scene_window.h"
+#include "../src/editor/windows/post_processing_window.h"
+#include "../src/editor/windows/diagnostics_window.h"
 
-std::vector<EngineWindow *> EngineUI::windows = std::vector<EngineWindow *>();
+std::vector<EditorWindow *> EditorUI::windows = std::vector<EditorWindow *>();
 
-Sizing EngineUI::sizing;
-Colors EngineUI::colors;
-WindowFlags EngineUI::windowFlags;
-Fonts EngineUI::fonts;
+Sizing EditorUI::sizing;
+Colors EditorUI::colors;
+WindowFlags EditorUI::windowFlags;
+Fonts EditorUI::fonts;
 
-unsigned int EngineUI::idCounter = 0;
+unsigned int EditorUI::idCounter = 0;
 
-void EngineUI::setup()
+void EditorUI::setup()
 {
 	IMGUI_CHECKVERSION();
 
@@ -136,7 +136,7 @@ void EngineUI::setup()
 	windows.push_back(diagnosticsWindow);
 }
 
-void EngineUI::newFrame()
+void EditorUI::newFrame()
 {
 	// Reset id counter for new frame
 	idCounter = 0;
@@ -147,7 +147,7 @@ void EngineUI::newFrame()
 	ImGui::NewFrame();
 }
 
-void EngineUI::render()
+void EditorUI::render()
 {
 
 	/* CREATE MAIN VIEWPORT DOCKSPACE */
@@ -185,19 +185,19 @@ void EngineUI::render()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-ImVec4 EngineUI::lighten(ImVec4 color, float amount)
+ImVec4 EditorUI::lighten(ImVec4 color, float amount)
 {
 	float factor = 1.0f + amount;
 	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 }
 
-ImVec4 EngineUI::darken(ImVec4 color, float amount)
+ImVec4 EditorUI::darken(ImVec4 color, float amount)
 {
 	float factor = 1.0f - amount;
 	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 }
 
-std::string EngineUI::getId()
+std::string EditorUI::getId()
 {
 	return ("##" + std::to_string(++idCounter));
 }

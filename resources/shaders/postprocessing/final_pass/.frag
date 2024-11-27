@@ -323,10 +323,10 @@ float unreal(float x) {
 vec2 applyBarrelDistortion(vec2 textureCoord, float distortionAmount) {
     // Center coordinates by subtracting 0.5
     vec2 centeredCoord = textureCoord - 0.5;
-    
+
     // Calculate distance from the center
     float distance = dot(centeredCoord, centeredCoord);
-    
+
     // Apply barrel distortion by scaling the coordinates based on distance
     return textureCoord + centeredCoord * distance * distortionAmount;
 }
@@ -349,14 +349,14 @@ float remapValue(float value, float rangeStart, float rangeEnd) {
 // Generate color spectrum based on input value t
 vec4 generateSpectrumOffset(float value) {
     vec4 color;
-    
+
     // Check if value is below or above 0.5 to determine color balance
     float low = step(value, 0.5);
     float high = 1.0 - low;
-    
+
     // Smooth weight transition between two colors
     float weight = lerp(remapValue(value, 1.0 / 6.0, 5.0 / 6.0));
-    
+
     // Create final color based on weight
     color = vec4(low, 1.0, high, 1.0) * vec4(1.0 - weight, weight, 1.0 - weight, 1.0);
 
@@ -372,22 +372,22 @@ vec3 chromaticAberration() {
 
     // Inverse of number of iterations for use in loops
     float inverseNumIterations = 1.0 / float(configuration.chromaticAberrationIterations);
-    
+
     // Loop through each iteration to apply chromatic aberration
     for (int i = 0; i < configuration.chromaticAberrationIterations; ++i) {
         // Calculate normalized weight based on iteration index
         float normalizedIndex = float(i) * inverseNumIterations;
-        
+
         // Generate color offset for this iteration
         vec4 weight = generateSpectrumOffset(normalizedIndex);
-        
+
         // Accumulate color weights
         accumulatedWeight += weight;
-        
+
         // Apply distortion and accumulate resulting color
         accumulatedColor += weight * texture2D(hdrBuffer, applyBarrelDistortion(uv, 0.6 * configuration.chromaticAberrationIntensity * normalizedIndex));
     }
-    
+
     // Return final chromatic aberration result by averaging accumulated colors and weights
     return vec3(accumulatedColor / accumulatedWeight);
 }

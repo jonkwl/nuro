@@ -17,7 +17,7 @@ void main() {
 
     // get depth in view space
     float viewSpaceDepth = v_viewPosition.z;
-    
+
     // RED CHANNEL = x velocity | GREEN CHANNEL = y velocity | BLUE CHANNEL = view space depth
     FragColor = vec4(velocity.x, velocity.y, viewSpaceDepth, 1.0);
 }

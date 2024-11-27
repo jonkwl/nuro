@@ -2,12 +2,11 @@
 
 #include <gtc/matrix_access.hpp>
 
-Camera::Camera(float fov, float near, float far) :
-    fov(fov),
-    near(near),
-    far(far),
-    frustum(),
-    transform()
+Camera::Camera(float fov, float near, float far) : fov(fov),
+                                                   near(near),
+                                                   far(far),
+                                                   frustum(),
+                                                   transform()
 {
 }
 

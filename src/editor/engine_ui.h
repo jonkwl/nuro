@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-class EngineWindow;
+class EditorWindow;
 
 struct Sizing
 {
@@ -43,7 +43,7 @@ struct Fonts
 	ImFont *uiIcons;
 };
 
-class EngineUI
+class EditorUI
 {
 public:
 	static void setup();
@@ -53,7 +53,7 @@ public:
 	static ImVec4 lighten(ImVec4 color, float amount);
 	static ImVec4 darken(ImVec4 color, float amount);
 
-	static std::vector<EngineWindow *> windows;
+	static std::vector<EditorWindow *> windows;
 
 	static Sizing sizing;
 	static Colors colors;

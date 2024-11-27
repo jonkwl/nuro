@@ -36,7 +36,7 @@
 #include "../src/utils/log.h"
 #include "../src/utils/inspector_mode.h"
 #include "../src/utils/profiler.h"
-#include "../src/engineui/engine_ui.h"
+#include "../src/editor/engine_ui.h"
 #include "../src/window/window.h"
 #include "../src/input/input.h"
 #include "../src/rendering/gizmos/quick_gizmo.h"
@@ -274,7 +274,7 @@ int Runtime::START_LOOP()
 	PostProcessing::setup();
 
 	// Setup engine ui
-	EngineUI::setup();
+	EditorUI::setup();
 
 	// Setup input system
 	Input::setupInputs();
@@ -436,8 +436,8 @@ int Runtime::START_LOOP()
 		// Render engine ui to screen
 		//
 		Profiler::start("ui_pass");
-		EngineUI::newFrame();
-		EngineUI::render();
+		EditorUI::newFrame();
+		EditorUI::render();
 		Profiler::stop("ui_pass");
 
 		//

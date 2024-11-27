@@ -2,10 +2,10 @@
 
 #include "implot.h"
 
-#include "../src/engineui/ui_components.h"
-#include "../src/engineui/IconsFontAwesome6.h"
+#include "../src/editor/ui_components.h"
+#include "../src/editor/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
-#include "../src/engineui/engine_ui.h"
+#include "../src/editor/engine_ui.h"
 #include "../src/utils/profiler.h"
 
 std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
@@ -43,7 +43,7 @@ float remap(float old_min, float old_max, float new_min, float new_max, float va
 
 void DiagnosticsWindow::prepare()
 {
-    ImGui::Begin("Diagnostics", nullptr, EngineUI::windowFlags.fixed);
+    ImGui::Begin("Diagnostics", nullptr, EditorUI::windowFlags.fixed);
 
     UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 

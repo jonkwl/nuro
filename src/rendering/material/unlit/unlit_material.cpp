@@ -9,8 +9,8 @@ UnlitMaterial::UnlitMaterial() : shader(ShaderPool::get("unlit")),
 								 baseColor(1.0f, 1.0f, 1.0f, 1.0f),
 								 tiling(1.0f, 1.0f),
 								 offset(0.0f, 0.0f),
-	useTexture(false),
-	texture()
+								 useTexture(false),
+								 texture()
 {
 }
 

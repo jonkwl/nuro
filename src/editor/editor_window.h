@@ -1,6 +1,6 @@
 #pragma once
 
-class EngineWindow
+class EditorWindow
 {
 public:
 	virtual void prepare() {};

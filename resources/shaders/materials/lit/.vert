@@ -21,14 +21,14 @@ vec3 getNormal() {
     return normalize(normalMatrix * normal_in);
 }
 
-mat3 getTBNMatrix(){
+mat3 getTBNMatrix() {
     vec3 t = normalize(normalMatrix * tangent_in);
     vec3 b = normalize(normalMatrix * bitangent_in);
     vec3 n = v_normal;
     return mat3(t, b, n);
 }
 
-vec3 getFragmentWorldPosition(){
+vec3 getFragmentWorldPosition() {
     return vec3(modelMatrix * vec4(position_in, 1.0));
 }
 

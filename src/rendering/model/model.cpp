@@ -13,12 +13,11 @@
 #include "../src/utils/string_helper.h"
 #include "../src/rendering/model/mesh.h"
 
-Model::Model(std::string path) :
-    castsShadow(true),
-    meshes(),
-    directory(""),
-    model_materials(),
-    metrics()
+Model::Model(std::string path) : castsShadow(true),
+                                 meshes(),
+                                 directory(""),
+                                 model_materials(),
+                                 metrics()
 {
     resolveModel(path);
     calculateModelMetrics();

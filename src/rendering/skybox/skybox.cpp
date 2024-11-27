@@ -8,18 +8,18 @@
 #include "../src/utils/log.h"
 
 Skybox::Skybox(Cubemap *cubemap) : emission(1.0f),
-cubemapTexture(0),
-vao(0),
-vbo(0),
+                                   cubemapTexture(0),
+                                   vao(0),
+                                   vbo(0),
                                    shader(ShaderPool::get("skybox"))
 {
     generate(cubemap);
 }
 
 Skybox::Skybox(Cubemap *cubemap, Shader *custom_shader) : emission(1.0f),
-cubemapTexture(0),
-vao(0),
-vbo(0),
+                                                          cubemapTexture(0),
+                                                          vao(0),
+                                                          vbo(0),
                                                           shader(custom_shader)
 {
     generate(cubemap);

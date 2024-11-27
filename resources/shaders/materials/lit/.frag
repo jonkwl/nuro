@@ -147,7 +147,7 @@ vec3 getShadowCoords() {
 
 float getDirectionalShadowBias(vec3 lightDirection) {
     /* float diffuseFactor = dot(normal, -lightDirection);
-                float bias = mix(0.0001, 0.0, diffuseFactor); */
+                    float bias = mix(0.0001, 0.0, diffuseFactor); */
     float bias = 0.0;
     return bias;
 }
@@ -369,9 +369,9 @@ float getAmbientOcclusionMapSample()
     return ambientOcclusionMapSample;
 }
 
-float getSSAO(){
+float getSSAO() {
     float ssao = 1.0;
-    if(configuration.enableSSAO){
+    if (configuration.enableSSAO) {
         ssao = texture(configuration.ssaoBuffer, screenUV).r;
     }
     return ssao;
@@ -459,7 +459,7 @@ float getAttenuation_range_infinite(float distance, float range)
 float getAttenuation_range_falloff_no_cusp(float distance, float range, float falloff)
 {
     float s = distance / range;
-    if (s >= 1.0){
+    if (s >= 1.0) {
         return 0.0;
     }
     float s2 = sqr(s);
@@ -469,7 +469,7 @@ float getAttenuation_range_falloff_no_cusp(float distance, float range, float fa
 float getAttenuation_range_falloff_cusp(float distance, float range, float falloff)
 {
     float s = distance / range;
-    if (s >= 1.0){
+    if (s >= 1.0) {
         return 0.0;
     }
     float s2 = sqr(s);

@@ -17,17 +17,16 @@ glm::mat3 MeshRenderer::currentViewNormalMatrix = glm::mat3(1.0);
 
 glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
-MeshRenderer::MeshRenderer(Entity* parentEntity) :
-    parentEntity(parentEntity),
-    model(nullptr),
-    volume(new BoundingAABB()),
-    useMotionBlur(false),
-    motionBlurIntensity(1.0f),
-    currentModelMatrix(glm::mat4(1.0f)),
-    currentMvpMatrix(glm::mat4(1.0f)),
-    currentNormalMatrix(glm::mat4(1.0f)),
-    previousModelMatrix(glm::mat4(1.0f)),
-    intersectsFrustum(false)
+MeshRenderer::MeshRenderer(Entity *parentEntity) : parentEntity(parentEntity),
+                                                   model(nullptr),
+                                                   volume(new BoundingAABB()),
+                                                   useMotionBlur(false),
+                                                   motionBlurIntensity(1.0f),
+                                                   currentModelMatrix(glm::mat4(1.0f)),
+                                                   currentMvpMatrix(glm::mat4(1.0f)),
+                                                   currentNormalMatrix(glm::mat4(1.0f)),
+                                                   previousModelMatrix(glm::mat4(1.0f)),
+                                                   intersectsFrustum(false)
 {
 }
 

@@ -2,9 +2,9 @@
 
 #include <deque>
 
-#include "../src/engineui/engine_window.h"
+#include "../src/editor/editor_window.h"
 
-class DiagnosticsWindow : public EngineWindow
+class DiagnosticsWindow : public EditorWindow
 {
 public:
 	void prepare();

@@ -51,7 +51,7 @@ vec3 decodeNormalInput() {
     return normalize(normalSample * 2.0 - 1.0);
 }
 
-float calculateOcclusion(){
+float calculateOcclusion() {
     // calculate tangen and bitangent for noise sample
     vec3 tangent = normalize(noiseSample - normal * dot(noiseSample, normal));
     vec3 bitangent = cross(normal, tangent);
@@ -63,7 +63,7 @@ float calculateOcclusion(){
     float occlusion = 0.0;
 
     // loop through each sample
-    for(int i = 0; i < nSamples; ++i){
+    for (int i = 0; i < nSamples; ++i) {
         // get sample position in view space
         vec3 samplePosition = tbn * samples[i];
 
@@ -85,7 +85,7 @@ float calculateOcclusion(){
 
         // perform range check and add to occlusion
         float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewPosition.z - depthSample));
-        occlusion += (depthSample >= samplePosition.z + bias ? 1.0 : 0.0) * rangeCheck; 
+        occlusion += (depthSample >= samplePosition.z + bias ? 1.0 : 0.0) * rangeCheck;
     }
 
     // get occlusion value
