@@ -15,7 +15,7 @@
 #include "../src/engineui/windows/post_processing_window.h"
 #include "../src/engineui/windows/diagnostics_window.h"
 
-std::vector<EngineWindow*> EngineUI::windows = std::vector<EngineWindow*>();
+std::vector<EngineWindow *> EngineUI::windows = std::vector<EngineWindow *>();
 
 Sizing EngineUI::sizing;
 Colors EngineUI::colors;
@@ -24,13 +24,15 @@ Fonts EngineUI::fonts;
 
 unsigned int EngineUI::idCounter = 0;
 
-void EngineUI::setup() {
+void EngineUI::setup()
+{
 	IMGUI_CHECKVERSION();
 
 	ImGui::CreateContext();
 	ImPlot::CreateContext();
 
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO &io = ImGui::GetIO();
+	(void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -40,7 +42,7 @@ void EngineUI::setup() {
 
 	// Merge icons into regularFontSize font
 	float iconFontSize = sizing.iconFontSize * 2.0f / 3.0f;
-	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
 	ImFontConfig icons_config;
 	icons_config.MergeMode = true;
 	icons_config.PixelSnapH = true;
@@ -53,7 +55,7 @@ void EngineUI::setup() {
 
 	ImGui::StyleColorsDark();
 
-	ImGuiStyle& style = ImGui::GetStyle();
+	ImGuiStyle &style = ImGui::GetStyle();
 
 	style.ButtonTextAlign = ImVec2(0.0f, 0.0f);
 	style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
@@ -76,7 +78,7 @@ void EngineUI::setup() {
 
 	style.ItemSpacing = ImVec2(4.0f, 8.0f);
 
-	ImVec4* imguiColors = style.Colors;
+	ImVec4 *imguiColors = style.Colors;
 
 	imguiColors[ImGuiCol_WindowBg] = colors.background;
 
@@ -124,17 +126,18 @@ void EngineUI::setup() {
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	SceneWindow* sceneWindow = new SceneWindow();
+	SceneWindow *sceneWindow = new SceneWindow();
 	windows.push_back(sceneWindow);
 
-	PostProcessingWindow* postProcessingWindow = new PostProcessingWindow();
+	PostProcessingWindow *postProcessingWindow = new PostProcessingWindow();
 	windows.push_back(postProcessingWindow);
 
-	DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
+	DiagnosticsWindow *diagnosticsWindow = new DiagnosticsWindow();
 	windows.push_back(diagnosticsWindow);
 }
 
-void EngineUI::newFrame() {
+void EngineUI::newFrame()
+{
 	// Reset id counter for new frame
 	idCounter = 0;
 
@@ -144,10 +147,11 @@ void EngineUI::newFrame() {
 	ImGui::NewFrame();
 }
 
-void EngineUI::render() {
+void EngineUI::render()
+{
 
 	/* CREATE MAIN VIEWPORT DOCKSPACE */
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGuiViewport *viewport = ImGui::GetMainViewport();
 
 	ImGui::PushFont(fonts.uiHeadline);
 
@@ -168,8 +172,10 @@ void EngineUI::render() {
 	ImGui::PopStyleVar(3);
 
 	/* PREPARE ALL WINDOWS */
-	for (int i = 0; i < windows.size(); i++) {
-		if (Runtime::inspectorMode && Runtime::showEngineUI) {
+	for (int i = 0; i < windows.size(); i++)
+	{
+		if (Runtime::inspectorMode && Runtime::showEngineUI)
+		{
 			windows[i]->prepare();
 		}
 	}
@@ -179,16 +185,19 @@ void EngineUI::render() {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-ImVec4 EngineUI::lighten(ImVec4 color, float amount) {
+ImVec4 EngineUI::lighten(ImVec4 color, float amount)
+{
 	float factor = 1.0f + amount;
 	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 }
 
-ImVec4 EngineUI::darken(ImVec4 color, float amount) {
+ImVec4 EngineUI::darken(ImVec4 color, float amount)
+{
 	float factor = 1.0f - amount;
 	return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 }
 
-std::string EngineUI::getId() {
+std::string EngineUI::getId()
+{
 	return ("##" + std::to_string(++idCounter));
 }

@@ -42,7 +42,8 @@ void ForwardPass::setup(unsigned int msaaSamples)
 
 	// Check for forward pass framebuffer error
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
@@ -66,7 +67,8 @@ void ForwardPass::setup(unsigned int msaaSamples)
 
 	// Check for multi-sampled framebuffer error
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
@@ -81,26 +83,29 @@ unsigned int ForwardPass::render()
 	int width = Window::width;
 	int height = Window::height;
 
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
+	std::vector<Entity *> entityLinks = Runtime::entityLinks;
 
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
 	// Clear framebuffer
-	if (!wireframe) {
+	if (!wireframe)
+	{
 		glm::vec4 clearColor = Runtime::clearColor;
 		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 	}
-	else {
+	else
+	{
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	 // Set viewport
+	// Set viewport
 	glViewport(0, 0, width, height);
 
 	// Set wireframe if enabled
-	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Set culling to back face
 	glEnable(GL_CULL_FACE);
@@ -109,7 +114,6 @@ unsigned int ForwardPass::render()
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
 
 	// INJECTED PRE PASS START
 	/*
@@ -128,22 +132,24 @@ unsigned int ForwardPass::render()
 	*/
 	// INJECTED PRE PASS END
 
-
 	// Render each linked entity to bound forward pass frame
-	for (int i = 0; i < entityLinks.size(); i++) {
+	for (int i = 0; i < entityLinks.size(); i++)
+	{
 		entityLinks[i]->meshRenderer->forwardPass();
 	}
 
 	// Disable wireframe if enabled
-	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Disable culling before rendering skybox
 	glDisable(GL_CULL_FACE);
 
 	// Render skybox to bound forward pass frame
 	glDepthFunc(GL_LEQUAL);
-	Skybox* activeSkybox = Runtime::activeSkybox;
-	if (activeSkybox != nullptr && !wireframe) {
+	Skybox *activeSkybox = Runtime::activeSkybox;
+	if (activeSkybox != nullptr && !wireframe)
+	{
 		activeSkybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
 	}
 	glDepthFunc(GL_LESS);

@@ -4,11 +4,13 @@
 #include "../src/engineui/engine_ui.h"
 #include "../src/engineui/ui_layout.h"
 
-std::string formatInteger(int number) {
+std::string formatInteger(int number)
+{
     std::string numStr = std::to_string(number);
     int insertPosition = numStr.length() - 3;
 
-    while (insertPosition > 0) {
+    while (insertPosition > 0)
+    {
         numStr.insert(insertPosition, ".");
         insertPosition -= 3;
     }
@@ -16,23 +18,25 @@ std::string formatInteger(int number) {
     return numStr;
 }
 
-void UIComponents::headline(std::string title, const char* icon, HeadlineJustification justification, bool zeroMargin) {
+void UIComponents::headline(std::string title, const char *icon, HeadlineJustification justification, bool zeroMargin)
+{
     Margin margin = zeroMargin ? Margin() : Margin(0.0f, 0.0f, 5.0f, 0.0f);
     UILayout::beginFlex(title.c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, margin);
 
-        tryIcon(icon);
-        ImGui::PushFont(EngineUI::fonts.uiHeadline);
-        ImGui::Text(title.c_str());
-        ImGui::PopFont();
+    tryIcon(icon);
+    ImGui::PushFont(EngineUI::fonts.uiHeadline);
+    ImGui::Text(title.c_str());
+    ImGui::PopFont();
 
     UILayout::endFlex();
-
 }
 
 void UIComponents::tooltip(std::string tooltip)
 {
-    if (!tooltip.empty()) {
-        if (ImGui::IsItemHovered()) {
+    if (!tooltip.empty())
+    {
+        if (ImGui::IsItemHovered())
+        {
             ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.5f));
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 0.8f));
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(6, 6));
@@ -45,7 +49,7 @@ void UIComponents::tooltip(std::string tooltip)
     }
 }
 
-void UIComponents::toggleButton(std::string label, bool& value, std::string tooltip)
+void UIComponents::toggleButton(std::string label, bool &value, std::string tooltip)
 {
     ImVec4 inactiveButtonColor = EngineUI::darken(EngineUI::colors.elementActive, 0.6f);
     ImVec4 activeButtonColor = EngineUI::colors.elementActive;
@@ -87,9 +91,10 @@ void UIComponents::labelBold(std::string text)
     ImGui::PopFont();
 }
 
-void UIComponents::tryIcon(const char* icon, float padding)
+void UIComponents::tryIcon(const char *icon, float padding)
 {
-    if (icon && icon[0] != '\0') {
+    if (icon && icon[0] != '\0')
+    {
         float currentY = ImGui::GetCursorPosY();
         ImGui::SetCursorPosY(currentY + padding);
         ImGui::Text(icon);
@@ -97,32 +102,32 @@ void UIComponents::tryIcon(const char* icon, float padding)
     }
 }
 
-void UIComponents::input(std::string label, bool& value)
+void UIComponents::input(std::string label, bool &value)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-        ImGui::Text(label.c_str());
-        ImGui::Spring(1.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-        ImGui::Checkbox(EngineUI::getId().c_str(), &value);
-        ImGui::PopStyleVar();
+    ImGui::Text(label.c_str());
+    ImGui::Spring(1.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+    ImGui::Checkbox(EngineUI::getId().c_str(), &value);
+    ImGui::PopStyleVar();
     UILayout::endFlex();
 }
 
-void UIComponents::input(std::string label, int& value, float speed)
+void UIComponents::input(std::string label, int &value, float speed)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-        ImGui::Text(label.c_str());
-        ImGui::Spring(1.0f);
-        ImGui::DragInt(EngineUI::getId().c_str(), &value, speed);
+    ImGui::Text(label.c_str());
+    ImGui::Spring(1.0f);
+    ImGui::DragInt(EngineUI::getId().c_str(), &value, speed);
     UILayout::endFlex();
 }
 
-void UIComponents::input(std::string label, float& value, float speed)
+void UIComponents::input(std::string label, float &value, float speed)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-        ImGui::Text(label.c_str());
-        ImGui::Spring(1.0f);
-        ImGui::DragFloat(EngineUI::getId().c_str(), &value, speed);
+    ImGui::Text(label.c_str());
+    ImGui::Spring(1.0f);
+    ImGui::DragFloat(EngineUI::getId().c_str(), &value, speed);
     UILayout::endFlex();
     // ImGui::DragFloat(std::string(label + EngineUI::getId()).c_str(), &value, speed);
 }
@@ -134,7 +139,8 @@ void UIComponents::indicatorLabel(std::string label, std::string value, std::str
     ImGui::PushFont(EngineUI::fonts.uiBold);
     ImGui::Text(value.c_str());
     ImGui::PopFont();
-    if (!additional.empty()) {
+    if (!additional.empty())
+    {
         ImGui::SameLine();
         ImGui::Text(additional.c_str());
     }
@@ -168,37 +174,39 @@ void UIComponents::indicatorLabel(std::string label, double value, std::string a
     indicatorLabel(label, buffer, additional);
 }
 
-bool UIComponents::extendableSettings(std::string label, bool& value, const char* icon)
+bool UIComponents::extendableSettings(std::string label, bool &value, const char *icon)
 {
     UILayout::beginFlex(EngineUI::getId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
-    
-        ImGui::Checkbox(EngineUI::getId().c_str(), &value);
-        UIComponents::space(1.0f, 1.5f);
-        tryIcon(icon);
 
-        if (value) {
+    ImGui::Checkbox(EngineUI::getId().c_str(), &value);
+    UIComponents::space(1.0f, 1.5f);
+    tryIcon(icon);
 
-            UIComponents::space(4.0f, 2.5f);
-            bool extended = ImGui::CollapsingHeader(label.c_str());
-            UILayout::endFlex();
+    if (value)
+    {
 
-            if (extended) {
-                UIComponents::space(0.0f, 8.0f);
-                return true;
-            }
-            else {
-                return false;
-            }
+        UIComponents::space(4.0f, 2.5f);
+        bool extended = ImGui::CollapsingHeader(label.c_str());
+        UILayout::endFlex();
 
+        if (extended)
+        {
+            UIComponents::space(0.0f, 8.0f);
+            return true;
         }
-        else {
-
-            ImGui::Text(label.c_str());
-
+        else
+        {
+            return false;
         }
+    }
+    else
+    {
+
+        ImGui::Text(label.c_str());
+    }
 
     UILayout::endFlex();
-    
+
     return false;
 }
 
@@ -214,7 +222,8 @@ bool UIComponents::header(std::string label)
 
 void UIComponents::colorPicker(std::string label, float value[3])
 {
-    if (ImGui::CollapsingHeader(std::string(label + EngineUI::getId()).c_str())) {
+    if (ImGui::CollapsingHeader(std::string(label + EngineUI::getId()).c_str()))
+    {
         ImGui::PushItemWidth(140);
         ImGui::ColorPicker3(EngineUI::getId().c_str(), value, ImGuiColorEditFlags_NoSidePreview);
         ImGui::PopItemWidth();

@@ -6,13 +6,15 @@
 
 class EngineWindow;
 
-struct Sizing {
+struct Sizing
+{
 	float regularFontSize = 14.0f;
 	float iconFontSize = 22.0f;
 	float headlineFontSize = 15.0f;
 };
 
-struct Colors {
+struct Colors
+{
 	ImVec4 background = ImVec4(0.1f, 0.1f, 0.1f, 0.95f);
 	ImVec4 text = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -26,17 +28,19 @@ struct Colors {
 	ImVec4 selection = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 };
 
-struct WindowFlags {
+struct WindowFlags
+{
 	ImGuiWindowFlags viewport = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground;
 	ImGuiWindowFlags standard = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
 	ImGuiWindowFlags fixed = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar;
 };
 
-struct Fonts {
-	ImFont* uiRegular;
-	ImFont* uiBold;
-	ImFont* uiHeadline;
-	ImFont* uiIcons;
+struct Fonts
+{
+	ImFont *uiRegular;
+	ImFont *uiBold;
+	ImFont *uiHeadline;
+	ImFont *uiIcons;
 };
 
 class EngineUI
@@ -49,7 +53,7 @@ public:
 	static ImVec4 lighten(ImVec4 color, float amount);
 	static ImVec4 darken(ImVec4 color, float amount);
 
-	static std::vector<EngineWindow*> windows;
+	static std::vector<EngineWindow *> windows;
 
 	static Sizing sizing;
 	static Colors colors;
@@ -57,6 +61,7 @@ public:
 	static Fonts fonts;
 
 	static std::string getId();
+
 private:
 	static unsigned int idCounter;
 };

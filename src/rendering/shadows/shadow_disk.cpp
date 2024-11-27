@@ -23,10 +23,14 @@ ShadowDisk::ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigne
 	int bufferSize = windowSize * windowSize * filterSize * filterSize * 2;
 	data.resize(bufferSize);
 	size_t index = 0;
-	for (int texY = 0; texY < windowSize; texY++) {
-		for (int texX = 0; texX < windowSize; texX++) {
-			for (int v = filterSize - 1; v >= 0; v--) {
-				for (int u = 0; u < filterSize; u++) {
+	for (int texY = 0; texY < windowSize; texY++)
+	{
+		for (int texX = 0; texX < windowSize; texX++)
+		{
+			for (int v = filterSize - 1; v >= 0; v--)
+			{
+				for (int u = 0; u < filterSize; u++)
+				{
 					float x = ((float)u + 0.5f + random()) / (float)filterSize;
 					float y = ((float)v + 0.5f + random()) / (float)filterSize;
 
@@ -40,17 +44,17 @@ ShadowDisk::ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigne
 
 	// Generate 3D sample disk texture
 	int nFilterSamples = filterSize * filterSize;
-	
+
 	// Generate texture
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_3D, texture);
 	glTexStorage3D(GL_TEXTURE_3D, 1, GL_RGBA32F, nFilterSamples / 2, windowSize, windowSize);
 	glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, nFilterSamples / 2, windowSize, windowSize, GL_RGBA, GL_FLOAT, &data[0]);
-	
+
 	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	
+
 	// Unbind texture
 	glBindTexture(GL_TEXTURE_3D, 0);
 }

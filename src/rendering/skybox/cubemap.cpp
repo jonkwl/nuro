@@ -5,9 +5,9 @@
 #include "../src/utils/log.h"
 #include "../src/utils/iohandler.h"
 
-Cubemap* Cubemap::GetBySingle(std::string path)
+Cubemap *Cubemap::GetBySingle(std::string path)
 {
-    Cubemap* cubemap = new Cubemap();
+    Cubemap *cubemap = new Cubemap();
     cubemap->name = IOHandler::getFilenameRaw(path);
 
     Log::printProcessStart("Cubemap", "Generating cubemap " + cubemap->name + "...");
@@ -19,9 +19,9 @@ Cubemap* Cubemap::GetBySingle(std::string path)
     return cubemap;
 }
 
-Cubemap* Cubemap::GetByFaces(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back)
+Cubemap *Cubemap::GetByFaces(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back)
 {
-    Cubemap* cubemap = new Cubemap();
+    Cubemap *cubemap = new Cubemap();
     cubemap->name = IOHandler::getLastFolder(right);
 
     Log::printProcessStart("Cubemap", "Generating cubemap " + cubemap->name + "...");
@@ -43,13 +43,14 @@ Image Cubemap::loadImage(std::string path)
     stbi_set_flip_vertically_on_load(false);
 
     int width, height, channels;
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-    if (!data) {
+    unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    if (!data)
+    {
         Log::printError("Cubemap", "Failed to load cubemap at " + path);
         return Image();
     }
 
-    return Image{ width, height, channels, data };
+    return Image{width, height, channels, data};
 }
 
 void Cubemap::extractFaces(std::string path)
@@ -74,7 +75,8 @@ void Cubemap::extractFaces(std::string path)
     };
 
     // Extract pixel data for each face
-    for (size_t i = 0; i < offsets.size(); ++i) {
+    for (size_t i = 0; i < offsets.size(); ++i)
+    {
         int xOffset = offsets[i].first;
         int yOffset = offsets[i].second;
 
@@ -85,8 +87,10 @@ void Cubemap::extractFaces(std::string path)
         faces[i].channels = image.channels;
 
         // Copy pixel data for each face
-        for (int y = 0; y < faceHeight; ++y) {
-            for (int x = 0; x < faceWidth; ++x) {
+        for (int y = 0; y < faceHeight; ++y)
+        {
+            for (int x = 0; x < faceWidth; ++x)
+            {
                 int srcIndex = ((yOffset + y) * image.width + (xOffset + x)) * image.channels;
                 int dstIndex = (y * faceWidth + x) * image.channels;
                 memcpy(&faces[i].data[dstIndex], &image.data[srcIndex], image.channels);

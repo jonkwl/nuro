@@ -15,6 +15,7 @@ public:
 	float getBoundsHeight() const;
 
 	unsigned int getFramebuffer() const;
+
 private:
 	unsigned int resolutionWidth;
 	unsigned int resolutionHeight;

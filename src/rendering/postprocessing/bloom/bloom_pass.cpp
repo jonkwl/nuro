@@ -17,9 +17,9 @@ float BloomPass::softThreshold = 0.0f;
 float BloomPass::filterRadius = 0.0f;
 unsigned int BloomPass::mipDepth = 16;
 
-Shader* BloomPass::prefilterShader = nullptr;
-Shader* BloomPass::downsamplingShader = nullptr;
-Shader* BloomPass::upsamplingShader = nullptr;
+Shader *BloomPass::prefilterShader = nullptr;
+Shader *BloomPass::downsamplingShader = nullptr;
+Shader *BloomPass::upsamplingShader = nullptr;
 
 void BloomPass::setup()
 {
@@ -43,7 +43,7 @@ void BloomPass::setup()
 	// Set static downsampling uniforms
 	downsamplingShader->bind();
 	downsamplingShader->setInt("inputTexture", 0);
-	
+
 	// Set static upsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setInt("inputTexture", 0);
@@ -99,7 +99,7 @@ unsigned int BloomPass::prefilteringPass(unsigned int hdrInput)
 void BloomPass::downsamplingPass(unsigned int hdrInput)
 {
 	// Get bloom mip chain
-	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
+	const std::vector<BloomMip> &mipChain = BloomFrame::getMipChain();
 
 	// Set downsampling uniforms
 	downsamplingShader->bind();
@@ -110,10 +110,11 @@ void BloomPass::downsamplingPass(unsigned int hdrInput)
 	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
 	// Downsample through mip chain
-	for (int i = 0; i < mipChain.size(); i++) {
+	for (int i = 0; i < mipChain.size(); i++)
+	{
 		// Get current mip
-		const BloomMip& mip = mipChain[i];
-		
+		const BloomMip &mip = mipChain[i];
+
 		// Set viewport and framebuffer rendering target according to current mip
 		glViewport(0, 0, mip.fSize.x, mip.fSize.y);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.texture, 0);
@@ -124,7 +125,7 @@ void BloomPass::downsamplingPass(unsigned int hdrInput)
 
 		// Set inversed resolution for next downsample iteration
 		downsamplingShader->setVec2("inversedResolution", mip.inversedSize);
-		
+
 		// Bind mip texture for next downsample iteration
 		glBindTexture(GL_TEXTURE_2D, mip.texture);
 	}
@@ -133,7 +134,7 @@ void BloomPass::downsamplingPass(unsigned int hdrInput)
 void BloomPass::upsamplingPass()
 {
 	// Get bloom mip chain
-	const std::vector<BloomMip>& mipChain = BloomFrame::getMipChain();
+	const std::vector<BloomMip> &mipChain = BloomFrame::getMipChain();
 
 	// Get viewport aspect ratio
 	const float aspectRatio = fViewportSize.x / fViewportSize.y;
@@ -152,8 +153,8 @@ void BloomPass::upsamplingPass()
 	for (int i = mipChain.size() - 1; i > 0; i--)
 	{
 		// Get current mip and target mip for current downsampling iteration
-		const BloomMip& mip = mipChain[i];
-		const BloomMip& targetMip = mipChain[i - 1];
+		const BloomMip &mip = mipChain[i];
+		const BloomMip &targetMip = mipChain[i - 1];
 
 		// Set input texture for next render to be current mips texture
 		glActiveTexture(GL_TEXTURE0);

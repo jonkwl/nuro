@@ -9,26 +9,26 @@
 
 BoundingSphere::BoundingSphere()
 {
-	center = glm::vec3(0.0f);
-	radius = 0.0f;
+    center = glm::vec3(0.0f);
+    radius = 0.0f;
 }
 
-void BoundingSphere::update(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void BoundingSphere::update(Model *model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     // Get models metrics
     ModelMetrics metrics = model->getMetrics();
 
-    // Calculate center position: 
+    // Calculate center position:
     // Position of models origin offset by the world position
-	center = metrics.origin + position;
+    center = metrics.origin + position;
 
     // Calculate radius:
     // Maximum distance of a models vertice to models origin divided by 2 (because its a radius, not diameter) times biggest world scale factor
-    radius = (metrics.furthest * 0.5f) * std::max({ scale.x, scale.y, scale.z });
+    radius = (metrics.furthest * 0.5f) * std::max({scale.x, scale.y, scale.z});
 
     // Draw bounding volume
-	QuickGizmo::color = GizmoColor::RED;
-	// QuickGizmo::sphereWire(center, radius);
+    QuickGizmo::color = GizmoColor::RED;
+    // QuickGizmo::sphereWire(center, radius);
 }
 
 bool BoundingSphere::intersectsFrustum(Frustum frustum)
@@ -49,7 +49,7 @@ BoundingAABB::BoundingAABB()
     max = glm::vec3(0.0f);
 }
 
-void BoundingAABB::update(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void BoundingAABB::update(Model *model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     // Get model's metrics
     ModelMetrics metrics = model->getMetrics();
@@ -74,7 +74,7 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::vec3 rotation, 
     glm::vec3 _min = positionOffset - glm::abs(rotatedX) - glm::abs(rotatedY) - glm::abs(rotatedZ);
     glm::vec3 _max = positionOffset + glm::abs(rotatedX) + glm::abs(rotatedY) + glm::abs(rotatedZ);
 
-    // Set the final bounding box 
+    // Set the final bounding box
     min = _min;
     max = _max;
 

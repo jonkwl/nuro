@@ -10,5 +10,5 @@ public:
 	Entity();
 
 	Transform transform;
-	MeshRenderer* meshRenderer;
+	MeshRenderer *meshRenderer;
 };

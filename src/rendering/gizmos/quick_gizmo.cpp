@@ -12,19 +12,19 @@
 
 glm::vec3 QuickGizmo::color = glm::vec3(1.0f);
 
-UnlitMaterial* QuickGizmo::material = nullptr;
+UnlitMaterial *QuickGizmo::material = nullptr;
 
-Model* QuickGizmo::planeModel = nullptr;
-Model* QuickGizmo::cubeModel = nullptr;
-Model* QuickGizmo::sphereModel = nullptr;
+Model *QuickGizmo::planeModel = nullptr;
+Model *QuickGizmo::cubeModel = nullptr;
+Model *QuickGizmo::sphereModel = nullptr;
 
 std::vector<QuickGizmo::RenderTarget> QuickGizmo::renderStack;
 
 void QuickGizmo::setup()
 {
-	// Setup material
-	material = new UnlitMaterial();
-    
+    // Setup material
+    material = new UnlitMaterial();
+
     // Load models from primitives
     planeModel = new Model("./resources/primitives/plane.fbx");
     cubeModel = new Model("./resources/primitives/cube.fbx");
@@ -41,12 +41,13 @@ void QuickGizmo::render()
 {
     // Cache current polygon mode
     GLenum polygonState[2];
-    glGetIntegerv(GL_POLYGON_MODE, (GLint*)polygonState);
+    glGetIntegerv(GL_POLYGON_MODE, (GLint *)polygonState);
 
     // Bind gizmo material for upcoming renders
     material->bind();
 
-    for (int i = 0; i < renderStack.size(); i++) {
+    for (int i = 0; i < renderStack.size(); i++)
+    {
         // Get gizmo rendering target
         RenderTarget gizmo = renderStack[i];
 
@@ -59,19 +60,22 @@ void QuickGizmo::render()
         material->getShader()->setVec4("baseColor", glm::vec4(gizmo.color, 1.0f));
 
         // Get model
-        Model* model = getModel(gizmo.shape);
+        Model *model = getModel(gizmo.shape);
 
         // Set polygon mode for gizmo render
-        if (gizmo.wireframe) {
+        if (gizmo.wireframe)
+        {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
-        else {
+        else
+        {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
 
         // Render each mesh
-        for (int i = 0; i < model->meshes.size(); i++) {
-            Mesh* mesh = model->meshes[i];
+        for (int i = 0; i < model->meshes.size(); i++)
+        {
+            Mesh *mesh = model->meshes[i];
             mesh->bind();
             glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
         }
@@ -105,7 +109,8 @@ void QuickGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
     renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::sphere(glm::vec3 position, float radius) {
+void QuickGizmo::sphere(glm::vec3 position, float radius)
+{
     RenderTarget gizmo;
     gizmo.color = color;
     gizmo.shape = Shape::SPHERE;
@@ -140,7 +145,8 @@ void QuickGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation
     renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::sphereWire(glm::vec3 position, float radius) {
+void QuickGizmo::sphereWire(glm::vec3 position, float radius)
+{
     RenderTarget gizmo;
     gizmo.color = color;
     gizmo.shape = Shape::SPHERE;
@@ -151,9 +157,10 @@ void QuickGizmo::sphereWire(glm::vec3 position, float radius) {
     renderStack.push_back(gizmo);
 }
 
-Model* QuickGizmo::getModel(Shape shape)
+Model *QuickGizmo::getModel(Shape shape)
 {
-    switch (shape) {
+    switch (shape)
+    {
     case Shape::PLANE:
         return planeModel;
     case Shape::BOX:

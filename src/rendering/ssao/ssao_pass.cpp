@@ -16,8 +16,8 @@ unsigned int SSAOPass::fbo = 0;
 unsigned int SSAOPass::aoOutput = 0;
 unsigned int SSAOPass::blurredOutput = 0;
 
-Shader* SSAOPass::aoPassShader = nullptr;
-Shader* SSAOPass::aoBlurShader = nullptr;
+Shader *SSAOPass::aoPassShader = nullptr;
+Shader *SSAOPass::aoBlurShader = nullptr;
 
 std::vector<glm::vec3> SSAOPass::kernel;
 unsigned int SSAOPass::noiseTexture = 0;
@@ -35,7 +35,8 @@ void SSAOPass::setup()
 	aoPassShader->setInt("normalInput", NORMAL_UNIT);
 	aoPassShader->setInt("noiseTexture", NOISE_UNIT);
 	aoPassShader->setFloat("noiseSize", NOISE_RESOLUTION);
-	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i) {
+	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i)
+	{
 		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
 	}
 
@@ -75,7 +76,8 @@ void SSAOPass::setup()
 
 	// Check framebuffer status
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating fbo: " + std::to_string(fboStatus));
 	}
 
@@ -116,7 +118,8 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
 	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
-	if (nSamples > MAX_KERNEL_SAMPLES) {
+	if (nSamples > MAX_KERNEL_SAMPLES)
+	{
 		nSamples = MAX_KERNEL_SAMPLES;
 	}
 
@@ -174,7 +177,8 @@ std::vector<glm::vec3> SSAOPass::generateKernel()
 {
 	std::vector<glm::vec3> kernel;
 
-	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i) {
+	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i)
+	{
 		// Generate raw sample with random values
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, random());
 
@@ -201,7 +205,8 @@ unsigned int SSAOPass::generateNoiseTexture()
 	// Generate noise samples
 	std::vector<glm::vec3> noiseSamples;
 
-	for (int i = 0; i < MAX_KERNEL_SAMPLES; i++) {
+	for (int i = 0; i < MAX_KERNEL_SAMPLES; i++)
+	{
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, 0.0f);
 		noiseSamples.push_back(sample);
 	}

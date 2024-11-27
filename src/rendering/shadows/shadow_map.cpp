@@ -14,21 +14,26 @@
 
 bool shadowMapSaved = false;
 
-void saveDepthMapAsImage(int width, int height, const std::string& filename) {
+void saveDepthMapAsImage(int width, int height, const std::string &filename)
+{
 	std::vector<float> depthData(width * height);
 	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
 	std::vector<unsigned char> depthImage(width * height);
-	for (int i = 0; i < width * height; ++i) {
+	for (int i = 0; i < width * height; ++i)
+	{
 		depthImage[i] = static_cast<unsigned char>(depthData[i] * 255.0f);
 	}
 	std::vector<unsigned char> flippedImage(width * height);
-	for (int y = 0; y < height; ++y) {
+	for (int y = 0; y < height; ++y)
+	{
 		memcpy(&flippedImage[y * width], &depthImage[(height - 1 - y) * width], width);
 	}
-	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0) {
+	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0)
+	{
 		Log::printProcessDone("Depth Map", "Depth map saved as " + filename);
 	}
-	else {
+	else
+	{
 		Log::printError("Depth Map", "Failed to save depth map at " + filename);
 	}
 }
@@ -60,7 +65,7 @@ ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
 	// Set texture border
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	// Set framebuffer attachments
@@ -84,7 +89,7 @@ void ShadowMap::render()
 	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering(), Runtime::mainShadowMap->boundsWidth, Runtime::mainShadowMap->boundsHeight);
 	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
-	
+
 	// Set mesh renderers light space matrix for upcoming shadow pass
 	MeshRenderer::currentLightSpaceMatrix = lightSpaceMatrix;
 
@@ -97,8 +102,9 @@ void ShadowMap::render()
 
 	Runtime::shadowPassShader->bind();
 
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
-	for (int i = 0; i < entityLinks.size(); i++) {
+	std::vector<Entity *> entityLinks = Runtime::entityLinks;
+	for (int i = 0; i < entityLinks.size(); i++)
+	{
 		entityLinks[i]->meshRenderer->shadowPass();
 	}
 
@@ -106,7 +112,8 @@ void ShadowMap::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Save shadow map (tmp)
-	if (!shadowMapSaved) {
+	if (!shadowMapSaved)
+	{
 		glBindFramebuffer(GL_FRAMEBUFFER, getFramebuffer());
 		saveDepthMapAsImage(resolutionWidth, resolutionHeight, "./shadow_map.png");
 		shadowMapSaved = true;

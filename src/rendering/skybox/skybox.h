@@ -10,15 +10,16 @@ class Shader;
 class Skybox
 {
 public:
-	Skybox(Cubemap* cubemap);
-	Skybox(Cubemap* cubemap, Shader* custom_shader);
-	
+	Skybox(Cubemap *cubemap);
+	Skybox(Cubemap *cubemap, Shader *custom_shader);
+
 	void render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
 	float emission;
 
-	Cubemap* cubemap;
-	Shader* shader;
+	Cubemap *cubemap;
+	Shader *shader;
+
 private:
 	unsigned int texture_id;
 

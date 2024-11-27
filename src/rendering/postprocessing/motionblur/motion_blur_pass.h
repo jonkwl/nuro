@@ -9,8 +9,10 @@ class MotionBlurPass
 public:
 	static void setup();
 	static unsigned int render(unsigned int hdrInput, unsigned int depthInput);
+
 private:
-	enum TextureUnits {
+	enum TextureUnits
+	{
 		HDR_UNIT,
 		DEPTH_UNIT,
 		VELOCITY_UNIT
@@ -19,7 +21,7 @@ private:
 	static unsigned int fbo;
 	static unsigned int output;
 
-	static Shader* shader;
+	static Shader *shader;
 
 	static glm::mat4 previousViewProjectionMatrix;
 };

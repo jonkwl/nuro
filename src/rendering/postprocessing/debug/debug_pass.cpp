@@ -9,13 +9,13 @@
 unsigned int DebugPass::fbo = 0;
 unsigned int DebugPass::output = 0;
 
-Shader* DebugPass::shader = nullptr;
+Shader *DebugPass::shader = nullptr;
 
 void DebugPass::setup()
 {
 	// Get debug pass shader
 	shader = ShaderPool::get("debug_pass");
-	 
+
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -27,7 +27,7 @@ void DebugPass::setup()
 
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -36,7 +36,8 @@ void DebugPass::setup()
 
 	// Check framebuffer status
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating fbo: " + std::to_string(fboStatus));
 	}
 

@@ -12,6 +12,7 @@ public:
 
 	static unsigned int getWidth();
 	static unsigned int getHeight();
+
 private:
 	static unsigned int fbo;
 

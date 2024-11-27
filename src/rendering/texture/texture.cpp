@@ -21,8 +21,9 @@ Texture::Texture(std::string path, TextureType type) : id(0)
 	int width, height, channels;
 
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-	if (!data) {
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+	if (!data)
+	{
 		Log::printError("Texture", "Couldn't load texture data");
 		return;
 	}
@@ -30,7 +31,8 @@ Texture::Texture(std::string path, TextureType type) : id(0)
 	GLenum internalFormat = GL_SRGB;
 	GLenum format = GL_RGB;
 
-	switch (type) {
+	switch (type)
+	{
 	case TextureType::ALBEDO:
 		internalFormat = GL_SRGB;
 		format = GL_RGB;
@@ -63,14 +65,16 @@ Texture::Texture(std::string path, TextureType type) : id(0)
 	stbi_image_free(data);
 }
 
-void Texture::bind(unsigned int unit) {
+void Texture::bind(unsigned int unit)
+{
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
 
 void Texture::destroy()
 {
-	if (id != 0) {
+	if (id != 0)
+	{
 		glDeleteTextures(1, &id);
 		id = 0;
 	}

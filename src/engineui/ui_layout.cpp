@@ -14,11 +14,13 @@ Margin UILayout::defaultMargin = Margin();
 
 FlexBuffer UILayout::lastFlex;
 
-float UILayout::mapAlignment(Alignment alignment) {
+float UILayout::mapAlignment(Alignment alignment)
+{
     return ((int)alignment - 1) / 2;
 }
 
-ImVec2 UILayout::getFlexRowSize(float width, float height) {
+ImVec2 UILayout::getFlexRowSize(float width, float height)
+{
     float windowWidth = ImGui::GetWindowWidth();
     float contentWidth = ImGui::GetContentRegionAvail().x;
     float rightPadding = windowWidth - contentWidth;
@@ -27,9 +29,10 @@ ImVec2 UILayout::getFlexRowSize(float width, float height) {
     return layoutSize;
 }
 
-void UILayout::beginFlex(const char* name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
+void UILayout::beginFlex(const char *name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
 {
-    if (type == FlexType::ROW) {
+    if (type == FlexType::ROW)
+    {
         static ImVec2 itemSpacing = ImVec2(spacing, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(floorf(itemSpacing.x), floorf(itemSpacing.y)));
 
@@ -38,9 +41,11 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
         ImVec2 rowSize = getFlexRowSize(width, height);
         ImGui::BeginHorizontal(name, rowSize, mapAlignment(alignment));
 
-        if(margin.left != 0) ImGui::Dummy(ImVec2(margin.left, 0.0f));
+        if (margin.left != 0)
+            ImGui::Dummy(ImVec2(margin.left, 0.0f));
 
-        if (justification == Justification::CENTER || justification == Justification::END) {
+        if (justification == Justification::CENTER || justification == Justification::END)
+        {
             ImGui::Spring(0.5f);
         }
 
@@ -56,10 +61,13 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
 
 void UILayout::endFlex()
 {
-    if (lastFlex.type == FlexType::ROW) {
-        if(lastFlex.margin.right != 0) ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
+    if (lastFlex.type == FlexType::ROW)
+    {
+        if (lastFlex.margin.right != 0)
+            ImGui::Dummy(ImVec2(lastFlex.margin.right, 0.0f));
 
-        if (lastFlex.justification == Justification::CENTER || lastFlex.justification == Justification::START) {
+        if (lastFlex.justification == Justification::CENTER || lastFlex.justification == Justification::START)
+        {
             ImGui::Spring(0.5f);
         }
 
@@ -68,8 +76,9 @@ void UILayout::endFlex()
 
         ImGui::Dummy(ImVec2(0.0f, lastFlex.margin.bottom));
 
-        if (debugMode) {
-            ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        if (debugMode)
+        {
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
             draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), ImGui::GetColorU32(ImGuiCol_Border));
         }
     }

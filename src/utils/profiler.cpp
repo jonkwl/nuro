@@ -1,6 +1,7 @@
 #include "profiler.h"
 
-namespace Profiler {
+namespace Profiler
+{
 
 	std::unordered_map<std::string, std::chrono::steady_clock::time_point> _profiles = std::unordered_map<std::string, std::chrono::steady_clock::time_point>();
 	std::unordered_map<std::string, double> _times = std::unordered_map<std::string, double>();
@@ -27,7 +28,8 @@ namespace Profiler {
 
 	double stop(std::string identifier)
 	{
-		if (!_validateProfile(identifier)) {
+		if (!_validateProfile(identifier))
+		{
 			return 0.0;
 		}
 		double time = std::chrono::duration<double, std::milli>(_now() - _profiles[identifier]).count();
@@ -37,7 +39,8 @@ namespace Profiler {
 
 	double get(std::string identifier)
 	{
-		if (!_validateTime(identifier)) {
+		if (!_validateTime(identifier))
+		{
 			return 0.0f;
 		}
 		return _times[identifier];

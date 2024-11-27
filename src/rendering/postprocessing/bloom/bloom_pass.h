@@ -14,6 +14,7 @@ public:
 	static float softThreshold;
 	static float filterRadius;
 	static unsigned int mipDepth;
+
 private:
 	static unsigned int prefilteringPass(unsigned int hdrInput);
 	static void downsamplingPass(unsigned int hdrInput);
@@ -23,7 +24,7 @@ private:
 	static glm::vec2 fViewportSize;
 	static glm::vec2 inversedViewportSize;
 
-	static Shader* prefilterShader;
-	static Shader* downsamplingShader;
-	static Shader* upsamplingShader;
+	static Shader *prefilterShader;
+	static Shader *downsamplingShader;
+	static Shader *upsamplingShader;
 };

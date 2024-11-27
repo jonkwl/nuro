@@ -10,7 +10,8 @@ Transform::Transform()
 	scale = glm::vec3(1.0f);
 }
 
-glm::vec3 Transform::forward() {
+glm::vec3 Transform::forward()
+{
 	glm::vec3 rotation_rad = glm::radians(rotation);
 	glm::quat quaternion = glm::quat(rotation_rad);
 	glm::vec3 forward_local = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -27,7 +28,8 @@ glm::vec3 Transform::backward()
 	return backward_vector;
 }
 
-glm::vec3 Transform::right() {
+glm::vec3 Transform::right()
+{
 	glm::vec3 rotation_rad = glm::radians(rotation);
 	glm::quat quaternion = glm::quat(rotation_rad);
 	glm::vec3 right_local = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -73,7 +75,7 @@ void Transform::lookAt(glm::vec3 point)
 	rotation = glm::vec3(pitch, yaw, 0.0f);
 }
 
-void Transform::lookAt(Entity* entity)
+void Transform::lookAt(Entity *entity)
 {
 	lookAt(entity->transform.position);
 }

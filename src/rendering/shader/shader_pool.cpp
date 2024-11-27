@@ -4,22 +4,25 @@
 #include "../src/utils/iohandler.h"
 #include "../src/rendering/shader/shader.h"
 
-std::vector<Shader*> ShaderPool::shaders;
+std::vector<Shader *> ShaderPool::shaders;
 std::vector<std::string> ShaderPool::identifiers;
 
-void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
+void ShaderPool::loadAndCompile(std::vector<std::string> paths)
+{
 	Log::printProcessStart("ShaderPool", "Building shaders...");
 	Log::printProcessState("ShaderPool", "Fetching shaders...");
 
 	std::vector<std::string> shader_paths;
 	std::vector<std::string> shader_names;
 
-	for (int i = 0; i < paths.size(); i++) {
+	for (int i = 0; i < paths.size(); i++)
+	{
 
 		Log::printProcessInfo(paths[i] + ":");
 
 		std::vector<std::string> shaders_in_folder = IOHandler::getFolders(paths[i]);
-		for (int x = 0; x < shaders_in_folder.size(); x++) {
+		for (int x = 0; x < shaders_in_folder.size(); x++)
+		{
 
 			shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
 			shader_names.push_back(shaders_in_folder[x]);
@@ -28,16 +31,18 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
 	}
 
 	Log::printProcessState("ShaderPool", "Compiling shaders...");
-	for (int i = 0; i < shader_paths.size(); i++) {
+	for (int i = 0; i < shader_paths.size(); i++)
+	{
 		std::string vertex_code = IOHandler::readFile(shader_paths[i] + "/.vert");
 		std::string fragment_code = IOHandler::readFile(shader_paths[i] + "/.frag");
-		const char* vertex_src = vertex_code.c_str();
-		const char* fragment_src = fragment_code.c_str();
+		const char *vertex_src = vertex_code.c_str();
+		const char *fragment_src = fragment_code.c_str();
 
 		bool compiled = false;
 		std::string name = shader_names[i];
-		Shader* shader = new Shader(vertex_src, fragment_src, compiled, name);
-		if (compiled) {
+		Shader *shader = new Shader(vertex_src, fragment_src, compiled, name);
+		if (compiled)
+		{
 			shaders.push_back(shader);
 			identifiers.push_back(name);
 			Log::printProcessInfo("Compiled " + name);
@@ -47,13 +52,16 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths) {
 	Log::printProcessDone("ShaderPool", "Finished building the shaders");
 }
 
-Shader* ShaderPool::get(std::string name) {
+Shader *ShaderPool::get(std::string name)
+{
 	auto it = std::find(identifiers.begin(), identifiers.end(), name);
-	if (it != identifiers.end()) {
+	if (it != identifiers.end())
+	{
 		int index = std::distance(identifiers.begin(), it);
 		return shaders[index];
 	}
-	else {
+	else
+	{
 		Log::printError("ShaderPool", "Couldn't find shader " + name);
 		return nullptr;
 	}

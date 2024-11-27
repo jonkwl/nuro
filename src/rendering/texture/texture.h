@@ -4,7 +4,8 @@
 
 typedef unsigned int GLuint;
 
-enum class TextureType {
+enum class TextureType
+{
 	ALBEDO,
 	NORMAL,
 	ROUGHNESS,
@@ -13,10 +14,11 @@ enum class TextureType {
 	EMISSIVE
 };
 
-class Texture {
+class Texture
+{
 public:
-	Texture() : id(0) {} // Construct with no backend texture attached
-	explicit Texture(GLuint id) : id(id) {} // Construct with existing backend texture attached
+	Texture() : id(0) {}								  // Construct with no backend texture attached
+	explicit Texture(GLuint id) : id(id) {}				  // Construct with existing backend texture attached
 	explicit Texture(std::string path, TextureType type); // Construct with newly from image created backend texture attached
 
 	void bind(unsigned int unit); // Bind texture for backend

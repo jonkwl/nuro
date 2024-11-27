@@ -15,7 +15,7 @@
 unsigned int MotionBlurPass::fbo = 0;
 unsigned int MotionBlurPass::output = 0;
 
-Shader* MotionBlurPass::shader = nullptr;
+Shader *MotionBlurPass::shader = nullptr;
 
 glm::mat4 MotionBlurPass::previousViewProjectionMatrix = glm::mat4(1.0f);
 
@@ -54,7 +54,8 @@ void MotionBlurPass::setup()
 
 	// Check framebuffer status
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
 	}
 
@@ -69,7 +70,8 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 {
 	// Render velocity buffer if object motion blur is active
 	unsigned int VELOCITY_BUFFER = 0;
-	if (PostProcessing::configuration.motionBlurObject) {
+	if (PostProcessing::configuration.motionBlurObject)
+	{
 		VELOCITY_BUFFER = VelocityBuffer::render();
 	}
 
@@ -88,20 +90,22 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 
 	// Bind shader
 	shader->bind();
-	
+
 	// Set shader uniforms
 	shader->setFloat("fps", Runtime::fps);
 
 	bool camera = PostProcessing::configuration.motionBlurCamera;
 	shader->setBool("camera", camera);
-	if (camera) {
+	if (camera)
+	{
 		shader->setFloat("cameraIntensity", PostProcessing::configuration.motionBlurCameraIntensity);
 		shader->setInt("cameraSamples", PostProcessing::configuration.motionBlurCameraSamples);
 	}
 
 	bool object = PostProcessing::configuration.motionBlurObject;
 	shader->setBool("object", object);
-	if (object) {
+	if (object)
+	{
 		shader->setInt("objectSamples", PostProcessing::configuration.motionBlurObjectSamples);
 	}
 

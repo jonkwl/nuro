@@ -31,7 +31,7 @@ void Model::resolveModel(std::string path)
     unsigned int importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, importSettings);
+    const aiScene *scene = import.ReadFile(path, importSettings);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -40,7 +40,8 @@ void Model::resolveModel(std::string path)
     }
 
     model_materials.reserve(scene->mNumMaterials);
-    for (int i = 0; i < scene->mNumMaterials; i++) {
+    for (int i = 0; i < scene->mNumMaterials; i++)
+    {
         model_materials.push_back(scene->mMaterials[i]);
     }
 
@@ -49,11 +50,11 @@ void Model::resolveModel(std::string path)
     Log::printProcessDone("Model", "Built model " + IOHandler::getFilename(path));
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+void Model::processNode(aiNode *node, const aiScene *scene)
 {
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+        aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.push_back(processMesh(mesh, scene));
     }
     for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -62,7 +63,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
-Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Mesh *Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     Log::printProcessInfo("- Building mesh " + std::to_string(meshes.size() + 1));
 
@@ -104,7 +105,8 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
-        for (unsigned int j = 0; j < face.mNumIndices; j++) {
+        for (unsigned int j = 0; j < face.mNumIndices; j++)
+        {
             indices.push_back(face.mIndices[j]);
         }
 
@@ -119,7 +121,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
     // Add to total materials metric if current index is the highest index
     metrics.nMaterials = std::max(metrics.nMaterials, materialIndex + 1);
-    
+
     return new Mesh(vertices, indices, materialIndex);
 }
 
@@ -133,12 +135,14 @@ void Model::calculateModelMetrics()
     metrics.furthest = 0.0f;
 
     // Loop through all meshes
-    for (int i = 0; i < meshes.size(); i++) {
+    for (int i = 0; i < meshes.size(); i++)
+    {
         // Get current mesh
-        Mesh* mesh = meshes[i];
+        Mesh *mesh = meshes[i];
 
         // Loop through all mesh vertices
-        for (int i = 0; i < mesh->vertices.size(); i++) {
+        for (int i = 0; i < mesh->vertices.size(); i++)
+        {
             // Get current vertex
             VertexData vertex = mesh->vertices[i];
 

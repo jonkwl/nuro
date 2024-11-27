@@ -9,8 +9,8 @@ public:
 
 	static unsigned int getVBO();
 	static unsigned int getVAO();
+
 private:
 	static unsigned int vbo;
 	static unsigned int vao;
 };
-

@@ -9,7 +9,7 @@ class LitMaterial : public IMaterial
 public:
 	LitMaterial();
 	void bind();
-	Shader* getShader();
+	Shader *getShader();
 
 	glm::vec4 baseColor = glm::vec4(1.0f);
 
@@ -29,8 +29,10 @@ public:
 	void setMetallicMap(Texture texture);
 	void setAmbientOcclusionMap(Texture texture);
 	void setEmissionMap(Texture texture);
+
 private:
-	enum TextureUnits {
+	enum TextureUnits
+	{
 		ALBEDO_UNIT,
 		NORMAL_UNIT,
 		ROUGHNESS_UNIT,
@@ -42,7 +44,7 @@ private:
 		SSAO_UNIT
 	};
 
-	Shader* shader;
+	Shader *shader;
 
 	bool enableAlbedoMap;
 	Texture albedoMap;

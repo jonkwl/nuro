@@ -56,7 +56,8 @@ void PrePass::setup(unsigned int width, unsigned int height)
 
 	// Check for framebuffer errors
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating bloom fbo: " + std::to_string(fboStatus));
 	}
 
@@ -87,8 +88,9 @@ void PrePass::render()
 	Runtime::prePassShader->bind();
 
 	// Pre pass render each entity
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
-	for (int i = 0; i < entityLinks.size(); i++) {
+	std::vector<Entity *> entityLinks = Runtime::entityLinks;
+	for (int i = 0; i < entityLinks.size(); i++)
+	{
 		entityLinks[i]->meshRenderer->prePass();
 	}
 }

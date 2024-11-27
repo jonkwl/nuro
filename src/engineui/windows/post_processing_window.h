@@ -7,4 +7,3 @@ class PostProcessingWindow : public EngineWindow
 public:
 	void prepare();
 };
-

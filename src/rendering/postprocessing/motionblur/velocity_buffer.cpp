@@ -20,7 +20,7 @@ unsigned int VelocityBuffer::rbo = 0;
 unsigned int VelocityBuffer::output = 0;
 unsigned int VelocityBuffer::postfilteredOutput = 0;
 
-Shader* VelocityBuffer::postfilterShader = nullptr;
+Shader *VelocityBuffer::postfilterShader = nullptr;
 
 void VelocityBuffer::setup()
 {
@@ -68,7 +68,8 @@ void VelocityBuffer::setup()
 
 	// Check framebuffer status
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
 	}
 
@@ -85,7 +86,8 @@ unsigned int VelocityBuffer::render()
 	OUTPUT = velocityPasses();
 
 	// Perform postfiltering pass on velocity buffer if object silhouettes should be extended
-	if (PostProcessing::configuration.motionBlurObjectSilhouetteExtension) {
+	if (PostProcessing::configuration.motionBlurObjectSilhouetteExtension)
+	{
 		OUTPUT = postfilteringPass();
 	}
 
@@ -112,8 +114,9 @@ unsigned int VelocityBuffer::velocityPasses()
 	Runtime::velocityPassShader->bind();
 
 	// Render velocity buffer by performing velocity pass on each object
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
-	for (int i = 0; i < entityLinks.size(); i++) {
+	std::vector<Entity *> entityLinks = Runtime::entityLinks;
+	for (int i = 0; i < entityLinks.size(); i++)
+	{
 		entityLinks[i]->meshRenderer->velocityPass();
 	}
 

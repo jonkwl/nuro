@@ -1,5 +1,6 @@
 #include "runtime/runtime.h"
 
-int main() {
+int main()
+{
 	return Runtime::START_LOOP();
 }

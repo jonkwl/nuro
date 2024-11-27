@@ -17,7 +17,7 @@
 
 PostProcessingConfiguration PostProcessing::configuration = PostProcessingConfiguration();
 
-Shader* PostProcessing::finalPassShader = nullptr;
+Shader *PostProcessing::finalPassShader = nullptr;
 
 PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessingConfiguration();
 
@@ -45,7 +45,8 @@ void PostProcessing::setup()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
 
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
 	}
 
@@ -78,14 +79,16 @@ void PostProcessing::render(unsigned int hdrInput)
 	unsigned int POST_PROCESSING_PIPELINE_NORMAL = PrePass::getNormalOutput();
 
 	// Motion blur pass
-	if (configuration.motionBlur) {
+	if (configuration.motionBlur)
+	{
 		// Apply motion blur on post processing hdr input
 		POST_PROCESSING_PIPELINE_HDR = MotionBlurPass::render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
 	}
 
 	// Seperate bloom pass
 	unsigned int BLOOM_PASS_OUTPUT = 0;
-	if (configuration.bloom) {
+	if (configuration.bloom)
+	{
 		BloomPass::threshold = configuration.bloomThreshold;
 		BloomPass::softThreshold = configuration.bloomSoftThreshold;
 		BloomPass::filterRadius = configuration.bloomFilterRadius;
@@ -101,7 +104,8 @@ void PostProcessing::render(unsigned int hdrInput)
 	finalPassShader->setVec2("resolution", Window::getSize());
 
 	// check for default configurations
-	if (!configuration.colorGrading) {
+	if (!configuration.colorGrading)
+	{
 		configuration.contrast = defaultConfiguration.contrast;
 		configuration.exposure = defaultConfiguration.exposure;
 		configuration.gamma = defaultConfiguration.gamma;
@@ -123,7 +127,8 @@ void PostProcessing::render(unsigned int hdrInput)
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
 
 	// Bind lens dirt texture
-	if (configuration.lensDirt) {
+	if (configuration.lensDirt)
+	{
 		configuration.lensDirtTexture.bind(LENS_DIRT_UNIT);
 	}
 

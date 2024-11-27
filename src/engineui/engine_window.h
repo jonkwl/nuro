@@ -5,4 +5,3 @@ class EngineWindow
 public:
 	virtual void prepare() {};
 };
-

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <glm.hpp>
-#include <vector> 
+#include <vector>
 
-struct BloomMip {
+struct BloomMip
+{
 	glm::ivec2 iSize;
 	glm::vec2 fSize;
 	glm::vec2 inversedSize;
@@ -17,10 +18,10 @@ public:
 	static void bind();
 
 	static unsigned int getPrefilterTexture();
-	static std::vector<BloomMip>& getMipChain();
+	static std::vector<BloomMip> &getMipChain();
+
 private:
 	static unsigned int framebuffer;
 	static unsigned int prefilterTexture;
 	static std::vector<BloomMip> mipChain;
 };
-

@@ -2,14 +2,15 @@
 
 #include <gtc/matrix_access.hpp>
 
-Camera::Camera() {
+Camera::Camera()
+{
     transform = Transform();
 
     frustum = Frustum();
 
-	fov = 70.0f;
-	near = 0.3f;
-	far = 1000.0f;
+    fov = 70.0f;
+    near = 0.3f;
+    far = 1000.0f;
 }
 
 float Camera::getFov()
@@ -47,7 +48,8 @@ void Camera::updateFrustum(glm::mat4 viewProjectionMatrix)
     frustum.planes[5] = col3 - col2; // Far
 
     // Normalize planes
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
         float length = glm::length(glm::vec3(frustum.planes[i]));
         frustum.planes[i] /= length;
     }

@@ -15,8 +15,9 @@ void PostProcessingWindow::prepare()
 
 	UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HeadlineJustification::LEFT);
 
-	if (UIComponents::extendableSettings("Color Grading", PostProcessing::configuration.colorGrading, ICON_FA_PROJECTOR)) {
-		
+	if (UIComponents::extendableSettings("Color Grading", PostProcessing::configuration.colorGrading, ICON_FA_PROJECTOR))
+	{
+
 		UIComponents::headline("Contrast, Exposure & Gamma");
 		UIComponents::input("Contrast:", PostProcessing::configuration.contrast, 0.0001f);
 		UIComponents::input("Exposure:", PostProcessing::configuration.exposure, 0.001f);
@@ -25,7 +26,8 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Motion Blur", PostProcessing::configuration.motionBlur, ICON_FA_PROJECTOR)) {
+	if (UIComponents::extendableSettings("Motion Blur", PostProcessing::configuration.motionBlur, ICON_FA_PROJECTOR))
+	{
 
 		UIComponents::headline("Camera Motion Blur Settings");
 		UIComponents::input("Enable Camera Motion Blur", PostProcessing::configuration.motionBlurCamera);
@@ -57,8 +59,9 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Bloom", PostProcessing::configuration.bloom, ICON_FA_PROJECTOR)) {
-		
+	if (UIComponents::extendableSettings("Bloom", PostProcessing::configuration.bloom, ICON_FA_PROJECTOR))
+	{
+
 		UIComponents::headline("Bloom Settings");
 		UIComponents::input("Intensity:", PostProcessing::configuration.bloomIntensity, 0.001f);
 		UIComponents::input("Threshold:", PostProcessing::configuration.bloomThreshold, 0.001f);
@@ -74,7 +77,8 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Vignette", PostProcessing::configuration.vignette, ICON_FA_BAG_SHOPPING)) {
+	if (UIComponents::extendableSettings("Vignette", PostProcessing::configuration.vignette, ICON_FA_BAG_SHOPPING))
+	{
 
 		UIComponents::headline("Vignette Settings");
 		UIComponents::input("Intensity:", PostProcessing::configuration.vignetteIntensity, 0.01f);
@@ -86,7 +90,8 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Chromatic Aberration", PostProcessing::configuration.chromaticAberration, ICON_FA_BAG_SHOPPING)) {
+	if (UIComponents::extendableSettings("Chromatic Aberration", PostProcessing::configuration.chromaticAberration, ICON_FA_BAG_SHOPPING))
+	{
 
 		UIComponents::headline("Chromatic Aberration Settings");
 		UIComponents::input("Intensity:", PostProcessing::configuration.chromaticAberrationIntensity, 0.01f);
@@ -95,7 +100,8 @@ void PostProcessingWindow::prepare()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Ambient Occlusion", PostProcessing::configuration.ambientOcclusion, ICON_FA_PROJECTOR)) {
+	if (UIComponents::extendableSettings("Ambient Occlusion", PostProcessing::configuration.ambientOcclusion, ICON_FA_PROJECTOR))
+	{
 		UIComponents::headline("SSAO Settings");
 		UIComponents::input("Radius:", PostProcessing::configuration.ambientOcclusionRadius, 0.001f);
 		UIComponents::input("Samples:", PostProcessing::configuration.ambientOcclusionSamples, 0.1f);

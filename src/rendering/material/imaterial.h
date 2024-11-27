@@ -2,9 +2,10 @@
 
 #include "../src/rendering/shader/shader.h"
 
-class IMaterial {
+class IMaterial
+{
 public:
 	virtual void bind() {}
 	virtual ~IMaterial() {}
-	virtual Shader* getShader() { return nullptr; }
+	virtual Shader *getShader() { return nullptr; }
 };

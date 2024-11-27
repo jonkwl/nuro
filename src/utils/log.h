@@ -4,7 +4,8 @@
 
 namespace Log
 {
-    enum class TextColor {
+    enum class TextColor
+    {
         Black = 30,
         Red = 31,
         Green = 32,
@@ -15,7 +16,8 @@ namespace Log
         White = 37,
     };
 
-    enum class BackgroundColor {
+    enum class BackgroundColor
+    {
         Black = 40,
         Red = 41,
         Green = 42,

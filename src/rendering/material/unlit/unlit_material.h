@@ -8,7 +8,7 @@ class UnlitMaterial : public IMaterial
 public:
 	UnlitMaterial();
 	void bind();
-	Shader* getShader();
+	Shader *getShader();
 
 	glm::vec4 baseColor;
 	glm::vec2 tiling;
@@ -16,7 +16,7 @@ public:
 
 	bool useTexture;
 	Texture texture;
-private:
-	Shader* shader;
-};
 
+private:
+	Shader *shader;
+};

@@ -4,10 +4,9 @@
 
 #include "../src/rendering/texture/texture.h"
 
-Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) :
-    vertices(vertices),
-    indices(indices),
-    materialIndex(materialIndex)
+Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) : vertices(vertices),
+                                                                                                     indices(indices),
+                                                                                                     materialIndex(materialIndex)
 {
     // Generate VAO, VBO and EBO
     glGenVertexArrays(1, &vao);
@@ -28,19 +27,19 @@ Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, 
     // Set attributes for VAO
     // Vertex position attribute (location = 0)
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, position));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void *)offsetof(VertexData, position));
     // Normal attribute (location = 1)
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void *)offsetof(VertexData, normal));
     // Texture coordinates attribute (location = 2)
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void *)offsetof(VertexData, uv));
     // Tangent attribute (location = 3)
     glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, tangent));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void *)offsetof(VertexData, tangent));
     // Bitangent attribute (location = 3)
     glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, bitangent));
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void *)offsetof(VertexData, bitangent));
 
     // Unbind VAO, ABO and EBO
     glBindVertexArray(0);

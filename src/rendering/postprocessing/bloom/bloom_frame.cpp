@@ -31,7 +31,8 @@ void BloomFrame::setup(unsigned int mipDepth)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Generate all bloom mips
-	for (unsigned int i = 0; i < mipDepth; i++) {
+	for (unsigned int i = 0; i < mipDepth; i++)
+	{
 		BloomMip mip;
 
 		// Halve mips size
@@ -61,13 +62,13 @@ void BloomFrame::setup(unsigned int mipDepth)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mipChain[0].texture, 0);
 
 	unsigned int fboAttachments[1] = {
-		GL_COLOR_ATTACHMENT0
-	};
+		GL_COLOR_ATTACHMENT0};
 	glDrawBuffers(1, fboAttachments);
 
 	// Check for framebuffer errors
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Log::printError("Framebuffer", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
 	}
 
@@ -86,7 +87,7 @@ unsigned int BloomFrame::getPrefilterTexture()
 	return prefilterTexture;
 }
 
-std::vector<BloomMip>& BloomFrame::getMipChain()
+std::vector<BloomMip> &BloomFrame::getMipChain()
 {
 	return mipChain;
 }

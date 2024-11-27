@@ -11,18 +11,20 @@
 std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
 float DiagnosticsWindow::fpsUpdateTimer = 0.0f;
 
-ImVec4 lerpColors(const ImVec4& a, const ImVec4& b, float t) {
+ImVec4 lerpColors(const ImVec4 &a, const ImVec4 &b, float t)
+{
     return ImVec4(
         a.x + t * (b.x - a.x),
         a.y + t * (b.y - a.y),
         a.z + t * (b.z - a.z),
-        a.w + t * (b.w - a.w)
-    );
+        a.w + t * (b.w - a.w));
 }
 
-void sparkline(const char* id, const float* values, int count, float min_v, float max_v, int offset, const ImVec4& col, const ImVec2& size) {
+void sparkline(const char *id, const float *values, int count, float min_v, float max_v, int offset, const ImVec4 &col, const ImVec2 &size)
+{
     ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
-    if (ImPlot::BeginPlot(id, size, ImPlotFlags_CanvasOnly)) {
+    if (ImPlot::BeginPlot(id, size, ImPlotFlags_CanvasOnly))
+    {
         ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
         ImPlot::SetupAxesLimits(0, count - 1, min_v, max_v, ImGuiCond_Always);
         ImPlot::SetNextLineStyle(col);
@@ -33,7 +35,8 @@ void sparkline(const char* id, const float* values, int count, float min_v, floa
     ImPlot::PopStyleVar();
 }
 
-float remap(float old_min, float old_max, float new_min, float new_max, float value) {
+float remap(float old_min, float old_max, float new_min, float new_max, float value)
+{
     value = glm::clamp(value, old_min, old_max);
     return new_min + (value - old_min) * (new_max - new_min) / (old_max - old_min);
 }
@@ -49,21 +52,25 @@ void DiagnosticsWindow::prepare()
     const int values = 100;
     const float updateRate = 0.025f;
     int maxValue = 1;
-    if (fpsCache.size() > 0.0f) maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
+    if (fpsCache.size() > 0.0f)
+        maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
 
     fpsUpdateTimer += Runtime::deltaTime;
-    if (fpsUpdateTimer >= updateRate) {
+    if (fpsUpdateTimer >= updateRate)
+    {
         fpsCache.push_back(Runtime::fps);
 
-        if (fpsCache.size() > values) {
+        if (fpsCache.size() > values)
+        {
             fpsCache.pop_front();
         }
 
         fpsUpdateTimer = 0.0f;
     }
 
-    float* data = new float[values];
-    for (size_t i = 0; i < fpsCache.size(); ++i) {
+    float *data = new float[values];
+    for (size_t i = 0; i < fpsCache.size(); ++i)
+    {
         data[i] = fpsCache[i];
     }
 

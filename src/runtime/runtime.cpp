@@ -44,19 +44,19 @@
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
 
-std::vector<Entity*> Runtime::entityLinks;
+std::vector<Entity *> Runtime::entityLinks;
 
-UnlitMaterial* Runtime::defaultMaterial = nullptr;
-Cubemap* Runtime::defaultSky = nullptr;
-Skybox* Runtime::defaultSkybox = nullptr;
+UnlitMaterial *Runtime::defaultMaterial = nullptr;
+Cubemap *Runtime::defaultSky = nullptr;
+Skybox *Runtime::defaultSkybox = nullptr;
 
-Shader* Runtime::prePassShader = nullptr;
-Shader* Runtime::shadowPassShader = nullptr;
-Shader* Runtime::velocityPassShader = nullptr;
+Shader *Runtime::prePassShader = nullptr;
+Shader *Runtime::shadowPassShader = nullptr;
+Shader *Runtime::velocityPassShader = nullptr;
 
-Camera* Runtime::renderCamera = new Camera();
-Camera* Runtime::activeCamera = new Camera();
-Camera* Runtime::inspectorCamera = new Camera();
+Camera *Runtime::renderCamera = new Camera();
+Camera *Runtime::activeCamera = new Camera();
+Camera *Runtime::inspectorCamera = new Camera();
 
 float Runtime::time = 0.0f;
 float Runtime::lastTime = 0.0f;
@@ -76,10 +76,10 @@ bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
 bool Runtime::showDiagnostics = true;
 
-Skybox* Runtime::activeSkybox = nullptr;
+Skybox *Runtime::activeSkybox = nullptr;
 
-ShadowDisk* Runtime::mainShadowDisk = nullptr;
-ShadowMap* Runtime::mainShadowMap = nullptr;
+ShadowDisk *Runtime::mainShadowDisk = nullptr;
+ShadowMap *Runtime::mainShadowMap = nullptr;
 
 unsigned int Runtime::currentDrawCalls = 0;
 unsigned int Runtime::currentVertices = 0;
@@ -105,36 +105,38 @@ unsigned int Runtime::ssaoBuffer = 0;
 
 bool skipSkyboxLoad = false; // tmp
 
-void Runtime::linkEntity(Entity* entity)
+void Runtime::linkEntity(Entity *entity)
 {
 	entityLinks.push_back(entity);
 }
 
-void Runtime::useCamera(Camera* camera) {
+void Runtime::useCamera(Camera *camera)
+{
 	activeCamera = camera;
 }
 
-Camera* Runtime::getCameraRendering()
+Camera *Runtime::getCameraRendering()
 {
 	return renderCamera;
 }
 
-Camera* Runtime::getActiveCamera()
+Camera *Runtime::getActiveCamera()
 {
 	return activeCamera;
 }
 
-Camera* Runtime::getInspectorCamera()
+Camera *Runtime::getInspectorCamera()
 {
 	return inspectorCamera;
 }
 
-void glfw_error_callback(int error, const char* description)
+void glfw_error_callback(int error, const char *description)
 {
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);
 }
 
-int Runtime::START_LOOP() {
+int Runtime::START_LOOP()
+{
 	//
 	// SETUP PHASE 1: CREATE CONTEXT AND LOAD GRAPHICS API //
 	//
@@ -157,9 +159,10 @@ int Runtime::START_LOOP() {
 	glfwWindowHint(GLFW_ALPHA_BITS, 2);
 
 	// Check for fullscreen
-	if (Window::fullscreen) {
-		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+	if (Window::fullscreen)
+	{
+		GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode *mode = glfwGetVideoMode(primaryMonitor);
 
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -171,18 +174,20 @@ int Runtime::START_LOOP() {
 	// Create window
 	Window::glfw = glfwCreateWindow(Window::width, Window::height, Window::title.c_str(), nullptr, nullptr);
 	glfwSetFramebufferSizeCallback(Window::glfw, Window::framebuffer_size_callback);
-	if (Window::glfw == nullptr) {
+	if (Window::glfw == nullptr)
+	{
 		Log::printError("GLFW", "Creation of window failed");
 	}
 
 	// Load graphics api
 	glfwMakeContextCurrent(Window::glfw);
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
 		Log::printError("GLFW", "Initialization of GLAD failed");
 	}
 
 	// Debug graphics api version
-	const char* version = (const char*)glGetString(GL_VERSION);
+	const char *version = (const char *)glGetString(GL_VERSION);
 	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
 
 	// Setup render settings
@@ -199,10 +204,10 @@ int Runtime::START_LOOP() {
 	//
 
 	// Loading all shaders
-	std::vector<std::string> shader_paths = { 
-		"./resources/shaders/materials", 
+	std::vector<std::string> shader_paths = {
+		"./resources/shaders/materials",
 		"./resources/shaders/postprocessing",
-		"./resources/shaders/passes" };
+		"./resources/shaders/passes"};
 	ShaderPool::loadAndCompile(shader_paths);
 
 	prePassShader = ShaderPool::get("pre_pass");
@@ -224,7 +229,8 @@ int Runtime::START_LOOP() {
 	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
 
 	// Creating default skybox
-	if (!skipSkyboxLoad) {
+	if (!skipSkyboxLoad)
+	{
 
 		// Load default sky cubemap
 		defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_night.png");
@@ -239,10 +245,9 @@ int Runtime::START_LOOP() {
 
 		// Create default skybox
 		defaultSkybox = new Skybox(defaultSky);
-		
+
 		// Set defaultr skybox as active
 		activeSkybox = defaultSkybox;
-
 	}
 
 	// Set inspector camera data
@@ -275,7 +280,7 @@ int Runtime::START_LOOP() {
 	Input::setupInputs();
 
 	// Create primitives
-	Quad::create(); 
+	Quad::create();
 
 	// Setup quick gizmo
 	QuickGizmo::setup();
@@ -285,7 +290,8 @@ int Runtime::START_LOOP() {
 	//
 	awake();
 
-	while (!glfwWindowShouldClose(Window::glfw)) {
+	while (!glfwWindowShouldClose(Window::glfw))
+	{
 
 		unsigned int width = Window::width, height = Window::height;
 
@@ -301,7 +307,8 @@ int Runtime::START_LOOP() {
 
 		averageFpsElapsedTime += deltaTime;
 		averageFpsFrameCount++;
-		if (averageFpsElapsedTime >= 1.0f) {
+		if (averageFpsElapsedTime >= 1.0f)
+		{
 			averageFps = static_cast<float>(averageFpsFrameCount) / averageFpsElapsedTime;
 			averageFpsElapsedTime = 0.0f;
 			averageFpsFrameCount = 0;
@@ -325,7 +332,7 @@ int Runtime::START_LOOP() {
 		//
 		// EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
 		// (NONE)
-		// 
+		//
 
 		//
 		// UPDATE GAME LOGIC
@@ -339,10 +346,12 @@ int Runtime::START_LOOP() {
 		Profiler::start("render");
 
 		// Select camera to be rendered (depending on whether inspector mode is activated)
-		if (!inspectorMode) {
+		if (!inspectorMode)
+		{
 			renderCamera = activeCamera;
 		}
-		else {
+		else
+		{
 			renderCamera = inspectorCamera;
 			InspectorMode::refreshInspector();
 		}
@@ -361,7 +370,7 @@ int Runtime::START_LOOP() {
 
 		// Update cameras frustum
 		renderCamera->updateFrustum(viewProjectionMatrix);
-		
+
 		// Reset entity metrics
 		nCPUEntities = 0;
 		nGPUEntities = 0;
@@ -370,7 +379,8 @@ int Runtime::START_LOOP() {
 		// PREPARATION PASS
 		// Prepare each mesh for upcoming render passes
 		//
-		for (int i = 0; i < entityLinks.size(); i++) {
+		for (int i = 0; i < entityLinks.size(); i++)
+		{
 			// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
 			// Here for now to ensure preparation despite further pipeline changes
 			entityLinks[i]->meshRenderer->prepareNextFrame();
@@ -399,7 +409,8 @@ int Runtime::START_LOOP() {
 		// Calculate screen space ambient occlusion if enabled
 		//
 		unsigned int SSAO_OUTPUT = 0;
-		if (PostProcessing::configuration.ambientOcclusion) {
+		if (PostProcessing::configuration.ambientOcclusion)
+		{
 			SSAO_OUTPUT = SSAOPass::render(PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 		}
 		ssaoBuffer = SSAO_OUTPUT;
@@ -446,7 +457,8 @@ int Runtime::START_LOOP() {
 
 void Runtime::TERMINATE()
 {
-	if (Window::glfw != nullptr) {
+	if (Window::glfw != nullptr)
+	{
 		glfwDestroyWindow(Window::glfw);
 		glfwTerminate();
 	}

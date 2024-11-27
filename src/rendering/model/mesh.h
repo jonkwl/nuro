@@ -3,7 +3,8 @@
 #include <vector>
 #include <glm.hpp>
 
-struct VertexData {
+struct VertexData
+{
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 uv;
@@ -22,6 +23,7 @@ public:
     void bind();
 
     unsigned int getMaterialIndex();
+
 private:
     unsigned int vao;
     unsigned int vbo;
