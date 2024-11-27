@@ -51,7 +51,7 @@ void LitMaterial::bind()
 	glBindTexture(GL_TEXTURE_2D, Runtime::ssaoBuffer);
 
 	// World parameters
-	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering()->transform.position));
+	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering().transform.position));
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);

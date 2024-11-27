@@ -54,9 +54,9 @@ Shader *Runtime::prePassShader = nullptr;
 Shader *Runtime::shadowPassShader = nullptr;
 Shader *Runtime::velocityPassShader = nullptr;
 
-Camera *Runtime::renderCamera = new Camera();
-Camera *Runtime::activeCamera = new Camera();
-Camera *Runtime::inspectorCamera = new Camera();
+Camera Runtime::renderCamera;
+Camera Runtime::activeCamera;
+Camera Runtime::inspectorCamera;
 
 float Runtime::time = 0.0f;
 float Runtime::lastTime = 0.0f;
@@ -110,22 +110,22 @@ void Runtime::linkEntity(Entity *entity)
 	entityLinks.push_back(entity);
 }
 
-void Runtime::useCamera(Camera *camera)
+void Runtime::useCamera(Camera camera)
 {
 	activeCamera = camera;
 }
 
-Camera *Runtime::getCameraRendering()
+Camera& Runtime::getCameraRendering()
 {
 	return renderCamera;
 }
 
-Camera *Runtime::getActiveCamera()
+Camera& Runtime::getActiveCamera()
 {
 	return activeCamera;
 }
 
-Camera *Runtime::getInspectorCamera()
+Camera& Runtime::getInspectorCamera()
 {
 	return inspectorCamera;
 }
@@ -251,8 +251,8 @@ int Runtime::START_LOOP()
 	}
 
 	// Set inspector camera data
-	inspectorCamera->transform.position.y = 2.0f;
-	inspectorCamera->transform.rotation.x = 22.0f;
+	inspectorCamera.transform.position.y = 2.0f;
+	inspectorCamera.transform.rotation.x = 22.0f;
 
 	//
 	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
@@ -369,7 +369,7 @@ int Runtime::START_LOOP()
 		MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 		// Update cameras frustum
-		renderCamera->updateFrustum(viewProjectionMatrix);
+		renderCamera.updateFrustum(viewProjectionMatrix);
 
 		// Reset entity metrics
 		nCPUEntities = 0;

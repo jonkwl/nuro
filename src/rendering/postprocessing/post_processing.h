@@ -27,7 +27,7 @@ struct PostProcessingConfiguration
 	float bloomFilterRadius = 0.0f;
 	unsigned int bloomMipDepth = 16;
 	bool lensDirt = false;
-	Texture lensDirtTexture = Texture();
+	Texture lensDirtTexture;
 	float lensDirtIntensity = 0.0f;
 
 	bool chromaticAberration = true;

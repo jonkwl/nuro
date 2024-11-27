@@ -4,8 +4,6 @@
 
 #include "../src/transform/transform.h"
 
-class Transform;
-
 struct Frustum
 {
 	glm::vec4 planes[6];

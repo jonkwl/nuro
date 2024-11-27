@@ -24,7 +24,7 @@ void defaultScene() {
 	}
 
 	// Create camera
-	Camera* camera = new Camera();
+	Camera camera;
 	Runtime::useCamera(camera);
 
 	// Post Processing Lens Dirt

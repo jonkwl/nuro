@@ -223,7 +223,7 @@ void MeshRenderer::performFrustumCulling()
     Runtime::nCPUEntities++;
 
     // Render target is not within frustum, cull it
-    if (!volume->intersectsFrustum(Runtime::getCameraRendering()->frustum))
+    if (!volume->intersectsFrustum(Runtime::getCameraRendering().frustum))
     {
         intersectsFrustum = false;
         return;
