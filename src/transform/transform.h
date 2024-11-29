@@ -4,9 +4,8 @@
 
 class Entity;
 
-class Transform
+struct Transform
 {
-public:
 	Transform();
 
 	glm::vec3 position;

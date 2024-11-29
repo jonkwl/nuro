@@ -365,6 +365,9 @@
     <ClInclude Include="src\rendering\ssao\ssao_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\camera\frustum.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\environment\top.jpg">

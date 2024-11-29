@@ -51,3 +51,9 @@ void Camera::updateFrustum(glm::mat4 viewProjectionMatrix)
         frustum.planes[i] /= length;
     }
 }
+
+Frustum Camera::getFrustum()
+{
+    // Return frustum
+    return frustum;
+}
