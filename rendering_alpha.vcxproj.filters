@@ -368,6 +368,9 @@
     <ClInclude Include="src\camera\frustum.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\environment\top.jpg">

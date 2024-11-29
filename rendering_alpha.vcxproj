@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera\frustum.h" />
+    <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\rendering\ssao\ssao_pass.h" />
     <ClInclude Include="src\rendering\postprocessing\motion_blur_pass.h" />
     <ClInclude Include="src\rendering\culling\bounding_volume.h" />
