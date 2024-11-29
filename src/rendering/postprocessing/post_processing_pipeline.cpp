@@ -12,19 +12,23 @@
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/texture/texture.h"
+#include "../src/utils/log.h"
 
-Shader *PostProcessingPipeline::finalPassShader = nullptr;
-
-unsigned int PostProcessingPipeline::fbo = 0;
-unsigned int PostProcessingPipeline::output = 0;
-
-BloomPass PostProcessingPipeline::bloomPass = BloomPass();
-MotionBlurPass PostProcessingPipeline::motionBlurPass = MotionBlurPass();
-
-PostProcessing::Configuration& PostProcessingPipeline::configuration = PostProcessing::configuration;
-
-void PostProcessingPipeline::setup()
+PostProcessingPipeline::PostProcessingPipeline() :
+	created(false),
+	fbo(0),
+	output(0),
+	finalPassShader(nullptr),
+	configuration(PostProcessing::configuration),
+	motionBlurPass(),
+	bloomPass()
 {
+}
+
+void PostProcessingPipeline::create()
+{
+	if (created) return;
+
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -46,7 +50,7 @@ void PostProcessingPipeline::setup()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Post Processing Pipeline", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Get default post processing final pass shader
@@ -62,10 +66,35 @@ void PostProcessingPipeline::setup()
 	// Setup post processing pipeline
 	motionBlurPass.create();
 	bloomPass.create(configuration.bloomMipDepth);
+
+	created = true;
+}
+
+void PostProcessingPipeline::destroy()
+{
+	if (!created) return;
+
+	// Delete output texture
+	glDeleteTextures(1, &output);
+	output = 0;
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &fbo);
+	fbo = 0;
+
+	// Remove shader
+	finalPassShader = nullptr;
+
+	created = false;
 }
 
 void PostProcessingPipeline::render(unsigned int hdrInput)
 {
+	if (!created) {
+		Log::printUncreatedWarning("Post Processing Pipeline", "render");
+		return;
+	}
+
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
 

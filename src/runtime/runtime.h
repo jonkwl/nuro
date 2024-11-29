@@ -3,6 +3,8 @@
 #include <vector>
 #include <glm.hpp>
 
+#include "../src/rendering/postprocessing/post_processing_pipeline.h"
+
 class UnlitMaterial;
 class Cubemap;
 class Skybox;
@@ -80,6 +82,9 @@ public:
 
 	// Screen space ambient occlusion
 	static unsigned int ssaoBuffer;
+
+	// Passes
+	static PostProcessingPipeline postProcessingPipeline;
 
 	// tmp for testing
 	static float intensity;

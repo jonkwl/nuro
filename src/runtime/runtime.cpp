@@ -26,7 +26,6 @@
 #include "../src/rendering/skybox/cubemap.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/postprocessing/post_processing.h"
-#include "../src/rendering/postprocessing/post_processing_pipeline.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/shadows/shadow_map.h"
@@ -103,6 +102,8 @@ int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
 unsigned int Runtime::ssaoBuffer = 0;
+
+PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline();
 
 bool skipSkyboxLoad = false; // tmp
 
@@ -272,7 +273,7 @@ int Runtime::START_LOOP()
 	SSAOPass::setup();
 
 	// Setup post processing
-	PostProcessingPipeline::setup();
+	postProcessingPipeline.create();
 
 	// Setup engine ui
 	EditorUI::setup();
@@ -429,7 +430,7 @@ int Runtime::START_LOOP()
 		// Render post processing pass to screen using forward pass output as input
 		//
 		Profiler::start("post_processing");
-		PostProcessingPipeline::render(FORWARD_PASS_OUTPUT);
+		postProcessingPipeline.render(FORWARD_PASS_OUTPUT);
 		Profiler::stop("post_processing");
 
 		//

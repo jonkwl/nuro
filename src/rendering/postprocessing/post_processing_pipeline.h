@@ -10,12 +10,18 @@ class Shader;
 class PostProcessingPipeline
 {
 public:
-	static void setup();					   // Setup post processing
-	static void render(unsigned int hdrInput); // Render post processing by performing all post processing passes on input
+	PostProcessingPipeline();
 
-	static unsigned int getOutput(); // Get output of last post processing render
+	void create();					   // Create post processing pipeline
+	void destroy(); // Destroy post processing pipeline
+
+	void render(unsigned int hdrInput); // Render post processing by performing all post processing passes on input
+
+	unsigned int getOutput(); // Get output of last post processing render
 
 private:
+	bool created;
+
 	enum TextureUnits
 	{
 		HDR_UNIT,
@@ -24,16 +30,16 @@ private:
 		LENS_DIRT_UNIT
 	};
 
-	static void syncConfiguration(); // Sync the post processing configuration with final pass shader
+	void syncConfiguration(); // Sync the post processing configuration with final pass shader
 
-	static Shader *finalPassShader; // Post processing final pass shader
+	unsigned int fbo;	// Framebuffer
+	unsigned int output; // Post processing output
 
-	static unsigned int fbo;	// Framebuffer
-	static unsigned int output; // Post processing output
+	Shader *finalPassShader; // Post processing final pass shader
 
-	static PostProcessing::Configuration& configuration;
+	PostProcessing::Configuration& configuration; // Configuration
 
 private:
-	static MotionBlurPass motionBlurPass;
-	static BloomPass bloomPass;
+	MotionBlurPass motionBlurPass;
+	BloomPass bloomPass;
 };
