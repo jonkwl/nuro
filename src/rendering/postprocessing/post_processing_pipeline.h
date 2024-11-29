@@ -12,7 +12,7 @@ class PostProcessingPipeline
 public:
 	PostProcessingPipeline();
 
-	void create();					   // Create post processing pipeline
+	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
 
 	void render(unsigned int hdrInput); // Render post processing by performing all post processing passes on input
@@ -32,12 +32,12 @@ private:
 
 	void syncConfiguration(); // Sync the post processing configuration with final pass shader
 
-	unsigned int fbo;	// Framebuffer
+	unsigned int fbo;	 // Framebuffer
 	unsigned int output; // Post processing output
 
 	Shader *finalPassShader; // Post processing final pass shader
 
-	PostProcessing::Configuration& configuration; // Configuration
+	PostProcessing::Configuration &configuration; // Configuration
 
 private:
 	MotionBlurPass motionBlurPass;

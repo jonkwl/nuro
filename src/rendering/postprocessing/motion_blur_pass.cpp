@@ -11,18 +11,18 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
-MotionBlurPass::MotionBlurPass() :
-	fbo(0),
-	output(0),
-	shader(nullptr),
-	previousViewProjectionMatrix(glm::mat4(1.0f)),
-	velocityBuffer()
+MotionBlurPass::MotionBlurPass() : fbo(0),
+								   output(0),
+								   shader(nullptr),
+								   previousViewProjectionMatrix(glm::mat4(1.0f)),
+								   velocityBuffer()
 {
 }
 
 void MotionBlurPass::create()
 {
-	if (created) return;
+	if (created)
+		return;
 
 	// Get motion blur pass shader
 	shader = ShaderPool::get("motion_blur_pass");
@@ -73,7 +73,8 @@ void MotionBlurPass::create()
 
 void MotionBlurPass::destroy()
 {
-	if (!created) return;
+	if (!created)
+		return;
 
 	// Delete output texture
 	glDeleteTextures(1, &output);
@@ -81,7 +82,7 @@ void MotionBlurPass::destroy()
 
 	// Delete framebuffer
 	glDeleteFramebuffers(1, &fbo);
-	fbo = 0; 
+	fbo = 0;
 
 	// Remove shader
 	shader = nullptr;
@@ -91,7 +92,8 @@ void MotionBlurPass::destroy()
 
 unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInput)
 {
-	if (!created) return Log::printUncreatedWarning("Motion Blur Pass", "render");
+	if (!created)
+		return Log::printUncreatedWarning("Motion Blur Pass", "render");
 
 	// Render velocity buffer if object motion blur is active
 	unsigned int VELOCITY_BUFFER = 0;

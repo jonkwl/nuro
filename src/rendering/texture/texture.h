@@ -17,11 +17,11 @@ enum class TextureType
 class Texture
 {
 public:
-	Texture(); // Construct without existing backend texture attached
-	explicit Texture(GLuint id);						  // Construct with existing backend texture attached
+	Texture();					 // Construct without existing backend texture attached
+	explicit Texture(GLuint id); // Construct with existing backend texture attached
 
 	void bind(unsigned int unit); // Bind texture for backend
-	void destroy(); // Delete texture in backend
+	void destroy();				  // Delete texture in backend
 
 public:
 	static Texture load(std::string path, TextureType type); // Create texture of type from image data

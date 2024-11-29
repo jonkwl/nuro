@@ -8,27 +8,27 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/utils/log.h"
 
-BloomPass::BloomPass() :
-	threshold(0.0f),
-	softThreshold(0.0f),
-	filterRadius(0.0f),
-	mipDepth(0),
-	created(false),
-	mipChain(),
-	iViewportSize(0, 0),
-	fViewportSize(0.0f, 0.0f),
-	inversedViewportSize(0, 0),
-	framebuffer(0),
-	prefilterOutput(0),
-	prefilterShader(nullptr),
-	downsamplingShader(nullptr),
-	upsamplingShader(nullptr)
+BloomPass::BloomPass() : threshold(0.0f),
+						 softThreshold(0.0f),
+						 filterRadius(0.0f),
+						 mipDepth(0),
+						 created(false),
+						 mipChain(),
+						 iViewportSize(0, 0),
+						 fViewportSize(0.0f, 0.0f),
+						 inversedViewportSize(0, 0),
+						 framebuffer(0),
+						 prefilterOutput(0),
+						 prefilterShader(nullptr),
+						 downsamplingShader(nullptr),
+						 upsamplingShader(nullptr)
 {
 }
 
 void BloomPass::create(unsigned int mipDepth)
 {
-	if (created) return;
+	if (created)
+		return;
 
 	// Load shaders
 	prefilterShader = ShaderPool::get("bloom_prefilter");
@@ -46,7 +46,7 @@ void BloomPass::create(unsigned int mipDepth)
 	// Set static upsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setInt("inputTexture", 0);
-	
+
 	// Set mip depth member
 	this->mipDepth = mipDepth;
 
@@ -106,7 +106,7 @@ void BloomPass::create(unsigned int mipDepth)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mipChain[0].texture, 0);
 
 	unsigned int fboAttachments[1] = {
-		GL_COLOR_ATTACHMENT0 };
+		GL_COLOR_ATTACHMENT0};
 	glDrawBuffers(1, fboAttachments);
 
 	// Check for framebuffer errors
@@ -124,14 +124,16 @@ void BloomPass::create(unsigned int mipDepth)
 
 void BloomPass::destroy()
 {
-	if (!created) return;
+	if (!created)
+		return;
 
 	// Delete prefilter texture
 	glDeleteTextures(1, &prefilterOutput);
 	prefilterOutput = 0;
 
 	// Delete all mipmap texture
-	for (auto& mip : mipChain) {
+	for (auto &mip : mipChain)
+	{
 		glDeleteTextures(1, &mip.texture);
 	}
 
@@ -152,7 +154,8 @@ void BloomPass::destroy()
 
 unsigned int BloomPass::render(unsigned int hdrInput)
 {
-	if (!created) return Log::printUncreatedWarning("Bloom Pass", "render");
+	if (!created)
+		return Log::printUncreatedWarning("Bloom Pass", "render");
 
 	// Bind bloom framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

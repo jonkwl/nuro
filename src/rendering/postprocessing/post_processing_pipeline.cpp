@@ -14,20 +14,20 @@
 #include "../src/rendering/texture/texture.h"
 #include "../src/utils/log.h"
 
-PostProcessingPipeline::PostProcessingPipeline() :
-	created(false),
-	fbo(0),
-	output(0),
-	finalPassShader(nullptr),
-	configuration(PostProcessing::configuration),
-	motionBlurPass(),
-	bloomPass()
+PostProcessingPipeline::PostProcessingPipeline() : created(false),
+												   fbo(0),
+												   output(0),
+												   finalPassShader(nullptr),
+												   configuration(PostProcessing::configuration),
+												   motionBlurPass(),
+												   bloomPass()
 {
 }
 
 void PostProcessingPipeline::create()
 {
-	if (created) return;
+	if (created)
+		return;
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
@@ -72,7 +72,8 @@ void PostProcessingPipeline::create()
 
 void PostProcessingPipeline::destroy()
 {
-	if (!created) return;
+	if (!created)
+		return;
 
 	// Delete output texture
 	glDeleteTextures(1, &output);
@@ -90,7 +91,8 @@ void PostProcessingPipeline::destroy()
 
 void PostProcessingPipeline::render(unsigned int hdrInput)
 {
-	if (!created) {
+	if (!created)
+	{
 		Log::printUncreatedWarning("Post Processing Pipeline", "render");
 		return;
 	}

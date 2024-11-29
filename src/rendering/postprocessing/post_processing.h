@@ -2,7 +2,8 @@
 
 #include "../src/rendering/texture/texture.h"
 
-namespace PostProcessing {
+namespace PostProcessing
+{
 
 	struct Configuration
 	{
@@ -21,7 +22,7 @@ namespace PostProcessing {
 
 		bool bloom = true;
 		float bloomIntensity = 0.38f;
-		float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
+		float bloomColor[3] = {1.0f, 1.0f, 1.0f};
 		float bloomThreshold = 0.2f;
 		float bloomSoftThreshold = 0.0f;
 		float bloomFilterRadius = 0.0f;
@@ -36,7 +37,7 @@ namespace PostProcessing {
 
 		bool vignette = true;
 		float vignetteIntensity = 1.0f;
-		float vignetteColor[3] = { 0.0f, 0.0f, 0.0f };
+		float vignetteColor[3] = {0.0f, 0.0f, 0.0f};
 		float vignetteRadius = 0.68f;
 		float vignetteSoftness = 0.35f;
 		float vignetteRoundness = 1.8f;
