@@ -84,7 +84,7 @@
     <ClCompile Include="src\rendering\skybox\cubemap.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\post_processing.cpp">
+    <ClCompile Include="src\rendering\postprocessing\post_processing_pipeline.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\shadows\shadow_map.cpp">
@@ -257,7 +257,7 @@
     <ClInclude Include="src\rendering\skybox\cubemap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\post_processing.h">
+    <ClInclude Include="src\rendering\postprocessing\post_processing_pipeline.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\shadows\shadow_map.h">
@@ -363,6 +363,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\engine.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\postprocessing\post_processing.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

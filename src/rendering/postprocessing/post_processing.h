@@ -1,14 +1,9 @@
 #pragma once
 
 #include "../src/rendering/texture/texture.h"
-#include "../src/rendering/postprocessing/motion_blur_pass.h"
-#include "../src/rendering/postprocessing/bloom_pass.h"
 
-class Shader;
+namespace PostProcessing {
 
-class PostProcessing
-{
-public:
 	struct Configuration
 	{
 		bool colorGrading = false;
@@ -52,33 +47,6 @@ public:
 		float ambientOcclusionPower = 20.0f;
 		float ambientOcclusionBias = 0.03f;
 	};
-public:
-	static void setup();					   // Setup post processing
-	static void render(unsigned int hdrInput); // Render post processing by performing all post processing passes on input
+	static Configuration configuration;
 
-	static PostProcessing::Configuration configuration; // Current post processing configuration
-
-	static unsigned int getOutput(); // Get output of last post processing render
-
-private:
-	enum TextureUnits
-	{
-		HDR_UNIT,
-		DEPTH_UNIT,
-		BLOOM_UNIT,
-		LENS_DIRT_UNIT
-	};
-
-	static void syncConfiguration(); // Sync the post processing configuration with final pass shader
-
-	static Shader *finalPassShader; // Post processing final pass shader
-
-	static PostProcessing::Configuration defaultConfiguration; // Default configuration cache
-
-	static unsigned int fbo;	// Framebuffer
-	static unsigned int output; // Post processing output
-
-private:
-	static MotionBlurPass motionBlurPass;
-	static BloomPass bloomPass;
-};
+}

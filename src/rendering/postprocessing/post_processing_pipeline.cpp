@@ -1,4 +1,4 @@
-#include "post_processing.h"
+#include "post_processing_pipeline.h"
 
 #include <glad/glad.h>
 #include <glm.hpp>
@@ -13,19 +13,17 @@
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/texture/texture.h"
 
-PostProcessing::Configuration PostProcessing::configuration = PostProcessing::Configuration();
+Shader *PostProcessingPipeline::finalPassShader = nullptr;
 
-Shader *PostProcessing::finalPassShader = nullptr;
+unsigned int PostProcessingPipeline::fbo = 0;
+unsigned int PostProcessingPipeline::output = 0;
 
-PostProcessing::Configuration PostProcessing::defaultConfiguration = PostProcessing::Configuration();
+BloomPass PostProcessingPipeline::bloomPass = BloomPass();
+MotionBlurPass PostProcessingPipeline::motionBlurPass = MotionBlurPass();
 
-unsigned int PostProcessing::fbo = 0;
-unsigned int PostProcessing::output = 0;
+PostProcessing::Configuration& PostProcessingPipeline::configuration = PostProcessing::configuration;
 
-BloomPass PostProcessing::bloomPass = BloomPass();
-MotionBlurPass PostProcessing::motionBlurPass = MotionBlurPass();
-
-void PostProcessing::setup()
+void PostProcessingPipeline::setup()
 {
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
@@ -61,15 +59,12 @@ void PostProcessing::setup()
 	finalPassShader->setInt("bloomBuffer", BLOOM_UNIT);
 	finalPassShader->setInt("configuration.lensDirtTexture", LENS_DIRT_UNIT);
 
-	// Cache default post processing configuration
-	defaultConfiguration = configuration;
-
 	// Setup post processing pipeline
 	motionBlurPass.create();
 	bloomPass.create(configuration.bloomMipDepth);
 }
 
-void PostProcessing::render(unsigned int hdrInput)
+void PostProcessingPipeline::render(unsigned int hdrInput)
 {
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
@@ -104,14 +99,6 @@ void PostProcessing::render(unsigned int hdrInput)
 	finalPassShader->bind();
 	finalPassShader->setVec2("resolution", Window::getSize());
 
-	// check for default configurations
-	if (!configuration.colorGrading)
-	{
-		configuration.contrast = defaultConfiguration.contrast;
-		configuration.exposure = defaultConfiguration.exposure;
-		configuration.gamma = defaultConfiguration.gamma;
-	}
-
 	// Sync post processing configuration with shader
 	syncConfiguration();
 
@@ -141,12 +128,12 @@ void PostProcessing::render(unsigned int hdrInput)
 	// glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-unsigned int PostProcessing::getOutput()
+unsigned int PostProcessingPipeline::getOutput()
 {
 	return output;
 }
 
-void PostProcessing::syncConfiguration()
+void PostProcessingPipeline::syncConfiguration()
 {
 	finalPassShader->setFloat("configuration.exposure", configuration.exposure);
 	finalPassShader->setFloat("configuration.contrast", configuration.contrast);

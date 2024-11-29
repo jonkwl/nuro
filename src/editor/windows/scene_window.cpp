@@ -31,7 +31,7 @@ void SceneWindow::prepare()
         float height = ImGui::GetContentRegionAvail().y;
 
         ImGui::Image(
-            PostProcessing::getOutput(),
+            0, // Final output terxture here
             ImGui::GetContentRegionAvail(),
             ImVec2(0, 1),
             ImVec2(1, 0));
