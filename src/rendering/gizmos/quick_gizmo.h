@@ -3,7 +3,7 @@
 #include <vector>
 #include <glm.hpp>
 
-class UnlitMaterial;
+class Shader;
 class Model;
 
 struct GizmoColor
@@ -43,13 +43,14 @@ public:
     static void render();   // Render all gizmos from render stack
 
     static glm::vec3 color;
+    static float opacity;
 
-    static void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
-    static void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
+    static void plane(glm::vec3 position, glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
+    static void box(glm::vec3 position, glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
     static void sphere(glm::vec3 position, float radius = 0.5f);
 
-    static void planeWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
-    static void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
+    static void planeWire(glm::vec3 position, glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
+    static void boxWire(glm::vec3 position, glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
     static void sphereWire(glm::vec3 position, float radius = 0.5f);
 
 private:
@@ -60,23 +61,39 @@ private:
         SPHERE
     };
 
+    struct RenderState {
+        glm::vec3 color;
+        float opacity;
+    };
+
     struct RenderTarget
     {
         Shape shape;
-        glm::vec3 color;
         glm::vec3 position;
         glm::vec3 rotation;
         glm::vec3 scale;
         bool wireframe;
+        RenderState state;
+
+        RenderTarget(Shape shape, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, bool wireframe) :
+            shape(shape),
+            position(position),
+            rotation(rotation),
+            scale(scale),
+            wireframe(wireframe),
+            state(getCurrentState())
+        {};
     };
 
-    static UnlitMaterial *material;
+    static Shader *shader;
 
     static Model *planeModel;
     static Model *cubeModel;
     static Model *sphereModel;
 
     static std::vector<RenderTarget> renderStack;
+
+    static RenderState getCurrentState();
 
     static Model *getModel(Shape shape);
     static glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);

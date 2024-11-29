@@ -4,15 +4,17 @@
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 
-#include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/rendering/model/model.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/transformation.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/model/mesh.h"
 
-glm::vec3 QuickGizmo::color = glm::vec3(1.0f);
 
-UnlitMaterial *QuickGizmo::material = nullptr;
+glm::vec3 QuickGizmo::color = glm::vec3(1.0f);
+float QuickGizmo::opacity = 0.4f;
+
+Shader *QuickGizmo::shader = nullptr;
 
 Model *QuickGizmo::planeModel = nullptr;
 Model *QuickGizmo::cubeModel = nullptr;
@@ -23,7 +25,7 @@ std::vector<QuickGizmo::RenderTarget> QuickGizmo::renderStack;
 void QuickGizmo::setup()
 {
     // Setup material
-    material = new UnlitMaterial();
+    shader = ShaderPool::get("quick_gizmo");
 
     // Load models from primitives
     planeModel = new Model("./resources/primitives/plane.fbx");
@@ -43,8 +45,12 @@ void QuickGizmo::render()
     GLenum polygonState[2];
     glGetIntegerv(GL_POLYGON_MODE, (GLint *)polygonState);
 
-    // Bind gizmo material for upcoming renders
-    material->bind();
+    // Bind quick gizmo shader for upcoming renders
+    shader->bind();
+
+    // Enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     for (int i = 0; i < renderStack.size(); i++)
     {
@@ -56,8 +62,8 @@ void QuickGizmo::render()
         glm::mat4 mvpMatrix = MeshRenderer::currentViewProjectionMatrix * modelMatrix;
 
         // Set material uniforms
-        material->getShader()->setMatrix4("mvpMatrix", mvpMatrix);
-        material->getShader()->setVec4("baseColor", glm::vec4(gizmo.color, 1.0f));
+        shader->setMatrix4("mvpMatrix", mvpMatrix);
+        shader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 
         // Get model
         Model *model = getModel(gizmo.shape);
@@ -81,80 +87,54 @@ void QuickGizmo::render()
         }
     }
 
+    // Disable blending
+    glDisable(GL_BLEND);
+
     // Restore polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, polygonState[0]);
 }
 
 void QuickGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    RenderTarget gizmo;
-    gizmo.color = color;
-    gizmo.shape = Shape::PLANE;
-    gizmo.position = position;
-    gizmo.scale = scale;
-    gizmo.rotation = rotation;
-    gizmo.wireframe = false;
+    RenderTarget gizmo(Shape::PLANE, position, rotation, scale, false);
     renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    RenderTarget gizmo;
-    gizmo.color = color;
-    gizmo.shape = Shape::BOX;
-    gizmo.position = position;
-    gizmo.scale = scale;
-    gizmo.rotation = rotation;
-    gizmo.wireframe = false;
+    RenderTarget gizmo(Shape::BOX, position, rotation, scale, false);
     renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::sphere(glm::vec3 position, float radius)
 {
-    RenderTarget gizmo;
-    gizmo.color = color;
-    gizmo.shape = Shape::SPHERE;
-    gizmo.position = position;
-    gizmo.scale = glm::vec3(radius * 2);
-    gizmo.rotation = glm::vec3(0.0f);
-    gizmo.wireframe = false;
+    RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), false);
     renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    RenderTarget gizmo;
-    gizmo.color = color;
-    gizmo.shape = Shape::PLANE;
-    gizmo.position = position;
-    gizmo.scale = scale;
-    gizmo.rotation = rotation;
-    gizmo.wireframe = true;
+    RenderTarget gizmo(Shape::PLANE, position, rotation, scale, true);
     renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-    RenderTarget gizmo;
-    gizmo.color = color;
-    gizmo.shape = Shape::BOX;
-    gizmo.position = position;
-    gizmo.scale = scale;
-    gizmo.rotation = rotation;
-    gizmo.wireframe = true;
+    RenderTarget gizmo(Shape::BOX, position, rotation, scale, true);
     renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::sphereWire(glm::vec3 position, float radius)
 {
-    RenderTarget gizmo;
-    gizmo.color = color;
-    gizmo.shape = Shape::SPHERE;
-    gizmo.position = position;
-    gizmo.scale = glm::vec3(radius * 2);
-    gizmo.rotation = glm::vec3(0.0f);
-    gizmo.wireframe = true;
+    RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), true);
     renderStack.push_back(gizmo);
+}
+
+QuickGizmo::RenderState QuickGizmo::getCurrentState() {
+    RenderState state;
+    state.color = color;
+    state.opacity = opacity;
+    return state;
 }
 
 Model *QuickGizmo::getModel(Shape shape)

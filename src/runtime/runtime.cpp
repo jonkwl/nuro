@@ -209,6 +209,7 @@ int Runtime::START_LOOP()
 	std::vector<std::string> shader_paths = {
 		"./resources/shaders/materials",
 		"./resources/shaders/postprocessing",
+		"./resources/shaders/gizmo",
 		"./resources/shaders/passes"};
 	ShaderPool::loadAndCompile(shader_paths);
 
