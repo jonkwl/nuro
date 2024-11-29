@@ -59,15 +59,15 @@ void MeshRenderer::forwardPass()
     for (int i = 0; i < model->meshes.size(); i++)
     {
         // Get current mesh
-        Mesh *mesh = model->meshes[i];
+        Mesh mesh = model->meshes[i];
 
         // Bind mesh
-        mesh->bind();
+        mesh.bind();
 
         // Get mesh material by index
         IMaterial *material = nullptr;
 
-        unsigned int materialIndex = mesh->getMaterialIndex();
+        unsigned int materialIndex = mesh.getMaterialIndex();
         // Try find material by models material index
         if (materialIndex < materials.size())
         {
@@ -92,12 +92,12 @@ void MeshRenderer::forwardPass()
         shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
-        render(mesh->indices.size());
+        render(mesh.getIndiceCount());
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
-        Runtime::currentVertices += static_cast<unsigned int>(mesh->vertices.size());
-        Runtime::currentPolygons += static_cast<unsigned int>(mesh->indices.size()) / 3;
+        Runtime::currentVertices += static_cast<unsigned int>(mesh.getVerticeCount());
+        Runtime::currentPolygons += static_cast<unsigned int>(mesh.getIndiceCount()) / 3;
     }
 }
 
@@ -115,10 +115,10 @@ void MeshRenderer::prePass()
     for (int i = 0; i < model->meshes.size(); i++)
     {
         // Get current mesh
-        Mesh *mesh = model->meshes[i];
+        Mesh mesh = model->meshes[i];
 
         // Bind mesh
-        mesh->bind();
+        mesh.bind();
 
         // Set depth pre pass shader uniforms
         Shader *shader = Runtime::prePassShader;
@@ -126,7 +126,7 @@ void MeshRenderer::prePass()
         shader->setMatrix3("viewNormalMatrix", currentViewNormalMatrix);
 
         // Render mesh
-        render(mesh->indices.size());
+        render(mesh.getIndiceCount());
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
@@ -147,10 +147,10 @@ void MeshRenderer::shadowPass()
     for (int i = 0; i < model->meshes.size(); i++)
     {
         // Get current mesh
-        Mesh *mesh = model->meshes[i];
+        Mesh mesh = model->meshes[i];
 
         // Bind mesh
-        mesh->bind();
+        mesh.bind();
 
         // Set shadow pass shader uniforms
         Shader *shader = Runtime::shadowPassShader;
@@ -158,7 +158,7 @@ void MeshRenderer::shadowPass()
         shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 
         // Render mesh
-        render(mesh->indices.size());
+        render(mesh.getIndiceCount());
 
         // Update diagnostics
         Runtime::currentDrawCalls++;
@@ -178,10 +178,10 @@ void MeshRenderer::velocityPass()
     for (int i = 0; i < model->meshes.size(); i++)
     {
         // Get current mesh
-        Mesh *mesh = model->meshes[i];
+        Mesh mesh = model->meshes[i];
 
         // Bind mesh
-        mesh->bind();
+        mesh.bind();
 
         // Set velocity pass shader uniforms
         Shader *shader = Runtime::velocityPassShader;
@@ -193,7 +193,7 @@ void MeshRenderer::velocityPass()
         shader->setFloat("intensity", motionBlurIntensity);
 
         // Render mesh
-        render(mesh->indices.size());
+        render(mesh.getIndiceCount());
     }
 
     // Cache mvp matrix

@@ -16,7 +16,7 @@ BoundingSphere::BoundingSphere()
 void BoundingSphere::update(Model *model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     // Get models metrics
-    ModelMetrics metrics = model->getMetrics();
+    Model::Metrics metrics = model->getMetrics();
 
     // Calculate center position:
     // Position of models origin offset by the world position
@@ -52,7 +52,7 @@ BoundingAABB::BoundingAABB()
 void BoundingAABB::update(Model *model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     // Get model's metrics
-    ModelMetrics metrics = model->getMetrics();
+    Model::Metrics metrics = model->getMetrics();
 
     // Calculate half extents of the model
     glm::vec3 modelHalfSize = (metrics.maxPoint - metrics.minPoint) * 0.5f;
@@ -82,7 +82,7 @@ void BoundingAABB::update(Model *model, glm::vec3 position, glm::vec3 rotation, 
     glm::vec3 center = (min + max) * 0.5f;
     glm::vec3 size = max - min;
     QuickGizmo::color = GizmoColor::DARK_RED;
-    // QuickGizmo::boxWire(center, size);
+    QuickGizmo::boxWire(center, size);
 }
 
 bool BoundingAABB::intersectsFrustum(Frustum frustum)

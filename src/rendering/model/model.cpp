@@ -11,19 +11,17 @@
 #include "../src/utils/log.h"
 #include "../src/utils/iohandler.h"
 #include "../src/utils/string_helper.h"
-#include "../src/rendering/model/mesh.h"
 
 Model::Model(std::string path) : castsShadow(true),
                                  meshes(),
                                  directory(""),
-                                 model_materials(),
+    modelMaterials(),
                                  metrics()
 {
     resolveModel(path);
-    calculateModelMetrics();
 }
 
-ModelMetrics Model::getMetrics() const
+Model::Metrics Model::getMetrics() const
 {
     return metrics;
 }
@@ -32,24 +30,32 @@ void Model::resolveModel(std::string path)
 {
     Log::printProcessStart("Model", "Building model " + IOHandler::getFilename(path) + "...");
 
+    // Set model import flags
     unsigned int importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
+    // Read file
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, importSettings);
 
+    // Make sure model is valid
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         Log::printError("Mesh", import.GetErrorString());
         return;
     }
 
-    model_materials.reserve(scene->mNumMaterials);
+    // Add all models materials
+    modelMaterials.reserve(scene->mNumMaterials);
     for (int i = 0; i < scene->mNumMaterials; i++)
     {
-        model_materials.push_back(scene->mMaterials[i]);
+        modelMaterials.push_back(scene->mMaterials[i]);
     }
 
+    // Process each model node, adding each mesh
     processNode(scene->mRootNode, scene);
+
+    // Finalize the metrics
+    finalizeMetrics();
 
     Log::printProcessDone("Model", "Built model " + IOHandler::getFilename(path));
 }
@@ -67,18 +73,18 @@ void Model::processNode(aiNode *node, const aiScene *scene)
     }
 }
 
-Mesh *Model::processMesh(aiMesh *mesh, const aiScene *scene)
+Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     Log::printProcessInfo("- Building mesh " + std::to_string(meshes.size() + 1));
 
     // Initialize mesh buffers
-    std::vector<VertexData> vertices;
+    std::vector<Mesh::VertexData> vertices;
     std::vector<unsigned int> indices;
     unsigned int materialIndex;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        VertexData vertex;
+        Mesh::VertexData vertex;
 
         // Define unconditional vertex data
         glm::vec3 position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
@@ -126,42 +132,34 @@ Mesh *Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // Add to total materials metric if current index is the highest index
     metrics.nMaterials = std::max(metrics.nMaterials, materialIndex + 1);
 
-    return new Mesh(vertices, indices, materialIndex);
+    // Add mesh to metrics
+    addMeshToMetrics(vertices);
+
+    return Mesh(vertices, indices, materialIndex);
 }
 
-void Model::calculateModelMetrics()
+void Model::addMeshToMetrics(std::vector<Mesh::VertexData> vertices)
 {
-    // Initialize metrics
-    metrics.minPoint = glm::vec3(FLT_MAX);
-    metrics.maxPoint = glm::vec3(-FLT_MAX);
-    metrics.origin = glm::vec3(0.0f);
-    metrics.centroid = glm::vec3(0.0f);
-    metrics.furthest = 0.0f;
-
-    // Loop through all meshes
-    for (int i = 0; i < meshes.size(); i++)
+    // Loop through all mesh vertices
+    for (int i = 0; i < vertices.size(); i++)
     {
-        // Get current mesh
-        Mesh *mesh = meshes[i];
+        // Get current vertex
+        Mesh::VertexData vertex = vertices[i];
 
-        // Loop through all mesh vertices
-        for (int i = 0; i < mesh->vertices.size(); i++)
-        {
-            // Get current vertex
-            VertexData vertex = mesh->vertices[i];
+        // Update min and max point
+        metrics.minPoint = glm::min(metrics.minPoint, vertex.position);
+        metrics.maxPoint = glm::max(metrics.maxPoint, vertex.position);
 
-            // Update min and max point
-            metrics.minPoint = glm::min(metrics.minPoint, vertex.position);
-            metrics.maxPoint = glm::max(metrics.maxPoint, vertex.position);
+        // Add vertex position to centroid
+        metrics.centroid += vertex.position;
 
-            // Add vertex position to centroid
-            metrics.centroid += vertex.position;
-
-            // Calculate furthest distance
-            metrics.furthest = glm::max(metrics.furthest, glm::distance(glm::vec3(0.0f), vertex.position));
-        }
+        // Calculate furthest distance
+        metrics.furthest = glm::max(metrics.furthest, glm::distance(glm::vec3(0.0f), vertex.position));
     }
+}
 
+void Model::finalizeMetrics()
+{
     // Calculate models center and transform to world space
     metrics.origin = (metrics.minPoint + metrics.maxPoint) * 0.5f;
     metrics.origin = Transformation::prepareWorldPosition(metrics.origin);

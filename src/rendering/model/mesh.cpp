@@ -4,11 +4,11 @@
 
 #include "../src/rendering/texture/texture.h"
 
-Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) : vertices(vertices),
-                                                                                                     indices(indices),
-                                                                                                     vao(0),
+Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) : vao(0),
                                                                                                      vbo(0),
                                                                                                      ebo(0),
+    nVertices(vertices.size()),
+    nIndices(indices.size()),
                                                                                                      materialIndex(materialIndex)
 {
     // Generate VAO, VBO and EBO
@@ -53,6 +53,16 @@ Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, 
 void Mesh::bind()
 {
     glBindVertexArray(vao);
+}
+
+unsigned int Mesh::getVerticeCount()
+{
+    return nVertices;
+}
+
+unsigned int Mesh::getIndiceCount()
+{
+    return nIndices;
 }
 
 unsigned int Mesh::getMaterialIndex()

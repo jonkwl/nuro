@@ -75,9 +75,9 @@ void QuickGizmo::render()
         // Render each mesh
         for (int i = 0; i < model->meshes.size(); i++)
         {
-            Mesh *mesh = model->meshes[i];
-            mesh->bind();
-            glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+            Mesh mesh = model->meshes[i];
+            mesh.bind();
+            glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
         }
     }
 
