@@ -8,31 +8,30 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/utils/log.h"
 
-float BloomPass::threshold = 0.0f;
-float BloomPass::softThreshold = 0.0f;
-float BloomPass::filterRadius = 0.0f;
-unsigned int BloomPass::mipDepth = 16;
-
-glm::ivec2 BloomPass::iViewportSize = glm::ivec2(0, 0);
-glm::vec2 BloomPass::fViewportSize = glm::vec2(0.0f, 0.0f);
-glm::vec2 BloomPass::inversedViewportSize = glm::ivec2(0, 0);
-
-std::vector<BloomPass::Mip> BloomPass::mipChain = std::vector<BloomPass::Mip>();
-unsigned int BloomPass::framebuffer = 0;
-unsigned int BloomPass::prefilterOutput = 0;
-
-Shader *BloomPass::prefilterShader = nullptr;
-Shader *BloomPass::downsamplingShader = nullptr;
-Shader *BloomPass::upsamplingShader = nullptr;
-
-void BloomPass::setup()
+BloomPass::BloomPass() :
+	threshold(0.0f),
+	softThreshold(0.0f),
+	filterRadius(0.0f),
+	mipDepth(0),
+	created(false),
+	mipChain(),
+	iViewportSize(0, 0),
+	fViewportSize(0.0f, 0.0f),
+	inversedViewportSize(0, 0),
+	framebuffer(0),
+	prefilterOutput(0),
+	prefilterShader(nullptr),
+	downsamplingShader(nullptr),
+	upsamplingShader(nullptr)
 {
-	// Get initial viewport size
-	iViewportSize = glm::ivec2(Window::width, Window::height);
-	fViewportSize = glm::vec2((float)Window::width, (float)Window::height);
-	inversedViewportSize = 1.0f / fViewportSize;
+}
 
-	// Get shaders
+void BloomPass::create(unsigned int mipDepth)
+{
+	// Only create if not created
+	if (created) return;
+
+	// Load shaders
 	prefilterShader = ShaderPool::get("bloom_prefilter");
 	downsamplingShader = ShaderPool::get("bloom_downsampling");
 	upsamplingShader = ShaderPool::get("bloom_upsampling");
@@ -48,6 +47,14 @@ void BloomPass::setup()
 	// Set static upsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setInt("inputTexture", 0);
+	
+	// Set mip depth member
+	this->mipDepth = mipDepth;
+
+	// Get initial viewport size
+	iViewportSize = glm::ivec2(Window::width, Window::height);
+	fViewportSize = glm::vec2((float)Window::width, (float)Window::height);
+	inversedViewportSize = 1.0f / fViewportSize;
 
 	// Get initial viewport size
 	glm::ivec2 iMipSize = glm::ivec2((int)Window::width, (int)Window::height);
@@ -112,10 +119,39 @@ void BloomPass::setup()
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	created = true;
+}
+
+void BloomPass::destroy()
+{
+	// Only destroy if created
+	if (!created) return;
+
+	// Delete prefilter texture
+	glDeleteTextures(1, &prefilterOutput);
+	prefilterOutput = 0;
+
+	// Delete all mipmap texture
+	for (auto& mip : mipChain) {
+		glDeleteTextures(1, &mip.texture);
+	}
+
+	// Clear mipchain
+	mipChain.clear();
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &framebuffer);
+	framebuffer = 0;
+
+	created = false;
 }
 
 unsigned int BloomPass::render(unsigned int hdrInput)
 {
+	// Return input if bloom pass isn't created
+	if (!created) return hdrInput;
+
 	// Bind bloom framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 

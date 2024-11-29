@@ -8,7 +8,6 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
-#include "../src/rendering/postprocessing/bloom_pass.h"
 #include "../src/rendering/postprocessing/motion_blur_pass.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../src/rendering/core/pre_pass.h"
@@ -23,6 +22,8 @@ PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessin
 
 unsigned int PostProcessing::fbo = 0;
 unsigned int PostProcessing::output = 0;
+
+BloomPass PostProcessing::bloomPass = BloomPass();
 
 void PostProcessing::setup()
 {
@@ -65,7 +66,7 @@ void PostProcessing::setup()
 
 	// Setup post processing pipeline
 	MotionBlurPass::setup();
-	BloomPass::setup();
+	bloomPass.create(configuration.bloomMipDepth);
 }
 
 void PostProcessing::render(unsigned int hdrInput)
@@ -89,11 +90,11 @@ void PostProcessing::render(unsigned int hdrInput)
 	unsigned int BLOOM_PASS_OUTPUT = 0;
 	if (configuration.bloom)
 	{
-		BloomPass::threshold = configuration.bloomThreshold;
-		BloomPass::softThreshold = configuration.bloomSoftThreshold;
-		BloomPass::filterRadius = configuration.bloomFilterRadius;
-		BloomPass::mipDepth = configuration.bloomMipDepth;
-		BLOOM_PASS_OUTPUT = BloomPass::render(POST_PROCESSING_PIPELINE_HDR);
+		bloomPass.threshold = configuration.bloomThreshold;
+		bloomPass.softThreshold = configuration.bloomSoftThreshold;
+		bloomPass.filterRadius = configuration.bloomFilterRadius;
+		bloomPass.mipDepth = configuration.bloomMipDepth;
+		BLOOM_PASS_OUTPUT = bloomPass.render(POST_PROCESSING_PIPELINE_HDR);
 	}
 
 	// glBindFramebuffer(GL_FRAMEBUFFER, fbo); // Bind post processing framebuffer

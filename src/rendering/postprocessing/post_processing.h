@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../src/rendering/texture/texture.h"
+#include "../src/rendering/postprocessing/bloom_pass.h"
 
 class Shader;
 
@@ -57,6 +58,7 @@ public:
 	static PostProcessingConfiguration configuration; // Current post processing configuration
 
 	static unsigned int getOutput(); // Get output of last post processing render
+
 private:
 	enum TextureUnits
 	{
@@ -74,4 +76,6 @@ private:
 
 	static unsigned int fbo;	// Framebuffer
 	static unsigned int output; // Post processing output
+private:
+	static BloomPass bloomPass;
 };

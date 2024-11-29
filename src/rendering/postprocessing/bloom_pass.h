@@ -8,20 +8,26 @@ class Shader;
 class BloomPass
 {
 public:
-	static void setup();
-	static unsigned int render(unsigned int hdrInput);
+	BloomPass();
 
-	static float threshold;
-	static float softThreshold;
-	static float filterRadius;
-	static unsigned int mipDepth;
+	void create(unsigned int mipDepth);
+	void destroy();
+
+	unsigned int render(unsigned int hdrInput);
+
+	float threshold;
+	float softThreshold;
+	float filterRadius;
+	unsigned int mipDepth;
 
 private:
-	static unsigned int prefilteringPass(unsigned int hdrInput);
-	static void downsamplingPass(unsigned int hdrInput);
-	static void upsamplingPass();
+	unsigned int prefilteringPass(unsigned int hdrInput);
+	void downsamplingPass(unsigned int hdrInput);
+	void upsamplingPass();
 
 private:
+	bool created;
+
 	struct Mip
 	{
 		glm::ivec2 iSize;
@@ -29,16 +35,16 @@ private:
 		glm::vec2 inversedSize;
 		unsigned int texture;
 	};
-	static std::vector<Mip> mipChain;
+	std::vector<Mip> mipChain;
 
-	static glm::ivec2 iViewportSize;
-	static glm::vec2 fViewportSize;
-	static glm::vec2 inversedViewportSize;
+	glm::ivec2 iViewportSize;
+	glm::vec2 fViewportSize;
+	glm::vec2 inversedViewportSize;
 
-	static unsigned int framebuffer;
-	static unsigned int prefilterOutput;
+	unsigned int framebuffer;
+	unsigned int prefilterOutput;
 
-	static Shader *prefilterShader;
-	static Shader *downsamplingShader;
-	static Shader *upsamplingShader;
+	Shader *prefilterShader;
+	Shader *downsamplingShader;
+	Shader *upsamplingShader;
 };
