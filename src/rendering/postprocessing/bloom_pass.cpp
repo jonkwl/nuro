@@ -28,7 +28,6 @@ BloomPass::BloomPass() :
 
 void BloomPass::create(unsigned int mipDepth)
 {
-	// Only create if not created
 	if (created) return;
 
 	// Load shaders
@@ -114,7 +113,7 @@ void BloomPass::create(unsigned int mipDepth)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Bloom Pass", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer
@@ -125,7 +124,6 @@ void BloomPass::create(unsigned int mipDepth)
 
 void BloomPass::destroy()
 {
-	// Only destroy if created
 	if (!created) return;
 
 	// Delete prefilter texture
@@ -144,13 +142,17 @@ void BloomPass::destroy()
 	glDeleteFramebuffers(1, &framebuffer);
 	framebuffer = 0;
 
+	// Remove shaders
+	prefilterShader = nullptr;
+	downsamplingShader = nullptr;
+	upsamplingShader = nullptr;
+
 	created = false;
 }
 
 unsigned int BloomPass::render(unsigned int hdrInput)
 {
-	// Return input if bloom pass isn't created
-	if (!created) return hdrInput;
+	if (!created) return Log::printUncreatedWarning("Bloom Pass", "render");
 
 	// Bind bloom framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

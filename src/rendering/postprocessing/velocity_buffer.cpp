@@ -14,16 +14,20 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
-unsigned int VelocityBuffer::fbo = 0;
-unsigned int VelocityBuffer::rbo = 0;
-
-unsigned int VelocityBuffer::output = 0;
-unsigned int VelocityBuffer::postfilteredOutput = 0;
-
-Shader *VelocityBuffer::postfilterShader = nullptr;
-
-void VelocityBuffer::setup()
+VelocityBuffer::VelocityBuffer() :
+	created(false),
+	fbo(0),
+	rbo(0),
+	output(0),
+	postfilteredOutput(0),
+	postfilterShader(nullptr)
 {
+}
+
+void VelocityBuffer::create()
+{
+	if (created) return;
+
 	// Get postfilter shader
 	postfilterShader = ShaderPool::get("velocity_postfilter");
 
@@ -70,15 +74,43 @@ void VelocityBuffer::setup()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Velocity Buffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	created = true;
+}
+
+void VelocityBuffer::destroy()
+{
+	// Delete output texture
+	glDeleteTextures(1, &output);
+	output = 0;
+
+	// Delete postfiltered output texture
+	glDeleteTextures(1, &postfilteredOutput);
+	postfilteredOutput = 0;
+
+	// Delete renderbuffer
+	glDeleteRenderbuffers(1, &rbo);
+	rbo = 0;
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &fbo);
+	fbo = 0;
+
+	// Remove shaders
+	postfilterShader = nullptr;
+
+	created = false;
 }
 
 unsigned int VelocityBuffer::render()
 {
+	if (!created) return Log::printUncreatedWarning("Velocity Buffer", "render");
+
 	// Prepare output
 	unsigned int OUTPUT = 0;
 

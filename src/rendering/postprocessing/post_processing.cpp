@@ -8,22 +8,22 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/primitives/quad.h"
-#include "../src/rendering/postprocessing/motion_blur_pass.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/texture/texture.h"
 
-PostProcessingConfiguration PostProcessing::configuration = PostProcessingConfiguration();
+PostProcessing::Configuration PostProcessing::configuration = PostProcessing::Configuration();
 
 Shader *PostProcessing::finalPassShader = nullptr;
 
-PostProcessingConfiguration PostProcessing::defaultConfiguration = PostProcessingConfiguration();
+PostProcessing::Configuration PostProcessing::defaultConfiguration = PostProcessing::Configuration();
 
 unsigned int PostProcessing::fbo = 0;
 unsigned int PostProcessing::output = 0;
 
 BloomPass PostProcessing::bloomPass = BloomPass();
+MotionBlurPass PostProcessing::motionBlurPass = MotionBlurPass();
 
 void PostProcessing::setup()
 {
@@ -65,7 +65,7 @@ void PostProcessing::setup()
 	defaultConfiguration = configuration;
 
 	// Setup post processing pipeline
-	MotionBlurPass::setup();
+	motionBlurPass.create();
 	bloomPass.create(configuration.bloomMipDepth);
 }
 
@@ -83,7 +83,7 @@ void PostProcessing::render(unsigned int hdrInput)
 	if (configuration.motionBlur)
 	{
 		// Apply motion blur on post processing hdr input
-		POST_PROCESSING_PIPELINE_HDR = MotionBlurPass::render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
+		POST_PROCESSING_PIPELINE_HDR = motionBlurPass.render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
 	}
 
 	// Seperate bloom pass

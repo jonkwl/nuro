@@ -37,4 +37,6 @@ namespace Log
     void printProcessDone(std::string origin, std::string process);
 
     void printDepthState();
+
+    unsigned int printUncreatedWarning(std::string origin, std::string action);
 };

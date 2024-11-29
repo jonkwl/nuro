@@ -2,15 +2,23 @@
 
 #include <glm.hpp>
 
+#include "../src/rendering/postprocessing/velocity_buffer.h"
+
 class Shader;
 
 class MotionBlurPass
 {
 public:
-	static void setup();
-	static unsigned int render(unsigned int hdrInput, unsigned int depthInput);
+	MotionBlurPass();
+
+	void create();
+	void destroy();
+
+	unsigned int render(unsigned int hdrInput, unsigned int depthInput);
 
 private:
+	bool created;
+
 	enum TextureUnits
 	{
 		HDR_UNIT,
@@ -18,10 +26,12 @@ private:
 		VELOCITY_UNIT
 	};
 
-	static unsigned int fbo;
-	static unsigned int output;
+	unsigned int fbo;
+	unsigned int output;
 
-	static Shader *shader;
+	Shader *shader;
 
-	static glm::mat4 previousViewProjectionMatrix;
+	glm::mat4 previousViewProjectionMatrix;
+
+	VelocityBuffer velocityBuffer;
 };

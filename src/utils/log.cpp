@@ -110,4 +110,10 @@ namespace Log
                "GL_DEPTH_WRITEMASK: " + std::string(depthMask ? "Enabled" : "Disabled"));
     }
 
+    unsigned int printUncreatedWarning(std::string origin, std::string action)
+    {
+        _print(TextColor::White, BackgroundColor::Yellow, _getSpacing() + origin + " >>> WARNING: Trying to " + action + " but " + origin + " is not created!" + _getSpacing());
+        return 0;
+    }
+
 }

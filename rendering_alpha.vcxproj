@@ -153,7 +153,6 @@
     <ClCompile Include="src\rendering\shadows\shadow_disk.cpp" />
     <ClCompile Include="src\editor\windows\diagnostics_window.cpp" />
     <ClCompile Include="src\rendering\postprocessing\bloom_pass.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\debug_pass.cpp" />
     <ClCompile Include="src\rendering\core\pre_pass.cpp" />
     <ClCompile Include="src\rendering\material\lit\lit_material.cpp" />
     <ClCompile Include="src\rendering\material\unlit\unlit_material.cpp" />
@@ -214,7 +213,6 @@
     <ClInclude Include="src\rendering\shadows\shadow_disk.h" />
     <ClInclude Include="src\editor\windows\diagnostics_window.h" />
     <ClInclude Include="src\rendering\postprocessing\bloom_pass.h" />
-    <ClInclude Include="src\rendering\postprocessing\debug_pass.h" />
     <ClInclude Include="src\rendering\core\pre_pass.h" />
     <ClInclude Include="src\editor\IconsFontAwesome6.h" />
     <ClInclude Include="src\rendering\skybox\cubemap.h" />

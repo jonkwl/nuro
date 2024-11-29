@@ -120,9 +120,6 @@
     <ClCompile Include="src\rendering\primitives\quad.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\debug_pass.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\rendering\postprocessing\bloom_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -294,9 +291,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\primitives\quad.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\debug_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\postprocessing\bloom_pass.h">

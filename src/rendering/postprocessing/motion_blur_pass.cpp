@@ -10,17 +10,20 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/postprocessing/post_processing.h"
-#include "../src/rendering/postprocessing/velocity_buffer.h"
 
-unsigned int MotionBlurPass::fbo = 0;
-unsigned int MotionBlurPass::output = 0;
-
-Shader *MotionBlurPass::shader = nullptr;
-
-glm::mat4 MotionBlurPass::previousViewProjectionMatrix = glm::mat4(1.0f);
-
-void MotionBlurPass::setup()
+MotionBlurPass::MotionBlurPass() :
+	fbo(0),
+	output(0),
+	shader(nullptr),
+	previousViewProjectionMatrix(glm::mat4(1.0f)),
+	velocityBuffer()
 {
+}
+
+void MotionBlurPass::create()
+{
+	if (created) return;
+
 	// Get motion blur pass shader
 	shader = ShaderPool::get("motion_blur_pass");
 
@@ -56,23 +59,45 @@ void MotionBlurPass::setup()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating post processing framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Motion Blur Pass", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Setup velocity buffer
-	VelocityBuffer::setup();
+	velocityBuffer.create();
+
+	created = true;
+}
+
+void MotionBlurPass::destroy()
+{
+	if (!created) return;
+
+	// Delete output texture
+	glDeleteTextures(1, &output);
+	output = 0;
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &fbo);
+	fbo = 0; 
+
+	// Remove shader
+	shader = nullptr;
+
+	created = false;
 }
 
 unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInput)
 {
+	if (!created) return Log::printUncreatedWarning("Motion Blur Pass", "render");
+
 	// Render velocity buffer if object motion blur is active
 	unsigned int VELOCITY_BUFFER = 0;
 	if (PostProcessing::configuration.motionBlurObject)
 	{
-		VELOCITY_BUFFER = VelocityBuffer::render();
+		VELOCITY_BUFFER = velocityBuffer.render();
 	}
 
 	// Bind framebuffer
