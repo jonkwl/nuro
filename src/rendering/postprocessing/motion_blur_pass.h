@@ -17,8 +17,6 @@ public:
 	unsigned int render(unsigned int hdrInput, unsigned int depthInput);
 
 private:
-	bool created;
-
 	enum TextureUnits
 	{
 		HDR_UNIT,

@@ -12,7 +12,6 @@ BloomPass::BloomPass() : threshold(0.0f),
 						 softThreshold(0.0f),
 						 filterRadius(0.0f),
 						 mipDepth(0),
-						 created(false),
 						 mipChain(),
 						 iViewportSize(0, 0),
 						 fViewportSize(0.0f, 0.0f),
@@ -27,9 +26,6 @@ BloomPass::BloomPass() : threshold(0.0f),
 
 void BloomPass::create(unsigned int mipDepth)
 {
-	if (created)
-		return;
-
 	// Load shaders
 	prefilterShader = ShaderPool::get("bloom_prefilter");
 	downsamplingShader = ShaderPool::get("bloom_downsampling");
@@ -118,15 +114,10 @@ void BloomPass::create(unsigned int mipDepth)
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	created = true;
 }
 
 void BloomPass::destroy()
 {
-	if (!created)
-		return;
-
 	// Delete prefilter texture
 	glDeleteTextures(1, &prefilterOutput);
 	prefilterOutput = 0;
@@ -148,15 +139,10 @@ void BloomPass::destroy()
 	prefilterShader = nullptr;
 	downsamplingShader = nullptr;
 	upsamplingShader = nullptr;
-
-	created = false;
 }
 
 unsigned int BloomPass::render(unsigned int hdrInput)
 {
-	if (!created)
-		return Log::printUncreatedWarning("Bloom Pass", "render");
-
 	// Bind bloom framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 

@@ -26,8 +26,6 @@ private:
 	void upsamplingPass();
 
 private:
-	bool created;
-
 	struct Mip
 	{
 		glm::ivec2 iSize;

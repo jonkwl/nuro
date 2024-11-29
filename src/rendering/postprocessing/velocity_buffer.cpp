@@ -14,8 +14,7 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
-VelocityBuffer::VelocityBuffer() : created(false),
-								   fbo(0),
+VelocityBuffer::VelocityBuffer() : fbo(0),
 								   rbo(0),
 								   output(0),
 								   postfilteredOutput(0),
@@ -25,9 +24,6 @@ VelocityBuffer::VelocityBuffer() : created(false),
 
 void VelocityBuffer::create()
 {
-	if (created)
-		return;
-
 	// Get postfilter shader
 	postfilterShader = ShaderPool::get("velocity_postfilter");
 
@@ -79,8 +75,6 @@ void VelocityBuffer::create()
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	created = true;
 }
 
 void VelocityBuffer::destroy()
@@ -103,15 +97,10 @@ void VelocityBuffer::destroy()
 
 	// Remove shaders
 	postfilterShader = nullptr;
-
-	created = false;
 }
 
 unsigned int VelocityBuffer::render()
 {
-	if (!created)
-		return Log::printUncreatedWarning("Velocity Buffer", "render");
-
 	// Prepare output
 	unsigned int OUTPUT = 0;
 

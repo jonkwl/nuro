@@ -121,7 +121,7 @@ void defaultScene() {
 	smearedWall2->meshRenderer->model = smearedWallModel;
 	smearedWall2->meshRenderer->materials.push_back(smearedWallMaterial);
 	smearedWall2->transform.position = glm::vec3(23.0f, -1.0f, 10.0f);
-	smearedWall2->transform.rotation = glm::vec3(0.0, 90.0f, 0.0f);
+	smearedWall2->transform.rotation = glm::vec3(0.0, 60.0f, 0.0f);
 	smearedWall2->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
 	Texture mannequinAlbedo = Texture::load("./user/assets/textures/mannequin_albedo.jpg", TextureType::ALBEDO);

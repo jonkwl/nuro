@@ -20,8 +20,6 @@ public:
 	unsigned int getOutput(); // Get output of last post processing render
 
 private:
-	bool created;
-
 	enum TextureUnits
 	{
 		HDR_UNIT,

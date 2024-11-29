@@ -17,8 +17,6 @@ private:
 	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:
-	bool created;
-
 	unsigned int fbo; // Framebuffer
 	unsigned int rbo; // Renderbuffer
 

@@ -21,9 +21,6 @@ MotionBlurPass::MotionBlurPass() : fbo(0),
 
 void MotionBlurPass::create()
 {
-	if (created)
-		return;
-
 	// Get motion blur pass shader
 	shader = ShaderPool::get("motion_blur_pass");
 
@@ -67,15 +64,10 @@ void MotionBlurPass::create()
 
 	// Setup velocity buffer
 	velocityBuffer.create();
-
-	created = true;
 }
 
 void MotionBlurPass::destroy()
 {
-	if (!created)
-		return;
-
 	// Delete output texture
 	glDeleteTextures(1, &output);
 	output = 0;
@@ -86,15 +78,10 @@ void MotionBlurPass::destroy()
 
 	// Remove shader
 	shader = nullptr;
-
-	created = false;
 }
 
 unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInput)
 {
-	if (!created)
-		return Log::printUncreatedWarning("Motion Blur Pass", "render");
-
 	// Render velocity buffer if object motion blur is active
 	unsigned int VELOCITY_BUFFER = 0;
 	if (PostProcessing::configuration.motionBlurObject)

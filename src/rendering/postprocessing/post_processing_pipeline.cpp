@@ -14,8 +14,7 @@
 #include "../src/rendering/texture/texture.h"
 #include "../src/utils/log.h"
 
-PostProcessingPipeline::PostProcessingPipeline() : created(false),
-												   fbo(0),
+PostProcessingPipeline::PostProcessingPipeline() : fbo(0),
 												   output(0),
 												   finalPassShader(nullptr),
 												   configuration(PostProcessing::configuration),
@@ -26,9 +25,6 @@ PostProcessingPipeline::PostProcessingPipeline() : created(false),
 
 void PostProcessingPipeline::create()
 {
-	if (created)
-		return;
-
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -66,15 +62,10 @@ void PostProcessingPipeline::create()
 	// Setup post processing pipeline
 	motionBlurPass.create();
 	bloomPass.create(configuration.bloomMipDepth);
-
-	created = true;
 }
 
 void PostProcessingPipeline::destroy()
 {
-	if (!created)
-		return;
-
 	// Delete output texture
 	glDeleteTextures(1, &output);
 	output = 0;
@@ -85,18 +76,10 @@ void PostProcessingPipeline::destroy()
 
 	// Remove shader
 	finalPassShader = nullptr;
-
-	created = false;
 }
 
 void PostProcessingPipeline::render(unsigned int hdrInput)
 {
-	if (!created)
-	{
-		Log::printUncreatedWarning("Post Processing Pipeline", "render");
-		return;
-	}
-
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
 
