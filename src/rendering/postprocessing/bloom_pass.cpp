@@ -6,16 +6,20 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/primitives/quad.h"
-#include "../src/rendering/postprocessing/bloom/bloom_frame.h"
-
-glm::ivec2 BloomPass::iViewportSize = glm::ivec2(0, 0);
-glm::vec2 BloomPass::fViewportSize = glm::vec2(0.0f, 0.0f);
-glm::vec2 BloomPass::inversedViewportSize = glm::ivec2(0, 0);
+#include "../src/utils/log.h"
 
 float BloomPass::threshold = 0.0f;
 float BloomPass::softThreshold = 0.0f;
 float BloomPass::filterRadius = 0.0f;
 unsigned int BloomPass::mipDepth = 16;
+
+glm::ivec2 BloomPass::iViewportSize = glm::ivec2(0, 0);
+glm::vec2 BloomPass::fViewportSize = glm::vec2(0.0f, 0.0f);
+glm::vec2 BloomPass::inversedViewportSize = glm::ivec2(0, 0);
+
+std::vector<BloomPass::Mip> BloomPass::mipChain = std::vector<BloomPass::Mip>();
+unsigned int BloomPass::framebuffer = 0;
+unsigned int BloomPass::prefilterOutput = 0;
 
 Shader *BloomPass::prefilterShader = nullptr;
 Shader *BloomPass::downsamplingShader = nullptr;
@@ -33,9 +37,6 @@ void BloomPass::setup()
 	downsamplingShader = ShaderPool::get("bloom_downsampling");
 	upsamplingShader = ShaderPool::get("bloom_upsampling");
 
-	// Setup bloom frame
-	BloomFrame::setup(mipDepth);
-
 	// Set static prefilter uniforms
 	prefilterShader->bind();
 	prefilterShader->setInt("inputTexture", 0);
@@ -47,12 +48,76 @@ void BloomPass::setup()
 	// Set static upsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setInt("inputTexture", 0);
+
+	// Get initial viewport size
+	glm::ivec2 iMipSize = glm::ivec2((int)Window::width, (int)Window::height);
+	glm::vec2 fMipSize = glm::vec2((float)Window::width, (float)Window::height);
+
+	// Generate framebuffer
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	// Generate prefilter texture
+	glGenTextures(1, &prefilterOutput);
+	glBindTexture(GL_TEXTURE_2D, prefilterOutput);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, nullptr);
+
+	// Set prefilter texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Generate all bloom mips
+	for (unsigned int i = 0; i < mipDepth; i++)
+	{
+		BloomPass::Mip mip;
+
+		// Halve mips size
+		iMipSize /= 2;
+		fMipSize *= 0.5f;
+
+		mip.iSize = iMipSize;
+		mip.fSize = fMipSize;
+		mip.inversedSize = 1.0f / fMipSize;
+
+		// Generate mips texture
+		glGenTextures(1, &mip.texture);
+		glBindTexture(GL_TEXTURE_2D, mip.texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, iMipSize.x, iMipSize.y, 0, GL_RGBA, GL_FLOAT, nullptr);
+
+		// Set mip textures parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		// Add generated mip to bloom mip chain
+		mipChain.emplace_back(mip);
+	}
+
+	// Set framebuffer attachments, set first mip to be the color attachment
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mipChain[0].texture, 0);
+
+	unsigned int fboAttachments[1] = {
+		GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, fboAttachments);
+
+	// Check for framebuffer errors
+	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		Log::printError("Framebuffer", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
+	}
+
+	// Unbind framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int BloomPass::render(unsigned int hdrInput)
 {
 	// Bind bloom framebuffer
-	BloomFrame::bind();
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	// Perform prefiltering pass
 	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(hdrInput);
@@ -68,14 +133,11 @@ unsigned int BloomPass::render(unsigned int hdrInput)
 	glViewport(0, 0, iViewportSize.x, iViewportSize.y);
 
 	// Return texture of first bloom mip (the texture being rendered to)
-	return BloomFrame::getMipChain()[0].texture;
+	return mipChain[0].texture;
 }
 
 unsigned int BloomPass::prefilteringPass(unsigned int hdrInput)
 {
-	// Get target texture for prefiltering pass
-	unsigned int prefilterTarget = BloomFrame::getPrefilterTexture();
-
 	// Set prefilter uniforms
 	prefilterShader->bind();
 	prefilterShader->setFloat("threshold", threshold);
@@ -86,21 +148,18 @@ unsigned int BloomPass::prefilteringPass(unsigned int hdrInput)
 	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
 	// Set prefilter target texture as framebuffer render target
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, prefilterTarget, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, prefilterOutput, 0);
 
 	// Bind and render to quad
 	Quad::bind();
 	Quad::render();
 
 	// Return prefiltering pass target (now the output after rendering)
-	return prefilterTarget;
+	return prefilterOutput;
 }
 
 void BloomPass::downsamplingPass(unsigned int hdrInput)
 {
-	// Get bloom mip chain
-	const std::vector<BloomMip> &mipChain = BloomFrame::getMipChain();
-
 	// Set downsampling uniforms
 	downsamplingShader->bind();
 	downsamplingShader->setVec2("inversedResolution", inversedViewportSize);
@@ -113,7 +172,7 @@ void BloomPass::downsamplingPass(unsigned int hdrInput)
 	for (int i = 0; i < mipChain.size(); i++)
 	{
 		// Get current mip
-		const BloomMip &mip = mipChain[i];
+		const BloomPass::Mip &mip = mipChain[i];
 
 		// Set viewport and framebuffer rendering target according to current mip
 		glViewport(0, 0, mip.fSize.x, mip.fSize.y);
@@ -133,9 +192,6 @@ void BloomPass::downsamplingPass(unsigned int hdrInput)
 
 void BloomPass::upsamplingPass()
 {
-	// Get bloom mip chain
-	const std::vector<BloomMip> &mipChain = BloomFrame::getMipChain();
-
 	// Get viewport aspect ratio
 	const float aspectRatio = fViewportSize.x / fViewportSize.y;
 
@@ -153,8 +209,8 @@ void BloomPass::upsamplingPass()
 	for (int i = mipChain.size() - 1; i > 0; i--)
 	{
 		// Get current mip and target mip for current downsampling iteration
-		const BloomMip &mip = mipChain[i];
-		const BloomMip &targetMip = mipChain[i - 1];
+		const BloomPass::Mip &mip = mipChain[i];
+		const BloomPass::Mip &targetMip = mipChain[i - 1];
 
 		// Set input texture for next render to be current mips texture
 		glActiveTexture(GL_TEXTURE0);

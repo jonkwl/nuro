@@ -235,7 +235,7 @@ void defaultScene() {
 	std::vector<IMaterial*> audiMats(100, audiMaterial);
 	audi->meshRenderer->materials = audiMats;*/
 
-	for (int i = 0; i < 40; i++) {
+	/*for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
 		x = new Entity();
 		x->meshRenderer->model = mannequinModel;
@@ -245,7 +245,7 @@ void defaultScene() {
 		x->transform.scale = glm::vec3(1.4f);
 
 		x->transform.position.x += 3.0f * (i + 1);
-	}
+	}*/
 }
 
 std::vector<Entity*> cubes = std::vector<Entity*>();

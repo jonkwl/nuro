@@ -120,13 +120,10 @@
     <ClCompile Include="src\rendering\primitives\quad.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\debug\debug_pass.cpp">
+    <ClCompile Include="src\rendering\postprocessing\debug_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\bloom\bloom_frame.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\bloom\bloom_pass.cpp">
+    <ClCompile Include="src\rendering\postprocessing\bloom_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\windows\post_processing_window.cpp">
@@ -177,10 +174,10 @@
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\motionblur\motion_blur_pass.cpp">
+    <ClCompile Include="src\rendering\postprocessing\motion_blur_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\motionblur\velocity_buffer.cpp">
+    <ClCompile Include="src\rendering\postprocessing\velocity_buffer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\ssao\ssao_pass.cpp">
@@ -299,13 +296,10 @@
     <ClInclude Include="src\rendering\primitives\quad.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\debug\debug_pass.h">
+    <ClInclude Include="src\rendering\postprocessing\debug_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\bloom\bloom_frame.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\bloom\bloom_pass.h">
+    <ClInclude Include="src\rendering\postprocessing\bloom_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\windows\post_processing_window.h">
@@ -362,10 +356,10 @@
     <ClInclude Include="src\rendering\culling\bounding_volume.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\motionblur\motion_blur_pass.h">
+    <ClInclude Include="src\rendering\postprocessing\motion_blur_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\motionblur\velocity_buffer.h">
+    <ClInclude Include="src\rendering\postprocessing\velocity_buffer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\ssao\ssao_pass.h">

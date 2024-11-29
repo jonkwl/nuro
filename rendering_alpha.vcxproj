@@ -136,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\rendering\ssao\ssao_pass.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\motionblur\motion_blur_pass.cpp" />
+    <ClCompile Include="src\rendering\postprocessing\motion_blur_pass.cpp" />
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp" />
     <ClCompile Include="src\rendering\core\mesh_renderer.cpp" />
@@ -152,9 +152,8 @@
     <ClCompile Include="imgui\implot_items.cpp" />
     <ClCompile Include="src\rendering\shadows\shadow_disk.cpp" />
     <ClCompile Include="src\editor\windows\diagnostics_window.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\bloom\bloom_pass.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\bloom\bloom_frame.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\debug\debug_pass.cpp" />
+    <ClCompile Include="src\rendering\postprocessing\bloom_pass.cpp" />
+    <ClCompile Include="src\rendering\postprocessing\debug_pass.cpp" />
     <ClCompile Include="src\rendering\core\pre_pass.cpp" />
     <ClCompile Include="src\rendering\material\lit\lit_material.cpp" />
     <ClCompile Include="src\rendering\material\unlit\unlit_material.cpp" />
@@ -190,11 +189,11 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\rendering\shader\shader.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\motionblur\velocity_buffer.cpp" />
+    <ClCompile Include="src\rendering\postprocessing\velocity_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\ssao\ssao_pass.h" />
-    <ClInclude Include="src\rendering\postprocessing\motionblur\motion_blur_pass.h" />
+    <ClInclude Include="src\rendering\postprocessing\motion_blur_pass.h" />
     <ClInclude Include="src\rendering\culling\bounding_volume.h" />
     <ClInclude Include="src\rendering\gizmos\quick_gizmo.h" />
     <ClInclude Include="src\rendering\core\mesh_renderer.h" />
@@ -212,9 +211,8 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\rendering\shadows\shadow_disk.h" />
     <ClInclude Include="src\editor\windows\diagnostics_window.h" />
-    <ClInclude Include="src\rendering\postprocessing\bloom\bloom_pass.h" />
-    <ClInclude Include="src\rendering\postprocessing\bloom\bloom_frame.h" />
-    <ClInclude Include="src\rendering\postprocessing\debug\debug_pass.h" />
+    <ClInclude Include="src\rendering\postprocessing\bloom_pass.h" />
+    <ClInclude Include="src\rendering\postprocessing\debug_pass.h" />
     <ClInclude Include="src\rendering\core\pre_pass.h" />
     <ClInclude Include="src\editor\IconsFontAwesome6.h" />
     <ClInclude Include="src\rendering\skybox\cubemap.h" />
@@ -252,7 +250,7 @@
     <ClInclude Include="src\utils\iohandler.h" />
     <ClInclude Include="src\rendering\shader\shader.h" />
     <ClInclude Include="src\rendering\texture\texture.h" />
-    <ClInclude Include="src\rendering\postprocessing\motionblur\velocity_buffer.h" />
+    <ClInclude Include="src\rendering\postprocessing\velocity_buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\default\default.jpg" />
