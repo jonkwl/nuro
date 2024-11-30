@@ -83,7 +83,7 @@ unsigned int ForwardPass::render()
 	int width = Window::width;
 	int height = Window::height;
 
-	std::vector<Entity *> entityLinks = Runtime::entityLinks;
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);

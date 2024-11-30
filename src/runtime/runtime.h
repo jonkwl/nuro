@@ -20,22 +20,22 @@ public:
 	static void TERMINATE(); // Terminate and exit
 
 	// Entity system
-	static void linkEntity(Entity *entity); // Links a given entity with the runtime (creating a runtime entity)
+	static void linkEntity(Entity* entity); // Links a given entity with the runtime (creating a runtime entity)
 
 	// All default assets
-	static UnlitMaterial *defaultMaterial;
+	static UnlitMaterial* defaultMaterial;
 	static Skybox defaultSkybox;
 
 	// Default shaders
-	static Shader *prePassShader;
-	static Shader *shadowPassShader;
-	static Shader *velocityPassShader;
+	static Shader* prePassShader;
+	static Shader* shadowPassShader;
+	static Shader* velocityPassShader;
 
 	// Camera settings
 	static void useCamera(Camera camera);
-	static Camera &getCameraRendering(); // Returns camera actually being rendered
-	static Camera &getActiveCamera();	 // Returns camera selected by user (active camera)
-	static Camera &getInspectorCamera();
+	static Camera& getCameraRendering(); // Returns camera actually being rendered
+	static Camera& getActiveCamera();	 // Returns camera selected by user (active camera)
+	static Camera& getInspectorCamera();
 
 	static float directionalIntensity;
 	static glm::vec3 directionalColor;
@@ -68,11 +68,11 @@ public:
 	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
 
 	// Shadow settings
-	static ShadowDisk *mainShadowDisk; // Default shadow disk
-	static ShadowMap *mainShadowMap;   // Default shadow map
+	static ShadowDisk* mainShadowDisk; // Default shadow disk
+	static ShadowMap* mainShadowMap;   // Default shadow map
 
 	// Entity links
-	static std::vector<Entity *> entityLinks; // All entities that will be processed by the runtime
+	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
 
 	// Diagnostics
 	static unsigned int currentDrawCalls;

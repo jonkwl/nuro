@@ -6,9 +6,9 @@
 #include "../../utils/log.h"
 #include "../../utils/iohandler.h"
 
-Shader::Shader(const char *vertex_src, const char *fragment_src, bool &compiled, const std::string name) : id(0),
-																										   shaderName(name),
-																										   uniformCache()
+Shader::Shader(const char* vertex_src, const char* fragment_src, bool& compiled, const std::string name) : id(0),
+shaderName(name),
+uniformCache()
 {
 	shaderName = name;
 
@@ -53,40 +53,40 @@ void Shader::bind()
 	glUseProgram(id);
 }
 
-void Shader::setBool(const std::string &name, bool value)
+void Shader::setBool(const std::string& name, bool value)
 {
 	glUniform1i(getUniformLocation(name), (int)value);
 }
-void Shader::setInt(const std::string &name, int value)
+void Shader::setInt(const std::string& name, int value)
 {
 	glUniform1i(getUniformLocation(name), value);
 }
-void Shader::setFloat(const std::string &name, float value)
+void Shader::setFloat(const std::string& name, float value)
 {
 	glUniform1f(getUniformLocation(name), value);
 }
-void Shader::setVec2(const std::string &name, glm::vec2 value)
+void Shader::setVec2(const std::string& name, glm::vec2 value)
 {
 	glUniform2f(getUniformLocation(name), value.x, value.y);
 }
-void Shader::setVec3(const std::string &name, glm::vec3 value)
+void Shader::setVec3(const std::string& name, glm::vec3 value)
 {
 	glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
 }
-void Shader::setVec4(const std::string &name, glm::vec4 value)
+void Shader::setVec4(const std::string& name, glm::vec4 value)
 {
 	glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
 }
-void Shader::setMatrix3(const std::string &name, glm::mat3 value)
+void Shader::setMatrix3(const std::string& name, glm::mat3 value)
 {
 	glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
-void Shader::setMatrix4(const std::string &name, glm::mat4 value)
+void Shader::setMatrix4(const std::string& name, glm::mat4 value)
 {
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-int Shader::getUniformLocation(const std::string &name)
+int Shader::getUniformLocation(const std::string& name)
 {
 	if (uniformCache.find(name) != uniformCache.end())
 	{

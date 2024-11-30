@@ -33,9 +33,9 @@ private:
 	unsigned int fbo;	 // Framebuffer
 	unsigned int output; // Post processing output
 
-	Shader *finalPassShader; // Post processing final pass shader
+	Shader* finalPassShader; // Post processing final pass shader
 
-	PostProcessing::Configuration &configuration; // Configuration
+	PostProcessing::Configuration& configuration; // Configuration
 
 private:
 	MotionBlurPass motionBlurPass;

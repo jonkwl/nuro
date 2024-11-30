@@ -37,10 +37,10 @@ private:
 
 	void resolveModel(std::string path);
 
-	void processNode(aiNode *node, const aiScene *scene);
-	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+	void processNode(aiNode* node, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 
-	std::vector<aiMaterial *> modelMaterials;
+	std::vector<aiMaterial*> modelMaterials;
 
 	// Model metrics
 	Metrics metrics;

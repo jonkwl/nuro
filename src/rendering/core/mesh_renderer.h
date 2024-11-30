@@ -10,13 +10,13 @@ class Entity;
 class MeshRenderer
 {
 public:
-	explicit MeshRenderer(Entity *parentEntity);
+	explicit MeshRenderer(Entity* parentEntity);
 
-	Model *model; // Linked model, rendering target
+	Model* model; // Linked model, rendering target
 
-	BoundingVolume *volume; // Bounding volume for the mesh renderer
+	BoundingVolume* volume; // Bounding volume for the mesh renderer
 
-	std::vector<IMaterial *> materials; // Container for mesh renderers materials
+	std::vector<IMaterial*> materials; // Container for mesh renderers materials
 
 	// Object related post processing settings
 	bool useMotionBlur;		   // Enable object motion blur for mesh renderer
@@ -44,7 +44,7 @@ private:
 
 	glm::mat4 previousModelMatrix; // MVP matrix cache of previous frame (only needed for velocity pass, set after velocity pass)
 
-	Entity *parentEntity; // Linked parent entity
+	Entity* parentEntity; // Linked parent entity
 
 	void render(unsigned int nElements); // Issues draw call
 

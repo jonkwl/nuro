@@ -9,18 +9,18 @@
 #include "../src/utils/log.h"
 
 BloomPass::BloomPass() : threshold(0.0f),
-						 softThreshold(0.0f),
-						 filterRadius(0.0f),
-						 mipDepth(0),
-						 mipChain(),
-						 iViewportSize(0, 0),
-						 fViewportSize(0.0f, 0.0f),
-						 inversedViewportSize(0, 0),
-						 framebuffer(0),
-						 prefilterOutput(0),
-						 prefilterShader(nullptr),
-						 downsamplingShader(nullptr),
-						 upsamplingShader(nullptr)
+softThreshold(0.0f),
+filterRadius(0.0f),
+mipDepth(0),
+mipChain(),
+iViewportSize(0, 0),
+fViewportSize(0.0f, 0.0f),
+inversedViewportSize(0, 0),
+framebuffer(0),
+prefilterOutput(0),
+prefilterShader(nullptr),
+downsamplingShader(nullptr),
+upsamplingShader(nullptr)
 {
 }
 
@@ -102,7 +102,7 @@ void BloomPass::create(unsigned int mipDepth)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mipChain[0].texture, 0);
 
 	unsigned int fboAttachments[1] = {
-		GL_COLOR_ATTACHMENT0};
+		GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, fboAttachments);
 
 	// Check for framebuffer errors
@@ -123,7 +123,7 @@ void BloomPass::destroy()
 	prefilterOutput = 0;
 
 	// Delete all mipmap texture
-	for (auto &mip : mipChain)
+	for (auto& mip : mipChain)
 	{
 		glDeleteTextures(1, &mip.texture);
 	}
@@ -199,7 +199,7 @@ void BloomPass::downsamplingPass(unsigned int hdrInput)
 	for (int i = 0; i < mipChain.size(); i++)
 	{
 		// Get current mip
-		const BloomPass::Mip &mip = mipChain[i];
+		const BloomPass::Mip& mip = mipChain[i];
 
 		// Set viewport and framebuffer rendering target according to current mip
 		glViewport(0, 0, mip.fSize.x, mip.fSize.y);
@@ -236,8 +236,8 @@ void BloomPass::upsamplingPass()
 	for (int i = mipChain.size() - 1; i > 0; i--)
 	{
 		// Get current mip and target mip for current downsampling iteration
-		const BloomPass::Mip &mip = mipChain[i];
-		const BloomPass::Mip &targetMip = mipChain[i - 1];
+		const BloomPass::Mip& mip = mipChain[i];
+		const BloomPass::Mip& targetMip = mipChain[i - 1];
 
 		// Set input texture for next render to be current mips texture
 		glActiveTexture(GL_TEXTURE0);

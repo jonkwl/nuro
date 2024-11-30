@@ -8,5 +8,5 @@ public:
 	virtual ~IMaterial() {}
 
 	virtual void bind() {}
-	virtual Shader *getShader() { return nullptr; }
+	virtual Shader* getShader() { return nullptr; }
 };

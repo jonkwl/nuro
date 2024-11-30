@@ -12,10 +12,10 @@
 #include "../src/rendering/postprocessing/post_processing.h"
 
 MotionBlurPass::MotionBlurPass() : fbo(0),
-								   output(0),
-								   shader(nullptr),
-								   previousViewProjectionMatrix(glm::mat4(1.0f)),
-								   velocityBuffer()
+output(0),
+shader(nullptr),
+previousViewProjectionMatrix(glm::mat4(1.0f)),
+velocityBuffer()
 {
 }
 

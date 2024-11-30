@@ -9,7 +9,7 @@ public:
 	UnlitMaterial();
 
 	void bind();
-	Shader *getShader();
+	Shader* getShader();
 
 	glm::vec4 baseColor;
 	glm::vec2 tiling;
@@ -19,5 +19,5 @@ public:
 	Texture texture;
 
 private:
-	Shader *shader;
+	Shader* shader;
 };

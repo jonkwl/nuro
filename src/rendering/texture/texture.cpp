@@ -48,7 +48,7 @@ Texture Texture::load(std::string path, TextureType type)
 	// Load image data
 	int width, height, channels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
 		Log::printError("Texture", "Couldn't load texture data");

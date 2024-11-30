@@ -59,7 +59,7 @@ public:
 	static float defaultSpacing;
 	static Margin defaultMargin;
 
-	static void beginFlex(const char *name, FlexType type, float width = defaultWidth, float height = defaultHeight, Justification justification = defaultJustification, Alignment alignment = defaultAlignment, float spacing = defaultSpacing, Margin margin = defaultMargin);
+	static void beginFlex(const char* name, FlexType type, float width = defaultWidth, float height = defaultHeight, Justification justification = defaultJustification, Alignment alignment = defaultAlignment, float spacing = defaultSpacing, Margin margin = defaultMargin);
 	static void endFlex();
 
 private:

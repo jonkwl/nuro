@@ -13,23 +13,23 @@
 #include "../src/utils/log.h"
 
 LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
-							 tiling(1.0f, 1.0f),
-							 offset(0.0f, 0.0f),
-							 roughness(0.0f),
-							 metallic(0.0f),
-							 emission(false),
-							 emissionIntensity(0.0f),
-							 emissionColor(1.0f, 1.0f, 1.0f),
-							 enableAlbedoMap(false),
-							 albedoMap(),
-							 enableNormalMap(false),
-							 normalMap(),
-							 enableRoughnessMap(false),
-							 roughnessMap(),
-							 enableMetallicMap(false),
-							 metallicMap(),
-							 enableEmissionMap(false),
-							 emissionMap()
+tiling(1.0f, 1.0f),
+offset(0.0f, 0.0f),
+roughness(0.0f),
+metallic(0.0f),
+emission(false),
+emissionIntensity(0.0f),
+emissionColor(1.0f, 1.0f, 1.0f),
+enableAlbedoMap(false),
+albedoMap(),
+enableNormalMap(false),
+normalMap(),
+enableRoughnessMap(false),
+roughnessMap(),
+enableMetallicMap(false),
+metallicMap(),
+enableEmissionMap(false),
+emissionMap()
 {
 	shader->bind();
 	syncStaticUniforms();
@@ -119,7 +119,7 @@ void LitMaterial::bind()
 	}
 }
 
-Shader *LitMaterial::getShader()
+Shader* LitMaterial::getShader()
 {
 	return shader;
 }

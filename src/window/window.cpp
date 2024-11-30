@@ -1,6 +1,6 @@
 #include "window.h"
 
-GLFWwindow *Window::glfw = nullptr;
+GLFWwindow* Window::glfw = nullptr;
 
 int Window::width = 1200;
 int Window::height = 800;
@@ -22,7 +22,7 @@ void Window::setCursor(GLenum cusor_mode)
 	glfwSetInputMode(Window::glfw, GLFW_CURSOR, cursorMode);
 }
 
-void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
+void Window::framebuffer_size_callback(GLFWwindow* window, int _width, int _height)
 {
 	width = _width;
 	height = _height;

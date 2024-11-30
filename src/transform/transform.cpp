@@ -4,8 +4,8 @@
 #include "../src/entity/entity.h"
 
 Transform::Transform() : position(glm::vec3(0.0f)),
-						 rotation(glm::vec3(0.0f)),
-						 scale(glm::vec3(1.0f))
+rotation(glm::vec3(0.0f)),
+scale(glm::vec3(1.0f))
 {
 }
 
@@ -74,7 +74,7 @@ void Transform::lookAt(glm::vec3 point)
 	rotation = glm::vec3(pitch, yaw, 0.0f);
 }
 
-void Transform::lookAt(Entity *entity)
+void Transform::lookAt(Entity* entity)
 {
 	lookAt(entity->transform.position);
 }

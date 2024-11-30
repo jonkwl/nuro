@@ -43,14 +43,14 @@
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/skybox/cubemap.h"
 
-std::vector<Entity *> Runtime::entityLinks;
+std::vector<Entity*> Runtime::entityLinks;
 
-UnlitMaterial *Runtime::defaultMaterial = nullptr;
+UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Skybox Runtime::defaultSkybox;
 
-Shader *Runtime::prePassShader = nullptr;
-Shader *Runtime::shadowPassShader = nullptr;
-Shader *Runtime::velocityPassShader = nullptr;
+Shader* Runtime::prePassShader = nullptr;
+Shader* Runtime::shadowPassShader = nullptr;
+Shader* Runtime::velocityPassShader = nullptr;
 
 Camera Runtime::renderCamera;
 Camera Runtime::activeCamera;
@@ -77,8 +77,8 @@ bool Runtime::showDiagnostics = true;
 bool Runtime::skyboxEnabled = true;
 Skybox& Runtime::selectedSkybox = Runtime::defaultSkybox;
 
-ShadowDisk *Runtime::mainShadowDisk = nullptr;
-ShadowMap *Runtime::mainShadowMap = nullptr;
+ShadowDisk* Runtime::mainShadowDisk = nullptr;
+ShadowMap* Runtime::mainShadowMap = nullptr;
 
 unsigned int Runtime::currentDrawCalls = 0;
 unsigned int Runtime::currentVertices = 0;
@@ -106,7 +106,7 @@ PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(
 
 bool skipSkyboxLoad = false; // tmp
 
-void Runtime::linkEntity(Entity *entity)
+void Runtime::linkEntity(Entity* entity)
 {
 	entityLinks.push_back(entity);
 }
@@ -116,22 +116,22 @@ void Runtime::useCamera(Camera camera)
 	activeCamera = camera;
 }
 
-Camera &Runtime::getCameraRendering()
+Camera& Runtime::getCameraRendering()
 {
 	return renderCamera;
 }
 
-Camera &Runtime::getActiveCamera()
+Camera& Runtime::getActiveCamera()
 {
 	return activeCamera;
 }
 
-Camera &Runtime::getInspectorCamera()
+Camera& Runtime::getInspectorCamera()
 {
 	return inspectorCamera;
 }
 
-void glfw_error_callback(int error, const char *description)
+void glfw_error_callback(int error, const char* description)
 {
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);
 }
@@ -162,8 +162,8 @@ int Runtime::START_LOOP()
 	// Check for fullscreen
 	if (Window::fullscreen)
 	{
-		GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode *mode = glfwGetVideoMode(primaryMonitor);
+		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
 
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -188,7 +188,7 @@ int Runtime::START_LOOP()
 	}
 
 	// Debug graphics api version
-	const char *version = (const char *)glGetString(GL_VERSION);
+	const char* version = (const char*)glGetString(GL_VERSION);
 	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
 
 	// Setup render settings
@@ -209,7 +209,7 @@ int Runtime::START_LOOP()
 		"./resources/shaders/materials",
 		"./resources/shaders/postprocessing",
 		"./resources/shaders/gizmo",
-		"./resources/shaders/passes"};
+		"./resources/shaders/passes" };
 	ShaderPool::loadAndCompile(shader_paths);
 
 	prePassShader = ShaderPool::get("pre_pass");

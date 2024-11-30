@@ -37,10 +37,10 @@ struct WindowFlags
 
 struct Fonts
 {
-	ImFont *uiRegular;
-	ImFont *uiBold;
-	ImFont *uiHeadline;
-	ImFont *uiIcons;
+	ImFont* uiRegular;
+	ImFont* uiBold;
+	ImFont* uiHeadline;
+	ImFont* uiIcons;
 };
 
 class EditorUI
@@ -53,7 +53,7 @@ public:
 	static ImVec4 lighten(ImVec4 color, float amount);
 	static ImVec4 darken(ImVec4 color, float amount);
 
-	static std::vector<EditorWindow *> windows;
+	static std::vector<EditorWindow*> windows;
 
 	static Sizing sizing;
 	static Colors colors;

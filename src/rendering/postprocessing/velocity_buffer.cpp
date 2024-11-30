@@ -15,10 +15,10 @@
 #include "../src/rendering/postprocessing/post_processing.h"
 
 VelocityBuffer::VelocityBuffer() : fbo(0),
-								   rbo(0),
-								   output(0),
-								   postfilteredOutput(0),
-								   postfilterShader(nullptr)
+rbo(0),
+output(0),
+postfilteredOutput(0),
+postfilterShader(nullptr)
 {
 }
 
@@ -136,7 +136,7 @@ unsigned int VelocityBuffer::velocityPasses()
 	Runtime::velocityPassShader->bind();
 
 	// Render velocity buffer by performing velocity pass on each object
-	std::vector<Entity *> entityLinks = Runtime::entityLinks;
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++)
 	{
 		entityLinks[i]->meshRenderer->velocityPass();

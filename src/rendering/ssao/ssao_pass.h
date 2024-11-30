@@ -30,8 +30,8 @@ private:
 	static void ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput);
 	static void blurPass();
 
-	static Shader *aoPassShader; // Ambient occlusion pass shader
-	static Shader *aoBlurShader; // Composite shader
+	static Shader* aoPassShader; // Ambient occlusion pass shader
+	static Shader* aoBlurShader; // Composite shader
 
 	static std::vector<glm::vec3> kernel; // Sample kernel
 	static unsigned int noiseTexture;	  // Noise texture

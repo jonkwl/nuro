@@ -6,11 +6,11 @@
 #include "../src/utils/log.h"
 
 UnlitMaterial::UnlitMaterial() : shader(ShaderPool::get("unlit")),
-								 baseColor(1.0f, 1.0f, 1.0f, 1.0f),
-								 tiling(1.0f, 1.0f),
-								 offset(0.0f, 0.0f),
-								 useTexture(false),
-								 texture()
+baseColor(1.0f, 1.0f, 1.0f, 1.0f),
+tiling(1.0f, 1.0f),
+offset(0.0f, 0.0f),
+useTexture(false),
+texture()
 {
 }
 
@@ -31,7 +31,7 @@ void UnlitMaterial::bind()
 	}
 }
 
-Shader *UnlitMaterial::getShader()
+Shader* UnlitMaterial::getShader()
 {
 	return shader;
 }

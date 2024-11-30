@@ -20,5 +20,5 @@ struct Transform
 	glm::vec3 down();
 
 	void lookAt(glm::vec3 point);
-	void lookAt(Entity *entity);
+	void lookAt(Entity* entity);
 };

@@ -42,7 +42,7 @@ private:
 	unsigned int framebuffer;
 	unsigned int prefilterOutput;
 
-	Shader *prefilterShader;
-	Shader *downsamplingShader;
-	Shader *upsamplingShader;
+	Shader* prefilterShader;
+	Shader* downsamplingShader;
+	Shader* upsamplingShader;
 };

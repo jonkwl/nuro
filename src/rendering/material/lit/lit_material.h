@@ -10,7 +10,7 @@ public:
 	LitMaterial();
 
 	void bind();
-	Shader *getShader();
+	Shader* getShader();
 
 	glm::vec4 baseColor = glm::vec4(1.0f);
 
@@ -45,7 +45,7 @@ private:
 		SSAO_UNIT
 	};
 
-	Shader *shader;
+	Shader* shader;
 
 	bool enableAlbedoMap;
 	Texture albedoMap;

@@ -15,7 +15,7 @@
 #include "../src/editor/windows/post_processing_window.h"
 #include "../src/editor/windows/diagnostics_window.h"
 
-std::vector<EditorWindow *> EditorUI::windows = std::vector<EditorWindow *>();
+std::vector<EditorWindow*> EditorUI::windows = std::vector<EditorWindow*>();
 
 Sizing EditorUI::sizing;
 Colors EditorUI::colors;
@@ -31,7 +31,7 @@ void EditorUI::setup()
 	ImGui::CreateContext();
 	ImPlot::CreateContext();
 
-	ImGuiIO &io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO();
 	(void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -42,7 +42,7 @@ void EditorUI::setup()
 
 	// Merge icons into regularFontSize font
 	float iconFontSize = sizing.iconFontSize * 2.0f / 3.0f;
-	static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 	ImFontConfig icons_config;
 	icons_config.MergeMode = true;
 	icons_config.PixelSnapH = true;
@@ -55,7 +55,7 @@ void EditorUI::setup()
 
 	ImGui::StyleColorsDark();
 
-	ImGuiStyle &style = ImGui::GetStyle();
+	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.ButtonTextAlign = ImVec2(0.0f, 0.0f);
 	style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
@@ -78,7 +78,7 @@ void EditorUI::setup()
 
 	style.ItemSpacing = ImVec2(4.0f, 8.0f);
 
-	ImVec4 *imguiColors = style.Colors;
+	ImVec4* imguiColors = style.Colors;
 
 	imguiColors[ImGuiCol_WindowBg] = colors.background;
 
@@ -126,13 +126,13 @@ void EditorUI::setup()
 	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	SceneWindow *sceneWindow = new SceneWindow();
+	SceneWindow* sceneWindow = new SceneWindow();
 	windows.push_back(sceneWindow);
 
-	PostProcessingWindow *postProcessingWindow = new PostProcessingWindow();
+	PostProcessingWindow* postProcessingWindow = new PostProcessingWindow();
 	windows.push_back(postProcessingWindow);
 
-	DiagnosticsWindow *diagnosticsWindow = new DiagnosticsWindow();
+	DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
 	windows.push_back(diagnosticsWindow);
 }
 
@@ -151,7 +151,7 @@ void EditorUI::render()
 {
 
 	/* CREATE MAIN VIEWPORT DOCKSPACE */
-	ImGuiViewport *viewport = ImGui::GetMainViewport();
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 	ImGui::PushFont(fonts.uiHeadline);
 

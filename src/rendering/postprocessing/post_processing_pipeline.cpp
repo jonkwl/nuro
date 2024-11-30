@@ -15,11 +15,11 @@
 #include "../src/utils/log.h"
 
 PostProcessingPipeline::PostProcessingPipeline() : fbo(0),
-												   output(0),
-												   finalPassShader(nullptr),
-												   configuration(PostProcessing::configuration),
-												   motionBlurPass(),
-												   bloomPass()
+output(0),
+finalPassShader(nullptr),
+configuration(PostProcessing::configuration),
+motionBlurPass(),
+bloomPass()
 {
 }
 

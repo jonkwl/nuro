@@ -4,7 +4,7 @@
 #include "../src/rendering/core/mesh_renderer.h"
 
 Entity::Entity() : transform(),
-				   meshRenderer(new MeshRenderer(this))
+meshRenderer(new MeshRenderer(this))
 {
 	Runtime::linkEntity(this);
 }

@@ -16,8 +16,8 @@ unsigned int SSAOPass::fbo = 0;
 unsigned int SSAOPass::aoOutput = 0;
 unsigned int SSAOPass::blurredOutput = 0;
 
-Shader *SSAOPass::aoPassShader = nullptr;
-Shader *SSAOPass::aoBlurShader = nullptr;
+Shader* SSAOPass::aoPassShader = nullptr;
+Shader* SSAOPass::aoBlurShader = nullptr;
 
 std::vector<glm::vec3> SSAOPass::kernel;
 unsigned int SSAOPass::noiseTexture = 0;

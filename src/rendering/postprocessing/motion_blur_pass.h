@@ -27,7 +27,7 @@ private:
 	unsigned int fbo;
 	unsigned int output;
 
-	Shader *shader;
+	Shader* shader;
 
 	glm::mat4 previousViewProjectionMatrix;
 

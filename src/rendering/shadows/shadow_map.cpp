@@ -14,7 +14,7 @@
 
 bool shadowMapSaved = false;
 
-void saveDepthMapAsImage(int width, int height, const std::string &filename)
+void saveDepthMapAsImage(int width, int height, const std::string& filename)
 {
 	std::vector<float> depthData(width * height);
 	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
@@ -39,11 +39,11 @@ void saveDepthMapAsImage(int width, int height, const std::string &filename)
 }
 
 ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight) : resolutionWidth(resolutionWidth),
-																														   resolutionHeight(resolutionHeight),
-																														   boundsWidth(boundsWidth),
-																														   boundsHeight(boundsHeight),
-																														   framebuffer(0),
-																														   texture(0)
+resolutionHeight(resolutionHeight),
+boundsWidth(boundsWidth),
+boundsHeight(boundsHeight),
+framebuffer(0),
+texture(0)
 {
 	// Generate framebuffer
 	glGenFramebuffers(1, &framebuffer);
@@ -60,7 +60,7 @@ ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
 	// Set texture border
-	float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	// Set framebuffer attachments
@@ -97,7 +97,7 @@ void ShadowMap::render()
 
 	Runtime::shadowPassShader->bind();
 
-	std::vector<Entity *> entityLinks = Runtime::entityLinks;
+	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++)
 	{
 		entityLinks[i]->meshRenderer->shadowPass();

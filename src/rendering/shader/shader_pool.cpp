@@ -4,7 +4,7 @@
 #include "../src/utils/iohandler.h"
 #include "../src/rendering/shader/shader.h"
 
-std::vector<Shader *> ShaderPool::shaders;
+std::vector<Shader*> ShaderPool::shaders;
 std::vector<std::string> ShaderPool::identifiers;
 
 void ShaderPool::loadAndCompile(std::vector<std::string> paths)
@@ -35,12 +35,12 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths)
 	{
 		std::string vertex_code = IOHandler::readFile(shader_paths[i] + "/.vert");
 		std::string fragment_code = IOHandler::readFile(shader_paths[i] + "/.frag");
-		const char *vertex_src = vertex_code.c_str();
-		const char *fragment_src = fragment_code.c_str();
+		const char* vertex_src = vertex_code.c_str();
+		const char* fragment_src = fragment_code.c_str();
 
 		bool compiled = false;
 		std::string name = shader_names[i];
-		Shader *shader = new Shader(vertex_src, fragment_src, compiled, name);
+		Shader* shader = new Shader(vertex_src, fragment_src, compiled, name);
 		if (compiled)
 		{
 			shaders.push_back(shader);
@@ -52,7 +52,7 @@ void ShaderPool::loadAndCompile(std::vector<std::string> paths)
 	Log::printProcessDone("ShaderPool", "Finished building the shaders");
 }
 
-Shader *ShaderPool::get(std::string name)
+Shader* ShaderPool::get(std::string name)
 {
 	auto it = std::find(identifiers.begin(), identifiers.end(), name);
 	if (it != identifiers.end())
