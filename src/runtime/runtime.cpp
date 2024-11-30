@@ -411,7 +411,8 @@ void Runtime::renderFrame() {
 
 	Profiler::start("render");
 
-	// Make sure color buffer is cleared
+	// Bind screen framebuffer and clear color
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	renderCamera = inspectorCamera;

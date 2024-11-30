@@ -15,7 +15,7 @@ void SceneWindow::prepare()
 
 	ImGui::Begin("  Scene  ", nullptr, EditorUI::windowFlags.standard);
 	{
-		UIComponents::space(0.0f, 15.0f);
+		UIComponents::space(0.0f, 14.0f);
 		UIComponents::headline("Scene", ICON_FA_MAP, HeadlineJustification::CENTER);
 
 		UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);

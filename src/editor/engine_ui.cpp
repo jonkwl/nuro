@@ -111,12 +111,11 @@ void EditorUI::setup()
 
 	imguiColors[ImGuiCol_Border] = colors.borderColor;
 
-	imguiColors[ImGuiCol_Tab] = colors.elementActive;
-	imguiColors[ImGuiCol_TabHovered] = colors.elementActive;
-	imguiColors[ImGuiCol_TabActive] = colors.elementActive;
-
-	imguiColors[ImGuiCol_TabDimmed] = colors.elementActive;
-	imguiColors[ImGuiCol_TabDimmedSelected] = colors.elementActive;
+	imguiColors[ImGuiCol_Tab] = colors.tabColor;
+	imguiColors[ImGuiCol_TabHovered] = colors.tabColor;
+	imguiColors[ImGuiCol_TabActive] = colors.tabColor;
+	imguiColors[ImGuiCol_TabDimmed] = colors.tabColor;
+	imguiColors[ImGuiCol_TabDimmedSelected] = colors.tabColor;
 	imguiColors[ImGuiCol_TabDimmedSelectedOverline] = colors.elementActive;
 
 	imguiColors[ImGuiCol_DockingPreview] = colors.elementActive;
