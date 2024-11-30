@@ -183,6 +183,9 @@
     <ClCompile Include="src\rendering\texture\texture.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\postprocessing\post_processing.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\shader\shader.h">

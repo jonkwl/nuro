@@ -13,6 +13,7 @@
 
 glm::vec3 QuickGizmo::color = glm::vec3(1.0f);
 float QuickGizmo::opacity = 0.4f;
+bool QuickGizmo::foreground = false;
 
 Shader *QuickGizmo::shader = nullptr;
 
@@ -57,6 +58,11 @@ void QuickGizmo::render()
         // Get gizmo rendering target
         RenderTarget gizmo = renderStack[i];
 
+        // Disable depth testing if gizmo should be in foreground
+        if (gizmo.state.foreground) {
+            glDisable(GL_DEPTH_TEST);
+        }
+
         // Calculate mvp
         glm::mat4 modelMatrix = getModelMatrix(gizmo.position, gizmo.rotation, gizmo.scale);
         glm::mat4 mvpMatrix = MeshRenderer::currentViewProjectionMatrix * modelMatrix;
@@ -84,6 +90,11 @@ void QuickGizmo::render()
             Mesh mesh = model->meshes[i];
             mesh.bind();
             glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+        }
+
+        // Re-Enable depth testing if gizmo was in foreground
+        if (gizmo.state.foreground) {
+            glEnable(GL_DEPTH_TEST);
         }
     }
 
@@ -134,6 +145,7 @@ QuickGizmo::RenderState QuickGizmo::getCurrentState() {
     RenderState state;
     state.color = color;
     state.opacity = opacity;
+    state.foreground = foreground;
     return state;
 }
 

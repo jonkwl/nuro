@@ -48,6 +48,7 @@ namespace PostProcessing
 		float ambientOcclusionPower = 20.0f;
 		float ambientOcclusionBias = 0.03f;
 	};
-	static Configuration configuration;
+
+	extern Configuration configuration;
 
 }
