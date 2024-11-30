@@ -17,7 +17,7 @@ public:
 	float getFar();
 
 	void updateFrustum(glm::mat4 viewProjectionMatrix);
-	Frustum getFrustum();
+	Frustum& getFrustum();
 
 private:
 	Frustum frustum;

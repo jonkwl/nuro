@@ -28,7 +28,7 @@ namespace PostProcessing
 		float bloomFilterRadius = 0.0f;
 		unsigned int bloomMipDepth = 16;
 		bool lensDirt = false;
-		Texture lensDirtTexture;
+		Texture lensDirtTexture = Texture::empty();
 		float lensDirtIntensity = 0.0f;
 
 		bool chromaticAberration = true;

@@ -9,10 +9,6 @@ Texture::Texture() : id(0)
 {
 }
 
-Texture::Texture(GLuint id) : id(id)
-{
-}
-
 void Texture::bind(unsigned int unit)
 {
 	// Bind texture to backend
@@ -25,6 +21,11 @@ void Texture::destroy()
 	// Delete texture in backend
 	glDeleteTextures(1, &id);
 	id = 0;
+}
+
+Texture Texture::empty()
+{
+	return Texture();
 }
 
 Texture Texture::load(std::string path, TextureType type)
@@ -52,7 +53,7 @@ Texture Texture::load(std::string path, TextureType type)
 	if (!data)
 	{
 		Log::printError("Texture", "Couldn't load texture data");
-		return Texture();
+		return Texture(); // Return empty texture
 	}
 
 	// Get texture backend format from texture type
@@ -99,4 +100,13 @@ Texture Texture::load(std::string path, TextureType type)
 
 	// Return Texture instance with id of newly created texture
 	return Texture(newId);
+}
+
+Texture Texture::fromBackendId(GLuint id)
+{
+	return Texture(id);
+}
+
+Texture::Texture(GLuint id) : id(id)
+{
 }

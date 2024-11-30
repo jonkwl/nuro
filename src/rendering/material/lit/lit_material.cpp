@@ -21,15 +21,15 @@ emission(false),
 emissionIntensity(0.0f),
 emissionColor(1.0f, 1.0f, 1.0f),
 enableAlbedoMap(false),
-albedoMap(),
+albedoMap(Texture::empty()),
 enableNormalMap(false),
-normalMap(),
+normalMap(Texture::empty()),
 enableRoughnessMap(false),
-roughnessMap(),
+roughnessMap(Texture::empty()),
 enableMetallicMap(false),
-metallicMap(),
+metallicMap(Texture::empty()),
 enableEmissionMap(false),
-emissionMap()
+emissionMap(Texture::empty())
 {
 	shader->bind();
 	syncStaticUniforms();
