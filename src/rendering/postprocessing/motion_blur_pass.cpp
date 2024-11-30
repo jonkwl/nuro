@@ -76,6 +76,9 @@ void MotionBlurPass::destroy()
 	glDeleteFramebuffers(1, &fbo);
 	fbo = 0;
 
+	// Destroy velocity buffer
+	velocityBuffer.destroy();
+
 	// Remove shader
 	shader = nullptr;
 }

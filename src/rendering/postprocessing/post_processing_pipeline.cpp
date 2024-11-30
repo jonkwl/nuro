@@ -75,6 +75,10 @@ void PostProcessingPipeline::destroy()
 	glDeleteFramebuffers(1, &fbo);
 	fbo = 0;
 
+	// Destroy all passes
+	motionBlurPass.destroy();
+	bloomPass.destroy();
+
 	// Remove shader
 	finalPassShader = nullptr;
 }
