@@ -136,10 +136,10 @@ unsigned int VelocityBuffer::velocityPasses()
 	Runtime::velocityPassShader->bind();
 
 	// Render velocity buffer by performing velocity pass on each object
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
-	for (int i = 0; i < entityLinks.size(); i++)
+	std::vector<Entity*> entityStack = Runtime::entityStack;
+	for (int i = 0; i < entityStack.size(); i++)
 	{
-		entityLinks[i]->meshRenderer.velocityPass();
+		entityStack[i]->meshRenderer.velocityPass();
 	}
 
 	// Disable depth testing

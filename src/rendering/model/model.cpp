@@ -14,7 +14,6 @@
 
 Model::Model(std::string path) : castsShadow(true),
 meshes(),
-directory(""),
 modelMaterials(),
 metrics()
 {

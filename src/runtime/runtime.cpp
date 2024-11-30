@@ -43,7 +43,7 @@
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/skybox/cubemap.h"
 
-std::vector<Entity*> Runtime::entityLinks;
+std::vector<Entity*> Runtime::entityStack;
 
 UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Skybox Runtime::defaultSkybox;
@@ -106,9 +106,25 @@ PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(
 
 bool skipSkyboxLoad = false; // tmp
 
-void Runtime::linkEntity(Entity* entity)
+Entity* Runtime::createEntity()
 {
-	entityLinks.push_back(entity);
+	// Create entity and push it to the entity stack
+	Entity* entity = new Entity();
+	entityStack.push_back(entity);
+
+	// Return created entity
+	return entity;
+}
+
+void Runtime::destroyEntity(Entity* entity) {
+	// Try to find entity in entity stack
+	auto it = std::find(entityStack.begin(), entityStack.end(), entity);
+
+	if (it != entityStack.end()) {
+		// Remove entity from entity stack and delete it on the heap
+		entityStack.erase(it);
+		delete entity;
+	}
 }
 
 void Runtime::useCamera(Camera camera)
@@ -370,11 +386,11 @@ int Runtime::START_LOOP()
 		// PREPARATION PASS
 		// Prepare each mesh for upcoming render passes
 		//
-		for (int i = 0; i < entityLinks.size(); i++)
+		for (int i = 0; i < entityStack.size(); i++)
 		{
 			// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
 			// Here for now to ensure preparation despite further pipeline changes
-			entityLinks[i]->meshRenderer.prepareNextFrame();
+			entityStack[i]->meshRenderer.prepareNextFrame();
 		}
 
 		//

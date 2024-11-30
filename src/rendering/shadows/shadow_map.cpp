@@ -97,10 +97,10 @@ void ShadowMap::render()
 
 	Runtime::shadowPassShader->bind();
 
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
-	for (int i = 0; i < entityLinks.size(); i++)
+	std::vector<Entity*> entityStack = Runtime::entityStack;
+	for (int i = 0; i < entityStack.size(); i++)
 	{
-		entityLinks[i]->meshRenderer.shadowPass();
+		entityStack[i]->meshRenderer.shadowPass();
 	}
 
 	// Unbind shadow map framebuffer

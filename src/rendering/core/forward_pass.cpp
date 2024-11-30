@@ -83,7 +83,7 @@ unsigned int ForwardPass::render()
 	int width = Window::width;
 	int height = Window::height;
 
-	std::vector<Entity*> entityLinks = Runtime::entityLinks;
+	std::vector<Entity*> entityStack = Runtime::entityStack;
 
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -122,8 +122,8 @@ unsigned int ForwardPass::render()
 	// Bind pre pass shader
 	Runtime::prePassShader->bind();
 	// Pre pass render each entity
-	for (int i = 0; i < entityLinks.size(); i++) {
-		entityLinks[i]->meshRenderer->prePass();
+	for (int i = 0; i < entityStack.size(); i++) {
+		entityStack[i]->meshRenderer->prePass();
 	}
 	// Re-enable color writing after pre pass
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -133,9 +133,9 @@ unsigned int ForwardPass::render()
 	// INJECTED PRE PASS END
 
 	// Render each linked entity to bound forward pass frame
-	for (int i = 0; i < entityLinks.size(); i++)
+	for (int i = 0; i < entityStack.size(); i++)
 	{
-		entityLinks[i]->meshRenderer.forwardPass();
+		entityStack[i]->meshRenderer.forwardPass();
 	}
 
 	// Disable wireframe if enabled

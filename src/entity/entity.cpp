@@ -6,5 +6,4 @@
 Entity::Entity() : transform(),
 meshRenderer(MeshRenderer(this))
 {
-	Runtime::linkEntity(this);
 }

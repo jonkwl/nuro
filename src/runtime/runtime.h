@@ -20,7 +20,8 @@ public:
 	static void TERMINATE(); // Terminate and exit
 
 	// Entity system
-	static void linkEntity(Entity* entity); // Links a given entity with the runtime (creating a runtime entity)
+	static Entity* createEntity(); // Links a given entity with the runtime (creating a runtime entity)
+	static void destroyEntity(Entity* entity);
 
 	// All default assets
 	static UnlitMaterial* defaultMaterial;
@@ -72,7 +73,7 @@ public:
 	static ShadowMap* mainShadowMap;   // Default shadow map
 
 	// Entity links
-	static std::vector<Entity*> entityLinks; // All entities that will be processed by the runtime
+	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
 
 	// Diagnostics
 	static unsigned int currentDrawCalls;

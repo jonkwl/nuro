@@ -33,8 +33,6 @@ public:
 	Metrics getMetrics() const; // Returns the model metrics
 
 private:
-	std::string directory;
-
 	void resolveModel(std::string path);
 
 	void processNode(aiNode* node, const aiScene* scene);
