@@ -7,7 +7,7 @@ int Window::height = 800;
 
 std::string Window::title = "Rendering Alpha";
 
-bool Window::fullscreen = true;
+bool Window::fullscreen = false;
 
 GLenum Window::cursorMode = GLFW_CURSOR_DISABLED;
 

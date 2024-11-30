@@ -93,6 +93,11 @@ void SSAOPass::create(float aoScale, int maxKernelSamples, float noiseResolution
 }
 
 void SSAOPass::destroy() {
+	// Reset configuration
+	aoScale = 0;
+	maxKernelSamples = 0.0f;
+	noiseResolution = 0;
+
 	// Delete ambient occlusion output texture
 	glDeleteTextures(1, &aoOutput);
 	aoOutput = 0;
@@ -104,6 +109,10 @@ void SSAOPass::destroy() {
 	// Delete framebuffer
 	glDeleteFramebuffers(1, &fbo);
 	fbo = 0;
+
+	// Reset shaders
+	aoPassShader = nullptr;
+	aoBlurShader = nullptr;
 
 	// Clear kernel
 	kernel.clear();

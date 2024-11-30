@@ -94,9 +94,6 @@ float Runtime::normalMappingIntensity = 1.0f;
 unsigned int Runtime::nCPUEntities = 0;
 unsigned int Runtime::nGPUEntities = 0;
 
-int Runtime::averageFpsFrameCount = 0;
-float Runtime::averageFpsElapsedTime = 0.0f;
-
 PrePass Runtime::prePass;
 ForwardPass Runtime::forwardPass;
 SSAOPass Runtime::ssaoPass;
@@ -107,6 +104,11 @@ unsigned int Runtime::prePassNormalOutput = 0;
 unsigned int Runtime::ssaoBuffer = 0;
 
 bool skipSkyboxLoad = false; // tmp
+
+int Runtime::averageFpsFrameCount = 0;
+float Runtime::averageFpsElapsedTime = 0.0f;
+
+bool Runtime::resized = false;
 
 //
 //
@@ -180,6 +182,9 @@ int Runtime::START_LOOP()
 
 	while (!glfwWindowShouldClose(Window::glfw))
 	{
+		// Check if window has been resized
+		checkResize();
+
 		// PREPARE INTERNAL VARIABLES FOR NEXT FRAME (Time, Delta Time etc.)
 		prepareFrameInternal();
 
@@ -225,13 +230,6 @@ void Runtime::TERMINATE()
 //
 //
 
-void glfwErrorCallback(int error, const char* description)
-{
-
-	Log::printError("GLFW", "Error: " + std::to_string(error), description);
-
-}
-
 void Runtime::setupGlfw() {
 
 	// Set error callback and initialize context
@@ -269,6 +267,9 @@ void Runtime::setupGlfw() {
 	{
 		Log::printError("GLFW", "Creation of window failed");
 	}
+
+	// Set window resize callback
+	glfwSetWindowSizeCallback(Window::glfw, glfwWindowSizeCallback);
 
 	// Load graphics api
 	glfwMakeContextCurrent(Window::glfw);
@@ -508,5 +509,46 @@ void Runtime::finishFrame() {
 	// Sqap glfw buffers and poll events
 	glfwSwapBuffers(Window::glfw);
 	glfwPollEvents();
+
+}
+
+void Runtime::checkResize() {
+
+	if (!resized) return;
+
+	unsigned int width = Window::width;
+	unsigned int height = Window::height;
+
+	// Destroy all passes/pipelines which are bound to a fixed viewport size
+	forwardPass.destroy();
+	prePass.destroy();
+	ssaoPass.destroy();
+	postProcessingPipeline.destroy();
+
+	// Recreate all destroyed passes/pipelines
+	forwardPass.create(msaaSamples);
+	prePass.create();
+	ssaoPass.create(); // Issues with ssao resizing
+	postProcessingPipeline.create();
+
+	Log::printProcessDone("Context", "Resize operation performed, various viewport dependant passes recreated");
+
+	resized = false;
+
+}
+
+void Runtime::glfwErrorCallback(int error, const char* description)
+{
+
+	Log::printError("GLFW", "Error: " + std::to_string(error), description);
+
+}
+
+void Runtime::glfwWindowSizeCallback(GLFWwindow* window, int width, int height) {
+
+	Window::width = width;
+	Window::height = height;
+
+	resized = true;
 
 }

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <glm.hpp>
+#include <chrono>
 
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
@@ -9,6 +10,7 @@
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
 #include "../src/rendering/skybox/skybox.h"
 
+struct GLFWwindow;
 class UnlitMaterial;
 class Shader;
 class Camera;
@@ -114,6 +116,8 @@ private:
 	static int averageFpsFrameCount;	// Count of frames in the current second
 	static float averageFpsElapsedTime; // Time accumulator for averaging FPS
 
+	static bool resized;
+
 private:
 	static void setupGlfw(); // Setup glfw context
 	static void setVSync(); // Set v sync option
@@ -124,4 +128,9 @@ private:
 	static void renderFrame(); // Render next game frame
 	static void renderEditor(); // Render next editor frame
 	static void finishFrame(); // Call to finalize current frame
+	static void checkResize(); // Perform resize if needed
+
+	// Context callbacks
+	static void glfwErrorCallback(int error, const char* description);
+	static void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);
 };

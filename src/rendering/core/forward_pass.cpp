@@ -23,10 +23,6 @@ multisampledColorBuffer(0)
 
 void ForwardPass::create(unsigned int msaaSamples)
 {
-	// Initialize parameters needed
-	int width = Window::width;
-	int height = Window::height;
-
 	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &outputFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, outputFbo);
@@ -34,7 +30,7 @@ void ForwardPass::create(unsigned int msaaSamples)
 	// Generate color output texture
 	glGenTextures(1, &outputColor);
 	glBindTexture(GL_TEXTURE_2D, outputColor);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -55,7 +51,7 @@ void ForwardPass::create(unsigned int msaaSamples)
 	// Generate multi-sampled color buffer texture
 	glGenTextures(1, &multisampledColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, width, height, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, Window::width, Window::height, GL_TRUE);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
@@ -63,7 +59,7 @@ void ForwardPass::create(unsigned int msaaSamples)
 	// Generate multi-sampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, width, height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, Window::width, Window::height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multi-sampled framebuffer error
