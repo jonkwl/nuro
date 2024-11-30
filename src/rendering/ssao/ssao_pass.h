@@ -8,13 +8,13 @@ class Shader;
 class SSAOPass
 {
 public:
-	static void setup();														   // Setup ambient occlusion pass
-	static unsigned int render(unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return blurred output
-private:
-	static constexpr float AO_SCALE = 0.5f;			// Scale of ambient occlusion output
-	static constexpr int MAX_KERNEL_SAMPLES = 64;	// Kernel samples initialized
-	static constexpr float NOISE_RESOLUTION = 4.0f; // Size of noise texture
+	SSAOPass();
 
+	void create(float aoScale = 0.5f, int maxKernelSamples = 64, float noiseResolution = 4.0f);  // Create ambient occlusion pass
+	void destroy(); // Destroy ambient occlusion pass
+
+	unsigned int render(unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return blurred output
+private:
 	enum TextureUnits
 	{
 		DEPTH_UNIT,
@@ -23,22 +23,26 @@ private:
 		AO_UNIT
 	};
 
-	static unsigned int fbo;		   // Framebuffer
-	static unsigned int aoOutput;	   // Ambient occlusion output
-	static unsigned int blurredOutput; // Blurred ambient occlusion output
+	float aoScale; // Scale of ambient occlusion resolution in relation to viewport resolution
+	int maxKernelSamples; // Amount of kernel samples being generated (therefore the max amount to be utilised)
+	float noiseResolution; // Resolution of noise texture
 
-	static void ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput);
-	static void blurPass();
+	unsigned int fbo;		   // Framebuffer
+	unsigned int aoOutput;	   // Ambient occlusion output
+	unsigned int blurredOutput; // Blurred ambient occlusion output
 
-	static Shader* aoPassShader; // Ambient occlusion pass shader
-	static Shader* aoBlurShader; // Composite shader
+	void ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput);
+	void blurPass();
 
-	static std::vector<glm::vec3> kernel; // Sample kernel
-	static unsigned int noiseTexture;	  // Noise texture
+	Shader* aoPassShader; // Ambient occlusion pass shader
+	Shader* aoBlurShader; // Composite shader
 
-	static std::vector<glm::vec3> generateKernel(); // Generate sample kernel
-	static unsigned int generateNoiseTexture();		// Generate noise texture
+	std::vector<glm::vec3> kernel; // Sample kernel
+	unsigned int noiseTexture;	  // Noise texture
 
-	static float random();									// Get random
-	static float lerp(float start, float end, float value); // Linear interpolation
+	std::vector<glm::vec3> generateKernel(); // Generate sample kernel
+	unsigned int generateNoiseTexture();		// Generate noise texture
+
+	float random();									// Get random
+	float lerp(float start, float end, float value); // Linear interpolation
 };

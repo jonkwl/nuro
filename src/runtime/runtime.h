@@ -5,6 +5,7 @@
 
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
+#include "../src/rendering/ssao/ssao_pass.h"
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
 #include "../src/rendering/skybox/skybox.h"
 
@@ -85,6 +86,7 @@ public:
 	// Passes & Pipelines
 	static PrePass prePass;
 	static ForwardPass forwardPass;
+	static SSAOPass ssaoPass;
 	static PostProcessingPipeline postProcessingPipeline;
 
 	// Buffers from passes

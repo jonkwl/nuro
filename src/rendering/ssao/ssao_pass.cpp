@@ -11,19 +11,26 @@
 #include "../src/window/window.h"
 #include "../src/utils/log.h"
 
-unsigned int SSAOPass::fbo = 0;
-
-unsigned int SSAOPass::aoOutput = 0;
-unsigned int SSAOPass::blurredOutput = 0;
-
-Shader* SSAOPass::aoPassShader = nullptr;
-Shader* SSAOPass::aoBlurShader = nullptr;
-
-std::vector<glm::vec3> SSAOPass::kernel;
-unsigned int SSAOPass::noiseTexture = 0;
-
-void SSAOPass::setup()
+SSAOPass::SSAOPass() : aoScale(0.0f),
+maxKernelSamples(0),
+noiseResolution(0.0f),
+fbo(0),
+aoOutput(0),
+blurredOutput(0),
+aoPassShader(nullptr),
+aoBlurShader(nullptr),
+kernel(),
+noiseTexture(0)
 {
+}
+
+void SSAOPass::create(float aoScale, int maxKernelSamples, float noiseResolution)
+{
+	// Set members
+	this->aoScale = aoScale;
+	this->maxKernelSamples = maxKernelSamples;
+	this->noiseResolution = noiseResolution;
+
 	// Get sample kernel and noise textures
 	kernel = generateKernel();
 	noiseTexture = generateNoiseTexture();
@@ -34,8 +41,8 @@ void SSAOPass::setup()
 	aoPassShader->setInt("depthInput", DEPTH_UNIT);
 	aoPassShader->setInt("normalInput", NORMAL_UNIT);
 	aoPassShader->setInt("noiseTexture", NOISE_UNIT);
-	aoPassShader->setFloat("noiseSize", NOISE_RESOLUTION);
-	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i)
+	aoPassShader->setFloat("noiseSize", noiseResolution);
+	for (int i = 0; i < maxKernelSamples; ++i)
 	{
 		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
 	}
@@ -52,7 +59,7 @@ void SSAOPass::setup()
 	// Generate ambient occlusion output texture
 	glGenTextures(1, &aoOutput);
 	glBindTexture(GL_TEXTURE_2D, aoOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width * AO_SCALE, Window::height * AO_SCALE, 0, GL_RED, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width * aoScale, Window::height * aoScale, 0, GL_RED, GL_FLOAT, nullptr);
 
 	// Set ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -85,6 +92,27 @@ void SSAOPass::setup()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void SSAOPass::destroy() {
+	// Delete ambient occlusion output texture
+	glDeleteTextures(1, &aoOutput);
+	aoOutput = 0;
+
+	// Delete blurred output texture
+	glDeleteTextures(1, &blurredOutput);
+	blurredOutput = 0;
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &fbo);
+	fbo = 0;
+
+	// Clear kernel
+	kernel.clear();
+
+	// Delete noise texture
+	glDeleteTextures(1, &noiseTexture);
+	noiseTexture = 0;
+}
+
 unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
 {
 	// Disable depth testing and culling
@@ -114,13 +142,13 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
 
 	// Set viewport size
-	glViewport(0, 0, Window::width * AO_SCALE, Window::height * AO_SCALE);
+	glViewport(0, 0, Window::width * aoScale, Window::height * aoScale);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
 	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
-	if (nSamples > MAX_KERNEL_SAMPLES)
+	if (nSamples > maxKernelSamples)
 	{
-		nSamples = MAX_KERNEL_SAMPLES;
+		nSamples = maxKernelSamples;
 	}
 
 	// Bind ambient occlusion pass shader
@@ -177,7 +205,7 @@ std::vector<glm::vec3> SSAOPass::generateKernel()
 {
 	std::vector<glm::vec3> kernel;
 
-	for (int i = 0; i < MAX_KERNEL_SAMPLES; ++i)
+	for (int i = 0; i < maxKernelSamples; ++i)
 	{
 		// Generate raw sample with random values
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, random());
@@ -189,7 +217,7 @@ std::vector<glm::vec3> SSAOPass::generateKernel()
 		sample *= random();
 
 		// More weight to samples closer to the center
-		float scale = (float)i / (float)MAX_KERNEL_SAMPLES;
+		float scale = (float)i / (float)maxKernelSamples;
 		scale = lerp(0.1f, 1.0f, scale * scale);
 		sample *= scale;
 
@@ -205,7 +233,7 @@ unsigned int SSAOPass::generateNoiseTexture()
 	// Generate noise samples
 	std::vector<glm::vec3> noiseSamples;
 
-	for (int i = 0; i < MAX_KERNEL_SAMPLES; i++)
+	for (int i = 0; i < maxKernelSamples; i++)
 	{
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, 0.0f);
 		noiseSamples.push_back(sample);
@@ -215,7 +243,7 @@ unsigned int SSAOPass::generateNoiseTexture()
 	unsigned int output = 0;
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, NOISE_RESOLUTION, NOISE_RESOLUTION, 0, GL_RGB, GL_FLOAT, &noiseSamples[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, noiseResolution, noiseResolution, 0, GL_RGB, GL_FLOAT, &noiseSamples[0]);
 
 	// Set noise texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -36,7 +36,6 @@
 #include "../src/window/window.h"
 #include "../src/input/input.h"
 #include "../src/rendering/gizmos/gizmos.h"
-#include "../src/rendering/ssao/ssao_pass.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/skybox/cubemap.h"
@@ -100,6 +99,7 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 
 PrePass Runtime::prePass;
 ForwardPass Runtime::forwardPass;
+SSAOPass Runtime::ssaoPass;
 PostProcessingPipeline Runtime::postProcessingPipeline;
 
 unsigned int Runtime::prePassDepthOutput = 0;
@@ -345,7 +345,7 @@ void Runtime::setupScripts() {
 	prePass.create();
 
 	// Setup ambient occlusion pass
-	SSAOPass::setup();
+	ssaoPass.create();
 
 	// Setup post processing
 	postProcessingPipeline.create();
@@ -468,7 +468,7 @@ void Runtime::renderFrame() {
 	unsigned int ssaoOutput = 0;
 	if (PostProcessing::configuration.ambientOcclusion)
 	{
-		ssaoOutput = SSAOPass::render(prePassDepthOutput, prePassNormalOutput);
+		ssaoOutput = ssaoPass.render(prePassDepthOutput, prePassNormalOutput);
 	}
 	ssaoBuffer = ssaoOutput;
 
