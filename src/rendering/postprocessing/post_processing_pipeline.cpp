@@ -14,7 +14,8 @@
 #include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
 
-PostProcessingPipeline::PostProcessingPipeline(Viewport& viewport) : viewport(viewport),
+PostProcessingPipeline::PostProcessingPipeline(Viewport& viewport, bool renderToScreen) : viewport(viewport),
+renderToScreen(renderToScreen),
 fbo(0),
 output(0),
 finalPassShader(nullptr),
@@ -26,28 +27,33 @@ bloomPass(viewport)
 
 void PostProcessingPipeline::create()
 {
-	// Generate framebuffer
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	// Generate own framebuffer and target textures if post processing pipeline doesnt render to screen
+	if (!renderToScreen) {
 
-	// Generate output texture
-	glGenTextures(1, &output);
-	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, NULL);
+		// Generate framebuffer
+		glGenFramebuffers(1, &fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	// Set output texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		// Generate output texture
+		glGenTextures(1, &output);
+		glBindTexture(GL_TEXTURE_2D, output);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, NULL);
 
-	// Attach output texture to framebuffer
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
+		// Set output texture parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-	{
-		Log::printError("Post Processing Pipeline", "Error generating framebuffer: " + std::to_string(fboStatus));
+		// Attach output texture to framebuffer
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
+
+		GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+		{
+			Log::printError("Post Processing Pipeline", "Error generating framebuffer: " + std::to_string(fboStatus));
+		}
+
 	}
 
 	// Get default post processing final pass shader
@@ -111,12 +117,12 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 		BLOOM_PASS_OUTPUT = bloomPass.render(POST_PROCESSING_PIPELINE_HDR);
 	}
 
-	// glBindFramebuffer(GL_FRAMEBUFFER, fbo); // Bind post processing framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind default framebuffer
+	// Bind post processing framebuffer (which is 0 if rendering to screen)
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
-	finalPassShader->setVec2("resolution", glm ::vec2(viewport.width, viewport.height));
+	finalPassShader->setVec2("resolution", glm::vec2(viewport.width, viewport.height));
 
 	// Sync post processing configuration with shader
 	syncConfiguration();
@@ -143,12 +149,13 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 	Quad::bind();
 	Quad::render();
 
-	// Unbind post processing framebuffer (rendering to screen at the moment)
-	// glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// Unbind post processing framebuffer (redundant if rendering to screen)
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int PostProcessingPipeline::getOutput()
 {
+	// Return output of post processing pipeline pass
 	return output;
 }
 

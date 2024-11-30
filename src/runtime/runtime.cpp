@@ -67,17 +67,13 @@ bool Runtime::solidMode = false;
 bool Runtime::shadows = true;
 bool Runtime::postProcessingEffects = true;
 
-bool Runtime::inspectorMode = true;
-bool Runtime::showEngineUI = false;
-bool Runtime::showDiagnostics = true;
-
 bool Runtime::skyboxEnabled = true;
 Skybox& Runtime::selectedSkybox = Runtime::defaultSkybox;
 
 GLFWwindow* Runtime::glfw = nullptr;
-glm::vec2 Runtime::windowSize = glm::vec2(800.0f, 400.0f);
-bool Runtime::fullscreen = false;
-GLenum Runtime::cursorMode = GLFW_CURSOR_DISABLED;
+glm::vec2 Runtime::windowSize = glm::vec2(1600.0f, 800.0f);
+bool Runtime::fullscreen = true;
+GLenum Runtime::cursorMode = GLFW_CURSOR_NORMAL;
 
 Viewport Runtime::sceneViewport;
 
@@ -101,16 +97,16 @@ float Runtime::normalMappingIntensity = 1.0f;
 unsigned int Runtime::nCPUEntities = 0;
 unsigned int Runtime::nGPUEntities = 0;
 
+bool Runtime::sceneViewRightclick = false;
+
 PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
 SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
-PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport);
+PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
 
 unsigned int Runtime::prePassDepthOutput = 0;
 unsigned int Runtime::prePassNormalOutput = 0;
 unsigned int Runtime::ssaoBuffer = 0;
-
-bool skipSkyboxLoad = false; // tmp
 
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
@@ -196,7 +192,7 @@ int Runtime::START_LOOP()
 	while (!glfwWindowShouldClose(glfw))
 	{
 		// Check if window has been resized
-		checkResize();
+		checkWindowResize();
 
 		// PREPARE INTERNAL VARIABLES FOR NEXT FRAME (Time, Delta Time etc.)
 		prepareFrameInternal();
@@ -337,16 +333,12 @@ void Runtime::loadAssets() {
 	bool shadow_map_saved = false;
 	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
 
-	// Creating default skybox
-	if (!skipSkyboxLoad)
-	{
-		// Create default skybox
-		Cubemap defaultCubemap = Cubemap::loadByCubemap("./resources/skybox/default/default_night.png");
-		defaultSkybox = Skybox(defaultCubemap);
+	// Create default skybox
+	Cubemap defaultCubemap = Cubemap::loadByCubemap("./resources/skybox/default/default_night.png");
+	defaultSkybox = Skybox(defaultCubemap);
 
-		// Set defaultr skybox as active
-		selectedSkybox = defaultSkybox;
-	}
+	// Set default skybox as active
+	selectedSkybox = defaultSkybox;
 
 	inspectorCamera.transform.position.y = 2.0f;
 	inspectorCamera.transform.rotation.x = 22.0f;
@@ -419,16 +411,11 @@ void Runtime::renderFrame() {
 
 	Profiler::start("render");
 
-	// Select camera to be rendered (depending on whether inspector mode is activated)
-	if (!inspectorMode)
-	{
-		renderCamera = activeCamera;
-	}
-	else
-	{
-		renderCamera = inspectorCamera;
-		InspectorMode::refreshInspector();
-	}
+	// Make sure color buffer is cleared
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	renderCamera = inspectorCamera;
+	InspectorMode::refreshInspector();
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
@@ -516,6 +503,14 @@ void Runtime::renderEditor() {
 	EditorUI::newFrame();
 	EditorUI::render();
 
+	bool hideCursor = sceneViewRightclick;
+	if (hideCursor) {
+		setCursor(GLFW_CURSOR_DISABLED);
+	}
+	else {
+		setCursor(GLFW_CURSOR_NORMAL);
+	}
+
 	Profiler::stop("ui_pass");
 
 }
@@ -528,9 +523,21 @@ void Runtime::finishFrame() {
 
 }
 
-void Runtime::checkResize() {
-
+void Runtime::checkWindowResize()
+{
 	if (!resized) return;
+	performResize();
+	resized = false;
+}
+
+void Runtime::resizeViewport(float width, float height) {
+	// TMP ALWAYS USE SCENE VIEWPORT
+	sceneViewport.width = width;
+	sceneViewport.height = height;
+	performResize();
+}
+
+void Runtime::performResize() {
 
 	// Destroy all passes/pipelines which are bound to a fixed viewport size
 	forwardPass.destroy();
@@ -545,15 +552,6 @@ void Runtime::checkResize() {
 	postProcessingPipeline.create();
 
 	Log::printProcessDone("Context", "Resize operation performed, various viewport dependant passes recreated");
-
-	resized = false;
-
-}
-
-void Runtime::startupWindow() {
-
-
-
 }
 
 void Runtime::glfwErrorCallback(int error, const char* description)

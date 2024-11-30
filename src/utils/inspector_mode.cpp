@@ -18,7 +18,7 @@ namespace InspectorMode
 		glm::vec3 movement_direction = cam_forward * Input::keyAxisSmooth.x + cam_right * Input::keyAxisSmooth.y;
 		camera.transform.position += movement_direction * speed * Runtime::deltaTime;
 
-		if (!Runtime::showEngineUI)
+		if (Runtime::sceneViewRightclick)
 		{
 
 			glm::vec3 rotate_direction = glm::vec3(-Input::mouseAxis.y, Input::mouseAxis.x, 0.0f);

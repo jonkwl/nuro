@@ -14,6 +14,4 @@ public:
 
 	static glm::vec2 mouseAxis;
 	static glm::vec2 mouseLast;
-
-	static bool escPressed;
 };

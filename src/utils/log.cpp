@@ -34,7 +34,7 @@ namespace Log
 
 	void printWarning(std::string origin, std::string warning, std::string additional_info)
 	{
-		_print(TextColor::White, BackgroundColor::Yellow, _getSpacing() + origin + " >>> WARNING: " + warning + _getSpacing());
+		_print(TextColor::Black, BackgroundColor::Yellow, _getSpacing() + origin + " >>> WARNING: " + warning + _getSpacing());
 		if (additional_info != "")
 		{
 			_print(TextColor::White, BackgroundColor::Black, additional_info);

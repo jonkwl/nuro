@@ -173,10 +173,7 @@ void EditorUI::render()
 	/* PREPARE ALL WINDOWS */
 	for (int i = 0; i < windows.size(); i++)
 	{
-		if (Runtime::inspectorMode && Runtime::showEngineUI)
-		{
-			windows[i]->prepare();
-		}
+		windows[i]->prepare();
 	}
 
 	/* RENDERING AND DRAW CALLS */

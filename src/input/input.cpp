@@ -16,8 +16,6 @@ float Input::keyAxisSmoothingFactor = 5.0f;
 glm::vec2 Input::mouseAxis = glm::vec2(0.0f);
 glm::vec2 Input::mouseLast = glm::vec2(0.0f);
 
-bool Input::escPressed = false;
-
 void Input::setupInputs()
 {
 	double mouseX, mouseY;
@@ -66,25 +64,4 @@ void Input::updateInputs()
 	}
 
 	Input::keyAxisSmooth = glm::mix(Input::keyAxisSmooth, Input::keyAxis, Input::keyAxisSmoothingFactor * Runtime::deltaTime);
-
-	// get escape input
-	if (glfwGetKey(Runtime::glfw, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-		if (escPressed)
-			return;
-		escPressed = true;
-		Runtime::showEngineUI = !Runtime::showEngineUI;
-		if (Runtime::cursorMode == GLFW_CURSOR_NORMAL)
-		{
-			Runtime::setCursor(GLFW_CURSOR_DISABLED);
-		}
-		else
-		{
-			Runtime::setCursor(GLFW_CURSOR_NORMAL);
-		}
-	}
-	else
-	{
-		escPressed = false;
-	}
 }

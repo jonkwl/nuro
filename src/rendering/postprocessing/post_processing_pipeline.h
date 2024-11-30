@@ -11,7 +11,7 @@ class Shader;
 class PostProcessingPipeline
 {
 public:
-	PostProcessingPipeline(Viewport& viewport);
+	PostProcessingPipeline(Viewport& viewport, bool renderToScreen);
 
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
@@ -30,6 +30,8 @@ private:
 	};
 
 	Viewport& viewport;
+
+	bool renderToScreen;
 
 	void syncConfiguration(); // Sync the post processing configuration with final pass shader
 

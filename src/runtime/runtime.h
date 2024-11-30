@@ -81,11 +81,6 @@ public:
 	static bool shadows;			   // Enable or disable rendering for all shadows
 	static bool postProcessingEffects; // Enable or disable non-mandatory post processing effects
 
-	// Engine settings
-	static bool inspectorMode;	 // Activates engines inspector mode
-	static bool showEngineUI;	 // Shows engine ui (only available in inspector mode)
-	static bool showDiagnostics; // Shows performance diagnostics such as fps etc.
-
 	// Shadow settings
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap;   // Default shadow map
@@ -118,6 +113,11 @@ public:
 	static unsigned int nCPUEntities;
 	static unsigned int nGPUEntities;
 
+	// Perform resize for specific viewport
+	static void resizeViewport(float width, float height);
+
+	static bool sceneViewRightclick;
+
 private:
 	// Values that only need to be accessed by the runtime itself (eg preprocessors)
 
@@ -129,7 +129,7 @@ private:
 	static int averageFpsFrameCount;	// Count of frames in the current second
 	static float averageFpsElapsedTime; // Time accumulator for averaging FPS
 
-	static bool resized;
+	static bool resized; // If window was resized
 
 private:
 	static void setupGlfw(); // Setup glfw context
@@ -141,9 +141,8 @@ private:
 	static void renderFrame(); // Render next game frame
 	static void renderEditor(); // Render next editor frame
 	static void finishFrame(); // Call to finalize current frame
-	static void checkResize(); // Perform resize if needed
-
-	static void startupWindow();
+	static void checkWindowResize(); // Perform resize if needed
+	static void performResize(); // Perform resize
 
 	// Context callbacks
 	static void glfwErrorCallback(int error, const char* description);
