@@ -374,7 +374,7 @@ int Runtime::START_LOOP()
 		{
 			// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
 			// Here for now to ensure preparation despite further pipeline changes
-			entityLinks[i]->meshRenderer->prepareNextFrame();
+			entityLinks[i]->meshRenderer.prepareNextFrame();
 		}
 
 		//

@@ -37,13 +37,13 @@ void defaultScene() {
 	sphereMaterial->roughness = 0.15f;
 	Model* sphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* sphere = new Entity();
-	sphere->meshRenderer->model = sphereModel;
-	sphere->meshRenderer->materials.push_back(sphereMaterial);
+	sphere->meshRenderer.model = sphereModel;
+	sphere->meshRenderer.materials.push_back(sphereMaterial);
 	sphere->transform.position = glm::vec3(0.0f, 0.6f, 6.5f);
 
 	Entity* collisionSphere = new Entity();
-	collisionSphere->meshRenderer->model = sphereModel;
-	collisionSphere->meshRenderer->materials.push_back(sphereMaterial);
+	collisionSphere->meshRenderer.model = sphereModel;
+	collisionSphere->meshRenderer.materials.push_back(sphereMaterial);
 	collisionSphere->transform.position = glm::vec3(5.0f, 0.6f, 6.5f);
 
 	Texture sphereAlbedo = Texture::load("./user/assets/textures/mat_albedo.jpg", TextureType::ALBEDO);
@@ -57,8 +57,8 @@ void defaultScene() {
 	pbrSphereMaterial->setNormalMap(sphereNormal);
 	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* pbrSphere = new Entity();
-	pbrSphere->meshRenderer->model = pbrSphereModel;
-	pbrSphere->meshRenderer->materials.push_back(pbrSphereMaterial);
+	pbrSphere->meshRenderer.model = pbrSphereModel;
+	pbrSphere->meshRenderer.materials.push_back(pbrSphereMaterial);
 	pbrSphere->transform.position = glm::vec3(3.0f, 0.6f, 6.5f);
 
 	Texture plankAlbedo = Texture::load("./user/assets/textures/plank.jpg", TextureType::ALBEDO);
@@ -69,8 +69,8 @@ void defaultScene() {
 	plank->metallic = 0.0f;
 	Model* cubeModel = new Model("./user/assets/models/cube.fbx");
 	Entity* cube = new Entity();
-	cube->meshRenderer->model = cubeModel;
-	cube->meshRenderer->materials.push_back(plank);
+	cube->meshRenderer.model = cubeModel;
+	cube->meshRenderer.materials.push_back(plank);
 	cube->transform.position = glm::vec3(-3.0f, 1.0f, 6.5f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
@@ -79,8 +79,8 @@ void defaultScene() {
 	Model* floorModel = new Model("./user/assets/models/cube.fbx");
 	floorModel->castsShadow = false;
 	Entity* floor = new Entity();
-	floor->meshRenderer->model = floorModel;
-	floor->meshRenderer->materials.push_back(floorMaterial);
+	floor->meshRenderer.model = floorModel;
+	floor->meshRenderer.materials.push_back(floorMaterial);
 	floor->transform.position = glm::vec3(0.0f, -1.0f, 0.0f);
 	floor->transform.scale = glm::vec3(150.0f, 0.1f, 150.0f);
 
@@ -90,8 +90,8 @@ void defaultScene() {
 	Model* wallModel = new Model("./user/assets/models/cube.fbx");
 	wallModel->castsShadow = true;
 	Entity* wall = new Entity();
-	wall->meshRenderer->model = wallModel;
-	wall->meshRenderer->materials.push_back(wallMaterial);
+	wall->meshRenderer.model = wallModel;
+	wall->meshRenderer.materials.push_back(wallMaterial);
 	wall->transform.position = glm::vec3(0.0f, -1.0f, 10.0f);
 	wall->transform.scale = glm::vec3(7.0f, 5.0f, 0.1f);
 
@@ -107,14 +107,14 @@ void defaultScene() {
 	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
 	Model* smearedWallModel = new Model("./user/assets/models/cube.fbx");
 	Entity* smearedWall = new Entity();
-	smearedWall->meshRenderer->model = smearedWallModel;
-	smearedWall->meshRenderer->materials.push_back(smearedWallMaterial);
+	smearedWall->meshRenderer.model = smearedWallModel;
+	smearedWall->meshRenderer.materials.push_back(smearedWallMaterial);
 	smearedWall->transform.position = glm::vec3(20.0f, -1.0f, 10.0f);
 	smearedWall->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
 	Entity* smearedWall2 = new Entity();
-	smearedWall2->meshRenderer->model = smearedWallModel;
-	smearedWall2->meshRenderer->materials.push_back(smearedWallMaterial);
+	smearedWall2->meshRenderer.model = smearedWallModel;
+	smearedWall2->meshRenderer.materials.push_back(smearedWallMaterial);
 	smearedWall2->transform.position = glm::vec3(23.0f, -1.0f, 10.0f);
 	smearedWall2->transform.rotation = glm::vec3(0.0, 60.0f, 0.0f);
 	smearedWall2->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
@@ -129,10 +129,10 @@ void defaultScene() {
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
 	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx");
 	mannequin = new Entity();
-	mannequin->meshRenderer->model = mannequinModel;
-	mannequin->meshRenderer->materials.push_back(mannequinMaterial);
-	mannequin->meshRenderer->useMotionBlur = true;
-	mannequin->meshRenderer->motionBlurIntensity = 3.0f;
+	mannequin->meshRenderer.model = mannequinModel;
+	mannequin->meshRenderer.materials.push_back(mannequinMaterial);
+	mannequin->meshRenderer.useMotionBlur = true;
+	mannequin->meshRenderer.motionBlurIntensity = 3.0f;
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.1f);
 	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 	mannequin->transform.scale = glm::vec3(1.4f);
@@ -142,8 +142,8 @@ void defaultScene() {
 	whiteMaterial->roughness = 0.15f;
 	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx");
 	Entity* shadowedSphere = new Entity();
-	shadowedSphere->meshRenderer->model = shadowedSphereModel;
-	shadowedSphere->meshRenderer->materials.push_back(whiteMaterial);
+	shadowedSphere->meshRenderer.model = shadowedSphereModel;
+	shadowedSphere->meshRenderer.materials.push_back(whiteMaterial);
 	shadowedSphere->transform.position = glm::vec3(12.5f, 0.6f, 8.0f);
 
 	neon = new LitMaterial();
@@ -155,8 +155,8 @@ void defaultScene() {
 	neonLight = new Entity();
 	neonLight->transform.position = glm::vec3(14.5f, 2.5f, 9.5f);
 	neonLight->transform.scale = glm::vec3(5.0f, 5.0f, 5.0f);
-	neonLight->meshRenderer->model = neonModel;
-	neonLight->meshRenderer->materials = { neon, neon, neon, neon, neon, neon, neon };
+	neonLight->meshRenderer.model = neonModel;
+	neonLight->meshRenderer.materials = { neon, neon, neon, neon, neon, neon, neon };
 
 	/*Model* dragonModel = new Model("./user/assets/models/dragon.fbx");
 	LitMaterial* dragonMaterial = new LitMaterial();
@@ -167,44 +167,44 @@ void defaultScene() {
 	dragon->transform.position = glm::vec3(9.7f, 1.0f, 0.0f);
 	dragon->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	dragon->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	dragon->meshRenderer->model = dragonModel;
+	dragon->meshRenderer.model = dragonModel;
 	std::vector<IMaterial*> dragonMats(100, dragonMaterial);
-	dragon->meshRenderer->materials = dragonMats;*/
+	dragon->meshRenderer.materials = dragonMats;*/
 
 	/*Entity* dragon2 = new Entity();
 	dragon2->transform.position = glm::vec3(32.0f, 1.0f, 0.0f);
 	dragon2->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	dragon2->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	dragon2->meshRenderer->model = dragonModel;
-	dragon2->meshRenderer->materials = dragonMats;
+	dragon2->meshRenderer.model = dragonModel;
+	dragon2->meshRenderer.materials = dragonMats;
 
 	Entity* dragon3 = new Entity();
 	dragon3->transform.position = glm::vec3(37.0f, 1.0f, 0.0f);
 	dragon3->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	dragon3->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	dragon3->meshRenderer->model = dragonModel;
-	dragon3->meshRenderer->materials = dragonMats;
+	dragon3->meshRenderer.model = dragonModel;
+	dragon3->meshRenderer.materials = dragonMats;
 
 	Entity* dragon4 = new Entity();
 	dragon4->transform.position = glm::vec3(42.0f, 1.0f, 0.0f);
 	dragon4->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	dragon4->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	dragon4->meshRenderer->model = dragonModel;
-	dragon4->meshRenderer->materials = dragonMats;
+	dragon4->meshRenderer.model = dragonModel;
+	dragon4->meshRenderer.materials = dragonMats;
 
 	Entity* dragon5 = new Entity();
 	dragon5->transform.position = glm::vec3(47.0f, 1.0f, 0.0f);
 	dragon5->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	dragon5->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	dragon5->meshRenderer->model = dragonModel;
-	dragon5->meshRenderer->materials = dragonMats;
+	dragon5->meshRenderer.model = dragonModel;
+	dragon5->meshRenderer.materials = dragonMats;
 
 	Entity* dragon6 = new Entity();
 	dragon6->transform.position = glm::vec3(52.0f, 1.0f, 0.0f);
 	dragon6->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	dragon6->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	dragon6->meshRenderer->model = dragonModel;
-	dragon6->meshRenderer->materials = dragonMats;*/
+	dragon6->meshRenderer.model = dragonModel;
+	dragon6->meshRenderer.materials = dragonMats;*/
 
 	/*Model* audiModel = new Model("./user/assets/models/audi.fbx");
 	LitMaterial* audiMaterial = new LitMaterial();
@@ -215,15 +215,15 @@ void defaultScene() {
 	audi->transform.position = glm::vec3(-8.0f, 1.0f, 0.0f);
 	audi->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	audi->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
-	audi->meshRenderer->model = audiModel;
+	audi->meshRenderer.model = audiModel;
 	std::vector<IMaterial*> audiMats(100, audiMaterial);
-	audi->meshRenderer->materials = audiMats;*/
+	audi->meshRenderer.materials = audiMats;*/
 
 	/*for (int i = 0; i < 40; i++) {
 		Entity* x = new Entity();
 		x = new Entity();
-		x->meshRenderer->model = mannequinModel;
-		x->meshRenderer->materials.push_back(mannequinMaterial);
+		x->meshRenderer.model = mannequinModel;
+		x->meshRenderer.materials.push_back(mannequinMaterial);
 		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);
@@ -254,8 +254,8 @@ void performanceScene() {
 		for (int z = 1; z < gridZ + 1; z++) {
 			Entity* entity = new Entity();
 			entity = new Entity();
-			entity->meshRenderer->model = cube;
-			entity->meshRenderer->materials.push_back(material);
+			entity->meshRenderer.model = cube;
+			entity->meshRenderer.materials.push_back(material);
 			entity->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
 			entity->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 			entity->transform.scale = glm::vec3(1.0f);
@@ -268,8 +268,8 @@ void performanceScene() {
 
 	Entity* entity = new Entity();
 	entity = new Entity();
-	entity->meshRenderer->model = cube;
-	entity->meshRenderer->materials.push_back(material);
+	entity->meshRenderer.model = cube;
+	entity->meshRenderer.materials.push_back(material);
 	entity->transform.position = glm::vec3(0.0f, 1.5f, 4.0f);
 	entity->transform.scale.x = 2.0f;
 	cubes.push_back(entity);

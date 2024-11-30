@@ -1,14 +1,13 @@
 #pragma once
 
 #include "../src/transform/transform.h"
+#include "../src/rendering/core/mesh_renderer.h"
 
-class MeshRenderer;
-
-class Entity
+struct Entity
 {
 public:
 	Entity();
 
 	Transform transform;
-	MeshRenderer* meshRenderer;
+	MeshRenderer meshRenderer;
 };

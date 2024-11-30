@@ -139,7 +139,7 @@ unsigned int VelocityBuffer::velocityPasses()
 	std::vector<Entity*> entityLinks = Runtime::entityLinks;
 	for (int i = 0; i < entityLinks.size(); i++)
 	{
-		entityLinks[i]->meshRenderer->velocityPass();
+		entityLinks[i]->meshRenderer.velocityPass();
 	}
 
 	// Disable depth testing

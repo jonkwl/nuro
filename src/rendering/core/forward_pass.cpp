@@ -135,7 +135,7 @@ unsigned int ForwardPass::render()
 	// Render each linked entity to bound forward pass frame
 	for (int i = 0; i < entityLinks.size(); i++)
 	{
-		entityLinks[i]->meshRenderer->forwardPass();
+		entityLinks[i]->meshRenderer.forwardPass();
 	}
 
 	// Disable wireframe if enabled
