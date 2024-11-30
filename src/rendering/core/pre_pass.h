@@ -3,22 +3,25 @@
 class PrePass
 {
 public:
-	static void setup(unsigned int width, unsigned int height);
+	PrePass();
+	
+	void create();
+	void destroy();
 
-	static void render();
+	void render();
 
-	static unsigned int getDepthOutput();
-	static unsigned int getNormalOutput();
+	unsigned int getDepthOutput();
+	unsigned int getNormalOutput();
 
-	static unsigned int getWidth();
-	static unsigned int getHeight();
+	unsigned int getWidth();
+	unsigned int getHeight();
 
 private:
-	static unsigned int fbo;
+	unsigned int fbo;
 
-	static unsigned int depthOutput;
-	static unsigned int normalOutput;
+	unsigned int depthOutput;
+	unsigned int normalOutput;
 
-	static unsigned int width;
-	static unsigned int height;
+	unsigned int width;
+	unsigned int height;
 };

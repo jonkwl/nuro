@@ -22,10 +22,8 @@
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/model/model.h"
-#include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/core/mesh_renderer.h"
-#include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/shadows/shadow_map.h"
 #include "../src/rendering/shadows/shadow_disk.h"
 #include "../src/rendering/primitives/quad.h"
@@ -100,9 +98,13 @@ unsigned int Runtime::nGPUEntities = 0;
 int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
-unsigned int Runtime::ssaoBuffer = 0;
+PrePass Runtime::prePass;
+ForwardPass Runtime::forwardPass;
+PostProcessingPipeline Runtime::postProcessingPipeline;
 
-PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline();
+unsigned int Runtime::prePassDepthOutput = 0;
+unsigned int Runtime::prePassNormalOutput = 0;
+unsigned int Runtime::ssaoBuffer = 0;
 
 bool skipSkyboxLoad = false; // tmp
 
@@ -268,11 +270,11 @@ int Runtime::START_LOOP()
 	// Set defualt window cursor
 	Window::setCursor(Window::cursorMode);
 
-	// Setup forward pass framebuffer
-	ForwardPass::setup(msaaSamples);
+	// Create forward pass
+	forwardPass.create(msaaSamples);
 
-	// Setup pre pass
-	PrePass::setup(Window::width, Window::height);
+	// Create pre pass
+	prePass.create();
 
 	// Setup ambient occlusion pass
 	SSAOPass::setup();
@@ -406,28 +408,28 @@ int Runtime::START_LOOP()
 		// Create geometry pass with depth buffer before forward pass
 		//
 		Profiler::start("pre_pass");
-		PrePass::render();
+		prePass.render();
 		Profiler::stop("pre_pass");
-		unsigned int PRE_PASS_DEPTH_OUTPUT = PrePass::getDepthOutput();
-		unsigned int PRE_PASS_NORMAL_OUTPUT = PrePass::getNormalOutput();
+		prePassDepthOutput = prePass.getDepthOutput();
+		prePassNormalOutput = prePass.getNormalOutput();
 
 		//
 		// SCREEN SPACE AMBIENT OCCLUSION PASS
 		// Calculate screen space ambient occlusion if enabled
 		//
-		unsigned int SSAO_OUTPUT = 0;
+		unsigned int ssaoOutput = 0;
 		if (PostProcessing::configuration.ambientOcclusion)
 		{
-			SSAO_OUTPUT = SSAOPass::render(PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+			ssaoOutput = SSAOPass::render(prePassDepthOutput, prePassNormalOutput);
 		}
-		ssaoBuffer = SSAO_OUTPUT;
+		ssaoBuffer = ssaoOutput;
 
 		//
 		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
 		// Includes injected pre pass
 		//
 		Profiler::start("forward_pass");
-		unsigned int FORWARD_PASS_OUTPUT = ForwardPass::render();
+		unsigned int forwardPassOutput = forwardPass.render();
 		Profiler::stop("forward_pass");
 
 		//
@@ -435,7 +437,7 @@ int Runtime::START_LOOP()
 		// Render post processing pass to screen using forward pass output as input
 		//
 		Profiler::start("post_processing");
-		postProcessingPipeline.render(FORWARD_PASS_OUTPUT);
+		postProcessingPipeline.render(forwardPassOutput);
 		Profiler::stop("post_processing");
 
 		//

@@ -3,16 +3,20 @@
 class ForwardPass
 {
 public:
-	static void setup(unsigned int msaaSamples);
-	static unsigned int render(); // Returns color output
+	ForwardPass();
 
-	static unsigned int getDepthOutput(); // Returns depth output
+	void create(unsigned int msaaSamples); // Creates forward pass
+	void destroy(); // Destroys forward pass
+
+	unsigned int render(); // Returns color output
+
+	unsigned int getDepthOutput(); // Returns depth output
 private:
-	static unsigned int outputFbo;	 // Output framebuffer
-	static unsigned int outputColor; // Output texture
-	static unsigned int outputDepth; // Output texture
+	unsigned int outputFbo;	 // Output framebuffer
+	unsigned int outputColor; // Output texture
+	unsigned int outputDepth; // Output texture
 
-	static unsigned int multisampledFbo;		 // Anti-Aliasing framebuffer
-	static unsigned int multisampledRbo;		 // Anti-Aliasing renderbuffer
-	static unsigned int multisampledColorBuffer; // Anti-Aliasing color buffer texture
+	unsigned int multisampledFbo;		 // Anti-Aliasing framebuffer
+	unsigned int multisampledRbo;		 // Anti-Aliasing renderbuffer
+	unsigned int multisampledColorBuffer; // Anti-Aliasing color buffer texture
 };

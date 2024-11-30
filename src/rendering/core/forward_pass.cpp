@@ -10,17 +10,18 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/skybox/skybox.h"
 
-unsigned int ForwardPass::outputFbo = 0;
-unsigned int ForwardPass::outputColor = 0;
-unsigned int ForwardPass::outputDepth = 0;
-
-unsigned int ForwardPass::multisampledFbo = 0;
-unsigned int ForwardPass::multisampledRbo = 0;
-unsigned int ForwardPass::multisampledColorBuffer = 0;
-
 #include <cstdlib>
 
-void ForwardPass::setup(unsigned int msaaSamples)
+ForwardPass::ForwardPass() : outputFbo(0),
+outputColor(0),
+outputDepth(0),
+multisampledFbo(0),
+multisampledRbo(0),
+multisampledColorBuffer(0)
+{
+}
+
+void ForwardPass::create(unsigned int msaaSamples)
 {
 	// Initialize parameters needed
 	int width = Window::width;
@@ -73,6 +74,32 @@ void ForwardPass::setup(unsigned int msaaSamples)
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ForwardPass::destroy() {
+	// Delete color output texture
+	glDeleteTextures(1, &outputColor);
+	outputColor = 0;
+
+	// Delete depth output texture
+	glDeleteTextures(1, &outputDepth);
+	outputDepth = 0;
+
+	// Delete output framebuffer
+	glDeleteFramebuffers(1, &outputFbo);
+	outputFbo = 0;
+
+	// Delete multisampled color buffer texture
+	glDeleteTextures(1, &multisampledColorBuffer);
+	multisampledColorBuffer = 0;
+
+	// Delete multisampled renderbuffer
+	glDeleteRenderbuffers(1, &multisampledRbo);
+	multisampledRbo = 0;
+
+	// Delete multisampled framebuffer
+	glDeleteFramebuffers(1, &multisampledFbo);
+	multisampledFbo = 0;
 }
 
 unsigned int ForwardPass::render()

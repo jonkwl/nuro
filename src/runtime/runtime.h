@@ -3,6 +3,8 @@
 #include <vector>
 #include <glm.hpp>
 
+#include "../src/rendering/core/pre_pass.h"
+#include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
 #include "../src/rendering/skybox/skybox.h"
 
@@ -80,11 +82,15 @@ public:
 	static unsigned int currentVertices;
 	static unsigned int currentPolygons;
 
-	// Screen space ambient occlusion
-	static unsigned int ssaoBuffer;
-
-	// Passes
+	// Passes & Pipelines
+	static PrePass prePass;
+	static ForwardPass forwardPass;
 	static PostProcessingPipeline postProcessingPipeline;
+
+	// Buffers from passes
+	static unsigned int prePassDepthOutput;
+	static unsigned int prePassNormalOutput;
+	static unsigned int ssaoBuffer;
 
 	// tmp for testing
 	static float intensity;

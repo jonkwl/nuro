@@ -7,20 +7,21 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/utils/log.h"
+#include "../src/window/window.h"
 
-unsigned int PrePass::width = 0;
-unsigned int PrePass::height = 0;
+PrePass::PrePass() : fbo(0),
+depthOutput(0),
+normalOutput(0),
+width(0),
+height(0)
+{
+}
 
-unsigned int PrePass::fbo = 0;
-
-unsigned int PrePass::depthOutput = 0;
-unsigned int PrePass::normalOutput = 0;
-
-void PrePass::setup(unsigned int width, unsigned int height)
+void PrePass::create()
 {
 	// Initialize members
-	PrePass::width = width;
-	PrePass::height = height;
+	width = Window::width;
+	height = Window::height;
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
@@ -63,6 +64,24 @@ void PrePass::setup(unsigned int width, unsigned int height)
 
 	// Unbind fbo
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void PrePass::destroy() {
+	// Delete depth output texture
+	glDeleteTextures(1, &depthOutput);
+	depthOutput = 0;
+
+	// Delete normal output texture
+	glDeleteTextures(1, &normalOutput);
+	normalOutput = 0;
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &fbo);
+	fbo = 0;
+
+	// Reset width and height
+	width = 0;
+	height = 0;
 }
 
 void PrePass::render()

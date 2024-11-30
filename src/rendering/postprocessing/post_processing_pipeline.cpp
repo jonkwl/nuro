@@ -12,6 +12,7 @@
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/texture/texture.h"
+#include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
 
 PostProcessingPipeline::PostProcessingPipeline() : fbo(0),
@@ -85,8 +86,8 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_HDR = hdrInput;
-	unsigned int POST_PROCESSING_PIPELINE_DEPTH = PrePass::getDepthOutput();
-	unsigned int POST_PROCESSING_PIPELINE_NORMAL = PrePass::getNormalOutput();
+	unsigned int POST_PROCESSING_PIPELINE_DEPTH = Runtime::prePassDepthOutput;
+	unsigned int POST_PROCESSING_PIPELINE_NORMAL = Runtime::prePassNormalOutput;
 
 	// Motion blur pass
 	if (configuration.motionBlur)
