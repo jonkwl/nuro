@@ -130,6 +130,8 @@ private:
 	static void finishFrame(); // Call to finalize current frame
 	static void checkResize(); // Perform resize if needed
 
+	static void startupWindow();
+
 	// Context callbacks
 	static void glfwErrorCallback(int error, const char* description);
 	static void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);

@@ -537,6 +537,12 @@ void Runtime::checkResize() {
 
 }
 
+void Runtime::startupWindow() {
+
+
+
+}
+
 void Runtime::glfwErrorCallback(int error, const char* description)
 {
 

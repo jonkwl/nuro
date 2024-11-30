@@ -43,6 +43,7 @@ void LitMaterial::bind()
 	// General parameters
 	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
+	shader->setVec2("configuration.screenResolution", glm::vec2(Window::width, Window::height));
 
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", Runtime::shadows);
@@ -163,7 +164,6 @@ void LitMaterial::setEmissionMap(Texture texture)
 void LitMaterial::syncStaticUniforms()
 {
 	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
-	shader->setVec2("configuration.screenResolution", glm::vec2(Window::width, Window::height));
 
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);
