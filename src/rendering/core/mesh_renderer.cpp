@@ -45,7 +45,7 @@ void MeshRenderer::prepareNextFrame()
 	performFrustumCulling();
 }
 
-void MeshRenderer::forwardPass()
+void MeshRenderer::forwardPass(Viewport& viewport)
 {
 	// No model to render available -> cancel
 	if (model == nullptr)
@@ -82,7 +82,7 @@ void MeshRenderer::forwardPass()
 		}
 
 		// Bind material
-		material->bind();
+		material->bind(viewport);
 
 		// Set shader uniforms
 		Shader* shader = material->getShader();

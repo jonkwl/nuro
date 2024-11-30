@@ -33,11 +33,11 @@
 #include "../src/utils/inspector_mode.h"
 #include "../src/utils/profiler.h"
 #include "../src/editor/engine_ui.h"
-#include "../src/window/window.h"
 #include "../src/input/input.h"
 #include "../src/rendering/gizmos/gizmos.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
+#include "../src/viewport/viewport.h"
 #include "../src/rendering/skybox/cubemap.h"
 
 std::vector<Entity*> Runtime::entityStack;
@@ -74,6 +74,13 @@ bool Runtime::showDiagnostics = true;
 bool Runtime::skyboxEnabled = true;
 Skybox& Runtime::selectedSkybox = Runtime::defaultSkybox;
 
+GLFWwindow* Runtime::glfw = nullptr;
+glm::vec2 Runtime::windowSize = glm::vec2(800.0f, 400.0f);
+bool Runtime::fullscreen = false;
+GLenum Runtime::cursorMode = GLFW_CURSOR_DISABLED;
+
+Viewport Runtime::sceneViewport;
+
 ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
@@ -94,10 +101,10 @@ float Runtime::normalMappingIntensity = 1.0f;
 unsigned int Runtime::nCPUEntities = 0;
 unsigned int Runtime::nGPUEntities = 0;
 
-PrePass Runtime::prePass;
-ForwardPass Runtime::forwardPass;
-SSAOPass Runtime::ssaoPass;
-PostProcessingPipeline Runtime::postProcessingPipeline;
+PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
+ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
+SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
+PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport);
 
 unsigned int Runtime::prePassDepthOutput = 0;
 unsigned int Runtime::prePassNormalOutput = 0;
@@ -157,6 +164,12 @@ Camera& Runtime::getInspectorCamera()
 	return inspectorCamera;
 }
 
+void Runtime::setCursor(GLenum cursorMode)
+{
+	Runtime::cursorMode = cursorMode;
+	glfwSetInputMode(Runtime::glfw, GLFW_CURSOR, cursorMode);
+}
+
 //
 //
 // RUNTIME BASE METHODS (START & TERMINATE)
@@ -180,7 +193,7 @@ int Runtime::START_LOOP()
 	// PERFORM GAMES AWAKE LOGIC
 	awake();
 
-	while (!glfwWindowShouldClose(Window::glfw))
+	while (!glfwWindowShouldClose(glfw))
 	{
 		// Check if window has been resized
 		checkResize();
@@ -216,9 +229,9 @@ int Runtime::START_LOOP()
 
 void Runtime::TERMINATE()
 {
-	if (Window::glfw != nullptr)
+	if (glfw != nullptr)
 	{
-		glfwDestroyWindow(Window::glfw);
+		glfwDestroyWindow(glfw);
 		glfwTerminate();
 	}
 	std::exit(0);
@@ -248,7 +261,7 @@ void Runtime::setupGlfw() {
 	glfwWindowHint(GLFW_ALPHA_BITS, 2);
 
 	// Check for fullscreen
-	if (Window::fullscreen)
+	if (fullscreen)
 	{
 		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
@@ -256,23 +269,23 @@ void Runtime::setupGlfw() {
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-		Window::width = mode->width;
-		Window::height = mode->height;
+		windowSize = glm::vec2(mode->width, mode->height);
 	}
 
 	// Create window
-	Window::glfw = glfwCreateWindow(Window::width, Window::height, Window::title.c_str(), nullptr, nullptr);
-	glfwSetFramebufferSizeCallback(Window::glfw, Window::framebuffer_size_callback);
-	if (Window::glfw == nullptr)
+	glfw = glfwCreateWindow(windowSize.x, windowSize.y, "Rendering Alpha", nullptr, nullptr);
+
+	// Set resize callbacks
+	glfwSetFramebufferSizeCallback(glfw, glfwWindowSizeCallback);
+	glfwSetWindowSizeCallback(glfw, glfwWindowSizeCallback);
+
+	if (glfw == nullptr)
 	{
 		Log::printError("GLFW", "Creation of window failed");
 	}
 
-	// Set window resize callback
-	glfwSetWindowSizeCallback(Window::glfw, glfwWindowSizeCallback);
-
 	// Load graphics api
-	glfwMakeContextCurrent(Window::glfw);
+	glfwMakeContextCurrent(glfw);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		Log::printError("GLFW", "Initialization of GLAD failed");
@@ -283,8 +296,11 @@ void Runtime::setupGlfw() {
 	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
 
 	// Set defualt window cursor
-	Window::setCursor(Window::cursorMode);
+	setCursor(cursorMode);
 
+	// Set scene viewport
+	sceneViewport.width = windowSize.x;
+	sceneViewport.height = windowSize.y;
 }
 
 void Runtime::setVSync() {
@@ -416,7 +432,7 @@ void Runtime::renderFrame() {
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, Window::width, Window::height);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, sceneViewport);
 	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
 
@@ -507,7 +523,7 @@ void Runtime::renderEditor() {
 void Runtime::finishFrame() {
 
 	// Sqap glfw buffers and poll events
-	glfwSwapBuffers(Window::glfw);
+	glfwSwapBuffers(glfw);
 	glfwPollEvents();
 
 }
@@ -515,9 +531,6 @@ void Runtime::finishFrame() {
 void Runtime::checkResize() {
 
 	if (!resized) return;
-
-	unsigned int width = Window::width;
-	unsigned int height = Window::height;
 
 	// Destroy all passes/pipelines which are bound to a fixed viewport size
 	forwardPass.destroy();
@@ -552,8 +565,8 @@ void Runtime::glfwErrorCallback(int error, const char* description)
 
 void Runtime::glfwWindowSizeCallback(GLFWwindow* window, int width, int height) {
 
-	Window::width = width;
-	Window::height = height;
+	sceneViewport.width = width;
+	sceneViewport.height = height;
 
 	resized = true;
 

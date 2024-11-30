@@ -7,9 +7,9 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/utils/log.h"
-#include "../src/window/window.h"
 
-PrePass::PrePass() : fbo(0),
+PrePass::PrePass(Viewport& viewport) : viewport(viewport),
+fbo(0),
 depthOutput(0),
 normalOutput(0)
 {
@@ -24,7 +24,7 @@ void PrePass::create()
 	// Generate depth output
 	glGenTextures(1, &depthOutput);
 	glBindTexture(GL_TEXTURE_2D, depthOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, Window::width, Window::height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, viewport.width, viewport.height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 	// Set depth output parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -38,7 +38,7 @@ void PrePass::create()
 	// Generate normal output
 	glGenTextures(1, &normalOutput);
 	glBindTexture(GL_TEXTURE_2D, normalOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, Window::width, Window::height, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.width, viewport.height, 0, GL_RGB, GL_FLOAT, nullptr);
 
 	// Set normal output parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -77,7 +77,7 @@ void PrePass::destroy() {
 void PrePass::render()
 {
 	// Set viewport for upcoming pre pass
-	glViewport(0, 0, Window::width, Window::height);
+	glViewport(0, 0, viewport.width, viewport.height);
 
 	// Bind pre pass framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);

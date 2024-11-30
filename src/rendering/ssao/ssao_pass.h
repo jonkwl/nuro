@@ -3,12 +3,14 @@
 #include <glm.hpp>
 #include <vector>
 
+#include "../src/viewport/viewport.h"
+
 class Shader;
 
 class SSAOPass
 {
 public:
-	SSAOPass();
+	SSAOPass(Viewport& viewport);
 
 	void create(float aoScale = 0.5f, int maxKernelSamples = 64, float noiseResolution = 4.0f);  // Create ambient occlusion pass
 	void destroy(); // Destroy ambient occlusion pass
@@ -22,6 +24,8 @@ private:
 		NOISE_UNIT,
 		AO_UNIT
 	};
+
+	Viewport& viewport;
 
 	float aoScale; // Scale of ambient occlusion resolution in relation to viewport resolution
 	int maxKernelSamples; // Amount of kernel samples being generated (therefore the max amount to be utilised)

@@ -9,7 +9,6 @@
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/shader/shader_pool.h"
-#include "../src/window/window.h"
 #include "../src/utils/log.h"
 
 LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
@@ -36,14 +35,14 @@ emissionMap(Texture::empty())
 	syncLightUniforms();
 }
 
-void LitMaterial::bind()
+void LitMaterial::bind(Viewport& viewport)
 {
 	shader->bind();
 
 	// General parameters
 	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
-	shader->setVec2("configuration.screenResolution", glm::vec2(Window::width, Window::height));
+	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport.width, viewport.height));
 
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", Runtime::shadows);

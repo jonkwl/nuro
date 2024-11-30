@@ -160,7 +160,6 @@
     <ClCompile Include="src\rendering\skybox\cubemap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\rendering\texture\texture.cpp" />
-    <ClCompile Include="src\window\window.cpp" />
     <ClCompile Include="src\camera\camera.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
     <ClCompile Include="src\rendering\shader\shader_pool.cpp" />
@@ -221,7 +220,6 @@
     <ClInclude Include="src\editor\IconsFontAwesome6.h" />
     <ClInclude Include="src\rendering\skybox\cubemap.h" />
     <ClInclude Include="src\rendering\material\lit\lit_material.h" />
-    <ClInclude Include="src\window\window.h" />
     <ClInclude Include="src\camera\camera.h" />
     <ClInclude Include="src\rendering\material\imaterial.h" />
     <ClInclude Include="src\rendering\shader\shader_pool.h" />
@@ -255,6 +253,7 @@
     <ClInclude Include="src\rendering\shader\shader.h" />
     <ClInclude Include="src\rendering\texture\texture.h" />
     <ClInclude Include="src\rendering\postprocessing\velocity_buffer.h" />
+    <ClInclude Include="src\viewport\viewport.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\default\default.jpg" />

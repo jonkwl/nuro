@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../src/viewport/viewport.h"
+
 class ForwardPass
 {
 public:
-	ForwardPass();
+	ForwardPass(Viewport& viewport);
 
 	void create(unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
@@ -12,6 +14,8 @@ public:
 
 	unsigned int getDepthOutput(); // Returns depth output
 private:
+	Viewport& viewport;
+
 	unsigned int outputFbo;	 // Output framebuffer
 	unsigned int outputColor; // Output texture
 	unsigned int outputDepth; // Output texture

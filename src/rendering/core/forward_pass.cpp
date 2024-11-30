@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include "../src/runtime/runtime.h"
-#include "../src/window/window.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/gizmos/gizmos.h"
 #include "../src/entity/entity.h"
@@ -12,7 +11,8 @@
 
 #include <cstdlib>
 
-ForwardPass::ForwardPass() : outputFbo(0),
+ForwardPass::ForwardPass(Viewport& viewport) : viewport(viewport),
+outputFbo(0),
 outputColor(0),
 outputDepth(0),
 multisampledFbo(0),
@@ -30,7 +30,7 @@ void ForwardPass::create(unsigned int msaaSamples)
 	// Generate color output texture
 	glGenTextures(1, &outputColor);
 	glBindTexture(GL_TEXTURE_2D, outputColor);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -51,7 +51,7 @@ void ForwardPass::create(unsigned int msaaSamples)
 	// Generate multi-sampled color buffer texture
 	glGenTextures(1, &multisampledColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, Window::width, Window::height, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, viewport.width, viewport.height, GL_TRUE);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
@@ -59,7 +59,7 @@ void ForwardPass::create(unsigned int msaaSamples)
 	// Generate multi-sampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, Window::width, Window::height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, viewport.width, viewport.height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multi-sampled framebuffer error
@@ -103,9 +103,6 @@ unsigned int ForwardPass::render()
 	// Initialize parameters needed
 	bool wireframe = Runtime::wireframe;
 
-	int width = Window::width;
-	int height = Window::height;
-
 	std::vector<Entity*> entityStack = Runtime::entityStack;
 
 	// Bind framebuffer
@@ -124,7 +121,7 @@ unsigned int ForwardPass::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Set viewport
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, viewport.width, viewport.height);
 
 	// Set wireframe if enabled
 	if (wireframe)
@@ -158,7 +155,7 @@ unsigned int ForwardPass::render()
 	// Render each linked entity to bound forward pass frame
 	for (int i = 0; i < entityStack.size(); i++)
 	{
-		entityStack[i]->meshRenderer.forwardPass();
+		entityStack[i]->meshRenderer.forwardPass(viewport);
 	}
 
 	// Disable wireframe if enabled
@@ -182,7 +179,7 @@ unsigned int ForwardPass::render()
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFbo);
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, viewport.width, viewport.height, 0, 0, viewport.width, viewport.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	return outputColor;
 }

@@ -4,13 +4,14 @@
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/postprocessing/motion_blur_pass.h"
 #include "../src/rendering/postprocessing/bloom_pass.h"
+#include "../src/viewport/viewport.h"
 
 class Shader;
 
 class PostProcessingPipeline
 {
 public:
-	PostProcessingPipeline();
+	PostProcessingPipeline(Viewport& viewport);
 
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
@@ -27,6 +28,8 @@ private:
 		BLOOM_UNIT,
 		LENS_DIRT_UNIT
 	};
+
+	Viewport& viewport;
 
 	void syncConfiguration(); // Sync the post processing configuration with final pass shader
 

@@ -57,9 +57,6 @@
     <ClCompile Include="src\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\window\window.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\editor\engine_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -224,9 +221,6 @@
     <ClInclude Include="src\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\window\window.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\editor\engine_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -375,6 +369,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\gizmos\gizmos.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\viewport\viewport.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

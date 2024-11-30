@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include <glm.hpp>
 
-#include "../src/window/window.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/shader/shader_pool.h"
@@ -15,12 +14,13 @@
 #include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
 
-PostProcessingPipeline::PostProcessingPipeline() : fbo(0),
+PostProcessingPipeline::PostProcessingPipeline(Viewport& viewport) : viewport(viewport),
+fbo(0),
 output(0),
 finalPassShader(nullptr),
 configuration(PostProcessing::configuration),
-motionBlurPass(),
-bloomPass()
+motionBlurPass(viewport),
+bloomPass(viewport)
 {
 }
 
@@ -33,7 +33,7 @@ void PostProcessingPipeline::create()
 	// Generate output texture
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -112,7 +112,7 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
-	finalPassShader->setVec2("resolution", Window::getSize());
+	finalPassShader->setVec2("resolution", glm ::vec2(viewport.width, viewport.height));
 
 	// Sync post processing configuration with shader
 	syncConfiguration();

@@ -7,7 +7,6 @@
 #include "IconsFontAwesome6.h"
 
 #include "../src/runtime/runtime.h"
-#include "../src/window/window.h"
 #include "../src/editor/editor_window.h"
 #include "../src/editor/ui_components.h"
 #include "../src/editor/ui_layout.h"
@@ -123,7 +122,7 @@ void EditorUI::setup()
 	imguiColors[ImGuiCol_DockingPreview] = colors.elementActive;
 	imguiColors[ImGuiCol_DockingEmptyBg] = colors.elementActive;
 
-	ImGui_ImplGlfw_InitForOpenGL(Window::glfw, true);
+	ImGui_ImplGlfw_InitForOpenGL(Runtime::glfw, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
 	SceneWindow* sceneWindow = new SceneWindow();

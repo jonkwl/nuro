@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include "../src/runtime/runtime.h"
-#include "../src/window/window.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/shader/shader.h"
@@ -11,11 +10,12 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
-MotionBlurPass::MotionBlurPass() : fbo(0),
+MotionBlurPass::MotionBlurPass(Viewport& viewport) : viewport(viewport),
+fbo(0),
 output(0),
 shader(nullptr),
 previousViewProjectionMatrix(glm::mat4(1.0f)),
-velocityBuffer()
+velocityBuffer(viewport)
 {
 }
 
@@ -41,7 +41,7 @@ void MotionBlurPass::create()
 	// Generate output texture
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, nullptr);
 
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

@@ -72,9 +72,9 @@ namespace Transformation {
 		return viewMatrix;
 	}
 
-	glm::mat4 projectionMatrix(Camera& camera, int width, int height)
+	glm::mat4 projectionMatrix(Camera& camera, Viewport& viewport)
 	{
-		glm::mat4 projection = glm::perspective(glm::radians(camera.getFov()), (float)width / (float)height, camera.getNear(), camera.getFar());
+		glm::mat4 projection = glm::perspective(glm::radians(camera.getFov()), viewport.width / viewport.height, camera.getNear(), camera.getFar());
 		return projection;
 	}
 

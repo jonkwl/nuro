@@ -3,12 +3,14 @@
 #include <vector>
 #include <glm.hpp>
 
+#include "../src/viewport/viewport.h"
+
 class Shader;
 
 class BloomPass
 {
 public:
-	BloomPass();
+	BloomPass(Viewport& viewport);
 
 	void create(unsigned int mipDepth);
 	void destroy();
@@ -26,6 +28,8 @@ private:
 	void upsamplingPass();
 
 private:
+	Viewport& viewport;
+
 	struct Mip
 	{
 		glm::ivec2 iSize;

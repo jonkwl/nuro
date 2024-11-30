@@ -4,11 +4,14 @@
 #include <glm.hpp>
 #include <chrono>
 
+#include <glad/glad.h> // tmp
+
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
 #include "../src/rendering/skybox/skybox.h"
+#include "../src/viewport/viewport.h"
 
 struct GLFWwindow;
 class UnlitMaterial;
@@ -51,6 +54,16 @@ public:
 	// Skybox settings
 	static bool skyboxEnabled;
 	static Skybox& selectedSkybox; // Currently selected skybox
+
+	// Context
+	static GLFWwindow* glfw;
+	static glm::vec2 windowSize;
+	static bool fullscreen;
+	static GLenum cursorMode;
+	static void setCursor(GLenum cursorMode);
+
+	// Viewports
+	static Viewport sceneViewport;
 
 	// Time & frames
 	static float time;		 // Time passed since application beginning

@@ -15,14 +15,14 @@ in vec3 v_fragmentWorldPosition;
 in vec4 v_fragmentLightSpacePosition;
 
 vec2 uv;
-vec2 screenUV;
+vec2 viewportUv;
 vec3 normal;
 
 struct Configuration {
     // General parameters
     float gamma;
     bool solidMode;
-    vec2 screenResolution;
+    vec2 viewportResolution;
 
     // Shadow parameters
     bool castShadows;
@@ -372,7 +372,7 @@ float getAmbientOcclusionMapSample()
 float getSSAO() {
     float ssao = 1.0;
     if (configuration.enableSSAO) {
-        ssao = texture(configuration.ssaoBuffer, screenUV).r;
+        ssao = texture(configuration.ssaoBuffer, viewportUv).r;
     }
     return ssao;
 }
@@ -713,7 +713,7 @@ vec4 shadeShadowMap() {
 void main()
 {
     uv = v_uv * material.tiling + material.offset;
-    screenUV = gl_FragCoord.xy / vec2(configuration.screenResolution.x, configuration.screenResolution.y);
+    viewportUv = gl_FragCoord.xy / vec2(configuration.viewportResolution.x, configuration.viewportResolution.y);
     normal = getNormal();
 
     if (!configuration.solidMode) {

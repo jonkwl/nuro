@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "../src/utils/log.h"
-#include "../src/window/window.h"
 #include "../src/runtime/runtime.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/shader/shader.h"
@@ -14,7 +13,8 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
-VelocityBuffer::VelocityBuffer() : fbo(0),
+VelocityBuffer::VelocityBuffer(Viewport& viewport) : viewport(viewport),
+fbo(0),
 rbo(0),
 output(0),
 postfilteredOutput(0),
@@ -38,7 +38,7 @@ void VelocityBuffer::create()
 	// RED CHANNEL = x velocity | GREEN CHANNEL = y velocity | BLUE CHANNEL = view space depth
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, Window::width, Window::height, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.width, viewport.height, 0, GL_RGB, GL_FLOAT, nullptr);
 
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -52,7 +52,7 @@ void VelocityBuffer::create()
 	// Generate postfiltered output texture
 	glGenTextures(1, &postfilteredOutput);
 	glBindTexture(GL_TEXTURE_2D, postfilteredOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, Window::width, Window::height, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.width, viewport.height, 0, GL_RGB, GL_FLOAT, nullptr);
 
 	// Set postfiltered output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -63,7 +63,7 @@ void VelocityBuffer::create()
 	// Create depth buffer
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, Window::width, Window::height);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, viewport.width, viewport.height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	// Check framebuffer status
@@ -156,7 +156,7 @@ unsigned int VelocityBuffer::postfilteringPass()
 
 	// Bind postfilter shader
 	postfilterShader->bind();
-	postfilterShader->setVec2("resolution", glm::vec2(Window::width, Window::height));
+	postfilterShader->setVec2("resolution", glm::vec2(viewport.width, viewport.height));
 
 	// Bind velocity buffer texture
 	glActiveTexture(GL_TEXTURE0);

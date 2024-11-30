@@ -2,6 +2,7 @@
 
 #include "../imaterial.h"
 
+#include "../src/viewport/viewport.h"
 #include "../src/rendering/texture/texture.h"
 
 class LitMaterial : public IMaterial
@@ -9,7 +10,7 @@ class LitMaterial : public IMaterial
 public:
 	LitMaterial();
 
-	void bind();
+	void bind(Viewport& viewport);
 	Shader* getShader();
 
 	glm::vec4 baseColor = glm::vec4(1.0f);

@@ -1,11 +1,13 @@
 #pragma once
 
+#include "../src/viewport/viewport.h"
+
 class Shader;
 
 class VelocityBuffer
 {
 public:
-	VelocityBuffer();
+	VelocityBuffer(Viewport& viewport);
 
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
@@ -17,6 +19,8 @@ private:
 	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:
+	Viewport& viewport;
+
 	unsigned int fbo; // Framebuffer
 	unsigned int rbo; // Renderbuffer
 

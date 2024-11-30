@@ -8,10 +8,10 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/primitives/quad.h"
-#include "../src/window/window.h"
 #include "../src/utils/log.h"
 
-SSAOPass::SSAOPass() : aoScale(0.0f),
+SSAOPass::SSAOPass(Viewport& viewport) : viewport(viewport),
+aoScale(0.0f),
 maxKernelSamples(0),
 noiseResolution(0.0f),
 fbo(0),
@@ -59,7 +59,7 @@ void SSAOPass::create(float aoScale, int maxKernelSamples, float noiseResolution
 	// Generate ambient occlusion output texture
 	glGenTextures(1, &aoOutput);
 	glBindTexture(GL_TEXTURE_2D, aoOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width * aoScale, Window::height * aoScale, 0, GL_RED, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, viewport.width * aoScale, viewport.height * aoScale, 0, GL_RED, GL_FLOAT, nullptr);
 
 	// Set ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -73,7 +73,7 @@ void SSAOPass::create(float aoScale, int maxKernelSamples, float noiseResolution
 	// Generate blurred ambient occlusion output texture
 	glGenTextures(1, &blurredOutput);
 	glBindTexture(GL_TEXTURE_2D, blurredOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, Window::width, Window::height, 0, GL_RED, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, viewport.width, viewport.height, 0, GL_RED, GL_FLOAT, nullptr);
 
 	// Set blurred ambient occlusion output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -151,7 +151,7 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
 
 	// Set viewport size
-	glViewport(0, 0, Window::width * aoScale, Window::height * aoScale);
+	glViewport(0, 0, viewport.width * aoScale, viewport.height * aoScale);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
 	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
@@ -164,7 +164,7 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	aoPassShader->bind();
 
 	// Set ambient occlusion pass shader uniforms
-	aoPassShader->setVec2("resolution", glm::vec2(Window::width, Window::height));
+	aoPassShader->setVec2("resolution", glm::vec2(viewport.width, viewport.height));
 	aoPassShader->setMatrix4("projectionMatrix", MeshRenderer::currentProjectionMatrix);
 	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
 
@@ -196,7 +196,7 @@ void SSAOPass::blurPass()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurredOutput, 0);
 
 	// Set viewport size
-	glViewport(0, 0, Window::width, Window::height);
+	glViewport(0, 0, viewport.width, viewport.height);
 
 	// Bind blur shader
 	aoBlurShader->bind();

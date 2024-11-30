@@ -1,6 +1,7 @@
 #include <glm.hpp>
 
 #include "../src/rendering/material/imaterial.h"
+#include "../src/viewport/viewport.h"
 
 class Model;
 class BoundingVolume;
@@ -26,7 +27,7 @@ public:
 	void prepareNextFrame();
 
 	// Mesh needs to be prepared using prepare() before any pass for current frame is performed
-	void forwardPass();
+	void forwardPass(Viewport& viewport);
 	void prePass();
 	void shadowPass();
 	void velocityPass();

@@ -2,13 +2,13 @@
 
 #include <glad/glad.h>
 
-#include "../src/window/window.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/primitives/quad.h"
 #include "../src/utils/log.h"
 
-BloomPass::BloomPass() : threshold(0.0f),
+BloomPass::BloomPass(Viewport& viewport) : viewport(viewport),
+threshold(0.0f),
 softThreshold(0.0f),
 filterRadius(0.0f),
 mipDepth(0),
@@ -47,13 +47,13 @@ void BloomPass::create(unsigned int mipDepth)
 	this->mipDepth = mipDepth;
 
 	// Get initial viewport size
-	iViewportSize = glm::ivec2(Window::width, Window::height);
-	fViewportSize = glm::vec2((float)Window::width, (float)Window::height);
+	iViewportSize = glm::ivec2(viewport.width, viewport.height);
+	fViewportSize = glm::vec2((float)viewport.width, (float)viewport.height);
 	inversedViewportSize = 1.0f / fViewportSize;
 
 	// Get initial viewport size
-	glm::ivec2 iMipSize = glm::ivec2((int)Window::width, (int)Window::height);
-	glm::vec2 fMipSize = glm::vec2((float)Window::width, (float)Window::height);
+	glm::ivec2 iMipSize = glm::ivec2((int)viewport.width, (int)viewport.height);
+	glm::vec2 fMipSize = glm::vec2((float)viewport.width, (float)viewport.height);
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &framebuffer);
@@ -62,7 +62,7 @@ void BloomPass::create(unsigned int mipDepth)
 	// Generate prefilter texture
 	glGenTextures(1, &prefilterOutput);
 	glBindTexture(GL_TEXTURE_2D, prefilterOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Window::width, Window::height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, nullptr);
 
 	// Set prefilter texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

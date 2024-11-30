@@ -2,6 +2,7 @@
 
 #include <glm.hpp>
 
+#include "../src/viewport/viewport.h"
 #include "../src/rendering/postprocessing/velocity_buffer.h"
 
 class Shader;
@@ -9,7 +10,7 @@ class Shader;
 class MotionBlurPass
 {
 public:
-	MotionBlurPass();
+	MotionBlurPass(Viewport& viewport);
 
 	void create();
 	void destroy();
@@ -23,6 +24,8 @@ private:
 		DEPTH_UNIT,
 		VELOCITY_UNIT
 	};
+
+	Viewport& viewport;
 
 	unsigned int fbo;
 	unsigned int output;
