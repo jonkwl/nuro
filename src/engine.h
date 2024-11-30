@@ -1,6 +1,6 @@
 #pragma once
 
-// Useful include batch for applications using engine
+// Useful includes for applications using engine
 #include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
 #include "../src/camera/camera.h"
@@ -12,3 +12,4 @@
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/texture/texture.h"
+#include "../src/rendering/gizmos/gizmos.h"

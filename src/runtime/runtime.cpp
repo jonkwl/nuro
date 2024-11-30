@@ -39,7 +39,7 @@
 #include "../src/editor/engine_ui.h"
 #include "../src/window/window.h"
 #include "../src/input/input.h"
-#include "../src/rendering/gizmos/quick_gizmo.h"
+#include "../src/rendering/gizmos/gizmos.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"

@@ -371,6 +371,12 @@
     <ClInclude Include="src\rendering\postprocessing\post_processing.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\rendering\gizmos\gizmo_color.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\gizmos\gizmos.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\skybox\environment\top.jpg">
