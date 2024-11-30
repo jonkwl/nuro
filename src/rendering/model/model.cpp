@@ -12,17 +12,22 @@
 #include "../src/utils/iohandler.h"
 #include "../src/utils/string_helper.h"
 
+Model* Model::load(std::string path)
+{
+	return new Model(path);
+}
+
+Model::Metrics Model::getMetrics() const
+{
+	return metrics;
+}
+
 Model::Model(std::string path) : castsShadow(true),
 meshes(),
 modelMaterials(),
 metrics()
 {
 	resolveModel(path);
-}
-
-Model::Metrics Model::getMetrics() const
-{
-	return metrics;
 }
 
 void Model::resolveModel(std::string path)

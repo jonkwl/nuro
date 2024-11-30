@@ -35,7 +35,7 @@ void defaultScene() {
 	sphereMaterial->emissionIntensity = 12.5f;*/
 	LitMaterial* sphereMaterial = new LitMaterial();
 	sphereMaterial->roughness = 0.15f;
-	Model* sphereModel = new Model("./user/assets/models/sphere.fbx");
+	Model* sphereModel = Model::load("./user/assets/models/sphere.fbx");
 	Entity* sphere = Runtime::createEntity();
 	sphere->meshRenderer.model = sphereModel;
 	sphere->meshRenderer.materials.push_back(sphereMaterial);
@@ -55,7 +55,7 @@ void defaultScene() {
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
 	pbrSphereMaterial->setMetallicMap(sphereMetallic);
 	pbrSphereMaterial->setNormalMap(sphereNormal);
-	Model* pbrSphereModel = new Model("./user/assets/models/sphere.fbx");
+	Model* pbrSphereModel = Model::load("./user/assets/models/sphere.fbx");
 	Entity* pbrSphere = Runtime::createEntity();
 	pbrSphere->meshRenderer.model = pbrSphereModel;
 	pbrSphere->meshRenderer.materials.push_back(pbrSphereMaterial);
@@ -67,7 +67,7 @@ void defaultScene() {
 	plank->setAlbedoMap(plankAlbedo);
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
-	Model* cubeModel = new Model("./user/assets/models/cube.fbx");
+	Model* cubeModel = Model::load("./user/assets/models/cube.fbx");
 	Entity* cube = Runtime::createEntity();
 	cube->meshRenderer.model = cubeModel;
 	cube->meshRenderer.materials.push_back(plank);
@@ -76,7 +76,7 @@ void defaultScene() {
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	floorMaterial->roughness = 0.35f;
-	Model* floorModel = new Model("./user/assets/models/cube.fbx");
+	Model* floorModel = Model::load("./user/assets/models/cube.fbx");
 	floorModel->castsShadow = false;
 	Entity* floor = Runtime::createEntity();
 	floor->meshRenderer.model = floorModel;
@@ -87,7 +87,7 @@ void defaultScene() {
 	LitMaterial* wallMaterial = new LitMaterial();
 	wallMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	wallMaterial->roughness = 0.35f;
-	Model* wallModel = new Model("./user/assets/models/cube.fbx");
+	Model* wallModel = Model::load("./user/assets/models/cube.fbx");
 	wallModel->castsShadow = true;
 	Entity* wall = Runtime::createEntity();
 	wall->meshRenderer.model = wallModel;
@@ -105,7 +105,7 @@ void defaultScene() {
 	smearedWallMaterial->setMetallicMap(smearedWallRoughness);
 	smearedWallMaterial->setNormalMap(smearedWallNormal);
 	smearedWallMaterial->tiling = glm::vec2(20.0f, 10.0f);
-	Model* smearedWallModel = new Model("./user/assets/models/cube.fbx");
+	Model* smearedWallModel = Model::load("./user/assets/models/cube.fbx");
 	Entity* smearedWall = Runtime::createEntity();
 	smearedWall->meshRenderer.model = smearedWallModel;
 	smearedWall->meshRenderer.materials.push_back(smearedWallMaterial);
@@ -127,7 +127,7 @@ void defaultScene() {
 	mannequinMaterial->setRoughnessMap(mannequinRoughness);
 	mannequinMaterial->setMetallicMap(mannequinMetallic);
 	mannequinMaterial->baseColor = glm::vec4(0.5f, 0.1f, 0.1f, 1.0f);
-	Model* mannequinModel = new Model("./user/assets/models/mannequin.fbx");
+	Model* mannequinModel = Model::load("./user/assets/models/mannequin.fbx");
 	mannequin = Runtime::createEntity();
 	mannequin->meshRenderer.model = mannequinModel;
 	mannequin->meshRenderer.materials.push_back(mannequinMaterial);
@@ -140,7 +140,7 @@ void defaultScene() {
 	LitMaterial* whiteMaterial = new LitMaterial();
 	whiteMaterial->baseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	whiteMaterial->roughness = 0.15f;
-	Model* shadowedSphereModel = new Model("./user/assets/models/sphere.fbx");
+	Model* shadowedSphereModel = Model::load("./user/assets/models/sphere.fbx");
 	Entity* shadowedSphere = Runtime::createEntity();
 	shadowedSphere->meshRenderer.model = shadowedSphereModel;
 	shadowedSphere->meshRenderer.materials.push_back(whiteMaterial);
@@ -151,14 +151,14 @@ void defaultScene() {
 	neon->emissionColor = glm::vec4(0.5f, 0.2f, 1.0f, 1.0f);
 	neon->emissionIntensity = 1.2f;
 
-	Model* neonModel = new Model("./user/assets/models/pacman_neon_lights.fbx");
+	Model* neonModel = Model::load("./user/assets/models/pacman_neon_lights.fbx");
 	neonLight = Runtime::createEntity();
 	neonLight->transform.position = glm::vec3(14.5f, 2.5f, 9.5f);
 	neonLight->transform.scale = glm::vec3(5.0f, 5.0f, 5.0f);
 	neonLight->meshRenderer.model = neonModel;
 	neonLight->meshRenderer.materials = { neon, neon, neon, neon, neon, neon, neon };
 
-	/*Model* dragonModel = new Model("./user/assets/models/dragon.fbx");
+	/*Model* dragonModel = Model::load("./user/assets/models/dragon.fbx");
 	LitMaterial* dragonMaterial = new LitMaterial();
 	dragonMaterial->baseColor = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
 	dragonMaterial->roughness = 0.4f;
@@ -206,7 +206,7 @@ void defaultScene() {
 	dragon6->meshRenderer.model = dragonModel;
 	dragon6->meshRenderer.materials = dragonMats;*/
 
-	/*Model* audiModel = new Model("./user/assets/models/audi.fbx");
+	/*Model* audiModel = Model::load("./user/assets/models/audi.fbx");
 	LitMaterial* audiMaterial = new LitMaterial();
 	audiMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 	audiMaterial->roughness = 0.2f;
@@ -238,7 +238,7 @@ void performanceScene() {
 	int gridZ = 5;
 	float offset = 3.0f;
 
-	Model* cube = new Model("./user/assets/models/cube.fbx");
+	Model* cube = Model::load("./user/assets/models/cube.fbx");
 	
 	LitMaterial* material = new LitMaterial();
 	material->baseColor = glm::vec4(1.0f);

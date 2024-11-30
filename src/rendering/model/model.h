@@ -9,6 +9,8 @@
 class Model
 {
 public:
+	static Model* load(std::string path); // Creates a new model on the heap using the corresponding constructor
+
 	struct Metrics
 	{
 		unsigned int nMeshes = 0;	 // Total number of meshes in model
@@ -23,16 +25,13 @@ public:
 		float furthest = 0.0f;				  // Maximum distance of a vertice from object space center
 	};
 
-public:
-	explicit Model(std::string path);
-
 	bool castsShadow;
-
 	std::vector<Mesh> meshes;
-
 	Metrics getMetrics() const; // Returns the model metrics
 
 private:
+	explicit Model(std::string path);
+
 	void resolveModel(std::string path);
 
 	void processNode(aiNode* node, const aiScene* scene);
