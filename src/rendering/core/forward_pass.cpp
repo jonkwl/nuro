@@ -147,10 +147,9 @@ unsigned int ForwardPass::render()
 
 	// Render skybox to bound forward pass frame
 	glDepthFunc(GL_LEQUAL);
-	Skybox *activeSkybox = Runtime::activeSkybox;
-	if (activeSkybox != nullptr && !wireframe)
+	if (Runtime::skyboxEnabled && !wireframe)
 	{
-		activeSkybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
+		Runtime::selectedSkybox.render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
 	}
 	glDepthFunc(GL_LESS);
 

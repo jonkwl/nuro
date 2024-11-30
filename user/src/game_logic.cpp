@@ -7,11 +7,6 @@ Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;
 Entity* neonLight = nullptr;
 void defaultScene() {
-	// Set default skybox
-	if (Runtime::defaultSkybox != nullptr) {
-		Runtime::defaultSkybox->emission = 1.0f;
-	}
-
 	// Create camera
 	Camera camera;
 	Runtime::useCamera(camera);

@@ -22,8 +22,6 @@
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/model/model.h"
-#include "../src/rendering/skybox/skybox.h"
-#include "../src/rendering/skybox/cubemap.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/core/mesh_renderer.h"
@@ -43,12 +41,12 @@
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
+#include "../src/rendering/skybox/cubemap.h"
 
 std::vector<Entity *> Runtime::entityLinks;
 
 UnlitMaterial *Runtime::defaultMaterial = nullptr;
-Cubemap *Runtime::defaultSky = nullptr;
-Skybox *Runtime::defaultSkybox;
+Skybox Runtime::defaultSkybox;
 
 Shader *Runtime::prePassShader = nullptr;
 Shader *Runtime::shadowPassShader = nullptr;
@@ -76,7 +74,8 @@ bool Runtime::inspectorMode = true;
 bool Runtime::showEngineUI = false;
 bool Runtime::showDiagnostics = true;
 
-Skybox *Runtime::activeSkybox = nullptr;
+bool Runtime::skyboxEnabled = true;
+Skybox& Runtime::selectedSkybox = Runtime::defaultSkybox;
 
 ShadowDisk *Runtime::mainShadowDisk = nullptr;
 ShadowMap *Runtime::mainShadowMap = nullptr;
@@ -234,23 +233,12 @@ int Runtime::START_LOOP()
 	// Creating default skybox
 	if (!skipSkyboxLoad)
 	{
-
-		// Load default sky cubemap
-		defaultSky = Cubemap::GetBySingle("./resources/skybox/default/default_night.png");
-		/*defaultSky = Cubemap::GetByFaces(
-			"./resources/skybox/environment/right.jpg",
-			"./resources/skybox/environment/left.jpg",
-			"./resources/skybox/environment/top.jpg",
-			"./resources/skybox/environment/bottom.jpg",
-			"./resources/skybox/environment/front.jpg",
-			"./resources/skybox/environment/back.jpg"
-		);*/
-
 		// Create default skybox
-		defaultSkybox = new Skybox(defaultSky);
+		Cubemap defaultCubemap = Cubemap::loadByCubemap("./resources/skybox/default/default_night.png");
+		defaultSkybox = Skybox(defaultCubemap);
 
 		// Set defaultr skybox as active
-		activeSkybox = defaultSkybox;
+		selectedSkybox = defaultSkybox;
 	}
 
 	// Set inspector camera data

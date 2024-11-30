@@ -4,14 +4,15 @@
 #include <vector>
 #include <glm.hpp>
 
-class Cubemap;
+#include "../src/rendering/skybox/cubemap.h"
+
 class Shader;
 
 class Skybox
 {
 public:
-	explicit Skybox(Cubemap *cubemap);
-	explicit Skybox(Cubemap *cubemap, Shader *custom_shader);
+	Skybox();
+	explicit Skybox(Cubemap& cubemap, Shader* customShader = nullptr);
 
 	void render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
@@ -22,10 +23,10 @@ private:
 	unsigned int vao;
 	unsigned int vbo;
 
-	void generate(Cubemap *cubemap);
+	void generate(Cubemap& cubemap);
 
-	void create_textures(Cubemap *cubemap);
+	void create_textures(Cubemap& cubemap);
 	void create_buffers();
 
-	Shader *shader;
+	Shader* shader;
 };

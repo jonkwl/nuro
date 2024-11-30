@@ -4,10 +4,9 @@
 #include <glm.hpp>
 
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
+#include "../src/rendering/skybox/skybox.h"
 
 class UnlitMaterial;
-class Cubemap;
-class Skybox;
 class Shader;
 class Camera;
 class ShadowDisk;
@@ -25,8 +24,7 @@ public:
 
 	// All default assets
 	static UnlitMaterial *defaultMaterial;
-	static Cubemap *defaultSky;
-	static Skybox *defaultSkybox;
+	static Skybox defaultSkybox;
 
 	// Default shaders
 	static Shader *prePassShader;
@@ -45,7 +43,8 @@ public:
 	static glm::vec3 directionalPosition;
 
 	// Skybox settings
-	static Skybox *activeSkybox; // Currently selected skybox
+	static bool skyboxEnabled;
+	static Skybox& selectedSkybox; // Currently selected skybox
 
 	// Time & frames
 	static float time;		 // Time passed since application beginning
