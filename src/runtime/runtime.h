@@ -111,4 +111,15 @@ private:
 	// Averaged fps calculations
 	static int averageFpsFrameCount;	// Count of frames in the current second
 	static float averageFpsElapsedTime; // Time accumulator for averaging FPS
+
+private:
+	static void setupGlfw(); // Setup glfw context
+	static void setVSync(); // Set v sync option
+	static void loadAssets(); // Load all defualt assets
+	static void setupScripts(); // Call all scripts needing setup
+	static void prepareFrameInternal(); // Prepare internal members for next frame
+	static void prepareFrameExternal(); // Prepare external scripts for next frame
+	static void renderFrame(); // Render next game frame
+	static void renderEditor(); // Render next editor frame
+	static void finishFrame(); // Call to finalize current frame
 };

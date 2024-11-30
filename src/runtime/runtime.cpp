@@ -108,6 +108,12 @@ unsigned int Runtime::ssaoBuffer = 0;
 
 bool skipSkyboxLoad = false; // tmp
 
+//
+//
+// PUBLIC RUNTIME METHODS
+//
+//
+
 Entity* Runtime::createEntity()
 {
 	// Create entity and push it to the entity stack
@@ -149,21 +155,87 @@ Camera& Runtime::getInspectorCamera()
 	return inspectorCamera;
 }
 
-void glfw_error_callback(int error, const char* description)
-{
-	Log::printError("GLFW", "Error: " + std::to_string(error), description);
-}
+//
+//
+// RUNTIME BASE METHODS (START & TERMINATE)
+//
+//
 
 int Runtime::START_LOOP()
 {
-	//
-	// SETUP PHASE 1: CREATE CONTEXT AND LOAD GRAPHICS API //
-	//
-
+	// CREATE CONTEXT AND LOAD GRAPHICS API //
 	Log::printProcessStart("Runtime", "Creating context...");
+	setupGlfw(); // Setup window
+	setVSync(); // Set vsync
+	Log::printProcessDone("Runtime", "Context created");
+
+	// LOAD ASSETS, COMPILE SHADERS
+	loadAssets();
+
+	// CALL ANY OTHER SCRIPTS NEEDING SETUP
+	setupScripts();
+
+	// PERFORM GAMES AWAKE LOGIC
+	awake();
+
+	while (!glfwWindowShouldClose(Window::glfw))
+	{
+		// PREPARE INTERNAL VARIABLES FOR NEXT FRAME (Time, Delta Time etc.)
+		prepareFrameInternal();
+
+		// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Input system update etc.)
+		prepareFrameExternal();
+
+		//
+		// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
+		//
+
+		// UPDATE GAME LOGIC
+		update();
+
+		// RENDER NEXT FRAME (full render pipeline pass)
+		renderFrame();
+
+		// RENDER EDITOR
+		renderEditor();
+
+		// FINISH CURRENT FRAME
+		finishFrame();
+	}
+
+	// Exit application
+
+	glfwTerminate();
+	return 0;
+}
+
+void Runtime::TERMINATE()
+{
+	if (Window::glfw != nullptr)
+	{
+		glfwDestroyWindow(Window::glfw);
+		glfwTerminate();
+	}
+	std::exit(0);
+}
+
+//
+//
+// PRIVATE RUNTIME CORE METHODS
+//
+//
+
+void glfwErrorCallback(int error, const char* description)
+{
+
+	Log::printError("GLFW", "Error: " + std::to_string(error), description);
+
+}
+
+void Runtime::setupGlfw() {
 
 	// Set error callback and initialize context
-	glfwSetErrorCallback(glfw_error_callback);
+	glfwSetErrorCallback(glfwErrorCallback);
 	glfwInit();
 
 	// Set versions
@@ -209,18 +281,18 @@ int Runtime::START_LOOP()
 	const char* version = (const char*)glGetString(GL_VERSION);
 	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
 
-	// Setup render settings
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// Set defualt window cursor
+	Window::setCursor(Window::cursorMode);
 
-	glfwSwapInterval(vsync ? 1 : 0); // V-Sync
+}
 
-	Log::printProcessDone("Runtime", "Context created");
+void Runtime::setVSync() {
 
-	//
-	// SETUP PHASE 2: LOAD ASSETS, COMPILE SHADERS
-	//
+	glfwSwapInterval(vsync ? 1 : 0);
+
+}
+
+void Runtime::loadAssets() {
 
 	// Loading all shaders
 	std::vector<std::string> shader_paths = {
@@ -259,16 +331,12 @@ int Runtime::START_LOOP()
 		selectedSkybox = defaultSkybox;
 	}
 
-	// Set inspector camera data
 	inspectorCamera.transform.position.y = 2.0f;
 	inspectorCamera.transform.rotation.x = 22.0f;
 
-	//
-	// SETUP PHASE 3: CALL ANY OTHER SCRIPTS NEEDING SETUP
-	//
+}
 
-	// Set defualt window cursor
-	Window::setCursor(Window::cursorMode);
+void Runtime::setupScripts() {
 
 	// Create forward pass
 	forwardPass.create(msaaSamples);
@@ -294,182 +362,151 @@ int Runtime::START_LOOP()
 	// Setup quick gizmo
 	QuickGizmo::setup();
 
-	//
-	// SETUP PHASE 4 (FINAL): AWAKE GAME LOGIC
-	//
-	awake();
-
-	while (!glfwWindowShouldClose(Window::glfw))
-	{
-
-		unsigned int width = Window::width, height = Window::height;
-
-		//
-		// PREPARE COMING FRAME UPDATE
-		//
-
-		// Update times
-		time = static_cast<float>(glfwGetTime());
-		deltaTime = time - lastTime;
-		lastTime = time;
-		fps = 1.0f / deltaTime;
-
-		averageFpsElapsedTime += deltaTime;
-		averageFpsFrameCount++;
-		if (averageFpsElapsedTime >= 1.0f)
-		{
-			averageFps = static_cast<float>(averageFpsFrameCount) / averageFpsElapsedTime;
-			averageFpsElapsedTime = 0.0f;
-			averageFpsFrameCount = 0;
-		}
-
-		// Reset diagnostics
-		currentDrawCalls = 0;
-		currentVertices = 0;
-		currentPolygons = 0;
-
-		//
-		// UPDATE ANY SCRIPTS NEEDING UPDATE
-		//
-
-		// Update input system
-		Input::updateInputs();
-
-		// Start new frame for quick gizmos
-		QuickGizmo::newFrame();
-
-		//
-		// EXTERNAL TRANSFORM MANIPULATION (e.g. physics)
-		// (NONE)
-		//
-
-		//
-		// UPDATE GAME LOGIC
-		//
-		update();
-
-		//
-		// RENDER NEXT FRAME (full render pipeline pass)
-		//
-
-		Profiler::start("render");
-
-		// Select camera to be rendered (depending on whether inspector mode is activated)
-		if (!inspectorMode)
-		{
-			renderCamera = activeCamera;
-		}
-		else
-		{
-			renderCamera = inspectorCamera;
-			InspectorMode::refreshInspector();
-		}
-
-		// Get transformation matrices
-		glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
-		glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, width, height);
-		glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
-		glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
-
-		// Set mesh renderers transformation matrix caches for upcomming render passes
-		MeshRenderer::currentViewMatrix = viewMatrix;
-		MeshRenderer::currentProjectionMatrix = projectionMatrix;
-		MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
-		MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
-
-		// Update cameras frustum
-		renderCamera.updateFrustum(viewProjectionMatrix);
-
-		// Reset entity metrics
-		nCPUEntities = 0;
-		nGPUEntities = 0;
-
-		//
-		// PREPARATION PASS
-		// Prepare each mesh for upcoming render passes
-		//
-		for (int i = 0; i < entityStack.size(); i++)
-		{
-			// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
-			// Here for now to ensure preparation despite further pipeline changes
-			entityStack[i]->meshRenderer.prepareNextFrame();
-		}
-
-		//
-		// SHADOW PASS
-		// Render shadow map
-		//
-		Profiler::start("shadow_pass");
-		mainShadowMap->render();
-		Profiler::stop("shadow_pass");
-
-		//
-		// PRE PASS
-		// Create geometry pass with depth buffer before forward pass
-		//
-		Profiler::start("pre_pass");
-		prePass.render();
-		Profiler::stop("pre_pass");
-		prePassDepthOutput = prePass.getDepthOutput();
-		prePassNormalOutput = prePass.getNormalOutput();
-
-		//
-		// SCREEN SPACE AMBIENT OCCLUSION PASS
-		// Calculate screen space ambient occlusion if enabled
-		//
-		unsigned int ssaoOutput = 0;
-		if (PostProcessing::configuration.ambientOcclusion)
-		{
-			ssaoOutput = SSAOPass::render(prePassDepthOutput, prePassNormalOutput);
-		}
-		ssaoBuffer = ssaoOutput;
-
-		//
-		// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
-		// Includes injected pre pass
-		//
-		Profiler::start("forward_pass");
-		unsigned int forwardPassOutput = forwardPass.render();
-		Profiler::stop("forward_pass");
-
-		//
-		// POST PROCESSING PASS
-		// Render post processing pass to screen using forward pass output as input
-		//
-		Profiler::start("post_processing");
-		postProcessingPipeline.render(forwardPassOutput);
-		Profiler::stop("post_processing");
-
-		//
-		// ENGINE UI PASS
-		// Render engine ui to screen
-		//
-		Profiler::start("ui_pass");
-		EditorUI::newFrame();
-		EditorUI::render();
-		Profiler::stop("ui_pass");
-
-		//
-		// MANAGE FRAME BUFFER AND WINDOW CONTEXT AND PROCESS EVENTS
-		//
-		glfwSwapBuffers(Window::glfw);
-		glfwPollEvents();
-
-		Profiler::stop("render");
-	}
-
-	// Exit application
-
-	glfwTerminate();
-	return 0;
 }
 
-void Runtime::TERMINATE()
-{
-	if (Window::glfw != nullptr)
+void Runtime::prepareFrameInternal() {
+
+	// Update times
+	time = static_cast<float>(glfwGetTime());
+	deltaTime = time - lastTime;
+	lastTime = time;
+	fps = 1.0f / deltaTime;
+
+	averageFpsElapsedTime += deltaTime;
+	averageFpsFrameCount++;
+	if (averageFpsElapsedTime >= 1.0f)
 	{
-		glfwDestroyWindow(Window::glfw);
-		glfwTerminate();
+		averageFps = static_cast<float>(averageFpsFrameCount) / averageFpsElapsedTime;
+		averageFpsElapsedTime = 0.0f;
+		averageFpsFrameCount = 0;
 	}
-	std::exit(0);
+
+	// Reset diagnostics
+	currentDrawCalls = 0;
+	currentVertices = 0;
+	currentPolygons = 0;
+
+}
+
+void Runtime::prepareFrameExternal() {
+
+	// Start new frame for quick gizmos
+	QuickGizmo::newFrame();
+
+	// Update input system
+	Input::updateInputs();
+
+}
+
+void Runtime::renderFrame() {
+
+	Profiler::start("render");
+
+	// Select camera to be rendered (depending on whether inspector mode is activated)
+	if (!inspectorMode)
+	{
+		renderCamera = activeCamera;
+	}
+	else
+	{
+		renderCamera = inspectorCamera;
+		InspectorMode::refreshInspector();
+	}
+
+	// Get transformation matrices
+	glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, Window::width, Window::height);
+	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
+
+	// Set mesh renderers transformation matrix caches for upcomming render passes
+	MeshRenderer::currentViewMatrix = viewMatrix;
+	MeshRenderer::currentProjectionMatrix = projectionMatrix;
+	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
+	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
+
+	// Update cameras frustum
+	renderCamera.updateFrustum(viewProjectionMatrix);
+
+	// Reset entity metrics
+	nCPUEntities = 0;
+	nGPUEntities = 0;
+
+	//
+	// PREPARATION PASS
+	// Prepare each mesh for upcoming render passes
+	//
+	for (int i = 0; i < entityStack.size(); i++)
+	{
+		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
+		// Here for now to ensure preparation despite further pipeline changes
+		entityStack[i]->meshRenderer.prepareNextFrame();
+	}
+
+	//
+	// SHADOW PASS
+	// Render shadow map
+	//
+	Profiler::start("shadow_pass");
+	mainShadowMap->render();
+	Profiler::stop("shadow_pass");
+
+	//
+	// PRE PASS
+	// Create geometry pass with depth buffer before forward pass
+	//
+	Profiler::start("pre_pass");
+	prePass.render();
+	Profiler::stop("pre_pass");
+	prePassDepthOutput = prePass.getDepthOutput();
+	prePassNormalOutput = prePass.getNormalOutput();
+
+	//
+	// SCREEN SPACE AMBIENT OCCLUSION PASS
+	// Calculate screen space ambient occlusion if enabled
+	//
+	unsigned int ssaoOutput = 0;
+	if (PostProcessing::configuration.ambientOcclusion)
+	{
+		ssaoOutput = SSAOPass::render(prePassDepthOutput, prePassNormalOutput);
+	}
+	ssaoBuffer = ssaoOutput;
+
+	//
+	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
+	// Includes injected pre pass
+	//
+	Profiler::start("forward_pass");
+	unsigned int forwardPassOutput = forwardPass.render();
+	Profiler::stop("forward_pass");
+
+	//
+	// POST PROCESSING PASS
+	// Render post processing pass to screen using forward pass output as input
+	//
+	Profiler::start("post_processing");
+	postProcessingPipeline.render(forwardPassOutput);
+	Profiler::stop("post_processing");
+
+	Profiler::stop("render");
+
+}
+
+void Runtime::renderEditor() {
+
+	Profiler::start("ui_pass");
+
+	EditorUI::newFrame();
+	EditorUI::render();
+
+	Profiler::stop("ui_pass");
+
+}
+
+void Runtime::finishFrame() {
+
+	// Sqap glfw buffers and poll events
+	glfwSwapBuffers(Window::glfw);
+	glfwPollEvents();
+
 }
