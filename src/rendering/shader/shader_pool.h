@@ -5,13 +5,8 @@
 
 class Shader;
 
-class ShaderPool
+namespace ShaderPool
 {
-public:
-	static void loadAndCompile(std::vector<std::string> path);
-	static Shader* get(std::string name);
-
-private:
-	static std::vector<Shader*> shaders;
-	static std::vector<std::string> identifiers;
+	void loadAndCompile(std::vector<std::string> path);
+	Shader* get(std::string name);
 };
