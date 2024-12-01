@@ -5,9 +5,9 @@
 class ShadowMap
 {
 public:
-	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight);
+	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
 
-	void render(Camera& camera);
+	void render();
 	void bind(unsigned int unit);
 
 	unsigned int getResolutionWidth() const;
@@ -19,6 +19,9 @@ public:
 	unsigned int getFramebuffer() const;
 
 private:
+	float near;
+	float far;
+
 	unsigned int resolutionWidth;
 	unsigned int resolutionHeight;
 

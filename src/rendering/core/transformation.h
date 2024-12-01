@@ -18,5 +18,5 @@ namespace Transformation
 	glm::mat4 projectionMatrix(Camera& camera, Viewport& viewport); // Projection matrix
 	
 	glm::mat4 lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection);
-	glm::mat4 lightProjectionMatrix(Camera& camera, float boundsWidth, float boundsHeight);
+	glm::mat4 lightProjectionMatrix(float boundsWidth, float boundsHeight, float near, float far);
 };

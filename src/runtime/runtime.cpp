@@ -302,7 +302,7 @@ void Runtime::loadAssets() {
 
 	// Create default shadow map
 	bool shadow_map_saved = false;
-	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
+	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
 
 	// Skip rest if quick launch
 	if (QUICK_LAUNCH) return;
@@ -402,7 +402,7 @@ void Runtime::renderFrame() {
 	// Render shadow map
 	//
 	Profiler::start("shadow_pass");
-	mainShadowMap->render(camera);
+	mainShadowMap->render();
 	Profiler::stop("shadow_pass");
 
 	//

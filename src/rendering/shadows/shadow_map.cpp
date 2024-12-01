@@ -38,7 +38,9 @@ void saveDepthMapAsImage(int width, int height, const std::string& filename)
 	}
 }
 
-ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight) : resolutionWidth(resolutionWidth),
+ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far) : near(near),
+far(far),
+resolutionWidth(resolutionWidth),
 resolutionHeight(resolutionHeight),
 boundsWidth(boundsWidth),
 boundsHeight(boundsHeight),
@@ -73,7 +75,7 @@ texture(0)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::render(Camera& camera) // Update needed for camera independence
+void ShadowMap::render() // Update needed for camera independence
 {
 	// Set viewport and bind shadow map framebuffer
 	glViewport(0, 0, resolutionWidth, resolutionHeight);
@@ -81,7 +83,7 @@ void ShadowMap::render(Camera& camera) // Update needed for camera independence
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Get shadow map transformation matrices
-	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(camera, Runtime::mainShadowMap->boundsWidth * 2.5f, Runtime::mainShadowMap->boundsHeight * 2.5f);
+	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::mainShadowMap->boundsWidth * 2.5f, Runtime::mainShadowMap->boundsHeight * 2.5f, near, far);
 	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
 

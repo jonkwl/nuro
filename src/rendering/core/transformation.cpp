@@ -89,9 +89,9 @@ namespace Transformation {
 		return view;
 	}
 
-	glm::mat4 lightProjectionMatrix(Camera& camera, float boundsWidth, float boundsHeight)
+	glm::mat4 lightProjectionMatrix(float boundsWidth, float boundsHeight, float near, float far)
 	{
-		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, camera.getNear(), camera.getFar());
+		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
 		return projection;
 	}
 
