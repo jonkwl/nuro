@@ -2,14 +2,13 @@
 
 #include <glm.hpp>
 
-class Input
+namespace Input
 {
-public:
-	static void setupInputs();
-	static void updateInputs();
 
-	static glm::vec2 keyAxis;
+	void setupInputs();
+	void updateInputs();
 
-	static glm::vec2 mouseAxis;
-	static glm::vec2 mouseLast;
+	glm::vec2 getKeyAxis();
+	glm::vec2 getMouseAxis();
+
 };

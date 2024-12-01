@@ -84,12 +84,12 @@ void SceneWindow::prepare()
 void SceneWindow::updateMovement(Camera& camera)
 {
 	// Get current inputs
-	glm::vec2 currentKeyAxis = Input::keyAxis;
+	glm::vec2 currentKeyAxis = Input::getKeyAxis();
 	if (!sceneViewRightclicked) {
 		currentKeyAxis = glm::vec2(0.0f);
 	}
 	keyAxis = glm::mix(keyAxis, currentKeyAxis, keyAxisSmoothingFactor * Runtime::deltaTime);
-	mouseAxis = Input::mouseAxis;
+	mouseAxis = Input::getMouseAxis();
 
 	// Update scene view movement according to inputs
 	glm::vec3 cam_forward = camera.transform.forward();
