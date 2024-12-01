@@ -27,7 +27,7 @@ struct Colors
 
 	ImVec4 selection = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	ImVec4 tabColor = ImVec4(0.13f, 0.13f, 0.13f, 1.0f);
+	ImVec4 tabColor = ImVec4(0.15f, 0.15f, 0.15f, 1.0f);
 };
 
 struct WindowFlags

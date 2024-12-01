@@ -61,6 +61,7 @@ public:
 	static bool fullscreen;
 	static GLenum cursorMode;
 	static void setCursor(GLenum cursorMode);
+	static void centerCursor();
 
 	// Viewports
 	static Viewport sceneViewport;
@@ -115,8 +116,6 @@ public:
 
 	// Perform resize for specific viewport
 	static void resizeViewport(float width, float height);
-
-	static bool sceneViewRightclick;
 
 private:
 	// Values that only need to be accessed by the runtime itself (eg preprocessors)

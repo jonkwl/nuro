@@ -81,7 +81,7 @@ void ShadowMap::render()
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Get shadow map transformation matrices
-	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering(), Runtime::mainShadowMap->boundsWidth, Runtime::mainShadowMap->boundsHeight);
+	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::getCameraRendering(), Runtime::mainShadowMap->boundsWidth * 2.5f, Runtime::mainShadowMap->boundsHeight * 2.5f);
 	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
 

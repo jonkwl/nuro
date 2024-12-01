@@ -42,7 +42,7 @@ namespace PostProcessing
 		float vignetteSoftness = 0.35f;
 		float vignetteRoundness = 1.8f;
 
-		bool ambientOcclusion = true;
+		bool ambientOcclusion = false;
 		float ambientOcclusionRadius = 0.2f;
 		int ambientOcclusionSamples = 64;
 		float ambientOcclusionPower = 20.0f;

@@ -10,8 +10,6 @@
 //
 
 glm::vec2 Input::keyAxis = glm::vec2(0.0f);
-glm::vec2 Input::keyAxisSmooth = glm::vec2(0.0f);
-float Input::keyAxisSmoothingFactor = 5.0f;
 
 glm::vec2 Input::mouseAxis = glm::vec2(0.0f);
 glm::vec2 Input::mouseLast = glm::vec2(0.0f);
@@ -31,7 +29,6 @@ void Input::updateInputs()
 	mouseAxis = glm::vec2(mouseX - mouseLast.x, -(mouseY - mouseLast.y));
 	mouseLast = glm::vec2(mouseX, mouseY);
 
-	// set axis inputs
 	if (glfwGetKey(Runtime::glfw, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(Runtime::glfw, true);
@@ -62,6 +59,4 @@ void Input::updateInputs()
 	{
 		keyAxis.y = 0.0f;
 	}
-
-	Input::keyAxisSmooth = glm::mix(Input::keyAxisSmooth, Input::keyAxis, Input::keyAxisSmoothingFactor * Runtime::deltaTime);
 }

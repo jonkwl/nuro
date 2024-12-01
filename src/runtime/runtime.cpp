@@ -30,7 +30,6 @@
 #include "../src/entity/entity.h"
 #include "../src/camera/camera.h"
 #include "../src/utils/log.h"
-#include "../src/utils/inspector_mode.h"
 #include "../src/utils/profiler.h"
 #include "../src/editor/engine_ui.h"
 #include "../src/input/input.h"
@@ -97,8 +96,6 @@ float Runtime::normalMappingIntensity = 1.0f;
 unsigned int Runtime::nCPUEntities = 0;
 unsigned int Runtime::nGPUEntities = 0;
 
-bool Runtime::sceneViewRightclick = false;
-
 PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
 SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
@@ -162,8 +159,18 @@ Camera& Runtime::getInspectorCamera()
 
 void Runtime::setCursor(GLenum cursorMode)
 {
+	// Set windows cursor mode
 	Runtime::cursorMode = cursorMode;
 	glfwSetInputMode(Runtime::glfw, GLFW_CURSOR, cursorMode);
+}
+
+void Runtime::centerCursor()
+{
+	// Center the cursor relative to the window
+	int windowWidth, windowHeight;
+	glfwGetWindowSize(Runtime::glfw, &windowWidth, &windowHeight);
+	glm::vec2 viewportCenter(windowWidth / 2.0f, windowHeight / 2.0f);
+	glfwSetCursorPos(Runtime::glfw, viewportCenter.x, viewportCenter.y);
 }
 
 //
@@ -200,12 +207,12 @@ int Runtime::START_LOOP()
 		// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Input system update etc.)
 		prepareFrameExternal();
 
+		// UPDATE GAME LOGIC
+		update();
+
 		//
 		// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
 		//
-
-		// UPDATE GAME LOGIC
-		update();
 
 		// RENDER NEXT FRAME (full render pipeline pass)
 		renderFrame();
@@ -412,11 +419,10 @@ void Runtime::renderFrame() {
 	Profiler::start("render");
 
 	// Bind screen framebuffer and clear color
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.06f, 0.06f, 0.06f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	renderCamera = inspectorCamera;
-	InspectorMode::refreshInspector();
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
@@ -503,14 +509,6 @@ void Runtime::renderEditor() {
 
 	EditorUI::newFrame();
 	EditorUI::render();
-
-	bool hideCursor = sceneViewRightclick;
-	if (hideCursor) {
-		setCursor(GLFW_CURSOR_DISABLED);
-	}
-	else {
-		setCursor(GLFW_CURSOR_NORMAL);
-	}
 
 	Profiler::stop("ui_pass");
 

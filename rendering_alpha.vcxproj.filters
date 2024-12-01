@@ -60,9 +60,6 @@
     <ClCompile Include="src\editor\engine_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\inspector_mode.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\rendering\model\model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -222,9 +219,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\engine_ui.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\inspector_mode.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\material\imaterial.h">
