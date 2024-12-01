@@ -5,11 +5,11 @@
 #include "../src/rendering/model/model.h"
 #include "../src/rendering/model/mesh.h"
 #include "../src/rendering/culling/bounding_volume.h"
-#include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/diagnostics/diagnostics.h"
+#include "../src/runtime/runtime.h"
 
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);

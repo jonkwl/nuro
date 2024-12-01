@@ -335,6 +335,8 @@ void Runtime::setupScripts() {
 
 	// Create forward pass
 	forwardPass.create(msaaSamples);
+	forwardPass.enableSkybox(&selectedSkybox);
+	forwardPass.enableQuickGizmo(&quickGizmo);
 
 	// Create pre pass
 	prePass.create();
@@ -445,7 +447,7 @@ void Runtime::renderFrame() {
 	// Includes injected pre pass
 	//
 	Profiler::start("forward_pass");
-	unsigned int forwardPassOutput = forwardPass.render();
+	unsigned int forwardPassOutput = forwardPass.render(entityStack);
 	Profiler::stop("forward_pass");
 
 	//

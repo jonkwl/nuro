@@ -2,16 +2,15 @@
 
 #include <glad/glad.h>
 
-#include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
-#include "../src/rendering/gizmos/gizmos.h"
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
-#include "../src/rendering/skybox/skybox.h"
 
-#include <cstdlib>
-
-ForwardPass::ForwardPass(Viewport& viewport) : viewport(viewport),
+ForwardPass::ForwardPass(Viewport& viewport) : wireframe(false),
+clearColor(glm::vec4(0.0f)),
+viewport(viewport),
+skybox(nullptr),
+quickGizmo(nullptr),
 outputFbo(0),
 outputColor(0),
 outputDepth(0),
@@ -98,20 +97,14 @@ void ForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int ForwardPass::render()
+unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 {
-	// Initialize parameters needed
-	bool wireframe = Runtime::wireframe;
-
-	std::vector<Entity*> entityStack = Runtime::entityStack;
-
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
 	// Clear framebuffer
 	if (!wireframe)
 	{
-		glm::vec4 clearColor = Runtime::clearColor;
 		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 	}
 	else
@@ -140,7 +133,7 @@ unsigned int ForwardPass::render()
 	// Disable color writing
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	// Bind pre pass shader
-	Runtime::prePassShader->bind();
+	prePassShader->bind();
 	// Pre pass render each entity
 	for (int i = 0; i < entityStack.size(); i++) {
 		entityStack[i]->meshRenderer->prePass();
@@ -153,9 +146,9 @@ unsigned int ForwardPass::render()
 	// INJECTED PRE PASS END
 
 	// Render each linked entity to bound forward pass frame
-	for (int i = 0; i < entityStack.size(); i++)
+	for (int i = 0; i < targets.size(); i++)
 	{
-		entityStack[i]->meshRenderer.forwardPass(viewport);
+		targets[i]->meshRenderer.forwardPass(viewport);
 	}
 
 	// Disable wireframe if enabled
@@ -167,14 +160,16 @@ unsigned int ForwardPass::render()
 
 	// Render skybox to bound forward pass frame
 	glDepthFunc(GL_LEQUAL);
-	if (Runtime::skyboxEnabled && !wireframe)
+	if (skybox && !wireframe)
 	{
-		Runtime::selectedSkybox.render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
+		skybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
 	}
 	glDepthFunc(GL_LESS);
 
 	// Render quick gizmos
-	Runtime::quickGizmo.render();
+	if (quickGizmo) {
+		quickGizmo->render();
+	}
 
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
@@ -187,4 +182,24 @@ unsigned int ForwardPass::render()
 unsigned int ForwardPass::getDepthOutput()
 {
 	return outputDepth;
+}
+
+void ForwardPass::enableSkybox(Skybox* source)
+{
+	skybox = source;
+}
+
+void ForwardPass::disableSkybox()
+{
+	skybox = nullptr;
+}
+
+void ForwardPass::enableQuickGizmo(QuickGizmo* source)
+{
+	quickGizmo = source;
+}
+
+void ForwardPass::disableQuickGizmo()
+{
+	quickGizmo = nullptr;
 }
