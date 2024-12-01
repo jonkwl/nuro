@@ -6,7 +6,7 @@
 #include "../src/editor/ui_components.h"
 #include "../src/editor/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
-#include "../src/editor/engine_ui.h"
+#include "../src/editor/editor_ui.h"
 
 PostProcessingWindow::PostProcessingWindow() :
 	configuration(PostProcessing::configuration)

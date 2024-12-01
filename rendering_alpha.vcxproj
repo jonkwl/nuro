@@ -167,7 +167,7 @@
     <ClCompile Include="src\utils\log.cpp" />
     <ClCompile Include="src\rendering\core\transformation.cpp" />
     <ClCompile Include="src\input\input.cpp" />
-    <ClCompile Include="src\editor\engine_ui.cpp" />
+    <ClCompile Include="src\editor\editor_ui.cpp" />
     <ClCompile Include="src\rendering\model\model.cpp" />
     <ClCompile Include="src\utils\string_helper.cpp" />
     <ClCompile Include="src\rendering\model\mesh.cpp" />
@@ -227,7 +227,7 @@
     <ClInclude Include="src\entity\entity.h" />
     <ClInclude Include="src\rendering\core\transformation.h" />
     <ClInclude Include="src\input\input.h" />
-    <ClInclude Include="src\editor\engine_ui.h" />
+    <ClInclude Include="src\editor\editor_ui.h" />
     <ClInclude Include="src\rendering\material\unlit\unlit_material.h" />
     <ClInclude Include="src\rendering\model\model.h" />
     <ClInclude Include="src\utils\string_helper.h" />

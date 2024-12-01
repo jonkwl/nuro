@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "../src/editor/engine_ui.h"
+#include "../src/editor/editor_ui.h"
 #include "../src/editor/ui_layout.h"
 #include "../src/editor/ui_components.h"
 #include "../src/editor/IconsFontAwesome6.h"

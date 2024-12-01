@@ -1,16 +1,11 @@
 #pragma once
 
-class Quad
+namespace Quad
 {
-public:
-	static void create();
-	static void bind();
-	static void render();
+	void create();
+	void bind();
+	void render();
 
-	static unsigned int getVBO();
-	static unsigned int getVAO();
-
-private:
-	static unsigned int vbo;
-	static unsigned int vao;
+	unsigned int getVBO();
+	unsigned int getVAO();
 };

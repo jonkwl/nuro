@@ -31,7 +31,7 @@
 #include "../src/camera/camera.h"
 #include "../src/utils/log.h"
 #include "../src/utils/profiler.h"
-#include "../src/editor/engine_ui.h"
+#include "../src/editor/editor_ui.h"
 #include "../src/input/input.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
@@ -420,7 +420,7 @@ void Runtime::renderFrame() {
 	Profiler::start("render");
 
 	// Bind screen framebuffer and clear color
-	glClearColor(0.06f, 0.06f, 0.06f, 1.0f);
+	glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	renderCamera = inspectorCamera;

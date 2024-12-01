@@ -2,50 +2,54 @@
 
 #include <glad/glad.h>
 
-unsigned int Quad::vbo = 0;
-unsigned int Quad::vao = 0;
+namespace Quad {
 
-void Quad::create()
-{
-	float vertices[] =
+	unsigned int _vbo = 0;
+	unsigned int _vao = 0;
+
+	void create()
 	{
-		1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f, 1.0f,
+		float vertices[] =
+		{
+			1.0f, -1.0f, 1.0f, 0.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f,
+			-1.0f, 1.0f, 0.0f, 1.0f,
 
-		1.0f, 1.0f, 1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f, 1.0f };
+			1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 1.0f, 0.0f,
+			-1.0f, 1.0f, 0.0f, 1.0f };
 
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
+		glGenVertexArrays(1, &_vao);
+		glGenBuffers(1, &_vbo);
 
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindVertexArray(_vao);
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-}
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	}
 
-void Quad::bind()
-{
-	glBindVertexArray(vao);
-}
+	void bind()
+	{
+		glBindVertexArray(_vao);
+	}
 
-void Quad::render()
-{
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-}
+	void render()
+	{
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
 
-unsigned int Quad::getVBO()
-{
-	return vbo;
-}
+	unsigned int getVBO()
+	{
+		return _vbo;
+	}
 
-unsigned int Quad::getVAO()
-{
-	return vao;
+	unsigned int getVAO()
+	{
+		return _vao;
+	}
+
 }

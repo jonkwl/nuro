@@ -1,4 +1,4 @@
-#include "engine_ui.h"
+#include "editor_ui.h"
 
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -74,6 +74,7 @@ void EditorUI::setup()
 	style.GrabRounding = 0.0f;
 
 	style.TabRounding = 1.0f;
+	style.TabBarOverlineSize = 0.0f;
 
 	style.ItemSpacing = ImVec2(4.0f, 8.0f);
 

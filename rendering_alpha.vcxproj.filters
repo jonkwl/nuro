@@ -57,7 +57,7 @@
     <ClCompile Include="src\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\engine_ui.cpp">
+    <ClCompile Include="src\editor\editor_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\model\model.cpp">
@@ -218,7 +218,7 @@
     <ClInclude Include="src\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\engine_ui.h">
+    <ClInclude Include="src\editor\editor_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\material\imaterial.h">
