@@ -87,7 +87,7 @@ void ShadowMap::render(std::vector<Entity*>& targets) // Update needed for camer
 	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
 	// Get shadow map transformation matrices
-	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::mainShadowMap->boundsWidth * 2.5f, Runtime::mainShadowMap->boundsHeight * 2.5f, near, far);
+	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(boundsWidth, boundsHeight, near, far);
 	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(directionalPosition, directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
 

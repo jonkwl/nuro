@@ -7,6 +7,7 @@
 class Model;
 class BoundingVolume;
 class Entity;
+class Shader;
 
 #pragma once
 class MeshRenderer
@@ -31,7 +32,7 @@ public:
 	void forwardPass();
 	void prePass();
 	void shadowPass();
-	void velocityPass();
+	void velocityPass(Shader* shader);
 
 	static glm::mat4 currentViewMatrix;			  // Static view matrix cache for current frame
 	static glm::mat4 currentProjectionMatrix;	  // Static projection matrix cache for current frame

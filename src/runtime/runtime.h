@@ -10,6 +10,7 @@
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
+#include "../src/rendering/postprocessing/velocity_buffer.h"
 #include "../src/rendering/skybox/skybox.h"
 #include "../src/viewport/viewport.h"
 #include "../src/rendering/gizmos/gizmos.h"
@@ -31,11 +32,6 @@ public:
 	static Skybox defaultSkybox; // MOVE TO FORWARD PASS
 	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-	static Shader* velocityPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-	// Shadow settings
-	// CAN STAY BUT REMOVE DEPENDENCIES (SHADOWS NEED TO BE MANAGED DIFFERENTLY LATER)
-	static ShadowDisk* mainShadowDisk; // Default shadow disk
-	static ShadowMap* mainShadowMap;   // Default shadow map
 
 	static int START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
@@ -68,6 +64,7 @@ public:
 	static PrePass prePass;
 	static ForwardPass forwardPass;
 	static SSAOPass ssaoPass;
+	static VelocityBuffer velocityBuffer;
 	static PostProcessingPipeline postProcessingPipeline;
 
 	// Instances
@@ -81,6 +78,9 @@ private:
 	static Viewport sceneViewport; // Scene viewport
 	static Camera camera; // Main render camera
 	static bool resized; // If window was resized
+
+	static ShadowDisk* mainShadowDisk; // Default shadow disk
+	static ShadowMap* mainShadowMap;   // Default shadow map
 
 private:
 	static void setupGlfw(); // Setup glfw context

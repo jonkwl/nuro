@@ -6,6 +6,9 @@
 #include "../src/camera/camera.h"
 #include "../src/rendering/texture/texture.h"
 
+class ShadowDisk;
+class ShadowMap;
+
 class LitMaterial : public IMaterial
 {
 public:
@@ -15,6 +18,9 @@ public:
 	static Viewport* viewport;
 	static Camera* camera;
 	static unsigned int ssaoInput;
+
+	static ShadowDisk* mainShadowDisk; // tmp until global shadow system
+	static ShadowMap* mainShadowMap; // tmp until global shadow system
 
 	void bind();
 	Shader* getShader();

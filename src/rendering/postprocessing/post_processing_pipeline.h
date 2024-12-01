@@ -16,7 +16,7 @@ public:
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
 
-	void render(const unsigned int hdrInput, const unsigned int depthInput); // Render post processing by performing all post processing passes on input
+	void render(const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput); // Render post processing by performing all post processing passes on input
 
 	unsigned int getOutput(); // Get output of last post processing render
 

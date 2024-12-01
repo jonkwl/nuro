@@ -169,7 +169,7 @@ void MeshRenderer::shadowPass()
 	}
 }
 
-void MeshRenderer::velocityPass()
+void MeshRenderer::velocityPass(Shader* shader)
 {
 	// No motion blur enabled -> cancel
 	if (!useMotionBlur)
@@ -188,12 +188,10 @@ void MeshRenderer::velocityPass()
 		mesh.bind();
 
 		// Set velocity pass shader uniforms
-		Shader* shader = Runtime::velocityPassShader;
 		shader->setMatrix4("modelMatrix", currentModelMatrix);
 		shader->setMatrix4("previousModelMatrix", previousModelMatrix);
 		shader->setMatrix4("viewMatrix", currentViewMatrix);
 		shader->setMatrix4("projectionMatrix", currentProjectionMatrix);
-
 		shader->setFloat("intensity", motionBlurIntensity);
 
 		// Render mesh

@@ -48,7 +48,6 @@ Skybox Runtime::defaultSkybox;
 
 Shader* Runtime::prePassShader = nullptr;
 Shader* Runtime::shadowPassShader = nullptr;
-Shader* Runtime::velocityPassShader = nullptr;
 
 Camera Runtime::camera;
 
@@ -74,6 +73,7 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
 SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
+VelocityBuffer Runtime::velocityBuffer = VelocityBuffer(Runtime::sceneViewport);
 PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
 
 QuickGizmo Runtime::quickGizmo;
@@ -276,7 +276,6 @@ void Runtime::loadAssets() {
 
 	prePassShader = ShaderPool::get("pre_pass");
 	shadowPassShader = ShaderPool::get("shadow_pass");
-	velocityPassShader = ShaderPool::get("velocity_pass");
 
 	// Creating default material
 	defaultMaterial = new UnlitMaterial();
@@ -312,6 +311,9 @@ void Runtime::setupScripts() {
 
 	// Setup ambient occlusion pass
 	ssaoPass.create();
+
+	// Setup velocity buffer
+	velocityBuffer.create();
 
 	// Setup post processing
 	postProcessingPipeline.create();
@@ -402,12 +404,21 @@ void Runtime::renderFrame() {
 	// SCREEN SPACE AMBIENT OCCLUSION PASS
 	// Calculate screen space ambient occlusion if enabled
 	//
+	Profiler::start("ssao");
 	unsigned int _ssaoOutput = 0;
 	if (PostProcessing::ambientOcclusion.enabled)
 	{
 		_ssaoOutput = ssaoPass.render(PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const unsigned int SSAO_OUTPUT = _ssaoOutput;
+	Profiler::stop("ssao");
+
+	//
+	// VELOCITY BUFFER RENDER PASS
+	//
+	Profiler::start("velocity_buffer");
+	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(entityStack);
+	Profiler::stop("velocity_buffer");
 
 	//
 	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
@@ -418,6 +429,8 @@ void Runtime::renderFrame() {
 	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
 	LitMaterial::camera = &camera; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
+	LitMaterial::mainShadowDisk = mainShadowDisk;
+	LitMaterial::mainShadowMap = mainShadowMap;
 
 	Profiler::start("forward_pass");
 	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(entityStack);
@@ -428,7 +441,7 @@ void Runtime::renderFrame() {
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT);
+	postProcessingPipeline.render(FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
@@ -474,12 +487,14 @@ void Runtime::performResize() {
 	forwardPass.destroy();
 	prePass.destroy();
 	ssaoPass.destroy();
+	velocityBuffer.destroy();
 	postProcessingPipeline.destroy();
 
 	// Recreate all destroyed passes/pipelines
 	forwardPass.create(msaaSamples);
 	prePass.create();
-	ssaoPass.create(); // Issues with ssao resizing
+	ssaoPass.create();
+	velocityBuffer.create();
 	postProcessingPipeline.create();
 
 	Log::printProcessDone("Context", "Resize operation performed, various viewport dependant passes recreated");

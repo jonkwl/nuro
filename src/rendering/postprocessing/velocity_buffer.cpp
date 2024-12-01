@@ -18,16 +18,18 @@ fbo(0),
 rbo(0),
 output(0),
 postfilteredOutput(0),
+velocityPassShader(nullptr),
 postfilterShader(nullptr)
 {
 }
 
 void VelocityBuffer::create()
 {
-	// Get postfilter shader
+	// Get shaders
+	velocityPassShader = ShaderPool::get("velocity_pass");
 	postfilterShader = ShaderPool::get("velocity_postfilter");
 
-	// Set postfilter static uniforms
+	// Set shaders static uniforms
 	postfilterShader->setInt("velocityBuffer", 0);
 
 	// Generate framebuffer
@@ -96,6 +98,7 @@ void VelocityBuffer::destroy()
 	fbo = 0;
 
 	// Remove shaders
+	velocityPassShader = nullptr;
 	postfilterShader = nullptr;
 }
 
@@ -133,12 +136,12 @@ unsigned int VelocityBuffer::velocityPasses(std::vector<Entity*>& targets)
 	glEnable(GL_DEPTH_TEST);
 
 	// Bind shader
-	Runtime::velocityPassShader->bind();
+	velocityPassShader->bind();
 
 	// Render velocity buffer by performing velocity pass on each object
 	for (int i = 0; i < targets.size(); i++)
 	{
-		targets[i]->meshRenderer.velocityPass();
+		targets[i]->meshRenderer.velocityPass(velocityPassShader);
 	}
 
 	// Disable depth testing

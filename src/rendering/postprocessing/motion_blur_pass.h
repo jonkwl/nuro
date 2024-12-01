@@ -15,7 +15,7 @@ public:
 	void create();
 	void destroy();
 
-	unsigned int render(const unsigned int hdrInput, const unsigned int depthInput);
+	unsigned int render(const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput);
 
 private:
 	enum TextureUnits
@@ -33,6 +33,4 @@ private:
 	Shader* shader;
 
 	glm::mat4 previousViewProjectionMatrix;
-
-	VelocityBuffer velocityBuffer;
 };

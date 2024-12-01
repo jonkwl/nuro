@@ -31,5 +31,6 @@ private:
 	unsigned int postfilteredOutput; // Postfilter passed velocity buffer
 	// Postfilter applies morphological dilation on velocity buffer to decrease silhouettes
 
+	Shader* velocityPassShader; // Shader for velocity pass
 	Shader* postfilterShader; // Shader for performing postfilter pass on velocity buffer
 };

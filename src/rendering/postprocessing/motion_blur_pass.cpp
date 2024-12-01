@@ -15,8 +15,7 @@ MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 output(0),
 shader(nullptr),
-previousViewProjectionMatrix(glm::mat4(1.0f)),
-velocityBuffer(viewport)
+previousViewProjectionMatrix(glm::mat4(1.0f))
 {
 }
 
@@ -62,9 +61,6 @@ void MotionBlurPass::create()
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// Setup velocity buffer
-	velocityBuffer.create();
 }
 
 void MotionBlurPass::destroy()
@@ -77,25 +73,12 @@ void MotionBlurPass::destroy()
 	glDeleteFramebuffers(1, &fbo);
 	fbo = 0;
 
-	// Destroy velocity buffer
-	velocityBuffer.destroy();
-
 	// Remove shader
 	shader = nullptr;
 }
 
-unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned int depthInput)
+unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
 {
-	// Render velocity buffer if object motion blur is active
-
-	// MOVE VELOCITY BUFFER PASS OUTSIDE OF POST PROCESSING LOGIC
-	unsigned int VELOCITY_BUFFER = 0;
-	bool objectEnabled = PostProcessing::motionBlur.objectEnabled;
-	if (objectEnabled)
-	{
-		// VELOCITY_BUFFER = velocityBuffer.render();
-	}
-
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -105,9 +88,6 @@ unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned 
 
 	glActiveTexture(GL_TEXTURE0 + DEPTH_UNIT);
 	glBindTexture(GL_TEXTURE_2D, depthInput);
-
-	glActiveTexture(GL_TEXTURE0 + VELOCITY_UNIT);
-	glBindTexture(GL_TEXTURE_2D, VELOCITY_BUFFER);
 
 	// Bind shader
 	shader->bind();
@@ -119,16 +99,24 @@ unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned 
 	shader->setBool("camera", cameraEnabled);
 	if (cameraEnabled)
 	{
+		// Set camera motion blur uniforms
 		shader->setFloat("cameraIntensity", PostProcessing::motionBlur.cameraIntensity);
 		shader->setInt("cameraSamples", PostProcessing::motionBlur.cameraSamples);
 	}
 
+	bool objectEnabled = PostProcessing::motionBlur.objectEnabled;
 	shader->setBool("object", objectEnabled);
 	if (objectEnabled)
 	{
+		// Attach velocity buffer
+		glActiveTexture(GL_TEXTURE0 + VELOCITY_UNIT);
+		glBindTexture(GL_TEXTURE_2D, velocityBufferInput);
+
+		// Set object motion blur uniforms
 		shader->setInt("objectSamples", PostProcessing::motionBlur.objectSamples);
 	}
 
+	// Set transformation uniforms
 	shader->setMatrix4("inverseViewMatrix", glm::inverse(MeshRenderer::currentViewMatrix));
 	shader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
 	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);

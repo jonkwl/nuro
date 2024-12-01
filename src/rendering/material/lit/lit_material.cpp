@@ -14,6 +14,9 @@ Viewport* LitMaterial::viewport = nullptr;
 Camera* LitMaterial::camera = nullptr;
 unsigned int LitMaterial::ssaoInput = 0;
 
+ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
+ShadowMap* LitMaterial::mainShadowMap = nullptr;
+
 LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
 tiling(1.0f, 1.0f),
 offset(0.0f, 0.0f),
@@ -48,14 +51,14 @@ void LitMaterial::bind()
 	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
 
 	// Shadow parameters
-	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
-	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(Runtime::mainShadowMap->getResolutionWidth()));
-	shader->setFloat("configuration.shadowMapResolutionHeight", static_cast<float>(Runtime::mainShadowMap->getResolutionHeight()));
+	mainShadowMap->bind(SHADOW_MAP_UNIT);
+	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(mainShadowMap->getResolutionWidth()));
+	shader->setFloat("configuration.shadowMapResolutionHeight", static_cast<float>(mainShadowMap->getResolutionHeight()));
 
-	Runtime::mainShadowDisk->bind(SHADOW_DISK_UNIT);
-	shader->setFloat("configuration.shadowDiskWindowSize", static_cast<float>(Runtime::mainShadowDisk->getWindowSize()));
-	shader->setFloat("configuration.shadowDiskFilterSize", static_cast<float>(Runtime::mainShadowDisk->getFilterSize()));
-	shader->setFloat("configuration.shadowDiskRadius", static_cast<float>(Runtime::mainShadowDisk->getRadius()));
+	mainShadowDisk->bind(SHADOW_DISK_UNIT);
+	shader->setFloat("configuration.shadowDiskWindowSize", static_cast<float>(mainShadowDisk->getWindowSize()));
+	shader->setFloat("configuration.shadowDiskFilterSize", static_cast<float>(mainShadowDisk->getFilterSize()));
+	shader->setFloat("configuration.shadowDiskRadius", static_cast<float>(mainShadowDisk->getRadius()));
 
 	// SSAO
 	shader->setBool("configuration.enableSSAO", PostProcessing::ambientOcclusion.enabled);
