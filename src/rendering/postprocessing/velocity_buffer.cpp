@@ -99,13 +99,13 @@ void VelocityBuffer::destroy()
 	postfilterShader = nullptr;
 }
 
-unsigned int VelocityBuffer::render()
+unsigned int VelocityBuffer::render(std::vector<Entity*>& targets)
 {
 	// Prepare output
 	unsigned int OUTPUT = 0;
 
 	// Render velocity buffer
-	OUTPUT = velocityPasses();
+	OUTPUT = velocityPasses(targets);
 
 	// Perform postfiltering pass on velocity buffer if object silhouettes should be extended
 	if (PostProcessing::motionBlur.objectSilhouetteExtension)
@@ -117,7 +117,7 @@ unsigned int VelocityBuffer::render()
 	return OUTPUT;
 }
 
-unsigned int VelocityBuffer::velocityPasses()
+unsigned int VelocityBuffer::velocityPasses(std::vector<Entity*>& targets)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -136,10 +136,9 @@ unsigned int VelocityBuffer::velocityPasses()
 	Runtime::velocityPassShader->bind();
 
 	// Render velocity buffer by performing velocity pass on each object
-	std::vector<Entity*> entityStack = Runtime::entityStack;
-	for (int i = 0; i < entityStack.size(); i++)
+	for (int i = 0; i < targets.size(); i++)
 	{
-		entityStack[i]->meshRenderer.velocityPass();
+		targets[i]->meshRenderer.velocityPass();
 	}
 
 	// Disable depth testing

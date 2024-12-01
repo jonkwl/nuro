@@ -1,8 +1,11 @@
 #pragma once
 
+#include <vector>
+
 #include "../src/viewport/viewport.h"
 
 class Shader;
+class Entity;
 
 class VelocityBuffer
 {
@@ -12,10 +15,10 @@ public:
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
 
-	unsigned int render(); // Renders the velocity buffer and returns the filtered output
+	unsigned int render(std::vector<Entity*>& targets); // Renders the velocity buffer and returns the filtered output
 
 private:
-	unsigned int velocityPasses();	  // Performs velocity passes to render velocity buffer and returns velocity buffer
+	unsigned int velocityPasses(std::vector<Entity*>& targets);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
 	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:

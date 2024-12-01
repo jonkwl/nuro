@@ -45,11 +45,9 @@ void LitMaterial::bind()
 
 	// General parameters
 	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
-	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
 
 	// Shadow parameters
-	shader->setBool("configuration.castShadows", Runtime::shadows);
 	Runtime::mainShadowMap->bind(SHADOW_MAP_UNIT);
 	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(Runtime::mainShadowMap->getResolutionWidth()));
 	shader->setFloat("configuration.shadowMapResolutionHeight", static_cast<float>(Runtime::mainShadowMap->getResolutionHeight()));
@@ -168,8 +166,8 @@ void LitMaterial::syncStaticUniforms()
 {
 	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
 
-	shader->setBool("configuration.solidMode", Runtime::solidMode);
-	shader->setBool("configuration.castShadows", Runtime::shadows);
+	shader->setBool("configuration.solidMode", false);
+	shader->setBool("configuration.castShadows", true);
 
 	shader->setInt("material.albedoMap", ALBEDO_UNIT);
 	shader->setInt("material.normalMap", NORMAL_UNIT);

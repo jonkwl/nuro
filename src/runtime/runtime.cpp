@@ -59,9 +59,7 @@ bool Runtime::wireframe = false;
 bool Runtime::solidMode = false;
 bool Runtime::shadows = true;
 bool Runtime::postProcessingEffects = true;
-
-bool Runtime::skyboxEnabled = true;
-Skybox& Runtime::selectedSkybox = Runtime::defaultSkybox;
+Skybox& Runtime::currentSkybox = Runtime::defaultSkybox;
 
 GLFWwindow* Runtime::glfw = nullptr;
 glm::vec2 Runtime::windowSize = glm::vec2(1600.0f, 800.0f);
@@ -81,8 +79,6 @@ PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(
 QuickGizmo Runtime::quickGizmo;
 
 bool Runtime::resized = false;
-
-bool QUICK_LAUNCH = false; // tmp for skipping asset loading
 
 //
 //
@@ -296,22 +292,19 @@ void Runtime::loadAssets() {
 	bool shadow_map_saved = false;
 	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
 
-	// Skip rest if quick launch
-	if (QUICK_LAUNCH) return;
-
 	// Create default skybox
 	Cubemap defaultCubemap = Cubemap::loadByCubemap("./resources/skybox/default/default_night.png");
 	defaultSkybox = Skybox(defaultCubemap);
 
-	// Set default skybox as active
-	selectedSkybox = defaultSkybox;
+	// Set default skybox as current skybox
+	currentSkybox = defaultSkybox;
 }
 
 void Runtime::setupScripts() {
 
 	// Create forward pass
 	forwardPass.create(msaaSamples);
-	forwardPass.enableSkybox(&selectedSkybox);
+	forwardPass.enableSkybox(&currentSkybox);
 	forwardPass.enableQuickGizmo(&quickGizmo);
 
 	// Create pre pass
@@ -392,7 +385,7 @@ void Runtime::renderFrame() {
 	// Render shadow map
 	//
 	Profiler::start("shadow_pass");
-	mainShadowMap->render();
+	mainShadowMap->render(entityStack);
 	Profiler::stop("shadow_pass");
 
 	//
@@ -400,7 +393,7 @@ void Runtime::renderFrame() {
 	// Create geometry pass with depth buffer before forward pass
 	//
 	Profiler::start("pre_pass");
-	prePass.render();
+	prePass.render(entityStack);
 	Profiler::stop("pre_pass");
 	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
 	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();

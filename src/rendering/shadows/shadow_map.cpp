@@ -75,7 +75,7 @@ texture(0)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::render() // Update needed for camera independence
+void ShadowMap::render(std::vector<Entity*>& targets) // Update needed for camera independence
 {
 	// Set viewport and bind shadow map framebuffer
 	glViewport(0, 0, resolutionWidth, resolutionHeight);
@@ -103,10 +103,9 @@ void ShadowMap::render() // Update needed for camera independence
 
 	Runtime::shadowPassShader->bind();
 
-	std::vector<Entity*> entityStack = Runtime::entityStack;
-	for (int i = 0; i < entityStack.size(); i++)
+	for (int i = 0; i < targets.size(); i++)
 	{
-		entityStack[i]->meshRenderer.shadowPass();
+		targets[i]->meshRenderer.shadowPass();
 	}
 
 	// Unbind shadow map framebuffer

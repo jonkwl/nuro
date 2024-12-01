@@ -5,6 +5,7 @@
 #include "../src/utils/log.h"
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
+#include "../src/rendering/skybox/skybox.h"
 
 ForwardPass::ForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),

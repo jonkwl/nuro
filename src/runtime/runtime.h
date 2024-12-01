@@ -25,6 +25,18 @@ class Entity;
 class Runtime
 {
 public:
+	// TO REMOVE
+	// All default assets
+	static UnlitMaterial* defaultMaterial; // MOVE TO MESH RENDERER
+	static Skybox defaultSkybox; // MOVE TO FORWARD PASS
+	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
+	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
+	static Shader* velocityPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
+	// Shadow settings
+	// CAN STAY BUT REMOVE DEPENDENCIES (SHADOWS NEED TO BE MANAGED DIFFERENTLY LATER)
+	static ShadowDisk* mainShadowDisk; // Default shadow disk
+	static ShadowMap* mainShadowMap;   // Default shadow map
+
 	static int START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
 
@@ -34,21 +46,6 @@ public:
 
 	static Camera& getCamera();
 
-	// All default assets
-	static UnlitMaterial* defaultMaterial; // MOVE TO MESH RENDERER
-
-	static Skybox defaultSkybox; // MOVE TO FORWARD PASS
-
-	// Default shaders
-	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-	static Shader* velocityPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-
-	// Skybox settings
-	// MOVE TO FORWARD PASS
-	static bool skyboxEnabled;
-	static Skybox& selectedSkybox; // Currently selected skybox
-
 	// Context
 	static GLFWwindow* glfw;
 	static glm::vec2 windowSize;
@@ -57,26 +54,15 @@ public:
 	static void setCursor(GLenum cursorMode);
 	static void centerCursor();
 
-	// Viewports
-	static Viewport sceneViewport;
-
 	// Render settings
-	// CHECK FOR DEPENDENCIES FROM OTHER SCRIPTS, SHOULD STAY
 	static glm::vec4 clearColor;	   // buffer clearing color
 	static unsigned int msaaSamples;   // MSAA Samples
 	static bool vsync;				   // V-Sync option
 	static bool wireframe;			   // Wireframe option
 	static bool solidMode;			   // Solid mode option (simple render)
 	static bool shadows;			   // Enable or disable rendering for all shadows
-	static bool postProcessingEffects; // Enable or disable non-mandatory post processing effects
-
-	// Shadow settings
-	// CAN STAY BUT REMOVE DEPENDENCIES (SHADOWS NEED TO MANAGED DIFFERENTLY)
-	static ShadowDisk* mainShadowDisk; // Default shadow disk
-	static ShadowMap* mainShadowMap;   // Default shadow map
-
-	// Entity links
-	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
+	static bool postProcessingEffects; // Enable or disable optional post processing effects
+	static Skybox& currentSkybox;      // Current skybox to be rendered
 
 	// Passes & Pipelines
 	static PrePass prePass;
@@ -91,10 +77,9 @@ public:
 	static void resizeViewport(float width, float height);
 
 private:
-	// Values that only need to be accessed by the runtime itself (eg preprocessors)
-
+	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
+	static Viewport sceneViewport; // Scene viewport
 	static Camera camera; // Main render camera
-
 	static bool resized; // If window was resized
 
 private:

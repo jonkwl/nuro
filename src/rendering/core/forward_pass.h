@@ -1,11 +1,13 @@
 #pragma once
 
+#include <vector>
 #include <glm.hpp>
 
 #include "../src/viewport/viewport.h"
-#include "../src/rendering/skybox/skybox.h"
 #include "../src/rendering/gizmos/quick_gizmo.h"
-#include "../src/entity/entity.h"
+
+class Entity;
+class Skybox;
 
 class ForwardPass
 {

@@ -74,7 +74,7 @@ void PrePass::destroy() {
 	fbo = 0;
 }
 
-void PrePass::render()
+void PrePass::render(std::vector<Entity*>& targets)
 {
 	// Set viewport for upcoming pre pass
 	glViewport(0, 0, viewport.width, viewport.height);
@@ -97,10 +97,9 @@ void PrePass::render()
 	Runtime::prePassShader->bind();
 
 	// Pre pass render each entity
-	std::vector<Entity*> entityStack = Runtime::entityStack;
-	for (int i = 0; i < entityStack.size(); i++)
+	for (int i = 0; i < targets.size(); i++)
 	{
-		entityStack[i]->meshRenderer.prePass();
+		targets[i]->meshRenderer.prePass();
 	}
 }
 

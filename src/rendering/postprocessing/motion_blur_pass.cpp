@@ -87,12 +87,13 @@ void MotionBlurPass::destroy()
 unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned int depthInput)
 {
 	// Render velocity buffer if object motion blur is active
-	unsigned int VELOCITY_BUFFER = 0;
 
+	// MOVE VELOCITY BUFFER PASS OUTSIDE OF POST PROCESSING LOGIC
+	unsigned int VELOCITY_BUFFER = 0;
 	bool objectEnabled = PostProcessing::motionBlur.objectEnabled;
 	if (objectEnabled)
 	{
-		VELOCITY_BUFFER = velocityBuffer.render();
+		// VELOCITY_BUFFER = velocityBuffer.render();
 	}
 
 	// Bind framebuffer

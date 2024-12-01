@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vector>
+
 #include "../src/viewport/viewport.h"
+
+class Entity;
 
 class PrePass
 {
@@ -10,7 +14,7 @@ public:
 	void create();
 	void destroy();
 
-	void render();
+	void render(std::vector<Entity*>& targets);
 
 	unsigned int getDepthOutput();
 	unsigned int getNormalOutput();

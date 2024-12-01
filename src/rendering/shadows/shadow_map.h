@@ -1,13 +1,17 @@
 #pragma once
 
+#include <vector>
+
 #include "../src/camera/camera.h"
+
+class Entity;
 
 class ShadowMap
 {
 public:
 	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
 
-	void render();
+	void render(std::vector<Entity*>& targets);
 	void bind(unsigned int unit);
 
 	unsigned int getResolutionWidth() const;
