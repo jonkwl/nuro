@@ -91,6 +91,13 @@ void UIComponents::labelBold(std::string text)
 	ImGui::PopFont();
 }
 
+void UIComponents::labelSmall(std::string text)
+{
+	ImGui::PushFont(EditorUI::getFonts().uiSmall);
+	ImGui::Text(text.c_str());
+	ImGui::PopFont();
+}
+
 void UIComponents::tryIcon(const char* icon, float padding)
 {
 	if (icon && icon[0] != '\0')

@@ -19,8 +19,9 @@ private:
 
 	bool sceneViewRightclicked; // Set if scene viewport is currently rightclicked
 
-	float movementSpeed; // Current speed of camera movement within scene viewport
-	float mouseSensitivity; // Current scene viewport mouse sensitivity
+	float movementSpeed; // Speed of camera movement within scene viewport
+	float mouseSensitivity; // Scene viewport mouse sensitivity
+	float scrollIncrementSpeed; // Speed for incrementing movement speed through mouse scrolling
 
 	glm::vec2 keyAxis; // Current input axis for evaluating scene view movement
 	float keyAxisSmoothingFactor; // Smoothing for key axis

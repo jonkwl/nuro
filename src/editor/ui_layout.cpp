@@ -16,7 +16,14 @@ FlexBuffer UILayout::lastFlex;
 
 float UILayout::mapAlignment(Alignment alignment)
 {
-	return ((int)alignment - 1) / 2;
+	switch (alignment) {
+	case Alignment::START:
+		return 0.0f;
+	case Alignment::CENTER:
+		return 0.5f;
+	case Alignment::END:
+		return 1.0f;
+	}
 }
 
 ImVec2 UILayout::getFlexRowSize(float width, float height)

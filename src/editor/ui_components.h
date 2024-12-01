@@ -18,6 +18,7 @@ public:
 
 	static void label(std::string text);
 	static void labelBold(std::string text);
+	static void labelSmall(std::string text);
 
 	static void tryIcon(const char* icon, float padding = 2.5f);
 

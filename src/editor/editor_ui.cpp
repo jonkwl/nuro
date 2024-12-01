@@ -52,6 +52,7 @@ namespace EditorUI {
 		// Load other _fonts
 		_fonts.uiBold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", _sizing.regularFontSize);
 		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", _sizing.headlineFontSize);
+		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", _sizing.smallFontSize);
 
 		ImGui::StyleColorsDark();
 

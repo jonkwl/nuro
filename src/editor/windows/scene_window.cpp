@@ -14,6 +14,7 @@ SceneWindow::SceneWindow() : lastContentRegionAvail(glm::vec2(0.0f)),
 sceneViewRightclicked(false),
 movementSpeed(12.0f),
 mouseSensitivity(0.08f),
+scrollIncrementSpeed(2.0f),
 keyAxis(glm::vec2(0.0f)),
 keyAxisSmoothingFactor(5.0f),
 mouseAxis(glm::vec2(0.0f))
@@ -36,11 +37,17 @@ void SceneWindow::prepare()
 
 		UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 		{
-
 			UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, Runtime::wireframe, "Wireframe");
 			UIComponents::toggleButton(ICON_FA_CUBE, Runtime::solidMode, "Solid Mode");
 			UIComponents::toggleButton(ICON_FA_ECLIPSE, Runtime::shadows, "Shadows");
 			UIComponents::toggleButton(ICON_FA_SPARKLES, Runtime::postProcessingEffects, "Post Processing");
+		}
+		UILayout::endFlex();
+
+		UILayout::beginFlex("setup", FlexType::ROW, UILayout::FULL_WIDTH, 13.0f, Justification::START, Alignment::CENTER, 1.0f);
+		{
+			UIComponents::space(1.0f, 0.0f);
+			UIComponents::label("Speed: " + std::to_string(static_cast<int>(movementSpeed)));
 		}
 		UILayout::endFlex();
 
@@ -98,6 +105,13 @@ void SceneWindow::updateMovement(Camera& camera)
 
 	camera.transform.position += movement_direction * movementSpeed * Runtime::deltaTime;
 
+	// Check for speed changes through scrolling if moving
+	if (currentKeyAxis != glm::vec2(0.0f)) {
+		glm::vec2 currentScrollAxis = Input::getScrollAxis();
+		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
+	}
+
+	// Check for camera rotation
 	if (sceneViewRightclicked)
 	{
 		glm::vec3 rotate_direction = glm::vec3(-mouseAxis.y, mouseAxis.x, 0.0f);

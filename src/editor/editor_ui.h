@@ -12,6 +12,7 @@ namespace EditorUI
 		float regularFontSize = 14.0f;
 		float iconFontSize = 22.0f;
 		float headlineFontSize = 15.0f;
+		float smallFontSize = 12.0f;
 	};
 
 	struct Colors
@@ -43,6 +44,7 @@ namespace EditorUI
 		ImFont* uiRegular;
 		ImFont* uiBold;
 		ImFont* uiHeadline;
+		ImFont* uiSmall;
 		ImFont* uiIcons;
 	};
 

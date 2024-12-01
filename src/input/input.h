@@ -10,5 +10,6 @@ namespace Input
 
 	const glm::vec2& getKeyAxis();
 	const glm::vec2& getMouseAxis();
+	const glm::vec2& getScrollAxis();
 
 };

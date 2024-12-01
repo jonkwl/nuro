@@ -7,18 +7,36 @@
 
 namespace Input {
 
+	GLFWwindow* _window;
+
 	glm::vec2 _keyAxis = glm::vec2(0.0f);
+
 	glm::vec2 _mouseAxis = glm::vec2(0.0f);
 	glm::vec2 _mouseLast = glm::vec2(0.0f);
 
-	void Input::setupInputs()
+	glm::vec2 _scrollOffset = glm::vec2(0.0f);
+
+	// Context callbacks
+
+	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		double mouseX, mouseY;
-		glfwGetCursorPos(Runtime::glfw, &mouseX, &mouseY);
-		_mouseLast = glm::vec2(mouseX, mouseY);
+		_scrollOffset = glm::vec2(xoffset, yoffset);
 	}
 
-	void Input::updateInputs()
+	// Input functions
+
+	void setupInputs()
+	{
+		_window = Runtime::glfw;
+
+		double mouseX, mouseY;
+		glfwGetCursorPos(_window, &mouseX, &mouseY);
+		_mouseLast = glm::vec2(mouseX, mouseY);
+
+		glfwSetScrollCallback(_window, scroll_callback);
+	}
+
+	void updateInputs()
 	{
 		// set mouse
 		double mouseX, mouseY;
@@ -58,14 +76,23 @@ namespace Input {
 		}
 	}
 
-	const glm::vec2& Input::getKeyAxis()
+	// Getters
+
+	const glm::vec2& getKeyAxis()
 	{
 		return _keyAxis;
 	}
 
-	const glm::vec2& Input::getMouseAxis()
+	const glm::vec2& getMouseAxis()
 	{
 		return _mouseAxis;
+	}
+
+	const glm::vec2& getScrollAxis()
+	{
+		glm::vec2 scrollAxis = _scrollOffset;
+		_scrollOffset = glm::vec2(0.0f);
+		return scrollAxis;
 	}
 
 }
