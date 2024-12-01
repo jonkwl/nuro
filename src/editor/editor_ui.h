@@ -50,11 +50,11 @@ namespace EditorUI
 	void newFrame();
 	void render();
 
-	std::string generateId();
+	const std::string generateId();
 
-	Colors getColors();
-	WindowFlags getWindowFlags();
-	Fonts getFonts();
+	const Colors& getColors();
+	const WindowFlags& getWindowFlags();
+	const Fonts& getFonts();
 
 	ImVec4 lighten(ImVec4 color, float amount);
 	ImVec4 darken(ImVec4 color, float amount);

@@ -42,12 +42,12 @@ namespace Quad {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 
-	unsigned int getVBO()
+	const unsigned int getVBO()
 	{
 		return _vbo;
 	}
 
-	unsigned int getVAO()
+	const unsigned int getVAO()
 	{
 		return _vao;
 	}

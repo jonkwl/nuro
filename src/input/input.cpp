@@ -58,12 +58,12 @@ namespace Input {
 		}
 	}
 
-	glm::vec2 Input::getKeyAxis()
+	const glm::vec2& Input::getKeyAxis()
 	{
 		return _keyAxis;
 	}
 
-	glm::vec2 Input::getMouseAxis()
+	const glm::vec2& Input::getMouseAxis()
 	{
 		return _mouseAxis;
 	}

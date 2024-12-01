@@ -8,7 +8,7 @@ namespace Input
 	void setupInputs();
 	void updateInputs();
 
-	glm::vec2 getKeyAxis();
-	glm::vec2 getMouseAxis();
+	const glm::vec2& getKeyAxis();
+	const glm::vec2& getMouseAxis();
 
 };

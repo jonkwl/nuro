@@ -26,7 +26,7 @@ namespace Profiler
 		_profiles[identifier] = _now();
 	}
 
-	double stop(std::string identifier)
+	const double stop(std::string identifier)
 	{
 		if (!_validateProfile(identifier))
 		{
@@ -37,7 +37,7 @@ namespace Profiler
 		return time;
 	}
 
-	double get(std::string identifier)
+	const double get(std::string identifier)
 	{
 		if (!_validateTime(identifier))
 		{

@@ -2,10 +2,12 @@
 
 namespace Quad
 {
+
 	void create();
 	void bind();
 	void render();
 
-	unsigned int getVBO();
-	unsigned int getVAO();
+	const unsigned int getVBO();
+	const unsigned int getVAO();
+
 };
