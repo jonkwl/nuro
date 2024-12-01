@@ -5,7 +5,7 @@
 class PrePass
 {
 public:
-	PrePass(Viewport& viewport);
+	PrePass(const Viewport& viewport);
 	
 	void create();
 	void destroy();
@@ -16,7 +16,7 @@ public:
 	unsigned int getNormalOutput();
 
 private:
-	Viewport& viewport;
+	const Viewport& viewport;
 
 	unsigned int fbo;
 	unsigned int depthOutput;

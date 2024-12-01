@@ -72,10 +72,6 @@ Viewport Runtime::sceneViewport;
 
 ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
-float Runtime::directionalIntensity = 0.1f;
-glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
-glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
-glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
 PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
@@ -83,10 +79,6 @@ SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
 PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
 
 QuickGizmo Runtime::quickGizmo;
-
-unsigned int Runtime::prePassDepthOutput = 0;
-unsigned int Runtime::prePassNormalOutput = 0;
-unsigned int Runtime::ssaoBuffer = 0;
 
 bool Runtime::resized = false;
 
@@ -388,8 +380,6 @@ void Runtime::renderFrame() {
 	// PREPARATION PASS
 	// Prepare each mesh for upcoming render passes
 	//
-	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
-	LitMaterial::camera = &camera; // Redundant most of the times atm
 	for (int i = 0; i < entityStack.size(); i++)
 	{
 		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
@@ -412,26 +402,32 @@ void Runtime::renderFrame() {
 	Profiler::start("pre_pass");
 	prePass.render();
 	Profiler::stop("pre_pass");
-	prePassDepthOutput = prePass.getDepthOutput();
-	prePassNormalOutput = prePass.getNormalOutput();
+	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
+	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
 
 	//
 	// SCREEN SPACE AMBIENT OCCLUSION PASS
 	// Calculate screen space ambient occlusion if enabled
 	//
-	unsigned int ssaoOutput = 0;
+	unsigned int _ssaoOutput = 0;
 	if (PostProcessing::ambientOcclusion.enabled)
 	{
-		ssaoOutput = ssaoPass.render(prePassDepthOutput, prePassNormalOutput);
+		_ssaoOutput = ssaoPass.render(PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
-	ssaoBuffer = ssaoOutput;
+	const unsigned int SSAO_OUTPUT = _ssaoOutput;
 
 	//
 	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
 	// Includes injected pre pass
 	//
+	
+	// Prepare lit material with current render data
+	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
+	LitMaterial::camera = &camera; // Redundant most of the times atm
+	LitMaterial::ssaoInput = SSAO_OUTPUT;
+
 	Profiler::start("forward_pass");
-	unsigned int forwardPassOutput = forwardPass.render(entityStack);
+	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(entityStack);
 	Profiler::stop("forward_pass");
 
 	//
@@ -439,7 +435,7 @@ void Runtime::renderFrame() {
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(forwardPassOutput);
+	postProcessingPipeline.render(FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");

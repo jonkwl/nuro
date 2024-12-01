@@ -10,9 +10,9 @@
 class ForwardPass
 {
 public:
-	ForwardPass(Viewport& viewport);
+	ForwardPass(const Viewport& viewport);
 
-	void create(unsigned int msaaSamples); // Creates forward pass
+	void create(const unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
 	unsigned int render(std::vector<Entity*>& targets); // Forward passes all entity render targets and returns color output
@@ -28,7 +28,7 @@ public:
 	bool wireframe; // Wireframe rendering mode
 	glm::vec4 clearColor; // Clear color for forward pass
 private:
-	Viewport& viewport; // Viewport forward pass instance is linked to
+	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
 	QuickGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)

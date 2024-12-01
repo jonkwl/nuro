@@ -7,7 +7,7 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/utils/log.h"
 
-BloomPass::BloomPass(Viewport& viewport) : viewport(viewport),
+BloomPass::BloomPass(const Viewport& viewport) : viewport(viewport),
 threshold(0.0f),
 softThreshold(0.0f),
 filterRadius(0.0f),
@@ -24,7 +24,7 @@ upsamplingShader(nullptr)
 {
 }
 
-void BloomPass::create(unsigned int mipDepth)
+void BloomPass::create(const unsigned int mipDepth)
 {
 	// Load shaders
 	prefilterShader = ShaderPool::get("bloom_prefilter");
@@ -141,7 +141,7 @@ void BloomPass::destroy()
 	upsamplingShader = nullptr;
 }
 
-unsigned int BloomPass::render(unsigned int hdrInput)
+unsigned int BloomPass::render(const unsigned int hdrInput)
 {
 	// Bind bloom framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -163,7 +163,7 @@ unsigned int BloomPass::render(unsigned int hdrInput)
 	return mipChain[0].texture;
 }
 
-unsigned int BloomPass::prefilteringPass(unsigned int hdrInput)
+unsigned int BloomPass::prefilteringPass(const unsigned int hdrInput)
 {
 	// Set prefilter uniforms
 	prefilterShader->bind();
@@ -185,7 +185,7 @@ unsigned int BloomPass::prefilteringPass(unsigned int hdrInput)
 	return prefilterOutput;
 }
 
-void BloomPass::downsamplingPass(unsigned int hdrInput)
+void BloomPass::downsamplingPass(const unsigned int hdrInput)
 {
 	// Set downsampling uniforms
 	downsamplingShader->bind();

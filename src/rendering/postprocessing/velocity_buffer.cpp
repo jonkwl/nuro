@@ -13,7 +13,7 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 
-VelocityBuffer::VelocityBuffer(Viewport& viewport) : viewport(viewport),
+VelocityBuffer::VelocityBuffer(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 rbo(0),
 output(0),

@@ -11,12 +11,12 @@ class Shader;
 class PostProcessingPipeline
 {
 public:
-	PostProcessingPipeline(Viewport& viewport, bool renderToScreen);
+	PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen);
 
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
 
-	void render(unsigned int hdrInput); // Render post processing by performing all post processing passes on input
+	void render(const unsigned int hdrInput, const unsigned int depthInput); // Render post processing by performing all post processing passes on input
 
 	unsigned int getOutput(); // Get output of last post processing render
 
@@ -29,9 +29,9 @@ private:
 		LENS_DIRT_UNIT
 	};
 
-	Viewport& viewport;
+	const Viewport& viewport;
 
-	bool renderToScreen;
+	const bool renderToScreen;
 
 	void syncConfiguration(); // Sync the post processing configuration with final pass shader
 

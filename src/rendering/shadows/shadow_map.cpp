@@ -82,9 +82,13 @@ void ShadowMap::render() // Update needed for camera independence
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	// Example directional light
+	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
+	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
+
 	// Get shadow map transformation matrices
 	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(Runtime::mainShadowMap->boundsWidth * 2.5f, Runtime::mainShadowMap->boundsHeight * 2.5f, near, far);
-	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(Runtime::directionalPosition, Runtime::directionalDirection);
+	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(directionalPosition, directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
 
 	// Set mesh renderers light space matrix for upcoming shadow pass

@@ -10,12 +10,12 @@ class Shader;
 class BloomPass
 {
 public:
-	BloomPass(Viewport& viewport);
+	BloomPass(const Viewport& viewport);
 
-	void create(unsigned int mipDepth);
+	void create(const unsigned int mipDepth);
 	void destroy();
 
-	unsigned int render(unsigned int hdrInput);
+	unsigned int render(const unsigned int hdrInput);
 
 	float threshold;
 	float softThreshold;
@@ -23,12 +23,12 @@ public:
 	unsigned int mipDepth;
 
 private:
-	unsigned int prefilteringPass(unsigned int hdrInput);
-	void downsamplingPass(unsigned int hdrInput);
+	unsigned int prefilteringPass(const unsigned int hdrInput);
+	void downsamplingPass(const unsigned int hdrInput);
 	void upsamplingPass();
 
 private:
-	Viewport& viewport;
+	const Viewport& viewport;
 
 	struct Mip
 	{

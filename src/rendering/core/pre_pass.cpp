@@ -8,7 +8,7 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/utils/log.h"
 
-PrePass::PrePass(Viewport& viewport) : viewport(viewport),
+PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 depthOutput(0),
 normalOutput(0)

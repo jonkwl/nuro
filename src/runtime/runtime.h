@@ -44,11 +44,6 @@ public:
 	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 	static Shader* velocityPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 
-	static float directionalIntensity; // REMOVE
-	static glm::vec3 directionalColor; // REMOVE
-	static glm::vec3 directionalDirection; // REMOVE
-	static glm::vec3 directionalPosition; // REMOVE
-
 	// Skybox settings
 	// MOVE TO FORWARD PASS
 	static bool skyboxEnabled;
@@ -91,12 +86,6 @@ public:
 
 	// Instances
 	static QuickGizmo quickGizmo;
-
-	// Buffers from passes
-	// PASS DEPENDENCIES DIRECTLY
-	static unsigned int prePassDepthOutput;
-	static unsigned int prePassNormalOutput;
-	static unsigned int ssaoBuffer;
 
 	// Perform resize for specific viewport
 	static void resizeViewport(float width, float height);

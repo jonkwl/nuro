@@ -7,7 +7,7 @@ class Shader;
 class VelocityBuffer
 {
 public:
-	VelocityBuffer(Viewport& viewport);
+	VelocityBuffer(const Viewport& viewport);
 
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
@@ -19,7 +19,7 @@ private:
 	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:
-	Viewport& viewport;
+	const Viewport& viewport;
 
 	unsigned int fbo; // Framebuffer
 	unsigned int rbo; // Renderbuffer

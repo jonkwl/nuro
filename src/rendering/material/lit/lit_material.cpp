@@ -12,6 +12,7 @@
 
 Viewport* LitMaterial::viewport = nullptr;
 Camera* LitMaterial::camera = nullptr;
+unsigned int LitMaterial::ssaoInput = 0;
 
 LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
 tiling(1.0f, 1.0f),
@@ -61,7 +62,7 @@ void LitMaterial::bind()
 	// SSAO
 	shader->setBool("configuration.enableSSAO", PostProcessing::ambientOcclusion.enabled);
 	glActiveTexture(GL_TEXTURE0 + SSAO_UNIT);
-	glBindTexture(GL_TEXTURE_2D, Runtime::ssaoBuffer);
+	glBindTexture(GL_TEXTURE_2D, ssaoInput);
 
 	// World parameters
 	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(camera->transform.position));
@@ -188,10 +189,15 @@ void LitMaterial::syncLightUniforms()
 	shader->setInt("configuration.numPointLights", 15);
 	shader->setInt("configuration.numSpotLights", 1);
 
-	shader->setFloat("directionalLights[0].intensity", Runtime::directionalIntensity);
-	shader->setVec3("directionalLights[0].direction", Transformation::prepareWorldPosition(Runtime::directionalDirection));
-	shader->setVec3("directionalLights[0].color", Runtime::directionalColor);
-	shader->setVec3("directionalLights[0].position", Transformation::prepareWorldPosition(Runtime::directionalPosition));
+	// Example directional light
+	float directionalIntensity = 0.1f;
+	glm::vec3 directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
+	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
+	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
+	shader->setFloat("directionalLights[0].intensity", directionalIntensity);
+	shader->setVec3("directionalLights[0].direction", Transformation::prepareWorldPosition(directionalDirection));
+	shader->setVec3("directionalLights[0].color", directionalColor);
+	shader->setVec3("directionalLights[0].position", Transformation::prepareWorldPosition(directionalPosition));
 
 	shader->setVec3("pointLights[0].position", Transformation::prepareWorldPosition(glm::vec3(0.0f, 0.0f, 6.5f)));
 	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.78f, 0.95f));

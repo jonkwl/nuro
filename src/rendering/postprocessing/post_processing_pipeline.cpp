@@ -14,7 +14,7 @@
 #include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
 
-PostProcessingPipeline::PostProcessingPipeline(Viewport& viewport, bool renderToScreen) : viewport(viewport),
+PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen) : viewport(viewport),
 renderToScreen(renderToScreen),
 fbo(0),
 output(0),
@@ -88,21 +88,19 @@ void PostProcessingPipeline::destroy()
 	finalPassShader = nullptr;
 }
 
-void PostProcessingPipeline::render(unsigned int hdrInput)
+void PostProcessingPipeline::render(const unsigned int hdrInput, const unsigned int depthInput)
 {
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
 
 	// Pass input through post processing pipeline
 	unsigned int POST_PROCESSING_PIPELINE_HDR = hdrInput;
-	unsigned int POST_PROCESSING_PIPELINE_DEPTH = Runtime::prePassDepthOutput;
-	unsigned int POST_PROCESSING_PIPELINE_NORMAL = Runtime::prePassNormalOutput;
 
 	// Motion blur pass
 	if (PostProcessing::motionBlur.enabled)
 	{
 		// Apply motion blur on post processing hdr input
-		POST_PROCESSING_PIPELINE_HDR = motionBlurPass.render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
+		POST_PROCESSING_PIPELINE_HDR = motionBlurPass.render(POST_PROCESSING_PIPELINE_HDR, depthInput);
 	}
 
 	// Seperate bloom pass
@@ -132,7 +130,7 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 
 	// Bind pre pass depth buffer
 	glActiveTexture(GL_TEXTURE0 + DEPTH_UNIT);
-	glBindTexture(GL_TEXTURE_2D, POST_PROCESSING_PIPELINE_DEPTH);
+	glBindTexture(GL_TEXTURE_2D, depthInput);
 
 	// Bind bloom buffer
 	glActiveTexture(GL_TEXTURE0 + BLOOM_UNIT);

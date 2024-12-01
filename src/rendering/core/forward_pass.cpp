@@ -6,7 +6,7 @@
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
 
-ForwardPass::ForwardPass(Viewport& viewport) : wireframe(false),
+ForwardPass::ForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
 viewport(viewport),
 skybox(nullptr),
@@ -20,7 +20,7 @@ multisampledColorBuffer(0)
 {
 }
 
-void ForwardPass::create(unsigned int msaaSamples)
+void ForwardPass::create(const unsigned int msaaSamples)
 {
 	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &outputFbo);

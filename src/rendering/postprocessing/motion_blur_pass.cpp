@@ -11,7 +11,7 @@
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/diagnostics/diagnostics.h"
 
-MotionBlurPass::MotionBlurPass(Viewport& viewport) : viewport(viewport),
+MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 output(0),
 shader(nullptr),
@@ -84,7 +84,7 @@ void MotionBlurPass::destroy()
 	shader = nullptr;
 }
 
-unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInput)
+unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned int depthInput)
 {
 	// Render velocity buffer if object motion blur is active
 	unsigned int VELOCITY_BUFFER = 0;

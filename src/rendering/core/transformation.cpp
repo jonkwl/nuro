@@ -8,12 +8,12 @@
 
 namespace Transformation {
 
-	glm::vec3 prepareWorldPosition(glm::vec3 position)
+	glm::vec3 prepareWorldPosition(const glm::vec3 position)
 	{
 		return glm::vec3(position.x, position.y, -position.z);
 	}
 
-	glm::vec3 prepareWorldRotation(glm::vec3 rotation)
+	glm::vec3 prepareWorldRotation(const glm::vec3 rotation)
 	{
 		return glm::vec3(-rotation.x, -rotation.y, rotation.z);
 	}
@@ -72,13 +72,13 @@ namespace Transformation {
 		return viewMatrix;
 	}
 
-	glm::mat4 projectionMatrix(Camera& camera, Viewport& viewport)
+	glm::mat4 projectionMatrix(Camera& camera, const Viewport& viewport)
 	{
 		glm::mat4 projection = glm::perspective(glm::radians(camera.getFov()), viewport.width / viewport.height, camera.getNear(), camera.getFar());
 		return projection;
 	}
 
-	glm::mat4 lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection)
+	glm::mat4 lightViewMatrix(const glm::vec3 lightPosition, const glm::vec3 lightDirection)
 	{
 		glm::vec3 position = prepareWorldPosition(lightPosition);
 		glm::vec3 target = position + glm::normalize(prepareWorldPosition(lightDirection));
@@ -89,7 +89,7 @@ namespace Transformation {
 		return view;
 	}
 
-	glm::mat4 lightProjectionMatrix(float boundsWidth, float boundsHeight, float near, float far)
+	glm::mat4 lightProjectionMatrix(const float boundsWidth, const float boundsHeight, const float near, const float far)
 	{
 		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
 		return projection;

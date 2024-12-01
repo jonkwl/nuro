@@ -14,6 +14,7 @@ public:
 	// Needed to be set before binding lit material
 	static Viewport* viewport;
 	static Camera* camera;
+	static unsigned int ssaoInput;
 
 	void bind();
 	Shader* getShader();

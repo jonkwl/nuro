@@ -10,12 +10,12 @@ class Shader;
 class MotionBlurPass
 {
 public:
-	MotionBlurPass(Viewport& viewport);
+	MotionBlurPass(const Viewport& viewport);
 
 	void create();
 	void destroy();
 
-	unsigned int render(unsigned int hdrInput, unsigned int depthInput);
+	unsigned int render(const unsigned int hdrInput, const unsigned int depthInput);
 
 private:
 	enum TextureUnits
@@ -25,7 +25,7 @@ private:
 		VELOCITY_UNIT
 	};
 
-	Viewport& viewport;
+	const Viewport& viewport;
 
 	unsigned int fbo;
 	unsigned int output;

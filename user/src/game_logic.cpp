@@ -227,7 +227,6 @@ void performanceScene() {
 	material->roughness = 0.1f;
 	material->metallic = 0.0f;
 
-	Runtime::directionalIntensity = 3.0f;
 	PostProcessing::bloom.intensity = 0.25f;
 
 	glm::vec2 halfSize = glm::vec2(gridX * offset, gridZ * offset);
