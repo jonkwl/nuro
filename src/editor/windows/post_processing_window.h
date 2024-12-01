@@ -6,8 +6,5 @@
 class PostProcessingWindow : public EditorWindow
 {
 public:
-	PostProcessingWindow();
 	void prepare();
-private:
-	PostProcessing::Configuration& configuration;
 };

@@ -87,7 +87,9 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 {
 	// Render velocity buffer if object motion blur is active
 	unsigned int VELOCITY_BUFFER = 0;
-	if (PostProcessing::configuration.motionBlurObject)
+
+	bool objectEnabled = PostProcessing::motionBlur.objectEnabled;
+	if (objectEnabled)
 	{
 		VELOCITY_BUFFER = velocityBuffer.render();
 	}
@@ -111,19 +113,18 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	// Set shader uniforms
 	shader->setFloat("fps", Runtime::fps);
 
-	bool camera = PostProcessing::configuration.motionBlurCamera;
-	shader->setBool("camera", camera);
-	if (camera)
+	bool cameraEnabled = PostProcessing::motionBlur.cameraEnabled;
+	shader->setBool("camera", cameraEnabled);
+	if (cameraEnabled)
 	{
-		shader->setFloat("cameraIntensity", PostProcessing::configuration.motionBlurCameraIntensity);
-		shader->setInt("cameraSamples", PostProcessing::configuration.motionBlurCameraSamples);
+		shader->setFloat("cameraIntensity", PostProcessing::motionBlur.cameraIntensity);
+		shader->setInt("cameraSamples", PostProcessing::motionBlur.cameraSamples);
 	}
 
-	bool object = PostProcessing::configuration.motionBlurObject;
-	shader->setBool("object", object);
-	if (object)
+	shader->setBool("object", objectEnabled);
+	if (objectEnabled)
 	{
-		shader->setInt("objectSamples", PostProcessing::configuration.motionBlurObjectSamples);
+		shader->setInt("objectSamples", PostProcessing::motionBlur.objectSamples);
 	}
 
 	shader->setMatrix4("inverseViewMatrix", glm::inverse(MeshRenderer::currentViewMatrix));

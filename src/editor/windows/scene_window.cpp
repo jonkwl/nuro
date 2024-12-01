@@ -102,18 +102,16 @@ void SceneWindow::updateMovement(Camera& camera)
 	glm::vec3 cam_forward = camera.transform.forward();
 	glm::vec3 cam_right = camera.transform.right();
 	glm::vec3 movement_direction = cam_forward * keyAxis.x + cam_right * keyAxis.y;
-
 	camera.transform.position += movement_direction * movementSpeed * Runtime::deltaTime;
 
-	// Check for speed changes through scrolling if moving
-	if (currentKeyAxis != glm::vec2(0.0f)) {
-		glm::vec2 currentScrollAxis = Input::getScrollAxis();
-		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
-	}
-
-	// Check for camera rotation
+	// If scene viewport is rightclicked
 	if (sceneViewRightclicked)
 	{
+		// Check for scrolling movement speed changes
+		glm::vec2 currentScrollAxis = Input::getScrollAxis();
+		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
+
+		// Check for camera rotation
 		glm::vec3 rotate_direction = glm::vec3(-mouseAxis.y, mouseAxis.x, 0.0f);
 		glm::vec3 new_rotation = camera.transform.rotation + (rotate_direction * mouseSensitivity);
 

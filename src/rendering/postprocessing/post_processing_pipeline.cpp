@@ -19,7 +19,6 @@ renderToScreen(renderToScreen),
 fbo(0),
 output(0),
 finalPassShader(nullptr),
-configuration(PostProcessing::configuration),
 motionBlurPass(viewport),
 bloomPass(viewport)
 {
@@ -68,7 +67,7 @@ void PostProcessingPipeline::create()
 
 	// Setup post processing pipeline
 	motionBlurPass.create();
-	bloomPass.create(configuration.bloomMipDepth);
+	bloomPass.create(PostProcessing::bloom.mipDepth);
 }
 
 void PostProcessingPipeline::destroy()
@@ -100,7 +99,7 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 	unsigned int POST_PROCESSING_PIPELINE_NORMAL = Runtime::prePassNormalOutput;
 
 	// Motion blur pass
-	if (configuration.motionBlur)
+	if (PostProcessing::motionBlur.enabled)
 	{
 		// Apply motion blur on post processing hdr input
 		POST_PROCESSING_PIPELINE_HDR = motionBlurPass.render(POST_PROCESSING_PIPELINE_HDR, POST_PROCESSING_PIPELINE_DEPTH);
@@ -108,12 +107,12 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 
 	// Seperate bloom pass
 	unsigned int BLOOM_PASS_OUTPUT = 0;
-	if (configuration.bloom)
+	if (PostProcessing::bloom.enabled)
 	{
-		bloomPass.threshold = configuration.bloomThreshold;
-		bloomPass.softThreshold = configuration.bloomSoftThreshold;
-		bloomPass.filterRadius = configuration.bloomFilterRadius;
-		bloomPass.mipDepth = configuration.bloomMipDepth;
+		bloomPass.threshold = PostProcessing::bloom.threshold;
+		bloomPass.softThreshold = PostProcessing::bloom.softThreshold;
+		bloomPass.filterRadius = PostProcessing::bloom.filterRadius;
+		bloomPass.mipDepth = PostProcessing::bloom.mipDepth;
 		BLOOM_PASS_OUTPUT = bloomPass.render(POST_PROCESSING_PIPELINE_HDR);
 	}
 
@@ -140,9 +139,9 @@ void PostProcessingPipeline::render(unsigned int hdrInput)
 	glBindTexture(GL_TEXTURE_2D, BLOOM_PASS_OUTPUT);
 
 	// Bind lens dirt texture
-	if (configuration.lensDirt)
+	if (PostProcessing::bloom.lensDirtEnabled)
 	{
-		configuration.lensDirtTexture.bind(LENS_DIRT_UNIT);
+		PostProcessing::bloom.lensDirtTexture.bind(LENS_DIRT_UNIT);
 	}
 
 	// Bind quad and render to screen
@@ -161,25 +160,25 @@ unsigned int PostProcessingPipeline::getOutput()
 
 void PostProcessingPipeline::syncConfiguration()
 {
-	finalPassShader->setFloat("configuration.exposure", configuration.exposure);
-	finalPassShader->setFloat("configuration.contrast", configuration.contrast);
-	finalPassShader->setFloat("configuration.gamma", configuration.gamma);
+	finalPassShader->setFloat("configuration.exposure", PostProcessing::color.exposure);
+	finalPassShader->setFloat("configuration.contrast", PostProcessing::color.contrast);
+	finalPassShader->setFloat("configuration.gamma", PostProcessing::color.gamma);
 
-	finalPassShader->setFloat("configuration.bloom", configuration.bloom);
-	finalPassShader->setFloat("configuration.bloomIntensity", configuration.bloomIntensity);
-	finalPassShader->setVec3("configuration.bloomColor", glm::vec3(configuration.bloomColor[0], configuration.bloomColor[1], configuration.bloomColor[2]));
-	finalPassShader->setFloat("configuration.bloomThreshold", configuration.bloomThreshold);
-	finalPassShader->setFloat("configuration.lensDirt", configuration.lensDirt);
-	finalPassShader->setFloat("configuration.lensDirtIntensity", configuration.lensDirtIntensity);
+	finalPassShader->setFloat("configuration.bloom", PostProcessing::bloom.enabled);
+	finalPassShader->setFloat("configuration.bloomIntensity", PostProcessing::bloom.intensity);
+	finalPassShader->setVec3("configuration.bloomColor", glm::vec3(PostProcessing::bloom.color[0], PostProcessing::bloom.color[1], PostProcessing::bloom.color[2]));
+	finalPassShader->setFloat("configuration.bloomThreshold", PostProcessing::bloom.threshold);
+	finalPassShader->setFloat("configuration.lensDirt", PostProcessing::bloom.lensDirtEnabled);
+	finalPassShader->setFloat("configuration.lensDirtIntensity", PostProcessing::bloom.lensDirtIntensity);
 
-	finalPassShader->setBool("configuration.chromaticAberration", configuration.chromaticAberration);
-	finalPassShader->setFloat("configuration.chromaticAberrationIntensity", configuration.chromaticAberrationIntensity);
-	finalPassShader->setInt("configuration.chromaticAberrationIterations", configuration.chromaticAberrationIterations);
+	finalPassShader->setBool("configuration.chromaticAberration", PostProcessing::chromaticAberration.enabled);
+	finalPassShader->setFloat("configuration.chromaticAberrationIntensity", PostProcessing::chromaticAberration.intensity);
+	finalPassShader->setInt("configuration.chromaticAberrationIterations", PostProcessing::chromaticAberration.iterations);
 
-	finalPassShader->setBool("configuration.vignette", configuration.vignette);
-	finalPassShader->setFloat("configuration.vignetteIntensity", configuration.vignetteIntensity);
-	finalPassShader->setVec3("configuration.vignetteColor", glm::vec3(configuration.vignetteColor[0], configuration.vignetteColor[1], configuration.vignetteColor[2]));
-	finalPassShader->setFloat("configuration.vignetteRadius", configuration.vignetteRadius);
-	finalPassShader->setFloat("configuration.vignetteSoftness", configuration.vignetteSoftness);
-	finalPassShader->setFloat("configuration.vignetteRoundness", configuration.vignetteRoundness);
+	finalPassShader->setBool("configuration.vignette", PostProcessing::vignette.enabled);
+	finalPassShader->setFloat("configuration.vignetteIntensity", PostProcessing::vignette.intensity);
+	finalPassShader->setVec3("configuration.vignetteColor", glm::vec3(PostProcessing::vignette.color[0], PostProcessing::vignette.color[1], PostProcessing::vignette.color[2]));
+	finalPassShader->setFloat("configuration.vignetteRadius", PostProcessing::vignette.radius);
+	finalPassShader->setFloat("configuration.vignetteSoftness", PostProcessing::vignette.softness);
+	finalPassShader->setFloat("configuration.vignetteRoundness", PostProcessing::vignette.roundness);
 }

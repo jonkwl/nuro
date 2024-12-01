@@ -5,50 +5,78 @@
 namespace PostProcessing
 {
 
-	struct Configuration
-	{
-		bool colorGrading = false;
+	struct Color {
+
 		float exposure = 1.0f;
 		float contrast = 1.004f;
 		float gamma = 2.2f;
 
-		bool motionBlur = true;
-		bool motionBlurCamera = true;
-		float motionBlurCameraIntensity = 0.8f;
-		int motionBlurCameraSamples = 32;
-		bool motionBlurObject = true;
-		int motionBlurObjectSamples = 16;
-		bool motionBlurObjectSilhouetteExtension = false;
+	};
 
-		bool bloom = true;
-		float bloomIntensity = 0.38f;
-		float bloomColor[3] = { 1.0f, 1.0f, 1.0f };
-		float bloomThreshold = 0.2f;
-		float bloomSoftThreshold = 0.0f;
-		float bloomFilterRadius = 0.0f;
-		unsigned int bloomMipDepth = 16;
-		bool lensDirt = false;
+	struct MotionBlur {
+
+		bool enabled = true;
+
+		bool cameraEnabled = true;
+		float cameraIntensity = 0.8f;
+		int cameraSamples = 32;
+
+		bool objectEnabled = true;
+		int objectSamples = 16;
+		bool objectSilhouetteExtension = false;
+
+	};
+
+	struct Bloom {
+
+		bool enabled = true;
+		float intensity = 0.38f;
+		float color[3] = { 1.0f, 1.0f, 1.0f };
+		float threshold = 0.2f;
+		float softThreshold = 0.0f;
+		float filterRadius = 0.0f;
+		unsigned int mipDepth = 16;
+
+		bool lensDirtEnabled = false;
 		Texture lensDirtTexture = Texture::empty();
 		float lensDirtIntensity = 0.0f;
 
-		bool chromaticAberration = true;
-		float chromaticAberrationIntensity = 0.055f;
-		int chromaticAberrationIterations = 6;
-
-		bool vignette = true;
-		float vignetteIntensity = 1.0f;
-		float vignetteColor[3] = { 0.0f, 0.0f, 0.0f };
-		float vignetteRadius = 0.68f;
-		float vignetteSoftness = 0.35f;
-		float vignetteRoundness = 1.8f;
-
-		bool ambientOcclusion = false;
-		float ambientOcclusionRadius = 0.2f;
-		int ambientOcclusionSamples = 64;
-		float ambientOcclusionPower = 20.0f;
-		float ambientOcclusionBias = 0.03f;
 	};
 
-	extern Configuration configuration;
+	struct ChromaticAberration {
+
+		bool enabled = true;
+		float intensity = 0.055f;
+		int iterations = 6;
+
+	};
+
+	struct Vignette {
+
+		bool enabled = true;
+		float intensity = 1.0f;
+		float color[3] = { 0.0f, 0.0f, 0.0f };
+		float radius = 0.68f;
+		float softness = 0.35f;
+		float roundness = 1.8f;
+
+	};
+
+	struct AmbientOcclusion {
+
+		bool enabled = false;
+		float radius = 0.2f;
+		int samples = 64;
+		float power = 20.0f;
+		float bias = 0.03f;
+
+	};
+
+	inline Color color;
+	inline MotionBlur motionBlur;
+	inline Bloom bloom;
+	inline ChromaticAberration chromaticAberration;
+	inline Vignette vignette;
+	inline AmbientOcclusion ambientOcclusion;
 
 }

@@ -13,26 +13,10 @@ void defaultScene() {
 
 	// Post Processing Lens Dirt
 	Texture lensDirt = Texture::load("./user/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
-	PostProcessing::configuration.lensDirtTexture = lensDirt;
-	PostProcessing::configuration.lensDirt = true;
+	PostProcessing::bloom.lensDirtTexture = lensDirt;
+	PostProcessing::bloom.lensDirtEnabled = true;
 
 	// Create all entities
-	/*Texture albedo = Texture("./user/assets/textures/sci-fi/albedo.jpg", EMISSION_MAP);
-	Texture normal = Texture("./user/assets/textures/sci-fi/normal.jpg", NORMAL_MAP);
-	Texture metallic = Texture("./user/assets/textures/sci-fi/metallic.jpg", METALLIC_MAP);
-	Texture roughness = Texture("./user/assets/textures/sci-fi/roughness.jpg", ROUGHNESS_MAP);
-	Texture ambient_occlusion = Texture("./user/assets/textures/sci-fi/ambient_occlusion.jpg", AMBIENT_OCCLUSION_MAP);
-	Texture emission = Texture("./user/assets/textures/sci-fi/emission.jpg", EMISSION_MAP);
-
-	sphereMaterial = new LitMaterial();
-	sphereMaterial->setAlbedoMap(albedo);
-	sphereMaterial->setNormalMap(normal);
-	sphereMaterial->setMetallicMap(metallic);
-	sphereMaterial->setRoughnessMap(roughness);
-	sphereMaterial->setAmbientOcclusionMap(ambient_occlusion);
-	sphereMaterial->emission = true;
-	sphereMaterial->setEmissionMap(emission);
-	sphereMaterial->emissionIntensity = 12.5f;*/
 	LitMaterial* sphereMaterial = new LitMaterial();
 	sphereMaterial->roughness = 0.15f;
 	Model* sphereModel = Model::load("./user/assets/models/sphere.fbx");
@@ -246,7 +230,7 @@ void performanceScene() {
 	material->metallic = 0.0f;
 
 	Runtime::directionalIntensity = 3.0f;
-	PostProcessing::configuration.bloomIntensity = 0.25f;
+	PostProcessing::bloom.intensity = 0.25f;
 
 	glm::vec2 halfSize = glm::vec2(gridX * offset, gridZ * offset);
 

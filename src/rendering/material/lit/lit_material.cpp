@@ -40,7 +40,7 @@ void LitMaterial::bind(Viewport& viewport)
 	shader->bind();
 
 	// General parameters
-	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
+	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport.width, viewport.height));
 
@@ -56,7 +56,7 @@ void LitMaterial::bind(Viewport& viewport)
 	shader->setFloat("configuration.shadowDiskRadius", static_cast<float>(Runtime::mainShadowDisk->getRadius()));
 
 	// SSAO
-	shader->setBool("configuration.enableSSAO", PostProcessing::configuration.ambientOcclusion);
+	shader->setBool("configuration.enableSSAO", PostProcessing::ambientOcclusion.enabled);
 	glActiveTexture(GL_TEXTURE0 + SSAO_UNIT);
 	glBindTexture(GL_TEXTURE_2D, Runtime::ssaoBuffer);
 
@@ -162,7 +162,7 @@ void LitMaterial::setEmissionMap(Texture texture)
 
 void LitMaterial::syncStaticUniforms()
 {
-	shader->setFloat("configuration.gamma", PostProcessing::configuration.gamma);
+	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
 
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
 	shader->setBool("configuration.castShadows", Runtime::shadows);

@@ -111,7 +111,7 @@ float Runtime::averageFpsElapsedTime = 0.0f;
 
 bool Runtime::resized = false;
 
-bool QUICK_LAUNCH = true; // tmp for skipping asset loading
+bool QUICK_LAUNCH = false; // tmp for skipping asset loading
 
 //
 //
@@ -479,7 +479,7 @@ void Runtime::renderFrame() {
 	// Calculate screen space ambient occlusion if enabled
 	//
 	unsigned int ssaoOutput = 0;
-	if (PostProcessing::configuration.ambientOcclusion)
+	if (PostProcessing::ambientOcclusion.enabled)
 	{
 		ssaoOutput = ssaoPass.render(prePassDepthOutput, prePassNormalOutput);
 	}

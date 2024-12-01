@@ -108,7 +108,7 @@ unsigned int VelocityBuffer::render()
 	OUTPUT = velocityPasses();
 
 	// Perform postfiltering pass on velocity buffer if object silhouettes should be extended
-	if (PostProcessing::configuration.motionBlurObjectSilhouetteExtension)
+	if (PostProcessing::motionBlur.objectSilhouetteExtension)
 	{
 		OUTPUT = postfilteringPass();
 	}

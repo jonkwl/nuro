@@ -154,7 +154,7 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	glViewport(0, 0, viewport.width * aoScale, viewport.height * aoScale);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
-	int nSamples = PostProcessing::configuration.ambientOcclusionSamples;
+	int nSamples = PostProcessing::ambientOcclusion.samples;
 	if (nSamples > maxKernelSamples)
 	{
 		nSamples = maxKernelSamples;
@@ -169,9 +169,9 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
 
 	aoPassShader->setInt("nSamples", nSamples);
-	aoPassShader->setFloat("radius", PostProcessing::configuration.ambientOcclusionRadius);
-	aoPassShader->setFloat("bias", PostProcessing::configuration.ambientOcclusionBias);
-	aoPassShader->setFloat("power", PostProcessing::configuration.ambientOcclusionPower);
+	aoPassShader->setFloat("radius", PostProcessing::ambientOcclusion.radius);
+	aoPassShader->setFloat("bias", PostProcessing::ambientOcclusion.bias);
+	aoPassShader->setFloat("power", PostProcessing::ambientOcclusion.power);
 
 	// Bind depth input
 	glActiveTexture(GL_TEXTURE0 + DEPTH_UNIT);

@@ -40,8 +40,6 @@ private:
 
 	Shader* finalPassShader; // Post processing final pass shader
 
-	PostProcessing::Configuration& configuration; // Configuration
-
 private:
 	MotionBlurPass motionBlurPass;
 	BloomPass bloomPass;
