@@ -57,7 +57,7 @@ float Runtime::deltaTime = 0.0f;
 float Runtime::fps = 0;
 float Runtime::averageFps = 0.0f;
 
-glm::vec4 Runtime::clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+glm::vec4 Runtime::clearColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
 unsigned int Runtime::msaaSamples = 4;
 bool Runtime::vsync = false;
 bool Runtime::wireframe = false;
@@ -110,6 +110,8 @@ int Runtime::averageFpsFrameCount = 0;
 float Runtime::averageFpsElapsedTime = 0.0f;
 
 bool Runtime::resized = false;
+
+bool QUICK_LAUNCH = true; // tmp for skipping asset loading
 
 //
 //
@@ -341,16 +343,15 @@ void Runtime::loadAssets() {
 	bool shadow_map_saved = false;
 	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f);
 
+	// Skip rest if quick launch
+	if (QUICK_LAUNCH) return;
+
 	// Create default skybox
 	Cubemap defaultCubemap = Cubemap::loadByCubemap("./resources/skybox/default/default_night.png");
 	defaultSkybox = Skybox(defaultCubemap);
 
 	// Set default skybox as active
 	selectedSkybox = defaultSkybox;
-
-	inspectorCamera.transform.position.y = 2.0f;
-	inspectorCamera.transform.rotation.x = 22.0f;
-
 }
 
 void Runtime::setupScripts() {

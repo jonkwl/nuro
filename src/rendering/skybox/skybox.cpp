@@ -32,6 +32,9 @@ Skybox::Skybox(Cubemap& cubemap, Shader* customShader) :
 
 void Skybox::render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
+	// Only render if skybox was created
+	if (!vao) return;
+
 	// DEPTH FUNCTION NEEDS TO BE GL_LEQUAL!
 
 	// Calculate skybox transformation matrices

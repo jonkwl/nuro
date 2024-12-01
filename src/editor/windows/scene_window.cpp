@@ -18,6 +18,8 @@ keyAxis(glm::vec2(0.0f)),
 keyAxisSmoothingFactor(5.0f),
 mouseAxis(glm::vec2(0.0f))
 {
+	Runtime::getInspectorCamera().transform.position.y = 2.0f;
+	Runtime::getInspectorCamera().transform.rotation.x = 22.0f;
 }
 
 void SceneWindow::prepare()
