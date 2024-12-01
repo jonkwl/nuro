@@ -9,6 +9,7 @@
 #include "../src/rendering/primitives/quad.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/postprocessing/post_processing.h"
+#include "../src/diagnostics/diagnostics.h"
 
 MotionBlurPass::MotionBlurPass(Viewport& viewport) : viewport(viewport),
 fbo(0),
@@ -111,7 +112,7 @@ unsigned int MotionBlurPass::render(unsigned int hdrInput, unsigned int depthInp
 	shader->bind();
 
 	// Set shader uniforms
-	shader->setFloat("fps", Runtime::fps);
+	shader->setFloat("fps", Diagnostics::getFps());
 
 	bool cameraEnabled = PostProcessing::motionBlur.cameraEnabled;
 	shader->setBool("camera", cameraEnabled);

@@ -9,6 +9,7 @@
 #include "../src/runtime/runtime.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/input/input.h"
+#include "../src/time/time.h"
 
 SceneWindow::SceneWindow() : lastContentRegionAvail(glm::vec2(0.0f)),
 sceneViewRightclicked(false),
@@ -95,14 +96,14 @@ void SceneWindow::updateMovement(Camera& camera)
 	if (!sceneViewRightclicked) {
 		currentKeyAxis = glm::vec2(0.0f);
 	}
-	keyAxis = glm::mix(keyAxis, currentKeyAxis, keyAxisSmoothingFactor * Runtime::deltaTime);
+	keyAxis = glm::mix(keyAxis, currentKeyAxis, keyAxisSmoothingFactor * Time::getDeltaTime());
 	mouseAxis = Input::getMouseAxis();
 
 	// Update scene view movement according to inputs
 	glm::vec3 cam_forward = camera.transform.forward();
 	glm::vec3 cam_right = camera.transform.right();
 	glm::vec3 movement_direction = cam_forward * keyAxis.x + cam_right * keyAxis.y;
-	camera.transform.position += movement_direction * movementSpeed * Runtime::deltaTime;
+	camera.transform.position += movement_direction * movementSpeed * Time::fgetDeltaTime();
 
 	// If scene viewport is rightclicked
 	if (sceneViewRightclicked)

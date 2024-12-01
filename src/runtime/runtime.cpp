@@ -30,13 +30,15 @@
 #include "../src/entity/entity.h"
 #include "../src/camera/camera.h"
 #include "../src/utils/log.h"
-#include "../src/utils/profiler.h"
+#include "../src/diagnostics/profiler.h"
 #include "../src/editor/editor_ui.h"
 #include "../src/input/input.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/viewport/viewport.h"
 #include "../src/rendering/skybox/cubemap.h"
+#include "../src/time/time.h"
+#include "../src/diagnostics/diagnostics.h"
 
 std::vector<Entity*> Runtime::entityStack;
 
@@ -50,12 +52,6 @@ Shader* Runtime::velocityPassShader = nullptr;
 Camera Runtime::renderCamera;
 Camera Runtime::activeCamera;
 Camera Runtime::inspectorCamera;
-
-float Runtime::time = 0.0f;
-float Runtime::lastTime = 0.0f;
-float Runtime::deltaTime = 0.0f;
-float Runtime::fps = 0;
-float Runtime::averageFps = 0.0f;
 
 glm::vec4 Runtime::clearColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
 unsigned int Runtime::msaaSamples = 4;
@@ -77,23 +73,10 @@ Viewport Runtime::sceneViewport;
 
 ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
-
-unsigned int Runtime::currentDrawCalls = 0;
-unsigned int Runtime::currentVertices = 0;
-unsigned int Runtime::currentPolygons = 0;
-
 float Runtime::directionalIntensity = 0.1f;
 glm::vec3 Runtime::directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 glm::vec3 Runtime::directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 glm::vec3 Runtime::directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
-
-float Runtime::intensity = 0.5f;
-float Runtime::range = 15.0f;
-float Runtime::falloff = 7.5f;
-bool Runtime::normalMapping = true;
-float Runtime::normalMappingIntensity = 1.0f;
-unsigned int Runtime::nCPUEntities = 0;
-unsigned int Runtime::nGPUEntities = 0;
 
 PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
@@ -105,9 +88,6 @@ QuickGizmo Runtime::quickGizmo;
 unsigned int Runtime::prePassDepthOutput = 0;
 unsigned int Runtime::prePassNormalOutput = 0;
 unsigned int Runtime::ssaoBuffer = 0;
-
-int Runtime::averageFpsFrameCount = 0;
-float Runtime::averageFpsElapsedTime = 0.0f;
 
 bool Runtime::resized = false;
 
@@ -204,11 +184,8 @@ int Runtime::START_LOOP()
 		// Check if window has been resized
 		checkWindowResize();
 
-		// PREPARE INTERNAL VARIABLES FOR NEXT FRAME (Time, Delta Time etc.)
-		prepareFrameInternal();
-
-		// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Input system update etc.)
-		prepareFrameExternal();
+		// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
+		prepareFrame();
 
 		// UPDATE GAME LOGIC
 		update();
@@ -372,7 +349,7 @@ void Runtime::setupScripts() {
 	EditorUI::setup();
 
 	// Setup input system
-	Input::setupInputs();
+	Input::setup();
 
 	// Create primitives
 	Quad::create();
@@ -382,37 +359,19 @@ void Runtime::setupScripts() {
 
 }
 
-void Runtime::prepareFrameInternal() {
+void Runtime::prepareFrame() {
 
-	// Update times
-	time = static_cast<float>(glfwGetTime());
-	deltaTime = time - lastTime;
-	lastTime = time;
-	fps = 1.0f / deltaTime;
+	// Update time
+	Time::step(glfwGetTime());
 
-	averageFpsElapsedTime += deltaTime;
-	averageFpsFrameCount++;
-	if (averageFpsElapsedTime >= 1.0f)
-	{
-		averageFps = static_cast<float>(averageFpsFrameCount) / averageFpsElapsedTime;
-		averageFpsElapsedTime = 0.0f;
-		averageFpsFrameCount = 0;
-	}
-
-	// Reset diagnostics
-	currentDrawCalls = 0;
-	currentVertices = 0;
-	currentPolygons = 0;
-
-}
-
-void Runtime::prepareFrameExternal() {
+	// Update diagnostics
+	Diagnostics::step();
 
 	// Start new frame for quick gizmos
 	quickGizmo.newFrame();
 
 	// Update input system
-	Input::updateInputs();
+	Input::step();
 
 }
 
@@ -440,10 +399,6 @@ void Runtime::renderFrame() {
 
 	// Update cameras frustum
 	renderCamera.updateFrustum(viewProjectionMatrix);
-
-	// Reset entity metrics
-	nCPUEntities = 0;
-	nGPUEntities = 0;
 
 	//
 	// PREPARATION PASS

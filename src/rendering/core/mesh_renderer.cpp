@@ -9,6 +9,7 @@
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/material/unlit/unlit_material.h"
+#include "../src/diagnostics/diagnostics.h"
 
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
@@ -95,9 +96,10 @@ void MeshRenderer::forwardPass(Viewport& viewport)
 		render(mesh.getIndiceCount());
 
 		// Update diagnostics
-		Runtime::currentDrawCalls++;
-		Runtime::currentVertices += static_cast<unsigned int>(mesh.getVerticeCount());
-		Runtime::currentPolygons += static_cast<unsigned int>(mesh.getIndiceCount()) / 3;
+		// Can be optimized with diagnostics update batch
+		Diagnostics::addCurrentDrawCalls(1);
+		Diagnostics::addCurrentVertices(static_cast<unsigned int>(mesh.getVerticeCount()));
+		Diagnostics::addCurrentPolygons(static_cast<unsigned int>(mesh.getIndiceCount()) / 3);
 	}
 }
 
@@ -129,7 +131,8 @@ void MeshRenderer::prePass()
 		render(mesh.getIndiceCount());
 
 		// Update diagnostics
-		Runtime::currentDrawCalls++;
+		// Can be optimized with diagnostics update batch
+		Diagnostics::addCurrentDrawCalls(1);
 	}
 }
 
@@ -161,7 +164,8 @@ void MeshRenderer::shadowPass()
 		render(mesh.getIndiceCount());
 
 		// Update diagnostics
-		Runtime::currentDrawCalls++;
+		// Can be optimized with diagnostics update batch
+		Diagnostics::addCurrentDrawCalls(1);
 	}
 }
 
@@ -214,7 +218,8 @@ void MeshRenderer::performFrustumCulling()
 	volume->update(model, parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
 
 	// Tmp, Add to cpu entities
-	Runtime::nCPUEntities++;
+	// Can be optimized with diagnostics update batch
+	Diagnostics::addNEntitiesCPU(1);
 
 	// Render target is not within frustum, cull it
 	if (!volume->intersectsFrustum(Runtime::getCameraRendering().getFrustum()))
@@ -224,7 +229,8 @@ void MeshRenderer::performFrustumCulling()
 	}
 
 	// Tmp, Add to gpu entities
-	Runtime::nGPUEntities++;
+	// Can be optimized with diagnostics update batch
+	Diagnostics::addNEntitiesGPU(1);
 }
 
 bool MeshRenderer::isCulled()

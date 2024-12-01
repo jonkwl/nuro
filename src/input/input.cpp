@@ -25,7 +25,7 @@ namespace Input {
 
 	// Input functions
 
-	void setupInputs()
+	void setup()
 	{
 		_window = Runtime::glfw;
 
@@ -36,7 +36,7 @@ namespace Input {
 		glfwSetScrollCallback(_window, scroll_callback);
 	}
 
-	void updateInputs()
+	void step()
 	{
 		// set mouse
 		double mouseX, mouseY;

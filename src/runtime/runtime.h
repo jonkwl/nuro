@@ -25,7 +25,7 @@ class Entity;
 class Runtime
 {
 public:
-	static int START_LOOP(); // Main loop
+	static int START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
 
 	// Entity system
@@ -33,13 +33,14 @@ public:
 	static void destroyEntity(Entity* entity);
 
 	// All default assets
-	static UnlitMaterial* defaultMaterial;
-	static Skybox defaultSkybox;
+	static UnlitMaterial* defaultMaterial; // MOVE TO MESH RENDERER
+
+	static Skybox defaultSkybox; // MOVE TO FORWARD PASS
 
 	// Default shaders
-	static Shader* prePassShader;
-	static Shader* shadowPassShader;
-	static Shader* velocityPassShader;
+	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
+	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
+	static Shader* velocityPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 
 	// Camera settings
 	static void useCamera(Camera camera);
@@ -47,12 +48,13 @@ public:
 	static Camera& getActiveCamera();	 // Returns camera selected by user (active camera)
 	static Camera& getInspectorCamera();
 
-	static float directionalIntensity;
-	static glm::vec3 directionalColor;
-	static glm::vec3 directionalDirection;
-	static glm::vec3 directionalPosition;
+	static float directionalIntensity; // REMOVE
+	static glm::vec3 directionalColor; // REMOVE
+	static glm::vec3 directionalDirection; // REMOVE
+	static glm::vec3 directionalPosition; // REMOVE
 
 	// Skybox settings
+	// MOVE TO FORWARD PASS
 	static bool skyboxEnabled;
 	static Skybox& selectedSkybox; // Currently selected skybox
 
@@ -67,14 +69,8 @@ public:
 	// Viewports
 	static Viewport sceneViewport;
 
-	// Time & frames
-	static float time;		 // Time passed since application beginning
-	static float lastTime;	 // Time passed since application beginning of last frame
-	static float deltaTime;	 // Frame delta time
-	static float fps;		 // current fps
-	static float averageFps; // averaged current fps
-
 	// Render settings
+	// CHECK FOR DEPENDENCIES FROM OTHER SCRIPTS, SHOULD STAY
 	static glm::vec4 clearColor;	   // buffer clearing color
 	static unsigned int msaaSamples;   // MSAA Samples
 	static bool vsync;				   // V-Sync option
@@ -84,16 +80,12 @@ public:
 	static bool postProcessingEffects; // Enable or disable non-mandatory post processing effects
 
 	// Shadow settings
+	// CAN STAY BUT REMOVE DEPENDENCIES (SHADOWS NEED TO MANAGED DIFFERENTLY)
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap;   // Default shadow map
 
 	// Entity links
 	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
-
-	// Diagnostics
-	static unsigned int currentDrawCalls;
-	static unsigned int currentVertices;
-	static unsigned int currentPolygons;
 
 	// Passes & Pipelines
 	static PrePass prePass;
@@ -105,18 +97,10 @@ public:
 	static QuickGizmo quickGizmo;
 
 	// Buffers from passes
+	// PASS DEPENDENCIES DIRECTLY
 	static unsigned int prePassDepthOutput;
 	static unsigned int prePassNormalOutput;
 	static unsigned int ssaoBuffer;
-
-	// tmp for testing
-	static float intensity;
-	static float range;
-	static float falloff;
-	static bool normalMapping;
-	static float normalMappingIntensity;
-	static unsigned int nCPUEntities;
-	static unsigned int nGPUEntities;
 
 	// Perform resize for specific viewport
 	static void resizeViewport(float width, float height);
@@ -128,10 +112,6 @@ private:
 	static Camera activeCamera;	   // Container camera; Sets render camera value if inspector mode is OFF
 	static Camera inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
 
-	// Averaged fps calculations
-	static int averageFpsFrameCount;	// Count of frames in the current second
-	static float averageFpsElapsedTime; // Time accumulator for averaging FPS
-
 	static bool resized; // If window was resized
 
 private:
@@ -139,8 +119,7 @@ private:
 	static void setVSync(); // Set v sync option
 	static void loadAssets(); // Load all defualt assets
 	static void setupScripts(); // Call all scripts needing setup
-	static void prepareFrameInternal(); // Prepare internal members for next frame
-	static void prepareFrameExternal(); // Prepare external scripts for next frame
+	static void prepareFrame(); // Prepare next frame
 	static void renderFrame(); // Render next game frame
 	static void renderEditor(); // Render next editor frame
 	static void finishFrame(); // Call to finalize current frame

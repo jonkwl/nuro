@@ -1,7 +1,9 @@
 #include "game_logic.h"
 
 #include <iostream>
+
 #include "../src/engine.h"
+#include "../src/time/time.h"
 
 Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;
@@ -274,5 +276,5 @@ void update() {
 	*/
 
 	// Default Scene
-	mannequin->transform.rotation.y += 360.0f * 2.5f * Runtime::deltaTime;
+	mannequin->transform.rotation.y += 360.0f * 2.5f * Time::getDeltaTime();
 }

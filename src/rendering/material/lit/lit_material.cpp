@@ -16,6 +16,7 @@ tiling(1.0f, 1.0f),
 offset(0.0f, 0.0f),
 roughness(0.0f),
 metallic(0.0f),
+normalMapIntensity(1.0f),
 emission(false),
 emissionIntensity(0.0f),
 emissionColor(1.0f, 1.0f, 1.0f),
@@ -79,12 +80,12 @@ void LitMaterial::bind(Viewport& viewport)
 		albedoMap.bind(ALBEDO_UNIT);
 	}
 
-	shader->setBool("material.enableNormalMap", enableNormalMap && Runtime::normalMapping);
-	if (enableNormalMap && Runtime::normalMapping)
+	shader->setBool("material.enableNormalMap", enableNormalMap);
+	if (enableNormalMap)
 	{
 		normalMap.bind(NORMAL_UNIT);
 	}
-	shader->setFloat("material.normalMapIntensity", Runtime::normalMappingIntensity);
+	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
 
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
 	if (enableRoughnessMap)

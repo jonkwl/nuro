@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\diagnostics\diagnostics.cpp" />
     <ClCompile Include="src\rendering\ssao\ssao_pass.cpp" />
     <ClCompile Include="src\rendering\postprocessing\motion_blur_pass.cpp" />
     <ClCompile Include="src\rendering\culling\bounding_volume.cpp" />
@@ -178,9 +179,10 @@
     <ClCompile Include="src\editor\windows\scene_window.cpp" />
     <ClCompile Include="src\editor\ui_components.cpp" />
     <ClCompile Include="src\editor\ui_layout.cpp" />
-    <ClCompile Include="src\utils\profiler.cpp" />
+    <ClCompile Include="src\diagnostics\profiler.cpp" />
     <ClCompile Include="src\rendering\primitives\quad.cpp" />
     <ClCompile Include="src\editor\windows\post_processing_window.cpp" />
+    <ClCompile Include="src\time\time.cpp" />
     <ClCompile Include="user\src\game_logic.cpp" />
     <ClCompile Include="dependencies\vendor\stb\stb_image.cpp" />
     <ClCompile Include="glad.c" />
@@ -189,6 +191,7 @@
     <ClCompile Include="src\rendering\postprocessing\velocity_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\diagnostics\diagnostics.h" />
     <ClInclude Include="src\camera\frustum.h" />
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\rendering\gizmos\gizmos.h" />
@@ -237,13 +240,14 @@
     <ClInclude Include="src\editor\editor_window.h" />
     <ClInclude Include="src\rendering\core\forward_pass.h" />
     <ClInclude Include="src\editor\windows\scene_window.h" />
-    <ClInclude Include="src\utils\profiler.h" />
+    <ClInclude Include="src\diagnostics\profiler.h" />
     <ClInclude Include="src\rendering\primitives\quad.h" />
     <ClInclude Include="src\editor\windows\post_processing_window.h" />
     <ClInclude Include="dependencies\vendor\stb\stb_image_write.h" />
     <ClInclude Include="src\transform\transform.h" />
     <ClInclude Include="src\editor\ui_components.h" />
     <ClInclude Include="src\editor\ui_layout.h" />
+    <ClInclude Include="src\time\time.h" />
     <ClInclude Include="user\src\game_logic.h" />
     <ClInclude Include="dependencies\vendor\stb\stb_image.h" />
     <ClInclude Include="src\utils\iohandler.h" />

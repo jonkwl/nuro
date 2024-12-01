@@ -6,7 +6,9 @@
 #include "../src/editor/IconsFontAwesome6.h"
 #include "../src/runtime/runtime.h"
 #include "../src/editor/editor_ui.h"
-#include "../src/utils/profiler.h"
+#include "../src/diagnostics/profiler.h"
+#include "../src/time/time.h"
+#include "../src/diagnostics/diagnostics.h"
 
 std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
 float DiagnosticsWindow::fpsUpdateTimer = 0.0f;
@@ -47,7 +49,7 @@ void DiagnosticsWindow::prepare()
 
 	UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
-	UIComponents::indicatorLabel("Average FPS:", Runtime::averageFps);
+	UIComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
 
 	const int values = 100;
 	const float updateRate = 0.025f;
@@ -55,10 +57,10 @@ void DiagnosticsWindow::prepare()
 	if (fpsCache.size() > 0.0f)
 		maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
 
-	fpsUpdateTimer += Runtime::deltaTime;
+	fpsUpdateTimer += Time::getDeltaTime();
 	if (fpsUpdateTimer >= updateRate)
 	{
-		fpsCache.push_back(Runtime::fps);
+		fpsCache.push_back(Diagnostics::getFps());
 
 		if (fpsCache.size() > values)
 		{
@@ -76,21 +78,21 @@ void DiagnosticsWindow::prepare()
 
 	ImVec4 low = ImVec4(1.0f, 0.0f, 0.5f, 1.0f);
 	ImVec4 high = ImVec4(0.0f, 1.0f, 0.5f, 1.0f);
-	ImVec4 color = lerpColors(low, high, remap(0.0f, maxValue, 0.0f, 1.0f, Runtime::fps));
+	ImVec4 color = lerpColors(low, high, remap(0.0f, maxValue, 0.0f, 1.0f, Diagnostics::getFps()));
 	sparkline("##spark", data, values, 0.0f, maxValue, 0.0f, color, ImVec2(120.0f, 40.0f));
 
 	delete[] data;
 
 	UIComponents::space(0.0f, 5.0f);
 
-	UIComponents::indicatorLabel("Current Draw Calls:", Runtime::currentDrawCalls);
-	UIComponents::indicatorLabel("Current Vertices:", Runtime::currentVertices);
-	UIComponents::indicatorLabel("Current Polygons:", Runtime::currentPolygons);
+	UIComponents::indicatorLabel("Current Draw Calls:", Diagnostics::getCurrentDrawCalls());
+	UIComponents::indicatorLabel("Current Vertices:", Diagnostics::getCurrentVertices());
+	UIComponents::indicatorLabel("Current Polygons:", Diagnostics::getCurrentPolygons());
 
 	UIComponents::space(0.0f, 5.0f);
 
-	UIComponents::indicatorLabel("CPU Entities:", Runtime::nCPUEntities);
-	UIComponents::indicatorLabel("GPU Entities:", Runtime::nGPUEntities);
+	UIComponents::indicatorLabel("CPU Entities:", Diagnostics::getNEntitiesCPU());
+	UIComponents::indicatorLabel("GPU Entities:", Diagnostics::getNEntitiesGPU());
 
 	UIComponents::space(0.0f, 5.0f);
 

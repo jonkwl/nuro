@@ -105,7 +105,7 @@
     <ClCompile Include="src\rendering\core\pre_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\profiler.cpp">
+    <ClCompile Include="src\diagnostics\profiler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\core\forward_pass.cpp">
@@ -175,6 +175,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\texture\texture.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\time.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\diagnostics\diagnostics.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -272,7 +278,7 @@
     <ClInclude Include="src\rendering\core\pre_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\profiler.h">
+    <ClInclude Include="src\diagnostics\profiler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\core\forward_pass.h">
@@ -363,6 +369,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\viewport\viewport.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\time.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\diagnostics\diagnostics.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

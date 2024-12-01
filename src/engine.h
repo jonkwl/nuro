@@ -13,3 +13,4 @@
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/gizmos/gizmos.h"
+#include "../src/time/time.h"
