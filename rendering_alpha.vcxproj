@@ -188,7 +188,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\rendering\shader\shader.cpp" />
-    <ClCompile Include="src\rendering\postprocessing\velocity_buffer.cpp" />
+    <ClCompile Include="src\rendering\velocitybuffer\velocity_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\diagnostics\diagnostics.h" />
@@ -253,7 +253,7 @@
     <ClInclude Include="src\utils\iohandler.h" />
     <ClInclude Include="src\rendering\shader\shader.h" />
     <ClInclude Include="src\rendering\texture\texture.h" />
-    <ClInclude Include="src\rendering\postprocessing\velocity_buffer.h" />
+    <ClInclude Include="src\rendering\velocitybuffer\velocity_buffer.h" />
     <ClInclude Include="src\viewport\viewport.h" />
   </ItemGroup>
   <ItemGroup>

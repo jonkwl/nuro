@@ -10,6 +10,7 @@
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/diagnostics/diagnostics.h"
 #include "../src/runtime/runtime.h"
+#include "../src/rendering/shader/shader_pool.h"
 
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
 glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
@@ -27,7 +28,8 @@ currentModelMatrix(glm::mat4(1.0f)),
 currentMvpMatrix(glm::mat4(1.0f)),
 currentNormalMatrix(glm::mat4(1.0f)),
 previousModelMatrix(glm::mat4(1.0f)),
-intersectsFrustum(false)
+intersectsFrustum(false),
+materialUnavailableShader(ShaderPool::get("mat_unavailable"))
 {
 }
 
@@ -65,6 +67,8 @@ void MeshRenderer::forwardPass()
 		// Bind mesh
 		mesh.bind();
 
+		// Material selection can be optimized: No need to select material each frame
+
 		// Get mesh material by index
 		IMaterial* material = nullptr;
 
@@ -76,21 +80,30 @@ void MeshRenderer::forwardPass()
 			material = materials[materialIndex];
 		}
 
-		// No available material found -> use default material
-		if (material == nullptr)
+		// Available material found
+		if (material)
 		{
-			material = Runtime::defaultMaterial;
+
+			// Bind material
+			material->bind();
+
+			// Set shader uniforms
+			Shader* shader = material->getShader();
+			shader->setMatrix4("mvpMatrix", currentMvpMatrix);
+			shader->setMatrix4("modelMatrix", currentModelMatrix);
+			shader->setMatrix3("normalMatrix", currentNormalMatrix);
+			shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
+
 		}
+		// No available material found
+		else {
 
-		// Bind material
-		material->bind();
+			// Use unavailable material shader 
+			Shader* shader = materialUnavailableShader;
+			shader->bind();
+			shader->setMatrix4("mvpMatrix", currentMvpMatrix);
 
-		// Set shader uniforms
-		Shader* shader = material->getShader();
-		shader->setMatrix4("mvpMatrix", currentMvpMatrix);
-		shader->setMatrix4("modelMatrix", currentModelMatrix);
-		shader->setMatrix3("normalMatrix", currentNormalMatrix);
-		shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
+		}
 
 		// Render mesh
 		render(mesh.getIndiceCount());

@@ -98,6 +98,9 @@ void DiagnosticsWindow::prepare()
 
 	UIComponents::indicatorLabel("Render:", Profiler::get("render"), "ms");
 	UIComponents::indicatorLabel("Shadow Pass:", Profiler::get("shadow_pass"), "ms");
+	UIComponents::indicatorLabel("Pre Pass:", Profiler::get("pre_pass"), "ms");
+	UIComponents::indicatorLabel("SSAO Pass:", Profiler::get("ssao"), "ms");
+	UIComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::get("velocity_buffer"), "ms");
 	UIComponents::indicatorLabel("Forward Pass:", Profiler::get("forward_pass"), "ms");
 	UIComponents::indicatorLabel("PP Pass:", Profiler::get("post_processing"), "ms");
 	UIComponents::indicatorLabel("UI Pass:", Profiler::get("ui_pass"), "ms");

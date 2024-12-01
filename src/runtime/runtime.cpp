@@ -43,7 +43,6 @@
 
 std::vector<Entity*> Runtime::entityStack;
 
-UnlitMaterial* Runtime::defaultMaterial = nullptr;
 Skybox Runtime::defaultSkybox;
 
 Shader* Runtime::prePassShader = nullptr;
@@ -276,10 +275,6 @@ void Runtime::loadAssets() {
 
 	prePassShader = ShaderPool::get("pre_pass");
 	shadowPassShader = ShaderPool::get("shadow_pass");
-
-	// Creating default material
-	defaultMaterial = new UnlitMaterial();
-	defaultMaterial->baseColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;

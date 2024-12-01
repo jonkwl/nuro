@@ -3,7 +3,6 @@
 #include <glm.hpp>
 
 #include "../src/viewport/viewport.h"
-#include "../src/rendering/postprocessing/velocity_buffer.h"
 
 class Shader;
 

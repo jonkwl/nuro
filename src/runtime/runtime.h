@@ -10,7 +10,7 @@
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/ssao/ssao_pass.h"
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
-#include "../src/rendering/postprocessing/velocity_buffer.h"
+#include "../src/rendering/velocitybuffer/velocity_buffer.h"
 #include "../src/rendering/skybox/skybox.h"
 #include "../src/viewport/viewport.h"
 #include "../src/rendering/gizmos/gizmos.h"
@@ -28,8 +28,6 @@ class Runtime
 public:
 	// TO REMOVE
 	// All default assets
-	static UnlitMaterial* defaultMaterial; // MOVE TO MESH RENDERER
-	static Skybox defaultSkybox; // MOVE TO FORWARD PASS
 	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 
@@ -78,6 +76,7 @@ private:
 	static Viewport sceneViewport; // Scene viewport
 	static Camera camera; // Main render camera
 	static bool resized; // If window was resized
+	static Skybox defaultSkybox; // Default skybox
 
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap;   // Default shadow map

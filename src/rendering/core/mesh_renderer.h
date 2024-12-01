@@ -49,6 +49,9 @@ private:
 
 	Entity* parentEntity; // Linked parent entity
 
+	// Can be optimized, not every mesh renderer needs to hold this pointer
+	Shader* materialUnavailableShader; // Shader used for unavailable material
+
 	void render(unsigned int nElements); // Issues draw call
 
 	void performFrustumCulling(Camera& renderCamera);
