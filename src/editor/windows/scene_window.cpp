@@ -23,7 +23,7 @@ mouseAxis(glm::vec2(0.0f))
 void SceneWindow::prepare()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("  Scene  ", nullptr, EditorUI::windowFlags.standard);
+	ImGui::Begin("  Scene  ", nullptr, EditorUI::getWindowFlags().standard);
 	{
 
 		bool focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);

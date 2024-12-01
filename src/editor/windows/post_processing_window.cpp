@@ -14,7 +14,7 @@ PostProcessingWindow::PostProcessingWindow() :
 
 void PostProcessingWindow::prepare()
 {
-	ImGui::Begin("  Post Processing  ", nullptr, EditorUI::windowFlags.standard);
+	ImGui::Begin("  Post Processing  ", nullptr, EditorUI::getWindowFlags().standard);
 
 	UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HeadlineJustification::LEFT);
 

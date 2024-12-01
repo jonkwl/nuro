@@ -43,7 +43,7 @@ float remap(float old_min, float old_max, float new_min, float new_max, float va
 
 void DiagnosticsWindow::prepare()
 {
-	ImGui::Begin("Diagnostics", nullptr, EditorUI::windowFlags.fixed);
+	ImGui::Begin("Diagnostics", nullptr, EditorUI::getWindowFlags().fixed);
 
 	UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
