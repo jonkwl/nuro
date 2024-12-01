@@ -10,18 +10,15 @@
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/model/mesh.h"
 
-
-glm::vec3 QuickGizmo::color = glm::vec3(1.0f);
-float QuickGizmo::opacity = 0.4f;
-bool QuickGizmo::foreground = false;
-
-Shader* QuickGizmo::shader = nullptr;
-
-Model* QuickGizmo::planeModel = nullptr;
-Model* QuickGizmo::cubeModel = nullptr;
-Model* QuickGizmo::sphereModel = nullptr;
-
-std::vector<QuickGizmo::RenderTarget> QuickGizmo::renderStack;
+QuickGizmo::QuickGizmo() : color(glm::vec3(1.0f)),
+opacity(0.4f),
+foreground(false),
+shader(nullptr),
+planeModel(nullptr),
+cubeModel(nullptr),
+sphereModel(nullptr)
+{
+}
 
 void QuickGizmo::setup()
 {
@@ -107,37 +104,37 @@ void QuickGizmo::render()
 
 void QuickGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-	RenderTarget gizmo(Shape::PLANE, position, rotation, scale, false);
+	RenderTarget gizmo(Shape::PLANE, position, rotation, scale, false, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-	RenderTarget gizmo(Shape::BOX, position, rotation, scale, false);
+	RenderTarget gizmo(Shape::BOX, position, rotation, scale, false, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::sphere(glm::vec3 position, float radius)
 {
-	RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), false);
+	RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), false, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-	RenderTarget gizmo(Shape::PLANE, position, rotation, scale, true);
+	RenderTarget gizmo(Shape::PLANE, position, rotation, scale, true, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
-	RenderTarget gizmo(Shape::BOX, position, rotation, scale, true);
+	RenderTarget gizmo(Shape::BOX, position, rotation, scale, true, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
 void QuickGizmo::sphereWire(glm::vec3 position, float radius)
 {
-	RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), true);
+	RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), true, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 

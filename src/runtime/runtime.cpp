@@ -33,7 +33,6 @@
 #include "../src/utils/profiler.h"
 #include "../src/editor/engine_ui.h"
 #include "../src/input/input.h"
-#include "../src/rendering/gizmos/gizmos.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/viewport/viewport.h"
@@ -100,6 +99,8 @@ PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
 SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
 PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
+
+QuickGizmo Runtime::quickGizmo;
 
 unsigned int Runtime::prePassDepthOutput = 0;
 unsigned int Runtime::prePassNormalOutput = 0;
@@ -376,7 +377,7 @@ void Runtime::setupScripts() {
 	Quad::create();
 
 	// Setup quick gizmo
-	QuickGizmo::setup();
+	quickGizmo.setup();
 
 }
 
@@ -407,7 +408,7 @@ void Runtime::prepareFrameInternal() {
 void Runtime::prepareFrameExternal() {
 
 	// Start new frame for quick gizmos
-	QuickGizmo::newFrame();
+	quickGizmo.newFrame();
 
 	// Update input system
 	Input::updateInputs();

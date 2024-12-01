@@ -174,7 +174,7 @@ unsigned int ForwardPass::render()
 	glDepthFunc(GL_LESS);
 
 	// Render quick gizmos
-	QuickGizmo::render();
+	Runtime::quickGizmo.render();
 
 	// Bilt multi-sampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);

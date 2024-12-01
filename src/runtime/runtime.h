@@ -4,7 +4,7 @@
 #include <glm.hpp>
 #include <chrono>
 
-#include <glad/glad.h> // tmp
+#include <glad/glad.h> // tmp for some context variables
 
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
@@ -12,6 +12,7 @@
 #include "../src/rendering/postprocessing/post_processing_pipeline.h"
 #include "../src/rendering/skybox/skybox.h"
 #include "../src/viewport/viewport.h"
+#include "../src/rendering/gizmos/gizmos.h"
 
 struct GLFWwindow;
 class UnlitMaterial;
@@ -99,6 +100,9 @@ public:
 	static ForwardPass forwardPass;
 	static SSAOPass ssaoPass;
 	static PostProcessingPipeline postProcessingPipeline;
+
+	// Instances
+	static QuickGizmo quickGizmo;
 
 	// Buffers from passes
 	static unsigned int prePassDepthOutput;
