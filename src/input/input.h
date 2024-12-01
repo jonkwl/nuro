@@ -2,10 +2,13 @@
 
 #include <glm.hpp>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Input
 {
 
-	void setup(); // Setup input system
+	void setup(GLFWwindow* linkedWindow); // Setup input system
 	void step(); // Fetch inputs of current frame
 
 	const glm::vec2& getKeyAxis();

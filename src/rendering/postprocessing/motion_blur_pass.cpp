@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/shader/shader.h"

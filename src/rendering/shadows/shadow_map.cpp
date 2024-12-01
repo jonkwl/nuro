@@ -5,10 +5,9 @@
 #include <vector>
 #include <stb_image_write.h>
 
-#include "../src/runtime/runtime.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/core/transformation.h"
-#include "../src/rendering/shader/shader.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/entity/entity.h"
 #include "../src/utils/log.h"
 
@@ -45,7 +44,8 @@ resolutionHeight(resolutionHeight),
 boundsWidth(boundsWidth),
 boundsHeight(boundsHeight),
 framebuffer(0),
-texture(0)
+texture(0),
+shadowPassShader(ShaderPool::get("shadow_pass"))
 {
 	// Generate framebuffer
 	glGenFramebuffers(1, &framebuffer);
@@ -101,11 +101,11 @@ void ShadowMap::render(std::vector<Entity*>& targets) // Update needed for camer
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 
-	Runtime::shadowPassShader->bind();
+	shadowPassShader->bind();
 
 	for (int i = 0; i < targets.size(); i++)
 	{
-		targets[i]->meshRenderer.shadowPass();
+		targets[i]->meshRenderer.shadowPass(shadowPassShader);
 	}
 
 	// Unbind shadow map framebuffer

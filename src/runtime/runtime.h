@@ -26,11 +26,6 @@ class Entity;
 class Runtime
 {
 public:
-	// TO REMOVE
-	// All default assets
-	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-
 	static int START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
 

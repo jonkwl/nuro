@@ -1,13 +1,8 @@
 #include "input.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include "../src/runtime/runtime.h"
-
 namespace Input {
 
-	GLFWwindow* _window;
+	GLFWwindow* _window = nullptr;
 
 	glm::vec2 _keyAxis = glm::vec2(0.0f);
 
@@ -25,9 +20,9 @@ namespace Input {
 
 	// Input functions
 
-	void setup()
+	void setup(GLFWwindow* linkedWindow)
 	{
-		_window = Runtime::glfw;
+		_window = linkedWindow;
 
 		double mouseX, mouseY;
 		glfwGetCursorPos(_window, &mouseX, &mouseY);
@@ -40,20 +35,20 @@ namespace Input {
 	{
 		// set mouse
 		double mouseX, mouseY;
-		glfwGetCursorPos(Runtime::glfw, &mouseX, &mouseY);
+		glfwGetCursorPos(_window, &mouseX, &mouseY);
 		_mouseAxis = glm::vec2(mouseX - _mouseLast.x, -(mouseY - _mouseLast.y));
 		_mouseLast = glm::vec2(mouseX, mouseY);
 
-		if (glfwGetKey(Runtime::glfw, GLFW_KEY_SPACE) == GLFW_PRESS)
+		if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			glfwSetWindowShouldClose(Runtime::glfw, true);
+			glfwSetWindowShouldClose(_window, true);
 		}
 
-		if (glfwGetKey(Runtime::glfw, GLFW_KEY_W) == GLFW_PRESS)
+		if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			_keyAxis.x = 1.0f;
 		}
-		else if (glfwGetKey(Runtime::glfw, GLFW_KEY_S) == GLFW_PRESS)
+		else if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
 		{
 			_keyAxis.x = -1.0f;
 		}
@@ -62,11 +57,11 @@ namespace Input {
 			_keyAxis.x = 0.0f;
 		}
 
-		if (glfwGetKey(Runtime::glfw, GLFW_KEY_D) == GLFW_PRESS)
+		if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
 		{
 			_keyAxis.y = 1.0f;
 		}
-		else if (glfwGetKey(Runtime::glfw, GLFW_KEY_A) == GLFW_PRESS)
+		else if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
 		{
 			_keyAxis.y = -1.0f;
 		}

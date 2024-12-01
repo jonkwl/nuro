@@ -3,10 +3,8 @@
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 
-#include "../src/rendering/gizmos/gizmos.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/model/model.h"
-#include "../src/runtime/runtime.h"
 
 BoundingSphere::BoundingSphere()
 {
@@ -28,7 +26,6 @@ void BoundingSphere::update(Model* model, glm::vec3 position, glm::vec3 rotation
 	radius = (metrics.furthest * 0.5f) * std::max({ scale.x, scale.y, scale.z });
 
 	// Draw bounding volume
-	Runtime::quickGizmo.color = GizmoColor::RED;
 	// Runtime::quickGizmo::sphereWire(center, radius);
 }
 
@@ -80,10 +77,10 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::vec3 rotation, 
 	max = _max;
 
 	// Draw bounding volume
-	glm::vec3 center = (min + max) * 0.5f;
+	/* glm::vec3 center = (min + max) * 0.5f;
 	glm::vec3 size = max - min;
 	Runtime::quickGizmo.color = GizmoColor::DARK_RED;
-	Runtime::quickGizmo.boxWire(center, size);
+	Runtime::quickGizmo.boxWire(center, size); */
 }
 
 bool BoundingAABB::intersectsFrustum(Frustum frustum)

@@ -1,7 +1,6 @@
 #pragma once
 
 // Useful includes for applications using engine
-#include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
 #include "../src/camera/camera.h"
 #include "../src/rendering/material/unlit/unlit_material.h"

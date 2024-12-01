@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "../src/utils/log.h"
-#include "../src/runtime/runtime.h"
 #include "../src/rendering/core/mesh_renderer.h"
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/primitives/quad.h"

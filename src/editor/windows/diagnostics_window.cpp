@@ -1,10 +1,10 @@
 #include "diagnostics_window.h"
 
-#include "implot.h"
+#include <glm.hpp>
+#include <implot.h>
 
 #include "../src/editor/ui_components.h"
 #include "../src/editor/IconsFontAwesome6.h"
-#include "../src/runtime/runtime.h"
 #include "../src/editor/editor_ui.h"
 #include "../src/diagnostics/profiler.h"
 #include "../src/time/time.h"

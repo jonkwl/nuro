@@ -1,13 +1,13 @@
 #include <glm.hpp>
 
 #include "../src/rendering/material/imaterial.h"
+#include "../src/rendering/shader/Shader.h"
 #include "../src/viewport/viewport.h"
 #include "../src/camera/camera.h"
 
 class Model;
 class BoundingVolume;
 class Entity;
-class Shader;
 
 #pragma once
 class MeshRenderer
@@ -30,8 +30,8 @@ public:
 
 	// Mesh needs to be prepared using prepare() before any pass for current frame is performed
 	void forwardPass();
-	void prePass();
-	void shadowPass();
+	void prePass(Shader* shader);
+	void shadowPass(Shader* shader);
 	void velocityPass(Shader* shader);
 
 	static glm::mat4 currentViewMatrix;			  // Static view matrix cache for current frame

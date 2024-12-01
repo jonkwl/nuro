@@ -45,9 +45,6 @@ std::vector<Entity*> Runtime::entityStack;
 
 Skybox Runtime::defaultSkybox;
 
-Shader* Runtime::prePassShader = nullptr;
-Shader* Runtime::shadowPassShader = nullptr;
-
 Camera Runtime::camera;
 
 glm::vec4 Runtime::clearColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
@@ -251,10 +248,6 @@ void Runtime::setupGlfw() {
 
 	// Set defualt window cursor
 	setCursor(cursorMode);
-
-	// Set scene viewport
-	sceneViewport.width = windowSize.x;
-	sceneViewport.height = windowSize.y;
 }
 
 void Runtime::setVSync() {
@@ -272,9 +265,6 @@ void Runtime::loadAssets() {
 		"./resources/shaders/gizmo",
 		"./resources/shaders/passes" };
 	ShaderPool::loadAndCompile(shader_paths);
-
-	prePassShader = ShaderPool::get("pre_pass");
-	shadowPassShader = ShaderPool::get("shadow_pass");
 
 	// Create shadow disk
 	unsigned int diskWindowSize = 4;
@@ -317,7 +307,7 @@ void Runtime::setupScripts() {
 	EditorUI::setup();
 
 	// Setup input system
-	Input::setup();
+	Input::setup(glfw);
 
 	// Create primitives
 	Quad::create();

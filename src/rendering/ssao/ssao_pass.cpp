@@ -135,6 +135,7 @@ unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
 	ambientOcclusionPass(depthInput, normalInput);
 
 	// Perform blur pass: Blur ambient occlusion
+	// UNKNOWN ISSUE WITH BLUR PASS
 	blurPass();
 
 	// Re-Enable depth testing and culling

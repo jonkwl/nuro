@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../src/camera/camera.h"
+#include "../src/rendering/shader/shader.h"
 
 class Entity;
 
@@ -34,4 +35,6 @@ private:
 
 	unsigned int texture;
 	unsigned int framebuffer;
+
+	Shader* shadowPassShader;
 };

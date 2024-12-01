@@ -3,8 +3,6 @@
 #include <glad/glad.h>
 #include <iostream>
 
-#include "../src/runtime/runtime.h"
-
 namespace Log
 {
 
@@ -29,7 +27,6 @@ namespace Log
 		{
 			_print(TextColor::White, BackgroundColor::Black, additional_info);
 		}
-		Runtime::TERMINATE();
 	}
 
 	void printWarning(std::string origin, std::string warning, std::string additional_info)

@@ -1,6 +1,5 @@
 #include "unlit_material.h"
 
-#include "../src/runtime/runtime.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/utils/log.h"

@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "../src/engine.h"
-#include "../src/time/time.h"
+#include "../src/runtime/runtime.h"
 
 Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;

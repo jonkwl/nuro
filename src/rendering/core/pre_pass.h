@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../src/viewport/viewport.h"
+#include "../src/rendering/shader/shader.h"
 
 class Entity;
 
@@ -25,4 +26,6 @@ private:
 	unsigned int fbo;
 	unsigned int depthOutput;
 	unsigned int normalOutput;
+
+	Shader* prePassShader;
 };

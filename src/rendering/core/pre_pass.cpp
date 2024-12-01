@@ -2,21 +2,24 @@
 
 #include <glad/glad.h>
 
-#include "../src/runtime/runtime.h"
 #include "../src/entity/entity.h"
 #include "../src/rendering/core/mesh_renderer.h"
-#include "../src/rendering/shader/shader.h"
+#include "../src/rendering/shader/shader_pool.h"
 #include "../src/utils/log.h"
 
 PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 depthOutput(0),
-normalOutput(0)
+normalOutput(0),
+prePassShader(nullptr)
 {
 }
 
 void PrePass::create()
 {
+	// Get pre pass shader
+	prePassShader = ShaderPool::get("pre_pass");
+
 	// Generate framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -72,6 +75,9 @@ void PrePass::destroy() {
 	// Delete framebuffer
 	glDeleteFramebuffers(1, &fbo);
 	fbo = 0;
+
+	// Remove shaders
+	prePassShader = nullptr;
 }
 
 void PrePass::render(std::vector<Entity*>& targets)
@@ -94,12 +100,12 @@ void PrePass::render(std::vector<Entity*>& targets)
 	glCullFace(GL_BACK);
 
 	// Bind pre pass shader
-	Runtime::prePassShader->bind();
+	prePassShader->bind();
 
 	// Pre pass render each entity
 	for (int i = 0; i < targets.size(); i++)
 	{
-		targets[i]->meshRenderer.prePass();
+		targets[i]->meshRenderer.prePass(prePassShader);
 	}
 }
 

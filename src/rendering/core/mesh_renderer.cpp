@@ -9,7 +9,6 @@
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/material/unlit/unlit_material.h"
 #include "../src/diagnostics/diagnostics.h"
-#include "../src/runtime/runtime.h"
 #include "../src/rendering/shader/shader_pool.h"
 
 glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
@@ -116,7 +115,7 @@ void MeshRenderer::forwardPass()
 	}
 }
 
-void MeshRenderer::prePass()
+void MeshRenderer::prePass(Shader* shader)
 {
 	// No model to render available -> cancel
 	if (model == nullptr)
@@ -136,7 +135,6 @@ void MeshRenderer::prePass()
 		mesh.bind();
 
 		// Set depth pre pass shader uniforms
-		Shader* shader = Runtime::prePassShader;
 		shader->setMatrix4("mvpMatrix", currentMvpMatrix);
 		shader->setMatrix3("viewNormalMatrix", currentViewNormalMatrix);
 
@@ -149,7 +147,7 @@ void MeshRenderer::prePass()
 	}
 }
 
-void MeshRenderer::shadowPass()
+void MeshRenderer::shadowPass(Shader* shader)
 {
 	// No model to render available -> cancel
 	if (model == nullptr)
@@ -169,7 +167,6 @@ void MeshRenderer::shadowPass()
 		mesh.bind();
 
 		// Set shadow pass shader uniforms
-		Shader* shader = Runtime::shadowPassShader;
 		shader->setMatrix4("modelMatrix", currentModelMatrix);
 		shader->setMatrix4("lightSpaceMatrix", currentLightSpaceMatrix);
 

@@ -5,7 +5,6 @@
 #include "../src/editor/ui_layout.h"
 #include "../src/editor/ui_components.h"
 #include "../src/editor/IconsFontAwesome6.h"
-#include "../src/runtime/runtime.h"
 #include "../src/editor/editor_ui.h"
 
 bool post_processing_window_tmp = false;

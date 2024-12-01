@@ -11,7 +11,6 @@
 #include "../src/rendering/core/pre_pass.h"
 #include "../src/rendering/core/forward_pass.h"
 #include "../src/rendering/texture/texture.h"
-#include "../src/runtime/runtime.h"
 #include "../src/utils/log.h"
 
 PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen) : viewport(viewport),
