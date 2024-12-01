@@ -3,6 +3,7 @@
 #include "../imaterial.h"
 
 #include "../src/viewport/viewport.h"
+#include "../src/camera/camera.h"
 #include "../src/rendering/texture/texture.h"
 
 class LitMaterial : public IMaterial
@@ -10,7 +11,11 @@ class LitMaterial : public IMaterial
 public:
 	LitMaterial();
 
-	void bind(Viewport& viewport);
+	// Needed to be set before binding lit material
+	static Viewport* viewport;
+	static Camera* camera;
+
+	void bind();
 	Shader* getShader();
 
 	glm::vec4 baseColor = glm::vec4(1.0f);

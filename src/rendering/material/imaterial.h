@@ -8,6 +8,6 @@ class IMaterial
 public:
 	virtual ~IMaterial() {}
 
-	virtual void bind(Viewport& viewport) {}
+	virtual void bind() {}
 	virtual Shader* getShader() { return nullptr; }
 };

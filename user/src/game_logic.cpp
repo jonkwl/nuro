@@ -9,10 +9,6 @@ Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;
 Entity* neonLight = nullptr;
 void defaultScene() {
-	// Create camera
-	Camera camera;
-	Runtime::useCamera(camera);
-
 	// Post Processing Lens Dirt
 	Texture lensDirt = Texture::load("./user/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
 	PostProcessing::bloom.lensDirtTexture = lensDirt;

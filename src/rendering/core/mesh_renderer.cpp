@@ -31,7 +31,7 @@ intersectsFrustum(false)
 {
 }
 
-void MeshRenderer::prepareNextFrame()
+void MeshRenderer::prepareNextFrame(Camera& renderCamera)
 {
 	// No model to render available -> cancel
 	if (model == nullptr)
@@ -43,10 +43,10 @@ void MeshRenderer::prepareNextFrame()
 	currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
 	// Frustum culling
-	performFrustumCulling();
+	performFrustumCulling(renderCamera);
 }
 
-void MeshRenderer::forwardPass(Viewport& viewport)
+void MeshRenderer::forwardPass()
 {
 	// No model to render available -> cancel
 	if (model == nullptr)
@@ -83,7 +83,7 @@ void MeshRenderer::forwardPass(Viewport& viewport)
 		}
 
 		// Bind material
-		material->bind(viewport);
+		material->bind();
 
 		// Set shader uniforms
 		Shader* shader = material->getShader();
@@ -209,7 +209,7 @@ void MeshRenderer::render(unsigned int nElements)
 	glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
 }
 
-void MeshRenderer::performFrustumCulling()
+void MeshRenderer::performFrustumCulling(Camera& renderCamera)
 {
 	// No culling by default
 	intersectsFrustum = true;
@@ -222,7 +222,7 @@ void MeshRenderer::performFrustumCulling()
 	Diagnostics::addNEntitiesCPU(1);
 
 	// Render target is not within frustum, cull it
-	if (!volume->intersectsFrustum(Runtime::getCameraRendering().getFrustum()))
+	if (!volume->intersectsFrustum(renderCamera.getFrustum()))
 	{
 		intersectsFrustum = false;
 		return;

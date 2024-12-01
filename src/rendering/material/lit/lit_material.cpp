@@ -3,13 +3,15 @@
 #include <glad/glad.h>
 
 #include "../src/runtime/runtime.h"
-#include "../src/camera/camera.h"
 #include "../src/rendering/shadows/shadow_map.h"
 #include "../src/rendering/shadows/shadow_disk.h"
 #include "../src/rendering/core/transformation.h"
 #include "../src/rendering/postprocessing/post_processing.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/utils/log.h"
+
+Viewport* LitMaterial::viewport = nullptr;
+Camera* LitMaterial::camera = nullptr;
 
 LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
 tiling(1.0f, 1.0f),
@@ -36,14 +38,14 @@ emissionMap(Texture::empty())
 	syncLightUniforms();
 }
 
-void LitMaterial::bind(Viewport& viewport)
+void LitMaterial::bind()
 {
 	shader->bind();
 
 	// General parameters
 	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
 	shader->setBool("configuration.solidMode", Runtime::solidMode);
-	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport.width, viewport.height));
+	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
 
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", Runtime::shadows);
@@ -62,7 +64,7 @@ void LitMaterial::bind(Viewport& viewport)
 	glBindTexture(GL_TEXTURE_2D, Runtime::ssaoBuffer);
 
 	// World parameters
-	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(Runtime::getCameraRendering().transform.position));
+	shader->setVec3("configuration.cameraPosition", Transformation::prepareWorldPosition(camera->transform.position));
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);

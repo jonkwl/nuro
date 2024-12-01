@@ -32,6 +32,8 @@ public:
 	static Entity* createEntity(); // Links a given entity with the runtime (creating a runtime entity)
 	static void destroyEntity(Entity* entity);
 
+	static Camera& getCamera();
+
 	// All default assets
 	static UnlitMaterial* defaultMaterial; // MOVE TO MESH RENDERER
 
@@ -41,12 +43,6 @@ public:
 	static Shader* prePassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 	static Shader* shadowPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
 	static Shader* velocityPassShader; // REMOVE, ADD TO MESH RENDERER ITSELF
-
-	// Camera settings
-	static void useCamera(Camera camera);
-	static Camera& getCameraRendering(); // Returns camera actually being rendered
-	static Camera& getActiveCamera();	 // Returns camera selected by user (active camera)
-	static Camera& getInspectorCamera();
 
 	static float directionalIntensity; // REMOVE
 	static glm::vec3 directionalColor; // REMOVE
@@ -108,9 +104,7 @@ public:
 private:
 	// Values that only need to be accessed by the runtime itself (eg preprocessors)
 
-	static Camera renderCamera;	   // This camera gets rendered to the screen
-	static Camera activeCamera;	   // Container camera; Sets render camera value if inspector mode is OFF
-	static Camera inspectorCamera; // Container camera; Sets render camera value if inspector mode is ON
+	static Camera camera; // Main render camera
 
 	static bool resized; // If window was resized
 

@@ -14,7 +14,7 @@ texture(Texture::empty())
 {
 }
 
-void UnlitMaterial::bind(Viewport& viewport)
+void UnlitMaterial::bind()
 {
 	shader->bind();
 

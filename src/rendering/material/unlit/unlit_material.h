@@ -10,7 +10,7 @@ class UnlitMaterial : public IMaterial
 public:
 	UnlitMaterial();
 
-	void bind(Viewport& viewport);
+	void bind();
 	Shader* getShader();
 
 	glm::vec4 baseColor;

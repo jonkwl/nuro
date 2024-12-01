@@ -148,7 +148,7 @@ unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 	// Render each linked entity to bound forward pass frame
 	for (int i = 0; i < targets.size(); i++)
 	{
-		targets[i]->meshRenderer.forwardPass(viewport);
+		targets[i]->meshRenderer.forwardPass();
 	}
 
 	// Disable wireframe if enabled

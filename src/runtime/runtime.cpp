@@ -20,6 +20,7 @@
 #include "../src/rendering/shader/shader.h"
 #include "../src/rendering/shader/shader_pool.h"
 #include "../src/rendering/material/unlit/unlit_material.h"
+#include "../src/rendering/material/lit/lit_material.h"
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/model/model.h"
 #include "../src/rendering/postprocessing/post_processing.h"
@@ -49,9 +50,7 @@ Shader* Runtime::prePassShader = nullptr;
 Shader* Runtime::shadowPassShader = nullptr;
 Shader* Runtime::velocityPassShader = nullptr;
 
-Camera Runtime::renderCamera;
-Camera Runtime::activeCamera;
-Camera Runtime::inspectorCamera;
+Camera Runtime::camera;
 
 glm::vec4 Runtime::clearColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
 unsigned int Runtime::msaaSamples = 4;
@@ -120,24 +119,9 @@ void Runtime::destroyEntity(Entity* entity) {
 	}
 }
 
-void Runtime::useCamera(Camera camera)
+Camera& Runtime::getCamera()
 {
-	activeCamera = camera;
-}
-
-Camera& Runtime::getCameraRendering()
-{
-	return renderCamera;
-}
-
-Camera& Runtime::getActiveCamera()
-{
-	return activeCamera;
-}
-
-Camera& Runtime::getInspectorCamera()
-{
-	return inspectorCamera;
+	return camera;
 }
 
 void Runtime::setCursor(GLenum cursorMode)
@@ -385,11 +369,9 @@ void Runtime::renderFrame() {
 	glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	renderCamera = inspectorCamera;
-
 	// Get transformation matrices
-	glm::mat4 viewMatrix = Transformation::viewMatrix(renderCamera);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(renderCamera, sceneViewport);
+	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(camera, sceneViewport);
 	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
 
@@ -400,17 +382,19 @@ void Runtime::renderFrame() {
 	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 	// Update cameras frustum
-	renderCamera.updateFrustum(viewProjectionMatrix);
+	camera.updateFrustum(viewProjectionMatrix);
 
 	//
 	// PREPARATION PASS
 	// Prepare each mesh for upcoming render passes
 	//
+	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
+	LitMaterial::camera = &camera; // Redundant most of the times atm
 	for (int i = 0; i < entityStack.size(); i++)
 	{
 		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
 		// Here for now to ensure preparation despite further pipeline changes
-		entityStack[i]->meshRenderer.prepareNextFrame();
+		entityStack[i]->meshRenderer.prepareNextFrame(camera);
 	}
 
 	//
@@ -418,7 +402,7 @@ void Runtime::renderFrame() {
 	// Render shadow map
 	//
 	Profiler::start("shadow_pass");
-	mainShadowMap->render();
+	mainShadowMap->render(camera);
 	Profiler::stop("shadow_pass");
 
 	//

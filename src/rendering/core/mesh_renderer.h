@@ -2,6 +2,7 @@
 
 #include "../src/rendering/material/imaterial.h"
 #include "../src/viewport/viewport.h"
+#include "../src/camera/camera.h"
 
 class Model;
 class BoundingVolume;
@@ -24,10 +25,10 @@ public:
 	float motionBlurIntensity; // Set objects motion blur intensity
 
 	// Prepare each mesh for upcoming passes for next frame (calculate and cache matrices, perform culling etc.)
-	void prepareNextFrame();
+	void prepareNextFrame(Camera& renderCamera);
 
 	// Mesh needs to be prepared using prepare() before any pass for current frame is performed
-	void forwardPass(Viewport& viewport);
+	void forwardPass();
 	void prePass();
 	void shadowPass();
 	void velocityPass();
@@ -49,7 +50,7 @@ private:
 
 	void render(unsigned int nElements); // Issues draw call
 
-	void performFrustumCulling();
+	void performFrustumCulling(Camera& renderCamera);
 	bool intersectsFrustum;
 
 	bool isCulled();

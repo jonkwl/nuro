@@ -20,8 +20,8 @@ keyAxis(glm::vec2(0.0f)),
 keyAxisSmoothingFactor(5.0f),
 mouseAxis(glm::vec2(0.0f))
 {
-	Runtime::getInspectorCamera().transform.position.y = 2.0f;
-	Runtime::getInspectorCamera().transform.rotation.x = 22.0f;
+	Runtime::getCamera().transform.position.y = 2.0f;
+	Runtime::getCamera().transform.rotation.x = 22.0f;
 }
 
 void SceneWindow::prepare()
@@ -78,7 +78,7 @@ void SceneWindow::prepare()
 	ImGui::End();
 	ImGui::PopStyleVar();
 
-	updateMovement(Runtime::getInspectorCamera());
+	updateMovement(Runtime::getCamera());
 
 	// Temporary, bad solution: Hide and lock cursor if scene view is rightclicked, otherwise use normal cursor
 	if (sceneViewRightclicked) {
