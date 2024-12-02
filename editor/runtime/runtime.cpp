@@ -33,7 +33,6 @@
 #include "../core/utils/log.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/input/input.h"
-#include "../user/src/game_logic.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/skybox/cubemap.h"
@@ -41,7 +40,8 @@
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/input/cursor.h"
 
-#include "../editor/editor_ui.h"
+#include "../editor/ui/editor_ui.h"
+#include "../editor/example/src/game_logic.h"
 
 std::vector<Entity*> Runtime::entityStack;
 

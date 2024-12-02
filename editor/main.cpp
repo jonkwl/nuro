@@ -1,4 +1,4 @@
-#include "runtime/runtime.h"
+#include "../editor/runtime/runtime.h"
 
 int main()
 {

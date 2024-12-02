@@ -21,7 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\runtime\runtime.cpp">
+    <ClCompile Include="editor\runtime\runtime.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
@@ -42,7 +42,7 @@
     <ClCompile Include="core\utils\log.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="user\src\game_logic.cpp">
+    <ClCompile Include="editor\example\src\game_logic.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="core\entity\entity.cpp">
@@ -57,7 +57,7 @@
     <ClCompile Include="core\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor_ui.cpp">
+    <ClCompile Include="editor\ui\editor_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\model\model.cpp">
@@ -69,7 +69,7 @@
     <ClCompile Include="core\rendering\model\mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="core\main.cpp">
+    <ClCompile Include="editor\main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\skybox\skybox.cpp">
@@ -93,13 +93,13 @@
     <ClCompile Include="core\transform\transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="editor\windows\scene_window.cpp">
+    <ClCompile Include="editor\ui\windows\scene_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="editor\ui_components.cpp">
+    <ClCompile Include="editor\ui\ui_components.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="editor\ui_layout.cpp">
+    <ClCompile Include="editor\ui\ui_layout.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\core\pre_pass.cpp">
@@ -117,10 +117,10 @@
     <ClCompile Include="core\rendering\postprocessing\bloom_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="editor\windows\post_processing_window.cpp">
+    <ClCompile Include="editor\ui\windows\post_processing_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="editor\windows\diagnostics_window.cpp">
+    <ClCompile Include="editor\ui\windows\diagnostics_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -206,10 +206,10 @@
     <ClInclude Include="core\rendering\texture\texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="user\src\game_logic.h">
+    <ClInclude Include="editor\example\src\game_logic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="core\runtime\runtime.h">
+    <ClInclude Include="editor\runtime\runtime.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="core\entity\entity.h">
@@ -224,7 +224,7 @@
     <ClInclude Include="core\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor_ui.h">
+    <ClInclude Include="editor\ui\editor_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\material\imaterial.h">
@@ -263,19 +263,19 @@
     <ClInclude Include="core\transform\transform.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor_window.h">
+    <ClInclude Include="editor\ui\editor_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\windows\scene_window.h">
+    <ClInclude Include="editor\ui\windows\scene_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\IconsFontAwesome6.h">
+    <ClInclude Include="editor\ui\IconsFontAwesome6.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\ui_components.h">
+    <ClInclude Include="editor\ui\ui_components.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\ui_layout.h">
+    <ClInclude Include="editor\ui\ui_layout.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\core\pre_pass.h">
@@ -293,10 +293,10 @@
     <ClInclude Include="core\rendering\postprocessing\bloom_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\windows\post_processing_window.h">
+    <ClInclude Include="editor\ui\windows\post_processing_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="editor\windows\diagnostics_window.h">
+    <ClInclude Include="editor\ui\windows\diagnostics_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
