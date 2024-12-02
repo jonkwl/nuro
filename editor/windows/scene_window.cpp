@@ -7,12 +7,12 @@
 #include "../editor/ui_components.h"
 #include "../editor/IconsFontAwesome6.h"
 
-#include "../src/runtime/runtime.h"
-#include "../src/rendering/postprocessing/post_processing.h"
-#include "../src/input/input.h"
-#include "../src/input/cursor.h"
-#include "../src/time/time.h"
-#include "../src/utils/log.h"
+#include "../core/runtime/runtime.h"
+#include "../core/rendering/postprocessing/post_processing.h"
+#include "../core/input/input.h"
+#include "../core/input/cursor.h"
+#include "../core/time/time.h"
+#include "../core/utils/log.h"
 
 SceneWindow::SceneWindow() : lastContentRegionAvail(glm::vec2(0.0f)),
 sceneViewRightclicked(false),

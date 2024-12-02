@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "../src/engine.h"
-#include "../src/runtime/runtime.h"
+#include "../core/engine.h"
+#include "../core/runtime/runtime.h"
 
 Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;

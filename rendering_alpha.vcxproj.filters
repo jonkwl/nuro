@@ -21,76 +21,76 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\runtime\runtime.cpp">
+    <ClCompile Include="core\runtime\runtime.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\shader\shader.cpp">
+    <ClCompile Include="core\rendering\shader\shader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\vendor\stb\stb_image.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\shader\shader_pool.cpp">
+    <ClCompile Include="core\rendering\shader\shader_pool.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\iohandler.cpp">
+    <ClCompile Include="core\utils\iohandler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\log.cpp">
+    <ClCompile Include="core\utils\log.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="user\src\game_logic.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\entity\entity.cpp">
+    <ClCompile Include="core\entity\entity.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\camera\camera.cpp">
+    <ClCompile Include="core\camera\camera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\core\transformation.cpp">
+    <ClCompile Include="core\rendering\core\transformation.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\input\input.cpp">
+    <ClCompile Include="core\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="editor\editor_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\model\model.cpp">
+    <ClCompile Include="core\rendering\model\model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\string_helper.cpp">
+    <ClCompile Include="core\utils\string_helper.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\model\mesh.cpp">
+    <ClCompile Include="core\rendering\model\mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="core\main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\skybox\skybox.cpp">
+    <ClCompile Include="core\rendering\skybox\skybox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\skybox\cubemap.cpp">
+    <ClCompile Include="core\rendering\skybox\cubemap.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\post_processing_pipeline.cpp">
+    <ClCompile Include="core\rendering\postprocessing\post_processing_pipeline.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\shadows\shadow_map.cpp">
+    <ClCompile Include="core\rendering\shadows\shadow_map.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\material\lit\lit_material.cpp">
+    <ClCompile Include="core\rendering\material\lit\lit_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\material\unlit\unlit_material.cpp">
+    <ClCompile Include="core\rendering\material\unlit\unlit_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\transform\transform.cpp">
+    <ClCompile Include="core\transform\transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="editor\windows\scene_window.cpp">
@@ -102,19 +102,19 @@
     <ClCompile Include="editor\ui_layout.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\core\pre_pass.cpp">
+    <ClCompile Include="core\rendering\core\pre_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\diagnostics\profiler.cpp">
+    <ClCompile Include="core\diagnostics\profiler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\core\forward_pass.cpp">
+    <ClCompile Include="core\rendering\core\forward_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\primitives\quad.cpp">
+    <ClCompile Include="core\rendering\primitives\quad.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\bloom_pass.cpp">
+    <ClCompile Include="core\rendering\postprocessing\bloom_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="editor\windows\post_processing_window.cpp">
@@ -153,114 +153,114 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\shadows\shadow_disk.cpp">
+    <ClCompile Include="core\rendering\shadows\shadow_disk.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\core\mesh_renderer.cpp">
+    <ClCompile Include="core\rendering\core\mesh_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\gizmos\quick_gizmo.cpp">
+    <ClCompile Include="core\rendering\gizmos\quick_gizmo.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\culling\bounding_volume.cpp">
+    <ClCompile Include="core\rendering\culling\bounding_volume.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\postprocessing\motion_blur_pass.cpp">
+    <ClCompile Include="core\rendering\postprocessing\motion_blur_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\velocitybuffer\velocity_buffer.cpp">
+    <ClCompile Include="core\rendering\velocitybuffer\velocity_buffer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\ssao\ssao_pass.cpp">
+    <ClCompile Include="core\rendering\ssao\ssao_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\texture\texture.cpp">
+    <ClCompile Include="core\rendering\texture\texture.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\time\time.cpp">
+    <ClCompile Include="core\time\time.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\diagnostics\diagnostics.cpp">
+    <ClCompile Include="core\diagnostics\diagnostics.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\input\cursor.cpp">
+    <ClCompile Include="core\input\cursor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\rendering\shader\shader.h">
+    <ClInclude Include="core\rendering\shader\shader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\iohandler.h">
+    <ClInclude Include="core\utils\iohandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\vendor\stb\stb_image.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\shader\shader_pool.h">
+    <ClInclude Include="core\rendering\shader\shader_pool.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\log.h">
+    <ClInclude Include="core\utils\log.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\texture\texture.h">
+    <ClInclude Include="core\rendering\texture\texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="user\src\game_logic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\runtime\runtime.h">
+    <ClInclude Include="core\runtime\runtime.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\entity\entity.h">
+    <ClInclude Include="core\entity\entity.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\camera\camera.h">
+    <ClInclude Include="core\camera\camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\core\transformation.h">
+    <ClInclude Include="core\rendering\core\transformation.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\input\input.h">
+    <ClInclude Include="core\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="editor\editor_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\material\imaterial.h">
+    <ClInclude Include="core\rendering\material\imaterial.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\material\unlit\unlit_material.h">
+    <ClInclude Include="core\rendering\material\unlit\unlit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\model\model.h">
+    <ClInclude Include="core\rendering\model\model.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\string_helper.h">
+    <ClInclude Include="core\utils\string_helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\model\mesh.h">
+    <ClInclude Include="core\rendering\model\mesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\material\lit\lit_material.h">
+    <ClInclude Include="core\rendering\material\lit\lit_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\skybox\skybox.h">
+    <ClInclude Include="core\rendering\skybox\skybox.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\vendor\stb\stb_image_write.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\skybox\cubemap.h">
+    <ClInclude Include="core\rendering\skybox\cubemap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\post_processing_pipeline.h">
+    <ClInclude Include="core\rendering\postprocessing\post_processing_pipeline.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\shadows\shadow_map.h">
+    <ClInclude Include="core\rendering\shadows\shadow_map.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\transform\transform.h">
+    <ClInclude Include="core\transform\transform.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="editor\editor_window.h">
@@ -278,19 +278,19 @@
     <ClInclude Include="editor\ui_layout.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\core\pre_pass.h">
+    <ClInclude Include="core\rendering\core\pre_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\diagnostics\profiler.h">
+    <ClInclude Include="core\diagnostics\profiler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\core\forward_pass.h">
+    <ClInclude Include="core\rendering\core\forward_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\primitives\quad.h">
+    <ClInclude Include="core\rendering\primitives\quad.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\bloom_pass.h">
+    <ClInclude Include="core\rendering\postprocessing\bloom_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="editor\windows\post_processing_window.h">
@@ -332,55 +332,55 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\shadows\shadow_disk.h">
+    <ClInclude Include="core\rendering\shadows\shadow_disk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\culling\bounding_volumes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\core\mesh_renderer.h">
+    <ClInclude Include="core\rendering\core\mesh_renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\gizmos\quick_gizmo.h">
+    <ClInclude Include="core\rendering\gizmos\quick_gizmo.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\culling\bounding_volume.h">
+    <ClInclude Include="core\rendering\culling\bounding_volume.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\motion_blur_pass.h">
+    <ClInclude Include="core\rendering\postprocessing\motion_blur_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\velocitybuffer\velocity_buffer.h">
+    <ClInclude Include="core\rendering\velocitybuffer\velocity_buffer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\ssao\ssao_pass.h">
+    <ClInclude Include="core\rendering\ssao\ssao_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\camera\frustum.h">
+    <ClInclude Include="core\camera\frustum.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine.h">
+    <ClInclude Include="core\engine.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\postprocessing\post_processing.h">
+    <ClInclude Include="core\rendering\postprocessing\post_processing.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\gizmos\gizmo_color.h">
+    <ClInclude Include="core\rendering\gizmos\gizmo_color.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\gizmos\gizmos.h">
+    <ClInclude Include="core\rendering\gizmos\gizmos.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\viewport\viewport.h">
+    <ClInclude Include="core\viewport\viewport.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\time\time.h">
+    <ClInclude Include="core\time\time.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\diagnostics\diagnostics.h">
+    <ClInclude Include="core\diagnostics\diagnostics.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\input\cursor.h">
+    <ClInclude Include="core\input\cursor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

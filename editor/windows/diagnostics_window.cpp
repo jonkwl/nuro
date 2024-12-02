@@ -7,9 +7,9 @@
 #include "../editor/IconsFontAwesome6.h"
 #include "../editor/editor_ui.h"
 
-#include "../src/diagnostics/profiler.h"
-#include "../src/time/time.h"
-#include "../src/diagnostics/diagnostics.h"
+#include "../core/diagnostics/profiler.h"
+#include "../core/time/time.h"
+#include "../core/diagnostics/diagnostics.h"
 
 std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
 float DiagnosticsWindow::fpsUpdateTimer = 0.0f;

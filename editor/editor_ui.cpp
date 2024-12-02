@@ -13,9 +13,9 @@
 #include "../editor/windows/post_processing_window.h"
 #include "../editor/windows/diagnostics_window.h"
 
-#include "../src/runtime/runtime.h"
-#include "../src/utils/log.h"
-#include "../src/input/cursor.h"
+#include "../core/runtime/runtime.h"
+#include "../core/utils/log.h"
+#include "../core/input/cursor.h"
 
 namespace EditorUI {
 
