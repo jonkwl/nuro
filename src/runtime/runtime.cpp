@@ -40,8 +40,8 @@
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/input/cursor.h"
 
-#include "../editor/ui/editor_ui.h"
-#include "../editor/example/src/game_logic.h"
+#include "../src/ui/editor_ui.h"
+#include "../src/example/src/game_logic.h"
 
 std::vector<Entity*> Runtime::entityStack;
 

@@ -2,11 +2,11 @@
 
 #include <imgui.h>
 
-#include "../editor/runtime/runtime.h"
-#include "../editor/ui/editor_ui.h"
-#include "../editor/ui/ui_layout.h"
-#include "../editor/ui/ui_components.h"
-#include "../editor/ui/IconsFontAwesome6.h"
+#include "../src/runtime/runtime.h"
+#include "../src/ui/editor_ui.h"
+#include "../src/ui/ui_layout.h"
+#include "../src/ui/ui_components.h"
+#include "../src/ui/IconsFontAwesome6.h"
 
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/input/input.h"

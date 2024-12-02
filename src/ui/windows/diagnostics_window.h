@@ -2,7 +2,7 @@
 
 #include <deque>
 
-#include "../editor/ui/editor_window.h"
+#include "../src/ui/editor_window.h"
 
 class DiagnosticsWindow : public EditorWindow
 {
