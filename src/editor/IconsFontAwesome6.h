@@ -1409,10 +1409,11 @@
 #define ICON_FA_Z "Z"                                                 // U+005a
 
 // CUSTOM DEFINITIONS
-#define ICON_FA_FRAME "\xee\x92\x95"            // U+e495
-#define ICON_FA_EMPTY_SET "\xEF\x99\x96"        // U+f656
-#define ICON_FA_ECLIPSE "\xEF\x9D\x89"          // U+f749
-#define ICON_FA_SPARKLES "\xEF\xA2\x90"         // U+f890
+#define ICON_FA_FRAME "\xee\x92\x95" // U+e495
+#define ICON_FA_EMPTY_SET "\xEF\x99\x96" // U+f656
+#define ICON_FA_ECLIPSE "\xEF\x9D\x89" // U+f749
+#define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
 #define ICON_FA_MONITOR_WAVEFORM "\xEF\x98\x91" // U+f611
-#define ICON_FA_SPARKLES "\xEF\xA2\x90"         // U+f890
-#define ICON_FA_PROJECTOR "\xEF\xA3\x96"        // U+f8d6
+#define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
+#define ICON_FA_PROJECTOR "\xEF\xA3\x96" // U+f8d6
+#define ICON_FA_RABBIT_RUNNING "\xEF\x9C\x89" // U+f709

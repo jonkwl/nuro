@@ -86,9 +86,10 @@ void SceneWindow::renderToolbar()
 	UILayout::endFlex();
 
 	// Render indicators for scene view setup
-	UILayout::beginFlex("setup", FlexType::ROW, UILayout::FULL_WIDTH, 13.0f, Justification::START, Alignment::CENTER, 1.0f);
+	UILayout::beginFlex("setup", FlexType::ROW, UILayout::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
 	{
 		UIComponents::space(1.0f, 0.0f);
+		UIComponents::tryIcon(ICON_FA_GAUGE);
 		UIComponents::label("Speed: " + std::to_string(static_cast<int>(movementSpeed)));
 	}
 	UILayout::endFlex();

@@ -45,7 +45,7 @@ namespace EditorUI {
 		// Load default font
 		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", _sizing.regularFontSize);
 
-		// Merge icons into regularFontSize font
+		// Merge icons into regular size font
 		float iconFontSize = _sizing.iconFontSize * 2.0f / 3.0f;
 		static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 		ImFontConfig icons_config;
@@ -156,7 +156,7 @@ namespace EditorUI {
 	void render()
 	{
 		/* SET VARIABLES NEEDING FRAME PREPARATION */
-		_overwriteCursor = true;
+		_overwriteCursor = false;
 		_overwriteCursorType = CursorType::DEFAULT;
 		_overwriteCursorMode = CursorMode::NORMAL;
 
