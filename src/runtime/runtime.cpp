@@ -32,7 +32,6 @@
 #include "../src/camera/camera.h"
 #include "../src/utils/log.h"
 #include "../src/diagnostics/profiler.h"
-#include "../src/editor/editor_ui.h"
 #include "../src/input/input.h"
 #include "../user/src/game_logic.h"
 #include "../src/rendering/core/transformation.h"
@@ -41,6 +40,8 @@
 #include "../src/time/time.h"
 #include "../src/diagnostics/diagnostics.h"
 #include "../src/input/cursor.h"
+
+#include "../editor/editor_ui.h"
 
 std::vector<Entity*> Runtime::entityStack;
 

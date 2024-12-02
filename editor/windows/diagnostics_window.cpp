@@ -3,9 +3,10 @@
 #include <glm.hpp>
 #include <implot.h>
 
-#include "../src/editor/ui_components.h"
-#include "../src/editor/IconsFontAwesome6.h"
-#include "../src/editor/editor_ui.h"
+#include "../editor/ui_components.h"
+#include "../editor/IconsFontAwesome6.h"
+#include "../editor/editor_ui.h"
+
 #include "../src/diagnostics/profiler.h"
 #include "../src/time/time.h"
 #include "../src/diagnostics/diagnostics.h"

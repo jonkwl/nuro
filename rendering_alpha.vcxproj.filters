@@ -57,7 +57,7 @@
     <ClCompile Include="src\input\input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\editor_ui.cpp">
+    <ClCompile Include="editor\editor_ui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\model\model.cpp">
@@ -93,13 +93,13 @@
     <ClCompile Include="src\transform\transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\windows\scene_window.cpp">
+    <ClCompile Include="editor\windows\scene_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\ui_components.cpp">
+    <ClCompile Include="editor\ui_components.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\ui_layout.cpp">
+    <ClCompile Include="editor\ui_layout.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\core\pre_pass.cpp">
@@ -117,10 +117,10 @@
     <ClCompile Include="src\rendering\postprocessing\bloom_pass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\windows\post_processing_window.cpp">
+    <ClCompile Include="editor\windows\post_processing_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\windows\diagnostics_window.cpp">
+    <ClCompile Include="editor\windows\diagnostics_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -224,7 +224,7 @@
     <ClInclude Include="src\input\input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\editor_ui.h">
+    <ClInclude Include="editor\editor_ui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\material\imaterial.h">
@@ -263,19 +263,19 @@
     <ClInclude Include="src\transform\transform.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\editor_window.h">
+    <ClInclude Include="editor\editor_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\windows\scene_window.h">
+    <ClInclude Include="editor\windows\scene_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\IconsFontAwesome6.h">
+    <ClInclude Include="editor\IconsFontAwesome6.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\ui_components.h">
+    <ClInclude Include="editor\ui_components.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\ui_layout.h">
+    <ClInclude Include="editor\ui_layout.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\core\pre_pass.h">
@@ -293,10 +293,10 @@
     <ClInclude Include="src\rendering\postprocessing\bloom_pass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\windows\post_processing_window.h">
+    <ClInclude Include="editor\windows\post_processing_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\windows\diagnostics_window.h">
+    <ClInclude Include="editor\windows\diagnostics_window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">

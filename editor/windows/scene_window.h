@@ -2,7 +2,7 @@
 
 #include <glm.hpp>
 
-#include "../src/editor/editor_window.h"
+#include "../editor/editor_window.h"
 #include "../src/camera/camera.h"
 
 class SceneWindow : public EditorWindow

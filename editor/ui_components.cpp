@@ -1,8 +1,8 @@
 #include "ui_components.h"
 
 #include <imgui.h>
-#include "../src/editor/editor_ui.h"
-#include "../src/editor/ui_layout.h"
+#include "../editor/editor_ui.h"
+#include "../editor/ui_layout.h"
 
 std::string formatInteger(int number)
 {

@@ -2,10 +2,10 @@
 
 #include <imgui.h>
 
-#include "../src/editor/ui_layout.h"
-#include "../src/editor/ui_components.h"
-#include "../src/editor/IconsFontAwesome6.h"
-#include "../src/editor/editor_ui.h"
+#include "../editor/ui_layout.h"
+#include "../editor/ui_components.h"
+#include "../editor/IconsFontAwesome6.h"
+#include "../editor/editor_ui.h"
 
 bool post_processing_window_tmp = false;
 

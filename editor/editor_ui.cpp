@@ -6,13 +6,14 @@
 
 #include "IconsFontAwesome6.h"
 
+#include "../editor/ui_components.h"
+#include "../editor/ui_layout.h"
+#include "../editor/editor_window.h"
+#include "../editor/windows/scene_window.h"
+#include "../editor/windows/post_processing_window.h"
+#include "../editor/windows/diagnostics_window.h"
+
 #include "../src/runtime/runtime.h"
-#include "../src/editor/ui_components.h"
-#include "../src/editor/ui_layout.h"
-#include "../src/editor/editor_window.h"
-#include "../src/editor/windows/scene_window.h"
-#include "../src/editor/windows/post_processing_window.h"
-#include "../src/editor/windows/diagnostics_window.h"
 #include "../src/utils/log.h"
 #include "../src/input/cursor.h"
 
