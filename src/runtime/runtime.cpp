@@ -40,6 +40,7 @@
 #include "../src/rendering/skybox/cubemap.h"
 #include "../src/time/time.h"
 #include "../src/diagnostics/diagnostics.h"
+#include "../src/input/cursor.h"
 
 std::vector<Entity*> Runtime::entityStack;
 
@@ -57,9 +58,8 @@ bool Runtime::postProcessingEffects = true;
 Skybox& Runtime::currentSkybox = Runtime::defaultSkybox;
 
 GLFWwindow* Runtime::glfw = nullptr;
-glm::vec2 Runtime::windowSize = glm::vec2(1600.0f, 800.0f);
+glm::vec2 Runtime::windowSize = glm::vec2(1800.0f, 1000.0f);
 bool Runtime::fullscreen = true;
-GLenum Runtime::cursorMode = GLFW_CURSOR_NORMAL;
 
 Viewport Runtime::sceneViewport;
 
@@ -106,22 +106,6 @@ void Runtime::destroyEntity(Entity* entity) {
 Camera& Runtime::getCamera()
 {
 	return camera;
-}
-
-void Runtime::setCursor(GLenum cursorMode)
-{
-	// Set windows cursor mode
-	Runtime::cursorMode = cursorMode;
-	glfwSetInputMode(Runtime::glfw, GLFW_CURSOR, cursorMode);
-}
-
-void Runtime::centerCursor()
-{
-	// Center the cursor relative to the window
-	int windowWidth, windowHeight;
-	glfwGetWindowSize(Runtime::glfw, &windowWidth, &windowHeight);
-	glm::vec2 viewportCenter(windowWidth / 2.0f, windowHeight / 2.0f);
-	glfwSetCursorPos(Runtime::glfw, viewportCenter.x, viewportCenter.y);
 }
 
 //
@@ -245,9 +229,6 @@ void Runtime::setupGlfw() {
 	// Debug graphics api version
 	const char* version = (const char*)glGetString(GL_VERSION);
 	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
-
-	// Set defualt window cursor
-	setCursor(cursorMode);
 }
 
 void Runtime::setVSync() {
@@ -286,6 +267,10 @@ void Runtime::loadAssets() {
 
 void Runtime::setupScripts() {
 
+	// Set context for scripts needed window context
+	Input::setContext(glfw);
+	Cursor::setContext(glfw);
+
 	// Create forward pass
 	forwardPass.create(msaaSamples);
 	forwardPass.enableSkybox(&currentSkybox);
@@ -305,9 +290,6 @@ void Runtime::setupScripts() {
 
 	// Setup engine ui
 	EditorUI::setup();
-
-	// Setup input system
-	Input::setup(glfw);
 
 	// Create primitives
 	Quad::create();

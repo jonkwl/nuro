@@ -7,7 +7,7 @@
 class DiagnosticsWindow : public EditorWindow
 {
 public:
-	void prepare();
+	void render();
 
 private:
 	static std::deque<float> fpsCache;

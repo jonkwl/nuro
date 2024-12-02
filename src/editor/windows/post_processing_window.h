@@ -6,5 +6,5 @@
 class PostProcessingWindow : public EditorWindow
 {
 public:
-	void prepare();
+	void render();
 };

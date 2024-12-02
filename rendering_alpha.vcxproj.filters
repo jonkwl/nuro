@@ -183,6 +183,9 @@
     <ClCompile Include="src\diagnostics\diagnostics.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\input\cursor.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\shader\shader.h">
@@ -375,6 +378,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\diagnostics\diagnostics.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\cursor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

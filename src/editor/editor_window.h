@@ -3,5 +3,5 @@
 class EditorWindow
 {
 public:
-	virtual void prepare() {};
+	virtual void render() {};
 };

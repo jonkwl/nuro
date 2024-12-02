@@ -146,6 +146,16 @@ unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
 	return blurredOutput;
 }
 
+unsigned int SSAOPass::getOutputRaw()
+{
+	return aoOutput;
+}
+
+unsigned int SSAOPass::getOutputProcessed()
+{
+	return blurredOutput;
+}
+
 void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
 {
 	// Set render target to ao output

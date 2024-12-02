@@ -16,6 +16,9 @@ public:
 	void destroy(); // Destroy ambient occlusion pass
 
 	unsigned int render(unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return blurred output
+
+	unsigned int getOutputRaw(); // Returns ao output (raw ssao texture)
+	unsigned int getOutputProcessed(); // Returns blurred output (processed ssao texture)
 private:
 	enum TextureUnits
 	{

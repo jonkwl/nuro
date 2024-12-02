@@ -9,7 +9,7 @@
 
 bool post_processing_window_tmp = false;
 
-void PostProcessingWindow::prepare()
+void PostProcessingWindow::render()
 {
 	ImGui::Begin("  Post Processing  ", nullptr, EditorUI::getWindowFlags().standard);
 

@@ -13,3 +13,5 @@
 #include "../src/rendering/texture/texture.h"
 #include "../src/rendering/gizmos/gizmos.h"
 #include "../src/time/time.h"
+#include "../src/input/input.h"
+#include "../src/input/cursor.h"

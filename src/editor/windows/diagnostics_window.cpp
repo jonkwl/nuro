@@ -43,7 +43,7 @@ float remap(float old_min, float old_max, float new_min, float new_max, float va
 	return new_min + (value - old_min) * (new_max - new_min) / (old_max - old_min);
 }
 
-void DiagnosticsWindow::prepare()
+void DiagnosticsWindow::render()
 {
 	ImGui::Begin("Diagnostics", nullptr, EditorUI::getWindowFlags().fixed);
 

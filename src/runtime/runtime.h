@@ -39,9 +39,6 @@ public:
 	static GLFWwindow* glfw;
 	static glm::vec2 windowSize;
 	static bool fullscreen;
-	static GLenum cursorMode;
-	static void setCursor(GLenum cursorMode);
-	static void centerCursor();
 
 	// Render settings
 	static glm::vec4 clearColor;	   // buffer clearing color

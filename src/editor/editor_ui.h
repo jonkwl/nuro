@@ -52,11 +52,13 @@ namespace EditorUI
 	void newFrame();
 	void render();
 
-	const std::string generateId();
+	std::string generateId();
 
 	const Colors& getColors();
 	const WindowFlags& getWindowFlags();
 	const Fonts& getFonts();
+
+	void hideCursor(); // Hide the cursor for this frame if possible
 
 	ImVec4 lighten(ImVec4 color, float amount);
 	ImVec4 darken(ImVec4 color, float amount);

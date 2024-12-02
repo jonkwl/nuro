@@ -9,10 +9,14 @@ class SceneWindow : public EditorWindow
 {
 public:
 	SceneWindow();
-	void prepare();
+	void render();
 
 private:
+	void renderToolbar();
+	void renderSceneView();
+
 	void updateMovement(Camera& camera); // Update movement within scene view
+	glm::vec2 checkCursorBoundaries(glm::vec2 min, glm::vec2 max, bool& positionedCursor);
 
 private:
 	glm::vec2 lastContentRegionAvail; // Cache for last frames content region avail
@@ -25,5 +29,7 @@ private:
 
 	glm::vec2 keyAxis; // Current input axis for evaluating scene view movement
 	float keyAxisSmoothingFactor; // Smoothing for key axis
-	glm::vec2 mouseAxis; // Current mouse axis
+	glm::vec2 mouseCurrent; // Current mouse position
+	glm::vec2 mouseLast; // Last mouse position
+	glm::vec2 mouseAxis; // Last mouse position
 };

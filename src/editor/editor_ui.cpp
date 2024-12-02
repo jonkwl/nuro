@@ -14,6 +14,7 @@
 #include "../src/editor/windows/post_processing_window.h"
 #include "../src/editor/windows/diagnostics_window.h"
 #include "../src/utils/log.h"
+#include "../src/input/cursor.h"
 
 namespace EditorUI {
 
@@ -23,6 +24,8 @@ namespace EditorUI {
 	Colors _colors;
 	WindowFlags _windowFlags;
 	Fonts _fonts;
+
+	bool _cursorHidden = false;
 
 	void setup()
 	{
@@ -150,6 +153,9 @@ namespace EditorUI {
 
 	void render()
 	{
+		/* SET VARIABLES NEEDING FRAME PREPARATION */
+		_cursorHidden = false;
+		ImGuiIO& io = ImGui::GetIO();
 
 		/* CREATE MAIN VIEWPORT DOCKSPACE */
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -175,7 +181,17 @@ namespace EditorUI {
 		/* PREPARE ALL WINDOWS */
 		for (int i = 0; i < _windows.size(); i++)
 		{
-			_windows[i]->prepare();
+			_windows[i]->render();
+		}
+
+		/* SET CURSOR */
+		if (_cursorHidden) {
+			Cursor::setMode(CursorMode::HIDDEN);
+			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+		}
+		else {
+			Cursor::setMode(CursorMode::NORMAL);
+			io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
 		}
 
 		/* RENDERING AND DRAW CALLS */
@@ -183,7 +199,7 @@ namespace EditorUI {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	const std::string generateId()
+	std::string generateId()
 	{
 		return ("##" + std::to_string(++_idCounter));
 	}
@@ -199,6 +215,10 @@ namespace EditorUI {
 
 	const Fonts& getFonts() {
 		return _fonts;
+	}
+
+	void hideCursor() {
+		_cursorHidden = true;
 	}
 
 	ImVec4 lighten(ImVec4 color, float amount)
