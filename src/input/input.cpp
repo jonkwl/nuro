@@ -20,9 +20,9 @@ namespace Input {
 
 	// Input functions
 
-	void setup(GLFWwindow* linkedWindow)
+	void setContext(GLFWwindow* window)
 	{
-		_window = linkedWindow;
+		_window = window;
 
 		double mouseX, mouseY;
 		glfwGetCursorPos(_window, &mouseX, &mouseY);
@@ -73,21 +73,28 @@ namespace Input {
 
 	// Getters
 
-	const glm::vec2& getKeyAxis()
+	glm::vec2 getKeyAxis()
 	{
 		return _keyAxis;
 	}
 
-	const glm::vec2& getMouseAxis()
+	glm::vec2 getMouseAxis()
 	{
 		return _mouseAxis;
 	}
 
-	const glm::vec2& getScrollAxis()
+	glm::vec2 getScrollAxis()
 	{
 		glm::vec2 scrollAxis = _scrollOffset;
 		_scrollOffset = glm::vec2(0.0f);
 		return scrollAxis;
+	}
+
+	glm::vec2 getMousePosition()
+	{
+		double mouseX = 0.0, mouseY = 0.0;
+		glfwGetCursorPos(_window, &mouseX, &mouseY);
+		return glm::vec2(mouseX, mouseY);
 	}
 
 }

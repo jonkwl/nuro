@@ -8,11 +8,13 @@
 namespace Input
 {
 
-	void setup(GLFWwindow* linkedWindow); // Setup input system
+	void setContext(GLFWwindow* window); // Sets context for input system
 	void step(); // Fetch inputs of current frame
 
-	const glm::vec2& getKeyAxis();
-	const glm::vec2& getMouseAxis();
-	const glm::vec2& getScrollAxis();
+	glm::vec2 getKeyAxis();
+	glm::vec2 getMouseAxis();
+	glm::vec2 getScrollAxis();
+
+	glm::vec2 getMousePosition();
 
 };
