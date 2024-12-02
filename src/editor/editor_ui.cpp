@@ -25,7 +25,9 @@ namespace EditorUI {
 	WindowFlags _windowFlags;
 	Fonts _fonts;
 
-	bool _cursorHidden = false;
+	bool _overwriteCursor = false; // Overwrites the default ui framework cursor
+	int _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
+	int _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
 	void setup()
 	{
@@ -154,7 +156,10 @@ namespace EditorUI {
 	void render()
 	{
 		/* SET VARIABLES NEEDING FRAME PREPARATION */
-		_cursorHidden = false;
+		_overwriteCursor = true;
+		_overwriteCursorType = CursorType::DEFAULT;
+		_overwriteCursorMode = CursorMode::NORMAL;
+
 		ImGuiIO& io = ImGui::GetIO();
 
 		/* CREATE MAIN VIEWPORT DOCKSPACE */
@@ -184,13 +189,17 @@ namespace EditorUI {
 			_windows[i]->render();
 		}
 
-		/* SET CURSOR */
-		if (_cursorHidden) {
-			Cursor::setMode(CursorMode::HIDDEN);
+		/* OVERWRITE UI FRAMEWORK CURSOR IF NEEDED */
+		if (_overwriteCursor) {
+			// Disable ui framework cursor management
 			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+			// Set cursor to overwrite type and mode
+			Cursor::setType(_overwriteCursorType);
+			Cursor::setMode(_overwriteCursorMode);
 		}
 		else {
-			Cursor::setMode(CursorMode::NORMAL);
+			// Enable ui frameword cursor management
 			io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
 		}
 
@@ -217,8 +226,18 @@ namespace EditorUI {
 		return _fonts;
 	}
 
-	void hideCursor() {
-		_cursorHidden = true;
+	void EditorUI::setCursorType(int cursorType)
+	{
+		// Overwrite cursor type for current frame
+		_overwriteCursor = true;
+		_overwriteCursorType = cursorType;
+	}
+
+	void setCursorMode(int cursorMode)
+	{
+		// Overwrite cursor mode for current frame
+		_overwriteCursor = true;
+		_overwriteCursorMode = cursorMode;
 	}
 
 	ImVec4 lighten(ImVec4 color, float amount)

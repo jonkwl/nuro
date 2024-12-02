@@ -21,6 +21,13 @@ namespace Cursor {
 		glfwSetCursorPos(_window, position.x, position.y);
 	}
 
+	void setType(int cursorType)
+	{
+		GLFWcursor* cursor = glfwCreateStandardCursor(cursorType);
+		glfwSetCursor(_window, cursor);
+		glfwDestroyCursor(cursor);
+	}
+
 	void setMode(int cursorMode)
 	{
 		glfwSetInputMode(_window, GLFW_CURSOR, cursorMode);

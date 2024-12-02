@@ -58,7 +58,8 @@ namespace EditorUI
 	const WindowFlags& getWindowFlags();
 	const Fonts& getFonts();
 
-	void hideCursor(); // Hide the cursor for this frame if possible
+	void setCursorType(int cursorType);
+	void setCursorMode(int cursorMode);
 
 	ImVec4 lighten(ImVec4 color, float amount);
 	ImVec4 darken(ImVec4 color, float amount);
