@@ -180,6 +180,9 @@
     <ClCompile Include="core\misc\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\ImGuizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\camera\camera.h">
@@ -633,6 +636,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\scene_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\ImGuizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
