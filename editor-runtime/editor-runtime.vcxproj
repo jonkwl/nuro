@@ -341,6 +341,7 @@
     <ClInclude Include="src\ui\windows\diagnostics_window.h" />
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\scene_window.h" />
+    <ClInclude Include="src\runtime\tmp_context.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\include\assimp\color4.inl" />

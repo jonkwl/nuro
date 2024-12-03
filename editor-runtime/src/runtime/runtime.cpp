@@ -43,6 +43,8 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
 
+#include "../runtime/tmp_context.h"
+
 std::vector<Entity*> Runtime::entityStack;
 
 Skybox Runtime::defaultSkybox;
@@ -338,6 +340,11 @@ void Runtime::renderFrame() {
 
 	// Update cameras frustum
 	camera.updateFrustum(viewProjectionMatrix);
+
+	// Set tmp context
+	TmpContext::selectedEntity = entityStack[0];
+	TmpContext::view = viewMatrix;
+	TmpContext::projection = projectionMatrix;
 
 	//
 	// PREPARATION PASS

@@ -641,6 +641,9 @@
     <ClInclude Include="imgui\ImGuizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\runtime\tmp_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\include\assimp\color4.inl">

@@ -3,6 +3,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <implot.h>
+#include <ImGuizmo.h>
 
 #include "IconsFontAwesome6.h"
 
@@ -152,6 +153,7 @@ namespace EditorUI {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void render()
@@ -184,7 +186,7 @@ namespace EditorUI {
 		ImGui::PopFont();
 		ImGui::PopStyleVar(3);
 
-		/* PREPARE ALL WINDOWS */
+		/* RENDER ALL WINDOWS */
 		for (int i = 0; i < _windows.size(); i++)
 		{
 			_windows[i]->render();

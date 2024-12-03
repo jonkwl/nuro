@@ -1,6 +1,7 @@
 #include "scene_window.h"
 
 #include <imgui.h>
+#include <ImGuizmo.h>
 
 #include "../src/runtime/runtime.h"
 #include "../src/ui/editor_ui.h"
@@ -13,18 +14,25 @@
 #include "../core/input/cursor.h"
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
+#include "../core/rendering/core/transformation.h"
+
+#include <gtc/type_ptr.hpp>
+#include "../src/runtime/tmp_context.h"
 
 SceneWindow::SceneWindow() : lastContentRegionAvail(glm::vec2(0.0f)),
+windowFocused(false),
+windowHovered(false),
 sceneViewRightclicked(false),
 sceneViewMiddleclicked(false),
 movementSpeed(12.0f),
 mouseSensitivity(0.08f),
 scrollIncrementSpeed(2.0f),
-keyAxis(glm::vec2(0.0f)),
-keyAxisSmoothingFactor(5.0f),
+moveAxis(glm::vec2(0.0f)),
+moveAxisSmoothingFactor(5.0f),
 cursorCurrent(glm::vec2(0.0f)),
 cursorLast(glm::vec2(0.0f)),
-cursorAxis(glm::vec2(0.0f))
+cursorDelta(glm::vec2(0.0f)),
+gizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
 {
 	Runtime::getCamera().transform.position.y = 2.0f;
 	Runtime::getCamera().transform.rotation.x = 22.0f;
@@ -39,8 +47,8 @@ void SceneWindow::render()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("  Scene  ", nullptr, EditorUI::getWindowFlags().standard);
 	{
-		bool focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
-		bool hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
+		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
 		UIComponents::space(0.0f, 14.0f);
 		UIComponents::headline("Scene", ICON_FA_MAP, HeadlineJustification::CENTER);
@@ -124,11 +132,59 @@ void SceneWindow::renderSceneView()
 			if (positionedCursor) cursorLast = cursorCurrent;
 
 			// Calculate cursor axis
-			cursorAxis = glm::vec2(cursorCurrent.x - cursorLast.x, -(cursorCurrent.y - cursorLast.y));
+			cursorDelta = glm::vec2(cursorCurrent.x - cursorLast.x, -(cursorCurrent.y - cursorLast.y));
 		}
 
+		// Render scene views transformation gizmos
+		renderTransformGizmos();
 	}
 	ImGui::EndChild();
+}
+
+void SceneWindow::renderTransformGizmos()
+{
+	// Get boundaries
+	ImVec2 itemPosition = ImGui::GetItemRectMin();
+	ImVec2 itemSize = ImGui::GetItemRectSize();
+	float itemX = itemPosition.x;
+	float itemY = itemPosition.y;
+	float itemWidth = itemSize.x;
+	float itemHeight = itemSize.y;
+
+	// Setup imguizmo
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(itemX, itemY, itemWidth, itemHeight);
+
+	// Change gizmo operation if issued
+	if (windowFocused) {
+		if (Input::command(Key::T)) {
+			gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		}
+		else if (Input::command(Key::R)) {
+			gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		}
+		else if (Input::command(Key::S)) {
+			gizmoOperation = ImGuizmo::OPERATION::SCALE;
+		}
+	}
+
+	// Get gizmo matrices
+	Entity* entity = TmpContext::selectedEntity;
+	glm::mat4 viewMatrix = TmpContext::view;
+	glm::mat4 projectionMatrix = TmpContext::projection;
+	glm::mat4 transformMatrix = glm::translate(glm::mat4(1.0f), Transformation::prepareWorldPosition(TmpContext::selectedEntity->transform.position));
+
+	// Draw debug cube
+	ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix));
+
+	// Update entities transform if gizmo is being used
+	if (ImGuizmo::IsUsing()) {
+
+		// Update entity position
+		glm::vec3 position = glm::vec3(transformMatrix[3]);
+		entity->transform.position = Transformation::prepareWorldPosition(position);
+	}
 }
 
 void SceneWindow::updateMovement(Camera& camera)
@@ -140,19 +196,19 @@ void SceneWindow::updateMovement(Camera& camera)
 	glm::vec3 camUp = camera.transform.up();
 
 	// Move in scene view
-	glm::vec2 currentKeyAxis = !sceneViewRightclicked ? glm::vec2(0.0f) : Input::getKeyAxis();
-	keyAxis = glm::mix(keyAxis, currentKeyAxis, keyAxisSmoothingFactor * deltaTime);
-	glm::vec3 movementDir = camForward * keyAxis.x + camRight * keyAxis.y;
+	glm::vec2 currentKeyAxis = !sceneViewRightclicked ? glm::vec2(0.0f) : Input::moveAxis();
+	moveAxis = glm::mix(moveAxis, currentKeyAxis, moveAxisSmoothingFactor * deltaTime);
+	glm::vec3 movementDir = camForward * moveAxis.x + camRight * moveAxis.y;
 	camera.transform.position += movementDir * movementSpeed * deltaTime;
 
 	// If theres a right click interaction with scene view
 	if (sceneViewRightclicked) {
 		// Check for scrolling movement speed changes
-		glm::vec2 currentScrollAxis = Input::getScrollAxis();
+		glm::vec2 currentScrollAxis = Input::scrollDelta();
 		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
 
 		// Rotate in scene view
-		glm::vec3 rotationDir = glm::vec3(-cursorAxis.y, cursorAxis.x, 0.0f);
+		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
 		glm::vec3 newRotation = camera.transform.rotation + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
 		camera.transform.rotation = newRotation;
@@ -161,7 +217,7 @@ void SceneWindow::updateMovement(Camera& camera)
 	// If theres a middle click interaction with scene view
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
-		glm::vec3 panningDir = (camRight * -cursorAxis.x) + (camUp * -cursorAxis.y);
+		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
 		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.25f; // 0.25f is a good factor to match movement speed
 	}
 }
@@ -169,7 +225,7 @@ void SceneWindow::updateMovement(Camera& camera)
 glm::vec2 SceneWindow::checkCursorBoundaries(glm::vec2 min, glm::vec2 max, bool& positionedCursor)
 {
 	// Offset preventing immediate wrapping at boundary
-	float offset = 10.0f;
+	float offset = 25.0f;
 
 	glm::vec2 currentPos = Cursor::getPosition();
 	glm::vec2 updatedPos = currentPos;
