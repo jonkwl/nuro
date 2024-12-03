@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor", "editor.vcxproj", "{1EBAB246-08BE-4EEC-A16F-74B18856B37D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor-runtime", "editor-runtime\editor-runtime.vcxproj", "{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{1EBAB246-08BE-4EEC-A16F-74B18856B37D}.Release|x64.Build.0 = Release|x64
 		{1EBAB246-08BE-4EEC-A16F-74B18856B37D}.Release|x86.ActiveCfg = Release|Win32
 		{1EBAB246-08BE-4EEC-A16F-74B18856B37D}.Release|x86.Build.0 = Release|Win32
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Debug|x64.ActiveCfg = Debug|x64
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Debug|x64.Build.0 = Debug|x64
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Debug|x86.ActiveCfg = Debug|Win32
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Debug|x86.Build.0 = Debug|Win32
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Release|x64.ActiveCfg = Release|x64
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Release|x64.Build.0 = Release|x64
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Release|x86.ActiveCfg = Release|Win32
+		{C7CBB9A1-32F0-415E-A4A2-A6287BA412CB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
