@@ -4,7 +4,6 @@
 #ifndef GLM_ENABLE_EXPERIMENTAL
 #define GLM_ENABLE_EXPERIMENTAL
 #endif
-
 #include <glm/gtx/dual_quaternion.hpp>
 #include <glm/gtc/vec1.hpp>
 #include <glm/gtc/quaternion.hpp>

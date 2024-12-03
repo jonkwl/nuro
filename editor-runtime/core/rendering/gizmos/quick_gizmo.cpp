@@ -26,9 +26,9 @@ void QuickGizmo::setup()
 	shader = ShaderPool::get("quick_gizmo");
 
 	// Load models from primitives
-	planeModel = Model::load("./resources/primitives/plane.fbx");
-	cubeModel = Model::load("./resources/primitives/cube.fbx");
-	sphereModel = Model::load("./resources/primitives/sphere.fbx");
+	planeModel = Model::load("../resources/primitives/plane.fbx");
+	cubeModel = Model::load("../resources/primitives/cube.fbx");
+	sphereModel = Model::load("../resources/primitives/sphere.fbx");
 }
 
 void QuickGizmo::newFrame()

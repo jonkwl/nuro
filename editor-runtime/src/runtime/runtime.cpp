@@ -242,10 +242,10 @@ void Runtime::loadAssets() {
 
 	// Loading all shaders
 	std::vector<std::string> shader_paths = {
-		"./resources/shaders/materials",
-		"./resources/shaders/postprocessing",
-		"./resources/shaders/gizmo",
-		"./resources/shaders/passes" };
+		"../resources/shaders/materials",
+		"../resources/shaders/postprocessing",
+		"../resources/shaders/gizmo",
+		"../resources/shaders/passes" };
 	ShaderPool::loadAndCompile(shader_paths);
 
 	// Create shadow disk
@@ -259,7 +259,7 @@ void Runtime::loadAssets() {
 	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
 
 	// Create default skybox
-	Cubemap defaultCubemap = Cubemap::loadByCubemap("./resources/skybox/default/default_night.png");
+	Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
 	defaultSkybox = Skybox(defaultCubemap);
 
 	// Set default skybox as current skybox

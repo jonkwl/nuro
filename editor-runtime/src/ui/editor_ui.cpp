@@ -44,7 +44,7 @@ namespace EditorUI {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 		// Load default font
-		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", _sizing.regularFontSize);
+		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-Light.ttf", _sizing.regularFontSize);
 
 		// Merge icons into regular size font
 		float iconFontSize = _sizing.iconFontSize * 2.0f / 3.0f;
@@ -53,12 +53,12 @@ namespace EditorUI {
 		icons_config.MergeMode = true;
 		icons_config.PixelSnapH = true;
 		icons_config.GlyphMinAdvanceX = iconFontSize;
-		_fonts.uiIcons = io.Fonts->AddFontFromFileTTF("./resources/fonts/fa-solid-900.ttf", iconFontSize, &icons_config, icons_ranges);
+		_fonts.uiIcons = io.Fonts->AddFontFromFileTTF("../resources/fonts/fa-solid-900.ttf", iconFontSize, &icons_config, icons_ranges);
 
 		// Load other _fonts
-		_fonts.uiBold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", _sizing.regularFontSize);
-		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-SemiBold.ttf", _sizing.headlineFontSize);
-		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter_18pt-Light.ttf", _sizing.smallFontSize);
+		_fonts.uiBold = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-SemiBold.ttf", _sizing.regularFontSize);
+		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-SemiBold.ttf", _sizing.headlineFontSize);
+		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-Light.ttf", _sizing.smallFontSize);
 
 		ImGui::StyleColorsDark();
 
