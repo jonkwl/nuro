@@ -191,8 +191,8 @@ void SceneWindow::renderTransformGizmos()
 		glm::decompose(transformMatrix, scale, rotation, position, skew, perspective);
 
 		// Update entity transform using components converted to world coordinates
-		transform.position = Transformation::prepareWorldPosition(position);
-		// transform.rotation = Transformation::prepareWorldRotation(rotation);
+		transform.position = Transformation::toBackendPosition(position);
+		transform.rotation = Transformation::toBackendRotation(rotation);
 		transform.scale = scale;
 	}
 }
@@ -218,10 +218,11 @@ void SceneWindow::updateMovement(Camera& camera)
 		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
 
 		// Rotate in scene view
-		/*glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
-		glm::vec3 newRotation = camera.transform.rotation + (rotationDir * mouseSensitivity);
+		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
+		glm::vec3 newRotation = camera.eulerAngles + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
-		camera.transform.rotation = newRotation;*/
+		camera.eulerAngles = newRotation;
+		camera.transform.rotation = glm::quat(glm::radians(camera.eulerAngles));
 	}
 
 	// If theres a middle click interaction with scene view

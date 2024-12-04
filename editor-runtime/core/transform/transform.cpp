@@ -12,34 +12,13 @@ scale(glm::vec3(1.0f))
 {
 }
 
-glm::vec3 Transform::getEulerAngles()
-{
-	// Get euler angles from rotation quaternion in radians
-	glm::vec3 eulerAngles = glm::eulerAngles(rotation);
-
-	// Convert euler angles to degrees
-	eulerAngles = glm::degrees(eulerAngles);
-
-	// Convert euler angles to left-handed coordinate system
-	eulerAngles = glm::vec3(-eulerAngles.x, eulerAngles.y, eulerAngles.z);
-
-	// Return transform rotation as euler angles
-	return eulerAngles;
-}
-
 void Transform::setEulerAngles(glm::vec3 eulerAngles)
 {
-	// Convert euler angles to use right-handed coordinate system
-	eulerAngles = Transformation::prepareWorldEulerAngles(eulerAngles);
-
-	// Convert euler angles given in degrees to radians
+	// Convert Euler angles from degrees to radians
 	eulerAngles = glm::radians(eulerAngles);
 
-	// Rotate transform
-	rotation = glm::quat(glm::mat4(1.0f));
-	rotation = glm::rotate(rotation, eulerAngles.x, glm::vec3(1, 0, 0));
-	rotation = glm::rotate(rotation, eulerAngles.y, glm::vec3(0, 1, 0));
-	rotation = glm::rotate(rotation, eulerAngles.z, glm::vec3(0, 0, 1));
+	// Set rotation quaternion
+	rotation = glm::quat(eulerAngles);
 }
 
 glm::vec3 Transform::forward()

@@ -8,31 +8,39 @@
 
 namespace Transformation {
 
-	glm::vec3 prepareWorldPosition(const glm::vec3 position)
+	glm::vec3 toBackendPosition(glm::vec3 position)
 	{
-		// Swap between left-handed coordinates and right-handed coordinates
+		// Use to convert left handed coordinates to right handed coordinates backend uses
 		return glm::vec3(position.x, position.y, -position.z);
 	}
 
-	glm::vec3 prepareWorldEulerAngles(const glm::vec3 rotation)
+	glm::quat toBackendRotation(glm::quat rotation)
 	{
-		// Swap between left-handed euler angles and right-handed euler angles
-		return glm::vec3(-rotation.x, -rotation.y, rotation.z);
+		// Use to convert left handed rotation to right handed rotation backend uses
+		rotation.x = -rotation.x;
+		rotation.y = -rotation.y;
+		rotation.z = rotation.z;
+		return rotation;
 	}
 
 	glm::mat4 modelMatrix(Transform& transform)
 	{
 		glm::mat4 model(1.0f);
 
-		// object position
-		glm::vec3 worldPosition = prepareWorldPosition(transform.position);
+		// Convert left handed transform position to right handed position
+		glm::vec3 worldPosition = toBackendPosition(transform.position);
+
+		// Transpose model matrix
 		model = glm::translate(model, worldPosition);
 
-		// object rotation
-		glm::mat4 rotationMatrix = glm::mat4_cast(transform.rotation);
+		// Convert left handed rotation to right handed rotation
+		glm::quat rotation = toBackendRotation(transform.rotation);
+
+		// Get rotation matrix and rotate model matrix
+		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
 		model = model * rotationMatrix;
 
-		// object scale
+		// Scale model matrix
 		model = glm::scale(model, transform.scale);
 
 		return model;
@@ -40,20 +48,34 @@ namespace Transformation {
 
 	glm::mat4 viewMatrix(Camera& camera)
 	{
-		// Extract camera position and orientation
-		const glm::vec3& position = prepareWorldPosition(camera.transform.position);
-		const glm::quat& rotation = camera.transform.rotation;
+		glm::vec3 camera_position = camera.transform.position;
+		glm::vec3 camera_rotation = camera.eulerAngles; // always utilize cameras euler angles for rotation
 
-		// Create a rotation matrix from the quaternion
-		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
+		camera_position = toBackendPosition(camera_position);
+		camera_rotation = -camera_rotation; // left handed euler rotation to right handed
 
-		// Create a translation matrix for the camera position
-		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), -position);
+		glm::vec3 radRotation = glm::radians(camera_rotation);
 
-		// Combine rotation and translation to form the view matrix
-		// Since the camera is moving in the opposite direction in the view space,
-		// apply translation AFTER the rotation
-		glm::mat4 viewMatrix = rotationMatrix * translationMatrix;
+		// Create rotation quaternions
+		glm::quat pitchQuat = glm::angleAxis(radRotation.x, glm::vec3(1, 0, 0)); // Pitch (X)
+		glm::quat yawQuat = glm::angleAxis(radRotation.y, glm::vec3(0, 1, 0));	 // Yaw (Y)
+		glm::quat rollQuat = glm::angleAxis(radRotation.z, glm::vec3(0, 0, 1));	 // Roll (Z)
+
+		// Combine rotations
+		glm::quat orientation = yawQuat * pitchQuat * rollQuat;
+
+		// Convert quaternion to matrix
+		glm::mat4 rotationMatrix = glm::mat4_cast(orientation);
+
+		// Calculate the forward direction
+		glm::vec3 forward = rotationMatrix * glm::vec4(0, 0, -1, 0); // Forward vector
+		glm::vec3 up = rotationMatrix * glm::vec4(0, 1, 0, 0);		 // Up vector
+
+		// Calculate the target position
+		glm::vec3 target = camera_position + forward;
+
+		// Create the view matrix
+		glm::mat4 viewMatrix = glm::lookAt(camera_position, target, up);
 
 		return viewMatrix;
 	}
@@ -64,10 +86,10 @@ namespace Transformation {
 		return projection;
 	}
 
-	glm::mat4 lightViewMatrix(const glm::vec3 lightPosition, const glm::vec3 lightDirection)
+	glm::mat4 lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection)
 	{
-		glm::vec3 position = prepareWorldPosition(lightPosition);
-		glm::vec3 target = position + glm::normalize(prepareWorldPosition(lightDirection));
+		glm::vec3 position = toBackendPosition(lightPosition);
+		glm::vec3 target = position + glm::normalize(toBackendPosition(lightDirection));
 		glm::mat4 view = glm::lookAt(
 			position,
 			target,
@@ -75,7 +97,7 @@ namespace Transformation {
 		return view;
 	}
 
-	glm::mat4 lightProjectionMatrix(const float boundsWidth, const float boundsHeight, const float near, const float far)
+	glm::mat4 lightProjectionMatrix(float boundsWidth, float boundsHeight, float near, float far)
 	{
 		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
 		return projection;

@@ -13,8 +13,7 @@ struct Transform
 	glm::quat rotation;
 	glm::vec3 scale;
 
-	glm::vec3 getEulerAngles();
-	void setEulerAngles(glm::vec3 eulerAngles);
+	void setEulerAngles(glm::vec3 eulerAngles); // Set rotation as euler angles
 
 	glm::vec3 forward();
 	glm::vec3 backward();

@@ -5,6 +5,8 @@
 #include "../core/engine.h"
 #include "../src/runtime/runtime.h"
 
+#include "../core/utils/log.h"
+
 Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;
 Entity* neonLight = nullptr;
@@ -55,6 +57,7 @@ void defaultScene() {
 	cube->meshRenderer.model = cubeModel;
 	cube->meshRenderer.materials.push_back(plank);
 	cube->transform.position = glm::vec3(-3.0f, 1.0f, 6.5f);
+	cube->transform.setEulerAngles(glm::vec3(15.0f, 10.0f, 5.0f));
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
@@ -116,8 +119,8 @@ void defaultScene() {
 	mannequin->meshRenderer.materials.push_back(mannequinMaterial);
 	mannequin->meshRenderer.useMotionBlur = true;
 	mannequin->meshRenderer.motionBlurIntensity = 3.0f;
-	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.1f);
-	mannequin->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f));
+	mannequin->transform.position = glm::vec3(14.0f, 1.0f, 6.1f);
+	//mannequin->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f));
 	mannequin->transform.scale = glm::vec3(1.4f);
 
 	LitMaterial* whiteMaterial = new LitMaterial();
@@ -268,11 +271,5 @@ void update() {
 	for (int i = 0; i < cubes.size(); i++) {
 		cubes[i]->transform.position.y = range * std::sin(Runtime::time * (float)i);
 	}
-	cubes[cubes.size() - 1]->transform.rotation.z += 360.0f * 2 * Runtime::deltaTime;
 	*/
-
-	// Default Scene
-	float deltaTime = Time::delta();
-	glm::quat rotationIncrement = glm::angleAxis(glm::radians(45.0f) * deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
-	cube->transform.rotation *= rotationIncrement;
 }

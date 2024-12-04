@@ -12,6 +12,8 @@ public:
 
 	Transform transform;
 
+	glm::vec3 eulerAngles;
+
 	float getFov();
 	float getNear();
 	float getFar();
