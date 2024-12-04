@@ -342,7 +342,7 @@ void Runtime::renderFrame() {
 	camera.updateFrustum(viewProjectionMatrix);
 
 	// Set tmp context
-	TmpContext::selectedEntity = entityStack[0];
+	TmpContext::selectedEntity = entityStack[2];
 	TmpContext::view = viewMatrix;
 	TmpContext::projection = projectionMatrix;
 

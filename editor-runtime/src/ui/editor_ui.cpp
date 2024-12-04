@@ -83,7 +83,7 @@ namespace EditorUI {
 		style.GrabRounding = 0.0f;
 
 		style.TabRounding = 1.0f;
-		style.TabBarOverlineSize = 0.0f;
+		// style.TabBarOverlineSize = 0.0f;
 
 		style.ItemSpacing = ImVec2(4.0f, 8.0f);
 

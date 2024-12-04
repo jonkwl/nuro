@@ -212,11 +212,6 @@ void MeshRenderer::velocityPass(Shader* shader)
 	previousModelMatrix = currentModelMatrix;
 }
 
-const glm::mat4& MeshRenderer::getCurrentModelMatrix()
-{
-	return currentModelMatrix;
-}
-
 void MeshRenderer::render(unsigned int nElements)
 {
 	glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);

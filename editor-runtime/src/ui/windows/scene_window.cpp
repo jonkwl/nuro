@@ -3,6 +3,10 @@
 #include <imgui.h>
 #include <ImGuizmo.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <gtc/type_ptr.hpp>
+#include <gtx/matrix_decompose.hpp>
+
 #include "../src/runtime/runtime.h"
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/ui_layout.h"
@@ -16,7 +20,6 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
 
-#include <gtc/type_ptr.hpp>
 #include "../src/runtime/tmp_context.h"
 
 SceneWindow::SceneWindow() : lastContentRegionAvail(glm::vec2(0.0f)),
@@ -75,8 +78,8 @@ void SceneWindow::render()
 
 	cursorLast = cursorCurrent;
 
-	// Hide cursor if theres a right click interaction with scene view
-	if (sceneViewRightclicked) EditorUI::setCursorMode(CursorMode::HIDDEN);
+	// Hide cursor if theres an interaction with scene view
+	if (sceneViewRightclicked || sceneViewMiddleclicked) EditorUI::setCursorMode(CursorMode::HIDDEN);
 
 	// Update movement according to inputs calculated prior
 	updateMovement(Runtime::getCamera());
@@ -171,19 +174,27 @@ void SceneWindow::renderTransformGizmos()
 
 	// Get gizmo matrices
 	Entity* entity = TmpContext::selectedEntity;
+	Transform& transform = entity->transform;
+
 	glm::mat4 viewMatrix = TmpContext::view;
 	glm::mat4 projectionMatrix = TmpContext::projection;
-	glm::mat4 transformMatrix = glm::translate(glm::mat4(1.0f), Transformation::prepareWorldPosition(TmpContext::selectedEntity->transform.position));
+	glm::mat4 transformMatrix = Transformation::modelMatrix(entity);
 
-	// Draw debug cube
+	// Draw transformation gizmo
 	ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix));
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {
+		// Get components from transform matrix
+		glm::vec3 position, scale, skew;
+		glm::vec4 perspective;
+		glm::quat rotation;
+		glm::decompose(transformMatrix, scale, rotation, position, skew, perspective);
 
-		// Update entity position
-		glm::vec3 position = glm::vec3(transformMatrix[3]);
-		entity->transform.position = Transformation::prepareWorldPosition(position);
+		// Update entity transform using components converted to world coordinates
+		transform.position = Transformation::prepareWorldPosition(position);
+		// transform.rotation = Transformation::prepareWorldRotation(rotation);
+		transform.scale = scale;
 	}
 }
 
@@ -218,7 +229,7 @@ void SceneWindow::updateMovement(Camera& camera)
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.25f; // 0.25f is a good factor to match movement speed
+		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.2f; // 0.2f is a good factor to match movement speed
 	}
 }
 
