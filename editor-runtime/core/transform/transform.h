@@ -15,6 +15,8 @@ struct Transform
 
 	void setEulerAngles(glm::vec3 eulerAngles); // Set rotation as euler angles
 
+	void setCameraEulerAngles(glm::vec3 eulerAngles); // Set rotation for camera objects as euler angles
+
 	glm::vec3 forward();
 	glm::vec3 backward();
 	glm::vec3 right();

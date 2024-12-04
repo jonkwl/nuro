@@ -14,11 +14,25 @@ scale(glm::vec3(1.0f))
 
 void Transform::setEulerAngles(glm::vec3 eulerAngles)
 {
-	// Convert Euler angles from degrees to radians
+	// Convert euler angles from degrees to radians
 	eulerAngles = glm::radians(eulerAngles);
 
 	// Set rotation quaternion
 	rotation = glm::quat(eulerAngles);
+}
+
+void Transform::setCameraEulerAngles(glm::vec3 eulerAngles)
+{
+	// Convert euler angles from degrees to radians
+	glm::vec3 radRotation = glm::radians(eulerAngles);
+
+	// Create rotation quaternions
+	glm::quat pitchQuat = glm::angleAxis(radRotation.x, glm::vec3(1, 0, 0)); // Pitch (X)
+	glm::quat yawQuat = glm::angleAxis(radRotation.y, glm::vec3(0, 1, 0));	 // Yaw (Y)
+	glm::quat rollQuat = glm::angleAxis(radRotation.z, glm::vec3(0, 0, 1));	 // Roll (Z)
+
+	// Combine rotation quaternions and set rotation
+	rotation = yawQuat * pitchQuat * rollQuat;
 }
 
 glm::vec3 Transform::forward()

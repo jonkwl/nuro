@@ -48,34 +48,21 @@ namespace Transformation {
 
 	glm::mat4 viewMatrix(Camera& camera)
 	{
-		glm::vec3 camera_position = camera.transform.position;
-		glm::vec3 camera_rotation = camera.eulerAngles; // always utilize cameras euler angles for rotation
-
-		camera_position = toBackendPosition(camera_position);
-		camera_rotation = -camera_rotation; // left handed euler rotation to right handed
-
-		glm::vec3 radRotation = glm::radians(camera_rotation);
-
-		// Create rotation quaternions
-		glm::quat pitchQuat = glm::angleAxis(radRotation.x, glm::vec3(1, 0, 0)); // Pitch (X)
-		glm::quat yawQuat = glm::angleAxis(radRotation.y, glm::vec3(0, 1, 0));	 // Yaw (Y)
-		glm::quat rollQuat = glm::angleAxis(radRotation.z, glm::vec3(0, 0, 1));	 // Roll (Z)
-
-		// Combine rotations
-		glm::quat orientation = yawQuat * pitchQuat * rollQuat;
+		glm::vec3 position = toBackendPosition(camera.transform.position);
+		glm::quat rotation = toBackendRotation(camera.transform.rotation);
 
 		// Convert quaternion to matrix
-		glm::mat4 rotationMatrix = glm::mat4_cast(orientation);
+		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
 
 		// Calculate the forward direction
 		glm::vec3 forward = rotationMatrix * glm::vec4(0, 0, -1, 0); // Forward vector
 		glm::vec3 up = rotationMatrix * glm::vec4(0, 1, 0, 0);		 // Up vector
 
 		// Calculate the target position
-		glm::vec3 target = camera_position + forward;
+		glm::vec3 target = position + forward;
 
 		// Create the view matrix
-		glm::mat4 viewMatrix = glm::lookAt(camera_position, target, up);
+		glm::mat4 viewMatrix = glm::lookAt(position, target, up);
 
 		return viewMatrix;
 	}

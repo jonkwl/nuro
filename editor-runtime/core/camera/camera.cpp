@@ -3,7 +3,6 @@
 #include <gtc/matrix_access.hpp>
 
 Camera::Camera(float fov, float near, float far) : transform(),
-eulerAngles(glm::vec3(0.0f)),
 frustum(),
 fov(fov),
 near(near),
