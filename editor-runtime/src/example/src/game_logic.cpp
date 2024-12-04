@@ -8,6 +8,7 @@
 Entity* mannequin = nullptr;
 LitMaterial* neon = nullptr;
 Entity* neonLight = nullptr;
+Entity* cube = nullptr;
 void defaultScene() {
 	// Post Processing Lens Dirt
 	Texture lensDirt = Texture::load("./src/example/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
@@ -50,7 +51,7 @@ void defaultScene() {
 	plank->roughness = 0.0f;
 	plank->metallic = 0.0f;
 	Model* cubeModel = Model::load("./src/example/assets/models/cube.fbx");
-	Entity* cube = Runtime::createEntity();
+	cube = Runtime::createEntity();
 	cube->meshRenderer.model = cubeModel;
 	cube->meshRenderer.materials.push_back(plank);
 	cube->transform.position = glm::vec3(-3.0f, 1.0f, 6.5f);
@@ -98,7 +99,7 @@ void defaultScene() {
 	smearedWall2->meshRenderer.model = smearedWallModel;
 	smearedWall2->meshRenderer.materials.push_back(smearedWallMaterial);
 	smearedWall2->transform.position = glm::vec3(23.0f, -1.0f, 10.0f);
-	smearedWall2->transform.rotation = glm::vec3(0.0, 80.0f, 0.0f);
+	smearedWall2->transform.setEulerAngles(glm::vec3(0.0, 80.0f, 0.0f));
 	smearedWall2->transform.scale = glm::vec3(10.0f, 5.0f, 0.1f);
 
 	Texture mannequinAlbedo = Texture::load("./src/example/assets/textures/mannequin_albedo.jpg", TextureType::ALBEDO);
@@ -116,7 +117,7 @@ void defaultScene() {
 	mannequin->meshRenderer.useMotionBlur = true;
 	mannequin->meshRenderer.motionBlurIntensity = 3.0f;
 	mannequin->transform.position = glm::vec3(14.0f, -0.9f, 6.1f);
-	mannequin->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	mannequin->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f));
 	mannequin->transform.scale = glm::vec3(1.4f);
 
 	LitMaterial* whiteMaterial = new LitMaterial();
@@ -148,7 +149,7 @@ void defaultScene() {
 	Entity* dragon = Runtime::createEntity();
 	dragon->transform.position = glm::vec3(9.7f, 1.0f, 0.0f);
 	dragon->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	dragon->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon->meshRenderer.model = dragonModel;
 	std::vector<IMaterial*> dragonMats(100, dragonMaterial);
 	dragon->meshRenderer.materials = dragonMats;*/
@@ -156,35 +157,35 @@ void defaultScene() {
 	/*Entity* dragon2 = Runtime::createEntity();
 	dragon2->transform.position = glm::vec3(32.0f, 1.0f, 0.0f);
 	dragon2->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	dragon2->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon2->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon2->meshRenderer.model = dragonModel;
 	dragon2->meshRenderer.materials = dragonMats;
 
 	Entity* dragon3 = Runtime::createEntity();
 	dragon3->transform.position = glm::vec3(37.0f, 1.0f, 0.0f);
 	dragon3->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	dragon3->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon3->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon3->meshRenderer.model = dragonModel;
 	dragon3->meshRenderer.materials = dragonMats;
 
 	Entity* dragon4 = Runtime::createEntity();
 	dragon4->transform.position = glm::vec3(42.0f, 1.0f, 0.0f);
 	dragon4->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	dragon4->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon4->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon4->meshRenderer.model = dragonModel;
 	dragon4->meshRenderer.materials = dragonMats;
 
 	Entity* dragon5 = Runtime::createEntity();
 	dragon5->transform.position = glm::vec3(47.0f, 1.0f, 0.0f);
 	dragon5->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	dragon5->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon5->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon5->meshRenderer.model = dragonModel;
 	dragon5->meshRenderer.materials = dragonMats;
 
 	Entity* dragon6 = Runtime::createEntity();
 	dragon6->transform.position = glm::vec3(52.0f, 1.0f, 0.0f);
 	dragon6->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	dragon6->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	dragon6->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	dragon6->meshRenderer.model = dragonModel;
 	dragon6->meshRenderer.materials = dragonMats;*/
 
@@ -196,7 +197,7 @@ void defaultScene() {
 	Entity* audi = Runtime::createEntity();
 	audi->transform.position = glm::vec3(-8.0f, 1.0f, 0.0f);
 	audi->transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	audi->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+	audi->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 	audi->meshRenderer.model = audiModel;
 	std::vector<IMaterial*> audiMats(100, audiMaterial);
 	audi->meshRenderer.materials = audiMats;*/
@@ -207,7 +208,7 @@ void defaultScene() {
 		x->meshRenderer.model = mannequinModel;
 		x->meshRenderer.materials.push_back(mannequinMaterial);
 		x->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
-		x->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+		x->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f);
 		x->transform.scale = glm::vec3(1.4f);
 
 		x->transform.position.x += 3.0f * (i + 1);
@@ -238,7 +239,7 @@ void performanceScene() {
 			entity->meshRenderer.model = cube;
 			entity->meshRenderer.materials.push_back(material);
 			entity->transform.position = glm::vec3(14.0f, -0.9f, 8.5f);
-			entity->transform.rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+			entity->transform.setEulerAngles(glm::vec3(90.0f, 0.0f, 0.0f));
 			entity->transform.scale = glm::vec3(1.0f);
 			entity->transform.position.x += offset * x - halfSize.x;
 			entity->transform.position.y = -3.5f;
@@ -271,5 +272,7 @@ void update() {
 	*/
 
 	// Default Scene
-	mannequin->transform.rotation.y += 360.0f * 2.5f * Time::getDeltaTime();
+	float deltaTime = Time::getDeltaTime();
+	glm::quat rotationIncrement = glm::angleAxis(glm::radians(45.0f) * deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
+	cube->transform.rotation *= rotationIncrement;
 }

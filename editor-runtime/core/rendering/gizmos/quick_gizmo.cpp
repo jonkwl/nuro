@@ -170,7 +170,7 @@ glm::mat4 QuickGizmo::getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm
 	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
-	glm::vec3 worldRotation = Transformation::prepareWorldRotation(rotation);
+	glm::vec3 worldRotation = Transformation::prepareWorldEulerAngles(rotation);
 	model = glm::rotate(model, glm::radians(worldRotation.x), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, glm::radians(worldRotation.y), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(worldRotation.z), glm::vec3(0, 0, 1));

@@ -39,7 +39,7 @@ void MeshRenderer::prepareNextFrame(Camera& renderCamera)
 		return;
 
 	// Calculate and cache model and mvp matrix for current frame
-	currentModelMatrix = Transformation::modelMatrix(parentEntity);
+	currentModelMatrix = Transformation::modelMatrix(parentEntity->transform);
 	currentMvpMatrix = currentViewProjectionMatrix * currentModelMatrix;
 	currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 

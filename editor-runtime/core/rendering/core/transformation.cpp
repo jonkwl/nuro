@@ -10,64 +10,50 @@ namespace Transformation {
 
 	glm::vec3 prepareWorldPosition(const glm::vec3 position)
 	{
+		// Swap between left-handed coordinates and right-handed coordinates
 		return glm::vec3(position.x, position.y, -position.z);
 	}
 
-	glm::vec3 prepareWorldRotation(const glm::vec3 rotation)
+	glm::vec3 prepareWorldEulerAngles(const glm::vec3 rotation)
 	{
+		// Swap between left-handed euler angles and right-handed euler angles
 		return glm::vec3(-rotation.x, -rotation.y, rotation.z);
 	}
 
-	glm::mat4 modelMatrix(Entity* entity)
+	glm::mat4 modelMatrix(Transform& transform)
 	{
 		glm::mat4 model(1.0f);
 
 		// object position
-		glm::vec3 worldPosition = prepareWorldPosition(entity->transform.position);
-		model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
+		glm::vec3 worldPosition = prepareWorldPosition(transform.position);
+		model = glm::translate(model, worldPosition);
 
 		// object rotation
-		glm::vec3 worldRotation = prepareWorldRotation(entity->transform.rotation);
-		glm::quat quaternion = glm::quat(glm::radians(worldRotation));
-		glm::mat4 rotationMatrix = glm::mat4_cast(quaternion);
+		glm::mat4 rotationMatrix = glm::mat4_cast(transform.rotation);
 		model = model * rotationMatrix;
 
 		// object scale
-		model = glm::scale(model, entity->transform.scale);
+		model = glm::scale(model, transform.scale);
 
 		return model;
 	}
 
 	glm::mat4 viewMatrix(Camera& camera)
 	{
-		glm::vec3 camera_position = camera.transform.position;
-		glm::vec3 camera_rotation = camera.transform.rotation;
+		// Extract camera position and orientation
+		const glm::vec3& position = prepareWorldPosition(camera.transform.position);
+		const glm::quat& rotation = camera.transform.rotation;
 
-		camera_position = prepareWorldPosition(camera_position);
-		camera_rotation = prepareWorldRotation(camera_rotation);
+		// Create a rotation matrix from the quaternion
+		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
 
-		glm::vec3 radRotation = glm::radians(camera_rotation);
+		// Create a translation matrix for the camera position
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), -position);
 
-		// Create rotation quaternions
-		glm::quat pitchQuat = glm::angleAxis(radRotation.x, glm::vec3(1, 0, 0)); // Pitch (X)
-		glm::quat yawQuat = glm::angleAxis(radRotation.y, glm::vec3(0, 1, 0));	 // Yaw (Y)
-		glm::quat rollQuat = glm::angleAxis(radRotation.z, glm::vec3(0, 0, 1));	 // Roll (Z)
-
-		// Combine rotations
-		glm::quat orientation = yawQuat * pitchQuat * rollQuat;
-
-		// Convert quaternion to matrix
-		glm::mat4 rotationMatrix = glm::mat4_cast(orientation);
-
-		// Calculate the forward direction
-		glm::vec3 forward = rotationMatrix * glm::vec4(0, 0, -1, 0); // Forward vector
-		glm::vec3 up = rotationMatrix * glm::vec4(0, 1, 0, 0);		 // Up vector
-
-		// Calculate the target position
-		glm::vec3 target = camera_position + forward;
-
-		// Create the view matrix
-		glm::mat4 viewMatrix = glm::lookAt(camera_position, target, up);
+		// Combine rotation and translation to form the view matrix
+		// Since the camera is moving in the opposite direction in the view space,
+		// apply translation AFTER the rotation
+		glm::mat4 viewMatrix = rotationMatrix * translationMatrix;
 
 		return viewMatrix;
 	}

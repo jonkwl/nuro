@@ -1,6 +1,5 @@
 #include "bounding_volume.h"
 
-#include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 
 #include "../core/rendering/core/transformation.h"
@@ -12,7 +11,7 @@ BoundingSphere::BoundingSphere()
 	radius = 0.0f;
 }
 
-void BoundingSphere::update(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void BoundingSphere::update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale)
 {
 	// Get models metrics
 	Model::Metrics metrics = model->getMetrics();
@@ -47,7 +46,7 @@ BoundingAABB::BoundingAABB()
 	max = glm::vec3(0.0f);
 }
 
-void BoundingAABB::update(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void BoundingAABB::update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale)
 {
 	// Get model's metrics
 	Model::Metrics metrics = model->getMetrics();
@@ -57,13 +56,10 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::vec3 rotation, 
 	glm::vec3 worldHalfSize = scale * 0.5f;
 	glm::vec3 absoluteHalfSize = modelHalfSize * worldHalfSize;
 
-	// Prepare rotation
-	glm::quat quaternion = glm::quat(glm::radians(rotation));
-
 	// Compute rotated half extents along each axis
-	glm::vec3 rotatedX = glm::vec3(quaternion * glm::vec4(absoluteHalfSize.x, 0.0f, 0.0f, 0.0f));
-	glm::vec3 rotatedY = glm::vec3(quaternion * glm::vec4(0.0f, absoluteHalfSize.y, 0.0f, 0.0f));
-	glm::vec3 rotatedZ = glm::vec3(quaternion * glm::vec4(0.0f, 0.0f, absoluteHalfSize.z, 0.0f));
+	glm::vec3 rotatedX = glm::vec3(rotation * glm::vec4(absoluteHalfSize.x, 0.0f, 0.0f, 0.0f));
+	glm::vec3 rotatedY = glm::vec3(rotation * glm::vec4(0.0f, absoluteHalfSize.y, 0.0f, 0.0f));
+	glm::vec3 rotatedZ = glm::vec3(rotation * glm::vec4(0.0f, 0.0f, absoluteHalfSize.z, 0.0f));
 
 	// Calculate poisiton offset
 	glm::vec3 positionOffset = position + metrics.origin;

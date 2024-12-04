@@ -38,7 +38,6 @@ cursorDelta(glm::vec2(0.0f)),
 gizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
 {
 	Runtime::getCamera().transform.position.y = 2.0f;
-	Runtime::getCamera().transform.rotation.x = 22.0f;
 
 	cursorLast = Cursor::getPosition();
 }
@@ -178,7 +177,7 @@ void SceneWindow::renderTransformGizmos()
 
 	glm::mat4 viewMatrix = TmpContext::view;
 	glm::mat4 projectionMatrix = TmpContext::projection;
-	glm::mat4 transformMatrix = Transformation::modelMatrix(entity);
+	glm::mat4 transformMatrix = Transformation::modelMatrix(entity->transform);
 
 	// Draw transformation gizmo
 	ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix));
@@ -219,10 +218,10 @@ void SceneWindow::updateMovement(Camera& camera)
 		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
 
 		// Rotate in scene view
-		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
+		/*glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
 		glm::vec3 newRotation = camera.transform.rotation + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
-		camera.transform.rotation = newRotation;
+		camera.transform.rotation = newRotation;*/
 	}
 
 	// If theres a middle click interaction with scene view
