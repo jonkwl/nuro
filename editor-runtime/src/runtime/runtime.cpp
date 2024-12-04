@@ -62,7 +62,7 @@ Skybox& Runtime::currentSkybox = Runtime::defaultSkybox;
 
 GLFWwindow* Runtime::glfw = nullptr;
 glm::vec2 Runtime::windowSize = glm::vec2(1800.0f, 1000.0f);
-bool Runtime::fullscreen = false;
+bool Runtime::fullscreen = true;
 
 Viewport Runtime::sceneViewport;
 

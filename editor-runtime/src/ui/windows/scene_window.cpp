@@ -200,7 +200,7 @@ void SceneWindow::renderTransformGizmos()
 void SceneWindow::updateMovement(Camera& camera)
 {
 	// Get values needed
-	float deltaTime = Time::fgetDeltaTime();
+	float deltaTime = Time::deltaf();
 	glm::vec3 camForward = camera.transform.forward();
 	glm::vec3 camRight = camera.transform.right();
 	glm::vec3 camUp = camera.transform.up();

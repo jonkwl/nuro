@@ -20,7 +20,7 @@ namespace Diagnostics {
 	void step()
 	{
 		// Get values needed for step
-		float deltaTime = Time::fgetDeltaTime();
+		float deltaTime = Time::deltaf();
 
 		// Reset frame based diagnostics
 		_currentDrawCalls = 0;

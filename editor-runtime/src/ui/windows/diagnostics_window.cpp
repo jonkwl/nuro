@@ -58,7 +58,7 @@ void DiagnosticsWindow::render()
 	if (fpsCache.size() > 0.0f)
 		maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
 
-	fpsUpdateTimer += Time::getDeltaTime();
+	fpsUpdateTimer += Time::delta();
 	if (fpsUpdateTimer >= updateRate)
 	{
 		fpsCache.push_back(Diagnostics::getFps());

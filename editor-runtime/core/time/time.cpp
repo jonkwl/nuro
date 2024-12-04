@@ -14,32 +14,32 @@ namespace Time {
 		_lastTime = _time;
 	}
 
-	const double getTime()
+	const double now()
 	{
 		return _time;
 	}
 
-	const double getLastTime()
+	const double last()
 	{
 		return _lastTime;
 	}
 
-	const double getDeltaTime()
+	const double delta()
 	{
 		return _deltaTime;
 	}
 
-	const float fgetTime()
+	const float nowf()
 	{
 		return static_cast<float>(_time);
 	}
 
-	const float fgetLastTime()
+	const float lastf()
 	{
 		return static_cast<float>(_lastTime);
 	}
 
-	const float fgetDeltaTime()
+	const float deltaf()
 	{
 		return static_cast<float>(_deltaTime);
 	}

@@ -272,7 +272,7 @@ void update() {
 	*/
 
 	// Default Scene
-	float deltaTime = Time::getDeltaTime();
+	float deltaTime = Time::delta();
 	glm::quat rotationIncrement = glm::angleAxis(glm::radians(45.0f) * deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
 	cube->transform.rotation *= rotationIncrement;
 }
