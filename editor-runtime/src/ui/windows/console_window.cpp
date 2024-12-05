@@ -167,12 +167,18 @@ void ConsoleWindow::drawLatestLog(float height, float padding)
 	drawList->AddRectFilled(p0, p1, backgroundColor);
 
 	// Evaluate text
-	std::string text = "Console is empty";
+	std::string originText = "";
+	std::string contentText = "Console is empty";
 	if (logs.size() > 0) {
-		text = logs[logs.size() - 1].content;
+		ConsoleLog& log = logs[logs.size() - 1];
+		originText = log.origin + ": ";
+		contentText = log.content;
 	}
 
 	// Draw text
-	ImVec2 textPos = ImVec2(p0.x + padding, p0.y + padding);
-	drawList->AddText(textPos, IM_COL32(255, 255, 255, 255), text.c_str());
+	float contentTextPaddingLeft = originText.empty() ? 0.0f : 4.0f;
+	ImVec2 originPosition = ImVec2(p0.x + padding, p0.y + padding);
+	ImVec2 contentPosition = ImVec2(originPosition.x + ImGui::CalcTextSize(originText.c_str()).x + contentTextPaddingLeft, originPosition.y);
+	drawList->AddText(EditorUI::getFonts().uiBold, ImGui::GetFontSize(), originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
+	drawList->AddText(contentPosition, IM_COL32(255, 255, 255, 255), contentText.c_str());
 }

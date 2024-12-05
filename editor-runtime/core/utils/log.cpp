@@ -35,7 +35,7 @@ namespace Log
 		}
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ error, "Core: " + origin, ConsoleLogType::ERROR});
+		ConsoleWindow::addLog(ConsoleLog{ error, "Core - " + origin, ConsoleLogType::ERROR});
 #endif
 	}
 
@@ -48,7 +48,7 @@ namespace Log
 		}
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ warning, "Core: " + origin, ConsoleLogType::WARNING });
+		ConsoleWindow::addLog(ConsoleLog{ warning, "Core - " + origin, ConsoleLogType::WARNING });
 #endif
 	}
 
@@ -59,7 +59,7 @@ namespace Log
 		std::cout << std::endl;
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ process, "Core: " + origin, ConsoleLogType::MESSAGE });
+		ConsoleWindow::addLog(ConsoleLog{ process, "Core - " + origin, ConsoleLogType::MESSAGE });
 #endif
 	}
 
@@ -68,7 +68,7 @@ namespace Log
 		_print(TextColor::White, BackgroundColor::Cyan, _getSpacing() + origin + " >>> " + process + _getSpacing());
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ process, "Core: " + origin, ConsoleLogType::MESSAGE });
+		ConsoleWindow::addLog(ConsoleLog{ process, "Core - " + origin, ConsoleLogType::MESSAGE });
 #endif
 	}
 
@@ -77,7 +77,7 @@ namespace Log
 		_print(TextColor::White, BackgroundColor::Black, _getSpacing() + info + _getSpacing());
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ info, "Core: Log API", ConsoleLogType::MESSAGE});
+		ConsoleWindow::addLog(ConsoleLog{ info, "Core - Log API", ConsoleLogType::MESSAGE});
 #endif
 	}
 
@@ -88,7 +88,7 @@ namespace Log
 		std::cout << std::endl;
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ process, "Core: " + origin, ConsoleLogType::MESSAGE });
+		ConsoleWindow::addLog(ConsoleLog{ process, "Core - " + origin, ConsoleLogType::MESSAGE });
 #endif
 	}
 
