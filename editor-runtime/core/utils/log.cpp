@@ -3,6 +3,12 @@
 #include <glad/glad.h>
 #include <iostream>
 
+#define EDITOR_CONNECTED 1
+
+#if EDITOR_CONNECTED
+#include "../src/ui/windows/console_window.h"
+#endif
+
 namespace Log
 {
 
@@ -27,6 +33,10 @@ namespace Log
 		{
 			_print(TextColor::White, BackgroundColor::Black, additional_info);
 		}
+
+#if EDITOR_CONNECTED
+		ConsoleWindow::addLog(ConsoleLog{ error, "Core: " + origin, ConsoleLogType::ERROR});
+#endif
 	}
 
 	void printWarning(std::string origin, std::string warning, std::string additional_info)
@@ -36,6 +46,10 @@ namespace Log
 		{
 			_print(TextColor::White, BackgroundColor::Black, additional_info);
 		}
+
+#if EDITOR_CONNECTED
+		ConsoleWindow::addLog(ConsoleLog{ warning, "Core: " + origin, ConsoleLogType::WARNING });
+#endif
 	}
 
 	void printProcessStart(std::string origin, std::string process)
@@ -43,16 +57,28 @@ namespace Log
 		std::cout << std::endl;
 		_print(TextColor::White, BackgroundColor::Blue, _getSpacing() + origin + " >>> " + process + _getSpacing());
 		std::cout << std::endl;
+
+#if EDITOR_CONNECTED
+		ConsoleWindow::addLog(ConsoleLog{ process, "Core: " + origin, ConsoleLogType::MESSAGE });
+#endif
 	}
 
 	void printProcessState(std::string origin, std::string process)
 	{
 		_print(TextColor::White, BackgroundColor::Cyan, _getSpacing() + origin + " >>> " + process + _getSpacing());
+
+#if EDITOR_CONNECTED
+		ConsoleWindow::addLog(ConsoleLog{ process, "Core: " + origin, ConsoleLogType::MESSAGE });
+#endif
 	}
 
 	void printProcessInfo(std::string info)
 	{
 		_print(TextColor::White, BackgroundColor::Black, _getSpacing() + info + _getSpacing());
+
+#if EDITOR_CONNECTED
+		ConsoleWindow::addLog(ConsoleLog{ info, "Core: Log API", ConsoleLogType::MESSAGE});
+#endif
 	}
 
 	void printProcessDone(std::string origin, std::string process)
@@ -60,6 +86,10 @@ namespace Log
 		std::cout << std::endl;
 		_print(TextColor::White, BackgroundColor::Magenta, _getSpacing() + origin + " >>> " + process + _getSpacing());
 		std::cout << std::endl;
+
+#if EDITOR_CONNECTED
+		ConsoleWindow::addLog(ConsoleLog{ process, "Core: " + origin, ConsoleLogType::MESSAGE });
+#endif
 	}
 
 	std::string getDepthFunctionName(GLenum func)

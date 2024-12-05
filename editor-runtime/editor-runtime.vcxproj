@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\windows\console_window.cpp" />
     <ClCompile Include="core\camera\camera.cpp" />
     <ClCompile Include="core\diagnostics\diagnostics.cpp" />
     <ClCompile Include="core\diagnostics\profiler.cpp" />
@@ -187,8 +188,10 @@
     <ClCompile Include="src\ui\windows\post_processing_window.cpp" />
     <ClCompile Include="src\ui\windows\scene_window.cpp" />
     <ClCompile Include="core\misc\stb_image.cpp" />
+    <ClCompile Include="src\ui\ui_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\windows\console_window.h" />
     <ClInclude Include="core\camera\camera.h" />
     <ClInclude Include="core\camera\frustum.h" />
     <ClInclude Include="core\diagnostics\diagnostics.h" />
@@ -342,6 +345,7 @@
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\scene_window.h" />
     <ClInclude Include="src\runtime\tmp_context.h" />
+    <ClInclude Include="src\ui\ui_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\include\assimp\color4.inl" />

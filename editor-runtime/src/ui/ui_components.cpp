@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/ui_layout.h"
+#include "../src/ui/ui_utils.h"
 
 std::string formatInteger(int number)
 {
@@ -49,9 +50,28 @@ void UIComponents::tooltip(std::string tooltip)
 	}
 }
 
+bool UIComponents::buttonBig(std::string label, std::string tooltip)
+{
+	bool pressed = false;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
+
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, UIUtils::darken(EditorUI::getColors().elementActive, 0.3f));
+	
+	pressed = ImGui::Button("Clear");
+
+	UIComponents::tooltip(tooltip);
+
+	ImGui::PopStyleVar(2);
+	ImGui::PopStyleColor();
+
+	return pressed;
+}
+
 void UIComponents::toggleButton(std::string label, bool& value, std::string tooltip)
 {
-	ImVec4 inactiveButtonColor = EditorUI::darken(EditorUI::getColors().elementActive, 0.6f);
+	ImVec4 inactiveButtonColor = UIUtils::darken(EditorUI::getColors().elementActive, 0.6f);
 	ImVec4 activeButtonColor = EditorUI::getColors().elementActive;
 	ImVec4 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
 

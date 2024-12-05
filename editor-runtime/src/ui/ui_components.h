@@ -14,6 +14,7 @@ class UIComponents
 public:
 	static void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool zeroMargin = false);
 	static void tooltip(std::string tooltip);
+	static bool buttonBig(std::string label, std::string tooltip = "");
 	static void toggleButton(std::string label, bool& value, std::string tooltip = "");
 
 	static void label(std::string text);

@@ -10,6 +10,7 @@
 #include "../src/runtime/runtime.h"
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/ui_layout.h"
+#include "../src/ui/ui_utils.h"
 #include "../src/ui/ui_components.h"
 #include "../src/ui/IconsFontAwesome6.h"
 
@@ -133,7 +134,7 @@ void SceneWindow::renderSceneView()
 
 			// Make sure cursor is within scene view bounds
 			bool positionedCursor = false;
-			cursorCurrent = keepCursorInBounds(sceneViewBounds, positionedCursor);
+			cursorCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
 			if (positionedCursor) cursorLast = cursorCurrent;
 
 			// Calculate cursor axis
@@ -218,7 +219,6 @@ void SceneWindow::renderTransformGizmos()
 			scale.z = transform.scale.z;
 		}
 
-		// Apply the new scale
 		transform.scale = scale;
 	}
 }
@@ -256,42 +256,4 @@ void SceneWindow::updateMovement(Camera& camera)
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
 		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
 	}
-}
-
-glm::vec2 SceneWindow::keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor)
-{
-	// Offset preventing immediate wrapping at boundary
-	float offset = 25.0f;
-
-	glm::vec2 currentPos = Cursor::getPosition();
-	glm::vec2 updatedPos = currentPos;
-
-	glm::vec2 min = glm::vec2(bounds.x, bounds.y);
-	glm::vec2 max = glm::vec2(bounds.z, bounds.w);
-
-	// Horizontal boundaries
-	if (currentPos.x < min.x + offset) {
-		updatedPos = glm::vec2(max.x - offset, currentPos.y);
-		Cursor::setPosition(updatedPos);
-		positionedCursor = true;
-	}
-	else if (currentPos.x > max.x - offset) {
-		updatedPos = glm::vec2(min.x + offset, currentPos.y);
-		Cursor::setPosition(updatedPos);
-		positionedCursor = true;
-	}
-
-	// Vertical boundaries
-	if (currentPos.y < min.y + offset) {
-		updatedPos = glm::vec2(currentPos.x, max.y - offset);
-		Cursor::setPosition(updatedPos);
-		positionedCursor = true;
-	}
-	else if (currentPos.y > max.y - offset) {
-		updatedPos = glm::vec2(currentPos.x, min.y + offset);
-		Cursor::setPosition(updatedPos);
-		positionedCursor = true;
-	}
-
-	return updatedPos;
 }

@@ -10,13 +10,15 @@
 #include "../src/ui/ui_components.h"
 #include "../src/ui/ui_layout.h"
 #include "../src/ui/editor_window.h"
-#include "../src/ui/windows/scene_window.h"
-#include "../src/ui/windows/post_processing_window.h"
-#include "../src/ui/windows/diagnostics_window.h"
 #include "../src/runtime/runtime.h"
 
 #include "../core/utils/log.h"
 #include "../core/input/cursor.h"
+
+#include "../src/ui/windows/scene_window.h"
+#include "../src/ui/windows/post_processing_window.h"
+#include "../src/ui/windows/diagnostics_window.h"
+#include "../src/ui/windows/console_window.h"
 
 namespace EditorUI {
 
@@ -144,6 +146,9 @@ namespace EditorUI {
 
 		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
 		_windows.push_back(diagnosticsWindow);
+
+		ConsoleWindow* consoleWindow = new ConsoleWindow();
+		_windows.push_back(consoleWindow);
 	}
 
 	void newFrame()
@@ -243,18 +248,6 @@ namespace EditorUI {
 		// Overwrite cursor mode for current frame
 		_overwriteCursor = true;
 		_overwriteCursorMode = cursorMode;
-	}
-
-	ImVec4 lighten(ImVec4 color, float amount)
-	{
-		float factor = 1.0f + amount;
-		return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
-	}
-
-	ImVec4 darken(ImVec4 color, float amount)
-	{
-		float factor = 1.0f - amount;
-		return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 	}
 
 }

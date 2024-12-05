@@ -18,9 +18,6 @@ private:
 
 	void updateMovement(Camera& camera); // Update movement within scene view
 
-	// Keeps the cursor in the given boundaries, returns the new cursor position and sets if the cursor was positioned by method
-	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor);
-
 private:
 	glm::vec2 lastContentRegionAvail; // Cache for last frames content region avail
 

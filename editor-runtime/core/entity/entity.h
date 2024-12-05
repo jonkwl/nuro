@@ -5,7 +5,6 @@
 
 struct Entity
 {
-public:
 	Entity();
 
 	Transform transform;

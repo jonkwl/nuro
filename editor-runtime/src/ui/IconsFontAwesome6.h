@@ -1417,3 +1417,6 @@
 #define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
 #define ICON_FA_PROJECTOR "\xEF\xA3\x96" // U+f8d6
 #define ICON_FA_RABBIT_RUNNING "\xEF\x9C\x89" // U+f709
+#define ICON_FA_BRAKE_WARNING "\xEE\x83\x87" // U+e0c7
+#define ICON_FA_XMARK_LARGE "\xEE\x96\x9B" // U+e59b
+#define ICON_FA_MESSAGE_LINES "\xEF\x92\xA6" // U+f4a6

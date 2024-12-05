@@ -60,8 +60,4 @@ namespace EditorUI
 
 	void setCursorType(int cursorType);
 	void setCursorMode(int cursorMode);
-
-	ImVec4 lighten(ImVec4 color, float amount);
-	ImVec4 darken(ImVec4 color, float amount);
-
 };
