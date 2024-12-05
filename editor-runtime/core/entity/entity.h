@@ -3,8 +3,9 @@
 #include "../core/transform/transform.h"
 #include "../core/rendering/core/mesh_renderer.h"
 
-struct Entity
+class Entity
 {
+public:
 	Entity();
 
 	Transform transform;

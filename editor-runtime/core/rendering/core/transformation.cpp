@@ -36,6 +36,9 @@ namespace Transformation {
 		// Convert left handed rotation to right handed rotation
 		glm::quat rotation = toBackendRotation(transform.rotation);
 
+		// Normalize rotation
+		rotation = glm::normalize(rotation);
+
 		// Get rotation matrix and rotate model matrix
 		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
 		model = model * rotationMatrix;
@@ -50,6 +53,9 @@ namespace Transformation {
 	{
 		glm::vec3 position = toBackendPosition(camera.transform.position);
 		glm::quat rotation = toBackendRotation(camera.transform.rotation);
+
+		// Normalize rotation
+		rotation = glm::normalize(rotation);
 
 		// Convert quaternion to matrix
 		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);

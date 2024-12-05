@@ -57,7 +57,7 @@ void defaultScene() {
 	cube->meshRenderer.model = cubeModel;
 	cube->meshRenderer.materials.push_back(plank);
 	cube->transform.position = glm::vec3(-3.0f, 1.0f, 6.5f);
-	cube->transform.setEulerAngles(glm::vec3(15.0f, 10.0f, 5.0f));
+	cube->transform.rotation = glm::quat(1.0f, 2.5f, 1.0f, 1.0f);
 
 	LitMaterial* floorMaterial = new LitMaterial();
 	floorMaterial->baseColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
