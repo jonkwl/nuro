@@ -113,6 +113,60 @@ void EditTransform(const Camera& camera, matrix_t& matrix)
 
 namespace ImGuizmo
 {
+   // Setup
+   
+   // Defaults
+   /*IMGUI_API inline bool DrawTranslationPlanes = true;
+   IMGUI_API inline float RotationLineThickness = 3.0;
+   IMGUI_API inline float RotationCircleThickness = 3.0;
+   IMGUI_API inline float HatchedAxisThickness = 2.0f;
+   IMGUI_API inline float ScaleLineThickness = 2.0f;
+   IMGUI_API inline float ScaleAxisCircleRadius = 6.0f;
+   IMGUI_API inline float ScaleScreenCircleRadius = 6.0f;
+   IMGUI_API inline float TranslationLineThickness = 2.0f;
+   IMGUI_API inline float TranslationPlaneOutlineThickness = 1.0f;
+   IMGUI_API inline float TranslationCircleRadius = 6.0f;
+   IMGUI_API inline float TranslationScreenSourceMarkerRadius = 6.0f;
+   IMGUI_API inline float TranslationArrowHeadSize = 6.0f;
+   IMGUI_API inline float ScalingFactor = 1.0f;*/
+   // Custom
+   IMGUI_API inline bool DrawTranslationPlanes = true;
+   IMGUI_API inline float RotationLineThickness = 4.0;
+   IMGUI_API inline float RotationCircleThickness = 5.0;
+   IMGUI_API inline float HatchedAxisThickness = 3.0f;
+   IMGUI_API inline float ScaleLineThickness = 4.0f;
+   IMGUI_API inline float ScaleAxisCircleRadius = 6.0f;
+   IMGUI_API inline float ScaleScreenCircleRadius = 6.0f;
+   IMGUI_API inline float TranslationLineThickness = 4.0f;
+   IMGUI_API inline float TranslationPlaneOutlineThickness = 2.0f;
+   IMGUI_API inline float TranslationCircleRadius = 6.0f;
+   IMGUI_API inline float TranslationScreenSourceMarkerRadius = 3.0f;
+   IMGUI_API inline float TranslationArrowHeadSize = 8.0f;
+   IMGUI_API inline float ScalingFactor = 1.5f;
+
+   // Color settings
+   
+   // Defaults
+   /*IMGUI_API inline ImU32 DirectionColorX = IM_COL32(170, 0, 0, 255);
+   IMGUI_API inline ImU32 DirectionColorY = IM_COL32(0, 170, 0, 255);
+   IMGUI_API inline ImU32 DirectionColorZ = IM_COL32(0, 0, 170, 255);
+   IMGUI_API inline ImU32 PlaneColorX = IM_COL32(170, 0, 0, 97);
+   IMGUI_API inline ImU32 PlaneColorY = IM_COL32(0, 170, 0, 97);
+   IMGUI_API inline ImU32 PlaneColorZ = IM_COL32(0, 0, 170, 97);
+   IMGUI_API inline ImU32 SelectionColor = IM_COL32(255, 128, 16, 138);
+   IMGUI_API inline ImU32 InactiveColor = IM_COL32(153, 153, 153, 153);
+   IMGUI_API inline ImU32 TranslationLineColor = IM_COL32(170, 170, 170, 170);*/
+   // Custom
+   IMGUI_API inline ImU32 DirectionColorX = IM_COL32(150, 60, 60, 240);
+   IMGUI_API inline ImU32 DirectionColorY = IM_COL32(60, 150, 60, 240);
+   IMGUI_API inline ImU32 DirectionColorZ = IM_COL32(60, 60, 150, 240);
+   IMGUI_API inline ImU32 PlaneColorX = IM_COL32(150, 90, 90, 90);
+   IMGUI_API inline ImU32 PlaneColorY = IM_COL32(90, 150, 90, 90);
+   IMGUI_API inline ImU32 PlaneColorZ = IM_COL32(90, 90, 150, 90);
+   IMGUI_API inline ImU32 SelectionColor = IM_COL32(255, 125, 50, 100);
+   IMGUI_API inline ImU32 InactiveColor = IM_COL32(150, 150, 150, 150);
+   IMGUI_API inline ImU32 TranslationLineColor = IM_COL32(170, 170, 170, 170);
+
    // call inside your own window and before Manipulate() in order to draw gizmo to that window.
    // Or pass a specific ImDrawList to draw to (e.g. ImGui::GetForegroundDrawList()).
    IMGUI_API void SetDrawlist(ImDrawList* drawlist = nullptr);

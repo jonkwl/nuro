@@ -27,7 +27,7 @@ namespace EditorUI {
 	WindowFlags _windowFlags;
 	Fonts _fonts;
 
-	bool _overwriteCursor = false; // Overwrites the default ui framework cursor
+	bool _overwriteCursor = false; // Overwrites the default imgui cursor
 	int _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
@@ -131,9 +131,11 @@ namespace EditorUI {
 		imguiColors[ImGuiCol_DockingPreview] = _colors.elementActive;
 		imguiColors[ImGuiCol_DockingEmptyBg] = _colors.elementActive;
 
+		// Initialize imgui backend
 		ImGui_ImplGlfw_InitForOpenGL(Runtime::glfw, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 
+		// Create editor windows
 		SceneWindow* sceneWindow = new SceneWindow();
 		_windows.push_back(sceneWindow);
 
@@ -192,9 +194,9 @@ namespace EditorUI {
 			_windows[i]->render();
 		}
 
-		/* OVERWRITE UI FRAMEWORK CURSOR IF NEEDED */
+		/* OVERWRITE IMGUI CURSOR IF NEEDED */
 		if (_overwriteCursor) {
-			// Disable ui framework cursor management
+			// Disable imgui cursor management
 			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
 			// Set cursor to overwrite type and mode

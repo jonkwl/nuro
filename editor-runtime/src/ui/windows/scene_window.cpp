@@ -27,6 +27,7 @@ windowFocused(false),
 windowHovered(false),
 sceneViewRightclicked(false),
 sceneViewMiddleclicked(false),
+sceneViewBounds(0.0f),
 movementSpeed(12.0f),
 mouseSensitivity(0.08f),
 scrollIncrementSpeed(2.0f),
@@ -35,7 +36,8 @@ moveAxisSmoothingFactor(5.0f),
 cursorCurrent(glm::vec2(0.0f)),
 cursorLast(glm::vec2(0.0f)),
 cursorDelta(glm::vec2(0.0f)),
-gizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
+gizmoOperation(ImGuizmo::OPERATION::TRANSLATE),
+gizmoScaleMin(0.1f)
 {
 	Runtime::getCamera().transform.position.y = 2.0f;
 
@@ -127,10 +129,11 @@ void SceneWindow::renderSceneView()
 			// Get scene view bounds
 			ImVec2 boundsMin = ImGui::GetItemRectMin();
 			ImVec2 boundsMax = ImGui::GetItemRectMax();
+			sceneViewBounds = glm::vec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
 
 			// Make sure cursor is within scene view bounds
 			bool positionedCursor = false;
-			cursorCurrent = checkCursorBoundaries(glm::vec2(boundsMin.x, boundsMin.y), glm::vec2(boundsMax.x, boundsMax.y), positionedCursor);
+			cursorCurrent = keepCursorInBounds(sceneViewBounds, positionedCursor);
 			if (positionedCursor) cursorLast = cursorCurrent;
 
 			// Calculate cursor axis
@@ -145,6 +148,9 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
+	// Dont render transform gizmos if scene view is interacted with
+	if (sceneViewRightclicked || sceneViewMiddleclicked) return;
+
 	// Get boundaries
 	ImVec2 itemPosition = ImGui::GetItemRectMin();
 	ImVec2 itemSize = ImGui::GetItemRectSize();
@@ -195,14 +201,28 @@ void SceneWindow::renderTransformGizmos()
 		glm::quat rotation;
 		glm::decompose(transformMatrix, scale, rotation, position, skew, perspective);
 
-		// Update entity transform using components converted to world coordinates
+		// Update transforms position
 		transform.position = Transformation::toBackendPosition(position);
+
+		// Update transforms rotation
 		transform.rotation = Transformation::toBackendRotation(rotation);
+
+		// Dont change scale, if its being decreased and is smaller than minimum
+		if (scale.x < transform.scale.x && scale.x < gizmoScaleMin) {
+			scale.x = transform.scale.x;
+		}
+		if (scale.y < transform.scale.y && scale.y < gizmoScaleMin) {
+			scale.y = transform.scale.y;
+		}
+		if (scale.z < transform.scale.z && scale.z < gizmoScaleMin) {
+			scale.z = transform.scale.z;
+		}
+
+		// Apply the new scale
 		transform.scale = scale;
 	}
 }
 
-glm::vec3 cameraEulerAngles = glm::vec3(0.0f);
 void SceneWindow::updateMovement(Camera& camera)
 {
 	// Get values needed
@@ -225,9 +245,8 @@ void SceneWindow::updateMovement(Camera& camera)
 
 		// Rotate in scene view
 		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
-		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
+		glm::vec3 newRotation = camera.transform.getEulerAngles() + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
-		cameraEulerAngles = newRotation;
 		camera.transform.setCameraEulerAngles(newRotation);
 	}
 
@@ -239,13 +258,16 @@ void SceneWindow::updateMovement(Camera& camera)
 	}
 }
 
-glm::vec2 SceneWindow::checkCursorBoundaries(glm::vec2 min, glm::vec2 max, bool& positionedCursor)
+glm::vec2 SceneWindow::keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor)
 {
 	// Offset preventing immediate wrapping at boundary
 	float offset = 25.0f;
 
 	glm::vec2 currentPos = Cursor::getPosition();
 	glm::vec2 updatedPos = currentPos;
+
+	glm::vec2 min = glm::vec2(bounds.x, bounds.y);
+	glm::vec2 max = glm::vec2(bounds.z, bounds.w);
 
 	// Horizontal boundaries
 	if (currentPos.x < min.x + offset) {

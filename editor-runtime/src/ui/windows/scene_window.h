@@ -17,7 +17,9 @@ private:
 	void renderTransformGizmos();
 
 	void updateMovement(Camera& camera); // Update movement within scene view
-	glm::vec2 checkCursorBoundaries(glm::vec2 min, glm::vec2 max, bool& positionedCursor);
+
+	// Keeps the cursor in the given boundaries, returns the new cursor position and sets if the cursor was positioned by method
+	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor);
 
 private:
 	glm::vec2 lastContentRegionAvail; // Cache for last frames content region avail
@@ -27,6 +29,8 @@ private:
 
 	bool sceneViewRightclicked; // Set if scene viewport is currently rightclicked
 	bool sceneViewMiddleclicked; // Set if scene viewport is currently rightclicked
+
+	glm::vec4 sceneViewBounds; // Bounds of scene view (min x, min y, max x, max y)
 
 	float movementSpeed; // Speed of camera movement within scene viewport
 	float mouseSensitivity; // Scene viewport mouse sensitivity
@@ -38,5 +42,6 @@ private:
 	glm::vec2 cursorLast; // Last mouse position
 	glm::vec2 cursorDelta; // Last mouse position
 
-	int gizmoOperation; // Last cached gizmo operation
+	int gizmoOperation; // Last used gizmo operation
+	float gizmoScaleMin; // Limit for downscaling an object with a gizmo
 };
