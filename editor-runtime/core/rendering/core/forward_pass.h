@@ -21,19 +21,19 @@ public:
 
 	unsigned int getDepthOutput(); // Returns depth output
 
-	void enableSkybox(Skybox* source);
+	void setSkybox(Skybox* source);
 	void disableSkybox();
 
 	void enableQuickGizmo(QuickGizmo* source);
 	void disableQuickGizmo();
 
-	bool wireframe; // Wireframe rendering mode
-	glm::vec4 clearColor; // Clear color for forward pass
+	void setClearColor(glm::vec4 clearColor); // Clear color for forward pass
 private:
 	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
 	QuickGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+	glm::vec4 clearColor; // Clear color for forward pass
 
 	unsigned int outputFbo;	 // Output framebuffer
 	unsigned int outputColor; // Output texture

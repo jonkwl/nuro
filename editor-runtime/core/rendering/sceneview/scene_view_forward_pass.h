@@ -1,0 +1,40 @@
+#pragma once
+
+#include <vector>
+#include <glm.hpp>
+
+#include "../core/viewport/viewport.h"
+#include "../core/rendering/gizmos/quick_gizmo.h"
+
+class Entity;
+class Skybox;
+
+class SceneViewForwardPass
+{
+public:
+	SceneViewForwardPass(const Viewport& viewport);
+
+	void create(); // Creates forward pass
+	void destroy(); // Destroys forward pass
+
+	// Scene view forward passes all entity render targets and returns color output
+	unsigned int render(std::vector<Entity*>& targets);
+
+	void setSkybox(Skybox* skybox);
+	bool drawSkybox; // Draw skybox in scene view
+
+	void enableQuickGizmo(QuickGizmo* source);
+	void disableQuickGizmo();
+
+	bool wireframe; // Wireframe rendering mode
+	glm::vec4 clearColor; // Clear color for forward pass
+private:
+	const Viewport& viewport; // Viewport forward pass instance is linked to
+
+	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
+	QuickGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+
+	unsigned int fbo;	 // Output framebuffer
+	unsigned int rbo; // Output renderbuffer
+	unsigned int outputColor; // Output color
+};

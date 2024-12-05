@@ -7,8 +7,7 @@
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
 
-ForwardPass::ForwardPass(const Viewport& viewport) : wireframe(false),
-clearColor(glm::vec4(0.0f)),
+ForwardPass::ForwardPass(const Viewport& viewport) : clearColor(glm::vec4(0.0f)),
 viewport(viewport),
 skybox(nullptr),
 quickGizmo(nullptr),
@@ -104,22 +103,11 @@ unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
 	// Clear framebuffer
-	if (!wireframe)
-	{
-		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-	}
-	else
-	{
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	}
+	glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Set viewport
 	glViewport(0, 0, viewport.width, viewport.height);
-
-	// Set wireframe if enabled
-	if (wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Set culling to back face
 	glEnable(GL_CULL_FACE);
@@ -152,19 +140,12 @@ unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 		targets[i]->meshRenderer.forwardPass();
 	}
 
-	// Disable wireframe if enabled
-	if (wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	// Disable culling before rendering skybox
 	glDisable(GL_CULL_FACE);
 
 	// Render skybox to bound forward pass frame
 	glDepthFunc(GL_LEQUAL);
-	if (skybox && !wireframe)
-	{
-		skybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
-	}
+	if (skybox) skybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
 	glDepthFunc(GL_LESS);
 
 	// Render quick gizmos
@@ -185,9 +166,9 @@ unsigned int ForwardPass::getDepthOutput()
 	return outputDepth;
 }
 
-void ForwardPass::enableSkybox(Skybox* source)
+void ForwardPass::setSkybox(Skybox* _skybox)
 {
-	skybox = source;
+	skybox = _skybox;
 }
 
 void ForwardPass::disableSkybox()
@@ -203,4 +184,9 @@ void ForwardPass::enableQuickGizmo(QuickGizmo* source)
 void ForwardPass::disableQuickGizmo()
 {
 	quickGizmo = nullptr;
+}
+
+void ForwardPass::setClearColor(glm::vec4 _clearColor)
+{
+	clearColor = _clearColor;
 }

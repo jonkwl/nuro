@@ -54,7 +54,7 @@ Camera Runtime::camera;
 glm::vec4 Runtime::clearColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
 unsigned int Runtime::msaaSamples = 4;
 bool Runtime::vsync = false;
-bool Runtime::wireframe = false;
+bool Runtime::sceneViewWireframe = false;
 bool Runtime::solidMode = false;
 bool Runtime::shadows = true;
 bool Runtime::postProcessingEffects = true;
@@ -71,6 +71,7 @@ ShadowMap* Runtime::mainShadowMap = nullptr;
 
 PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
 ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
+SceneViewForwardPass Runtime::sceneViewForwardPass = SceneViewForwardPass(Runtime::sceneViewport);
 SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
 VelocityBuffer Runtime::velocityBuffer = VelocityBuffer(Runtime::sceneViewport);
 PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
@@ -276,8 +277,11 @@ void Runtime::setupScripts() {
 
 	// Create forward pass
 	forwardPass.create(msaaSamples);
-	forwardPass.enableSkybox(&currentSkybox);
+	forwardPass.setSkybox(&currentSkybox);
 	forwardPass.enableQuickGizmo(&quickGizmo);
+
+	// Create scene view forward pass
+	sceneViewForwardPass.create();
 
 	// Create pre pass
 	prePass.create();
@@ -408,7 +412,8 @@ void Runtime::renderFrame() {
 	LitMaterial::mainShadowMap = mainShadowMap;
 
 	Profiler::start("forward_pass");
-	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(entityStack);
+	sceneViewForwardPass.wireframe = sceneViewWireframe;
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(entityStack);
 	Profiler::stop("forward_pass");
 
 	//
@@ -460,6 +465,7 @@ void Runtime::performResize() {
 
 	// Destroy all passes/pipelines which are bound to a fixed viewport size
 	forwardPass.destroy();
+	sceneViewForwardPass.destroy();
 	prePass.destroy();
 	ssaoPass.destroy();
 	velocityBuffer.destroy();
@@ -467,6 +473,7 @@ void Runtime::performResize() {
 
 	// Recreate all destroyed passes/pipelines
 	forwardPass.create(msaaSamples);
+	sceneViewForwardPass.create();
 	prePass.create();
 	ssaoPass.create();
 	velocityBuffer.create();

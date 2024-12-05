@@ -8,6 +8,7 @@
 
 #include "../core/rendering/core/pre_pass.h"
 #include "../core/rendering/core/forward_pass.h"
+#include "../core/rendering/sceneview/scene_view_forward_pass.h"
 #include "../core/rendering/ssao/ssao_pass.h"
 #include "../core/rendering/postprocessing/post_processing_pipeline.h"
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
@@ -44,7 +45,7 @@ public:
 	static glm::vec4 clearColor;	   // buffer clearing color
 	static unsigned int msaaSamples;   // MSAA Samples
 	static bool vsync;				   // V-Sync option
-	static bool wireframe;			   // Wireframe option
+	static bool sceneViewWireframe;    // Scene view wireframe option
 	static bool solidMode;			   // Solid mode option (simple render)
 	static bool shadows;			   // Enable or disable rendering for all shadows
 	static bool postProcessingEffects; // Enable or disable optional post processing effects
@@ -53,6 +54,7 @@ public:
 	// Passes & Pipelines
 	static PrePass prePass;
 	static ForwardPass forwardPass;
+	static SceneViewForwardPass sceneViewForwardPass;
 	static SSAOPass ssaoPass;
 	static VelocityBuffer velocityBuffer;
 	static PostProcessingPipeline postProcessingPipeline;

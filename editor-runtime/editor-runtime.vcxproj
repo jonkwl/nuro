@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
     <ClCompile Include="src\ui\windows\console_window.cpp" />
     <ClCompile Include="core\camera\camera.cpp" />
     <ClCompile Include="core\diagnostics\diagnostics.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\ui\ui_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
     <ClInclude Include="src\ui\windows\console_window.h" />
     <ClInclude Include="core\camera\camera.h" />
     <ClInclude Include="core\camera\frustum.h" />
