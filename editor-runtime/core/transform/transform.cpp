@@ -8,21 +8,30 @@
 
 Transform::Transform() : position(glm::vec3(0.0f)),
 rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)),
-scale(glm::vec3(1.0f))
+scale(glm::vec3(1.0f)),
+eulerAngles(glm::vec3(0.0f))
 {
 }
 
-void Transform::setEulerAngles(glm::vec3 eulerAngles)
+glm::vec3 Transform::getEulerAngles() const
 {
-	// Convert euler angles from degrees to radians
-	eulerAngles = glm::radians(eulerAngles);
-
-	// Set rotation quaternion
-	rotation = glm::quat(eulerAngles);
+	return eulerAngles;
 }
 
-void Transform::setCameraEulerAngles(glm::vec3 eulerAngles)
+void Transform::setEulerAngles(glm::vec3 _eulerAngles)
 {
+	// Set euler angles
+	eulerAngles = _eulerAngles;
+
+	// Set rotation quaternion by euler angles
+	rotation = glm::quat(glm::radians(eulerAngles));
+}
+
+void Transform::setCameraEulerAngles(glm::vec3 _eulerAngles)
+{
+	// Set euler angles
+	eulerAngles = _eulerAngles;
+
 	// Convert euler angles from degrees to radians
 	glm::vec3 radRotation = glm::radians(eulerAngles);
 

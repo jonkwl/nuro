@@ -179,8 +179,13 @@ void SceneWindow::renderTransformGizmos()
 	glm::mat4 projectionMatrix = TmpContext::projection;
 	glm::mat4 transformMatrix = Transformation::modelMatrix(entity->transform);
 
+	// Check for snapping
+	bool snapping = Input::keyDown(Key::LEFT_CONTROL);
+	float snapValue = gizmoOperation == ImGuizmo::OPERATION::ROTATE ? 45.0f : 0.5f; // Snap to 45 degrees if rotating or 0.5 units otherwise
+	const float snapValues[3] = { snapValue, snapValue, snapValue };
+
 	// Draw transformation gizmo
-	ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix));
+	ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix), nullptr, snapping ? snapValues : nullptr);
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {
@@ -230,7 +235,7 @@ void SceneWindow::updateMovement(Camera& camera)
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.2f; // 0.2f is a good factor to match movement speed
+		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
 	}
 }
 
