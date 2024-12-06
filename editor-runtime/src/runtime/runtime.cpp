@@ -118,6 +118,8 @@ Camera& Runtime::getCamera()
 //
 //
 
+static bool enterPressedLastFrame = false;
+static bool gameView = false;
 int Runtime::START_LOOP()
 {
 	// CREATE CONTEXT AND LOAD GRAPHICS API //
@@ -151,7 +153,18 @@ int Runtime::START_LOOP()
 		//
 
 		// RENDER NEXT FRAME (full render pipeline pass)
-		renderFrame();
+
+		// Tmp switching between scene view and game view
+		if (enterPressedLastFrame) {
+			if (!Input::keyDown(Key::ENTER)) gameView = !gameView;
+		}
+		enterPressedLastFrame = Input::keyDown(Key::ENTER);
+		if (gameView) {
+			renderGameView();
+		}
+		else {
+			renderSceneView();
+		}
 
 		// RENDER EDITOR
 		renderEditor();
@@ -320,17 +333,24 @@ void Runtime::prepareFrame() {
 	// Update input system
 	Input::step();
 
+	// Clear frame color
+	glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 }
 
 static unsigned int selectedEntity = 2;
 static bool selectionChangedLastFrame = false;
-void Runtime::renderFrame() {
+void Runtime::renderSceneView() {
 
 	Profiler::start("render");
 
-	// Bind screen framebuffer and clear color
-	glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	// Tmp post processing overwrite
+	PostProcessing::bloom.enabled = false;
+	PostProcessing::motionBlur.enabled = false;
+	PostProcessing::ambientOcclusion.enabled = false;
+	PostProcessing::vignette.enabled = false;
+	PostProcessing::chromaticAberration.enabled = false;
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
@@ -361,6 +381,105 @@ void Runtime::renderFrame() {
 	TmpContext::selectedEntity = entityStack[selectedEntity];
 	TmpContext::view = viewMatrix;
 	TmpContext::projection = projectionMatrix;
+
+	//
+	// PREPARATION PASS
+	// Prepare each mesh for upcoming render passes
+	//
+	for (int i = 0; i < entityStack.size(); i++)
+	{
+		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
+		// Here for now to ensure preparation despite further pipeline changes
+		entityStack[i]->meshRenderer.prepareNextFrame(camera);
+	}
+
+	//
+	// SHADOW PASS
+	// Render shadow map
+	//
+	Profiler::start("shadow_pass");
+	mainShadowMap->render(entityStack);
+	Profiler::stop("shadow_pass");
+
+	//
+	// PRE PASS
+	// Create geometry pass with depth buffer before forward pass
+	//
+	Profiler::start("pre_pass");
+	prePass.render(entityStack);
+	Profiler::stop("pre_pass");
+	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
+	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
+
+	//
+	// VELOCITY BUFFER RENDER PASS
+	//
+	Profiler::start("velocity_buffer");
+	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(entityStack);
+	Profiler::stop("velocity_buffer");
+
+	//
+	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
+	// Includes injected pre pass
+	//
+
+	// Prepare lit material with current render data
+	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
+	LitMaterial::camera = &camera; // Redundant most of the times atm
+	LitMaterial::ssaoInput = 0;
+	LitMaterial::mainShadowDisk = mainShadowDisk;
+	LitMaterial::mainShadowMap = mainShadowMap;
+
+	Profiler::start("forward_pass");
+	sceneViewForwardPass.wireframe = sceneViewWireframe;
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(entityStack, TmpContext::selectedEntity);
+	Profiler::stop("forward_pass");
+
+	//
+	// POST PROCESSING PASS
+	// Render post processing pass to screen using forward pass output as input
+	//
+	Profiler::start("post_processing");
+	postProcessingPipeline.render(FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
+	Profiler::stop("post_processing");
+
+	Profiler::stop("render");
+
+}
+
+void Runtime::renderGameView() {
+
+	Profiler::start("render");
+
+	// Tmp post processing overwrite
+	PostProcessing::bloom.enabled = true;
+	PostProcessing::motionBlur.enabled = true;
+	PostProcessing::ambientOcclusion.enabled = true;
+	PostProcessing::vignette.enabled = true;
+	PostProcessing::chromaticAberration.enabled = true;
+
+	// Get transformation matrices
+	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(camera, sceneViewport);
+	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
+
+	// Set mesh renderers transformation matrix caches for upcomming render passes
+	MeshRenderer::currentViewMatrix = viewMatrix;
+	MeshRenderer::currentProjectionMatrix = projectionMatrix;
+	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
+	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
+
+	// Update cameras frustum
+	camera.updateFrustum(viewProjectionMatrix);
+
+	// Set tmp context
+	TmpContext::selectedEntity = entityStack[selectedEntity];
+	TmpContext::view = viewMatrix;
+	TmpContext::projection = projectionMatrix;
+
+	// Update cameras frustum
+	camera.updateFrustum(viewProjectionMatrix);
 
 	//
 	// PREPARATION PASS
@@ -424,8 +543,7 @@ void Runtime::renderFrame() {
 	LitMaterial::mainShadowMap = mainShadowMap;
 
 	Profiler::start("forward_pass");
-	sceneViewForwardPass.wireframe = sceneViewWireframe;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(entityStack, TmpContext::selectedEntity);
+	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(entityStack);
 	Profiler::stop("forward_pass");
 
 	//

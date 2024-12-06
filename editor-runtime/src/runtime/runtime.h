@@ -76,12 +76,16 @@ private:
 	static ShadowMap* mainShadowMap;   // Default shadow map
 
 private:
+	// Render passes
+	static void renderSceneView(); // Render scene view frame
+	static void renderGameView(); // Render embedded game frame
+
+	// Methods
 	static void setupGlfw(); // Setup glfw context
 	static void setVSync(); // Set v sync option
 	static void loadAssets(); // Load all defualt assets
 	static void setupScripts(); // Call all scripts needing setup
 	static void prepareFrame(); // Prepare next frame
-	static void renderFrame(); // Render next game frame
 	static void renderEditor(); // Render next editor frame
 	static void finishFrame(); // Call to finalize current frame
 	static void checkWindowResize(); // Perform resize if needed
