@@ -4,7 +4,7 @@
 #include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
-#include "../core/rendering/gizmos/quick_gizmo.h"
+#include "../core/rendering/gizmos/imgizmo.h"
 
 class Entity;
 class Skybox;
@@ -24,7 +24,7 @@ public:
 	void setSkybox(Skybox* source);
 	void disableSkybox();
 
-	void enableQuickGizmo(QuickGizmo* source);
+	void enableQuickGizmo(IMGizmo* source);
 	void disableQuickGizmo();
 
 	void setClearColor(glm::vec4 clearColor); // Clear color for forward pass
@@ -32,7 +32,7 @@ private:
 	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
-	QuickGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+	IMGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
 	glm::vec4 clearColor; // Clear color for forward pass
 
 	unsigned int outputFbo;	 // Output framebuffer

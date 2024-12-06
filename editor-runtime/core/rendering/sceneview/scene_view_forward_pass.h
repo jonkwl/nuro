@@ -4,7 +4,7 @@
 #include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
-#include "../core/rendering/gizmos/quick_gizmo.h"
+#include "../core/rendering/gizmos/imgizmo.h"
 #include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 
@@ -25,7 +25,7 @@ public:
 	void setSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
 
-	void setQuickGizmo(QuickGizmo* source);
+	void setQuickGizmo(IMGizmo* source);
 	bool drawQuickGizmos;
 
 	bool wireframe; // Wireframe rendering mode
@@ -34,7 +34,7 @@ private:
 	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
-	QuickGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+	IMGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
 
 	unsigned int outputFbo;	 // Output framebuffer
 	unsigned int outputColor; // Output color

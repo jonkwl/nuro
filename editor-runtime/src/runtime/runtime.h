@@ -69,7 +69,7 @@ public:
 	static PostProcessing::Profile gameViewProfile;
 
 	// Instances
-	static QuickGizmo quickGizmo;
+	static IMGizmo quickGizmo;
 
 	// Perform resize for specific viewport
 	static void resizeViewport(float width, float height);

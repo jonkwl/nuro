@@ -179,7 +179,7 @@ void SceneViewForwardPass::setSkybox(Skybox* source)
 	skybox = source;
 }
 
-void SceneViewForwardPass::setQuickGizmo(QuickGizmo* source)
+void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
 {
 	quickGizmo = source;
 }

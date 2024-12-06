@@ -146,7 +146,7 @@
     <ClCompile Include="core\rendering\core\pre_pass.cpp" />
     <ClCompile Include="core\rendering\core\transformation.cpp" />
     <ClCompile Include="core\rendering\culling\bounding_volume.cpp" />
-    <ClCompile Include="core\rendering\gizmos\quick_gizmo.cpp" />
+    <ClCompile Include="core\rendering\gizmos\imgizmo.cpp" />
     <ClCompile Include="core\rendering\material\lit\lit_material.cpp" />
     <ClCompile Include="core\rendering\material\unlit\unlit_material.cpp" />
     <ClCompile Include="core\rendering\model\mesh.cpp" />
@@ -213,7 +213,7 @@
     <ClInclude Include="core\rendering\culling\bounding_volume.h" />
     <ClInclude Include="core\rendering\gizmos\gizmos.h" />
     <ClInclude Include="core\rendering\gizmos\gizmo_color.h" />
-    <ClInclude Include="core\rendering\gizmos\quick_gizmo.h" />
+    <ClInclude Include="core\rendering\gizmos\imgizmo.h" />
     <ClInclude Include="core\rendering\material\imaterial.h" />
     <ClInclude Include="core\rendering\material\lit\lit_material.h" />
     <ClInclude Include="core\rendering\material\unlit\unlit_material.h" />

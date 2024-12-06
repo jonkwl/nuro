@@ -6,10 +6,10 @@
 class Shader;
 class Model;
 
-class QuickGizmo
+class IMGizmo
 {
 public:
-	QuickGizmo();
+	IMGizmo();
 
 	void setup();    // Load gizmo shaders and models if not loaded already
 	void newFrame(); // Clear the render stack
@@ -18,7 +18,7 @@ public:
 	// Global render state settings
 	glm::vec3 color; // Color of gizmo
 	float opacity; // Opacity of gizmo
-	bool foreground; // If gizmo should always be in foreground 
+	bool foreground; // If gizmo should always be in foreground
 
 	void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));
 	void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f));

@@ -176,7 +176,7 @@ void ForwardPass::disableSkybox()
 	skybox = nullptr;
 }
 
-void ForwardPass::enableQuickGizmo(QuickGizmo* source)
+void ForwardPass::enableQuickGizmo(IMGizmo* source)
 {
 	quickGizmo = source;
 }

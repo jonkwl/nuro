@@ -48,7 +48,7 @@
     <ClCompile Include="core\rendering\culling\bounding_volume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\gizmos\quick_gizmo.cpp">
+    <ClCompile Include="core\rendering\gizmos\imgizmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\material\lit\lit_material.cpp">
@@ -245,7 +245,7 @@
     <ClInclude Include="core\rendering\gizmos\gizmo_color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\gizmos\quick_gizmo.h">
+    <ClInclude Include="core\rendering\gizmos\imgizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\material\imaterial.h">

@@ -1,4 +1,4 @@
-#include "quick_gizmo.h"
+#include "imgizmo.h"
 
 #include <glad/glad.h>
 #include <glm.hpp>
@@ -11,18 +11,18 @@
 #include "../core/rendering/model/mesh.h"
 
 // Global gizmo resources
-Shader* QuickGizmo::shader = nullptr;
-Model* QuickGizmo::planeModel = nullptr;
-Model* QuickGizmo::cubeModel = nullptr;
-Model* QuickGizmo::sphereModel = nullptr;
+Shader* IMGizmo::shader = nullptr;
+Model* IMGizmo::planeModel = nullptr;
+Model* IMGizmo::cubeModel = nullptr;
+Model* IMGizmo::sphereModel = nullptr;
 
-QuickGizmo::QuickGizmo() : color(glm::vec3(1.0f)),
+IMGizmo::IMGizmo() : color(glm::vec3(1.0f)),
 opacity(0.4f),
 foreground(false)
 {
 }
 
-void QuickGizmo::setup()
+void IMGizmo::setup()
 {
 	// Load global gizmo shaders and models if not loaded already
 	if (!shader) shader = ShaderPool::get("quick_gizmo");
@@ -31,13 +31,13 @@ void QuickGizmo::setup()
 	if(!sphereModel) sphereModel = Model::load("../resources/primitives/sphere.fbx");
 }
 
-void QuickGizmo::newFrame()
+void IMGizmo::newFrame()
 {
 	// Clear render stack
 	renderStack.clear();
 }
 
-void QuickGizmo::render()
+void IMGizmo::render()
 {
 	// Cache current polygon mode
 	GLenum polygonState[2];
@@ -102,43 +102,43 @@ void QuickGizmo::render()
 	glPolygonMode(GL_FRONT_AND_BACK, polygonState[0]);
 }
 
-void QuickGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
+void IMGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
 	RenderTarget gizmo(Shape::PLANE, position, rotation, scale, false, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
+void IMGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
 	RenderTarget gizmo(Shape::BOX, position, rotation, scale, false, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::sphere(glm::vec3 position, float radius)
+void IMGizmo::sphere(glm::vec3 position, float radius)
 {
 	RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), false, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
+void IMGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
 	RenderTarget gizmo(Shape::PLANE, position, rotation, scale, true, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
+void IMGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
 {
 	RenderTarget gizmo(Shape::BOX, position, rotation, scale, true, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
-void QuickGizmo::sphereWire(glm::vec3 position, float radius)
+void IMGizmo::sphereWire(glm::vec3 position, float radius)
 {
 	RenderTarget gizmo(Shape::SPHERE, position, glm::vec3(radius * 2), glm::vec3(0.0f), true, getCurrentState());
 	renderStack.push_back(gizmo);
 }
 
-QuickGizmo::RenderState QuickGizmo::getCurrentState() {
+IMGizmo::RenderState IMGizmo::getCurrentState() {
 	RenderState state;
 	state.color = color;
 	state.opacity = opacity;
@@ -146,7 +146,7 @@ QuickGizmo::RenderState QuickGizmo::getCurrentState() {
 	return state;
 }
 
-Model* QuickGizmo::getModel(Shape shape)
+Model* IMGizmo::getModel(Shape shape)
 {
 	switch (shape)
 	{
@@ -161,7 +161,7 @@ Model* QuickGizmo::getModel(Shape shape)
 	}
 }
 
-glm::mat4 QuickGizmo::getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+glm::mat4 IMGizmo::getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
 	glm::mat4 model(1.0f);
 

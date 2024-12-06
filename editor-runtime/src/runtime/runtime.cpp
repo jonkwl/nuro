@@ -78,7 +78,7 @@ PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(
 PostProcessing::Profile Runtime::sceneViewProfile;
 PostProcessing::Profile Runtime::gameViewProfile;
 
-QuickGizmo Runtime::quickGizmo;
+IMGizmo Runtime::quickGizmo;
 
 SceneViewPipeline Runtime::sceneViewPipeline;
 

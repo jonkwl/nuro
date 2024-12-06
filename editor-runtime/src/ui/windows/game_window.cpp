@@ -36,6 +36,7 @@ void GameWindow::render()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("  Game  ", nullptr, EditorUI::getWindowFlags().standard);
 	{
+
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
