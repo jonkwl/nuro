@@ -34,7 +34,7 @@ void ConsoleWindow::render()
 			UIComponents::toggleButton(messageIcon, showMessages, "Show Messages");
 			UIComponents::toggleButton(warningIcon, showWarnings, "Show Warnings");
 			UIComponents::toggleButton(errorIcon, showErrors, "Show Errors");
-			if (UIComponents::buttonBig("clear")) logs.clear();
+			if (UIComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
 		}
 		UILayout::endFlex();
 

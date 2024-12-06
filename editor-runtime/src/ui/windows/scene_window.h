@@ -19,7 +19,8 @@ private:
 	void updateMovement(Camera& camera); // Update movement within scene view
 
 private:
-	glm::vec2 lastContentRegionAvail; // Cache for last frames content region avail
+	glm::vec2 currentWindowSize; // Current windows size
+	glm::vec2 lastWindowSize; // Cache last windows size
 
 	bool windowFocused; // Set if scene window is currently focused
 	bool windowHovered; // Set if scene window is currently hovered

@@ -14,22 +14,24 @@ viewport(viewport),
 drawSkybox(false),
 skybox(nullptr),
 quickGizmo(nullptr),
-fbo(0),
-rbo(0),
+outputFbo(0),
 outputColor(0),
+multisampledFbo(0),
+multisampledRbo(0),
+multisampledColorBuffer(0),
 selectionMaterial(nullptr)
 {
 }
 
-void SceneViewForwardPass::create()
+void SceneViewForwardPass::create(unsigned int msaaSamples)
 {
 	// Create outline material
 	selectionMaterial = new UnlitMaterial();
 	selectionMaterial->baseColor = glm::vec4(1.0f, 0.25f, 0.0f, 0.7f);
 
 	// Generate forward pass framebuffer
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenFramebuffers(1, &outputFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, outputFbo);
 
 	// Generate color output texture
 	glGenTextures(1, &outputColor);
@@ -41,17 +43,36 @@ void SceneViewForwardPass::create()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputColor, 0);
 
-	// Generate renderbuffer
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, viewport.width, viewport.height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
 	// Check for forward pass framebuffer error
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Framebuffer", "Error generating scene view pass output framebuffer: " + std::to_string(fboStatus));
+	}
+
+	// Generate multisampled framebuffer
+	glGenFramebuffers(1, &multisampledFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
+
+	// Generate multisampled color buffer texture
+	glGenTextures(1, &multisampledColorBuffer);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, viewport.width, viewport.height, GL_TRUE);
+	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
+
+	// Generate multisampled depth buffer
+	glGenRenderbuffers(1, &multisampledRbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, viewport.width, viewport.height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
+
+	// Check for multisampled framebuffer error
+	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		Log::printError("Framebuffer", "Error generating scene view pass multisampled framebuffer: " + std::to_string(fboStatus));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -60,25 +81,33 @@ void SceneViewForwardPass::create()
 void SceneViewForwardPass::destroy() {
 	// Delete selection material
 	delete(selectionMaterial);
-
 	selectionMaterial = nullptr;
+
 	// Delete color output texture
 	glDeleteTextures(1, &outputColor);
 	outputColor = 0;
 
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &outputFbo);
+	outputFbo = 0;
+
+	// Delete color output texture
+	glDeleteTextures(1, &multisampledColorBuffer);
+	multisampledColorBuffer = 0;
+
 	// Delete renderbuffer
-	glDeleteRenderbuffers(1, &rbo);
-	rbo = 0;
+	glDeleteRenderbuffers(1, &multisampledRbo);
+	multisampledRbo = 0;
 
 	// Delete framebuffer
-	glDeleteFramebuffers(1, &fbo);
-	fbo = 0;
+	glDeleteFramebuffers(1, &multisampledFbo);
+	multisampledFbo = 0;
 }
 
 unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets, Entity* selected)
 {
 	// Bind framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
 	// Clear framebuffer
 	if (!wireframe)
@@ -135,6 +164,11 @@ unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets, Entity*
 
 	// Render quick gizmos
 	if (quickGizmo) quickGizmo->render();
+
+	// Bilt multisampled framebuffer to post processing framebuffer
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFbo);
+	glBlitFramebuffer(0, 0, viewport.width, viewport.height, 0, 0, viewport.width, viewport.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	return outputColor;
 }

@@ -16,6 +16,7 @@
 #include "../core/input/cursor.h"
 
 #include "../src/ui/windows/scene_window.h"
+#include "../src/ui/windows/game_window.h"
 #include "../src/ui/windows/post_processing_window.h"
 #include "../src/ui/windows/diagnostics_window.h"
 #include "../src/ui/windows/console_window.h"
@@ -141,7 +142,10 @@ namespace EditorUI {
 		SceneWindow* sceneWindow = new SceneWindow();
 		_windows.push_back(sceneWindow);
 
-		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow();
+		GameWindow* gameWindow = new GameWindow();
+		_windows.push_back(gameWindow);
+
+		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::gameViewProfile);
 		_windows.push_back(postProcessingWindow);
 
 		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();

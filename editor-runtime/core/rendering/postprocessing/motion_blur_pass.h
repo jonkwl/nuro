@@ -3,6 +3,7 @@
 #include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
+#include "../core/rendering/postprocessing/post_processing.h"
 
 class Shader;
 
@@ -14,7 +15,7 @@ public:
 	void create();
 	void destroy();
 
-	unsigned int render(const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput);
+	unsigned int render(const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput);
 
 private:
 	enum TextureUnits

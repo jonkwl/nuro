@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "../core/viewport/viewport.h"
+#include "../core/rendering/postprocessing/post_processing.h"
+#
 
 class Shader;
 class Entity;
@@ -15,7 +17,7 @@ public:
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
 
-	unsigned int render(std::vector<Entity*>& targets); // Renders the velocity buffer and returns the filtered output
+	unsigned int render(const PostProcessing::Profile& profile, std::vector<Entity*>& targets); // Renders the velocity buffer and returns the filtered output
 
 private:
 	unsigned int velocityPasses(std::vector<Entity*>& targets);	  // Performs velocity passes to render velocity buffer and returns velocity buffer

@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include <random>
 
-#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/core/mesh_renderer.h"
@@ -122,7 +121,7 @@ void SSAOPass::destroy() {
 	noiseTexture = 0;
 }
 
-unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
+unsigned int SSAOPass::render(const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
 {
 	// Disable depth testing and culling
 	glDisable(GL_DEPTH_TEST);
@@ -132,18 +131,19 @@ unsigned int SSAOPass::render(unsigned int depthInput, unsigned int normalInput)
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Perform ambient occlusion pass
-	ambientOcclusionPass(depthInput, normalInput);
+	ambientOcclusionPass(profile, depthInput, normalInput);
 
 	// Perform blur pass: Blur ambient occlusion
 	// UNKNOWN ISSUE WITH BLUR PASS
-	blurPass();
+	blurPass(profile);
 
 	// Re-Enable depth testing and culling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
 	// Return blurred output
-	return blurredOutput;
+	// return blurredOutput;
+	return aoOutput; // tmp return raw ao output
 }
 
 unsigned int SSAOPass::getOutputRaw()
@@ -156,7 +156,7 @@ unsigned int SSAOPass::getOutputProcessed()
 	return blurredOutput;
 }
 
-void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normalInput)
+void SSAOPass::ambientOcclusionPass(const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
 {
 	// Set render target to ao output
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
@@ -165,7 +165,7 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	glViewport(0, 0, viewport.width * aoScale, viewport.height * aoScale);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
-	int nSamples = PostProcessing::ambientOcclusion.samples;
+	int nSamples = profile.ambientOcclusion.samples;
 	if (nSamples > maxKernelSamples)
 	{
 		nSamples = maxKernelSamples;
@@ -180,9 +180,9 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
 
 	aoPassShader->setInt("nSamples", nSamples);
-	aoPassShader->setFloat("radius", PostProcessing::ambientOcclusion.radius);
-	aoPassShader->setFloat("bias", PostProcessing::ambientOcclusion.bias);
-	aoPassShader->setFloat("power", PostProcessing::ambientOcclusion.power);
+	aoPassShader->setFloat("radius", profile.ambientOcclusion.radius);
+	aoPassShader->setFloat("bias", profile.ambientOcclusion.bias);
+	aoPassShader->setFloat("power", profile.ambientOcclusion.power);
 
 	// Bind depth input
 	glActiveTexture(GL_TEXTURE0 + DEPTH_UNIT);
@@ -201,7 +201,7 @@ void SSAOPass::ambientOcclusionPass(unsigned int depthInput, unsigned int normal
 	Quad::render();
 }
 
-void SSAOPass::blurPass()
+void SSAOPass::blurPass(const PostProcessing::Profile& profile)
 {
 	// Set render target to blurred ambient occlusion output
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurredOutput, 0);

@@ -39,7 +39,7 @@ private:
 	unsigned int outputColor; // Output texture
 	unsigned int outputDepth; // Output texture
 
-	unsigned int multisampledFbo;		 // Anti-Aliasing framebuffer
-	unsigned int multisampledRbo;		 // Anti-Aliasing renderbuffer
-	unsigned int multisampledColorBuffer; // Anti-Aliasing color buffer texture
+	unsigned int multisampledFbo;		 // Anti-aliasing framebuffer
+	unsigned int multisampledRbo;		 // Anti-aliasing renderbuffer
+	unsigned int multisampledColorBuffer; // Anti-aliasing color buffer texture
 };

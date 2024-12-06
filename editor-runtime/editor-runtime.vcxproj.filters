@@ -192,6 +192,9 @@
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\windows\game_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\camera\camera.h">
@@ -660,6 +663,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\windows\game_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

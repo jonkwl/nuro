@@ -40,14 +40,14 @@ void ForwardPass::create(const unsigned int msaaSamples)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Framebuffer", "Error generating forward pass output framebuffer: " + std::to_string(fboStatus));
 	}
 
-	// Generate multi-sampled framebuffer
+	// Generate multisampled framebuffer
 	glGenFramebuffers(1, &multisampledFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
 
-	// Generate multi-sampled color buffer texture
+	// Generate multisampled color buffer texture
 	glGenTextures(1, &multisampledColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
 	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, viewport.width, viewport.height, GL_TRUE);
@@ -55,17 +55,17 @@ void ForwardPass::create(const unsigned int msaaSamples)
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
 
-	// Generate multi-sampled depth buffer
+	// Generate multisampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH_COMPONENT24, viewport.width, viewport.height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
-	// Check for multi-sampled framebuffer error
+	// Check for multisampled framebuffer error
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Log::printError("Framebuffer", "Error generating forward pass multisampled framebuffer: " + std::to_string(fboStatus));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -153,7 +153,7 @@ unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 		quickGizmo->render();
 	}
 
-	// Bilt multi-sampled framebuffer to post processing framebuffer
+	// Bilt multisampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFbo);
 	glBlitFramebuffer(0, 0, viewport.width, viewport.height, 0, 0, viewport.width, viewport.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);

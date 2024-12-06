@@ -23,7 +23,6 @@
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/texture/texture.h"
 #include "../core/rendering/model/model.h"
-#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/shadows/shadow_disk.h"
@@ -75,6 +74,9 @@ SceneViewForwardPass Runtime::sceneViewForwardPass = SceneViewForwardPass(Runtim
 SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
 VelocityBuffer Runtime::velocityBuffer = VelocityBuffer(Runtime::sceneViewport);
 PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
+
+PostProcessing::Profile Runtime::sceneViewProfile;
+PostProcessing::Profile Runtime::gameViewProfile;
 
 QuickGizmo Runtime::quickGizmo;
 
@@ -294,7 +296,7 @@ void Runtime::setupScripts() {
 	forwardPass.enableQuickGizmo(&quickGizmo);
 
 	// Create scene view forward pass
-	sceneViewForwardPass.create();
+	sceneViewForwardPass.create(msaaSamples);
 
 	// Create pre pass
 	prePass.create();
@@ -316,6 +318,13 @@ void Runtime::setupScripts() {
 
 	// Setup quick gizmo
 	quickGizmo.setup();
+
+	// Setup scene view post processing
+	sceneViewProfile.bloom.enabled = false;
+	sceneViewProfile.motionBlur.enabled = false;
+	sceneViewProfile.ambientOcclusion.enabled = false;
+	sceneViewProfile.vignette.enabled = false;
+	sceneViewProfile.chromaticAberration.enabled = false;
 
 }
 
@@ -344,13 +353,6 @@ static bool selectionChangedLastFrame = false;
 void Runtime::renderSceneView() {
 
 	Profiler::start("render");
-
-	// Tmp post processing overwrite
-	PostProcessing::bloom.enabled = false;
-	PostProcessing::motionBlur.enabled = false;
-	PostProcessing::ambientOcclusion.enabled = false;
-	PostProcessing::vignette.enabled = false;
-	PostProcessing::chromaticAberration.enabled = false;
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
@@ -412,10 +414,23 @@ void Runtime::renderSceneView() {
 	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
 
 	//
+	// SCREEN SPACE AMBIENT OCCLUSION PASS
+	// Calculate screen space ambient occlusion if enabled
+	//
+	Profiler::start("ssao");
+	unsigned int _ssaoOutput = 0;
+	if (gameViewProfile.ambientOcclusion.enabled)
+	{
+		_ssaoOutput = ssaoPass.render(gameViewProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+	}
+	const unsigned int SSAO_OUTPUT = _ssaoOutput;
+	Profiler::stop("ssao");
+
+	//
 	// VELOCITY BUFFER RENDER PASS
 	//
 	Profiler::start("velocity_buffer");
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(entityStack);
+	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(gameViewProfile, entityStack);
 	Profiler::stop("velocity_buffer");
 
 	//
@@ -426,7 +441,8 @@ void Runtime::renderSceneView() {
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
 	LitMaterial::camera = &camera; // Redundant most of the times atm
-	LitMaterial::ssaoInput = 0;
+	LitMaterial::ssaoInput = SSAO_OUTPUT;
+	LitMaterial::profile = &sceneViewProfile;
 	LitMaterial::mainShadowDisk = mainShadowDisk;
 	LitMaterial::mainShadowMap = mainShadowMap;
 
@@ -440,7 +456,7 @@ void Runtime::renderSceneView() {
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
+	postProcessingPipeline.render(sceneViewProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
@@ -450,13 +466,6 @@ void Runtime::renderSceneView() {
 void Runtime::renderGameView() {
 
 	Profiler::start("render");
-
-	// Tmp post processing overwrite
-	PostProcessing::bloom.enabled = true;
-	PostProcessing::motionBlur.enabled = true;
-	PostProcessing::ambientOcclusion.enabled = true;
-	PostProcessing::vignette.enabled = true;
-	PostProcessing::chromaticAberration.enabled = true;
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
@@ -516,9 +525,9 @@ void Runtime::renderGameView() {
 	//
 	Profiler::start("ssao");
 	unsigned int _ssaoOutput = 0;
-	if (PostProcessing::ambientOcclusion.enabled)
+	if (gameViewProfile.ambientOcclusion.enabled)
 	{
-		_ssaoOutput = ssaoPass.render(PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+		_ssaoOutput = ssaoPass.render(gameViewProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const unsigned int SSAO_OUTPUT = _ssaoOutput;
 	Profiler::stop("ssao");
@@ -527,7 +536,7 @@ void Runtime::renderGameView() {
 	// VELOCITY BUFFER RENDER PASS
 	//
 	Profiler::start("velocity_buffer");
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(entityStack);
+	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(gameViewProfile, entityStack);
 	Profiler::stop("velocity_buffer");
 
 	//
@@ -539,6 +548,7 @@ void Runtime::renderGameView() {
 	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
 	LitMaterial::camera = &camera; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
+	LitMaterial::profile = &gameViewProfile;
 	LitMaterial::mainShadowDisk = mainShadowDisk;
 	LitMaterial::mainShadowMap = mainShadowMap;
 
@@ -551,7 +561,7 @@ void Runtime::renderGameView() {
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
+	postProcessingPipeline.render(gameViewProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
@@ -603,7 +613,7 @@ void Runtime::performResize() {
 
 	// Recreate all destroyed passes/pipelines
 	forwardPass.create(msaaSamples);
-	sceneViewForwardPass.create();
+	sceneViewForwardPass.create(msaaSamples);
 	prePass.create();
 	ssaoPass.create();
 	velocityBuffer.create();

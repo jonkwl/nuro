@@ -14,8 +14,6 @@ Entity* cube = nullptr;
 void defaultScene() {
 	// Post Processing Lens Dirt
 	Texture lensDirt = Texture::load("./src/example/assets/textures/lens_dirt.jpg", TextureType::ALBEDO);
-	PostProcessing::bloom.lensDirtTexture = lensDirt;
-	PostProcessing::bloom.lensDirtEnabled = true;
 
 	// Create all entities
 	LitMaterial* sphereMaterial = new LitMaterial();
@@ -230,8 +228,6 @@ void performanceScene() {
 	material->baseColor = glm::vec4(1.0f);
 	material->roughness = 0.1f;
 	material->metallic = 0.0f;
-
-	PostProcessing::bloom.intensity = 0.25f;
 
 	glm::vec2 halfSize = glm::vec2(gridX * offset, gridZ * offset);
 

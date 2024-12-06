@@ -5,7 +5,7 @@
 
 #include "../core/utils/log.h"
 
-Texture::Texture() : id(0)
+Texture::Texture() : backendId(0)
 {
 }
 
@@ -13,14 +13,19 @@ void Texture::bind(unsigned int unit)
 {
 	// Bind texture to backend
 	glActiveTexture(GL_TEXTURE0 + unit);
-	glBindTexture(GL_TEXTURE_2D, id);
+	glBindTexture(GL_TEXTURE_2D, backendId);
 }
 
 void Texture::destroy()
 {
 	// Delete texture in backend
-	glDeleteTextures(1, &id);
-	id = 0;
+	glDeleteTextures(1, &backendId);
+	backendId = 0;
+}
+
+unsigned int Texture::getBackendId()
+{
+	return backendId;
 }
 
 Texture Texture::empty()
@@ -98,15 +103,15 @@ Texture Texture::load(std::string path, TextureType type)
 	// Free memory allocated for image data
 	stbi_image_free(data);
 
-	// Return Texture instance with id of newly created texture
+	// Return Texture instance with backendId of newly created texture
 	return Texture(newId);
 }
 
-Texture Texture::fromBackendId(GLuint id)
+Texture Texture::fromBackendId(unsigned int backendId)
 {
-	return Texture(id);
+	return Texture(backendId);
 }
 
-Texture::Texture(GLuint id) : id(id)
+Texture::Texture(unsigned int backendId) : backendId(backendId)
 {
-}
+}  

@@ -23,7 +23,8 @@
 
 #include "../src/runtime/tmp_context.h"
 
-SceneWindow::SceneWindow() : lastContentRegionAvail(glm::vec2(0.0f)),
+SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),
+lastWindowSize(glm::vec2(0.0f)),
 windowFocused(false),
 windowHovered(false),
 sceneViewRightclicked(false),
@@ -58,15 +59,8 @@ void SceneWindow::render()
 		UIComponents::space(0.0f, 14.0f);
 		UIComponents::headline("Scene", ICON_FA_MAP, HeadlineJustification::CENTER);
 
-		// Get scene view content avail
-		glm::vec2 contentRegionAvail = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
-
-		// Check if scene view has been resized
-		if (contentRegionAvail != lastContentRegionAvail && !ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-			Runtime::resizeViewport(contentRegionAvail.x, contentRegionAvail.y);
-
-			lastContentRegionAvail = contentRegionAvail;
-		}
+		// Get scene window size
+		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
 
 		// Render scene windows toolbar
 		renderToolbar();
@@ -113,13 +107,20 @@ void SceneWindow::renderSceneView()
 {
 	ImGui::BeginChild("SceneView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	{
+		// Check if window is currently being resized
+		bool currentlyResizing = currentWindowSize != lastWindowSize;
 
 		// Render target
-		ImGui::Image(
-			Runtime::postProcessingPipeline.getOutput(),
-			ImGui::GetContentRegionAvail(),
-			ImVec2(0, 1),
-			ImVec2(1, 0));
+		ImGui::Image(currentlyResizing ? 0 : Runtime::postProcessingPipeline.getOutput(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+
+		// Get scene view bounds
+		ImVec2 boundsMin = ImGui::GetItemRectMin();
+		ImVec2 boundsMax = ImGui::GetItemRectMax();
+		sceneViewBounds = glm::vec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
+
+		// Get scene view width and height
+		float width = boundsMax.x - boundsMin.x;
+		float height = boundsMax.y - boundsMin.y;
 
 		// Check if scene view is interacted with
 		sceneViewRightclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right);
@@ -127,11 +128,6 @@ void SceneWindow::renderSceneView()
 
 		// Update cursor bounds and inputs if theres an interaction with scene view
 		if (sceneViewRightclicked || sceneViewMiddleclicked) {
-			// Get scene view bounds
-			ImVec2 boundsMin = ImGui::GetItemRectMin();
-			ImVec2 boundsMax = ImGui::GetItemRectMax();
-			sceneViewBounds = glm::vec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
-
 			// Make sure cursor is within scene view bounds
 			bool positionedCursor = false;
 			cursorCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
@@ -143,6 +139,12 @@ void SceneWindow::renderSceneView()
 
 		// Render scene views transformation gizmos
 		renderTransformGizmos();
+
+		// Check if scene window has been resized
+		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
+			Runtime::resizeViewport(width, height);
+			lastWindowSize = currentWindowSize;
+		}
 	}
 	ImGui::EndChild();
 }

@@ -7,7 +7,6 @@
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/quad.h"
 #include "../core/rendering/core/mesh_renderer.h"
-#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/diagnostics/diagnostics.h"
 
 MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),
@@ -76,7 +75,7 @@ void MotionBlurPass::destroy()
 	shader = nullptr;
 }
 
-unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
+unsigned int MotionBlurPass::render(const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -94,16 +93,16 @@ unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned 
 	// Set shader uniforms
 	shader->setFloat("fps", Diagnostics::getFps());
 
-	bool cameraEnabled = PostProcessing::motionBlur.cameraEnabled;
+	bool cameraEnabled = profile.motionBlur.cameraEnabled;
 	shader->setBool("camera", cameraEnabled);
 	if (cameraEnabled)
 	{
 		// Set camera motion blur uniforms
-		shader->setFloat("cameraIntensity", PostProcessing::motionBlur.cameraIntensity);
-		shader->setInt("cameraSamples", PostProcessing::motionBlur.cameraSamples);
+		shader->setFloat("cameraIntensity", profile.motionBlur.cameraIntensity);
+		shader->setInt("cameraSamples", profile.motionBlur.cameraSamples);
 	}
 
-	bool objectEnabled = PostProcessing::motionBlur.objectEnabled;
+	bool objectEnabled = profile.motionBlur.objectEnabled;
 	shader->setBool("object", objectEnabled);
 	if (objectEnabled)
 	{
@@ -112,7 +111,7 @@ unsigned int MotionBlurPass::render(const unsigned int hdrInput, const unsigned 
 		glBindTexture(GL_TEXTURE_2D, velocityBufferInput);
 
 		// Set object motion blur uniforms
-		shader->setInt("objectSamples", PostProcessing::motionBlur.objectSamples);
+		shader->setInt("objectSamples", profile.motionBlur.objectSamples);
 	}
 
 	// Set transformation uniforms

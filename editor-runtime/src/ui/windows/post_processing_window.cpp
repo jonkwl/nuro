@@ -7,7 +7,9 @@
 #include "../src/ui/IconsFontAwesome6.h"
 #include "../src/ui/editor_ui.h"
 
-bool post_processing_window_tmp = false;
+PostProcessingWindow::PostProcessingWindow(PostProcessing::Profile& targetProfile) : targetProfile(targetProfile)
+{
+}
 
 void PostProcessingWindow::render()
 {
@@ -15,29 +17,31 @@ void PostProcessingWindow::render()
 
 	UIComponents::headline("Post Processing", ICON_FA_SPARKLES, HeadlineJustification::LEFT);
 
+	bool post_processing_window_tmp = false;
+
 	if (UIComponents::extendableSettings("Color Grading", post_processing_window_tmp, ICON_FA_PROJECTOR))
 	{
 
 		UIComponents::headline("Contrast, Exposure & Gamma");
-		UIComponents::input("Contrast:", PostProcessing::color.contrast, 0.0001f);
-		UIComponents::input("Exposure:", PostProcessing::color.exposure, 0.001f);
-		UIComponents::input("Gamma:", PostProcessing::color.gamma, 0.001f);
+		UIComponents::input("Contrast:", targetProfile.color.contrast, 0.0001f);
+		UIComponents::input("Exposure:", targetProfile.color.exposure, 0.001f);
+		UIComponents::input("Gamma:", targetProfile.color.gamma, 0.001f);
 
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Motion Blur", PostProcessing::motionBlur.enabled, ICON_FA_PROJECTOR))
+	if (UIComponents::extendableSettings("Motion Blur", targetProfile.motionBlur.enabled, ICON_FA_PROJECTOR))
 	{
 
 		UIComponents::headline("Camera Motion Blur Settings");
-		UIComponents::input("Enable Camera Motion Blur", PostProcessing::motionBlur.cameraEnabled);
-		UIComponents::input("Intensity:", PostProcessing::motionBlur.cameraIntensity, 0.001f);
-		UIComponents::input("Samples:", PostProcessing::motionBlur.cameraSamples, 0.1f);
+		UIComponents::input("Enable Camera Motion Blur", targetProfile.motionBlur.cameraEnabled);
+		UIComponents::input("Intensity:", targetProfile.motionBlur.cameraIntensity, 0.001f);
+		UIComponents::input("Samples:", targetProfile.motionBlur.cameraSamples, 0.1f);
 
 		UIComponents::space(0.0f, 5.0f);
 		UIComponents::headline("Object Motion Blur Settings");
-		UIComponents::input("Enable Object Motion Blur", PostProcessing::motionBlur.objectEnabled);
-		UIComponents::input("Samples:", PostProcessing::motionBlur.objectSamples, 0.1f);
+		UIComponents::input("Enable Object Motion Blur", targetProfile.motionBlur.objectEnabled);
+		UIComponents::input("Samples:", targetProfile.motionBlur.objectSamples, 0.1f);
 
 		/*UIComponents::space(0.0f, 2.0f);
 		UILayout::beginFlex("SilhouetteExtension", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
@@ -59,57 +63,65 @@ void PostProcessingWindow::render()
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Bloom", PostProcessing::bloom.enabled, ICON_FA_PROJECTOR))
+	if (UIComponents::extendableSettings("Bloom", targetProfile.bloom.enabled, ICON_FA_PROJECTOR))
 	{
 
 		UIComponents::headline("Bloom Settings");
-		UIComponents::input("Intensity:", PostProcessing::bloom.intensity, 0.001f);
-		UIComponents::input("Threshold:", PostProcessing::bloom.threshold, 0.001f);
-		UIComponents::input("Soft Threshold:", PostProcessing::bloom.softThreshold, 0.001f);
-		UIComponents::input("Filter Radius:", PostProcessing::bloom.filterRadius, 0.001f);
-		UIComponents::colorPicker("Bloom Color", PostProcessing::bloom.color);
+		UIComponents::input("Intensity:", targetProfile.bloom.intensity, 0.001f);
+		UIComponents::input("Threshold:", targetProfile.bloom.threshold, 0.001f);
+		UIComponents::input("Soft Threshold:", targetProfile.bloom.softThreshold, 0.001f);
+		UIComponents::input("Filter Radius:", targetProfile.bloom.filterRadius, 0.001f);
+		UIComponents::colorPicker("Bloom Color", targetProfile.bloom.color);
 
 		UIComponents::space(0.0f, 5.0f);
 		UIComponents::headline("Lens Dirt Settings");
-		UIComponents::input("Enable Lens Dirt", PostProcessing::bloom.lensDirtEnabled);
-		UIComponents::input("Intensity:", PostProcessing::bloom.lensDirtIntensity, 0.01f);
+		UIComponents::input("Enable Lens Dirt", targetProfile.bloom.lensDirtEnabled);
+		UIComponents::input("Intensity:", targetProfile.bloom.lensDirtIntensity, 0.01f);
 
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Vignette", PostProcessing::vignette.enabled, ICON_FA_BAG_SHOPPING))
+	if (UIComponents::extendableSettings("Vignette", targetProfile.vignette.enabled, ICON_FA_BAG_SHOPPING))
 	{
 
 		UIComponents::headline("Vignette Settings");
-		UIComponents::input("Intensity:", PostProcessing::vignette.intensity, 0.01f);
-		UIComponents::input("Radius:", PostProcessing::vignette.radius, 0.01f);
-		UIComponents::input("Softness:", PostProcessing::vignette.softness, 0.01f);
-		UIComponents::input("Roundness:", PostProcessing::vignette.roundness, 0.01f);
-		UIComponents::colorPicker("Vignette Color", PostProcessing::vignette.color);
+		UIComponents::input("Intensity:", targetProfile.vignette.intensity, 0.01f);
+		UIComponents::input("Radius:", targetProfile.vignette.radius, 0.01f);
+		UIComponents::input("Softness:", targetProfile.vignette.softness, 0.01f);
+		UIComponents::input("Roundness:", targetProfile.vignette.roundness, 0.01f);
+		UIComponents::colorPicker("Vignette Color", targetProfile.vignette.color);
 
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Chromatic Aberration", PostProcessing::chromaticAberration.enabled, ICON_FA_BAG_SHOPPING))
+	if (UIComponents::extendableSettings("Chromatic Aberration", targetProfile.chromaticAberration.enabled, ICON_FA_BAG_SHOPPING))
 	{
 
 		UIComponents::headline("Chromatic Aberration Settings");
-		UIComponents::input("Intensity:", PostProcessing::chromaticAberration.intensity, 0.01f);
-		UIComponents::input("Iterations:", PostProcessing::chromaticAberration.iterations, 0.1f);
+		UIComponents::input("Intensity:", targetProfile.chromaticAberration.intensity, 0.01f);
+		UIComponents::input("Iterations:", targetProfile.chromaticAberration.iterations, 0.1f);
 
 		UIComponents::space(0.0f, 8.0f);
 	}
 
-	if (UIComponents::extendableSettings("Ambient Occlusion", PostProcessing::ambientOcclusion.enabled, ICON_FA_PROJECTOR))
+	if (UIComponents::extendableSettings("Ambient Occlusion", targetProfile.ambientOcclusion.enabled, ICON_FA_PROJECTOR))
 	{
 		UIComponents::headline("SSAO Settings");
-		UIComponents::input("Radius:", PostProcessing::ambientOcclusion.radius, 0.001f);
-		UIComponents::input("Samples:", PostProcessing::ambientOcclusion.samples, 0.1f);
-		UIComponents::input("Power:", PostProcessing::ambientOcclusion.power, 0.001f);
-		UIComponents::input("Bias:", PostProcessing::ambientOcclusion.bias, 0.0001f);
+		UIComponents::input("Radius:", targetProfile.ambientOcclusion.radius, 0.001f);
+		UIComponents::input("Samples:", targetProfile.ambientOcclusion.samples, 0.1f);
+		UIComponents::input("Power:", targetProfile.ambientOcclusion.power, 0.001f);
+		UIComponents::input("Bias:", targetProfile.ambientOcclusion.bias, 0.0001f);
 
 		UIComponents::space(0.0f, 8.0f);
 	}
 
 	ImGui::End();
+}
+
+PostProcessing::Profile& PostProcessingWindow::getTargetProfile() {
+	return targetProfile;
+}
+
+void PostProcessingWindow::updateTargetProfile(PostProcessing::Profile& profile) {
+	targetProfile = profile;
 }

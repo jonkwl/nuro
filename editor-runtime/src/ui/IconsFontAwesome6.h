@@ -1420,3 +1420,4 @@
 #define ICON_FA_BRAKE_WARNING "\xEE\x83\x87" // U+e0c7
 #define ICON_FA_XMARK_LARGE "\xEE\x96\x9B" // U+e59b
 #define ICON_FA_MESSAGE_LINES "\xEF\x92\xA6" // U+f4a6
+#define ICON_FA_BRROM_WIDE "\xEE\x97\x91" // U+e5d1

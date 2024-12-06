@@ -2,6 +2,7 @@
 
 #include "../imaterial.h"
 
+#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/viewport/viewport.h"
 #include "../core/camera/camera.h"
 #include "../core/rendering/texture/texture.h"
@@ -15,10 +16,13 @@ public:
 	LitMaterial();
 
 	// Needed to be set before binding lit material
+	// Replace this through some state object and add a function to push a state
+	// Eg "RenderState" and pushRenderState(state)
+	// Or rewrite matertial system for more modular and dynamic approach
 	static Viewport* viewport;
 	static Camera* camera;
 	static unsigned int ssaoInput;
-
+	static PostProcessing::Profile* profile;
 	static ShadowDisk* mainShadowDisk; // tmp until global shadow system
 	static ShadowMap* mainShadowMap; // tmp until global shadow system
 

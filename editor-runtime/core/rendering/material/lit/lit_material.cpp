@@ -5,14 +5,13 @@
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/shadows/shadow_disk.h"
 #include "../core/rendering/core/transformation.h"
-#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/utils/log.h"
 
 Viewport* LitMaterial::viewport = nullptr;
 Camera* LitMaterial::camera = nullptr;
 unsigned int LitMaterial::ssaoInput = 0;
-
+PostProcessing::Profile* LitMaterial::profile = nullptr;
 ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
 ShadowMap* LitMaterial::mainShadowMap = nullptr;
 
@@ -46,7 +45,7 @@ void LitMaterial::bind()
 	shader->bind();
 
 	// General parameters
-	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
+	shader->setFloat("configuration.gamma", profile->color.gamma);
 	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
 
 	// Shadow parameters
@@ -60,7 +59,7 @@ void LitMaterial::bind()
 	shader->setFloat("configuration.shadowDiskRadius", static_cast<float>(mainShadowDisk->getRadius()));
 
 	// SSAO
-	shader->setBool("configuration.enableSSAO", PostProcessing::ambientOcclusion.enabled);
+	shader->setBool("configuration.enableSSAO", profile->ambientOcclusion.enabled);
 	glActiveTexture(GL_TEXTURE0 + SSAO_UNIT);
 	glBindTexture(GL_TEXTURE_2D, ssaoInput);
 
@@ -166,8 +165,6 @@ void LitMaterial::setEmissionMap(Texture texture)
 
 void LitMaterial::syncStaticUniforms()
 {
-	shader->setFloat("configuration.gamma", PostProcessing::color.gamma);
-
 	shader->setBool("configuration.solidMode", false);
 	shader->setBool("configuration.castShadows", true);
 

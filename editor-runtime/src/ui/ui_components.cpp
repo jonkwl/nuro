@@ -59,7 +59,7 @@ bool UIComponents::buttonBig(std::string label, std::string tooltip)
 
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, UIUtils::darken(EditorUI::getColors().elementActive, 0.3f));
 	
-	pressed = ImGui::Button("Clear");
+	pressed = ImGui::Button(label.c_str());
 
 	UIComponents::tooltip(tooltip);
 

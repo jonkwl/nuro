@@ -35,7 +35,6 @@ namespace PostProcessing
 		float threshold = 0.2f;
 		float softThreshold = 0.0f;
 		float filterRadius = 0.0f;
-		unsigned int mipDepth = 16;
 
 		bool lensDirtEnabled = false;
 		Texture lensDirtTexture = Texture::empty();
@@ -72,11 +71,15 @@ namespace PostProcessing
 
 	};
 
-	inline Color color;
-	inline MotionBlur motionBlur;
-	inline Bloom bloom;
-	inline ChromaticAberration chromaticAberration;
-	inline Vignette vignette;
-	inline AmbientOcclusion ambientOcclusion;
+	struct Profile {
+
+		Color color;
+		MotionBlur motionBlur;
+		Bloom bloom;
+		ChromaticAberration chromaticAberration;
+		Vignette vignette;
+		AmbientOcclusion ambientOcclusion;
+
+	};
 
 }

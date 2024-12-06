@@ -20,7 +20,6 @@ public:
 	float threshold;
 	float softThreshold;
 	float filterRadius;
-	unsigned int mipDepth;
 
 private:
 	unsigned int prefilteringPass(const unsigned int hdrInput);

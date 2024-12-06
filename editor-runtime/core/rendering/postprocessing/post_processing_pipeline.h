@@ -16,11 +16,13 @@ public:
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
 
-	void render(const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput); // Render post processing by performing all post processing passes on input
+	void render(const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput); // Render post processing by performing all post processing passes on input
 
 	unsigned int getOutput(); // Get output of last post processing render
 
 private:
+	static constexpr int DEFAULT_BLOOM_MIP_DEPTH = 16;
+
 	enum TextureUnits
 	{
 		HDR_UNIT,
@@ -33,7 +35,7 @@ private:
 
 	const bool renderToScreen;
 
-	void syncConfiguration(); // Sync the post processing configuration with final pass shader
+	void syncConfiguration(const PostProcessing::Profile& profile); // Sync the post processing configuration with final pass shader
 
 	unsigned int fbo;	 // Framebuffer
 	unsigned int output; // Post processing output

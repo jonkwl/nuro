@@ -10,6 +10,7 @@
 #include "../core/rendering/core/forward_pass.h"
 #include "../core/rendering/sceneview/scene_view_forward_pass.h"
 #include "../core/rendering/ssao/ssao_pass.h"
+#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/postprocessing/post_processing_pipeline.h"
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/skybox/skybox.h"
@@ -58,6 +59,10 @@ public:
 	static SSAOPass ssaoPass;
 	static VelocityBuffer velocityBuffer;
 	static PostProcessingPipeline postProcessingPipeline;
+
+	// tmp profile
+	static PostProcessing::Profile sceneViewProfile;
+	static PostProcessing::Profile gameViewProfile;
 
 	// Instances
 	static QuickGizmo quickGizmo;

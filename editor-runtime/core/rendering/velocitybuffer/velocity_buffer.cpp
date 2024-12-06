@@ -10,7 +10,6 @@
 #include "../core/rendering/primitives/quad.h"
 #include "../core/entity/entity.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/postprocessing/post_processing.h"
 
 VelocityBuffer::VelocityBuffer(const Viewport& viewport) : viewport(viewport),
 fbo(0),
@@ -101,7 +100,7 @@ void VelocityBuffer::destroy()
 	postfilterShader = nullptr;
 }
 
-unsigned int VelocityBuffer::render(std::vector<Entity*>& targets)
+unsigned int VelocityBuffer::render(const PostProcessing::Profile& profile, std::vector<Entity*>& targets)
 {
 	// Prepare output
 	unsigned int OUTPUT = 0;
@@ -110,7 +109,7 @@ unsigned int VelocityBuffer::render(std::vector<Entity*>& targets)
 	OUTPUT = velocityPasses(targets);
 
 	// Perform postfiltering pass on velocity buffer if object silhouettes should be extended
-	if (PostProcessing::motionBlur.objectSilhouetteExtension)
+	if (profile.motionBlur.objectSilhouetteExtension)
 	{
 		OUTPUT = postfilteringPass();
 	}

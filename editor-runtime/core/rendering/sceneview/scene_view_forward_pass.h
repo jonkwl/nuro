@@ -16,7 +16,7 @@ class SceneViewForwardPass
 public:
 	SceneViewForwardPass(const Viewport& viewport);
 
-	void create(); // Creates forward pass
+	void create(unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
 	// Scene view forward passes all entity render targets and returns color output
@@ -36,9 +36,12 @@ private:
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
 	QuickGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
 
-	unsigned int fbo;	 // Output framebuffer
-	unsigned int rbo; // Output renderbuffer
+	unsigned int outputFbo;	 // Output framebuffer
 	unsigned int outputColor; // Output color
+
+	unsigned int multisampledFbo; // Anti-aliasing framebuffer
+	unsigned int multisampledRbo; // Anti-aliasing renderbuffer
+	unsigned int multisampledColorBuffer; // Anti-aliasing colorbuffer
 
 	UnlitMaterial* selectionMaterial; // Material for selection outline
 

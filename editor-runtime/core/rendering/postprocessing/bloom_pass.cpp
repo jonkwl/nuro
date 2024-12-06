@@ -11,7 +11,6 @@ BloomPass::BloomPass(const Viewport& viewport) : viewport(viewport),
 threshold(0.0f),
 softThreshold(0.0f),
 filterRadius(0.0f),
-mipDepth(0),
 mipChain(),
 iViewportSize(0, 0),
 fViewportSize(0.0f, 0.0f),
@@ -42,9 +41,6 @@ void BloomPass::create(const unsigned int mipDepth)
 	// Set static upsampling uniforms
 	upsamplingShader->bind();
 	upsamplingShader->setInt("inputTexture", 0);
-
-	// Set mip depth member
-	this->mipDepth = mipDepth;
 
 	// Get initial viewport size
 	iViewportSize = glm::ivec2(viewport.width, viewport.height);

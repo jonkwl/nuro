@@ -2,8 +2,6 @@
 
 #include <string>
 
-typedef unsigned int GLuint;
-
 enum class TextureType
 {
 	ALBEDO,
@@ -22,13 +20,15 @@ public:
 	void bind(unsigned int unit); // Bind texture for backend
 	void destroy(); // Delete texture in backend
 
+	unsigned int getBackendId(); // Returns the textures backend id
+
 public:
 	static Texture empty(); // Get empty texture
 	static Texture load(std::string path, TextureType type); // Create texture of type from image data
-	static Texture fromBackendId(GLuint id); // Create texture with existing backend texture attached
+	static Texture fromBackendId(unsigned int backendId); // Create texture with existing backend texture attached
 
 private:
-	explicit Texture(GLuint id); // Construct texture class by backend texture id (0 for none)
+	explicit Texture(unsigned int backendId); // Construct texture class by backend texture id (0 for none)
 
-	GLuint id; // Backend texture id
+	unsigned int backendId; // Backend texture id
 };
