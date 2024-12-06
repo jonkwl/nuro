@@ -102,6 +102,11 @@ namespace Input {
 		return glfwGetKey(_window, key) == GLFW_PRESS;
 	}
 
+	bool mouseDown(int mouseButton)
+	{
+		return glfwGetMouseButton(_window, mouseButton) == GLFW_PRESS;
+	}
+
 	bool command(int key)
 	{
 		return keyDown(Key::LEFT_CONTROL) && keyDown(key);
