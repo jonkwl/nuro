@@ -134,7 +134,7 @@ unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 	*/
 	// INJECTED PRE PASS END
 
-	// Render each linked entity to bound forward pass frame
+	// Render each linked entity
 	for (int i = 0; i < targets.size(); i++)
 	{
 		targets[i]->meshRenderer.forwardPass();

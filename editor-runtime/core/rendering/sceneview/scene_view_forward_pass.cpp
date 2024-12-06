@@ -6,6 +6,7 @@
 #include "../core/entity/entity.h"
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
+#include "../core/rendering/model/model.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -15,12 +16,17 @@ skybox(nullptr),
 quickGizmo(nullptr),
 fbo(0),
 rbo(0),
-outputColor(0)
+outputColor(0),
+selectionMaterial(nullptr)
 {
 }
 
 void SceneViewForwardPass::create()
 {
+	// Create outline material
+	selectionMaterial = new UnlitMaterial();
+	selectionMaterial->baseColor = glm::vec4(1.0f, 0.25f, 0.0f, 0.7f);
+
 	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -52,6 +58,10 @@ void SceneViewForwardPass::create()
 }
 
 void SceneViewForwardPass::destroy() {
+	// Delete selection material
+	delete(selectionMaterial);
+
+	selectionMaterial = nullptr;
 	// Delete color output texture
 	glDeleteTextures(1, &outputColor);
 	outputColor = 0;
@@ -65,7 +75,7 @@ void SceneViewForwardPass::destroy() {
 	fbo = 0;
 }
 
-unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets)
+unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets, Entity* selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -95,8 +105,22 @@ unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	// Render each linked entity to bound forward pass frame
-	for (int i = 0; i < targets.size(); i++) targets[i]->meshRenderer.forwardPass();
+	// Enable stencil testing without writing
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilMask(0x00);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+
+	// Render each objects forward pass except for selected entity
+	for (int i = 0; i < targets.size(); i++) {
+		Entity* entity = targets[i];
+		if (entity != selected) {
+			entity->meshRenderer.forwardPass();
+		}
+	}
+	
+	// Render selected entity with outline
+	renderSelectedEntity(selected);
 
 	// Disable wireframe if enabled
 	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -128,4 +152,42 @@ void SceneViewForwardPass::enableQuickGizmo(QuickGizmo* source)
 void SceneViewForwardPass::disableQuickGizmo()
 {
 	quickGizmo = nullptr;
+}
+
+void SceneViewForwardPass::renderSelectedEntity(Entity* selected)
+{
+	// Render the selected entity and write to stencil
+	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
+	glStencilMask(0xFF); // Enable stencil writes
+	selected->meshRenderer.forwardPass();
+
+	// Render outline of selected entity
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // Pass if stencil value is NOT 1
+	glStencilMask(0x00); // Disable stencil writes
+	glDepthFunc(GL_LEQUAL); // Pass depth test if less or equal
+
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Temporarily increase scale for outline rendering
+	float scaleIncrease = 0.025f;
+	selected->transform.scale += scaleIncrease;
+
+	// Temporarily overwrite all materials with selection material
+	std::vector<IMaterial*> originalMaterials = selected->meshRenderer.materials;
+	std::fill(selected->meshRenderer.materials.begin(), selected->meshRenderer.materials.end(), selectionMaterial);
+
+	// Recalculate render matrices and render the outline entity
+	selected->meshRenderer.recalculateRenderMatrices();
+	selected->meshRenderer.forwardPass();
+
+	// Restore original materials, scale and position
+	selected->meshRenderer.materials = originalMaterials;
+	selected->transform.scale -= scaleIncrease;
+
+	// Reset state
+	glDisable(GL_BLEND);
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 }

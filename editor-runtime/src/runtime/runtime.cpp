@@ -322,6 +322,8 @@ void Runtime::prepareFrame() {
 
 }
 
+static unsigned int selectedEntity = 2;
+static bool selectionChangedLastFrame = false;
 void Runtime::renderFrame() {
 
 	Profiler::start("render");
@@ -346,7 +348,17 @@ void Runtime::renderFrame() {
 	camera.updateFrustum(viewProjectionMatrix);
 
 	// Set tmp context
-	TmpContext::selectedEntity = entityStack[2];
+	if (Input::keyDown(Key::BACKSPACE) && !selectionChangedLastFrame) {
+		selectedEntity++;
+		if (selectedEntity > entityStack.size() - 1) {
+			selectedEntity = 0;
+		}
+		selectionChangedLastFrame = true;
+	}
+	if (selectionChangedLastFrame) {
+		if (!Input::keyDown(Key::BACKSPACE)) selectionChangedLastFrame = false;
+	}
+	TmpContext::selectedEntity = entityStack[selectedEntity];
 	TmpContext::view = viewMatrix;
 	TmpContext::projection = projectionMatrix;
 
@@ -403,7 +415,7 @@ void Runtime::renderFrame() {
 	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
 	// Includes injected pre pass
 	//
-	
+
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
 	LitMaterial::camera = &camera; // Redundant most of the times atm
@@ -413,7 +425,7 @@ void Runtime::renderFrame() {
 
 	Profiler::start("forward_pass");
 	sceneViewForwardPass.wireframe = sceneViewWireframe;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(entityStack);
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(entityStack, TmpContext::selectedEntity);
 	Profiler::stop("forward_pass");
 
 	//

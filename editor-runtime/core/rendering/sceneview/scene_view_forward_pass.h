@@ -5,6 +5,8 @@
 
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/quick_gizmo.h"
+#include "../core/rendering/material/imaterial.h"
+#include "../core/rendering/material/unlit/unlit_material.h"
 
 class Entity;
 class Skybox;
@@ -18,7 +20,7 @@ public:
 	void destroy(); // Destroys forward pass
 
 	// Scene view forward passes all entity render targets and returns color output
-	unsigned int render(std::vector<Entity*>& targets);
+	unsigned int render(std::vector<Entity*>& targets, Entity* selected);
 
 	void setSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
@@ -37,4 +39,8 @@ private:
 	unsigned int fbo;	 // Output framebuffer
 	unsigned int rbo; // Output renderbuffer
 	unsigned int outputColor; // Output color
+
+	UnlitMaterial* selectionMaterial; // Material for selection outline
+
+	void renderSelectedEntity(Entity* selected); // Renders the selected entity with an outline
 };

@@ -40,6 +40,8 @@ public:
 	static glm::mat3 currentViewNormalMatrix;	  // Static transposed inverse view matrix for current frame
 
 	static glm::mat4 currentLightSpaceMatrix; // Static light space matrix cache for current frame
+
+	void recalculateRenderMatrices(); // Recalculates the current model matrix according to transform
 private:
 	glm::mat4 currentModelMatrix;  // Model matrix cache for current frame
 	glm::mat4 currentMvpMatrix;	   // MVP matrix cache for current frame
