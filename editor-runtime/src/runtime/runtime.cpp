@@ -80,6 +80,8 @@ PostProcessing::Profile Runtime::gameViewProfile;
 
 QuickGizmo Runtime::quickGizmo;
 
+SceneViewPipeline Runtime::sceneViewPipeline;
+
 bool Runtime::resized = false;
 
 //
@@ -120,8 +122,6 @@ Camera& Runtime::getCamera()
 //
 //
 
-static bool enterPressedLastFrame = false;
-static bool gameView = false;
 int Runtime::START_LOOP()
 {
 	// CREATE CONTEXT AND LOAD GRAPHICS API //
@@ -155,18 +155,9 @@ int Runtime::START_LOOP()
 		//
 
 		// RENDER NEXT FRAME (full render pipeline pass)
-
-		// Tmp switching between scene view and game view
-		if (enterPressedLastFrame) {
-			if (!Input::keyDown(Key::ENTER)) gameView = !gameView;
-		}
-		enterPressedLastFrame = Input::keyDown(Key::ENTER);
-		if (gameView) {
-			renderGameView();
-		}
-		else {
-			renderSceneView();
-		}
+		renderShadows();
+		sceneViewPipeline.render(entityStack);
+		renderGameView();
 
 		// RENDER EDITOR
 		renderEditor();
@@ -290,6 +281,11 @@ void Runtime::setupScripts() {
 	Input::setContext(glfw);
 	Cursor::setContext(glfw);
 
+	// Setup scene view pipeline
+	sceneViewPipeline.setup();
+
+	//
+	//
 	// Create forward pass
 	forwardPass.create(msaaSamples);
 	forwardPass.setSkybox(&currentSkybox);
@@ -310,21 +306,17 @@ void Runtime::setupScripts() {
 	// Setup post processing
 	postProcessingPipeline.create();
 
-	// Setup engine ui
-	EditorUI::setup();
+	// Setup quick gizmo
+	quickGizmo.setup();
+	//
+	//
+
 
 	// Create primitives
 	Quad::create();
 
-	// Setup quick gizmo
-	quickGizmo.setup();
-
-	// Setup scene view post processing
-	sceneViewProfile.bloom.enabled = false;
-	sceneViewProfile.motionBlur.enabled = false;
-	sceneViewProfile.ambientOcclusion.enabled = false;
-	sceneViewProfile.vignette.enabled = false;
-	sceneViewProfile.chromaticAberration.enabled = false;
+	// Setup engine ui
+	EditorUI::setup();
 
 }
 
@@ -348,53 +340,18 @@ void Runtime::prepareFrame() {
 
 }
 
-static unsigned int selectedEntity = 2;
-static bool selectionChangedLastFrame = false;
-void Runtime::renderSceneView() {
-
-	Profiler::start("render");
-
-	// Get transformation matrices
-	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(camera, sceneViewport);
-	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
-	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
-
-	// Set mesh renderers transformation matrix caches for upcomming render passes
-	MeshRenderer::currentViewMatrix = viewMatrix;
-	MeshRenderer::currentProjectionMatrix = projectionMatrix;
-	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
-	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
-
-	// Update cameras frustum
-	camera.updateFrustum(viewProjectionMatrix);
-
-	// Set tmp context
-	if (Input::keyDown(Key::BACKSPACE) && !selectionChangedLastFrame) {
-		selectedEntity++;
-		if (selectedEntity > entityStack.size() - 1) {
-			selectedEntity = 0;
-		}
-		selectionChangedLastFrame = true;
-	}
-	if (selectionChangedLastFrame) {
-		if (!Input::keyDown(Key::BACKSPACE)) selectionChangedLastFrame = false;
-	}
-	TmpContext::selectedEntity = entityStack[selectedEntity];
-	TmpContext::view = viewMatrix;
-	TmpContext::projection = projectionMatrix;
-
+void Runtime::renderShadows()
+{
+	// WARNING
+	// 
+	// Right now, the shadow passes will use the "current model matrix" from themesh renderer.
+	// As the shadows will be rendered before the other rendering pipelines,
+	// which prepare the mesh renderer by among other things calculating and 
+	// settings its "current model matrix", the "current model matrix" will always be
+	// one frame delayed, ultimately delaying object movement for shadows by one frame
 	//
-	// PREPARATION PASS
-	// Prepare each mesh for upcoming render passes
-	//
-	for (int i = 0; i < entityStack.size(); i++)
-	{
-		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
-		// Here for now to ensure preparation despite further pipeline changes
-		entityStack[i]->meshRenderer.prepareNextFrame(camera);
-	}
-
+	// Needs fix
+	
 	//
 	// SHADOW PASS
 	// Render shadow map
@@ -402,65 +359,6 @@ void Runtime::renderSceneView() {
 	Profiler::start("shadow_pass");
 	mainShadowMap->render(entityStack);
 	Profiler::stop("shadow_pass");
-
-	//
-	// PRE PASS
-	// Create geometry pass with depth buffer before forward pass
-	//
-	Profiler::start("pre_pass");
-	prePass.render(entityStack);
-	Profiler::stop("pre_pass");
-	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
-	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
-
-	//
-	// SCREEN SPACE AMBIENT OCCLUSION PASS
-	// Calculate screen space ambient occlusion if enabled
-	//
-	Profiler::start("ssao");
-	unsigned int _ssaoOutput = 0;
-	if (gameViewProfile.ambientOcclusion.enabled)
-	{
-		_ssaoOutput = ssaoPass.render(gameViewProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
-	}
-	const unsigned int SSAO_OUTPUT = _ssaoOutput;
-	Profiler::stop("ssao");
-
-	//
-	// VELOCITY BUFFER RENDER PASS
-	//
-	Profiler::start("velocity_buffer");
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(gameViewProfile, entityStack);
-	Profiler::stop("velocity_buffer");
-
-	//
-	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
-	// Includes injected pre pass
-	//
-
-	// Prepare lit material with current render data
-	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
-	LitMaterial::camera = &camera; // Redundant most of the times atm
-	LitMaterial::ssaoInput = SSAO_OUTPUT;
-	LitMaterial::profile = &sceneViewProfile;
-	LitMaterial::mainShadowDisk = mainShadowDisk;
-	LitMaterial::mainShadowMap = mainShadowMap;
-
-	Profiler::start("forward_pass");
-	sceneViewForwardPass.wireframe = sceneViewWireframe;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(entityStack, TmpContext::selectedEntity);
-	Profiler::stop("forward_pass");
-
-	//
-	// POST PROCESSING PASS
-	// Render post processing pass to screen using forward pass output as input
-	//
-	Profiler::start("post_processing");
-	postProcessingPipeline.render(sceneViewProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
-	Profiler::stop("post_processing");
-
-	Profiler::stop("render");
-
 }
 
 void Runtime::renderGameView() {
@@ -482,14 +380,6 @@ void Runtime::renderGameView() {
 	// Update cameras frustum
 	camera.updateFrustum(viewProjectionMatrix);
 
-	// Set tmp context
-	TmpContext::selectedEntity = entityStack[selectedEntity];
-	TmpContext::view = viewMatrix;
-	TmpContext::projection = projectionMatrix;
-
-	// Update cameras frustum
-	camera.updateFrustum(viewProjectionMatrix);
-
 	//
 	// PREPARATION PASS
 	// Prepare each mesh for upcoming render passes
@@ -500,14 +390,6 @@ void Runtime::renderGameView() {
 		// Here for now to ensure preparation despite further pipeline changes
 		entityStack[i]->meshRenderer.prepareNextFrame(camera);
 	}
-
-	//
-	// SHADOW PASS
-	// Render shadow map
-	//
-	Profiler::start("shadow_pass");
-	mainShadowMap->render(entityStack);
-	Profiler::stop("shadow_pass");
 
 	//
 	// PRE PASS
@@ -549,6 +431,7 @@ void Runtime::renderGameView() {
 	LitMaterial::camera = &camera; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &gameViewProfile;
+	LitMaterial::castShadows = true;
 	LitMaterial::mainShadowDisk = mainShadowDisk;
 	LitMaterial::mainShadowMap = mainShadowMap;
 

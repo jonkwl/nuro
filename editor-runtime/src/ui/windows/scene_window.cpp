@@ -41,8 +41,6 @@ cursorDelta(glm::vec2(0.0f)),
 gizmoOperation(ImGuizmo::OPERATION::TRANSLATE),
 gizmoScaleMin(0.1f)
 {
-	Runtime::getCamera().transform.position.y = 2.0f;
-
 	cursorLast = Cursor::getPosition();
 }
 
@@ -78,7 +76,7 @@ void SceneWindow::render()
 	if (sceneViewRightclicked || sceneViewMiddleclicked) EditorUI::setCursorMode(CursorMode::HIDDEN);
 
 	// Update movement according to inputs calculated prior
-	updateMovement(Runtime::getCamera());
+	updateMovement(Runtime::sceneViewPipeline.getFlyCamera());
 }
 
 void SceneWindow::renderToolbar()
@@ -86,10 +84,11 @@ void SceneWindow::renderToolbar()
 	// Render toggle buttons for render options
 	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
-		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, Runtime::sceneViewWireframe, "Wireframe");
-		UIComponents::toggleButton(ICON_FA_CUBE, Runtime::solidMode, "Solid Mode");
-		UIComponents::toggleButton(ICON_FA_ECLIPSE, Runtime::shadows, "Shadows");
-		UIComponents::toggleButton(ICON_FA_SPARKLES, Runtime::postProcessingEffects, "Post Processing");
+		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, Runtime::sceneViewPipeline.wireframe, "Wireframe");
+		UIComponents::toggleButton(ICON_FA_ECLIPSE, Runtime::sceneViewPipeline.renderShadows, "Render Shadows");
+		UIComponents::toggleButton(ICON_FA_SPARKLES, Runtime::sceneViewPipeline.useProfileEffects, "Enable Post Processing");
+		UIComponents::toggleButton(ICON_FA_DRAW_SQUARE, Runtime::sceneViewPipeline.showGizmos, "Show Gizmos");
+		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, Runtime::sceneViewPipeline.showSkybox, "Render Skybox");
 	}
 	UILayout::endFlex();
 
@@ -111,7 +110,7 @@ void SceneWindow::renderSceneView()
 		bool currentlyResizing = currentWindowSize != lastWindowSize;
 
 		// Render target
-		ImGui::Image(currentlyResizing ? 0 : Runtime::postProcessingPipeline.getOutput(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(currentlyResizing ? 0 : Runtime::sceneViewPipeline.getOutput(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 
 		// Get scene view bounds
 		ImVec2 boundsMin = ImGui::GetItemRectMin();
@@ -142,7 +141,7 @@ void SceneWindow::renderSceneView()
 
 		// Check if scene window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			Runtime::resizeViewport(width, height);
+			Runtime::sceneViewPipeline.resizeViewport(width, height);
 			lastWindowSize = currentWindowSize;
 		}
 	}

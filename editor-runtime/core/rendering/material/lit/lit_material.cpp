@@ -12,6 +12,7 @@ Viewport* LitMaterial::viewport = nullptr;
 Camera* LitMaterial::camera = nullptr;
 unsigned int LitMaterial::ssaoInput = 0;
 PostProcessing::Profile* LitMaterial::profile = nullptr;
+bool LitMaterial::castShadows = true;
 ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
 ShadowMap* LitMaterial::mainShadowMap = nullptr;
 
@@ -44,11 +45,13 @@ void LitMaterial::bind()
 {
 	shader->bind();
 
-	// General parameters
+	// General configuration
 	shader->setFloat("configuration.gamma", profile->color.gamma);
 	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
 
 	// Shadow parameters
+	shader->setBool("configuration.castShadows", castShadows);
+
 	mainShadowMap->bind(SHADOW_MAP_UNIT);
 	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(mainShadowMap->getResolutionWidth()));
 	shader->setFloat("configuration.shadowMapResolutionHeight", static_cast<float>(mainShadowMap->getResolutionHeight()));
@@ -165,9 +168,6 @@ void LitMaterial::setEmissionMap(Texture texture)
 
 void LitMaterial::syncStaticUniforms()
 {
-	shader->setBool("configuration.solidMode", false);
-	shader->setBool("configuration.castShadows", true);
-
 	shader->setInt("material.albedoMap", ALBEDO_UNIT);
 	shader->setInt("material.normalMap", NORMAL_UNIT);
 	shader->setInt("material.roughnessMap", ROUGHNESS_UNIT);

@@ -25,8 +25,8 @@ public:
 	void setSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
 
-	void enableQuickGizmo(QuickGizmo* source);
-	void disableQuickGizmo();
+	void setQuickGizmo(QuickGizmo* source);
+	bool drawQuickGizmos;
 
 	bool wireframe; // Wireframe rendering mode
 	glm::vec4 clearColor; // Clear color for forward pass

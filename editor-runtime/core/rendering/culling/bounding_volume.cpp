@@ -57,6 +57,7 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::quat rotation, 
 	glm::vec3 absoluteHalfSize = modelHalfSize * worldHalfSize;
 
 	// Compute rotated half extents along each axis
+	rotation = glm::normalize(rotation);
 	glm::vec3 rotatedX = glm::vec3(rotation * glm::vec4(absoluteHalfSize.x, 0.0f, 0.0f, 0.0f));
 	glm::vec3 rotatedY = glm::vec3(rotation * glm::vec4(0.0f, absoluteHalfSize.y, 0.0f, 0.0f));
 	glm::vec3 rotatedZ = glm::vec3(rotation * glm::vec4(0.0f, 0.0f, absoluteHalfSize.z, 0.0f));
@@ -90,4 +91,14 @@ float BoundingAABB::getDistance(glm::vec3 point)
 	glm::vec3 clampedPoint = glm::clamp(point, min, max);
 	glm::vec3 difference = point - clampedPoint;
 	return glm::length(difference);
+}
+
+glm::vec3 BoundingAABB::getMin()
+{
+	return min;
+}
+
+glm::vec3 BoundingAABB::getMax()
+{
+	return max;
 }

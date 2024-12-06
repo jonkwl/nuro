@@ -11,7 +11,7 @@ class QuickGizmo
 public:
 	QuickGizmo();
 
-	void setup();    // Load material and models
+	void setup();    // Load gizmo shaders and models if not loaded already
 	void newFrame(); // Clear the render stack
 	void render();   // Render all gizmos from render stack
 
@@ -65,9 +65,11 @@ private:
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
 private:
-	Shader* shader;
-	Model* planeModel;
-	Model* cubeModel;
-	Model* sphereModel;
 	std::vector<RenderTarget> renderStack;
+
+	// Initialized once by any instance, these will be needed for the rest of the application lifetime
+	static Shader* shader;
+	static Model* planeModel;
+	static Model* cubeModel;
+	static Model* sphereModel;
 };

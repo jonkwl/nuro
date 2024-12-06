@@ -195,6 +195,9 @@
     <ClCompile Include="src\ui\windows\game_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\pipelines\scene_view_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\camera\camera.h">
@@ -666,6 +669,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\game_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipelines\scene_view_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

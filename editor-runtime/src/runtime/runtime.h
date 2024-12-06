@@ -17,6 +17,8 @@
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/gizmos.h"
 
+#include "../src/pipelines/scene_view_pipeline.h"
+
 struct GLFWwindow;
 class UnlitMaterial;
 class Shader;
@@ -52,6 +54,8 @@ public:
 	static bool postProcessingEffects; // Enable or disable optional post processing effects
 	static Skybox& currentSkybox;      // Current skybox to be rendered
 
+	static SceneViewPipeline sceneViewPipeline;
+
 	// Passes & Pipelines
 	static PrePass prePass;
 	static ForwardPass forwardPass;
@@ -70,6 +74,9 @@ public:
 	// Perform resize for specific viewport
 	static void resizeViewport(float width, float height);
 
+	static ShadowDisk* mainShadowDisk; // Default shadow disk
+	static ShadowMap* mainShadowMap;   // Default shadow map
+
 private:
 	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
 	static Viewport sceneViewport; // Scene viewport
@@ -77,12 +84,9 @@ private:
 	static bool resized; // If window was resized
 	static Skybox defaultSkybox; // Default skybox
 
-	static ShadowDisk* mainShadowDisk; // Default shadow disk
-	static ShadowMap* mainShadowMap;   // Default shadow map
-
 private:
 	// Render passes
-	static void renderSceneView(); // Render scene view frame
+	static void renderShadows(); // Renders all shadow passes
 	static void renderGameView(); // Render embedded game frame
 
 	// Methods

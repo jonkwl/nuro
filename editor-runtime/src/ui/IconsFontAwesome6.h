@@ -1421,3 +1421,5 @@
 #define ICON_FA_XMARK_LARGE "\xEE\x96\x9B" // U+e59b
 #define ICON_FA_MESSAGE_LINES "\xEF\x92\xA6" // U+f4a6
 #define ICON_FA_BRROM_WIDE "\xEE\x97\x91" // U+e5d1
+#define ICON_FA_CLOUDS_SUN "\xEF\x9D\x86" // U+f746
+#define ICON_FA_DRAW_SQUARE "\xEF\x97\xAF" // U+f5ef

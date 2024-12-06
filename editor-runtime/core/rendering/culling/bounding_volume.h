@@ -13,6 +13,9 @@ public:
 	virtual void update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale) {};
 	virtual bool intersectsFrustum(Frustum frustum) { return false; };
 	virtual float getDistance(glm::vec3 point) { return 0.0f; }
+
+	virtual glm::vec3 getMin() { return glm::vec3(0.0f); }
+	virtual glm::vec3 getMax() { return glm::vec3(0.0f); }
 };
 
 class BoundingSphere : public BoundingVolume
@@ -36,6 +39,9 @@ public:
 	void update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 	bool intersectsFrustum(Frustum frustum);
 	float getDistance(glm::vec3 point);
+
+	glm::vec3 getMin();
+	glm::vec3 getMax();
 
 	glm::vec3 min;
 	glm::vec3 max;

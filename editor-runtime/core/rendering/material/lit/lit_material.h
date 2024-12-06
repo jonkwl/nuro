@@ -23,6 +23,7 @@ public:
 	static Camera* camera;
 	static unsigned int ssaoInput;
 	static PostProcessing::Profile* profile;
+	static bool castShadows;
 	static ShadowDisk* mainShadowDisk; // tmp until global shadow system
 	static ShadowMap* mainShadowMap; // tmp until global shadow system
 

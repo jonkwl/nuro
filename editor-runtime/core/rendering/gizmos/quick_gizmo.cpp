@@ -10,25 +10,25 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/model/mesh.h"
 
+// Global gizmo resources
+Shader* QuickGizmo::shader = nullptr;
+Model* QuickGizmo::planeModel = nullptr;
+Model* QuickGizmo::cubeModel = nullptr;
+Model* QuickGizmo::sphereModel = nullptr;
+
 QuickGizmo::QuickGizmo() : color(glm::vec3(1.0f)),
 opacity(0.4f),
-foreground(false),
-shader(nullptr),
-planeModel(nullptr),
-cubeModel(nullptr),
-sphereModel(nullptr)
+foreground(false)
 {
 }
 
 void QuickGizmo::setup()
 {
-	// Setup material
-	shader = ShaderPool::get("quick_gizmo");
-
-	// Load models from primitives
-	planeModel = Model::load("../resources/primitives/plane.fbx");
-	cubeModel = Model::load("../resources/primitives/cube.fbx");
-	sphereModel = Model::load("../resources/primitives/sphere.fbx");
+	// Load global gizmo shaders and models if not loaded already
+	if (!shader) shader = ShaderPool::get("quick_gizmo");
+	if(!planeModel) planeModel = Model::load("../resources/primitives/plane.fbx");
+	if(!cubeModel) cubeModel = Model::load("../resources/primitives/cube.fbx");
+	if(!sphereModel) sphereModel = Model::load("../resources/primitives/sphere.fbx");
 }
 
 void QuickGizmo::newFrame()
