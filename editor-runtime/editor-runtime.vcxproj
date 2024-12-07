@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
+    <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
     <ClCompile Include="src\ui\windows\game_window.cpp" />
     <ClCompile Include="src\ui\windows\console_window.cpp" />
@@ -195,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
+    <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h" />
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />
     <ClInclude Include="src\ui\windows\game_window.h" />
     <ClInclude Include="src\ui\windows\console_window.h" />

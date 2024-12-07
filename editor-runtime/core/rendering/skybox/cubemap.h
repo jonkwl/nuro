@@ -30,7 +30,6 @@ public:
 
 private:
 	Image loadImage(std::string path);
-
 	void loadFace(std::string facePath);
 	void loadCubemapFaces(std::string cubemapPath);
 };

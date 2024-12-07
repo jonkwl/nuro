@@ -63,13 +63,13 @@ void Skybox::generate(Cubemap& cubemap)
 	Log::printProcessStart("Skybox", "Generating skybox from cubemap " + cubemap.name + "...");
 
 	// Create 
-	create_textures(cubemap);
-	create_buffers();
+	createTextures(cubemap);
+	createBuffers();
 
 	Log::printProcessDone("Skybox", "Skybox generated");
 }
 
-void Skybox::create_textures(Cubemap& cubemap)
+void Skybox::createTextures(Cubemap& cubemap)
 {
 	glGenTextures(1, &cubemapTexture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
@@ -97,7 +97,7 @@ void Skybox::create_textures(Cubemap& cubemap)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-void Skybox::create_buffers()
+void Skybox::createBuffers()
 {
 	Log::printProcessInfo("Generating sky...");
 

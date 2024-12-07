@@ -77,7 +77,7 @@ namespace Log
 		_print(TextColor::White, BackgroundColor::Black, _getSpacing() + info + _getSpacing());
 
 #if EDITOR_CONNECTED
-		ConsoleWindow::addLog(ConsoleLog{ info, "Core - Log API", ConsoleLogType::MESSAGE});
+		ConsoleWindow::addLog(ConsoleLog{ info, "Core - Direct Log API", ConsoleLogType::MESSAGE});
 #endif
 	}
 

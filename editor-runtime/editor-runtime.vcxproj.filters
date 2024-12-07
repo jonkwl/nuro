@@ -198,6 +198,9 @@
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\camera\camera.h">
@@ -672,6 +675,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pipelines\scene_view_pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -273,6 +273,9 @@ void Runtime::loadAssets() {
 
 	// Set default skybox as current skybox
 	currentSkybox = defaultSkybox;
+
+	// Load gizmo icons
+	GizmoIconPool::loadAll("../resources/gizmos");
 }
 
 void Runtime::setupScripts() {

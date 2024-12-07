@@ -25,8 +25,8 @@ private:
 
 	void generate(Cubemap& cubemap);
 
-	void create_textures(Cubemap& cubemap);
-	void create_buffers();
+	void createTextures(Cubemap& cubemap);
+	void createBuffers();
 
 	Shader* shader;
 };

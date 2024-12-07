@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "../core/utils/log.h"
+
 namespace IOHandler
 {
 
@@ -83,6 +85,51 @@ namespace IOHandler
 			return fsPath.parent_path().filename().string();
 		}
 		return "";
+	}
+
+	std::vector<std::string> getFilesWithExtensions(const std::string& path, const std::vector<std::string>& extensions)
+	{
+		std::vector<std::string> files;
+
+		// Check if the path exists and is a directory
+		if (!std::filesystem::exists(path))
+		{
+			Log::printError("IO", "Error: Path does not exist: " + path);
+			return files;
+		}
+
+		if (!std::filesystem::is_directory(path))
+		{
+			Log::printError("IO", "Error: Path is not a directory: " + path);
+			return files;
+		}
+
+		// Iterate through the directory and subdirectories
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
+		{
+			if (std::filesystem::is_regular_file(entry)) // Only consider files
+			{
+				std::string filePath = entry.path().string();
+
+				// Get file extension and convert to lowercase for case-insensitive matching
+				std::string ext = entry.path().extension().string();
+				std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower); // make extension lowercase
+
+				for (const auto& validExt : extensions)
+				{
+					std::string lowerValidExt = validExt;
+					std::transform(lowerValidExt.begin(), lowerValidExt.end(), lowerValidExt.begin(), ::tolower);
+
+					if (ext == lowerValidExt) // Check if the file extension matches
+					{
+						files.push_back(filePath);
+						break; // No need to check further extensions if we found a match
+					}
+				}
+			}
+		}
+
+		return files;
 	}
 
 }
