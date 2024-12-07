@@ -41,7 +41,7 @@ void GameWindow::render()
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
 		UIComponents::space(0.0f, 14.0f);
-		UIComponents::headline(ICON_FA_PLAY "Game", ICON_FA_MAP, HeadlineJustification::CENTER);
+		UIComponents::headline("Game", ICON_FA_PLAY, HeadlineJustification::CENTER);
 
 		// Get game window size
 		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);

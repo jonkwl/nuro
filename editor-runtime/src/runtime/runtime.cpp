@@ -78,7 +78,7 @@ PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(
 PostProcessing::Profile Runtime::sceneViewProfile;
 PostProcessing::Profile Runtime::gameViewProfile;
 
-IMGizmo Runtime::quickGizmo;
+IMGizmo Runtime::imGizmo;
 
 SceneViewPipeline Runtime::sceneViewPipeline;
 
@@ -292,7 +292,7 @@ void Runtime::setupScripts() {
 	// Create forward pass
 	forwardPass.create(msaaSamples);
 	forwardPass.setSkybox(&currentSkybox);
-	forwardPass.enableQuickGizmo(&quickGizmo);
+	forwardPass.enableQuickGizmo(&imGizmo);
 
 	// Create scene view forward pass
 	sceneViewForwardPass.create(msaaSamples);
@@ -310,7 +310,7 @@ void Runtime::setupScripts() {
 	postProcessingPipeline.create();
 
 	// Setup quick gizmo
-	quickGizmo.setup();
+	imGizmo.setup();
 	//
 	//
 
@@ -332,7 +332,7 @@ void Runtime::prepareFrame() {
 	Diagnostics::step();
 
 	// Start new frame for quick gizmos
-	quickGizmo.newFrame();
+	imGizmo.newFrame();
 
 	// Update input system
 	Input::step();

@@ -34,7 +34,7 @@ private:
 	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
-	IMGizmo* quickGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+	IMGizmo* imGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
 
 	unsigned int outputFbo;	 // Output framebuffer
 	unsigned int outputColor; // Output color

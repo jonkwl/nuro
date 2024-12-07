@@ -89,6 +89,15 @@ Texture Texture::load(std::string path, TextureType type)
 	case TextureType::EMISSIVE:
 		internalFormat = GL_RGB;
 		format = GL_RGB;
+		break;
+	case TextureType::IMAGE_RGB:
+		internalFormat = GL_SRGB;
+		format = GL_RGB;
+		break;
+	case TextureType::IMAGE_RGBA:
+		internalFormat = GL_SRGB_ALPHA;
+		format = GL_RGBA;
+		break;
 	}
 
 	// Buffer image data to texture

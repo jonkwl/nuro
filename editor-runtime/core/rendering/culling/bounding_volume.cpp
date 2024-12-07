@@ -25,7 +25,7 @@ void BoundingSphere::update(Model* model, glm::vec3 position, glm::quat rotation
 	radius = (metrics.furthest * 0.5f) * std::max({ scale.x, scale.y, scale.z });
 
 	// Draw bounding volume
-	// Runtime::quickGizmo::sphereWire(center, radius);
+	// Runtime::imGizmo::sphereWire(center, radius);
 }
 
 bool BoundingSphere::intersectsFrustum(Frustum frustum)
@@ -76,8 +76,8 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::quat rotation, 
 	// Draw bounding volume
 	/* glm::vec3 center = (min + max) * 0.5f;
 	glm::vec3 size = max - min;
-	Runtime::quickGizmo.color = GizmoColor::DARK_RED;
-	Runtime::quickGizmo.boxWire(center, size); */
+	Runtime::imGizmo.color = GizmoColor::DARK_RED;
+	Runtime::imGizmo.boxWire(center, size); */
 }
 
 bool BoundingAABB::intersectsFrustum(Frustum frustum)

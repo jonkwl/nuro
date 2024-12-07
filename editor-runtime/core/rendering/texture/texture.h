@@ -9,7 +9,9 @@ enum class TextureType
 	ROUGHNESS,
 	METALLIC,
 	AMBIENT_OCCLUSION,
-	EMISSIVE
+	EMISSIVE,
+	IMAGE_RGB,
+	IMAGE_RGBA
 };
 
 class Texture

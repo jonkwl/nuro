@@ -25,7 +25,7 @@ sceneViewForwardPass(viewport),
 ssaoPass(viewport),
 velocityBuffer(viewport),
 postProcessingPipeline(viewport, false),
-quickGizmo(),
+imGizmo(),
 selectedEntity(2),
 selectionChangedLastFrame(false)
 {
@@ -34,7 +34,7 @@ selectionChangedLastFrame(false)
 void SceneViewPipeline::setup()
 {
 	// Setup quick gizmo
-	quickGizmo.setup();
+	imGizmo.setup();
 
 	// Initialize default profile:
 
@@ -58,7 +58,7 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 	Profiler::start("render");
 
 	// Start new frame for quick gizmos
-	quickGizmo.newFrame();
+	imGizmo.newFrame();
 
 	// Pick variable items for rendering
 	Camera& targetCamera = flyCamera;
@@ -110,14 +110,66 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 		targetRenderer.prepareNextFrame(targetCamera);
 
 		// Draw bounding volume (experimental)
-		if (showGizmos) {
+		/*if (showGizmos) {
 			glm::vec3 min = targetRenderer.volume->getMin(), max = targetRenderer.volume->getMax();
 			glm::vec3 center = (min + max) * 0.5f;
 			glm::vec3 size = max - min;
-			quickGizmo.color = GizmoColor::DARK_RED;
-			quickGizmo.boxWire(center, size);
-		}
+			imGizmo.color = GizmoColor::DARK_RED;
+			imGizmo.boxWire(center, size);
+		}*/
 	}
+
+	// Render light gizmos
+	imGizmo.color = GizmoColor::BLUE;
+	imGizmo.foreground = false;
+	imGizmo.opacity = 0.08f;
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(0.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 1.9f, -4.0f), targetCamera, glm::vec3(0.35f));
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(4.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(4.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(8.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(8.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(12.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(16.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(16.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(20.0, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(20.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(24.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(24.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(28.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(28.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(32.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(32.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(36.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(36.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(40.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(40.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(44.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(44.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(48.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(48.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(52.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(52.0f, 0.0f, 6.5f), 1.0f);
+
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(56.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
+	imGizmo.sphereWire(glm::vec3(56.0f, 0.0f, 6.5f), 1.0f);
 
 	//
 	// PRE PASS
@@ -222,7 +274,7 @@ void SceneViewPipeline::createPasses()
 {
 	prePass.create();
 	sceneViewForwardPass.create(msaaSamples);
-	sceneViewForwardPass.setQuickGizmo(&quickGizmo);
+	sceneViewForwardPass.setQuickGizmo(&imGizmo);
 	ssaoPass.create();
 	velocityBuffer.create();
 	postProcessingPipeline.create();

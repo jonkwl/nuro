@@ -10,7 +10,7 @@
 ForwardPass::ForwardPass(const Viewport& viewport) : clearColor(glm::vec4(0.0f)),
 viewport(viewport),
 skybox(nullptr),
-quickGizmo(nullptr),
+imGizmo(nullptr),
 outputFbo(0),
 outputColor(0),
 outputDepth(0),
@@ -149,8 +149,8 @@ unsigned int ForwardPass::render(std::vector<Entity*>& targets)
 	glDepthFunc(GL_LESS);
 
 	// Render quick gizmos
-	if (quickGizmo) {
-		quickGizmo->render();
+	if (imGizmo) {
+		imGizmo->render();
 	}
 
 	// Bilt multisampled framebuffer to post processing framebuffer
@@ -178,12 +178,12 @@ void ForwardPass::disableSkybox()
 
 void ForwardPass::enableQuickGizmo(IMGizmo* source)
 {
-	quickGizmo = source;
+	imGizmo = source;
 }
 
 void ForwardPass::disableQuickGizmo()
 {
-	quickGizmo = nullptr;
+	imGizmo = nullptr;
 }
 
 void ForwardPass::setClearColor(glm::vec4 _clearColor)

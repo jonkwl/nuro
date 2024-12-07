@@ -14,7 +14,7 @@ viewport(viewport),
 drawSkybox(false),
 drawQuickGizmos(true),
 skybox(nullptr),
-quickGizmo(nullptr),
+imGizmo(nullptr),
 outputFbo(0),
 outputColor(0),
 multisampledFbo(0),
@@ -164,7 +164,7 @@ unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets, Entity*
 	glDepthFunc(GL_LESS);
 
 	// Render quick gizmos
-	if (drawQuickGizmos && quickGizmo) quickGizmo->render();
+	if (drawQuickGizmos && imGizmo) imGizmo->render();
 
 	// Bilt multisampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
@@ -181,7 +181,7 @@ void SceneViewForwardPass::setSkybox(Skybox* source)
 
 void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
 {
-	quickGizmo = source;
+	imGizmo = source;
 }
 
 void SceneViewForwardPass::renderSelectedEntity(Entity* selected)

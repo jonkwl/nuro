@@ -63,7 +63,7 @@ private:
 	PostProcessingPipeline postProcessingPipeline;
 
 	// Other instances
-	IMGizmo quickGizmo;
+	IMGizmo imGizmo;
 
 	// Tmp
 	unsigned int selectedEntity;
