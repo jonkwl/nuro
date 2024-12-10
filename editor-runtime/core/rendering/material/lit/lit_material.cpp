@@ -112,10 +112,10 @@ void LitMaterial::bind()
 		shader->setFloat("material.metallic", metallic);
 	}
 
-	shader->setBool("material.enableAmbientOcclusionMap", enableAmbientOcclusionMap);
-	if (enableAmbientOcclusionMap)
+	shader->setBool("material.enableAmbientOcclusionMap", enableOcclusionMap);
+	if (enableOcclusionMap)
 	{
-		ambientOcclusionMap.bind(AMBIENT_OCCLUSION_UNIT);
+		occlusionMap.bind(AMBIENT_OCCLUSION_UNIT);
 	}
 
 	shader->setBool("material.enableEmissionMap", enableEmissionMap);
@@ -154,10 +154,10 @@ void LitMaterial::setMetallicMap(Texture texture)
 	metallicMap = texture;
 }
 
-void LitMaterial::setAmbientOcclusionMap(Texture texture)
+void LitMaterial::setOcclusionMap(Texture texture)
 {
-	enableAmbientOcclusionMap = true;
-	ambientOcclusionMap = texture;
+	enableOcclusionMap = true;
+	occlusionMap = texture;
 }
 
 void LitMaterial::setEmissionMap(Texture texture)

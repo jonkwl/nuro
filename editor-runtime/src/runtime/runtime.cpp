@@ -63,17 +63,17 @@ GLFWwindow* Runtime::glfw = nullptr;
 glm::vec2 Runtime::windowSize = glm::vec2(1800.0f, 1000.0f);
 bool Runtime::fullscreen = true;
 
-Viewport Runtime::sceneViewport;
+Viewport Runtime::gameViewport;
 
 ShadowDisk* Runtime::mainShadowDisk = nullptr;
 ShadowMap* Runtime::mainShadowMap = nullptr;
 
-PrePass Runtime::prePass = PrePass(Runtime::sceneViewport);
-ForwardPass Runtime::forwardPass = ForwardPass(Runtime::sceneViewport);
-SceneViewForwardPass Runtime::sceneViewForwardPass = SceneViewForwardPass(Runtime::sceneViewport);
-SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::sceneViewport);
-VelocityBuffer Runtime::velocityBuffer = VelocityBuffer(Runtime::sceneViewport);
-PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::sceneViewport, false);
+PrePass Runtime::prePass = PrePass(Runtime::gameViewport);
+ForwardPass Runtime::forwardPass = ForwardPass(Runtime::gameViewport);
+SceneViewForwardPass Runtime::sceneViewForwardPass = SceneViewForwardPass(Runtime::gameViewport);
+SSAOPass Runtime::ssaoPass = SSAOPass(Runtime::gameViewport);
+VelocityBuffer Runtime::velocityBuffer = VelocityBuffer(Runtime::gameViewport);
+PostProcessingPipeline Runtime::postProcessingPipeline = PostProcessingPipeline(Runtime::gameViewport, false);
 
 PostProcessing::Profile Runtime::sceneViewProfile;
 PostProcessing::Profile Runtime::gameViewProfile;
@@ -370,7 +370,7 @@ void Runtime::renderGameView() {
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(camera, sceneViewport);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(camera, gameViewport);
 	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
 
@@ -381,7 +381,7 @@ void Runtime::renderGameView() {
 	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 	// Update cameras frustum
-	camera.updateFrustum(viewProjectionMatrix);
+	camera.updateFrustum(gameViewport);
 
 	//
 	// PREPARATION PASS
@@ -430,7 +430,7 @@ void Runtime::renderGameView() {
 	//
 
 	// Prepare lit material with current render data
-	LitMaterial::viewport = &sceneViewport; // Redundant most of the times atm
+	LitMaterial::viewport = &gameViewport; // Redundant most of the times atm
 	LitMaterial::camera = &camera; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &gameViewProfile;
@@ -482,8 +482,8 @@ void Runtime::checkWindowResize()
 
 void Runtime::resizeViewport(float width, float height) {
 	// TMP ALWAYS USE SCENE VIEWPORT
-	sceneViewport.width = width;
-	sceneViewport.height = height;
+	gameViewport.width = width;
+	gameViewport.height = height;
 	performResize();
 }
 
@@ -517,8 +517,8 @@ void Runtime::glfwErrorCallback(int error, const char* description)
 
 void Runtime::glfwWindowSizeCallback(GLFWwindow* window, int width, int height) {
 
-	sceneViewport.width = width;
-	sceneViewport.height = height;
+	gameViewport.width = width;
+	gameViewport.height = height;
 
 	resized = true;
 

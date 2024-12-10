@@ -20,7 +20,7 @@ glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
 MeshRenderer::MeshRenderer(Entity* parentEntity) : parentEntity(parentEntity),
 model(nullptr),
-volume(new BoundingAABB()),
+volume(new BoundingSphere()),
 useMotionBlur(false),
 motionBlurIntensity(1.0f),
 currentModelMatrix(glm::mat4(1.0f)),
@@ -53,9 +53,8 @@ void MeshRenderer::forwardPass()
 	if (model == nullptr)
 		return;
 
-	// Check if render target was culled this frame -> cancel
-	if (isCulled())
-		return;
+	// Check if render target is not visible this frame -> cancel
+	if (!visible()) return;
 
 	// Render each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
@@ -121,9 +120,8 @@ void MeshRenderer::prePass(Shader* shader)
 	if (model == nullptr)
 		return;
 
-	// Check if render target was culled this frame -> cancel
-	if (isCulled())
-		return;
+	// Check if render target is not visible this frame -> cancel
+	if (!visible()) return;
 
 	// Depth pre pass each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
@@ -248,8 +246,8 @@ void MeshRenderer::performFrustumCulling(Camera& renderCamera)
 	Diagnostics::addNEntitiesGPU(1);
 }
 
-bool MeshRenderer::isCulled()
+bool MeshRenderer::visible()
 {
-	// Check if render target was culled
-	return !intersectsFrustum;
+	// Must intersect frustum to be visible
+	return intersectsFrustum;
 }

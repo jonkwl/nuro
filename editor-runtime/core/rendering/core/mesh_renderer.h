@@ -58,5 +58,5 @@ private:
 	void performFrustumCulling(Camera& renderCamera);
 	bool intersectsFrustum;
 
-	bool isCulled();
+	bool visible();
 };

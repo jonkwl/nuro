@@ -48,7 +48,7 @@ public:
 	void setNormalMap(Texture texture);
 	void setRoughnessMap(Texture texture);
 	void setMetallicMap(Texture texture);
-	void setAmbientOcclusionMap(Texture texture);
+	void setOcclusionMap(Texture texture);
 	void setEmissionMap(Texture texture);
 
 private:
@@ -79,8 +79,8 @@ private:
 	bool enableMetallicMap;
 	Texture metallicMap;
 
-	bool enableAmbientOcclusionMap;
-	Texture ambientOcclusionMap;
+	bool enableOcclusionMap;
+	Texture occlusionMap;
 
 	bool enableEmissionMap;
 	Texture emissionMap;

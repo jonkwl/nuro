@@ -79,7 +79,7 @@ public:
 
 private:
 	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
-	static Viewport sceneViewport; // Scene viewport
+	static Viewport gameViewport; // Scene viewport
 	static Camera camera; // Main render camera
 	static bool resized; // If window was resized
 	static Skybox defaultSkybox; // Default skybox

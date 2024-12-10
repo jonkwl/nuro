@@ -1,7 +1,5 @@
 #include "camera.h"
 
-#include <gtc/matrix_access.hpp>
-
 Camera::Camera(float fov, float near, float far) : transform(),
 frustum(),
 fov(fov),
@@ -28,32 +26,64 @@ float Camera::getFar()
 	return far;
 }
 
-void Camera::updateFrustum(glm::mat4 viewProjectionMatrix)
+void Camera::updateFrustum(Viewport& viewport)
 {
-	// Extract columns of the matrix
-	glm::vec4 col0 = glm::column(viewProjectionMatrix, 0);
-	glm::vec4 col1 = glm::column(viewProjectionMatrix, 1);
-	glm::vec4 col2 = glm::column(viewProjectionMatrix, 2);
-	glm::vec4 col3 = glm::column(viewProjectionMatrix, 3);
+    // Half field of view (vertical)
+    float halfFov = glm::radians(fov * 0.5f);
+    float aspectRatio = viewport.width / viewport.height;
 
-	// Compute planes
-	frustum.planes[0] = col3 + col0; // Left
-	frustum.planes[1] = col3 - col0; // Right
-	frustum.planes[2] = col3 + col1; // Bottom
-	frustum.planes[3] = col3 - col1; // Top
-	frustum.planes[4] = col3 + col2; // Near
-	frustum.planes[5] = col3 - col2; // Far
+    glm::vec3 position = transform.position;
+    glm::vec3 forward = transform.forward();
+    glm::vec3 right = transform.right();
+    glm::vec3 up = transform.up();
 
-	// Normalize planes
-	for (int i = 0; i < 6; i++)
-	{
-		float length = glm::length(glm::vec3(frustum.planes[i]));
-		frustum.planes[i] /= length;
-	}
+    // Calculate near and far centers
+    glm::vec3 nearCenter = position + forward * near;
+    glm::vec3 farCenter = position + forward * far;
+
+    // Calculate near and far heights/widths
+    float nearHeight = 2.0f * tan(halfFov) * near;
+    float nearWidth = nearHeight * aspectRatio;
+    float farHeight = 2.0f * tan(halfFov) * far;
+    float farWidth = farHeight * aspectRatio;
+
+    // Calculate near and far plane corners
+    glm::vec3 nearTopLeft = nearCenter + up * (nearHeight * 0.5f) - right * (nearWidth * 0.5f);
+    glm::vec3 nearTopRight = nearCenter + up * (nearHeight * 0.5f) + right * (nearWidth * 0.5f);
+    glm::vec3 nearBottomLeft = nearCenter - up * (nearHeight * 0.5f) - right * (nearWidth * 0.5f);
+    glm::vec3 nearBottomRight = nearCenter - up * (nearHeight * 0.5f) + right * (nearWidth * 0.5f);
+
+    glm::vec3 farTopLeft = farCenter + up * (farHeight * 0.5f) - right * (farWidth * 0.5f);
+    glm::vec3 farTopRight = farCenter + up * (farHeight * 0.5f) + right * (farWidth * 0.5f);
+    glm::vec3 farBottomLeft = farCenter - up * (farHeight * 0.5f) - right * (farWidth * 0.5f);
+    glm::vec3 farBottomRight = farCenter - up * (farHeight * 0.5f) + right * (farWidth * 0.5f);
+
+    // Calculate planes using the corners
+    frustum.nearPlane = calculatePlane(nearTopLeft, nearTopRight, nearBottomLeft);
+    frustum.farPlane = calculatePlane(farTopLeft, farTopRight, farBottomLeft);
+    frustum.leftPlane = calculatePlane(nearTopLeft, farTopLeft, farBottomLeft);
+    frustum.rightPlane = calculatePlane(nearTopRight, farTopRight, farBottomRight);
+    frustum.topPlane = calculatePlane(nearTopLeft, farTopLeft, farTopRight);
+    frustum.bottomPlane = calculatePlane(nearBottomLeft, farBottomLeft, farBottomRight);
 }
 
-Frustum& Camera::getFrustum()
+const Frustum& Camera::getFrustum()
 {
 	// Return frustum
 	return frustum;
+}
+
+glm::vec4 Camera::calculatePlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
+{
+    // Create two vectors from the three points
+    glm::vec3 v1 = p2 - p1;
+    glm::vec3 v2 = p3 - p1;
+
+    // Calculate normal via cross product
+    glm::vec3 normal = glm::normalize(glm::cross(v1, v2));
+
+    // Calculate distance (d) from origin to plane
+    float d = -glm::dot(normal, p1);
+
+    return glm::vec4(normal, d);
 }

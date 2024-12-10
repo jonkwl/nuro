@@ -29,15 +29,23 @@ void defaultScene() {
 	collisionSphere->meshRenderer.materials.push_back(sphereMaterial);
 	collisionSphere->transform.position = glm::vec3(5.0f, 0.6f, 6.5f);
 
-	Texture sphereAlbedo = Texture::load("./src/example/assets/textures/mat_albedo.jpg", TextureType::ALBEDO);
-	Texture sphereRoughness = Texture::load("./src/example/assets/textures/mat_roughness.jpg", TextureType::ROUGHNESS);
-	Texture sphereMetallic = Texture::load("./src/example/assets/textures/mat_metallic.jpg", TextureType::METALLIC);
-	Texture sphereNormal = Texture::load("./src/example/assets/textures/mat_normal.jpg", TextureType::NORMAL);
+	std::string materialName = "old-linoleum-floor";
+	Texture sphereAlbedo = Texture::load("./src/example/assets/textures/" + materialName + "/albedo.jpg", TextureType::ALBEDO);
+	Texture sphereRoughness = Texture::load("./src/example/assets/textures/" + materialName + "/roughness.jpg", TextureType::ROUGHNESS);
+	// Texture sphereMetallic = Texture::load("./src/example/assets/textures/" + materialName + "/metallic.jpg", TextureType::METALLIC);
+	Texture sphereNormal = Texture::load("./src/example/assets/textures/" + materialName + "/normal.jpg", TextureType::NORMAL);
+	Texture sphereOcclusion = Texture::load("./src/example/assets/textures/" + materialName + "/ao.jpg", TextureType::OCCLUSION);
+	// Texture sphereEmissive = Texture::load("./src/example/assets/textures/" + materialName + "/emissive.jpg", TextureType::EMISSIVE);
+	
 	LitMaterial* pbrSphereMaterial = new LitMaterial();
 	pbrSphereMaterial->setAlbedoMap(sphereAlbedo);
 	pbrSphereMaterial->setRoughnessMap(sphereRoughness);
-	pbrSphereMaterial->setMetallicMap(sphereMetallic);
+	// pbrSphereMaterial->setMetallicMap(sphereMetallic);
 	pbrSphereMaterial->setNormalMap(sphereNormal);
+	pbrSphereMaterial->setOcclusionMap(sphereOcclusion);
+	//pbrSphereMaterial->setEmissionMap(sphereEmissive);
+	pbrSphereMaterial->tiling = glm::vec2(3.0f, 3.0f);
+
 	Model* pbrSphereModel = Model::load("./src/example/assets/models/sphere.fbx");
 	Entity* pbrSphere = Runtime::createEntity();
 	pbrSphere->meshRenderer.model = pbrSphereModel;

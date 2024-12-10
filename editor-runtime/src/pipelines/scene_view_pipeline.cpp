@@ -80,7 +80,7 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 	// Update cameras frustum
-	flyCamera.updateFrustum(viewProjectionMatrix);
+	flyCamera.updateFrustum(viewport);
 
 	// Set tmp context
 	if (Input::keyDown(Key::BACKSPACE) && !selectionChangedLastFrame) {
@@ -109,14 +109,9 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 		// Here for now to ensure preparation despite further pipeline changes
 		targetRenderer.prepareNextFrame(targetCamera);
 
-		// Draw bounding volume (experimental)
-		/*if (showGizmos) {
-			glm::vec3 min = targetRenderer.volume->getMin(), max = targetRenderer.volume->getMax();
-			glm::vec3 center = (min + max) * 0.5f;
-			glm::vec3 size = max - min;
-			imGizmo.color = GizmoColor::DARK_RED;
-			imGizmo.boxWire(center, size);
-		}*/
+		if (showGizmos) {
+			targetRenderer.volume->draw(imGizmo, glm::vec4(GizmoColor::GREEN, 0.5f));
+		}
 	}
 
 	// Render light gizmos
@@ -126,48 +121,33 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(0.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 1.9f, -4.0f), targetCamera, glm::vec3(0.35f));
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(4.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(4.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(8.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(8.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(12.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(16.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(16.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(20.0, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(20.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(24.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(24.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(28.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(28.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(32.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(32.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(36.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(36.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(40.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(40.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(44.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(44.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(48.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(48.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(52.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(52.0f, 0.0f, 6.5f), 1.0f);
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(56.0f, 0.0f, 6.5f), targetCamera, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(56.0f, 0.0f, 6.5f), 1.0f);
 

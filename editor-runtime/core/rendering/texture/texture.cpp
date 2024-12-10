@@ -82,7 +82,7 @@ Texture Texture::load(std::string path, TextureType type)
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
-	case TextureType::AMBIENT_OCCLUSION:
+	case TextureType::OCCLUSION:
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;

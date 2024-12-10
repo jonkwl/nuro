@@ -5,6 +5,8 @@
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/model/model.h"
 
+#include "../core/utils/log.h"
+
 BoundingSphere::BoundingSphere()
 {
 	center = glm::vec3(0.0f);
@@ -23,13 +25,27 @@ void BoundingSphere::update(Model* model, glm::vec3 position, glm::quat rotation
 	// Calculate radius:
 	// Maximum distance of a models vertice to models origin divided by 2 (because its a radius, not diameter) times biggest world scale factor
 	radius = (metrics.furthest * 0.5f) * std::max({ scale.x, scale.y, scale.z });
-
-	// Draw bounding volume
-	// Runtime::imGizmo::sphereWire(center, radius);
 }
 
-bool BoundingSphere::intersectsFrustum(Frustum frustum)
+bool BoundingSphere::intersectsFrustum(const Frustum& frustum)
 {
+	// Always intersect for now
+	return true;
+
+	// Loop over all the planes of the frustum
+	for (const auto& plane : { frustum.nearPlane, frustum.farPlane, frustum.leftPlane, frustum.rightPlane, frustum.topPlane, frustum.bottomPlane })
+	{
+		// Calculate the distance from the sphere's center to the plane
+		float distance = glm::dot(glm::vec3(plane), center) + plane.w;
+
+		// If the distance from the center to the plane is greater than the radius, the sphere is outside the frustum
+		if (distance > radius)
+		{
+			return false; // Sphere is outside the frustum
+		}
+	}
+
+	// If none of the planes pushed the sphere outside, it's inside or intersecting the frustum
 	return true;
 }
 
@@ -38,6 +54,14 @@ float BoundingSphere::getDistance(glm::vec3 point)
 	// Return smallest distance of given point to spheres surface
 	float signedDistance = glm::length(point - center) - radius;
 	return std::fmaxf(signedDistance, 0.0f);
+}
+
+void BoundingSphere::draw(IMGizmo& imGizmoInstance, glm::vec4 color)
+{
+	// Draw bounding volume
+	imGizmoInstance.color = glm::vec3(color);
+	imGizmoInstance.opacity = color.w;
+	imGizmoInstance.sphereWire(center, radius);
 }
 
 BoundingAABB::BoundingAABB()
@@ -72,16 +96,11 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::quat rotation, 
 	// Set the final bounding box
 	min = _min;
 	max = _max;
-
-	// Draw bounding volume
-	/* glm::vec3 center = (min + max) * 0.5f;
-	glm::vec3 size = max - min;
-	Runtime::imGizmo.color = GizmoColor::DARK_RED;
-	Runtime::imGizmo.boxWire(center, size); */
 }
 
-bool BoundingAABB::intersectsFrustum(Frustum frustum)
+bool BoundingAABB::intersectsFrustum(const Frustum& frustum)
 {
+	// Always intersect for now
 	return true;
 }
 
@@ -93,12 +112,12 @@ float BoundingAABB::getDistance(glm::vec3 point)
 	return glm::length(difference);
 }
 
-glm::vec3 BoundingAABB::getMin()
+void BoundingAABB::draw(IMGizmo& imGizmoInstance, glm::vec4 color)
 {
-	return min;
-}
-
-glm::vec3 BoundingAABB::getMax()
-{
-	return max;
+	// Draw bounding volume
+	glm::vec3 center = (min + max) * 0.5f;
+	glm::vec3 size = max - min;
+	imGizmoInstance.color = glm::vec3(color);
+	imGizmoInstance.opacity = color.w;
+	imGizmoInstance.boxWire(center, size);
 }

@@ -111,8 +111,8 @@ struct Material {
     bool enableMetallicMap;
     sampler2D metallicMap;
 
-    bool enableAmbientOcclusionMap;
-    sampler2D ambientOcclusionMap;
+    bool enableOcclusionMap;
+    sampler2D occlusionMap;
 
     bool emission;
     float emissionIntensity;
@@ -360,13 +360,13 @@ float getMetallic()
     return metallic;
 }
 
-float getAmbientOcclusionMapSample()
+float getOcclusionMapSample()
 {
-    float ambientOcclusionMapSample = 1.0;
-    if (material.enableAmbientOcclusionMap) {
-        ambientOcclusionMapSample = texture(material.ambientOcclusionMap, uv).r;
+    float occlusionMapSample = 1.0;
+    if (material.enableOcclusionMap) {
+        occlusionMapSample = texture(material.occlusionMap, uv).r;
     }
-    return ambientOcclusionMapSample;
+    return occlusionMapSample;
 }
 
 float getSSAO() {
@@ -487,7 +487,7 @@ vec4 shadePBR() {
     float metallic = getMetallic();
 
     // get ambient occlusion
-    float ambientOcclusionMapSample = getAmbientOcclusionMapSample();
+    float occlusionMapSample = getOcclusionMapSample();
 
     // get ssao
     float ssao = getSSAO();
@@ -589,7 +589,7 @@ vec4 shadePBR() {
     vec3 color = Lo;
 
     // apply ambient occlusion: modulate color by ambient occlusion map sample and ssao
-    color *= ambientOcclusionMapSample * ssao;
+    color *= occlusionMapSample * ssao;
 
     // gamma correct if using albedo map
     if (material.enableAlbedoMap) {
