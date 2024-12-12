@@ -8,8 +8,8 @@
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/culling/bounding_volume.h"
 
+#include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
-#include "../src/runtime/tmp_context.h"
 
 // initialize with users editor settings later
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
@@ -25,9 +25,7 @@ sceneViewForwardPass(viewport),
 ssaoPass(viewport),
 velocityBuffer(viewport),
 postProcessingPipeline(viewport, false),
-imGizmo(),
-selectedEntity(2),
-selectionChangedLastFrame(false)
+imGizmo()
 {
 }
 
@@ -53,7 +51,7 @@ void SceneViewPipeline::setup()
 	createPasses();
 }
 
-void SceneViewPipeline::render(std::vector<Entity*>& targets)
+void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 {
 	Profiler::start("render");
 
@@ -79,23 +77,12 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
 	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
+	// Set scene windows current matrix caches
+	SceneWindow::viewMatrix = viewMatrix;
+	SceneWindow::projectionMatrix = projectionMatrix;
+
 	// Update cameras frustum
 	flyCamera.updateFrustum(viewport);
-
-	// Set tmp context
-	if (Input::keyDown(Key::BACKSPACE) && !selectionChangedLastFrame) {
-		selectedEntity++;
-		if (selectedEntity > targets.size() - 1) {
-			selectedEntity = 0;
-		}
-		selectionChangedLastFrame = true;
-	}
-	if (selectionChangedLastFrame) {
-		if (!Input::keyDown(Key::BACKSPACE)) selectionChangedLastFrame = false;
-	}
-	TmpContext::selectedEntity = targets[selectedEntity];
-	TmpContext::view = viewMatrix;
-	TmpContext::projection = projectionMatrix;
 
 	//
 	// PREPARATION PASS
@@ -200,7 +187,7 @@ void SceneViewPipeline::render(std::vector<Entity*>& targets)
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.setSkybox(&Runtime::currentSkybox);
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, TmpContext::selectedEntity);
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, targets[0]);
 	Profiler::stop("forward_pass");
 
 	//

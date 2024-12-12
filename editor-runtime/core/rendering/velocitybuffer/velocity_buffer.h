@@ -7,7 +7,7 @@
 #
 
 class Shader;
-class Entity;
+class OldEntity;
 
 class VelocityBuffer
 {
@@ -17,10 +17,10 @@ public:
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
 
-	unsigned int render(const PostProcessing::Profile& profile, std::vector<Entity*>& targets); // Renders the velocity buffer and returns the filtered output
+	unsigned int render(const PostProcessing::Profile& profile, std::vector<OldEntity*>& targets); // Renders the velocity buffer and returns the filtered output
 
 private:
-	unsigned int velocityPasses(std::vector<Entity*>& targets);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
+	unsigned int velocityPasses(std::vector<OldEntity*>& targets);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
 	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:

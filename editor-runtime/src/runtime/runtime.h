@@ -25,7 +25,7 @@ class Shader;
 class Camera;
 class ShadowDisk;
 class ShadowMap;
-class Entity;
+class OldEntity;
 
 class Runtime
 {
@@ -33,9 +33,9 @@ public:
 	static int START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
 
-	// Entity system
-	static Entity* createEntity(); // Links a given entity with the runtime (creating a runtime entity)
-	static void destroyEntity(Entity* entity);
+	// OldEntity system
+	static OldEntity* createEntity(); // Links a given entity with the runtime (creating a runtime entity)
+	static void destroyEntity(OldEntity* entity);
 
 	static Camera& getCamera();
 
@@ -78,7 +78,7 @@ public:
 	static ShadowMap* mainShadowMap;   // Default shadow map
 
 private:
-	static std::vector<Entity*> entityStack; // Stack of all entities that will be processed by the runtime
+	static std::vector<OldEntity*> entityStack; // Stack of all entities that will be processed by the runtime
 	static Viewport gameViewport; // Scene viewport
 	static Camera camera; // Main render camera
 	static bool resized; // If window was resized

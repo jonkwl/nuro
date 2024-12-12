@@ -3,7 +3,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/camera/camera.h"
 
 namespace Transformation {

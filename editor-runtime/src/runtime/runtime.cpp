@@ -27,7 +27,7 @@
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/shadows/shadow_disk.h"
 #include "../core/rendering/primitives/quad.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/camera/camera.h"
 #include "../core/utils/log.h"
 #include "../core/diagnostics/profiler.h"
@@ -42,9 +42,7 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
 
-#include "../runtime/tmp_context.h"
-
-std::vector<Entity*> Runtime::entityStack;
+std::vector<OldEntity*> Runtime::entityStack;
 
 Skybox Runtime::defaultSkybox;
 
@@ -90,17 +88,17 @@ bool Runtime::resized = false;
 //
 //
 
-Entity* Runtime::createEntity()
+OldEntity* Runtime::createEntity()
 {
 	// Create entity and push it to the entity stack
-	Entity* entity = new Entity();
+	OldEntity* entity = new OldEntity();
 	entityStack.push_back(entity);
 
 	// Return created entity
 	return entity;
 }
 
-void Runtime::destroyEntity(Entity* entity) {
+void Runtime::destroyEntity(OldEntity* entity) {
 	// Try to find entity in entity stack
 	auto it = std::find(entityStack.begin(), entityStack.end(), entity);
 

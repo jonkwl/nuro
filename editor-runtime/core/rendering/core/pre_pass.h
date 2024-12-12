@@ -5,7 +5,7 @@
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/shader/shader.h"
 
-class Entity;
+class OldEntity;
 
 class PrePass
 {
@@ -15,7 +15,7 @@ public:
 	void create();
 	void destroy();
 
-	void render(std::vector<Entity*>& targets);
+	void render(std::vector<OldEntity*>& targets);
 
 	unsigned int getDepthOutput();
 	unsigned int getNormalOutput();

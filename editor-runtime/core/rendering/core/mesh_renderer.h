@@ -7,13 +7,13 @@
 
 class Model;
 class BoundingVolume;
-class Entity;
+class OldEntity;
 
 #pragma once
 class MeshRenderer
 {
 public:
-	explicit MeshRenderer(Entity* parentEntity);
+	explicit MeshRenderer(OldEntity* parentEntity);
 
 	Model* model; // Linked model, rendering target
 
@@ -48,7 +48,7 @@ private:
 	glm::mat4 currentNormalMatrix; // Normal matrix cache for current frame
 	glm::mat4 previousModelMatrix; // MVP matrix cache of previous frame (only needed for velocity pass, set after velocity pass)
 
-	Entity* parentEntity; // Linked parent entity
+	OldEntity* parentEntity; // Linked parent entity
 
 	// Can be optimized, not every mesh renderer needs to hold this pointer
 	Shader* materialUnavailableShader; // Shader used for unavailable material

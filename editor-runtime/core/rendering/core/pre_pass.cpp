@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/utils/log.h"
@@ -80,7 +80,7 @@ void PrePass::destroy() {
 	prePassShader = nullptr;
 }
 
-void PrePass::render(std::vector<Entity*>& targets)
+void PrePass::render(std::vector<OldEntity*>& targets)
 {
 	// Set viewport for upcoming pre pass
 	glViewport(0, 0, viewport.width, viewport.height);

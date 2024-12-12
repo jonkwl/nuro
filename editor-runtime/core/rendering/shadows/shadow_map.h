@@ -5,14 +5,14 @@
 #include "../core/camera/camera.h"
 #include "../core/rendering/shader/shader.h"
 
-class Entity;
+class OldEntity;
 
 class ShadowMap
 {
 public:
 	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
 
-	void render(std::vector<Entity*>& targets);
+	void render(std::vector<OldEntity*>& targets);
 	void bind(unsigned int unit);
 
 	unsigned int getResolutionWidth() const;

@@ -3,10 +3,10 @@
 #include "../core/transform/transform.h"
 #include "../core/rendering/core/mesh_renderer.h"
 
-class Entity
+class OldEntity
 {
 public:
-	Entity();
+	OldEntity();
 
 	Transform transform;
 	MeshRenderer meshRenderer;

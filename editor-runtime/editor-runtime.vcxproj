@@ -139,7 +139,7 @@
     <ClCompile Include="core\camera\camera.cpp" />
     <ClCompile Include="core\diagnostics\diagnostics.cpp" />
     <ClCompile Include="core\diagnostics\profiler.cpp" />
-    <ClCompile Include="core\entity\entity.cpp" />
+    <ClCompile Include="core\old_entity\old_entity.cpp" />
     <ClCompile Include="core\input\cursor.cpp" />
     <ClCompile Include="core\input\input.cpp" />
     <ClCompile Include="core\rendering\core\forward_pass.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="core\diagnostics\diagnostics.h" />
     <ClInclude Include="core\diagnostics\profiler.h" />
     <ClInclude Include="core\engine.h" />
-    <ClInclude Include="core\entity\entity.h" />
+    <ClInclude Include="core\old_entity\old_entity.h" />
     <ClInclude Include="core\input\cursor.h" />
     <ClInclude Include="core\input\input.h" />
     <ClInclude Include="core\rendering\core\forward_pass.h" />
@@ -352,7 +352,6 @@
     <ClInclude Include="src\ui\windows\diagnostics_window.h" />
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\scene_window.h" />
-    <ClInclude Include="src\runtime\tmp_context.h" />
     <ClInclude Include="src\ui\ui_utils.h" />
   </ItemGroup>
   <ItemGroup>

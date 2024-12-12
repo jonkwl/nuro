@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
 
@@ -97,7 +97,7 @@ void ForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int ForwardPass::render(std::vector<Entity*>& targets)
+unsigned int ForwardPass::render(std::vector<OldEntity*>& targets)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);

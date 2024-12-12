@@ -3,7 +3,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtx/quaternion.hpp>
 
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/core/transformation.h"
 
 Transform::Transform() : position(glm::vec3(0.0f)),

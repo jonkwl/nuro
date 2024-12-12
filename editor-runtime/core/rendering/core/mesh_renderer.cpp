@@ -5,7 +5,7 @@
 #include "../core/rendering/model/model.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/culling/bounding_volume.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 #include "../core/diagnostics/diagnostics.h"
@@ -18,7 +18,7 @@ glm::mat3 MeshRenderer::currentViewNormalMatrix = glm::mat3(1.0);
 
 glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
 
-MeshRenderer::MeshRenderer(Entity* parentEntity) : parentEntity(parentEntity),
+MeshRenderer::MeshRenderer(OldEntity* parentEntity) : parentEntity(parentEntity),
 model(nullptr),
 volume(new BoundingSphere()),
 useMotionBlur(false),

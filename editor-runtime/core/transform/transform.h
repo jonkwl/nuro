@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 
-class Entity;
+class OldEntity;
 
 class Transform
 {

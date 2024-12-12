@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/model/model.h"
@@ -105,7 +105,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets, Entity* selected)
+unsigned int SceneViewForwardPass::render(std::vector<OldEntity*>& targets, OldEntity* selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -143,7 +143,7 @@ unsigned int SceneViewForwardPass::render(std::vector<Entity*>& targets, Entity*
 
 	// Render each objects forward pass except for selected entity
 	for (int i = 0; i < targets.size(); i++) {
-		Entity* entity = targets[i];
+		OldEntity* entity = targets[i];
 		if (entity != selected) {
 			entity->meshRenderer.forwardPass();
 		}
@@ -184,7 +184,7 @@ void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
 	imGizmo = source;
 }
 
-void SceneViewForwardPass::renderSelectedEntity(Entity* selected)
+void SceneViewForwardPass::renderSelectedEntity(OldEntity* selected)
 {
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer

@@ -21,7 +21,8 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
 
-#include "../src/runtime/tmp_context.h"
+glm::mat4 SceneWindow::viewMatrix;
+glm::mat4 SceneWindow::projectionMatrix;
 
 SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
@@ -150,6 +151,8 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
+	return;
+
 	// Dont render transform gizmos if scene view is interacted with
 	if (sceneViewRightclicked || sceneViewMiddleclicked) return;
 
@@ -180,11 +183,9 @@ void SceneWindow::renderTransformGizmos()
 	}
 
 	// Get gizmo matrices
-	Entity* entity = TmpContext::selectedEntity;
+	OldEntity* entity = nullptr;
 	Transform& transform = entity->transform;
 
-	glm::mat4 viewMatrix = TmpContext::view;
-	glm::mat4 projectionMatrix = TmpContext::projection;
 	glm::mat4 transformMatrix = Transformation::modelMatrix(entity->transform);
 
 	// Check for snapping

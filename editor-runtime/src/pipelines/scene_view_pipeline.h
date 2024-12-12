@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../core/viewport/viewport.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/postprocessing/post_processing_pipeline.h"
 #include "../core/rendering/core/pre_pass.h"
@@ -21,7 +21,7 @@ public:
 
 	void setup(); // Setup scene view pipeline
 
-	void render(std::vector<Entity*>& targets); // Renders scene view
+	void render(std::vector<OldEntity*>& targets); // Renders scene view
 
 	unsigned int getOutput(); // Returns color output from latest render
 
@@ -64,9 +64,5 @@ private:
 
 	// Other instances
 	IMGizmo imGizmo;
-
-	// Tmp
-	unsigned int selectedEntity;
-	bool selectionChangedLastFrame;
 };
 

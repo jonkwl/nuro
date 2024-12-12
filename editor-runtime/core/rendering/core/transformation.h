@@ -7,7 +7,7 @@
 #include "../core/transform/transform.h"
 #include "../core/camera/camera.h"
 
-class Entity;
+class OldEntity;
 
 namespace Transformation
 {

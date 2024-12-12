@@ -8,7 +8,7 @@
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/quad.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/shader/shader_pool.h"
 
 VelocityBuffer::VelocityBuffer(const Viewport& viewport) : viewport(viewport),
@@ -100,7 +100,7 @@ void VelocityBuffer::destroy()
 	postfilterShader = nullptr;
 }
 
-unsigned int VelocityBuffer::render(const PostProcessing::Profile& profile, std::vector<Entity*>& targets)
+unsigned int VelocityBuffer::render(const PostProcessing::Profile& profile, std::vector<OldEntity*>& targets)
 {
 	// Prepare output
 	unsigned int OUTPUT = 0;
@@ -118,7 +118,7 @@ unsigned int VelocityBuffer::render(const PostProcessing::Profile& profile, std:
 	return OUTPUT;
 }
 
-unsigned int VelocityBuffer::velocityPasses(std::vector<Entity*>& targets)
+unsigned int VelocityBuffer::velocityPasses(std::vector<OldEntity*>& targets)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);

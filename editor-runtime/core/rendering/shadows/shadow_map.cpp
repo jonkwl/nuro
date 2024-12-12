@@ -8,7 +8,7 @@
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/entity/entity.h"
+#include "../core/old_entity/old_entity.h"
 #include "../core/utils/log.h"
 
 bool shadowMapSaved = false;
@@ -75,7 +75,7 @@ shadowPassShader(ShaderPool::get("shadow_pass"))
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::render(std::vector<Entity*>& targets) // Update needed for camera independence
+void ShadowMap::render(std::vector<OldEntity*>& targets) // Update needed for camera independence
 {
 	// Set viewport and bind shadow map framebuffer
 	glViewport(0, 0, resolutionWidth, resolutionHeight);

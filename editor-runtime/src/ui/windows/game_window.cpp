@@ -21,8 +21,6 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
 
-#include "../src/runtime/tmp_context.h"
-
 GameWindow::GameWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
 windowFocused(false),

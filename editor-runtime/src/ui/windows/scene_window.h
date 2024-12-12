@@ -11,6 +11,9 @@ public:
 	SceneWindow();
 	void render();
 
+	static glm::mat4 viewMatrix;
+	static glm::mat4 projectionMatrix;
+
 private:
 	void renderToolbar();
 	void renderSceneView();

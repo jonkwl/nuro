@@ -6,7 +6,7 @@
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/imgizmo.h"
 
-class Entity;
+class OldEntity;
 class Skybox;
 
 class ForwardPass
@@ -17,7 +17,7 @@ public:
 	void create(const unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
-	unsigned int render(std::vector<Entity*>& targets); // Forward passes all entity render targets and returns color output
+	unsigned int render(std::vector<OldEntity*>& targets); // Forward passes all entity render targets and returns color output
 
 	unsigned int getDepthOutput(); // Returns depth output
 
