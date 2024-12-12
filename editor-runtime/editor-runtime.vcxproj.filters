@@ -24,9 +24,6 @@
     <ClCompile Include="core\diagnostics\profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\entity\entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\input\cursor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -201,6 +198,18 @@
     <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\old_entity\old_entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ecs\ecs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ecs\components.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pipelines\game_view_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\camera\camera.h">
@@ -216,9 +225,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\entity\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\input\cursor.h">
@@ -659,9 +665,6 @@
     <ClInclude Include="imgui\ImGuizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\runtime\tmp_context.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\windows\console_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -678,6 +681,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\old_entity\old_entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\ecs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipelines\game_view_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

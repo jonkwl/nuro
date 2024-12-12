@@ -63,7 +63,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 
 	// Select game profile if profile effects are enabled and not rendering wireframe
 	bool useDefaultProfile = !useProfileEffects || wireframe;
-	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewProfile;
+	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewPipeline.getProfile();
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(targetCamera);
@@ -185,7 +185,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	Profiler::start("forward_pass");
 	sceneViewForwardPass.wireframe = wireframe;
 	sceneViewForwardPass.drawSkybox = showSkybox;
-	sceneViewForwardPass.setSkybox(&Runtime::currentSkybox);
+	sceneViewForwardPass.setSkybox(Runtime::gameViewPipeline.getSkybox());
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
 	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, nullptr);
 	Profiler::stop("forward_pass");

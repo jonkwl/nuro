@@ -109,7 +109,7 @@ void GameWindow::renderGameView()
 		ImGui::SetCursorPos(offset);
 
 		// Render target
-		ImGui::Image(currentlyResizing ? 0 : Runtime::postProcessingPipeline.getOutput(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(currentlyResizing ? 0 : Runtime::gameViewPipeline.getOutput(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 
 		ImVec2 boundsMin = ImGui::GetItemRectMin();
 		ImVec2 boundsMax = ImGui::GetItemRectMax();
@@ -119,7 +119,7 @@ void GameWindow::renderGameView()
 
 		// Check if game window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			Runtime::resizeViewport(width, height);
+			Runtime::gameViewPipeline.resizeViewport(width, height);
 			lastWindowSize = currentWindowSize;
 		}
 	}

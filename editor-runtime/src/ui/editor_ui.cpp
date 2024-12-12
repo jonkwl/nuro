@@ -145,7 +145,7 @@ namespace EditorUI {
 		GameWindow* gameWindow = new GameWindow();
 		_windows.push_back(gameWindow);
 
-		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::gameViewProfile);
+		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::gameViewPipeline.getProfile());
 		_windows.push_back(postProcessingWindow);
 
 		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();

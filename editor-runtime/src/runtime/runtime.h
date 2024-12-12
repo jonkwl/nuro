@@ -18,6 +18,7 @@
 #include "../core/rendering/gizmos/gizmos.h"
 
 #include "../src/pipelines/scene_view_pipeline.h"
+#include "../src/pipelines/game_view_pipeline.h"
 
 struct GLFWwindow;
 class UnlitMaterial;
@@ -33,74 +34,34 @@ public:
 	static int START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
 
-	// OldEntity system
-	static OldEntity* createEntity(); // Links a given entity with the runtime (creating a runtime entity)
-	static void destroyEntity(OldEntity* entity);
-
-	static Camera& getCamera();
-
 	// Context
 	static GLFWwindow* glfw;
 	static glm::vec2 windowSize;
 	static bool fullscreen;
 
-	// Render settings
-	static glm::vec4 clearColor;	   // buffer clearing color
-	static unsigned int msaaSamples;   // MSAA Samples
-	static bool vsync;				   // V-Sync option
-	static bool sceneViewWireframe;    // Scene view wireframe option
-	static bool solidMode;			   // Solid mode option (simple render)
-	static bool shadows;			   // Enable or disable rendering for all shadows
-	static bool postProcessingEffects; // Enable or disable optional post processing effects
-	static Skybox& currentSkybox;      // Current skybox to be rendered
-
 	static SceneViewPipeline sceneViewPipeline;
-
-	// Passes & Pipelines
-	static PrePass prePass;
-	static ForwardPass forwardPass;
-	static SceneViewForwardPass sceneViewForwardPass;
-	static SSAOPass ssaoPass;
-	static VelocityBuffer velocityBuffer;
-	static PostProcessingPipeline postProcessingPipeline;
-
-	// tmp profile
-	static PostProcessing::Profile sceneViewProfile;
-	static PostProcessing::Profile gameViewProfile;
-
-	// Instances
-	static IMGizmo imGizmo;
-
-	// Perform resize for specific viewport
-	static void resizeViewport(float width, float height);
+	static GameViewPipeline gameViewPipeline;
 
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap;   // Default shadow map
 
-private:
 	static std::vector<OldEntity*> entityStack; // Stack of all entities that will be processed by the runtime
-	static Viewport gameViewport; // Scene viewport
-	static Camera camera; // Main render camera
-	static bool resized; // If window was resized
+
+private:
 	static Skybox defaultSkybox; // Default skybox
 
 private:
 	// Render passes
 	static void renderShadows(); // Renders all shadow passes
-	static void renderGameView(); // Render embedded game frame
 
 	// Methods
 	static void setupGlfw(); // Setup glfw context
-	static void setVSync(); // Set v sync option
 	static void loadAssets(); // Load all defualt assets
 	static void setupScripts(); // Call all scripts needing setup
 	static void prepareFrame(); // Prepare next frame
 	static void renderEditor(); // Render next editor frame
 	static void finishFrame(); // Call to finalize current frame
-	static void checkWindowResize(); // Perform resize if needed
-	static void performResize(); // Perform resize
 
 	// Context callbacks
 	static void glfwErrorCallback(int error, const char* description);
-	static void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);
 };
