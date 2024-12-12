@@ -186,6 +186,8 @@ void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
 
 void SceneViewForwardPass::renderSelectedEntity(OldEntity* selected)
 {
+	if (!selected) return;
+
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
 	glStencilMask(0xFF); // Enable stencil writes

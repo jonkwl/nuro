@@ -187,7 +187,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.setSkybox(&Runtime::currentSkybox);
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, targets[0]);
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, nullptr);
 	Profiler::stop("forward_pass");
 
 	//
