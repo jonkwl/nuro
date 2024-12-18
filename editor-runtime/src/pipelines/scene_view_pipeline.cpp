@@ -68,7 +68,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 
 	// Get transformation matrices
 	glm::mat4 viewMatrix = Transformation::viewMatrix(targetCamera.first.position, targetCamera.first.rotation);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(targetCamera.second.far, targetCamera.second.near, targetCamera.second.far, viewport);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(targetCamera.second.fov, targetCamera.second.near, targetCamera.second.far, viewport);
 	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
 
@@ -81,9 +81,6 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Set scene windows current matrix caches
 	SceneWindow::viewMatrix = viewMatrix;
 	SceneWindow::projectionMatrix = projectionMatrix;
-
-	// Update cameras frustum
-	//
 
 	//
 	// PREPARATION PASS
@@ -108,7 +105,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	imGizmo.opacity = 0.08f;
 
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(0.0f, 0.0f, 6.5f), 1.0f);
+	/*imGizmo.sphereWire(glm::vec3(0.0f, 0.0f, 6.5f), 1.0f);
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 1.9f, -4.0f), targetCamera.first, glm::vec3(0.35f));
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(4.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(4.0f, 0.0f, 6.5f), 1.0f);
@@ -137,7 +134,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(52.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
 	imGizmo.sphereWire(glm::vec3(52.0f, 0.0f, 6.5f), 1.0f);
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(56.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(56.0f, 0.0f, 6.5f), 1.0f);
+	imGizmo.sphereWire(glm::vec3(56.0f, 0.0f, 6.5f), 1.0f);*/
 
 	//
 	// PRE PASS

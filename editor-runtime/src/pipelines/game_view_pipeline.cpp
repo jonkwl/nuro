@@ -39,9 +39,10 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Get active camera
 	auto _camera = ECS::getActiveCamera();
 	if (!_camera) {
-		Log::printWarning("Game View", "No camera available! Can't render without camera.");
+		cameraAvailable = false;
 		return;
 	}
+	cameraAvailable = true;
 	TransformComponent& cameraTransform = std::get<0>(*_camera);
 	CameraComponent& cameraComponent = std::get<1>(*_camera);
 
@@ -56,9 +57,6 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	MeshRenderer::currentProjectionMatrix = projectionMatrix;
 	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
 	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
-
-	// Update cameras frustum
-	//
 
 	//
 	// PREPARATION PASS
@@ -175,6 +173,11 @@ void GameViewPipeline::setSkybox(Skybox* _skybox)
 Skybox* GameViewPipeline::getSkybox()
 {
 	return skybox;
+}
+
+bool GameViewPipeline::getCameraAvailable()
+{
+	return cameraAvailable;
 }
 
 void GameViewPipeline::createPasses()

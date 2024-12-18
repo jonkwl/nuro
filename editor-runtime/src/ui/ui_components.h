@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <glm.hpp>
 
 enum class HeadlineJustification
 {
@@ -18,10 +19,14 @@ public:
 	static void toggleButton(std::string label, bool& value, std::string tooltip = "");
 
 	static void label(std::string text);
+	static void label(std::string text, glm::vec4 color);
 	static void labelBold(std::string text);
+	static void labelBold(std::string text, glm::vec4 color);
 	static void labelSmall(std::string text);
+	static void labelSmall(std::string text, glm::vec4 color);
 
-	static void tryIcon(const char* icon, float padding = 2.5f);
+	static void tryIcon(const char* icon, float yPadding = 2.5f);
+	static void tryIcon(const char* icon, glm::vec4 color, float yPadding = 2.5f);
 
 	static void input(std::string label, bool& value);
 	static void input(std::string label, int& value, float speed = 0.1f);

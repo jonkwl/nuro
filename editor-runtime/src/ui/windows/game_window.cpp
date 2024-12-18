@@ -83,10 +83,27 @@ void GameWindow::renderToolbar()
 
 void GameWindow::renderGameView()
 {
+	// Prepare game view data
+	GameViewPipeline& pipeline = Runtime::gameViewPipeline;
+	bool availableCamera = pipeline.getCameraAvailable();
+	unsigned int output = pipeline.getOutput();
+
+	// Warn if camera isn't available
+	if (!Runtime::gameViewPipeline.getCameraAvailable()) {
+		glm::vec4 color = glm::vec4(0.94f, 0.72f, 0.29f, 1.0f);
+		ImGui::SetCursorPosX(25.0f);
+		UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION, color, 1.0f);
+		ImGui::SetCursorPosX(45.0f);
+		UIComponents::labelBold("Warning: No camera found, can't render", color);
+		output = 0;
+	}
+
+	// Render game view
 	ImGui::BeginChild("GameView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	{
 		// Check if window is currently being resized
 		bool currentlyResizing = currentWindowSize != lastWindowSize;
+		if (currentlyResizing) output = 0;
 
 		// Get content region avail for game view
 		ImVec2 contentRegionAvail = ImGui::GetContentRegionAvail();
@@ -109,7 +126,7 @@ void GameWindow::renderGameView()
 		ImGui::SetCursorPos(offset);
 
 		// Render target
-		ImGui::Image(currentlyResizing ? 0 : Runtime::gameViewPipeline.getOutput(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(output, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 
 		ImVec2 boundsMin = ImGui::GetItemRectMin();
 		ImVec2 boundsMax = ImGui::GetItemRectMax();

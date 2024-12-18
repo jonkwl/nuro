@@ -21,6 +21,7 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/transform/transform.h"
+#include "../core/ecs/components.h"
 
 glm::mat4 SceneWindow::viewMatrix;
 glm::mat4 SceneWindow::projectionMatrix;
@@ -153,7 +154,6 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
-	/*
 	return;
 
 	// Dont render transform gizmos if scene view is interacted with
@@ -187,7 +187,7 @@ void SceneWindow::renderTransformGizmos()
 
 	// Get gizmo matrices
 	OldEntity* entity = nullptr;
-	Transform& transform = entity->transform;
+	TransformComponent& transform = entity->transform;
 
 	glm::mat4 transformMatrix = Transformation::modelMatrix(entity->transform);
 
@@ -226,7 +226,6 @@ void SceneWindow::renderTransformGizmos()
 
 		transform.scale = scale;
 	}
-	*/
 }
 
 void SceneWindow::updateMovement()

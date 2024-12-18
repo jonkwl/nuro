@@ -80,9 +80,6 @@ int Runtime::START_LOOP()
 	// PERFORM GAMES AWAKE LOGIC
 	awake();
 
-	// Create some entity
-	ECS::createEntity();
-
 	// Create game camera
 	entt::entity camera = ECS::createEntity();
 	ECS::addCameraComponent(camera);

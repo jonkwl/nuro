@@ -45,5 +45,5 @@ private:
 	int gizmoOperation; // Last used gizmo operation
 	float gizmoScaleMin; // Limit for downscaling an object with a gizmo
 
-	glm::vec3 cameraEulerAngles;
+	glm::vec3 cameraEulerAngles; // Cache for cameras euler angles
 };

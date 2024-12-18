@@ -104,11 +104,25 @@ void UIComponents::label(std::string text)
 	ImGui::Text(text.c_str());
 }
 
+void UIComponents::label(std::string text, glm::vec4 color)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.r, color.g, color.b, color.a));
+	label(text);
+	ImGui::PopStyleColor();
+}
+
 void UIComponents::labelBold(std::string text)
 {
 	ImGui::PushFont(EditorUI::getFonts().uiBold);
 	ImGui::Text(text.c_str());
 	ImGui::PopFont();
+}
+
+void UIComponents::labelBold(std::string text, glm::vec4 color)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.r, color.g, color.b, color.a));
+	labelBold(text);
+	ImGui::PopStyleColor();
 }
 
 void UIComponents::labelSmall(std::string text)
@@ -118,15 +132,29 @@ void UIComponents::labelSmall(std::string text)
 	ImGui::PopFont();
 }
 
-void UIComponents::tryIcon(const char* icon, float padding)
+void UIComponents::labelSmall(std::string text, glm::vec4 color)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.r, color.g, color.b, color.a));
+	labelSmall(text);
+	ImGui::PopStyleColor();
+}
+
+void UIComponents::tryIcon(const char* icon, float yPadding)
 {
 	if (icon && icon[0] != '\0')
 	{
 		float currentY = ImGui::GetCursorPosY();
-		ImGui::SetCursorPosY(currentY + padding);
+		ImGui::SetCursorPosY(currentY + yPadding);
 		ImGui::Text(icon);
 		ImGui::SetCursorPosY(currentY);
 	}
+}
+
+void UIComponents::tryIcon(const char* icon, glm::vec4 color, float yPadding)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.r, color.g, color.b, color.a));
+	tryIcon(icon, yPadding);
+	ImGui::PopStyleColor();
 }
 
 void UIComponents::input(std::string label, bool& value)

@@ -36,6 +36,8 @@ public:
 	void setSkybox(Skybox* skybox);
 	Skybox* getSkybox();
 
+	bool getCameraAvailable();
+
 private:
 	void createPasses(); // Create all passes
 	void destroyPasses(); // Destroy all passes
@@ -54,5 +56,8 @@ private:
 	SSAOPass ssaoPass;
 	VelocityBuffer velocityBuffer;
 	PostProcessingPipeline postProcessingPipeline;
+
+	// Camera available cache
+	bool cameraAvailable;
 };
 
