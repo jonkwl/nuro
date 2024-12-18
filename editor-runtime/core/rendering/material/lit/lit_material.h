@@ -4,8 +4,8 @@
 
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/viewport/viewport.h"
-#include "../core/camera/camera.h"
 #include "../core/rendering/texture/texture.h"
+#include "../core/ecs/components.h"
 
 class ShadowDisk;
 class ShadowMap;
@@ -20,7 +20,7 @@ public:
 	// Eg "RenderState" and pushRenderState(state)
 	// Or rewrite matertial system for more modular and dynamic approach
 	static Viewport* viewport;
-	static Camera* camera;
+	static TransformComponent* cameraTransform;
 	static unsigned int ssaoInput;
 	static PostProcessing::Profile* profile;
 	static bool castShadows;

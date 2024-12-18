@@ -77,7 +77,7 @@ void SceneWindow::render()
 	if (sceneViewRightclicked || sceneViewMiddleclicked) EditorUI::setCursorMode(CursorMode::HIDDEN);
 
 	// Update movement according to inputs calculated prior
-	updateMovement(Runtime::sceneViewPipeline.getFlyCamera());
+	updateMovement();
 }
 
 void SceneWindow::renderToolbar()
@@ -225,8 +225,11 @@ void SceneWindow::renderTransformGizmos()
 	}
 }
 
-void SceneWindow::updateMovement(Camera& camera)
+void SceneWindow::updateMovement()
 {
+	auto camera = Runtime::sceneViewPipeline.getFlyCamera();
+
+	/*
 	// Get values needed
 	float deltaTime = Time::deltaf();
 	glm::vec3 camForward = camera.transform.forward();
@@ -258,4 +261,5 @@ void SceneWindow::updateMovement(Camera& camera)
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
 		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
 	}
+	*/
 }

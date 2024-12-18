@@ -10,9 +10,10 @@
 #include "../core/rendering/core/forward_pass.h"
 #include "../core/rendering/ssao/ssao_pass.h"
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
-#include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/camera/camera.h"
+#include "../core/ecs/components.h"
+
+class Skybox;
 
 class GameViewPipeline
 {
@@ -42,7 +43,6 @@ private:
 	// Members
 	Viewport viewport;
 	PostProcessing::Profile profile;
-	Camera camera;
 	Skybox* skybox;
 
 	// Render settings

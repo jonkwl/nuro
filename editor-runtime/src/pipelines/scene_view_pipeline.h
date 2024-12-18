@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <utility>
 
 #include "../core/viewport/viewport.h"
 #include "../core/old_entity/old_entity.h"
@@ -12,7 +13,7 @@
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/camera/camera.h"
+#include "../core/ecs/components.h"
 
 class SceneViewPipeline
 {
@@ -37,7 +38,7 @@ public:
 
 	void updateMsaaSamples(unsigned int msaaSamples);
 
-	Camera& getFlyCamera();
+	std::pair<TransformComponent, CameraComponent>& getFlyCamera();
 
 private:
 	void createPasses(); // Create all passes
@@ -53,7 +54,7 @@ private:
 	PostProcessing::Profile defaultProfile; // Default scene view profile
 
 	// Scene view cameras
-	Camera flyCamera;
+	std::pair<TransformComponent, CameraComponent> flyCamera;
 
 	// Linked passes
 	PrePass prePass;

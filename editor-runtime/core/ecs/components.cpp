@@ -12,3 +12,9 @@ normalMatrix(glm::mat4(1.0f))
 MeshRendererComponent::MeshRendererComponent() : mesh(nullptr)
 {
 }
+
+CameraComponent::CameraComponent() : fov(70.0f),
+near(0.3f),
+far(1000.0f)
+{
+}

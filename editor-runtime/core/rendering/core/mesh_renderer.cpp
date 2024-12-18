@@ -32,7 +32,7 @@ materialUnavailableShader(ShaderPool::get("mat_unavailable"))
 {
 }
 
-void MeshRenderer::prepareNextFrame(Camera& renderCamera)
+void MeshRenderer::prepareNextFrame()
 {
 	// No model to render available -> cancel
 	if (model == nullptr)
@@ -44,7 +44,7 @@ void MeshRenderer::prepareNextFrame(Camera& renderCamera)
 	currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
 	// Frustum culling
-	performFrustumCulling(renderCamera);
+	//
 }
 
 void MeshRenderer::forwardPass()

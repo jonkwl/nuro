@@ -7,6 +7,8 @@
 #include "../core/diagnostics/profiler.h"
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/culling/bounding_volume.h"
+#include "../core/rendering/skybox/skybox.h"
+#include "../core/ecs/ecs.h"
 
 #include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
@@ -15,7 +17,6 @@
 GameViewPipeline::GameViewPipeline() : viewport(),
 msaaSamples(8), // should lower this
 profile(),
-camera(),
 skybox(nullptr),
 prePass(viewport),
 forwardPass(viewport),
@@ -35,9 +36,18 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 {
 	Profiler::start("render");
 
+	// Get active camera
+	auto _camera = ECS::getActiveCamera();
+	if (!_camera) {
+		Log::printWarning("Game View", "No camera available! Can't render without camera.");
+		return;
+	}
+	TransformComponent& cameraTransform = std::get<0>(*_camera);
+	CameraComponent& cameraComponent = std::get<1>(*_camera);
+
 	// Get transformation matrices
-	glm::mat4 viewMatrix = Transformation::viewMatrix(camera);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(camera, viewport);
+	glm::mat4 viewMatrix = Transformation::viewMatrix(cameraTransform.position, cameraTransform.rotation);
+	glm::mat4 projectionMatrix = Transformation::projectionMatrix(cameraComponent.fov, cameraComponent.near, cameraComponent.far, viewport);
 	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
 
@@ -48,7 +58,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 	// Update cameras frustum
-	camera.updateFrustum(viewport);
+	//
 
 	//
 	// PREPARATION PASS
@@ -58,7 +68,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	{
 		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
 		// Here for now to ensure preparation despite further pipeline changes
-		targets[i]->meshRenderer.prepareNextFrame(camera);
+		targets[i]->meshRenderer.prepareNextFrame();
 	}
 
 	//
@@ -98,7 +108,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &viewport; // Redundant most of the times atm
-	LitMaterial::camera = &camera; // Redundant most of the times atm
+	LitMaterial::cameraTransform = &cameraTransform; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &profile;
 	LitMaterial::castShadows = true;

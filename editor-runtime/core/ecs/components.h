@@ -26,3 +26,13 @@ struct MeshRendererComponent {
 	Mesh* mesh;
 
 };
+
+struct CameraComponent {
+
+	CameraComponent();
+
+	float fov;
+	float near;
+	float far;
+
+};

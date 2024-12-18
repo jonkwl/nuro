@@ -9,7 +9,7 @@
 #include "../core/utils/log.h"
 
 Viewport* LitMaterial::viewport = nullptr;
-Camera* LitMaterial::camera = nullptr;
+TransformComponent* LitMaterial::cameraTransform = nullptr;
 unsigned int LitMaterial::ssaoInput = 0;
 PostProcessing::Profile* LitMaterial::profile = nullptr;
 bool LitMaterial::castShadows = true;
@@ -67,7 +67,7 @@ void LitMaterial::bind()
 	glBindTexture(GL_TEXTURE_2D, ssaoInput);
 
 	// World parameters
-	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(camera->transform.position));
+	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
 
 	// Set material data
 	shader->setVec4("material.baseColor", baseColor);

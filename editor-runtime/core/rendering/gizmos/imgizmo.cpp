@@ -85,9 +85,9 @@ void IMGizmo::sphereWire(glm::vec3 position, float radius)
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::icon3d(Texture& icon, glm::vec3 position, Camera& camera, glm::vec3 scale)
+void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale)
 {
-	IconRenderTarget gizmo(icon, position, scale, camera, getCurrentState());
+	IconRenderTarget gizmo(icon, position, scale, cameraTransform, getCurrentState());
 	iconRenderStack.push_back(gizmo);
 }
 
@@ -181,7 +181,7 @@ void IMGizmo::renderIcons()
 
 		// Get cameras position and direction
 		glm::vec3 gizmoPosition = Transformation::toBackendPosition(gizmo.position);
-		glm::vec3 cameraPosition = Transformation::toBackendPosition(gizmo.camera.transform.position);
+		glm::vec3 cameraPosition = Transformation::toBackendPosition(gizmo.cameraTransform.position);
 		// Compute direction vector from gizmo to camera in XZ plane
 		glm::vec3 directionToCamera = glm::normalize(glm::vec3(cameraPosition.x - gizmoPosition.x, 0.0f, cameraPosition.z - gizmoPosition.z));
 		glm::vec3 right = glm::normalize(glm::vec3(-directionToCamera.z, 0.0f, directionToCamera.x));

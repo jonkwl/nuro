@@ -4,7 +4,7 @@
 #include <glm.hpp>
 
 #include "../core/rendering/texture/texture.h"
-#include "../core/camera/camera.h"
+#include "../core/ecs/components.h"
 
 class Shader;
 class Model;
@@ -32,7 +32,7 @@ public:
 	void sphereWire(glm::vec3 position, float radius = 0.5f);
 
 	// Icons
-	void icon3d(Texture& icon, glm::vec3 position, Camera& camera, glm::vec3 scale = glm::vec3(1.0f));
+	void icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
 
 private:
 	struct RenderState {
@@ -72,14 +72,14 @@ private:
 		Texture& icon;
 		glm::vec3 position;
 		glm::vec3 scale;
-		Camera& camera;
+		TransformComponent& cameraTransform;
 		RenderState state;
 
-		IconRenderTarget(Texture& icon, glm::vec3 position, glm::vec3 scale, Camera& camera, RenderState state) :
+		IconRenderTarget(Texture& icon, glm::vec3 position, glm::vec3 scale, TransformComponent& cameraTransform, RenderState state) :
 			icon(icon),
 			position(position),
 			scale(scale),
-			camera(camera),
+			cameraTransform(cameraTransform),
 			state(state)
 		{};
 	};

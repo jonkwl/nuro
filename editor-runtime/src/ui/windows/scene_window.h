@@ -3,7 +3,6 @@
 #include <glm.hpp>
 
 #include "../src/ui/editor_window.h"
-#include "../core/camera/camera.h"
 
 class SceneWindow : public EditorWindow
 {
@@ -19,7 +18,7 @@ private:
 	void renderSceneView();
 	void renderTransformGizmos();
 
-	void updateMovement(Camera& camera); // Update movement within scene view
+	void updateMovement(); // Update movement within scene view
 
 private:
 	glm::vec2 currentWindowSize; // Current windows size

@@ -26,7 +26,7 @@ public:
 	float motionBlurIntensity; // Set objects motion blur intensity
 
 	// Prepare each mesh for upcoming passes for next frame (calculate and cache matrices, perform culling etc.)
-	void prepareNextFrame(Camera& renderCamera);
+	void prepareNextFrame();
 
 	// Mesh needs to be prepared using prepare() before any pass for current frame is performed
 	void forwardPass();

@@ -4,7 +4,6 @@
 #include <gtc/type_ptr.hpp>
 
 #include "../core/old_entity/old_entity.h"
-#include "../core/camera/camera.h"
 
 namespace Transformation {
 
@@ -49,10 +48,10 @@ namespace Transformation {
 		return model;
 	}
 
-	glm::mat4 viewMatrix(Camera& camera)
+	glm::mat4 viewMatrix(glm::vec3 cameraPosition, glm::quat cameraRotation)
 	{
-		glm::vec3 position = toBackendPosition(camera.transform.position);
-		glm::quat rotation = toBackendRotation(camera.transform.rotation);
+		glm::vec3 position = toBackendPosition(cameraPosition);
+		glm::quat rotation = toBackendRotation(cameraRotation);
 
 		// Normalize rotation
 		rotation = glm::normalize(rotation);
@@ -73,9 +72,9 @@ namespace Transformation {
 		return viewMatrix;
 	}
 
-	glm::mat4 projectionMatrix(Camera& camera, const Viewport& viewport)
+	glm::mat4 projectionMatrix(float fov, float near, float far, const Viewport& viewport)
 	{
-		glm::mat4 projection = glm::perspective(glm::radians(camera.getFov()), viewport.width / viewport.height, camera.getNear(), camera.getFar());
+		glm::mat4 projection = glm::perspective(glm::radians(fov), viewport.width / viewport.height, near, far);
 		return projection;
 	}
 

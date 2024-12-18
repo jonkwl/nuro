@@ -2,7 +2,6 @@
 
 // Useful includes for applications using engine
 #include "../core/old_entity/old_entity.h"
-#include "../core/camera/camera.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/postprocessing/post_processing.h"
