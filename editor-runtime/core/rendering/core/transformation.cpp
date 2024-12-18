@@ -22,7 +22,7 @@ namespace Transformation {
 		return rotation;
 	}
 
-	glm::mat4 modelMatrix(Transform& transform)
+	glm::mat4 modelMatrix(TransformComponent& transform)
 	{
 		glm::mat4 model(1.0f);
 

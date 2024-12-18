@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/transform/transform.h"
+#include "../core/ecs/components.h"
 #include "../core/rendering/core/mesh_renderer.h"
 
 class OldEntity
@@ -8,6 +8,6 @@ class OldEntity
 public:
 	OldEntity();
 
-	Transform transform;
+	TransformComponent transform;
 	MeshRenderer meshRenderer;
 };

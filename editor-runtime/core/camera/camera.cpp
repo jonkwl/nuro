@@ -1,7 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(float fov, float near, float far) : transform(),
-frustum(),
+Camera::Camera(float fov, float near, float far) : frustum(),
 fov(fov),
 near(near),
 far(far)
@@ -28,6 +27,7 @@ float Camera::getFar()
 
 void Camera::updateFrustum(Viewport& viewport)
 {
+    /*
     // Half field of view (vertical)
     float halfFov = glm::radians(fov * 0.5f);
     float aspectRatio = viewport.width / viewport.height;
@@ -65,6 +65,7 @@ void Camera::updateFrustum(Viewport& viewport)
     frustum.rightPlane = calculatePlane(nearTopRight, farTopRight, farBottomRight);
     frustum.topPlane = calculatePlane(nearTopLeft, farTopLeft, farTopRight);
     frustum.bottomPlane = calculatePlane(nearBottomLeft, farBottomLeft, farBottomRight);
+    */
 }
 
 const Frustum& Camera::getFrustum()

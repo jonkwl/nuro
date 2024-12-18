@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\camera\camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\diagnostics\diagnostics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -210,14 +207,11 @@
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\camera\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\camera\camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\camera\frustum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="core\diagnostics\diagnostics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -693,6 +687,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pipelines\game_view_pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\camera\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\camera\frustum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

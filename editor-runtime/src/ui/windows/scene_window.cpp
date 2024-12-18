@@ -20,6 +20,7 @@
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
+#include "../core/transform/transform.h"
 
 glm::mat4 SceneWindow::viewMatrix;
 glm::mat4 SceneWindow::projectionMatrix;
@@ -40,7 +41,8 @@ cursorCurrent(glm::vec2(0.0f)),
 cursorLast(glm::vec2(0.0f)),
 cursorDelta(glm::vec2(0.0f)),
 gizmoOperation(ImGuizmo::OPERATION::TRANSLATE),
-gizmoScaleMin(0.1f)
+gizmoScaleMin(0.1f),
+cameraEulerAngles(glm::vec3(0.0f))
 {
 	cursorLast = Cursor::getPosition();
 }
@@ -151,6 +153,7 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
+	/*
 	return;
 
 	// Dont render transform gizmos if scene view is interacted with
@@ -223,24 +226,24 @@ void SceneWindow::renderTransformGizmos()
 
 		transform.scale = scale;
 	}
+	*/
 }
 
 void SceneWindow::updateMovement()
 {
-	auto camera = Runtime::sceneViewPipeline.getFlyCamera();
+	TransformComponent& cameraTransform = Runtime::sceneViewPipeline.getFlyCamera().first;
 
-	/*
 	// Get values needed
 	float deltaTime = Time::deltaf();
-	glm::vec3 camForward = camera.transform.forward();
-	glm::vec3 camRight = camera.transform.right();
-	glm::vec3 camUp = camera.transform.up();
+	glm::vec3 camForward = Transform::forward(cameraTransform);
+	glm::vec3 camRight = Transform::right(cameraTransform);
+	glm::vec3 camUp = Transform::up(cameraTransform);
 
 	// Move in scene view
 	glm::vec2 currentKeyAxis = !sceneViewRightclicked ? glm::vec2(0.0f) : Input::moveAxis();
 	moveAxis = glm::mix(moveAxis, currentKeyAxis, moveAxisSmoothingFactor * deltaTime);
 	glm::vec3 movementDir = camForward * moveAxis.x + camRight * moveAxis.y;
-	camera.transform.position += movementDir * movementSpeed * deltaTime;
+	cameraTransform.position += movementDir * movementSpeed * deltaTime;
 
 	// If theres a right click interaction with scene view
 	if (sceneViewRightclicked) {
@@ -250,16 +253,17 @@ void SceneWindow::updateMovement()
 
 		// Rotate in scene view
 		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
-		glm::vec3 newRotation = camera.transform.getEulerAngles() + (rotationDir * mouseSensitivity);
+		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
-		camera.transform.setCameraEulerAngles(newRotation);
+		cameraTransform.rotation = glm::quat(glm::radians(newRotation));
+		cameraEulerAngles = newRotation;
 	}
 
 	// If theres a middle click interaction with scene view
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
+		cameraTransform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
 	}
-	*/
+
 }

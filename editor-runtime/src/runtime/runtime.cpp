@@ -39,6 +39,7 @@
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/input/cursor.h"
 #include "../core/ecs/ecs.h"
+#include "../core/ecs/components.h"
 
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
@@ -81,6 +82,10 @@ int Runtime::START_LOOP()
 
 	// Create some entity
 	ECS::createEntity();
+
+	// Create game camera
+	entt::entity camera = ECS::createEntity();
+	ECS::addCameraComponent(camera);
 
 	while (!glfwWindowShouldClose(glfw))
 	{

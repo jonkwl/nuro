@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vector>
-
-#include "../core/camera/camera.h"
 #include "../core/rendering/shader/shader.h"
 
 class OldEntity;

@@ -8,9 +8,9 @@
 
 namespace ECS {
 
-	entt::registry& getRegistry();
-
 	entt::entity createEntity();
+
+	void addCameraComponent(entt::entity& entity);
 
 	std::optional<std::tuple<TransformComponent&, CameraComponent&>> getActiveCamera();
 

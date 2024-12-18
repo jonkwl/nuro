@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\camera\camera.cpp" />
     <ClCompile Include="core\ecs\components.cpp" />
     <ClCompile Include="core\ecs\ecs.cpp" />
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
@@ -139,7 +140,6 @@
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
     <ClCompile Include="src\ui\windows\game_window.cpp" />
     <ClCompile Include="src\ui\windows\console_window.cpp" />
-    <ClCompile Include="core\camera\camera.cpp" />
     <ClCompile Include="core\diagnostics\diagnostics.cpp" />
     <ClCompile Include="core\diagnostics\profiler.cpp" />
     <ClCompile Include="core\old_entity\old_entity.cpp" />
@@ -198,6 +198,8 @@
     <ClCompile Include="src\ui\ui_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core\camera\camera.h" />
+    <ClInclude Include="core\camera\frustum.h" />
     <ClInclude Include="core\ecs\components.h" />
     <ClInclude Include="core\ecs\ecs.h" />
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
@@ -206,8 +208,6 @@
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />
     <ClInclude Include="src\ui\windows\game_window.h" />
     <ClInclude Include="src\ui\windows\console_window.h" />
-    <ClInclude Include="core\camera\camera.h" />
-    <ClInclude Include="core\camera\frustum.h" />
     <ClInclude Include="core\diagnostics\diagnostics.h" />
     <ClInclude Include="core\diagnostics\profiler.h" />
     <ClInclude Include="core\engine.h" />

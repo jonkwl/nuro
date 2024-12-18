@@ -27,7 +27,6 @@ currentModelMatrix(glm::mat4(1.0f)),
 currentMvpMatrix(glm::mat4(1.0f)),
 currentNormalMatrix(glm::mat4(1.0f)),
 previousModelMatrix(glm::mat4(1.0f)),
-intersectsFrustum(false),
 materialUnavailableShader(ShaderPool::get("mat_unavailable"))
 {
 }
@@ -52,9 +51,6 @@ void MeshRenderer::forwardPass()
 	// No model to render available -> cancel
 	if (model == nullptr)
 		return;
-
-	// Check if render target is not visible this frame -> cancel
-	if (!visible()) return;
 
 	// Render each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
@@ -119,9 +115,6 @@ void MeshRenderer::prePass(Shader* shader)
 	// No model to render available -> cancel
 	if (model == nullptr)
 		return;
-
-	// Check if render target is not visible this frame -> cancel
-	if (!visible()) return;
 
 	// Depth pre pass each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
@@ -220,34 +213,4 @@ void MeshRenderer::recalculateRenderMatrices()
 void MeshRenderer::render(unsigned int nElements)
 {
 	glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
-}
-
-void MeshRenderer::performFrustumCulling(Camera& renderCamera)
-{
-	// No culling by default
-	intersectsFrustum = true;
-
-	// Update bounding volume
-	volume->update(model, parentEntity->transform.position, parentEntity->transform.rotation, parentEntity->transform.scale);
-
-	// Tmp, Add to cpu entities
-	// Can be optimized with diagnostics update batch
-	Diagnostics::addNEntitiesCPU(1);
-
-	// Render target is not within frustum, cull it
-	if (!volume->intersectsFrustum(renderCamera.getFrustum()))
-	{
-		intersectsFrustum = false;
-		return;
-	}
-
-	// Tmp, Add to gpu entities
-	// Can be optimized with diagnostics update batch
-	Diagnostics::addNEntitiesGPU(1);
-}
-
-bool MeshRenderer::visible()
-{
-	// Must intersect frustum to be visible
-	return intersectsFrustum;
 }

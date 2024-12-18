@@ -3,7 +3,6 @@
 #include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/shader/Shader.h"
 #include "../core/viewport/viewport.h"
-#include "../core/camera/camera.h"
 
 class Model;
 class BoundingVolume;
@@ -54,9 +53,4 @@ private:
 	Shader* materialUnavailableShader; // Shader used for unavailable material
 
 	void render(unsigned int nElements); // Issues draw call
-
-	void performFrustumCulling(Camera& renderCamera);
-	bool intersectsFrustum;
-
-	bool visible();
 };
