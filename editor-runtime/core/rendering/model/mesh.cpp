@@ -50,9 +50,9 @@ materialIndex(materialIndex)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Mesh::bind()
+unsigned int Mesh::getVAO()
 {
-	glBindVertexArray(vao);
+	return vao;
 }
 
 unsigned int Mesh::getVerticeCount()

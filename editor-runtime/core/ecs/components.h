@@ -13,17 +13,17 @@ struct TransformComponent {
 	glm::quat rotation;
 	glm::vec3 scale;
 
-	glm::mat4 modelMatrix; // Model matrix cache for current frame
-	glm::mat4 mvpMatrix; // MVP matrix cache for current frame
-	glm::mat4 normalMatrix; // Normal matrix cache for current frame
+	// Matrix cache
+	glm::mat4 model;
+	glm::mat4 mvp;
 
 };
 
 struct MeshRendererComponent {
 
-	MeshRendererComponent();
+	MeshRendererComponent(Mesh& mesh);
 
-	Mesh* mesh;
+	Mesh& mesh; // Mesh render target
 
 };
 
@@ -31,8 +31,8 @@ struct CameraComponent {
 
 	CameraComponent();
 
-	float fov;
-	float near;
-	float far;
+	float fov; // Cameras y fov in degrees
+	float near; // Near clipping
+	float far; // Far clipping
 
 };

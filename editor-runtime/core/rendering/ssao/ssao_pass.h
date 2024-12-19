@@ -11,7 +11,7 @@ class Shader;
 class SSAOPass
 {
 public:
-	SSAOPass(Viewport& viewport);
+	explicit SSAOPass(Viewport& viewport);
 
 	void create(float aoScale = 0.5f, int maxKernelSamples = 64, float noiseResolution = 4.0f);  // Create ambient occlusion pass
 	void destroy(); // Destroy ambient occlusion pass

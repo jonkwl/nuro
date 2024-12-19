@@ -11,7 +11,7 @@ class Shader;
 class PostProcessingPipeline
 {
 public:
-	PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen);
+	explicit PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen);
 
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline

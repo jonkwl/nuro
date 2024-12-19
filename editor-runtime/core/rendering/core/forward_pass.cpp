@@ -4,8 +4,13 @@
 
 #include "../core/utils/log.h"
 #include "../core/old_entity/old_entity.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
+#include "../core/ecs/ecs.h"
+#include "../core/rendering/material/imaterial.h"
+#include "../core/diagnostics/diagnostics.h"
+#include "../core/rendering/core/transformation.h"
+
+#include "../src/runtime/runtime.h"
 
 ForwardPass::ForwardPass(const Viewport& viewport) : clearColor(glm::vec4(0.0f)),
 viewport(viewport),
@@ -16,7 +21,8 @@ outputColor(0),
 outputDepth(0),
 multisampledFbo(0),
 multisampledRbo(0),
-multisampledColorBuffer(0)
+multisampledColorBuffer(0),
+defaultMaterial(nullptr)
 {
 }
 
@@ -69,6 +75,11 @@ void ForwardPass::create(const unsigned int msaaSamples)
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Create default material
+	defaultMaterial = new LitMaterial();
+	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.75f), 1.0f);
+	defaultMaterial->roughness = 0.3f;
 }
 
 void ForwardPass::destroy() {
@@ -97,7 +108,7 @@ void ForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int ForwardPass::render(std::vector<OldEntity*>& targets, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
+unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -134,10 +145,28 @@ unsigned int ForwardPass::render(std::vector<OldEntity*>& targets, const glm::ma
 	*/
 	// INJECTED PRE PASS END
 
-	// Render each linked entity
-	for (int i = 0; i < targets.size(); i++)
-	{
-		targets[i]->meshRenderer.forwardPass();
+	// Render each entity
+	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	for (auto [entity, transform, renderer] : targets.each()) {
+		// Transform components model and mvp must have been calculated beforehand
+
+		// Bind mesh
+		glBindVertexArray(renderer.mesh.getVAO());
+
+		// Bind material
+		IMaterial* material = defaultMaterial; // implement new material system here
+		material->bind();
+
+		// Set shader uniforms
+		Shader* shader = material->getShader();
+		shader->setMatrix4("mvpMatrix", transform.mvp);
+		shader->setMatrix4("modelMatrix", transform.model);
+		glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
+		shader->setMatrix3("normalMatrix", normalMatrix);
+		// Handle light space
+
+		// Render mesh
+		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 
 	// Disable culling before rendering skybox

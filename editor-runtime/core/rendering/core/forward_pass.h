@@ -5,6 +5,7 @@
 
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/imgizmo.h"
+#include "../core/rendering/material/lit/lit_material.h"
 
 class OldEntity;
 class Skybox;
@@ -12,13 +13,13 @@ class Skybox;
 class ForwardPass
 {
 public:
-	ForwardPass(const Viewport& viewport);
+	explicit ForwardPass(const Viewport& viewport);
 
 	void create(const unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
 	// Forward passes all entity render targets and returns color output
-	unsigned int render(std::vector<OldEntity*>& targets, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
+	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
 
 	unsigned int getDepthOutput(); // Returns depth output
 
@@ -43,4 +44,6 @@ private:
 	unsigned int multisampledFbo;		 // Anti-aliasing framebuffer
 	unsigned int multisampledRbo;		 // Anti-aliasing renderbuffer
 	unsigned int multisampledColorBuffer; // Anti-aliasing color buffer texture
+
+	LitMaterial* defaultMaterial; // Some default material
 };

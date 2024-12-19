@@ -34,6 +34,8 @@ public:
 	// Icons
 	void icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
 
+	Model* getCubeModel(); // tmp
+
 private:
 	struct RenderState {
 		glm::vec3 color;

@@ -26,7 +26,9 @@ sceneViewForwardPass(viewport),
 ssaoPass(viewport),
 velocityBuffer(viewport),
 postProcessingPipeline(viewport, false),
-imGizmo()
+imGizmo(),
+view(glm::mat4(1.0f)),
+projection(glm::mat4(1.0f))
 {
 }
 
@@ -67,14 +69,10 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewPipeline.getProfile();
 
 	// Get transformation matrices
-	glm::mat4 viewMatrix = Transformation::view(targetCamera.first.position, targetCamera.first.rotation);
-	glm::mat4 projectionMatrix = Transformation::projection(targetCamera.second.fov, targetCamera.second.near, targetCamera.second.far, viewport);
-	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
-	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
-
-	// Set scene windows current matrix caches
-	SceneWindow::viewMatrix = viewMatrix;
-	SceneWindow::projectionMatrix = projectionMatrix;
+	view = Transformation::view(targetCamera.first.position, targetCamera.first.rotation);
+	projection = Transformation::projection(targetCamera.second.fov, targetCamera.second.near, targetCamera.second.far, viewport);
+	glm::mat4 viewProjection = projection * view;
+	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	//
 	// PREPARATION PASS
@@ -135,7 +133,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Create geometry pass with depth buffer before forward pass
 	//
 	Profiler::start("pre_pass");
-	prePass.render(targets);
+	prePass.render(viewProjection, viewNormal);
 	Profiler::stop("pre_pass");
 	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
 	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
@@ -148,7 +146,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	unsigned int _ssaoOutput = 0;
 	if (targetProfile.ambientOcclusion.enabled)
 	{
-		_ssaoOutput = ssaoPass.render(projectionMatrix, targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+		_ssaoOutput = ssaoPass.render(projection, targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const unsigned int SSAO_OUTPUT = _ssaoOutput;
 	Profiler::stop("ssao");
@@ -179,7 +177,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.setSkybox(Runtime::gameViewPipeline.getSkybox());
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, nullptr, viewMatrix, projectionMatrix, viewProjectionMatrix);
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection);
 	Profiler::stop("forward_pass");
 
 	//
@@ -187,7 +185,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(viewMatrix, projectionMatrix, viewProjectionMatrix, targetProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
+	postProcessingPipeline.render(view, projection, viewProjection, targetProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
@@ -196,6 +194,16 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 unsigned int SceneViewPipeline::getOutput()
 {
 	return postProcessingPipeline.getOutput();
+}
+
+unsigned int SceneViewPipeline::getPrePassNormals()
+{
+	return prePass.getNormalOutput();
+}
+
+unsigned int SceneViewPipeline::getPrePassDepth()
+{
+	return prePass.getDepthOutput();
 }
 
 const Viewport& SceneViewPipeline::getViewport()
@@ -227,6 +235,16 @@ void SceneViewPipeline::updateMsaaSamples(unsigned int _msaaSamples)
 std::pair<TransformComponent, CameraComponent>& SceneViewPipeline::getFlyCamera()
 {
 	return flyCamera;
+}
+
+const glm::mat4& SceneViewPipeline::getView() const
+{
+	return view;
+}
+
+const glm::mat4& SceneViewPipeline::getProjection() const
+{
+	return projection;
 }
 
 void SceneViewPipeline::createPasses()

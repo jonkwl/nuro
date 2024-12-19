@@ -11,7 +11,6 @@
 #include "../core/rendering/ssao/ssao_pass.h"
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/ecs/components.h"
 
 class Skybox;
 

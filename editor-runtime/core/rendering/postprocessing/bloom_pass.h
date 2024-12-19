@@ -10,7 +10,7 @@ class Shader;
 class BloomPass
 {
 public:
-	BloomPass(const Viewport& viewport);
+	explicit BloomPass(const Viewport& viewport);
 
 	void create(const unsigned int mipDepth);
 	void destroy();

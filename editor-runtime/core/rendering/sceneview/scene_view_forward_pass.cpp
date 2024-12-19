@@ -7,6 +7,8 @@
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/model/model.h"
+#include "../core/ecs/ecs.h"
+#include "../core/rendering/core/transformation.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -20,7 +22,8 @@ outputColor(0),
 multisampledFbo(0),
 multisampledRbo(0),
 multisampledColorBuffer(0),
-selectionMaterial(nullptr)
+selectionMaterial(nullptr),
+defaultMaterial(nullptr)
 {
 }
 
@@ -77,6 +80,11 @@ void SceneViewForwardPass::create(unsigned int msaaSamples)
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Create default material
+	defaultMaterial = new LitMaterial();
+	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.75f), 1.0f);
+	defaultMaterial->roughness = 0.3f;
 }
 
 void SceneViewForwardPass::destroy() {
@@ -105,7 +113,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int SceneViewForwardPass::render(std::vector<OldEntity*>& targets, OldEntity* selected, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
+unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -141,16 +149,32 @@ unsigned int SceneViewForwardPass::render(std::vector<OldEntity*>& targets, OldE
 	glStencilMask(0x00);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
-	// Render each objects forward pass except for selected entity
-	for (int i = 0; i < targets.size(); i++) {
-		OldEntity* entity = targets[i];
-		if (entity != selected) {
-			entity->meshRenderer.forwardPass();
-		}
+	// Render each entity
+	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	for (auto [entity, transform, renderer] : targets.each()) {
+		// Transform components model and mvp must have been calculated beforehand
+
+		// Bind mesh
+		glBindVertexArray(renderer.mesh.getVAO());
+
+		// Bind material
+		IMaterial* material = defaultMaterial; // implement new material system here
+		material->bind();
+
+		// Set shader uniforms
+		Shader* shader = material->getShader();
+		shader->setMatrix4("mvpMatrix", transform.mvp);
+		shader->setMatrix4("modelMatrix", transform.model);
+		glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
+		shader->setMatrix3("normalMatrix", normalMatrix);
+		// Handle light space
+
+		// Render mesh
+		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 	
 	// Render selected entity with outline
-	renderSelectedEntity(selected);
+	// renderSelectedEntity(selected);
 
 	// Disable wireframe if enabled
 	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

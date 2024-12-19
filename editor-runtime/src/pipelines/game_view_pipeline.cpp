@@ -53,22 +53,11 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	//
-	// PREPARATION PASS
-	// Prepare each mesh for upcoming render passes
-	//
-	for (int i = 0; i < targets.size(); i++)
-	{
-		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
-		// Here for now to ensure preparation despite further pipeline changes
-		targets[i]->meshRenderer.prepareNextFrame();
-	}
-
-	//
 	// PRE PASS
 	// Create geometry pass with depth buffer before forward pass
 	//
 	Profiler::start("pre_pass");
-	prePass.render(targets);
+	prePass.render(viewProjection, viewNormal);
 	Profiler::stop("pre_pass");
 	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
 	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
@@ -108,7 +97,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	LitMaterial::mainShadowMap = Runtime::mainShadowMap;
 
 	Profiler::start("forward_pass");
-	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(targets, view, projection, viewProjection);
+	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);
 	Profiler::stop("forward_pass");
 
 	//

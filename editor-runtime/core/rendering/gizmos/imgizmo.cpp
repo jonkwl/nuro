@@ -32,7 +32,7 @@ void IMGizmo::setup()
 	if (!fillShader) fillShader = ShaderPool::get("gizmo_fill");
 	if (!iconShader) iconShader = ShaderPool::get("gizmo_icon");
 	if(!planeModel) planeModel = Model::load("../resources/primitives/plane.fbx");
-	if(!cubeModel) cubeModel = Model::load("../resources/primitives/cube.fbx");
+	if (!cubeModel) cubeModel = Model::load("../resources/primitives/cube.fbx");
 	if(!sphereModel) sphereModel = Model::load("../resources/primitives/sphere.fbx");
 }
 
@@ -91,6 +91,11 @@ void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& came
 	iconRenderStack.push_back(gizmo);
 }
 
+Model* IMGizmo::getCubeModel()
+{
+	return cubeModel;
+}
+
 void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 {
 	// Cache current polygon mode
@@ -138,8 +143,8 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		// Render each mesh
 		for (int i = 0; i < model->meshes.size(); i++)
 		{
-			Mesh mesh = model->meshes[i];
-			mesh.bind();
+			Mesh& mesh = model->meshes[i];
+			glBindVertexArray(mesh.getVAO());
 			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 		}
 
@@ -219,8 +224,8 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		// Render each mesh
 		for (int i = 0; i < model->meshes.size(); i++)
 		{
-			Mesh mesh = model->meshes[i];
-			mesh.bind();
+			Mesh& mesh = model->meshes[i];
+			glBindVertexArray(mesh.getVAO());
 			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 		}
 	}

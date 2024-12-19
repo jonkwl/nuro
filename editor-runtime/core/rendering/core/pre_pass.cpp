@@ -6,6 +6,8 @@
 #include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/utils/log.h"
+#include "../core/ecs/ecs.h"
+#include "../core/rendering/core/transformation.h"
 
 PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
@@ -80,7 +82,7 @@ void PrePass::destroy() {
 	prePassShader = nullptr;
 }
 
-void PrePass::render(std::vector<OldEntity*>& targets)
+void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 {
 	// Set viewport for upcoming pre pass
 	glViewport(0, 0, viewport.width, viewport.height);
@@ -103,9 +105,21 @@ void PrePass::render(std::vector<OldEntity*>& targets)
 	prePassShader->bind();
 
 	// Pre pass render each entity
-	for (int i = 0; i < targets.size(); i++)
-	{
-		targets[i]->meshRenderer.prePass(prePassShader);
+	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	for (auto [entity, transform, renderer] : targets.each()) {
+		// Recalculate transforms matrix cache for all upcoming passes of current frame
+		transform.model = Transformation::model(transform);
+		transform.mvp = viewProjection * transform.model;
+
+		// Bind mesh
+		glBindVertexArray(renderer.mesh.getVAO());
+
+		// Set depth pre pass shader uniforms
+		prePassShader->setMatrix4("mvpMatrix", transform.mvp);
+		prePassShader->setMatrix3("viewNormalMatrix", viewNormal);
+
+		// Render mesh
+		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 }
 

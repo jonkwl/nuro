@@ -23,9 +23,6 @@
 #include "../core/transform/transform.h"
 #include "../core/ecs/components.h"
 
-glm::mat4 SceneWindow::viewMatrix;
-glm::mat4 SceneWindow::projectionMatrix;
-
 SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
 windowFocused(false),
@@ -85,14 +82,16 @@ void SceneWindow::render()
 
 void SceneWindow::renderToolbar()
 {
+	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline;
+
 	// Render toggle buttons for render options
 	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
-		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, Runtime::sceneViewPipeline.wireframe, "Wireframe");
-		UIComponents::toggleButton(ICON_FA_ECLIPSE, Runtime::sceneViewPipeline.renderShadows, "Render Shadows");
-		UIComponents::toggleButton(ICON_FA_SPARKLES, Runtime::sceneViewPipeline.useProfileEffects, "Enable Post Processing");
-		UIComponents::toggleButton(ICON_FA_DRAW_SQUARE, Runtime::sceneViewPipeline.showGizmos, "Show Gizmos");
-		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, Runtime::sceneViewPipeline.showSkybox, "Render Skybox");
+		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe");
+		UIComponents::toggleButton(ICON_FA_ECLIPSE, pipeline.renderShadows, "Render Shadows");
+		UIComponents::toggleButton(ICON_FA_SPARKLES, pipeline.useProfileEffects, "Enable Post Processing");
+		UIComponents::toggleButton(ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Show Gizmos");
+		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Render Skybox");
 	}
 	UILayout::endFlex();
 
@@ -108,13 +107,17 @@ void SceneWindow::renderToolbar()
 
 void SceneWindow::renderSceneView()
 {
+	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline;
+	unsigned int output = pipeline.getOutput();
+
 	ImGui::BeginChild("SceneView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	{
 		// Check if window is currently being resized
 		bool currentlyResizing = currentWindowSize != lastWindowSize;
+		if (currentlyResizing) output = 0;
 
 		// Render target
-		ImGui::Image(currentlyResizing ? 0 : Runtime::sceneViewPipeline.getOutput(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(output, ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 
 		// Get scene view bounds
 		ImVec2 boundsMin = ImGui::GetItemRectMin();
@@ -145,7 +148,7 @@ void SceneWindow::renderSceneView()
 
 		// Check if scene window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			Runtime::sceneViewPipeline.resizeViewport(width, height);
+			pipeline.resizeViewport(width, height);
 			lastWindowSize = currentWindowSize;
 		}
 	}
@@ -197,7 +200,7 @@ void SceneWindow::renderTransformGizmos()
 	const float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	// Draw transformation gizmo
-	ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix), nullptr, snapping ? snapValues : nullptr);
+	ImGuizmo::Manipulate(glm::value_ptr(Runtime::sceneViewPipeline.getView()), glm::value_ptr(Runtime::sceneViewPipeline.getProjection()), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix), nullptr, snapping ? snapValues : nullptr);
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {

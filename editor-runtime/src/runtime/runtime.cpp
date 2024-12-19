@@ -20,7 +20,6 @@
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
-#include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/texture/texture.h"
 #include "../core/rendering/model/model.h"
 #include "../core/rendering/core/mesh_renderer.h"
@@ -39,7 +38,6 @@
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/input/cursor.h"
 #include "../core/ecs/ecs.h"
-#include "../core/ecs/components.h"
 
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
@@ -79,16 +77,6 @@ int Runtime::START_LOOP()
 
 	// PERFORM GAMES AWAKE LOGIC
 	awake();
-
-	// Create game camera
-	entt::entity camera = ECS::createEntity();
-	ECS::addTransformComponent(camera);
-	ECS::addCameraComponent(camera);
-
-	// Create some rendered entity
-	entt::entity sphere = ECS::createEntity();
-	ECS::addTransformComponent(sphere);
-	ECS::addMeshRendererComponent(sphere);
 
 	while (!glfwWindowShouldClose(glfw))
 	{

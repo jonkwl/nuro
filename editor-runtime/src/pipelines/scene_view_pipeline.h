@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <utility>
+#include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
 #include "../core/old_entity/old_entity.h"
@@ -26,6 +27,9 @@ public:
 
 	unsigned int getOutput(); // Returns color output from latest render
 
+	unsigned int getPrePassNormals(); // Returns normal output from latest pre pass render
+	unsigned int getPrePassDepth(); // Returns depth output from latest pre pass render
+
 	const Viewport& getViewport();
 	void resizeViewport(float width, float height);
 
@@ -39,6 +43,9 @@ public:
 	void updateMsaaSamples(unsigned int msaaSamples);
 
 	std::pair<TransformComponent, CameraComponent>& getFlyCamera();
+
+	const glm::mat4& getView() const;
+	const glm::mat4& getProjection() const;
 
 private:
 	void createPasses(); // Create all passes
@@ -65,5 +72,9 @@ private:
 
 	// Other instances
 	IMGizmo imGizmo;
+
+	// Matrix cache
+	glm::mat4 view;
+	glm::mat4 projection;
 };
 

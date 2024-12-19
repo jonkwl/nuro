@@ -53,10 +53,10 @@ void MeshRenderer::forwardPass()
 	for (int i = 0; i < model->meshes.size(); i++)
 	{
 		// Get current mesh
-		Mesh mesh = model->meshes[i];
+		Mesh& mesh = model->meshes[i];
 
 		// Bind mesh
-		mesh.bind();
+		glBindVertexArray(mesh.getVAO());
 
 		// Material selection can be optimized: No need to select material each frame
 
@@ -119,10 +119,10 @@ void MeshRenderer::prePass(Shader* shader)
 	for (int i = 0; i < model->meshes.size(); i++)
 	{
 		// Get current mesh
-		Mesh mesh = model->meshes[i];
+		Mesh& mesh = model->meshes[i];
 
 		// Bind mesh
-		mesh.bind();
+		glBindVertexArray(mesh.getVAO());
 
 		// Set depth pre pass shader uniforms
 		shader->setMatrix4("mvpMatrix", currentMvpMatrix);
@@ -153,10 +153,10 @@ void MeshRenderer::shadowPass(Shader* shader)
 	for (int i = 0; i < model->meshes.size(); i++)
 	{
 		// Get current mesh
-		Mesh mesh = model->meshes[i];
+		Mesh& mesh = model->meshes[i];
 
 		// Bind mesh
-		mesh.bind();
+		glBindVertexArray(mesh.getVAO());
 
 		// Set shadow pass shader uniforms
 		shader->setMatrix4("modelMatrix", currentModelMatrix);
@@ -188,10 +188,10 @@ void MeshRenderer::velocityPass(Shader* shader)
 	for (int i = 0; i < model->meshes.size(); i++)
 	{
 		// Get current mesh
-		Mesh mesh = model->meshes[i];
+		Mesh& mesh = model->meshes[i];
 
 		// Bind mesh
-		mesh.bind();
+		glBindVertexArray(mesh.getVAO());
 
 		// Set velocity pass shader uniforms
 		shader->setMatrix4("modelMatrix", currentModelMatrix);

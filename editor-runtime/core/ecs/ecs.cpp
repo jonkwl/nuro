@@ -4,6 +4,11 @@ namespace ECS {
 
 	entt::registry _registry;
 
+	entt::registry& getRegistry()
+	{
+		return _registry;
+	}
+
 	entt::entity createEntity()
 	{
 		return _registry.create();
@@ -14,19 +19,14 @@ namespace ECS {
 		_registry.emplace<TransformComponent>(entity);
 	}
 
-	void addMeshRendererComponent(entt::entity& entity)
+	void addMeshRendererComponent(entt::entity& entity, Mesh& mesh)
 	{
-		_registry.emplace<MeshRendererComponent>(entity);
+		_registry.emplace<MeshRendererComponent>(entity, mesh);
 	}
 
 	void addCameraComponent(entt::entity& entity)
 	{
 		_registry.emplace<CameraComponent>(entity);
-	}
-
-	template<typename T>
-	void addComponent(entt::entity& entity) {
-		_registry.emplace<T>(entity);
 	}
 
 	std::optional<std::tuple<TransformComponent&, CameraComponent&>> getActiveCamera() {

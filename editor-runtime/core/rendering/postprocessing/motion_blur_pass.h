@@ -10,7 +10,7 @@ class Shader;
 class MotionBlurPass
 {
 public:
-	MotionBlurPass(const Viewport& viewport);
+	explicit MotionBlurPass(const Viewport& viewport);
 
 	void create();
 	void destroy();

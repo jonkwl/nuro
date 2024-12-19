@@ -18,8 +18,7 @@ public:
 public:
 	explicit Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex);
 
-	void bind();
-
+	unsigned int getVAO();
 	unsigned int getVerticeCount();
 	unsigned int getIndiceCount();
 

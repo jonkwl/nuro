@@ -12,7 +12,7 @@ class OldEntity;
 class VelocityBuffer
 {
 public:
-	VelocityBuffer(const Viewport& viewport);
+	explicit VelocityBuffer(const Viewport& viewport);
 
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer

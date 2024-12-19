@@ -89,7 +89,7 @@ void GameWindow::renderGameView()
 	unsigned int output = pipeline.getOutput();
 
 	// Warn if camera isn't available
-	if (!Runtime::gameViewPipeline.getCameraAvailable()) {
+	if (!pipeline.getCameraAvailable()) {
 		glm::vec4 color = glm::vec4(0.94f, 0.72f, 0.29f, 1.0f);
 		ImGui::SetCursorPosX(25.0f);
 		UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION, color, 1.0f);
@@ -136,7 +136,7 @@ void GameWindow::renderGameView()
 
 		// Check if game window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			Runtime::gameViewPipeline.resizeViewport(width, height);
+			pipeline.resizeViewport(width, height);
 			lastWindowSize = currentWindowSize;
 		}
 	}

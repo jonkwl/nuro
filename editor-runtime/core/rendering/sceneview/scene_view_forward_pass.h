@@ -7,6 +7,7 @@
 #include "../core/rendering/gizmos/imgizmo.h"
 #include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
+#include "../core/rendering/material/lit/lit_material.h"
 
 class OldEntity;
 class Skybox;
@@ -14,13 +15,13 @@ class Skybox;
 class SceneViewForwardPass
 {
 public:
-	SceneViewForwardPass(const Viewport& viewport);
+	explicit SceneViewForwardPass(const Viewport& viewport);
 
 	void create(unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
 	// Scene view forward passes all entity render targets and returns color output
-	unsigned int render(std::vector<OldEntity*>& targets, OldEntity* selected, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
+	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
 
 	void setSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
@@ -44,6 +45,7 @@ private:
 	unsigned int multisampledColorBuffer; // Anti-aliasing colorbuffer
 
 	UnlitMaterial* selectionMaterial; // Material for selection outline
+	LitMaterial* defaultMaterial; // Some default material
 
 	void renderSelectedEntity(OldEntity* selected); // Renders the selected entity with an outline
 };

@@ -8,6 +8,7 @@
 namespace Transform
 {
 
+	// Transform related direction vectors
 	glm::vec3 forward(TransformComponent& transform);
 	glm::vec3 backward(TransformComponent& transform);
 	glm::vec3 right(TransformComponent& transform);
