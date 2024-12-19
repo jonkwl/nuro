@@ -14,7 +14,7 @@ public:
 	Skybox();
 	explicit Skybox(Cubemap& cubemap, Shader* customShader = nullptr);
 
-	void render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
 
 	float emission;
 

@@ -67,16 +67,10 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewPipeline.getProfile();
 
 	// Get transformation matrices
-	glm::mat4 viewMatrix = Transformation::viewMatrix(targetCamera.first.position, targetCamera.first.rotation);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(targetCamera.second.fov, targetCamera.second.near, targetCamera.second.far, viewport);
+	glm::mat4 viewMatrix = Transformation::view(targetCamera.first.position, targetCamera.first.rotation);
+	glm::mat4 projectionMatrix = Transformation::projection(targetCamera.second.fov, targetCamera.second.near, targetCamera.second.far, viewport);
 	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
-
-	// Set mesh renderers transformation matrix caches for upcomming render passes
-	MeshRenderer::currentViewMatrix = viewMatrix;
-	MeshRenderer::currentProjectionMatrix = projectionMatrix;
-	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
-	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
 
 	// Set scene windows current matrix caches
 	SceneWindow::viewMatrix = viewMatrix;
@@ -154,7 +148,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	unsigned int _ssaoOutput = 0;
 	if (targetProfile.ambientOcclusion.enabled)
 	{
-		_ssaoOutput = ssaoPass.render(targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+		_ssaoOutput = ssaoPass.render(projectionMatrix, targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const unsigned int SSAO_OUTPUT = _ssaoOutput;
 	Profiler::stop("ssao");
@@ -185,7 +179,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.setSkybox(Runtime::gameViewPipeline.getSkybox());
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, nullptr);
+	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(targets, nullptr, viewMatrix, projectionMatrix, viewProjectionMatrix);
 	Profiler::stop("forward_pass");
 
 	//
@@ -193,7 +187,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(targetProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
+	postProcessingPipeline.render(viewMatrix, projectionMatrix, viewProjectionMatrix, targetProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");

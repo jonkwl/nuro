@@ -47,16 +47,10 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	CameraComponent& cameraComponent = std::get<1>(*_camera);
 
 	// Get transformation matrices
-	glm::mat4 viewMatrix = Transformation::viewMatrix(cameraTransform.position, cameraTransform.rotation);
-	glm::mat4 projectionMatrix = Transformation::projectionMatrix(cameraComponent.fov, cameraComponent.near, cameraComponent.far, viewport);
-	glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
-	glm::mat3 viewNormalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix)));
-
-	// Set mesh renderers transformation matrix caches for upcomming render passes
-	MeshRenderer::currentViewMatrix = viewMatrix;
-	MeshRenderer::currentProjectionMatrix = projectionMatrix;
-	MeshRenderer::currentViewProjectionMatrix = viewProjectionMatrix;
-	MeshRenderer::currentViewNormalMatrix = viewNormalMatrix;
+	glm::mat4 view = Transformation::view(cameraTransform.position, cameraTransform.rotation);
+	glm::mat4 projection = Transformation::projection(cameraComponent.fov, cameraComponent.near, cameraComponent.far, viewport);
+	glm::mat4 viewProjection = projection * view;
+	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	//
 	// PREPARATION PASS
@@ -87,7 +81,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	unsigned int _ssaoOutput = 0;
 	if (profile.ambientOcclusion.enabled)
 	{
-		_ssaoOutput = ssaoPass.render(profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+		_ssaoOutput = ssaoPass.render(projection, profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const unsigned int SSAO_OUTPUT = _ssaoOutput;
 	Profiler::stop("ssao");
@@ -114,7 +108,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	LitMaterial::mainShadowMap = Runtime::mainShadowMap;
 
 	Profiler::start("forward_pass");
-	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(targets);
+	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(targets, view, projection, viewProjection);
 	Profiler::stop("forward_pass");
 
 	//
@@ -122,7 +116,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Render post processing pass to screen using forward pass output as input
 	//
 	Profiler::start("post_processing");
-	postProcessingPipeline.render(profile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
+	postProcessingPipeline.render(view, projection, viewProjection, profile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");

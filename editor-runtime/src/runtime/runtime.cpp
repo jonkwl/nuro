@@ -82,7 +82,13 @@ int Runtime::START_LOOP()
 
 	// Create game camera
 	entt::entity camera = ECS::createEntity();
+	ECS::addTransformComponent(camera);
 	ECS::addCameraComponent(camera);
+
+	// Create some rendered entity
+	entt::entity sphere = ECS::createEntity();
+	ECS::addTransformComponent(sphere);
+	ECS::addMeshRendererComponent(sphere);
 
 	while (!glfwWindowShouldClose(glfw))
 	{
@@ -177,6 +183,9 @@ void Runtime::setupGlfw() {
 	// Debug graphics api version
 	const char* version = (const char*)glGetString(GL_VERSION);
 	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
+
+	// Disable vsync
+	glfwSwapInterval(0);
 }
 
 void Runtime::loadAssets() {

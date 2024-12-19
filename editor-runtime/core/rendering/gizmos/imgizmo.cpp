@@ -5,9 +5,9 @@
 #include <gtc/type_ptr.hpp>
 
 #include "../core/rendering/model/model.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/shader/shader_pool.h"
+#include "../core/rendering/shader/shader.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/utils/log.h"
 
@@ -43,10 +43,10 @@ void IMGizmo::newFrame()
 	iconRenderStack.clear();
 }
 
-void IMGizmo::render()
+void IMGizmo::render(const glm::mat4& viewProjection)
 {
-	renderShapes();
-	renderIcons();
+	renderShapes(viewProjection);
+	renderIcons(viewProjection);
 }
 
 void IMGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
@@ -91,7 +91,7 @@ void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& came
 	iconRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::renderShapes()
+void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 {
 	// Cache current polygon mode
 	GLenum polygonState[2];
@@ -116,7 +116,7 @@ void IMGizmo::renderShapes()
 
 		// Calculate mvp
 		glm::mat4 modelMatrix = getModelMatrix(gizmo.position, gizmo.rotation, gizmo.scale);
-		glm::mat4 mvpMatrix = MeshRenderer::currentViewProjectionMatrix * modelMatrix;
+		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Set material uniforms
 		fillShader->setMatrix4("mvpMatrix", mvpMatrix);
@@ -156,7 +156,7 @@ void IMGizmo::renderShapes()
 	glPolygonMode(GL_FRONT_AND_BACK, polygonState[0]);
 }
 
-void IMGizmo::renderIcons()
+void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 {
 	// Bind quick gizmo shader for upcoming renders
 	iconShader->bind();
@@ -205,7 +205,7 @@ void IMGizmo::renderIcons()
 		// Scale gizmo icon
 		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), gizmo.scale);
 		// Calculate MVP matrix
-		glm::mat4 mvpMatrix = MeshRenderer::currentViewProjectionMatrix * modelMatrix;
+		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Set material uniforms
 		iconShader->setMatrix4("mvpMatrix", mvpMatrix);

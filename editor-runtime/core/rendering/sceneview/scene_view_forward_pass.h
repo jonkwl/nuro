@@ -20,7 +20,7 @@ public:
 	void destroy(); // Destroys forward pass
 
 	// Scene view forward passes all entity render targets and returns color output
-	unsigned int render(std::vector<OldEntity*>& targets, OldEntity* selected);
+	unsigned int render(std::vector<OldEntity*>& targets, OldEntity* selected, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
 
 	void setSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view

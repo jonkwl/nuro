@@ -17,6 +17,6 @@ namespace UIUtils
 	float getChildScrollValue();
 
 	// Keeps the cursor in the given boundaries, returns the new cursor position and sets if the cursor was positioned by method
-	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor);
+	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor, float offset = 40.0f);
 
 };

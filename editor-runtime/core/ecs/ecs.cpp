@@ -6,10 +6,17 @@ namespace ECS {
 
 	entt::entity createEntity()
 	{
-		entt::entity entity = _registry.create();
+		return _registry.create();
+	}
+
+	void addTransformComponent(entt::entity& entity)
+	{
 		_registry.emplace<TransformComponent>(entity);
+	}
+
+	void addMeshRendererComponent(entt::entity& entity)
+	{
 		_registry.emplace<MeshRendererComponent>(entity);
-		return entity;
 	}
 
 	void addCameraComponent(entt::entity& entity)

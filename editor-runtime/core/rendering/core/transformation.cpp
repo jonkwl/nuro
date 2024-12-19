@@ -22,7 +22,7 @@ namespace Transformation {
 		return rotation;
 	}
 
-	glm::mat4 modelMatrix(TransformComponent& transform)
+	glm::mat4 model(TransformComponent& transform)
 	{
 		glm::mat4 model(1.0f);
 
@@ -48,7 +48,7 @@ namespace Transformation {
 		return model;
 	}
 
-	glm::mat4 viewMatrix(glm::vec3 cameraPosition, glm::quat cameraRotation)
+	glm::mat4 view(glm::vec3 cameraPosition, glm::quat cameraRotation)
 	{
 		glm::vec3 position = toBackendPosition(cameraPosition);
 		glm::quat rotation = toBackendRotation(cameraRotation);
@@ -72,13 +72,13 @@ namespace Transformation {
 		return viewMatrix;
 	}
 
-	glm::mat4 projectionMatrix(float fov, float near, float far, const Viewport& viewport)
+	glm::mat4 projection(float fov, float near, float far, const Viewport& viewport)
 	{
 		glm::mat4 projection = glm::perspective(glm::radians(fov), viewport.width / viewport.height, near, far);
 		return projection;
 	}
 
-	glm::mat4 lightViewMatrix(glm::vec3 lightPosition, glm::vec3 lightDirection)
+	glm::mat4 lightView(glm::vec3 lightPosition, glm::vec3 lightDirection)
 	{
 		glm::vec3 position = toBackendPosition(lightPosition);
 		glm::vec3 target = position + glm::normalize(toBackendPosition(lightDirection));
@@ -89,7 +89,7 @@ namespace Transformation {
 		return view;
 	}
 
-	glm::mat4 lightProjectionMatrix(float boundsWidth, float boundsHeight, float near, float far)
+	glm::mat4 lightProjection(float boundsWidth, float boundsHeight, float near, float far)
 	{
 		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
 		return projection;

@@ -97,7 +97,7 @@ void ForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int ForwardPass::render(std::vector<OldEntity*>& targets)
+unsigned int ForwardPass::render(std::vector<OldEntity*>& targets, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -145,12 +145,12 @@ unsigned int ForwardPass::render(std::vector<OldEntity*>& targets)
 
 	// Render skybox to bound forward pass frame
 	glDepthFunc(GL_LEQUAL);
-	if (skybox) skybox->render(MeshRenderer::currentViewMatrix, MeshRenderer::currentProjectionMatrix);
+	if (skybox) skybox->render(view, projection);
 	glDepthFunc(GL_LESS);
 
 	// Render quick gizmos
 	if (imGizmo) {
-		imGizmo->render();
+		imGizmo->render(viewProjection);
 	}
 
 	// Bilt multisampled framebuffer to post processing framebuffer

@@ -15,7 +15,7 @@ public:
 	void create();
 	void destroy();
 
-	unsigned int render(const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput);
+	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput);
 
 private:
 	enum TextureUnits

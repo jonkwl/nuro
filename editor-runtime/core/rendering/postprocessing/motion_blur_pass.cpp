@@ -75,7 +75,7 @@ void MotionBlurPass::destroy()
 	shader = nullptr;
 }
 
-unsigned int MotionBlurPass::render(const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
+unsigned int MotionBlurPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -115,8 +115,8 @@ unsigned int MotionBlurPass::render(const PostProcessing::Profile& profile, cons
 	}
 
 	// Set transformation uniforms
-	shader->setMatrix4("inverseViewMatrix", glm::inverse(MeshRenderer::currentViewMatrix));
-	shader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
+	shader->setMatrix4("inverseViewMatrix", glm::inverse(view));
+	shader->setMatrix4("inverseProjectionMatrix", glm::inverse(projection));
 	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);
 
 	// Bind and render to quad
@@ -124,7 +124,7 @@ unsigned int MotionBlurPass::render(const PostProcessing::Profile& profile, cons
 	Quad::render();
 
 	// Cache current view projection matrix
-	previousViewProjectionMatrix = MeshRenderer::currentViewProjectionMatrix;
+	previousViewProjectionMatrix = viewProjection;
 
 	// Return output
 	return output;

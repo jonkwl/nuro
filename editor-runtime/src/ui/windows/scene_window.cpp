@@ -189,7 +189,7 @@ void SceneWindow::renderTransformGizmos()
 	OldEntity* entity = nullptr;
 	TransformComponent& transform = entity->transform;
 
-	glm::mat4 transformMatrix = Transformation::modelMatrix(entity->transform);
+	glm::mat4 transformMatrix = Transformation::model(entity->transform);
 
 	// Check for snapping
 	bool snapping = Input::keyDown(Key::LEFT_CONTROL);

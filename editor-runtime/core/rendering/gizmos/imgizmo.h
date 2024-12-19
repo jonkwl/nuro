@@ -16,7 +16,7 @@ public:
 
 	void setup();    // Load gizmo shaders and models if not loaded already
 	void newFrame(); // Clear the render stack
-	void render();   // Render all gizmos from render stack
+	void render(const glm::mat4& viewProjection);   // Render all gizmos from render stack
 
 	// Global render state settings
 	glm::vec3 color; // Color of gizmo
@@ -86,12 +86,12 @@ private:
 
 private:
 	std::vector<ShapeRenderTarget> shapeRenderStack;
-	void renderShapes();
+	void renderShapes(const glm::mat4& viewProjection);
 
 	std::vector<IconRenderTarget> iconRenderStack;
-	void renderIcons();
+	void renderIcons(const glm::mat4& viewProjection);
 
-	// Initialized once by any instance, these will be needed for the rest of the application lifetime
+	// Initialized once by any instance being setup, these will be needed for the rest of the application lifetime
 	static Shader* fillShader;
 	static Shader* iconShader;
 	static Model* planeModel;

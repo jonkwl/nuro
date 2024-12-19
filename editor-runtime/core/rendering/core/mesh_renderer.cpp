@@ -11,13 +11,6 @@
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/rendering/shader/shader_pool.h"
 
-glm::mat4 MeshRenderer::currentViewMatrix = glm::mat4(1.0);
-glm::mat4 MeshRenderer::currentProjectionMatrix = glm::mat4(1.0);
-glm::mat4 MeshRenderer::currentViewProjectionMatrix = glm::mat4(1.0);
-glm::mat3 MeshRenderer::currentViewNormalMatrix = glm::mat3(1.0);
-
-glm::mat4 MeshRenderer::currentLightSpaceMatrix = glm::mat4(1.0);
-
 MeshRenderer::MeshRenderer(OldEntity* parentEntity) : parentEntity(parentEntity),
 model(nullptr),
 volume(new BoundingSphere()),
@@ -37,8 +30,10 @@ void MeshRenderer::prepareNextFrame()
 	if (model == nullptr)
 		return;
 
+	glm::mat4 currentViewProjectionMatrix = glm::mat4(1.0f);
+
 	// Calculate and cache model and mvp matrix for current frame
-	currentModelMatrix = Transformation::modelMatrix(parentEntity->transform);
+	currentModelMatrix = Transformation::model(parentEntity->transform);
 	currentMvpMatrix = currentViewProjectionMatrix * currentModelMatrix;
 	currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 
@@ -51,6 +46,8 @@ void MeshRenderer::forwardPass()
 	// No model to render available -> cancel
 	if (model == nullptr)
 		return;
+
+	glm::mat4 currentLightSpaceMatrix = glm::mat4(1.0f);
 
 	// Render each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
@@ -116,6 +113,8 @@ void MeshRenderer::prePass(Shader* shader)
 	if (model == nullptr)
 		return;
 
+	glm::mat4 currentViewNormalMatrix = glm::mat4(1.0f);
+
 	// Depth pre pass each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
 	{
@@ -147,6 +146,8 @@ void MeshRenderer::shadowPass(Shader* shader)
 	// Skip shadow pass if model doesnt cast shadows
 	if (!model->castsShadow)
 		return;
+
+	glm::mat4 currentLightSpaceMatrix = glm::mat4(1.0f);
 
 	// Shadow pass each mesh of entity
 	for (int i = 0; i < model->meshes.size(); i++)
@@ -180,6 +181,10 @@ void MeshRenderer::velocityPass(Shader* shader)
 	if (model == nullptr)
 		return;
 
+	glm::mat4 currentViewMatrix = glm::mat4(1.0f);
+	glm::mat4 currentProjectionMatrix = glm::mat4(1.0f);
+	glm::mat4 currentViewProjectionMatrix = glm::mat4(1.0f);
+
 	for (int i = 0; i < model->meshes.size(); i++)
 	{
 		// Get current mesh
@@ -205,7 +210,9 @@ void MeshRenderer::velocityPass(Shader* shader)
 
 void MeshRenderer::recalculateRenderMatrices()
 {
-	currentModelMatrix = Transformation::modelMatrix(parentEntity->transform);
+	glm::mat4 currentViewProjectionMatrix = glm::mat4(1.0f);
+
+	currentModelMatrix = Transformation::model(parentEntity->transform);
 	currentMvpMatrix = currentViewProjectionMatrix * currentModelMatrix;
 	currentNormalMatrix = glm::transpose(glm::inverse(currentModelMatrix));
 }

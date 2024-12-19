@@ -17,7 +17,8 @@ public:
 	void create(const unsigned int msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
-	unsigned int render(std::vector<OldEntity*>& targets); // Forward passes all entity render targets and returns color output
+	// Forward passes all entity render targets and returns color output
+	unsigned int render(std::vector<OldEntity*>& targets, const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
 
 	unsigned int getDepthOutput(); // Returns depth output
 

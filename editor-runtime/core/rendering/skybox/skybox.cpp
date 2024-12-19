@@ -30,7 +30,7 @@ Skybox::Skybox(Cubemap& cubemap, Shader* customShader) :
 	generate(cubemap);
 }
 
-void Skybox::render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
 {
 	// Only render if skybox was created
 	if (!vao) return;

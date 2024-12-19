@@ -67,11 +67,8 @@ namespace UIUtils {
 		return scrollY / maxScrollY;
 	}
 
-	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor)
+	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor, float offset)
 	{
-		// Offset preventing immediate wrapping at boundary
-		float offset = 25.0f;
-
 		glm::vec2 currentPos = Cursor::getPosition();
 		glm::vec2 updatedPos = currentPos;
 

@@ -33,13 +33,6 @@ public:
 	void shadowPass(Shader* shader);
 	void velocityPass(Shader* shader);
 
-	static glm::mat4 currentViewMatrix;			  // Static view matrix cache for current frame
-	static glm::mat4 currentProjectionMatrix;	  // Static projection matrix cache for current frame
-	static glm::mat4 currentViewProjectionMatrix; // Static projection matrix * view matrix cache for current frame
-	static glm::mat3 currentViewNormalMatrix;	  // Static transposed inverse view matrix for current frame
-
-	static glm::mat4 currentLightSpaceMatrix; // Static light space matrix cache for current frame
-
 	void recalculateRenderMatrices(); // Recalculates the current model matrix according to transform
 private:
 	glm::mat4 currentModelMatrix;  // Model matrix cache for current frame

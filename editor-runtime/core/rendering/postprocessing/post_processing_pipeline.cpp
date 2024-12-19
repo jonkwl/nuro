@@ -87,7 +87,7 @@ void PostProcessingPipeline::destroy()
 	finalPassShader = nullptr;
 }
 
-void PostProcessingPipeline::render(const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
+void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
 {
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
@@ -99,7 +99,7 @@ void PostProcessingPipeline::render(const PostProcessing::Profile& profile, cons
 	if (profile.motionBlur.enabled)
 	{
 		// Apply motion blur on post processing hdr input
-		POST_PROCESSING_PIPELINE_HDR = motionBlurPass.render(profile, POST_PROCESSING_PIPELINE_HDR, depthInput, velocityBufferInput);
+		POST_PROCESSING_PIPELINE_HDR = motionBlurPass.render(view, projection, viewProjection, profile, POST_PROCESSING_PIPELINE_HDR, depthInput, velocityBufferInput);
 	}
 
 	// Seperate bloom pass

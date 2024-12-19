@@ -121,7 +121,7 @@ void SSAOPass::destroy() {
 	noiseTexture = 0;
 }
 
-unsigned int SSAOPass::render(const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
+unsigned int SSAOPass::render(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
 {
 	// Disable depth testing and culling
 	glDisable(GL_DEPTH_TEST);
@@ -131,7 +131,7 @@ unsigned int SSAOPass::render(const PostProcessing::Profile& profile, unsigned i
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Perform ambient occlusion pass
-	ambientOcclusionPass(profile, depthInput, normalInput);
+	ambientOcclusionPass(projection, profile, depthInput, normalInput);
 
 	// Perform blur pass: Blur ambient occlusion
 	// UNKNOWN ISSUE WITH BLUR PASS
@@ -156,7 +156,7 @@ unsigned int SSAOPass::getOutputProcessed()
 	return blurredOutput;
 }
 
-void SSAOPass::ambientOcclusionPass(const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
+void SSAOPass::ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
 {
 	// Set render target to ao output
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
@@ -176,8 +176,8 @@ void SSAOPass::ambientOcclusionPass(const PostProcessing::Profile& profile, unsi
 
 	// Set ambient occlusion pass shader uniforms
 	aoPassShader->setVec2("resolution", glm::vec2(viewport.width, viewport.height));
-	aoPassShader->setMatrix4("projectionMatrix", MeshRenderer::currentProjectionMatrix);
-	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(MeshRenderer::currentProjectionMatrix));
+	aoPassShader->setMatrix4("projectionMatrix", projection);
+	aoPassShader->setMatrix4("inverseProjectionMatrix", glm::inverse(projection));
 
 	aoPassShader->setInt("nSamples", nSamples);
 	aoPassShader->setFloat("radius", profile.ambientOcclusion.radius);

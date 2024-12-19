@@ -87,12 +87,9 @@ void ShadowMap::render(std::vector<OldEntity*>& targets) // Update needed for ca
 	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
 	// Get shadow map transformation matrices
-	glm::mat4 lightProjectionMatrix = Transformation::lightProjectionMatrix(boundsWidth, boundsHeight, near, far);
-	glm::mat4 lightViewMatrix = Transformation::lightViewMatrix(directionalPosition, directionalDirection);
+	glm::mat4 lightProjectionMatrix = Transformation::lightProjection(boundsWidth, boundsHeight, near, far);
+	glm::mat4 lightViewMatrix = Transformation::lightView(directionalPosition, directionalDirection);
 	glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
-
-	// Set mesh renderers light space matrix for upcoming shadow pass
-	MeshRenderer::currentLightSpaceMatrix = lightSpaceMatrix;
 
 	// Bind shadow pass shader and render each objects depth on shadow map
 	glEnable(GL_DEPTH_TEST);

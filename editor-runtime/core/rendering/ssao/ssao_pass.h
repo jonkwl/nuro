@@ -16,7 +16,7 @@ public:
 	void create(float aoScale = 0.5f, int maxKernelSamples = 64, float noiseResolution = 4.0f);  // Create ambient occlusion pass
 	void destroy(); // Destroy ambient occlusion pass
 
-	unsigned int render(const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return blurred output
+	unsigned int render(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return blurred output
 
 	unsigned int getOutputRaw(); // Returns ao output (raw ssao texture)
 	unsigned int getOutputProcessed(); // Returns blurred output (processed ssao texture)
@@ -39,7 +39,7 @@ private:
 	unsigned int aoOutput;	   // Ambient occlusion output
 	unsigned int blurredOutput; // Blurred ambient occlusion output
 
-	void ambientOcclusionPass(const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput);
+	void ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput);
 	void blurPass(const PostProcessing::Profile& profile);
 
 	Shader* aoPassShader; // Ambient occlusion pass shader
