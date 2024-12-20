@@ -183,7 +183,7 @@ void LitMaterial::syncLightUniforms()
 {
 	// Lighting parameters
 	shader->setInt("configuration.numDirectionalLights", 1);
-	shader->setInt("configuration.numPointLights", 15);
+	shader->setInt("configuration.numPointLights", 1);
 	shader->setInt("configuration.numSpotLights", 1);
 
 	// Example directional light
@@ -221,82 +221,4 @@ void LitMaterial::syncLightUniforms()
 	shader->setFloat("pointLights[1].intensity", 0.25f);
 	shader->setFloat("pointLights[1].range", 10.0f);
 	shader->setFloat("pointLights[1].falloff", 5.0f);
-
-	shader->setVec3("pointLights[2].position", Transformation::toBackendPosition(glm::vec3(8.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[2].color", glm::vec3(0.2f, 0.8f, 0.3f));
-	shader->setFloat("pointLights[2].intensity", 0.25f);
-	shader->setFloat("pointLights[2].range", 10.0f);
-	shader->setFloat("pointLights[2].falloff", 5.0f);
-
-	shader->setVec3("pointLights[3].position", Transformation::toBackendPosition(glm::vec3(12.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[3].color", glm::vec3(0.6f, 0.2f, 0.9f));
-	shader->setFloat("pointLights[3].intensity", 0.05f);
-	shader->setFloat("pointLights[3].range", 10.0f);
-	shader->setFloat("pointLights[3].falloff", 5.0f);
-
-	shader->setVec3("pointLights[4].position", Transformation::toBackendPosition(glm::vec3(16.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[4].color", glm::vec3(0.1f, 0.35f, 0.7f));
-	shader->setFloat("pointLights[4].intensity", 0.05f);
-	shader->setFloat("pointLights[4].range", 10.0f);
-	shader->setFloat("pointLights[4].falloff", 5.0f);
-
-	shader->setVec3("pointLights[5].position", Transformation::toBackendPosition(glm::vec3(20.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[5].color", glm::vec3(0.78f, 0.0f, 0.95f));
-	shader->setFloat("pointLights[5].intensity", 0.05f);
-	shader->setFloat("pointLights[5].range", 10.0f);
-	shader->setFloat("pointLights[5].falloff", 5.0f);
-
-	shader->setVec3("pointLights[6].position", Transformation::toBackendPosition(glm::vec3(24.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[6].color", glm::vec3(0.2f, 0.8f, 0.3f));
-	shader->setFloat("pointLights[6].intensity", 0.05f);
-	shader->setFloat("pointLights[6].range", 10.0f);
-	shader->setFloat("pointLights[6].falloff", 5.0f);
-
-	shader->setVec3("pointLights[7].position", Transformation::toBackendPosition(glm::vec3(28.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[7].color", glm::vec3(0.6f, 0.2f, 0.9f));
-	shader->setFloat("pointLights[7].intensity", 4.0f);
-	shader->setFloat("pointLights[7].range", 3.0f);
-	shader->setFloat("pointLights[7].falloff", 5.0f);
-
-	shader->setVec3("pointLights[8].position", Transformation::toBackendPosition(glm::vec3(32.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[8].color", glm::vec3(0.1f, 0.35f, 0.7f));
-	shader->setFloat("pointLights[8].intensity", 4.0f);
-	shader->setFloat("pointLights[8].range", 10.0f);
-	shader->setFloat("pointLights[8].falloff", 5.0f);
-
-	shader->setVec3("pointLights[9].position", Transformation::toBackendPosition(glm::vec3(36.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[9].color", glm::vec3(0.78f, 0.0f, 0.95f));
-	shader->setFloat("pointLights[9].intensity", 2.0f);
-	shader->setFloat("pointLights[9].range", 10.0f);
-	shader->setFloat("pointLights[9].falloff", 5.0f);
-
-	shader->setVec3("pointLights[10].position", Transformation::toBackendPosition(glm::vec3(40.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[10].color", glm::vec3(0.2f, 0.8f, 0.3f));
-	shader->setFloat("pointLights[10].intensity", 1.0f);
-	shader->setFloat("pointLights[10].range", 10.0f);
-	shader->setFloat("pointLights[10].falloff", 5.0f);
-
-	shader->setVec3("pointLights[11].position", Transformation::toBackendPosition(glm::vec3(44.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[11].color", glm::vec3(0.6f, 0.2f, 0.9f));
-	shader->setFloat("pointLights[11].intensity", 3.0f);
-	shader->setFloat("pointLights[11].range", 10.0f);
-	shader->setFloat("pointLights[11].falloff", 5.0f);
-
-	shader->setVec3("pointLights[12].position", Transformation::toBackendPosition(glm::vec3(48.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[12].color", glm::vec3(0.1f, 0.35f, 0.7f));
-	shader->setFloat("pointLights[12].intensity", 4.0f);
-	shader->setFloat("pointLights[12].range", 10.0f);
-	shader->setFloat("pointLights[12].falloff", 5.0f);
-
-	shader->setVec3("pointLights[13].position", Transformation::toBackendPosition(glm::vec3(52.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[13].color", glm::vec3(0.78f, 0.0f, 0.95f));
-	shader->setFloat("pointLights[13].intensity", 2.0f);
-	shader->setFloat("pointLights[13].range", 10.0f);
-	shader->setFloat("pointLights[13].falloff", 5.0f);
-
-	shader->setVec3("pointLights[14].position", Transformation::toBackendPosition(glm::vec3(56.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[14].color", glm::vec3(0.2f, 0.8f, 0.3f));
-	shader->setFloat("pointLights[14].intensity", 1.0f);
-	shader->setFloat("pointLights[14].range", 10.0f);
-	shader->setFloat("pointLights[14].falloff", 5.0f);
 }
