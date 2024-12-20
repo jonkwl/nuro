@@ -37,8 +37,8 @@ public:
 
 	bool getCameraAvailable();
 
-	unsigned int getSSAOOutput(); // Returns the last ssao output
-	unsigned int getVelocityOutput(); // Returns the velocity buffers last output
+	unsigned int getSSAOOutput() const; // Returns the last ssao output
+	unsigned int getVelocityOutput() const; // Returns the velocity buffers last output
 
 private:
 	void createPasses(); // Create all passes

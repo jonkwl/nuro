@@ -12,6 +12,7 @@ public:
 
 	void render();
 	void bind(unsigned int unit);
+	unsigned int getTexture() const;
 
 	unsigned int getResolutionWidth() const;
 	unsigned int getResolutionHeight() const;

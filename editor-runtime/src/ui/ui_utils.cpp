@@ -102,4 +102,23 @@ namespace UIUtils {
 		return updatedPos;
 	}
 
+	void calculateAspectFitting(float aspectRatio, ImVec2& size, ImVec2& offset)
+	{
+		// Get content region avail for game view
+		ImVec2 contentRegionAvail = ImGui::GetContentRegionAvail();
+
+		// Determine the maximum size that maintains the 16:9 aspect ratio, scale by width
+		size.x = contentRegionAvail.x;
+		size.y = contentRegionAvail.x / aspectRatio;
+
+		// Calculated height exceeds available height, scale by height instead
+		if (size.y > contentRegionAvail.y) {
+			size.y = contentRegionAvail.y;
+			size.x = contentRegionAvail.y * aspectRatio;
+		}
+
+		// Set offset of game view render target to make sure its centered
+		offset = ImVec2((contentRegionAvail.x - size.x) * 0.5f, (contentRegionAvail.y - size.y) * 0.5f);
+	}
+
 }

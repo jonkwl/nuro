@@ -70,21 +70,29 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 	// Calculate screen space ambient occlusion if enabled
 	//
 	Profiler::start("ssao");
-	unsigned int _ssaoOutput = 0;
-	if (profile.ambientOcclusion.enabled)
+	bool ssaoNeeded = profile.ambientOcclusion.enabled;
+	ssaoOutput = 0;
+
+	if (ssaoNeeded)
 	{
-		_ssaoOutput = ssaoPass.render(projection, profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
+		ssaoOutput = ssaoPass.render(projection, profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
-	const unsigned int SSAO_OUTPUT = _ssaoOutput;
-	ssaoOutput = SSAO_OUTPUT;
+
+	const unsigned int SSAO_OUTPUT = ssaoOutput;
 	Profiler::stop("ssao");
 
 	//
 	// VELOCITY BUFFER RENDER PASS
 	//
 	Profiler::start("velocity_buffer");
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(view, projection, profile);
-	velocityOutput = VELOCITY_BUFFER_OUTPUT;
+	bool velocityBufferNeeded = profile.motionBlur.objectEnabled;
+	velocityOutput = 0;
+
+	if (velocityBufferNeeded) {
+		velocityOutput = velocityBuffer.render(view, projection, profile);
+	}
+
+	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityOutput;
 	Profiler::stop("velocity_buffer");
 
 	//
@@ -167,12 +175,12 @@ bool GameViewPipeline::getCameraAvailable()
 	return cameraAvailable;
 }
 
-unsigned int GameViewPipeline::getSSAOOutput()
+unsigned int GameViewPipeline::getSSAOOutput() const
 {
 	return ssaoOutput;
 }
 
-unsigned int GameViewPipeline::getVelocityOutput()
+unsigned int GameViewPipeline::getVelocityOutput() const
 {
 	return velocityOutput;
 }

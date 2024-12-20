@@ -67,7 +67,6 @@ private:
 	PrePass prePass;
 	SceneViewForwardPass sceneViewForwardPass;
 	SSAOPass ssaoPass;
-	VelocityBuffer velocityBuffer;
 	PostProcessingPipeline postProcessingPipeline;
 
 	// Other instances

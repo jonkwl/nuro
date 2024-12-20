@@ -24,7 +24,6 @@ flyCamera(),
 prePass(viewport),
 sceneViewForwardPass(viewport),
 ssaoPass(viewport),
-velocityBuffer(viewport),
 postProcessingPipeline(viewport, false),
 imGizmo(),
 view(glm::mat4(1.0f)),
@@ -202,7 +201,6 @@ void SceneViewPipeline::createPasses()
 	sceneViewForwardPass.create(msaaSamples);
 	sceneViewForwardPass.setQuickGizmo(&imGizmo);
 	ssaoPass.create();
-	velocityBuffer.create();
 	postProcessingPipeline.create();
 }
 
@@ -211,6 +209,5 @@ void SceneViewPipeline::destroyPasses()
 	prePass.destroy();
 	sceneViewForwardPass.destroy();
 	ssaoPass.destroy();
-	velocityBuffer.destroy();
 	postProcessingPipeline.destroy();
 }

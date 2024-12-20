@@ -133,6 +133,11 @@ void ShadowMap::bind(unsigned int unit)
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
+unsigned int ShadowMap::getTexture() const
+{
+	return texture;
+}
+
 unsigned int ShadowMap::getResolutionWidth() const
 {
 	return resolutionWidth;

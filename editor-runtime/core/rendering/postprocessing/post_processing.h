@@ -21,7 +21,7 @@ namespace PostProcessing
 		float cameraIntensity = 0.8f;
 		int cameraSamples = 32;
 
-		bool objectEnabled = true;
+		bool objectEnabled = false;
 		int objectSamples = 16;
 
 	};

@@ -20,6 +20,7 @@
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
+#include "../core/rendering/shadows/shadow_map.h"
 
 GameWindow::GameWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
@@ -105,28 +106,14 @@ void GameWindow::renderGameView()
 		bool currentlyResizing = currentWindowSize != lastWindowSize;
 		if (currentlyResizing) output = 0;
 
-		// Get content region avail for game view
-		ImVec2 contentRegionAvail = ImGui::GetContentRegionAvail();
-
-		// Calculate desired aspect ratio (16:9)
 		float aspectRatio = 16.0f / 9.0f;
+		ImVec2 size, offset;
+		UIUtils::calculateAspectFitting(aspectRatio, size, offset);
 
-		// Determine the maximum size that maintains the 16:9 aspect ratio
-		float width = contentRegionAvail.x;
-		float height = contentRegionAvail.x / aspectRatio;
-
-		// Calculated height exceeds available height, scale by height instead
-		if (height > contentRegionAvail.y) {
-			height = contentRegionAvail.y;
-			width = contentRegionAvail.y * aspectRatio;
-		}
-
-		// Set offset of game view render target to make sure its centered
-		ImVec2 offset = ImVec2((contentRegionAvail.x - width) * 0.5f, (contentRegionAvail.y - height) * 0.5f);
 		ImGui::SetCursorPos(offset);
 
 		// Render target
-		ImGui::Image(output, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(output, size, ImVec2(0, 1), ImVec2(1, 0));
 
 		ImVec2 boundsMin = ImGui::GetItemRectMin();
 		ImVec2 boundsMax = ImGui::GetItemRectMax();
@@ -136,7 +123,7 @@ void GameWindow::renderGameView()
 
 		// Check if game window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			pipeline.resizeViewport(width, height);
+			pipeline.resizeViewport(size.x, size.y);
 			lastWindowSize = currentWindowSize;
 		}
 	}
