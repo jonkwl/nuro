@@ -34,7 +34,7 @@ void GameViewPipeline::setup()
 	createPasses();
 }
 
-void GameViewPipeline::render(std::vector<OldEntity*>& targets)
+void GameViewPipeline::render()
 {
 	Profiler::start("render");
 
@@ -45,12 +45,11 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 		return;
 	}
 	cameraAvailable = true;
-	TransformComponent& cameraTransform = std::get<0>(*_camera);
-	CameraComponent& cameraComponent = std::get<1>(*_camera);
+	Camera camera = *_camera;
 
 	// Get transformation matrices
-	glm::mat4 view = Transformation::view(cameraTransform.position, cameraTransform.rotation);
-	glm::mat4 projection = Transformation::projection(cameraComponent.fov, cameraComponent.near, cameraComponent.far, viewport);
+	glm::mat4 view = Transformation::view(camera.transform.position, camera.transform.rotation);
+	glm::mat4 projection = Transformation::projection(camera.root.fov, camera.root.near, camera.root.far, viewport);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
@@ -100,7 +99,7 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &viewport; // Redundant most of the times atm
-	LitMaterial::cameraTransform = &cameraTransform; // Redundant most of the times atm
+	LitMaterial::cameraTransform = &camera.transform; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &profile;
 	LitMaterial::castShadows = true;

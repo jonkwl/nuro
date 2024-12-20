@@ -27,25 +27,9 @@ void BoundingSphere::update(Model* model, glm::vec3 position, glm::quat rotation
 	radius = (metrics.furthest * 0.5f) * std::max({ scale.x, scale.y, scale.z });
 }
 
-bool BoundingSphere::intersectsFrustum(const Frustum& frustum)
+bool BoundingSphere::intersectsFrustum()
 {
-	// Always intersect for now
-	return true;
-
-	// Loop over all the planes of the frustum
-	for (const auto& plane : { frustum.nearPlane, frustum.farPlane, frustum.leftPlane, frustum.rightPlane, frustum.topPlane, frustum.bottomPlane })
-	{
-		// Calculate the distance from the sphere's center to the plane
-		float distance = glm::dot(glm::vec3(plane), center) + plane.w;
-
-		// If the distance from the center to the plane is greater than the radius, the sphere is outside the frustum
-		if (distance > radius)
-		{
-			return false; // Sphere is outside the frustum
-		}
-	}
-
-	// If none of the planes pushed the sphere outside, it's inside or intersecting the frustum
+	// Always intersects
 	return true;
 }
 
@@ -98,9 +82,9 @@ void BoundingAABB::update(Model* model, glm::vec3 position, glm::quat rotation, 
 	max = _max;
 }
 
-bool BoundingAABB::intersectsFrustum(const Frustum& frustum)
+bool BoundingAABB::intersectsFrustum()
 {
-	// Always intersect for now
+	// Always intersects
 	return true;
 }
 

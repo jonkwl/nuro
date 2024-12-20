@@ -4,8 +4,8 @@
 #include <tuple>
 #include <optional>
 
-#include "components.h"
-
+#include "../core/ecs/components.h"
+#include "../core/ecs/composed.h"
 #include "../core/rendering/model/mesh.h"
 
 namespace ECS {
@@ -19,6 +19,6 @@ namespace ECS {
 	void addCameraComponent(entt::entity& entity);
 	void addVelocityComponent(entt::entity& entity);
 
-	std::optional<std::tuple<TransformComponent&, CameraComponent&>> getActiveCamera();
+	std::optional<Camera> getActiveCamera();
 
 }

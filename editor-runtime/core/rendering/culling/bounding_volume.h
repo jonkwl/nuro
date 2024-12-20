@@ -3,7 +3,6 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 
-#include "../core/camera/camera.h"
 #include "../core/rendering/gizmos/gizmos.h"
 
 class Model;
@@ -12,7 +11,7 @@ class BoundingVolume
 {
 public:
 	virtual void update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale) {};
-	virtual bool intersectsFrustum(const Frustum& frustum) { return false; };
+	virtual bool intersectsFrustum() { return false; };
 	virtual float getDistance(glm::vec3 point) { return 0.0f; }
 	virtual void draw(IMGizmo& imGizmoInstance, glm::vec4 color) {};
 };
@@ -23,7 +22,7 @@ public:
 	BoundingSphere();
 
 	void update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
-	bool intersectsFrustum(const Frustum& frustum);
+	bool intersectsFrustum();
 	float getDistance(glm::vec3 point);
 	void draw(IMGizmo& imGizmoInstance, glm::vec4 color);
 
@@ -37,7 +36,7 @@ public:
 	BoundingAABB();
 
 	void update(Model* model, glm::vec3 position, glm::quat rotation, glm::vec3 scale);
-	bool intersectsFrustum(const Frustum& frustum);
+	bool intersectsFrustum();
 	float getDistance(glm::vec3 point);
 	void draw(IMGizmo& imGizmoInstance, glm::vec4 color);
 

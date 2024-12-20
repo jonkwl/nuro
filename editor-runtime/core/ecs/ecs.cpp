@@ -34,10 +34,11 @@ namespace ECS {
 		_registry.emplace<VelocityComponent>(entity);
 	}
 
-	std::optional<std::tuple<TransformComponent&, CameraComponent&>> getActiveCamera() {
+	std::optional<Camera> getActiveCamera() {
 		auto group = _registry.group<TransformComponent>(entt::get<CameraComponent>);
 		for (auto entity : group) {
-			return group.get<TransformComponent, CameraComponent>(entity);
+			auto[transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+			return Camera(transform, camera);
 		}
 		return std::nullopt;
 	}

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <utility>
 #include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
@@ -14,6 +13,7 @@
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
 #include "../core/ecs/components.h"
+#include "../core/ecs/composed.h"
 
 class SceneViewPipeline
 {
@@ -22,7 +22,7 @@ public:
 
 	void setup(); // Setup scene view pipeline
 
-	void render(std::vector<OldEntity*>& targets); // Renders scene view
+	void render(); // Renders scene view
 
 	unsigned int getOutput(); // Returns color output from latest render
 
@@ -41,7 +41,7 @@ public:
 
 	void updateMsaaSamples(unsigned int msaaSamples);
 
-	std::pair<TransformComponent, CameraComponent>& getFlyCamera();
+	Camera& getFlyCamera();
 
 	const glm::mat4& getView() const;
 	const glm::mat4& getProjection() const;
@@ -60,7 +60,9 @@ private:
 	PostProcessing::Profile defaultProfile; // Default scene view profile
 
 	// Scene view cameras
-	std::pair<TransformComponent, CameraComponent> flyCamera;
+	TransformComponent flyCameraTransform;
+	CameraComponent flyCameraRoot;
+	Camera flyCamera;
 
 	// Linked passes
 	PrePass prePass;

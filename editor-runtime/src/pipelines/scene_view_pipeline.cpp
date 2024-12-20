@@ -19,7 +19,9 @@ renderShadows(false),
 viewport(),
 msaaSamples(8), // should lower this
 defaultProfile(),
-flyCamera(),
+flyCameraTransform(),
+flyCameraRoot(),
+flyCamera(flyCameraTransform, flyCameraRoot),
 prePass(viewport),
 sceneViewForwardPass(viewport),
 ssaoPass(viewport),
@@ -52,7 +54,7 @@ void SceneViewPipeline::setup()
 	createPasses();
 }
 
-void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
+void SceneViewPipeline::render()
 {
 	Profiler::start("render");
 
@@ -60,15 +62,15 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	imGizmo.newFrame();
 
 	// Pick variable items for rendering
-	std::pair<TransformComponent&, CameraComponent&> targetCamera(flyCamera.first, flyCamera.second);
+	Camera& targetCamera = flyCamera;
 
 	// Select game profile if profile effects are enabled and not rendering wireframe
 	bool useDefaultProfile = !useProfileEffects || wireframe;
 	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewPipeline.getProfile();
 
 	// Get transformation matrices
-	view = Transformation::view(targetCamera.first.position, targetCamera.first.rotation);
-	projection = Transformation::projection(targetCamera.second.fov, targetCamera.second.near, targetCamera.second.far, viewport);
+	view = Transformation::view(targetCamera.transform.position, targetCamera.transform.rotation);
+	projection = Transformation::projection(targetCamera.root.fov, targetCamera.root.near, targetCamera.root.far, viewport);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
@@ -76,7 +78,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	imGizmo.color = GizmoColor::BLUE;
 	imGizmo.foreground = false;
 	imGizmo.opacity = 0.08f;
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
+	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.35f));
 
 	//
 	// PRE PASS
@@ -112,7 +114,7 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &viewport; // Redundant most of the times atm
-	LitMaterial::cameraTransform = &targetCamera.first; // Redundant most of the times atm
+	LitMaterial::cameraTransform = &targetCamera.transform; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &targetProfile;
 	LitMaterial::castShadows = renderShadows;
@@ -179,7 +181,7 @@ void SceneViewPipeline::updateMsaaSamples(unsigned int _msaaSamples)
 	sceneViewForwardPass.create(msaaSamples);
 }
 
-std::pair<TransformComponent, CameraComponent>& SceneViewPipeline::getFlyCamera()
+Camera& SceneViewPipeline::getFlyCamera()
 {
 	return flyCamera;
 }

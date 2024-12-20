@@ -25,7 +25,6 @@
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/shadows/shadow_disk.h"
 #include "../core/rendering/primitives/quad.h"
-#include "../core/camera/camera.h"
 #include "../core/utils/log.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/input/input.h"
@@ -39,8 +38,6 @@
 
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
-
-std::vector<OldEntity*> Runtime::entityStack;
 
 Skybox Runtime::defaultSkybox;
 
@@ -90,8 +87,8 @@ int Runtime::START_LOOP()
 
 		// RENDER NEXT FRAME (full render pipeline pass)
 		renderShadows();
-		sceneViewPipeline.render(entityStack);
-		gameViewPipeline.render(entityStack);
+		sceneViewPipeline.render();
+		gameViewPipeline.render();
 
 		// RENDER EDITOR
 		renderEditor();

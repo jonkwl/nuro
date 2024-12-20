@@ -6,8 +6,6 @@
 #include "../core/viewport/viewport.h"
 #include "../core/ecs/components.h"
 
-class OldEntity;
-
 namespace Transformation
 {
 	glm::vec3 toBackendPosition(glm::vec3 position); // Use to convert left handed coordinates to right handed coordinates backend uses

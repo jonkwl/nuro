@@ -20,7 +20,7 @@ public:
 
 	void setup(); // Setup scene view pipeline
 
-	void render(std::vector<OldEntity*>& targets); // Renders scene view
+	void render(); // Renders scene view
 
 	unsigned int getOutput(); // Returns color output from latest render
 

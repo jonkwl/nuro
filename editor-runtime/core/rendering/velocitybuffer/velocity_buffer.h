@@ -8,7 +8,6 @@
 #
 
 class Shader;
-class OldEntity;
 
 class VelocityBuffer
 {

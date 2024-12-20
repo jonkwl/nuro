@@ -3,7 +3,6 @@
 #include <glm.hpp>
 
 #include "../src/ui/editor_window.h"
-#include "../core/camera/camera.h"
 
 class GameWindow : public EditorWindow
 {

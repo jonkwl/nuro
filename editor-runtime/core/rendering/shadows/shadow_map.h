@@ -3,8 +3,6 @@
 #include <vector>
 #include "../core/rendering/shader/shader.h"
 
-class OldEntity;
-
 class ShadowMap
 {
 public:

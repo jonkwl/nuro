@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <vector>
@@ -26,7 +27,6 @@ class Shader;
 class Camera;
 class ShadowDisk;
 class ShadowMap;
-class OldEntity;
 
 class Runtime
 {
@@ -44,8 +44,6 @@ public:
 
 	static ShadowDisk* mainShadowDisk; // Default shadow disk
 	static ShadowMap* mainShadowMap;   // Default shadow map
-
-	static std::vector<OldEntity*> entityStack; // Stack of all entities that will be processed by the runtime
 
 private:
 	static Skybox defaultSkybox; // Default skybox

@@ -189,7 +189,6 @@ void SceneWindow::renderTransformGizmos()
 	}
 
 	// Get gizmo matrices
-	OldEntity* entity = nullptr;
 	TransformComponent transform; // Get transform component of selected entity here
 	glm::mat4 model = Transformation::model(transform);
 
@@ -232,19 +231,19 @@ void SceneWindow::renderTransformGizmos()
 
 void SceneWindow::updateMovement()
 {
-	TransformComponent& cameraTransform = Runtime::sceneViewPipeline.getFlyCamera().first;
+	Camera& camera = Runtime::sceneViewPipeline.getFlyCamera();
 
 	// Get values needed
 	float deltaTime = Time::deltaf();
-	glm::vec3 camForward = Transform::forward(cameraTransform);
-	glm::vec3 camRight = Transform::right(cameraTransform);
-	glm::vec3 camUp = Transform::up(cameraTransform);
+	glm::vec3 camForward = Transform::forward(camera.transform);
+	glm::vec3 camRight = Transform::right(camera.transform);
+	glm::vec3 camUp = Transform::up(camera.transform);
 
 	// Move in scene view
 	glm::vec2 currentKeyAxis = !sceneViewRightclicked ? glm::vec2(0.0f) : Input::moveAxis();
 	moveAxis = glm::mix(moveAxis, currentKeyAxis, moveAxisSmoothingFactor * deltaTime);
 	glm::vec3 movementDir = camForward * moveAxis.x + camRight * moveAxis.y;
-	cameraTransform.position += movementDir * movementSpeed * deltaTime;
+	camera.transform.position += movementDir * movementSpeed * deltaTime;
 
 	// If theres a right click interaction with scene view
 	if (sceneViewRightclicked) {
@@ -256,7 +255,7 @@ void SceneWindow::updateMovement()
 		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
 		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
-		cameraTransform.rotation = glm::quat(glm::radians(newRotation));
+		camera.transform.rotation = glm::quat(glm::radians(newRotation));
 		cameraEulerAngles = newRotation;
 	}
 
@@ -264,7 +263,7 @@ void SceneWindow::updateMovement()
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		cameraTransform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
+		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
 	}
 
 }

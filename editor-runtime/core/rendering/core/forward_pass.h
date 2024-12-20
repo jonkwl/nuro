@@ -7,7 +7,6 @@
 #include "../core/rendering/gizmos/imgizmo.h"
 #include "../core/rendering/material/lit/lit_material.h"
 
-class OldEntity;
 class Skybox;
 
 class ForwardPass
