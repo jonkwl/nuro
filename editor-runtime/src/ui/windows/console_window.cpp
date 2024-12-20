@@ -1,11 +1,5 @@
 #include "console_window.h"
-
-#include <imgui.h>
-
-#include "../src/ui/editor_ui.h"
-#include "../src/ui/ui_layout.h"
-#include "../src/ui/ui_components.h"
-#include "../src/ui/ui_utils.h"
+#include "window_includes.h"
 
 std::deque<ConsoleLog> ConsoleWindow::logs;
 std::vector<ConsoleLog> ConsoleWindow::logsToAdd;

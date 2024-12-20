@@ -23,4 +23,7 @@ namespace UIUtils
 	// Offset: Offset for image to be centered
 	void calculateAspectFitting(float aspectRatio, ImVec2& size, ImVec2& offset);
 
+	// Returns title for window with adjusted spacing
+	const char* windowTitle(const char* title);
+
 };

@@ -1,18 +1,9 @@
 #include "game_window.h"
-
-#include <imgui.h>
-#include <ImGuizmo.h>
+#include "window_includes.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtc/type_ptr.hpp>
 #include <gtx/matrix_decompose.hpp>
-
-#include "../src/runtime/runtime.h"
-#include "../src/ui/editor_ui.h"
-#include "../src/ui/ui_layout.h"
-#include "../src/ui/ui_utils.h"
-#include "../src/ui/ui_components.h"
-#include "../src/ui/IconsFontAwesome6.h"
 
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/input/input.h"

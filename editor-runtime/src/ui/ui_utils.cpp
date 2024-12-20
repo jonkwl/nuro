@@ -121,4 +121,21 @@ namespace UIUtils {
 		offset = ImVec2((contentRegionAvail.x - size.x) * 0.5f, (contentRegionAvail.y - size.y) * 0.5f);
 	}
 
+	const char* windowTitle(const char* title)
+	{
+		size_t titleLength = strlen(title);
+		size_t newLength = titleLength + 10;
+
+		char* newTitle = (char*)malloc(newLength + 1);
+		if (newTitle == nullptr) {
+			return nullptr;
+		}
+
+		strcpy_s(newTitle, newLength + 1, "     ");
+		strcat_s(newTitle, newLength + 1, title);
+		strcat_s(newTitle, newLength + 1, "     ");
+
+		return newTitle;
+	}
+
 }

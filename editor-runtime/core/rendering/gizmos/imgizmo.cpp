@@ -216,7 +216,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		iconShader->setMatrix4("mvpMatrix", mvpMatrix);
 		iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 		iconShader->setVec3("tint", glm::vec3(1.0f));
-		iconShader->setFloat("alpha", 0.28f);
+		iconShader->setFloat("alpha", 0.35f);
 
 		// Get model
 		Model* model = getModel(Shape::PLANE);

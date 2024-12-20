@@ -1,11 +1,5 @@
 #include "post_processing_window.h"
-
-#include <imgui.h>
-
-#include "../src/ui/ui_layout.h"
-#include "../src/ui/ui_components.h"
-#include "../src/ui/IconsFontAwesome6.h"
-#include "../src/ui/editor_ui.h"
+#include "window_includes.h"
 
 PostProcessingWindow::PostProcessingWindow(PostProcessing::Profile& targetProfile) : targetProfile(targetProfile)
 {

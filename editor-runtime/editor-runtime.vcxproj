@@ -137,6 +137,7 @@
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
     <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp" />
     <ClCompile Include="core\ecs\entity.cpp" />
+    <ClCompile Include="src\ui\windows\hierarchy_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
     <ClCompile Include="src\ui\windows\game_window.cpp" />
@@ -168,7 +169,7 @@
     <ClCompile Include="core\rendering\texture\texture.cpp" />
     <ClCompile Include="core\rendering\velocitybuffer\velocity_buffer.cpp" />
     <ClCompile Include="core\time\time.cpp" />
-    <ClCompile Include="core\transform\transform.cpp" />
+    <ClCompile Include="core\utils\transform.cpp" />
     <ClCompile Include="core\utils\iohandler.cpp" />
     <ClCompile Include="core\utils\log.cpp" />
     <ClCompile Include="core\utils\string_helper.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
     <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h" />
     <ClInclude Include="core\ecs\entity.h" />
+    <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />
     <ClInclude Include="src\ui\windows\game_window.h" />
@@ -240,7 +242,7 @@
     <ClInclude Include="core\rendering\texture\texture.h" />
     <ClInclude Include="core\rendering\velocitybuffer\velocity_buffer.h" />
     <ClInclude Include="core\time\time.h" />
-    <ClInclude Include="core\transform\transform.h" />
+    <ClInclude Include="core\utils\transform.h" />
     <ClInclude Include="core\utils\iohandler.h" />
     <ClInclude Include="core\utils\log.h" />
     <ClInclude Include="core\utils\string_helper.h" />
@@ -357,6 +359,7 @@
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\scene_window.h" />
     <ClInclude Include="src\ui\ui_utils.h" />
+    <ClInclude Include="src\ui\windows\window_includes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\include\assimp\color4.inl" />

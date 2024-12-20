@@ -96,7 +96,7 @@
     <ClCompile Include="core\time\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\transform\transform.cpp">
+    <ClCompile Include="core\utils\transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\utils\iohandler.cpp">
@@ -207,6 +207,9 @@
     <ClCompile Include="core\ecs\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\windows\hierarchy_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -305,7 +308,7 @@
     <ClInclude Include="core\time\time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\transform\transform.h">
+    <ClInclude Include="core\utils\transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\utils\iohandler.h">
@@ -687,6 +690,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\windows\hierarchy_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\windows\window_includes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

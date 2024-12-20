@@ -20,6 +20,7 @@
 #include "../src/ui/windows/post_processing_window.h"
 #include "../src/ui/windows/diagnostics_window.h"
 #include "../src/ui/windows/console_window.h"
+#include "../src/ui/windows/hierarchy_window.h"
 
 namespace EditorUI {
 
@@ -153,6 +154,9 @@ namespace EditorUI {
 
 		ConsoleWindow* consoleWindow = new ConsoleWindow();
 		_windows.push_back(consoleWindow);
+
+		HierarchyWindow* hierarchyWindow = new HierarchyWindow();
+		_windows.push_back(hierarchyWindow);
 	}
 
 	void newFrame()
