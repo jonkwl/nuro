@@ -3,8 +3,6 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-#include "../core/old_entity/old_entity.h"
-
 namespace Transformation {
 
 	glm::vec3 toBackendPosition(glm::vec3 position)

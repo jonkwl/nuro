@@ -5,7 +5,6 @@
 
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/primitives/quad.h"
 #include "../core/utils/log.h"
 

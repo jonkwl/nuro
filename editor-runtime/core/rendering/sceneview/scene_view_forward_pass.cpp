@@ -3,8 +3,6 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
-#include "../core/old_entity/old_entity.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/model/model.h"
 #include "../core/ecs/ecs.h"
@@ -174,7 +172,7 @@ unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4
 	}
 	
 	// Render selected entity with outline
-	// renderSelectedEntity(selected);
+	// renderSelectedEntity(..., ...);
 
 	// Disable wireframe if enabled
 	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -211,10 +209,9 @@ void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
 	imGizmo = source;
 }
 
-void SceneViewForwardPass::renderSelectedEntity(OldEntity* selected)
+void SceneViewForwardPass::renderSelectedEntity(TransformComponent& transform, MeshRendererComponent& renderer)
 {
-	if (!selected) return;
-
+	/*
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
 	glStencilMask(0xFF); // Enable stencil writes
@@ -249,4 +246,5 @@ void SceneViewForwardPass::renderSelectedEntity(OldEntity* selected)
 	glDisable(GL_BLEND);
 	glStencilMask(0xFF);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	*/
 }

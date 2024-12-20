@@ -190,9 +190,8 @@ void SceneWindow::renderTransformGizmos()
 
 	// Get gizmo matrices
 	OldEntity* entity = nullptr;
-	TransformComponent& transform = entity->transform;
-
-	glm::mat4 transformMatrix = Transformation::model(entity->transform);
+	TransformComponent transform; // Get transform component of selected entity here
+	glm::mat4 model = Transformation::model(transform);
 
 	// Check for snapping
 	bool snapping = Input::keyDown(Key::LEFT_CONTROL);
@@ -200,7 +199,7 @@ void SceneWindow::renderTransformGizmos()
 	const float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	// Draw transformation gizmo
-	ImGuizmo::Manipulate(glm::value_ptr(Runtime::sceneViewPipeline.getView()), glm::value_ptr(Runtime::sceneViewPipeline.getProjection()), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(transformMatrix), nullptr, snapping ? snapValues : nullptr);
+	ImGuizmo::Manipulate(glm::value_ptr(Runtime::sceneViewPipeline.getView()), glm::value_ptr(Runtime::sceneViewPipeline.getProjection()), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(model), nullptr, snapping ? snapValues : nullptr);
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {
@@ -208,7 +207,7 @@ void SceneWindow::renderTransformGizmos()
 		glm::vec3 position, scale, skew;
 		glm::vec4 perspective;
 		glm::quat rotation;
-		glm::decompose(transformMatrix, scale, rotation, position, skew, perspective);
+		glm::decompose(model, scale, rotation, position, skew, perspective);
 
 		// Update transforms position
 		transform.position = Transformation::toBackendPosition(position);

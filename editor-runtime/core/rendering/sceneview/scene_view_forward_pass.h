@@ -8,8 +8,8 @@
 #include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 #include "../core/rendering/material/lit/lit_material.h"
+#include "../core/ecs/components.h"
 
-class OldEntity;
 class Skybox;
 
 class SceneViewForwardPass
@@ -47,5 +47,5 @@ private:
 	UnlitMaterial* selectionMaterial; // Material for selection outline
 	LitMaterial* defaultMaterial; // Some default material
 
-	void renderSelectedEntity(OldEntity* selected); // Renders the selected entity with an outline
+	void renderSelectedEntity(TransformComponent& transform, MeshRendererComponent& renderer); // Renders the selected entity with an outline
 };

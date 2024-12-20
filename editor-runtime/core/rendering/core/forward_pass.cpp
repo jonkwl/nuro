@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
-#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/ecs/ecs.h"
 #include "../core/rendering/material/imaterial.h"

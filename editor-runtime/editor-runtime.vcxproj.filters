@@ -30,9 +30,6 @@
     <ClCompile Include="core\rendering\core\forward_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\core\mesh_renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\rendering\core\pre_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -195,9 +192,6 @@
     <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\old_entity\old_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\ecs\ecs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -228,9 +222,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\core\forward_pass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\rendering\core\mesh_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\core\pre_pass.h">
@@ -675,9 +666,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\old_entity\old_entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\ecs.h">

@@ -5,10 +5,8 @@
 #include <vector>
 #include <stb_image_write.h>
 
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/old_entity/old_entity.h"
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs.h"
 

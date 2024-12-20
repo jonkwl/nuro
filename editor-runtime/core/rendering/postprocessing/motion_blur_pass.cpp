@@ -6,7 +6,6 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/quad.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/diagnostics/diagnostics.h"
 
 MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),

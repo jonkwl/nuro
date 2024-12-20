@@ -142,11 +142,9 @@
     <ClCompile Include="src\ui\windows\console_window.cpp" />
     <ClCompile Include="core\diagnostics\diagnostics.cpp" />
     <ClCompile Include="core\diagnostics\profiler.cpp" />
-    <ClCompile Include="core\old_entity\old_entity.cpp" />
     <ClCompile Include="core\input\cursor.cpp" />
     <ClCompile Include="core\input\input.cpp" />
     <ClCompile Include="core\rendering\core\forward_pass.cpp" />
-    <ClCompile Include="core\rendering\core\mesh_renderer.cpp" />
     <ClCompile Include="core\rendering\core\pre_pass.cpp" />
     <ClCompile Include="core\rendering\core\transformation.cpp" />
     <ClCompile Include="core\rendering\culling\bounding_volume.cpp" />
@@ -211,11 +209,9 @@
     <ClInclude Include="core\diagnostics\diagnostics.h" />
     <ClInclude Include="core\diagnostics\profiler.h" />
     <ClInclude Include="core\engine.h" />
-    <ClInclude Include="core\old_entity\old_entity.h" />
     <ClInclude Include="core\input\cursor.h" />
     <ClInclude Include="core\input\input.h" />
     <ClInclude Include="core\rendering\core\forward_pass.h" />
-    <ClInclude Include="core\rendering\core\mesh_renderer.h" />
     <ClInclude Include="core\rendering\core\pre_pass.h" />
     <ClInclude Include="core\rendering\core\transformation.h" />
     <ClInclude Include="core\rendering\culling\bounding_volume.h" />

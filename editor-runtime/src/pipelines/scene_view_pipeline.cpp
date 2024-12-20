@@ -2,7 +2,6 @@
 
 #include "../core/input/input.h"
 #include "../core/rendering/core/transformation.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/utils/log.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/rendering/material/lit/lit_material.h"

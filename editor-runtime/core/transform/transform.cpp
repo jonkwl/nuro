@@ -3,7 +3,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtx/quaternion.hpp>
 
-#include "../core/old_entity/old_entity.h"
 #include "../core/rendering/core/transformation.h"
 
 namespace Transform {

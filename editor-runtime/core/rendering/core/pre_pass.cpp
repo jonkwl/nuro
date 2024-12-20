@@ -2,8 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "../core/old_entity/old_entity.h"
-#include "../core/rendering/core/mesh_renderer.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs.h"
