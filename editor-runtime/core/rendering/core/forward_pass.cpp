@@ -4,10 +4,11 @@
 
 #include "../core/utils/log.h"
 #include "../core/rendering/skybox/skybox.h"
-#include "../core/ecs/ecs.h"
 #include "../core/rendering/material/imaterial.h"
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/rendering/core/transformation.h"
+#include "../core/rendering/model/mesh.h"
+#include "../core/ecs/ecs_collection.h"
 
 #include "../src/runtime/runtime.h"
 
@@ -145,7 +146,7 @@ unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& project
 	// INJECTED PRE PASS END
 
 	// Render each entity
-	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		// Transform components model and mvp must have been calculated beforehand
 

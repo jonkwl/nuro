@@ -7,8 +7,9 @@
 
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/shader/shader_pool.h"
+#include "../core/rendering/model/mesh.h"
 #include "../core/utils/log.h"
-#include "../core/ecs/ecs.h"
+#include "../core/ecs/ecs_collection.h"
 
 bool shadowMapSaved = false;
 
@@ -99,7 +100,7 @@ void ShadowMap::render()
 
 	shadowPassShader->bind();
 
-	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		// Bind mesh
 		glBindVertexArray(renderer.mesh.getVAO());

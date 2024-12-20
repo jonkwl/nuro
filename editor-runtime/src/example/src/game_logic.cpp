@@ -3,33 +3,26 @@
 #include "../core/engine.h";
 #include "../src/runtime/runtime.h"
 
-#include "../core/ecs/ecs.h"
-
-entt::entity camera;
-entt::entity sphere;
-entt::entity cube;
+Entity camera;
+Entity sphere;
+Entity cube;
 
 void awake() {
 
-	// Create game camera
-	camera = ECS::createEntity();
-	ECS::addTransformComponent(camera);
-	ECS::addCameraComponent(camera);
+	camera = Entity::create();
+	camera.addComponent<TransformComponent>();
+	camera.addComponent<CameraComponent>();
 
-	// Create some rendered entity
-	sphere = ECS::createEntity();
-	ECS::addTransformComponent(sphere);
-	ECS::addMeshRendererComponent(sphere, Model::load("../resources/primitives/sphere.fbx")->meshes[0]);
-	TransformComponent& sphereTransform = ECS::getRegistry().get<TransformComponent>(sphere);
-	sphereTransform.position.z = 10.0f;
+	sphere = Entity::create();
+	TransformComponent& sphereTransform = sphere.addComponent<TransformComponent>();
+	MeshRendererComponent& sphereRenderer = sphere.addComponent<MeshRendererComponent>(Model::load("../resources/primitives/sphere.fbx")->meshes[0]);
+	sphereTransform.position.z = 8.0f;
 
-	// Create another rendered entity
-	cube = ECS::createEntity();
-	ECS::addTransformComponent(cube);
-	ECS::addMeshRendererComponent(cube, Model::load("../resources/primitives/cube.fbx")->meshes[0]);
-	TransformComponent& cubeTransform = ECS::getRegistry().get<TransformComponent>(cube);
-	cubeTransform.position.z = 12.0f;
-	cubeTransform.scale = glm::vec3(5.0f, 5.0f, 0.25f);
+	cube = Entity::create();
+	TransformComponent& cubeTransform = cube.addComponent<TransformComponent>();
+	MeshRendererComponent& cubeRenderer = cube.addComponent<MeshRendererComponent>(Model::load("../resources/primitives/cube.fbx")->meshes[0]);
+	cubeTransform.position.z = 10.0f;
+	cubeTransform.scale = glm::vec3(5.0f, 5.0f, 0.1f);
 
 }
 

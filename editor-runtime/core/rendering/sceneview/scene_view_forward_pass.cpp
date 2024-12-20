@@ -4,9 +4,9 @@
 
 #include "../core/utils/log.h"
 #include "../core/rendering/skybox/skybox.h"
-#include "../core/rendering/model/model.h"
-#include "../core/ecs/ecs.h"
+#include "../core/rendering/model/mesh.h"
 #include "../core/rendering/core/transformation.h"
+#include "../core/ecs/ecs_collection.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -148,7 +148,7 @@ unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
 	// Render each entity
-	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		// Transform components model and mvp must have been calculated beforehand
 

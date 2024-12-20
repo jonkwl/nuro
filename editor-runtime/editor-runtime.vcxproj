@@ -136,6 +136,7 @@
     <ClCompile Include="core\ecs\ecs.cpp" />
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
     <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp" />
+    <ClCompile Include="core\ecs\entity.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
     <ClCompile Include="src\ui\windows\game_window.cpp" />
@@ -199,8 +200,10 @@
     <ClInclude Include="core\ecs\components.h" />
     <ClInclude Include="core\ecs\composed.h" />
     <ClInclude Include="core\ecs\ecs.h" />
+    <ClInclude Include="core\ecs\ecs_collection.h" />
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
     <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h" />
+    <ClInclude Include="core\ecs\entity.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />
     <ClInclude Include="src\ui\windows\game_window.h" />

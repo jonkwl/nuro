@@ -34,7 +34,6 @@
 #include "../core/time/time.h"
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/input/cursor.h"
-#include "../core/ecs/ecs.h"
 
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"

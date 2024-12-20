@@ -4,8 +4,9 @@
 
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/utils/log.h"
-#include "../core/ecs/ecs.h"
 #include "../core/rendering/core/transformation.h"
+#include "../core/rendering/model/mesh.h"
+#include "../core/ecs/ecs_collection.h"
 
 PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
@@ -103,7 +104,7 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	prePassShader->bind();
 
 	// Pre pass render each entity
-	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		// Recalculate transforms matrix cache for all upcoming passes of current frame
 		transform.model = Transformation::model(transform);

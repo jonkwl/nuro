@@ -7,7 +7,7 @@
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/culling/bounding_volume.h"
 #include "../core/rendering/skybox/skybox.h"
-#include "../core/ecs/ecs.h"
+#include "../core/ecs/ecs_collection.h"
 
 #include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
@@ -39,13 +39,13 @@ void GameViewPipeline::render()
 	Profiler::start("render");
 
 	// Get active camera
-	auto _camera = ECS::getActiveCamera();
+	auto _camera = ECS::getLatestCamera();
 	if (!_camera) {
 		cameraAvailable = false;
 		return;
 	}
 	cameraAvailable = true;
-	Camera camera = *_camera;
+	Camera& camera = *_camera;
 
 	// Get transformation matrices
 	glm::mat4 view = Transformation::view(camera.transform.position, camera.transform.rotation);

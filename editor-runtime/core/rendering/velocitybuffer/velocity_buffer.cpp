@@ -7,7 +7,8 @@
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/quad.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/ecs/ecs.h"
+#include "../core/rendering/model/mesh.h"
+#include "../core/ecs/ecs_collection.h"
 
 VelocityBuffer::VelocityBuffer(const Viewport& viewport) : viewport(viewport),
 fbo(0),
@@ -134,7 +135,7 @@ unsigned int VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4
 	velocityPassShader->setMatrix4("projectionMatrix", projection);
 
 	// Render velocity buffer by performing velocity pass on each object
-	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent, VelocityComponent>();
+	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent, VelocityComponent>();
 	for (auto [entity, transform, renderer, velocity] : targets.each()) {
 		// Bind mesh
 		glBindVertexArray(renderer.mesh.getVAO());

@@ -192,9 +192,6 @@
     <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\ecs\ecs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\ecs\components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -202,6 +199,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\ecs\composed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ecs\ecs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ecs\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -668,9 +671,6 @@
     <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\ecs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="core\ecs\components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -678,6 +678,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\composed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\ecs_collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\ecs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
