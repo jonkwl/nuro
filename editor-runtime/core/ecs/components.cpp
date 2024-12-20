@@ -17,3 +17,7 @@ near(0.3f),
 far(1000.0f)
 {
 }
+
+VelocityComponent::VelocityComponent() : intensity(1.0f)
+{
+}

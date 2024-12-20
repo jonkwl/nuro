@@ -36,3 +36,14 @@ struct CameraComponent {
 	float far; // Far clipping
 
 };
+
+struct VelocityComponent {
+
+	VelocityComponent();
+
+	float intensity; // Velocity impact
+
+	// Matrix cache
+	glm::mat4 lastModel;
+
+};

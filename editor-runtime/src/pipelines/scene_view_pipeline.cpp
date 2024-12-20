@@ -74,59 +74,11 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
-	//
-	// PREPARATION PASS
-	// Prepare each mesh renderer for upcoming render passes
-	//
-	for (int i = 0; i < targets.size(); i++)
-	{
-		MeshRenderer& targetRenderer = targets[i]->meshRenderer;
-
-		// Could be moved to existing iteration over entity links within some pass to avoid additional iteration overhead
-		// Here for now to ensure preparation despite further pipeline changes
-		targetRenderer.prepareNextFrame();
-
-		if (showGizmos) {
-			targetRenderer.volume->draw(imGizmo, glm::vec4(GizmoColor::GREEN, 0.5f));
-		}
-	}
-
-	// Render light gizmos
+	// Render test light gizmo
 	imGizmo.color = GizmoColor::BLUE;
 	imGizmo.foreground = false;
 	imGizmo.opacity = 0.08f;
-
 	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	/*imGizmo.sphereWire(glm::vec3(0.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 1.9f, -4.0f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(4.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(4.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(8.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(8.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(12.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(12.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(16.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(16.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(20.0, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(20.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(24.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(24.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(28.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(28.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(32.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(32.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(36.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(36.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(40.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(40.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(44.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(44.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(48.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(48.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(52.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(52.0f, 0.0f, 6.5f), 1.0f);
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(56.0f, 0.0f, 6.5f), targetCamera.first, glm::vec3(0.35f));
-	imGizmo.sphereWire(glm::vec3(56.0f, 0.0f, 6.5f), 1.0f);*/
 
 	//
 	// PRE PASS
@@ -152,15 +104,12 @@ void SceneViewPipeline::render(std::vector<OldEntity*>& targets)
 	Profiler::stop("ssao");
 
 	//
-	// VELOCITY BUFFER RENDER PASS
+	// VELOCITY BUFFER RENDER PASS (NONE)
 	//
-	Profiler::start("velocity_buffer");
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(targetProfile, targets);
-	Profiler::stop("velocity_buffer");
+	const unsigned int VELOCITY_BUFFER_OUTPUT = 0;
 
 	//
 	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
-	// Includes injected pre pass
 	//
 
 	// Prepare lit material with current render data

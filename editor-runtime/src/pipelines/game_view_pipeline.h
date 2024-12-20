@@ -37,6 +37,9 @@ public:
 
 	bool getCameraAvailable();
 
+	unsigned int getSSAOOutput(); // Returns the last ssao output
+	unsigned int getVelocityOutput(); // Returns the velocity buffers last output
+
 private:
 	void createPasses(); // Create all passes
 	void destroyPasses(); // Destroy all passes
@@ -58,5 +61,9 @@ private:
 
 	// Camera available cache
 	bool cameraAvailable;
+
+	// Cached outputs
+	unsigned int ssaoOutput;
+	unsigned int velocityOutput;
 };
 

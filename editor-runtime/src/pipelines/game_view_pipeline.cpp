@@ -22,7 +22,10 @@ prePass(viewport),
 forwardPass(viewport),
 ssaoPass(viewport),
 velocityBuffer(viewport),
-postProcessingPipeline(viewport, false)
+postProcessingPipeline(viewport, false),
+cameraAvailable(false),
+ssaoOutput(0),
+velocityOutput(0)
 {
 }
 
@@ -73,18 +76,19 @@ void GameViewPipeline::render(std::vector<OldEntity*>& targets)
 		_ssaoOutput = ssaoPass.render(projection, profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const unsigned int SSAO_OUTPUT = _ssaoOutput;
+	ssaoOutput = SSAO_OUTPUT;
 	Profiler::stop("ssao");
 
 	//
 	// VELOCITY BUFFER RENDER PASS
 	//
 	Profiler::start("velocity_buffer");
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(profile, targets);
+	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityBuffer.render(view, projection, profile);
+	velocityOutput = VELOCITY_BUFFER_OUTPUT;
 	Profiler::stop("velocity_buffer");
 
 	//
 	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
-	// Includes injected pre pass
 	//
 
 	// Prepare lit material with current render data
@@ -161,6 +165,16 @@ Skybox* GameViewPipeline::getSkybox()
 bool GameViewPipeline::getCameraAvailable()
 {
 	return cameraAvailable;
+}
+
+unsigned int GameViewPipeline::getSSAOOutput()
+{
+	return ssaoOutput;
+}
+
+unsigned int GameViewPipeline::getVelocityOutput()
+{
+	return velocityOutput;
 }
 
 void GameViewPipeline::createPasses()

@@ -10,6 +10,7 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/old_entity/old_entity.h"
 #include "../core/utils/log.h"
+#include "../core/ecs/ecs.h"
 
 bool shadowMapSaved = false;
 
@@ -75,7 +76,7 @@ shadowPassShader(ShaderPool::get("shadow_pass"))
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::render(std::vector<OldEntity*>& targets) // Update needed for camera independence
+void ShadowMap::render()
 {
 	// Set viewport and bind shadow map framebuffer
 	glViewport(0, 0, resolutionWidth, resolutionHeight);
@@ -100,9 +101,17 @@ void ShadowMap::render(std::vector<OldEntity*>& targets) // Update needed for ca
 
 	shadowPassShader->bind();
 
-	for (int i = 0; i < targets.size(); i++)
-	{
-		targets[i]->meshRenderer.shadowPass(shadowPassShader);
+	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent>();
+	for (auto [entity, transform, renderer] : targets.each()) {
+		// Bind mesh
+		glBindVertexArray(renderer.mesh.getVAO());
+
+		// Set shadow pass shader uniforms
+		shadowPassShader->setMatrix4("modelMatrix", transform.model);
+		shadowPassShader->setMatrix4("lightSpaceMatrix", lightSpaceMatrix);
+
+		// Render mesh
+		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 
 	// Unbind shadow map framebuffer

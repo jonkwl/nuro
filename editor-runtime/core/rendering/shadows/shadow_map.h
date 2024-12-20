@@ -10,7 +10,7 @@ class ShadowMap
 public:
 	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
 
-	void render(std::vector<OldEntity*>& targets);
+	void render();
 	void bind(unsigned int unit);
 
 	unsigned int getResolutionWidth() const;

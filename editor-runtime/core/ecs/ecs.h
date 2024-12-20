@@ -17,6 +17,7 @@ namespace ECS {
 	void addTransformComponent(entt::entity& entity);
 	void addMeshRendererComponent(entt::entity& entity, Mesh& mesh);
 	void addCameraComponent(entt::entity& entity);
+	void addVelocityComponent(entt::entity& entity);
 
 	std::optional<std::tuple<TransformComponent&, CameraComponent&>> getActiveCamera();
 

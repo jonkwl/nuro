@@ -190,6 +190,9 @@ unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4
 	// Render quick gizmos
 	if (drawQuickGizmos && imGizmo) imGizmo->render(viewProjection);
 
+	// Disable stencil testing
+	glDisable(GL_STENCIL_TEST);
+
 	// Bilt multisampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFbo);

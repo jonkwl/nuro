@@ -1,6 +1,7 @@
 #pragma once
 
 // Useful includes for applications using engine
+#include <cmath>
 #include "../core/old_entity/old_entity.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 #include "../core/rendering/material/lit/lit_material.h"

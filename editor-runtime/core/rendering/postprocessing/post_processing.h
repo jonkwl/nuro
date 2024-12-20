@@ -23,7 +23,6 @@ namespace PostProcessing
 
 		bool objectEnabled = true;
 		int objectSamples = 16;
-		bool objectSilhouetteExtension = false;
 
 	};
 

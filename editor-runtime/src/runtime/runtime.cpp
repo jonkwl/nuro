@@ -259,7 +259,7 @@ void Runtime::renderShadows()
 	// Render shadow map
 	//
 	Profiler::start("shadow_pass");
-	mainShadowMap->render(entityStack);
+	mainShadowMap->render();
 	Profiler::stop("shadow_pass");
 }
 

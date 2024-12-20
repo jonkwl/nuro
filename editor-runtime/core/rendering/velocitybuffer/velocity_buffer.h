@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/postprocessing/post_processing.h"
@@ -17,10 +18,10 @@ public:
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
 
-	unsigned int render(const PostProcessing::Profile& profile, std::vector<OldEntity*>& targets); // Renders the velocity buffer and returns the filtered output
+	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const PostProcessing::Profile& profile); // Renders the velocity buffer and returns the filtered output
 
 private:
-	unsigned int velocityPasses(std::vector<OldEntity*>& targets);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
+	unsigned int velocityPass(const glm::mat4& view, const glm::mat4& projection);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
 	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:

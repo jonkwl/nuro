@@ -1,7 +1,6 @@
 #include "velocity_buffer.h"
 
 #include <glad/glad.h>
-#include <glm.hpp>
 #include <vector>
 
 #include "../core/utils/log.h"
@@ -10,6 +9,7 @@
 #include "../core/rendering/primitives/quad.h"
 #include "../core/old_entity/old_entity.h"
 #include "../core/rendering/shader/shader_pool.h"
+#include "../core/ecs/ecs.h"
 
 VelocityBuffer::VelocityBuffer(const Viewport& viewport) : viewport(viewport),
 fbo(0),
@@ -100,25 +100,21 @@ void VelocityBuffer::destroy()
 	postfilterShader = nullptr;
 }
 
-unsigned int VelocityBuffer::render(const PostProcessing::Profile& profile, std::vector<OldEntity*>& targets)
+unsigned int VelocityBuffer::render(const glm::mat4& view, const glm::mat4& projection, const PostProcessing::Profile& profile)
 {
 	// Prepare output
 	unsigned int OUTPUT = 0;
 
 	// Render velocity buffer
-	OUTPUT = velocityPasses(targets);
+	OUTPUT = velocityPass(view, projection);
 
-	// Perform postfiltering pass on velocity buffer if object silhouettes should be extended
-	if (profile.motionBlur.objectSilhouetteExtension)
-	{
-		OUTPUT = postfilteringPass();
-	}
+	// OUTPUT = postfilteringPass();
 
 	// Return final output
 	return OUTPUT;
 }
 
-unsigned int VelocityBuffer::velocityPasses(std::vector<OldEntity*>& targets)
+unsigned int VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4& projection)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -132,14 +128,29 @@ unsigned int VelocityBuffer::velocityPasses(std::vector<OldEntity*>& targets)
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	// Bind shader
 	velocityPassShader->bind();
+	velocityPassShader->setMatrix4("viewMatrix", view);
+	velocityPassShader->setMatrix4("projectionMatrix", projection);
 
 	// Render velocity buffer by performing velocity pass on each object
-	for (int i = 0; i < targets.size(); i++)
-	{
-		targets[i]->meshRenderer.velocityPass(velocityPassShader);
+	auto targets = ECS::getRegistry().view<TransformComponent, MeshRendererComponent, VelocityComponent>();
+	for (auto [entity, transform, renderer, velocity] : targets.each()) {
+		// Bind mesh
+		glBindVertexArray(renderer.mesh.getVAO());
+
+		// Set velocity pass shader uniforms
+		velocityPassShader->setMatrix4("modelMatrix", transform.model);
+		velocityPassShader->setMatrix4("previousModelMatrix", velocity.lastModel);
+		velocityPassShader->setFloat("intensity", velocity.intensity);
+		  
+		// Render mesh
+		glDrawElements(GL_TRIANGLES, renderer.mesh.getVerticeCount(), GL_UNSIGNED_INT, 0);
+
+		// Update last model matrix cache
+		velocity.lastModel = transform.model;
 	}
 
 	// Disable depth testing
