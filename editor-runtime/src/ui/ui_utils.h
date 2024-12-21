@@ -13,6 +13,9 @@ namespace UIUtils
 	ImVec4 darken(ImVec4 color, float amount);
 	ImU32 darken(ImU32 color, float amount);
 
+	// Lerps between given colors
+	ImVec4 lerpColors(const ImVec4& a, const ImVec4& b, float t);
+
 	// Returns the relative scroll value of current ui child rendering
 	float getChildScrollValue();
 

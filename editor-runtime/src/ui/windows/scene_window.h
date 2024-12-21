@@ -3,6 +3,7 @@
 #include <glm.hpp>
 
 #include "../src/ui/editor_window.h"
+#include "window_includes.h"
 
 class SceneWindow : public EditorWindow
 {

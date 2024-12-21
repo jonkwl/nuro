@@ -29,6 +29,12 @@ namespace UIUtils {
 		return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | ((int)(b * 255)) | (color & 0xFF000000);
 	}
 
+	ImVec4 darken(ImVec4 color, float amount)
+	{
+		float factor = 1.0f - amount;
+		return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
+	}
+
 	ImU32 darken(ImU32 color, float amount)
 	{
 		// Extract RGBA components
@@ -46,10 +52,13 @@ namespace UIUtils {
 		return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | ((int)(b * 255)) | (color & 0xFF000000);
 	}
 
-	ImVec4 darken(ImVec4 color, float amount)
+	ImVec4 lerpColors(const ImVec4& a, const ImVec4& b, float t)
 	{
-		float factor = 1.0f - amount;
-		return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
+		return ImVec4(
+			a.x + t * (b.x - a.x),
+			a.y + t * (b.y - a.y),
+			a.z + t * (b.z - a.z),
+			a.w + t * (b.w - a.w));
 	}
 
 	float getChildScrollValue()

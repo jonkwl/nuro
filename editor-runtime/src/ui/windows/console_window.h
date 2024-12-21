@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "../src/ui/editor_window.h"
+#include "window_includes.h"
+
 #include "../src/ui/IconsFontAwesome6.h"
 
 struct ImVec2;
@@ -42,6 +44,6 @@ private:
 	static std::deque<ConsoleLog> logs;
 	static std::vector<ConsoleLog> logsToAdd;
 
-	void drawLog(ConsoleLog log);
-	void drawLatestLog(float height, float padding);
+	void drawLog(ImDrawList& drawList, ConsoleLog log);
+	void drawLatestLog(ImDrawList& drawList, float height, float padding);
 };

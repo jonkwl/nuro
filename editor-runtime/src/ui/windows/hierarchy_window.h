@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../src/ui/editor_window.h"
+#include "window_includes.h"
 
 class HierarchyWindow : public EditorWindow
 {
@@ -10,8 +11,9 @@ public:
 	void render();
 
 private:
-	void renderSearch();
-	void renderItems();
+	void renderSearch(ImDrawList& drawList);
+	void renderItems(ImDrawList& drawList);
+	void renderItem(ImDrawList& drawList);
 
 	char searchBuffer[128];
 };

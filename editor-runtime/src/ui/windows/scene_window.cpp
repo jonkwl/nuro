@@ -1,5 +1,4 @@
 #include "scene_window.h"
-#include "window_includes.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtc/type_ptr.hpp>

@@ -1,5 +1,4 @@
 #include "hierarchy_window.h"
-#include "window_includes.h"
 
 #include "../core/ecs/ecs_collection.h"
 
@@ -11,26 +10,28 @@ void HierarchyWindow::render()
 {
 	ImGui::Begin(UIUtils::windowTitle("Hierarchy"), nullptr, EditorUI::getWindowFlags().fixed);
 
+	// Get draw list
+	ImDrawList& drawList = *ImGui::GetWindowDrawList();
+
 	UIComponents::headline("Hierarchy", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
 
-	renderSearch();
-	renderItems();
+	renderSearch(drawList);
+	renderItems(drawList);
 
 	ImGui::End();
 }
 
-void HierarchyWindow::renderSearch()
+void HierarchyWindow::renderSearch(ImDrawList& drawList)
 {
-	UIComponents::space(0.0f, 10.0f);
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 	if (ImGui::InputTextWithHint("##Search", "Search...", searchBuffer, IM_ARRAYSIZE(searchBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
 		Log::printWarning("Hierarchy Window", "Search not implemented yet");
 	}
 	ImGui::PopItemWidth();
-	UIComponents::space(0.0f, 10.0f);
+	UIComponents::space(0.0f, 5.0f);
 }
 
-void HierarchyWindow::renderItems()
+void HierarchyWindow::renderItems(ImDrawList& drawList)
 {
 
 	auto transforms = ECS::registry.view<TransformComponent>();
@@ -46,5 +47,10 @@ void HierarchyWindow::renderItems()
 		}
 
 	}
+
+}
+
+void HierarchyWindow::renderItem(ImDrawList& drawList)
+{
 
 }

@@ -8,37 +8,9 @@
 #include "../core/time/time.h"
 #include "../core/diagnostics/diagnostics.h"
 
-std::deque<float> DiagnosticsWindow::fpsCache = std::deque<float>(100);
-float DiagnosticsWindow::fpsUpdateTimer = 0.0f;
-
-ImVec4 lerpColors(const ImVec4& a, const ImVec4& b, float t)
+DiagnosticsWindow::DiagnosticsWindow() : fpsCache(std::deque<float>(100)),
+fpsUpdateTimer(0.0f)
 {
-	return ImVec4(
-		a.x + t * (b.x - a.x),
-		a.y + t * (b.y - a.y),
-		a.z + t * (b.z - a.z),
-		a.w + t * (b.w - a.w));
-}
-
-void sparkline(const char* id, const float* values, int count, float min_v, float max_v, int offset, const ImVec4& col, const ImVec2& size)
-{
-	ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
-	if (ImPlot::BeginPlot(id, size, ImPlotFlags_CanvasOnly))
-	{
-		ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-		ImPlot::SetupAxesLimits(0, count - 1, min_v, max_v, ImGuiCond_Always);
-		ImPlot::SetNextLineStyle(col);
-		ImPlot::SetNextFillStyle(col, 0.25);
-		ImPlot::PlotLine(id, values, count, 1, 0, ImPlotLineFlags_Shaded, offset);
-		ImPlot::EndPlot();
-	}
-	ImPlot::PopStyleVar();
-}
-
-float remap(float old_min, float old_max, float new_min, float new_max, float value)
-{
-	value = glm::clamp(value, old_min, old_max);
-	return new_min + (value - old_min) * (new_max - new_min) / (old_max - old_min);
 }
 
 void DiagnosticsWindow::render()
@@ -76,8 +48,9 @@ void DiagnosticsWindow::render()
 
 	ImVec4 low = ImVec4(1.0f, 0.0f, 0.5f, 1.0f);
 	ImVec4 high = ImVec4(0.0f, 1.0f, 0.5f, 1.0f);
-	ImVec4 color = lerpColors(low, high, remap(0.0f, maxValue, 0.0f, 1.0f, Diagnostics::getFps()));
-	sparkline("##spark", data, values, 0.0f, maxValue, 0.0f, color, ImVec2(120.0f, 40.0f));
+	ImVec4 color = UIUtils::lerpColors(low, high, remap(0.0f, maxValue, 0.0f, 1.0f, Diagnostics::getFps()));
+	ImVec2 size = ImVec2(120.0f, 40.0f);
+	UIComponents::sparklineGraph("##spark", data, values, 0.0f, maxValue, 0.0f, color, size);
 
 	delete[] data;
 
@@ -104,4 +77,10 @@ void DiagnosticsWindow::render()
 	UIComponents::indicatorLabel("UI Pass:", Profiler::get("ui_pass"), "ms");
 
 	ImGui::End();
+}
+
+float DiagnosticsWindow::remap(float old_min, float old_max, float new_min, float new_max, float value)
+{
+	value = glm::clamp(value, old_min, old_max);
+	return new_min + (value - old_min) * (new_max - new_min) / (old_max - old_min);
 }

@@ -1,5 +1,4 @@
 #include "game_window.h"
-#include "window_includes.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtc/type_ptr.hpp>
@@ -82,7 +81,7 @@ void GameWindow::renderGameView()
 
 	// Warn if camera isn't available
 	if (!pipeline.getCameraAvailable()) {
-		glm::vec4 color = glm::vec4(0.94f, 0.72f, 0.29f, 1.0f);
+		ImVec4 color = ImVec4(0.94f, 0.72f, 0.29f, 1.0f);
 		ImGui::SetCursorPosX(25.0f);
 		UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION, color, 1.0f);
 		ImGui::SetCursorPosX(45.0f);

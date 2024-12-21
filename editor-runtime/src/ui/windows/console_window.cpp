@@ -1,5 +1,4 @@
 #include "console_window.h"
-#include "window_includes.h"
 
 std::deque<ConsoleLog> ConsoleWindow::logs;
 std::vector<ConsoleLog> ConsoleWindow::logsToAdd;
@@ -15,6 +14,9 @@ void ConsoleWindow::render()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Console", nullptr, EditorUI::getWindowFlags().standard);
 	{
+		// Get draw list
+		ImDrawList& drawList = *ImGui::GetWindowDrawList();
+
 		// Get window size
 		ImVec2 windowSize = ImGui::GetContentRegionAvail();
 
@@ -53,7 +55,7 @@ void ConsoleWindow::render()
 
 			// Draw logs
 			for (int i = 0; i < logs.size(); i++) {
-				drawLog(logs[i]);
+				drawLog(drawList, logs[i]);
 			}
 
 			// Scroll to bottom if logs were added this frame and current scroll is almost at the bottom
@@ -72,7 +74,7 @@ void ConsoleWindow::render()
 		ImGui::SetCursorPosY(windowSize.y - latestLogTotalHeight - toolbarPaddingTop * 3 + latestLogPadding * 2);
 		ImGui::BeginChild("LatestLog", ImVec2(windowSize.x, latestLogTotalHeight));
 		{
-			drawLatestLog(latestLogHeight, latestLogPadding);
+			drawLatestLog(drawList, latestLogHeight, latestLogPadding);
 		}
 		ImGui::EndChild();
 	}
@@ -86,7 +88,7 @@ void ConsoleWindow::addLog(ConsoleLog log)
 	logsToAdd.push_back(log);
 }
 
-void ConsoleWindow::drawLog(ConsoleLog log)
+void ConsoleWindow::drawLog(ImDrawList& drawList, ConsoleLog log)
 {
 	// Evaluate log type
 	ImU32 textColor = IM_COL32(255, 255, 255, 255);
@@ -107,10 +109,6 @@ void ConsoleWindow::drawLog(ConsoleLog log)
 		break;
 	}
 
-	// Get draw list and io
-	ImDrawList* drawList = ImGui::GetWindowDrawList();
-	ImGuiIO& io = ImGui::GetIO();
-
 	// Set sizing
 	float elementPadding = 18.0f;
 	float originPaddingY = 6.0f;
@@ -123,34 +121,31 @@ void ConsoleWindow::drawLog(ConsoleLog log)
 	if (ImGui::IsMouseHoveringRect(p0, p1)) {
 		backgroundColor = UIUtils::lighten(backgroundColor, 0.1f);
 	}
-	drawList->AddRectFilled(p0, p1, backgroundColor);
+	drawList.AddRectFilled(p0, p1, backgroundColor);
 
 	// Draw content text with icon
 	ImVec2 contentPosition = ImVec2(p0.x + elementPadding, p0.y + elementPadding);
 	switch (log.type) {
 	case ConsoleLogType::MESSAGE:
-		drawList->AddText(contentPosition, textColor, messageIcon); break;
+		drawList.AddText(contentPosition, textColor, messageIcon); break;
 	case ConsoleLogType::WARNING:
-		drawList->AddText(contentPosition, textColor, warningIcon); break;
+		drawList.AddText(contentPosition, textColor, warningIcon); break;
 	case ConsoleLogType::ERROR:
-		drawList->AddText(contentPosition, textColor, errorIcon); break;
+		drawList.AddText(contentPosition, textColor, errorIcon); break;
 	}
-	drawList->AddText(ImVec2(contentPosition.x + ImGui::GetFontSize() + originPaddingY, contentPosition.y), textColor, log.content.c_str());
+	drawList.AddText(ImVec2(contentPosition.x + ImGui::GetFontSize() + originPaddingY, contentPosition.y), textColor, log.content.c_str());
 
 	// Draw origin text
 	ImVec2 originPosition = ImVec2(contentPosition.x, contentPosition.y + 20.0f);
 	ImU32 originColor = IM_COL32(255, 255, 255, 180);
-	drawList->AddText(originPosition, originColor, log.origin.c_str());
+	drawList.AddText(originPosition, originColor, log.origin.c_str());
 
 	// Advance cursor
 	ImGui::Dummy(ImVec2(0.0f, totalHeight));
 }
 
-void ConsoleWindow::drawLatestLog(float height, float padding)
+void ConsoleWindow::drawLatestLog(ImDrawList& drawList, float height, float padding)
 {
-	// Get draw list
-	ImDrawList* drawList = ImGui::GetWindowDrawList();
-
 	// Set sizing
 	float totalHeight = height + padding * 2;
 
@@ -158,7 +153,7 @@ void ConsoleWindow::drawLatestLog(float height, float padding)
 	ImVec2 p0 = ImGui::GetCursorScreenPos();
 	ImVec2 p1 = ImVec2(p0.x + ImGui::GetContentRegionAvail().x, p0.y + totalHeight + padding * 2);
 	ImU32 backgroundColor = IM_COL32(40, 40, 40, 255);
-	drawList->AddRectFilled(p0, p1, backgroundColor);
+	drawList.AddRectFilled(p0, p1, backgroundColor);
 
 	// Evaluate text
 	std::string originText = "";
@@ -173,6 +168,6 @@ void ConsoleWindow::drawLatestLog(float height, float padding)
 	float contentTextPaddingLeft = originText.empty() ? 0.0f : 4.0f;
 	ImVec2 originPosition = ImVec2(p0.x + padding, p0.y + padding);
 	ImVec2 contentPosition = ImVec2(originPosition.x + ImGui::CalcTextSize(originText.c_str()).x + contentTextPaddingLeft, originPosition.y);
-	drawList->AddText(EditorUI::getFonts().uiBold, ImGui::GetFontSize(), originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
-	drawList->AddText(contentPosition, IM_COL32(255, 255, 255, 255), contentText.c_str());
+	drawList.AddText(EditorUI::getFonts().uiBold, ImGui::GetFontSize(), originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
+	drawList.AddText(contentPosition, IM_COL32(255, 255, 255, 255), contentText.c_str());
 }

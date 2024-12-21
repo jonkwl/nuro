@@ -1,5 +1,4 @@
 #include "post_processing_window.h"
-#include "window_includes.h"
 
 PostProcessingWindow::PostProcessingWindow(PostProcessing::Profile& targetProfile) : targetProfile(targetProfile)
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <glm.hpp>
+#include <imgui.h>
 
 enum class HeadlineJustification
 {
@@ -10,39 +10,40 @@ enum class HeadlineJustification
 	RIGHT
 };
 
-class UIComponents
+namespace UIComponents
 {
-public:
-	static void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool zeroMargin = false);
-	static void tooltip(std::string tooltip);
-	static bool buttonBig(std::string label, std::string tooltip = "");
-	static void toggleButton(std::string label, bool& value, std::string tooltip = "");
+	void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool zeroMargin = false);
+	void tooltip(std::string tooltip);
+	bool buttonBig(std::string label, std::string tooltip = "");
+	void toggleButton(std::string label, bool& value, std::string tooltip = "");
 
-	static void label(std::string text);
-	static void label(std::string text, glm::vec4 color);
-	static void labelBold(std::string text);
-	static void labelBold(std::string text, glm::vec4 color);
-	static void labelSmall(std::string text);
-	static void labelSmall(std::string text, glm::vec4 color);
+	void label(std::string text);
+	void label(std::string text, ImVec4 color);
+	void labelBold(std::string text);
+	void labelBold(std::string text, ImVec4 color);
+	void labelSmall(std::string text);
+	void labelSmall(std::string text, ImVec4 color);
 
-	static void tryIcon(const char* icon, float yPadding = 2.5f);
-	static void tryIcon(const char* icon, glm::vec4 color, float yPadding = 2.5f);
+	void tryIcon(const char* icon, float yPadding = 2.5f);
+	void tryIcon(const char* icon, ImVec4 color, float yPadding = 2.5f);
 
-	static void input(std::string label, bool& value);
-	static void input(std::string label, int& value, float speed = 0.1f);
-	static void input(std::string label, float& value, float speed = 0.1f);
+	void input(std::string label, bool& value);
+	void input(std::string label, int& value, float speed = 0.1f);
+	void input(std::string label, float& value, float speed = 0.1f);
 
-	static void indicatorLabel(std::string label, std::string value, std::string additional = "");
-	static void indicatorLabel(std::string label, int value, std::string additional = "");
-	static void indicatorLabel(std::string label, unsigned int value, std::string additional = "");
-	static void indicatorLabel(std::string label, float value, std::string additional = "");
-	static void indicatorLabel(std::string label, double value, std::string additional = "");
+	void indicatorLabel(std::string label, std::string value, std::string additional = "");
+	void indicatorLabel(std::string label, int value, std::string additional = "");
+	void indicatorLabel(std::string label, unsigned int value, std::string additional = "");
+	void indicatorLabel(std::string label, float value, std::string additional = "");
+	void indicatorLabel(std::string label, double value, std::string additional = "");
 
-	static bool extendableSettings(std::string label, bool& value, const char* icon = "");
+	bool extendableSettings(std::string label, bool& value, const char* icon = "");
 
-	static void space(float width, float height);
+	void space(float width, float height);
 
-	static bool header(std::string label);
+	bool header(std::string label);
 
-	static void colorPicker(std::string label, float value[3]);
+	void colorPicker(std::string label, float value[3]);
+
+	void sparklineGraph(const char* id, const float* values, int count, float min_v, float max_v, int offset, const ImVec4& color, const ImVec2& size);
 };

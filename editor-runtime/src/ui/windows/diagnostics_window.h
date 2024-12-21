@@ -7,9 +7,13 @@
 class DiagnosticsWindow : public EditorWindow
 {
 public:
+	DiagnosticsWindow();
+
 	void render();
 
 private:
-	static std::deque<float> fpsCache;
-	static float fpsUpdateTimer;
+	std::deque<float> fpsCache;
+	float fpsUpdateTimer;
+
+	float remap(float old_min, float old_max, float new_min, float new_max, float value);
 };
