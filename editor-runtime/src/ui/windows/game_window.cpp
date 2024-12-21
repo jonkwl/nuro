@@ -30,7 +30,7 @@ void GameWindow::render()
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
 		UIComponents::space(0.0f, 14.0f);
-		UIComponents::headline("Game", ICON_FA_PLAY, HeadlineJustification::CENTER);
+		UIComponents::headline("Game", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER);
 
 		// Get game window size
 		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
@@ -50,12 +50,23 @@ void GameWindow::renderToolbar()
 {
 	bool tmp = false;
 
+	bool gameRunning = Runtime::gameRunning();
+
 	// Render toggle buttons for render options
 	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
-		UIComponents::toggleButton(ICON_FA_PLAY, tmp, "Play");
-		UIComponents::toggleButton(ICON_FA_PAUSE, tmp, "Pause");
-		UIComponents::toggleButton(ICON_FA_FORWARD_STEP, tmp, "Step");
+		if (gameRunning) {
+			UIComponents::toggleButton(ICON_FA_PAUSE, tmp, "Pause");
+			if (UIComponents::buttonBig(ICON_FA_STOP, "Stop")) {
+				Runtime::stopGame();
+			}
+			UIComponents::toggleButton(ICON_FA_FORWARD_STEP, tmp, "Step");
+		}
+		else {
+			if (UIComponents::buttonBig(ICON_FA_PLAY, "Play")) {
+				Runtime::startGame();
+			}
+		}
 	}
 	UILayout::endFlex();
 

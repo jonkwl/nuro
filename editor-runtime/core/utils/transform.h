@@ -16,4 +16,10 @@ namespace Transform
 	glm::vec3 up(TransformComponent& transform);
 	glm::vec3 down(TransformComponent& transform);
 
+	// Modulate rotation
+	void rotate(TransformComponent& transform, float degrees, glm::vec3 axis);
+	void rotateX(TransformComponent& transform, float degrees);
+	void rotateY(TransformComponent& transform, float degrees);
+	void rotateZ(TransformComponent& transform, float degrees);
+
 };

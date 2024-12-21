@@ -3,40 +3,29 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <map>
-
-#include <stb_image.h>
-#include <stb_image_write.h>
-
 #include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
-#include <gtc/quaternion.hpp>
 
-#include "../core/rendering/shader/shader.h"
-#include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/material/unlit/unlit_material.h"
-#include "../core/rendering/texture/texture.h"
-#include "../core/rendering/model/model.h"
-#include "../core/rendering/shadows/shadow_map.h"
-#include "../core/rendering/shadows/shadow_disk.h"
-#include "../core/rendering/primitives/quad.h"
-#include "../core/utils/log.h"
-#include "../core/diagnostics/profiler.h"
-#include "../core/input/input.h"
-#include "../core/rendering/core/transformation.h"
-#include "../core/viewport/viewport.h"
-#include "../core/rendering/skybox/cubemap.h"
-#include "../core/time/time.h"
-#include "../core/diagnostics/diagnostics.h"
-#include "../core/input/cursor.h"
-
-#include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
+#include "../src/ui/editor_ui.h"
+
+#include "../core/rendering/material/unlit/unlit_material.h"
+#include "../core/rendering/shadows/shadow_disk.h"
+#include "../core/rendering/shadows/shadow_map.h"
+#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/shader/shader_pool.h"
+#include "../core/rendering/texture/texture.h"
+#include "../core/rendering/shader/shader.h"
+#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/skybox/cubemap.h"
+#include "../core/rendering/model/model.h"
+
+#include "../core/diagnostics/diagnostics.h"
+#include "../core/diagnostics/profiler.h"
+#include "../core/viewport/viewport.h"
+#include "../core/input/cursor.h"
+#include "../core/input/input.h"
+#include "../core/time/time.h"
+#include "../core/utils/log.h"
 
 namespace Runtime {
 
@@ -51,6 +40,8 @@ namespace Runtime {
 	ShadowMap* _mainShadowMap = nullptr;
 
 	Skybox _defaultSkybox;
+
+	bool _gameRunning = false;
 
 	//
 	//
@@ -217,9 +208,20 @@ namespace Runtime {
 
 	void _finishFrame() {
 
-		// Sqap _window buffers and poll events
+		// Swap _window buffers and poll events
 		glfwSwapBuffers(_window);
 		glfwPollEvents();
+
+	}
+
+	void _stepGame() {
+
+		// Update game logic
+		update();
+
+		//
+		// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
+		//
 
 	}
 
@@ -250,12 +252,10 @@ namespace Runtime {
 			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
 			_prepareFrame();
 
-			// UPDATE GAME LOGIC
-			update();
-
-			//
-			// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
-			//
+			// UPDATE GAME IF GAME IS RUNNING
+			if (_gameRunning) {
+				_stepGame();
+			}
 
 			// RENDER NEXT FRAME (full render pipeline pass)
 			_renderShadows();
@@ -283,6 +283,29 @@ namespace Runtime {
 			glfwTerminate();
 		}
 		std::exit(0);
+	}
+
+	void startGame()
+	{
+		// perform awake logic
+		awake();
+
+		// set game running state
+		_gameRunning = true;
+	}
+
+	void stopGame()
+	{
+		// perform quit logic
+		quit();
+
+		// set game running state
+		_gameRunning = false;
+	}
+
+	bool gameRunning()
+	{
+		return _gameRunning;
 	}
 
 	SceneViewPipeline& getSceneViewPipeline()

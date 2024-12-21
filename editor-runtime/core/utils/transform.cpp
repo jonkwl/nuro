@@ -49,4 +49,20 @@ namespace Transform {
 		return down_vector;
 	}
 
+	void rotate(TransformComponent& transform, float degrees, glm::vec3 axis) {
+		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::normalize(axis)));
+	}
+
+	void rotateX(TransformComponent& transform, float degrees) {
+		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f)));
+	}
+
+	void rotateY(TransformComponent& transform, float degrees) {
+		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 1.0f, 0.0f)));
+	}
+
+	void rotateZ(TransformComponent& transform, float degrees) {
+		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f)));
+	}
+
 }

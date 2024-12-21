@@ -27,8 +27,17 @@ void setup() {
 }
 
 void awake() {
+	Log::printProcessInfo("Game Start");
+}
 
+void quit()
+{
+	Log::printProcessInfo("Game End");
 }
 
 void update() {
+	float delta = Time::deltaf();
+
+	TransformComponent& sphereTransform = ECS::getComponent<TransformComponent>(sphere);
+	Transform::rotateY(sphereTransform, 360.0f * delta);
 }

@@ -1,9 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <glm.hpp>
-#include <chrono>
-
 #include "../src/pipelines/scene_view_pipeline.h"
 #include "../src/pipelines/game_view_pipeline.h"
 
@@ -15,6 +11,11 @@ namespace Runtime
 	// Base functions
 	int32_t START_LOOP(); // Main loop 
 	void TERMINATE(); // Terminate and exit
+
+	// Game functions
+	void startGame();
+	void stopGame();
+	bool gameRunning();
 
 	// Pipelines getters
 	SceneViewPipeline& getSceneViewPipeline();
