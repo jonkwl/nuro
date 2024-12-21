@@ -9,7 +9,6 @@
 #include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 #include "../core/rendering/material/lit/lit_material.h"
-#include "../core/ecs/entity.h"
 
 class Skybox;
 
@@ -22,7 +21,7 @@ public:
 	void destroy(); // Destroys forward pass
 
 	// Scene view forward passes all entity render targets and returns color output
-	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, Entity* selected);
+	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint32_t selected);
 
 	void setSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
@@ -50,5 +49,5 @@ private:
 
 	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material); // Renders a given entities mesh
 
-	void renderSelectedEntity(Entity& entity, const glm::mat4& viewProjection); // Renders the selected entity with an outline
+	void renderSelectedEntity(uint32_t entity, const glm::mat4& viewProjection); // Renders the selected entity with an outline
 };

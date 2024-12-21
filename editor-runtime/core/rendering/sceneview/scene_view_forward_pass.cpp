@@ -111,7 +111,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, Entity* selected)
+unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint32_t selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -151,22 +151,16 @@ unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4
 	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 
-		// Render entities mesh if entity isnt the selected entity
-		// Needs to be optimized, boilerplate
-		if (selected) {
-			if (selected->getHandle() != entity) {
-				renderMesh(transform, renderer, defaultMaterial);
-			}
-		}
-		else {
-			renderMesh(transform, renderer, defaultMaterial);
-		}
+		// Skip if target entity is selected entity
+		if (selected == entity) continue;
+
+		renderMesh(transform, renderer, defaultMaterial);
 
 	}
 
 	// Render selected entity with outline
 	if (selected) {
-		renderSelectedEntity(*selected, viewProjection);
+		renderSelectedEntity(selected, viewProjection);
 	}
 
 	// Disable wireframe if enabled
@@ -226,10 +220,10 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 }
 
-void SceneViewForwardPass::renderSelectedEntity(Entity& entity, const glm::mat4& viewProjection)
+void SceneViewForwardPass::renderSelectedEntity(uint32_t entity, const glm::mat4& viewProjection)
 {
-	TransformComponent& transform = entity.getComponent<TransformComponent>();
-	MeshRendererComponent& renderer = entity.getComponent<MeshRendererComponent>();
+	TransformComponent& transform = ECS::getComponent<TransformComponent>(entity);
+	MeshRendererComponent& renderer = ECS::getComponent<MeshRendererComponent>(entity);
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer

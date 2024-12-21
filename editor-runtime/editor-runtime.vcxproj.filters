@@ -204,9 +204,6 @@
     <ClCompile Include="core\ecs\ecs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\ecs\entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ui\windows\hierarchy_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -687,9 +684,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\ecs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\ecs\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\hierarchy_window.h">

@@ -2,9 +2,19 @@
 
 namespace ECS {
 
-	entt::entity createEntity()
+	uint32_t createEntity()
 	{
 		return registry.create();
+	}
+
+	void destroyEntity(uint32_t entity)
+	{
+		registry.destroy(entity);
+	}
+
+	bool verifyEntity(uint32_t entity)
+	{
+		return registry.valid(entity);
 	}
 
 	std::optional<Camera> getLatestCamera() {
