@@ -1,21 +1,22 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
 struct CubemapFace
 {
 	std::vector<unsigned char> data;
-	int width;
-	int height;
-	int channels;
+	int32_t width;
+	int32_t height;
+	int32_t channels;
 };
 
 struct Image
 {
-	int width;
-	int height;
-	int channels;
+	int32_t width;
+	int32_t height;
+	int32_t channels;
 	unsigned char* data;
 };
 

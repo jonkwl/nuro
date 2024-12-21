@@ -4,8 +4,8 @@
 
 namespace Quad {
 
-	unsigned int _vbo = 0;
-	unsigned int _vao = 0;
+	uint32_t _vbo = 0;
+	uint32_t _vao = 0;
 
 	void create()
 	{
@@ -42,12 +42,12 @@ namespace Quad {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 
-	const unsigned int getVBO()
+	const uint32_t getVBO()
 	{
 		return _vbo;
 	}
 
-	const unsigned int getVAO()
+	const uint32_t getVAO()
 	{
 		return _vao;
 	}

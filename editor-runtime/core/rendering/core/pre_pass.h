@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <glm.hpp>
 
@@ -16,15 +17,15 @@ public:
 
 	void render(glm::mat4 viewProjection, glm::mat3 viewNormal);
 
-	unsigned int getDepthOutput();
-	unsigned int getNormalOutput();
+	uint32_t getDepthOutput();
+	uint32_t getNormalOutput();
 
 private:
 	const Viewport& viewport;
 
-	unsigned int fbo;
-	unsigned int depthOutput;
-	unsigned int normalOutput;
+	uint32_t fbo;
+	uint32_t depthOutput;
+	uint32_t normalOutput;
 
 	Shader* prePassShader;
 };

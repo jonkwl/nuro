@@ -99,10 +99,10 @@ void VelocityBuffer::destroy()
 	postfilterShader = nullptr;
 }
 
-unsigned int VelocityBuffer::render(const glm::mat4& view, const glm::mat4& projection, const PostProcessing::Profile& profile)
+uint32_t VelocityBuffer::render(const glm::mat4& view, const glm::mat4& projection, const PostProcessing::Profile& profile)
 {
 	// Prepare output
-	unsigned int OUTPUT = 0;
+	uint32_t OUTPUT = 0;
 
 	// Render velocity buffer
 	OUTPUT = velocityPass(view, projection);
@@ -113,7 +113,7 @@ unsigned int VelocityBuffer::render(const glm::mat4& view, const glm::mat4& proj
 	return OUTPUT;
 }
 
-unsigned int VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4& projection)
+uint32_t VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4& projection)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -159,7 +159,7 @@ unsigned int VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4
 	return output;
 }
 
-unsigned int VelocityBuffer::postfilteringPass()
+uint32_t VelocityBuffer::postfilteringPass()
 {
 	// Set render target to postfiltered output texture
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postfilteredOutput, 0);

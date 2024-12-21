@@ -109,7 +109,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for (int i = 0; i < shapeRenderStack.size(); i++)
+	for (int32_t i = 0; i < shapeRenderStack.size(); i++)
 	{
 		// Get gizmo rendering target
 		ShapeRenderTarget gizmo = shapeRenderStack[i];
@@ -141,7 +141,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		}
 
 		// Render each mesh
-		for (int i = 0; i < model->meshes.size(); i++)
+		for (int32_t i = 0; i < model->meshes.size(); i++)
 		{
 			Mesh& mesh = model->meshes[i];
 			glBindVertexArray(mesh.getVAO());
@@ -176,7 +176,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 	// Fill polygons
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	for (int i = 0; i < iconRenderStack.size(); i++)
+	for (int32_t i = 0; i < iconRenderStack.size(); i++)
 	{
 		// Get gizmo rendering target
 		IconRenderTarget gizmo = iconRenderStack[i];
@@ -222,7 +222,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		Model* model = getModel(Shape::PLANE);
 
 		// Render each mesh
-		for (int i = 0; i < model->meshes.size(); i++)
+		for (int32_t i = 0; i < model->meshes.size(); i++)
 		{
 			Mesh& mesh = model->meshes[i];
 			glBindVertexArray(mesh.getVAO());

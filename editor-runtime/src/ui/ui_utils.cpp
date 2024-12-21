@@ -26,7 +26,7 @@ namespace UIUtils {
 		b = fminf(b * factor, 1.0f);
 
 		// Convert back to ImU32 (with clamped RGB values)
-		return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | ((int)(b * 255)) | (color & 0xFF000000);
+		return ((int32_t)(r * 255) << 16) | ((int32_t)(g * 255) << 8) | ((int32_t)(b * 255)) | (color & 0xFF000000);
 	}
 
 	ImVec4 darken(ImVec4 color, float amount)
@@ -49,7 +49,7 @@ namespace UIUtils {
 		b = fmaxf(b * factor, 0.0f);
 
 		// Convert back to ImU32 (with clamped RGB values)
-		return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | ((int)(b * 255)) | (color & 0xFF000000);
+		return ((int32_t)(r * 255) << 16) | ((int32_t)(g * 255) << 8) | ((int32_t)(b * 255)) | (color & 0xFF000000);
 	}
 
 	ImVec4 lerpColors(const ImVec4& a, const ImVec4& b, float t)

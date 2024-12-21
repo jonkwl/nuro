@@ -10,7 +10,7 @@
 
 Viewport* LitMaterial::viewport = nullptr;
 TransformComponent* LitMaterial::cameraTransform = nullptr;
-unsigned int LitMaterial::ssaoInput = 0;
+uint32_t LitMaterial::ssaoInput = 0;
 PostProcessing::Profile* LitMaterial::profile = nullptr;
 bool LitMaterial::castShadows = true;
 ShadowDisk* LitMaterial::mainShadowDisk = nullptr;

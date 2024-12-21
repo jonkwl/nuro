@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <glm.hpp>
 #include <vector>
 
@@ -13,13 +14,13 @@ class SSAOPass
 public:
 	explicit SSAOPass(Viewport& viewport);
 
-	void create(float aoScale = 0.5f, int maxKernelSamples = 64, float noiseResolution = 4.0f);  // Create ambient occlusion pass
+	void create(float aoScale = 0.5f, int32_t maxKernelSamples = 64, float noiseResolution = 4.0f);  // Create ambient occlusion pass
 	void destroy(); // Destroy ambient occlusion pass
 
-	unsigned int render(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput); // Render ambient occlusion pass and return blurred output
+	uint32_t render(const glm::mat4& projection, const PostProcessing::Profile& profile, uint32_t depthInput, uint32_t normalInput); // Render ambient occlusion pass and return blurred output
 
-	unsigned int getOutputRaw(); // Returns ao output (raw ssao texture)
-	unsigned int getOutputProcessed(); // Returns blurred output (processed ssao texture)
+	uint32_t getOutputRaw(); // Returns ao output (raw ssao texture)
+	uint32_t getOutputProcessed(); // Returns blurred output (processed ssao texture)
 private:
 	enum TextureUnits
 	{
@@ -32,24 +33,24 @@ private:
 	Viewport& viewport;
 
 	float aoScale; // Scale of ambient occlusion resolution in relation to viewport resolution
-	int maxKernelSamples; // Amount of kernel samples being generated (therefore the max amount to be utilised)
+	int32_t maxKernelSamples; // Amount of kernel samples being generated (therefore the max amount to be utilised)
 	float noiseResolution; // Resolution of noise texture
 
-	unsigned int fbo;		   // Framebuffer
-	unsigned int aoOutput;	   // Ambient occlusion output
-	unsigned int blurredOutput; // Blurred ambient occlusion output
+	uint32_t fbo;		   // Framebuffer
+	uint32_t aoOutput;	   // Ambient occlusion output
+	uint32_t blurredOutput; // Blurred ambient occlusion output
 
-	void ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput);
+	void ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, uint32_t depthInput, uint32_t normalInput);
 	void blurPass(const PostProcessing::Profile& profile);
 
 	Shader* aoPassShader; // Ambient occlusion pass shader
 	Shader* aoBlurShader; // Composite shader
 
 	std::vector<glm::vec3> kernel; // Sample kernel
-	unsigned int noiseTexture;	  // Noise texture
+	uint32_t noiseTexture;	  // Noise texture
 
 	std::vector<glm::vec3> generateKernel(); // Generate sample kernel
-	unsigned int generateNoiseTexture();		// Generate noise texture
+	uint32_t generateNoiseTexture();		// Generate noise texture
 
 	float random();									// Get random
 	float lerp(float start, float end, float value); // Linear interpolation

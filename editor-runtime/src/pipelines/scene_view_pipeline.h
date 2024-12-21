@@ -24,10 +24,10 @@ public:
 
 	void render(); // Renders scene view
 
-	unsigned int getOutput(); // Returns color output from latest render
+	uint32_t getOutput(); // Returns color output from latest render
 
-	unsigned int getPrePassNormals(); // Returns normal output from latest pre pass render
-	unsigned int getPrePassDepth(); // Returns depth output from latest pre pass render
+	uint32_t getPrePassNormals(); // Returns normal output from latest pre pass render
+	uint32_t getPrePassDepth(); // Returns depth output from latest pre pass render
 
 	const Viewport& getViewport();
 	void resizeViewport(float width, float height);
@@ -39,7 +39,7 @@ public:
 	bool showGizmos;            // Enable or disable scene view gizmos
 	bool renderShadows;         // Enable or disable shadows
 
-	void updateMsaaSamples(unsigned int msaaSamples);
+	void updateMsaaSamples(uint32_t msaaSamples);
 
 	Camera& getFlyCamera();
 
@@ -54,7 +54,7 @@ private:
 	Viewport viewport;
 
 	// Render settings
-	unsigned int msaaSamples;   // MSAA Samples
+	uint32_t msaaSamples;   // MSAA Samples
 
 	// Post processing profile
 	PostProcessing::Profile defaultProfile; // Default scene view profile

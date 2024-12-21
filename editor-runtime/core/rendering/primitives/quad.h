@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace Quad
 {
 
@@ -7,7 +9,7 @@ namespace Quad
 	void bind();
 	void render();
 
-	const unsigned int getVBO();
-	const unsigned int getVAO();
+	const uint32_t getVBO();
+	const uint32_t getVAO();
 
 };

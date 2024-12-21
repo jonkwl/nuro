@@ -1,6 +1,6 @@
 #include "../src/runtime/runtime.h"
 
-int main()
+int32_t main()
 {
 	return Runtime::START_LOOP();
 }

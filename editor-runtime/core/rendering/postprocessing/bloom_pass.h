@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <glm.hpp>
 
@@ -12,18 +13,18 @@ class BloomPass
 public:
 	explicit BloomPass(const Viewport& viewport);
 
-	void create(const unsigned int mipDepth);
+	void create(const uint32_t mipDepth);
 	void destroy();
 
-	unsigned int render(const unsigned int hdrInput);
+	uint32_t render(const uint32_t hdrInput);
 
 	float threshold;
 	float softThreshold;
 	float filterRadius;
 
 private:
-	unsigned int prefilteringPass(const unsigned int hdrInput);
-	void downsamplingPass(const unsigned int hdrInput);
+	uint32_t prefilteringPass(const uint32_t hdrInput);
+	void downsamplingPass(const uint32_t hdrInput);
 	void upsamplingPass();
 
 private:
@@ -34,7 +35,7 @@ private:
 		glm::ivec2 iSize;
 		glm::vec2 fSize;
 		glm::vec2 inversedSize;
-		unsigned int texture;
+		uint32_t texture;
 	};
 	std::vector<Mip> mipChain;
 
@@ -42,8 +43,8 @@ private:
 	glm::vec2 fViewportSize;
 	glm::vec2 inversedViewportSize;
 
-	unsigned int framebuffer;
-	unsigned int prefilterOutput;
+	uint32_t framebuffer;
+	uint32_t prefilterOutput;
 
 	Shader* prefilterShader;
 	Shader* downsamplingShader;

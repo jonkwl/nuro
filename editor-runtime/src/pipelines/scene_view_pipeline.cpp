@@ -88,26 +88,26 @@ void SceneViewPipeline::render()
 	Profiler::start("pre_pass");
 	prePass.render(viewProjection, viewNormal);
 	Profiler::stop("pre_pass");
-	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
-	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
+	const uint32_t PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
+	const uint32_t PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
 
 	//
 	// SCREEN SPACE AMBIENT OCCLUSION PASS
 	// Calculate screen space ambient occlusion if enabled
 	//
 	Profiler::start("ssao");
-	unsigned int _ssaoOutput = 0;
+	uint32_t _ssaoOutput = 0;
 	if (targetProfile.ambientOcclusion.enabled)
 	{
 		_ssaoOutput = ssaoPass.render(projection, targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
-	const unsigned int SSAO_OUTPUT = _ssaoOutput;
+	const uint32_t SSAO_OUTPUT = _ssaoOutput;
 	Profiler::stop("ssao");
 
 	//
 	// VELOCITY BUFFER RENDER PASS (NONE)
 	//
-	const unsigned int VELOCITY_BUFFER_OUTPUT = 0;
+	const uint32_t VELOCITY_BUFFER_OUTPUT = 0;
 
 	//
 	// FORWARD PASS: Perform rendering for every object with materials, lighting etc.
@@ -128,7 +128,7 @@ void SceneViewPipeline::render()
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.setSkybox(Runtime::gameViewPipeline.getSkybox());
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
-	unsigned int FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0);
+	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0);
 	Profiler::stop("forward_pass");
 
 	//
@@ -142,17 +142,17 @@ void SceneViewPipeline::render()
 	Profiler::stop("render");
 }
 
-unsigned int SceneViewPipeline::getOutput()
+uint32_t SceneViewPipeline::getOutput()
 {
 	return postProcessingPipeline.getOutput();
 }
 
-unsigned int SceneViewPipeline::getPrePassNormals()
+uint32_t SceneViewPipeline::getPrePassNormals()
 {
 	return prePass.getNormalOutput();
 }
 
-unsigned int SceneViewPipeline::getPrePassDepth()
+uint32_t SceneViewPipeline::getPrePassDepth()
 {
 	return prePass.getDepthOutput();
 }
@@ -175,7 +175,7 @@ void SceneViewPipeline::resizeViewport(float width, float height)
 	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }
 
-void SceneViewPipeline::updateMsaaSamples(unsigned int _msaaSamples)
+void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
 {
 	// Set new msaa samples and recreate scene view forward pass
 	msaaSamples = _msaaSamples;

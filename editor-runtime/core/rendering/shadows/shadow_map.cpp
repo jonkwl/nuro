@@ -11,7 +11,7 @@
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs_collection.h"
 
-ShadowMap::ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far) : near(near),
+ShadowMap::ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight, float boundsWidth, float boundsHeight, float near, float far) : near(near),
 far(far),
 resolutionWidth(resolutionWidth),
 resolutionHeight(resolutionHeight),
@@ -94,23 +94,23 @@ void ShadowMap::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMap::bind(unsigned int unit)
+void ShadowMap::bind(uint32_t unit)
 {
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-unsigned int ShadowMap::getTexture() const
+uint32_t ShadowMap::getTexture() const
 {
 	return texture;
 }
 
-unsigned int ShadowMap::getResolutionWidth() const
+uint32_t ShadowMap::getResolutionWidth() const
 {
 	return resolutionWidth;
 }
 
-unsigned int ShadowMap::getResolutionHeight() const
+uint32_t ShadowMap::getResolutionHeight() const
 {
 	return resolutionHeight;
 }
@@ -125,7 +125,7 @@ float ShadowMap::getBoundsHeight() const
 	return boundsHeight;
 }
 
-unsigned int ShadowMap::getFramebuffer() const
+uint32_t ShadowMap::getFramebuffer() const
 {
 	return framebuffer;
 }
@@ -135,17 +135,17 @@ const glm::mat4& ShadowMap::getLightSpace() const
 	return lightSpace;
 }
 
-bool ShadowMap::saveAsImage(int width, int height, const std::string& filename)
+bool ShadowMap::saveAsImage(int32_t width, int32_t height, const std::string& filename)
 {
 	std::vector<float> depthData(width * height);
 	glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, &depthData[0]);
 	std::vector<unsigned char> depthImage(width * height);
-	for (int i = 0; i < width * height; ++i)
+	for (int32_t i = 0; i < width * height; ++i)
 	{
 		depthImage[i] = static_cast<unsigned char>(depthData[i] * 255.0f);
 	}
 	std::vector<unsigned char> flippedImage(width * height);
-	for (int y = 0; y < height; ++y)
+	for (int32_t y = 0; y < height; ++y)
 	{
 		memcpy(&flippedImage[y * width], &depthImage[(height - 1 - y) * width], width);
 	}

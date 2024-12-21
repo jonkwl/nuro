@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <glm.hpp>
 
@@ -17,20 +18,20 @@ public:
 	void create();	// Setup velocity buffer
 	void destroy(); // Delete velocity buffer
 
-	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const PostProcessing::Profile& profile); // Renders the velocity buffer and returns the filtered output
+	uint32_t render(const glm::mat4& view, const glm::mat4& projection, const PostProcessing::Profile& profile); // Renders the velocity buffer and returns the filtered output
 
 private:
-	unsigned int velocityPass(const glm::mat4& view, const glm::mat4& projection);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
-	unsigned int postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
+	uint32_t velocityPass(const glm::mat4& view, const glm::mat4& projection);	  // Performs velocity passes to render velocity buffer and returns velocity buffer
+	uint32_t postfilteringPass(); // Performs postfiltering pass on rendered velocity buffer and returns postfiltered velocity buffer
 
 private:
 	const Viewport& viewport;
 
-	unsigned int fbo; // Framebuffer
-	unsigned int rbo; // Renderbuffer
+	uint32_t fbo; // Framebuffer
+	uint32_t rbo; // Renderbuffer
 
-	unsigned int output;			 // Rendered velocity buffer
-	unsigned int postfilteredOutput; // Postfilter passed velocity buffer
+	uint32_t output;			 // Rendered velocity buffer
+	uint32_t postfilteredOutput; // Postfilter passed velocity buffer
 	// Postfilter applies morphological dilation on velocity buffer to decrease silhouettes
 
 	Shader* velocityPassShader; // Shader for velocity pass

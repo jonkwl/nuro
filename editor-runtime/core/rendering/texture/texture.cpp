@@ -9,7 +9,7 @@ Texture::Texture() : backendId(0)
 {
 }
 
-void Texture::bind(unsigned int unit)
+void Texture::bind(uint32_t unit)
 {
 	// Bind texture to backend
 	glActiveTexture(GL_TEXTURE0 + unit);
@@ -23,7 +23,7 @@ void Texture::destroy()
 	backendId = 0;
 }
 
-unsigned int Texture::getBackendId()
+uint32_t Texture::getBackendId()
 {
 	return backendId;
 }
@@ -36,7 +36,7 @@ Texture Texture::empty()
 Texture Texture::load(std::string path, TextureType type)
 {
 	// Buffer for new texture id
-	unsigned int newId;
+	uint32_t newId;
 
 	// Start creating texture
 	Log::printProcessInfo("Loading texture " + path + "...");
@@ -52,7 +52,7 @@ Texture Texture::load(std::string path, TextureType type)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load image data
-	int width, height, channels;
+	int32_t width, height, channels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
@@ -116,11 +116,11 @@ Texture Texture::load(std::string path, TextureType type)
 	return Texture(newId);
 }
 
-Texture Texture::fromBackendId(unsigned int backendId)
+Texture Texture::fromBackendId(uint32_t backendId)
 {
 	return Texture(backendId);
 }
 
-Texture::Texture(unsigned int backendId) : backendId(backendId)
+Texture::Texture(uint32_t backendId) : backendId(backendId)
 {
 }  

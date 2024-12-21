@@ -24,7 +24,7 @@
 
 namespace EditorUI {
 
-	unsigned int _idCounter = 0;
+	uint32_t _idCounter = 0;
 	std::vector<EditorWindow*> _windows;
 	Sizing _sizing;
 	Colors _colors;
@@ -32,8 +32,8 @@ namespace EditorUI {
 	Fonts _fonts;
 
 	bool _overwriteCursor = false; // Overwrites the default imgui cursor
-	int _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
-	int _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
+	int32_t _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
+	int32_t _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
 	void setup()
 	{
@@ -202,7 +202,7 @@ namespace EditorUI {
 		ImGui::PopStyleVar(3);
 
 		/* RENDER ALL WINDOWS */
-		for (int i = 0; i < _windows.size(); i++)
+		for (int32_t i = 0; i < _windows.size(); i++)
 		{
 			_windows[i]->render();
 		}
@@ -244,14 +244,14 @@ namespace EditorUI {
 		return _fonts;
 	}
 
-	void EditorUI::setCursorType(int cursorType)
+	void EditorUI::setCursorType(int32_t cursorType)
 	{
 		// Overwrite cursor type for current frame
 		_overwriteCursor = true;
 		_overwriteCursorType = cursorType;
 	}
 
-	void setCursorMode(int cursorMode)
+	void setCursorMode(int32_t cursorMode)
 	{
 		// Overwrite cursor mode for current frame
 		_overwriteCursor = true;

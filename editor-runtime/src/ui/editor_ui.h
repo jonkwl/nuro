@@ -58,6 +58,6 @@ namespace EditorUI
 	const WindowFlags& getWindowFlags();
 	const Fonts& getFonts();
 
-	void setCursorType(int cursorType);
-	void setCursorMode(int cursorMode);
+	void setCursorType(int32_t cursorType);
+	void setCursorMode(int32_t cursorMode);
 };

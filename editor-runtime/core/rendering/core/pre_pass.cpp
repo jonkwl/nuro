@@ -122,13 +122,13 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	}
 }
 
-unsigned int PrePass::getDepthOutput()
+uint32_t PrePass::getDepthOutput()
 {
 	// Return pre pass depth output
 	return depthOutput;
 }
 
-unsigned int PrePass::getNormalOutput()
+uint32_t PrePass::getNormalOutput()
 {
 	// Return pre pass normal output
 	return normalOutput;

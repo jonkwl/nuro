@@ -77,7 +77,7 @@ void GameWindow::renderGameView()
 	// Prepare game view data
 	GameViewPipeline& pipeline = Runtime::gameViewPipeline;
 	bool availableCamera = pipeline.getCameraAvailable();
-	unsigned int output = pipeline.getOutput();
+	uint32_t output = pipeline.getOutput();
 
 	// Warn if camera isn't available
 	if (!pipeline.getCameraAvailable()) {

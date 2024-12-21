@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <glm.hpp>
 
@@ -16,21 +17,21 @@ public:
 	};
 
 public:
-	explicit Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex);
+	explicit Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex);
 
-	unsigned int getVAO();
-	unsigned int getVerticeCount();
-	unsigned int getIndiceCount();
+	uint32_t getVAO();
+	uint32_t getVerticeCount();
+	uint32_t getIndiceCount();
 
-	unsigned int getMaterialIndex();
+	uint32_t getMaterialIndex();
 
 private:
-	unsigned int vao;
-	unsigned int vbo;
-	unsigned int ebo;
+	uint32_t vao;
+	uint32_t vbo;
+	uint32_t ebo;
 
-	unsigned int nVertices;
-	unsigned int nIndices;
+	uint32_t nVertices;
+	uint32_t nIndices;
 
-	unsigned int materialIndex;
+	uint32_t materialIndex;
 };

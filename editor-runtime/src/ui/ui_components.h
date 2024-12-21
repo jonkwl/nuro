@@ -28,12 +28,12 @@ namespace UIComponents
 	void tryIcon(const char* icon, ImVec4 color, float yPadding = 2.5f);
 
 	void input(std::string label, bool& value);
-	void input(std::string label, int& value, float speed = 0.1f);
+	void input(std::string label, int32_t& value, float speed = 0.1f);
 	void input(std::string label, float& value, float speed = 0.1f);
 
 	void indicatorLabel(std::string label, std::string value, std::string additional = "");
-	void indicatorLabel(std::string label, int value, std::string additional = "");
-	void indicatorLabel(std::string label, unsigned int value, std::string additional = "");
+	void indicatorLabel(std::string label, int32_t value, std::string additional = "");
+	void indicatorLabel(std::string label, uint32_t value, std::string additional = "");
 	void indicatorLabel(std::string label, float value, std::string additional = "");
 	void indicatorLabel(std::string label, double value, std::string additional = "");
 
@@ -45,5 +45,5 @@ namespace UIComponents
 
 	void colorPicker(std::string label, float value[3]);
 
-	void sparklineGraph(const char* id, const float* values, int count, float min_v, float max_v, int offset, const ImVec4& color, const ImVec2& size);
+	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size);
 };

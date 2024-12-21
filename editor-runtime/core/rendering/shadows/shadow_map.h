@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <glm.hpp>
 
@@ -8,26 +9,26 @@
 class ShadowMap
 {
 public:
-	explicit ShadowMap(unsigned int resolutionWidth, unsigned int resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
+	explicit ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
 
 	void render();
-	void bind(unsigned int unit);
-	unsigned int getTexture() const;
+	void bind(uint32_t unit);
+	uint32_t getTexture() const;
 
-	unsigned int getResolutionWidth() const;
-	unsigned int getResolutionHeight() const;
+	uint32_t getResolutionWidth() const;
+	uint32_t getResolutionHeight() const;
 
 	float getBoundsWidth() const;
 	float getBoundsHeight() const;
 
-	unsigned int getFramebuffer() const;
+	uint32_t getFramebuffer() const;
 
 	const glm::mat4& getLightSpace() const;
 
 private:
 	// Shadow map resolution
-	unsigned int resolutionWidth;
-	unsigned int resolutionHeight;
+	uint32_t resolutionWidth;
+	uint32_t resolutionHeight;
 
 	// Shadow map projection near and far clipping
 	float near;
@@ -38,8 +39,8 @@ private:
 	float boundsHeight;
 
 	// Texture and framebuffer
-	unsigned int texture;
-	unsigned int framebuffer;
+	uint32_t texture;
+	uint32_t framebuffer;
 
 	// Cache for latest light space matrix
 	glm::mat4 lightSpace;
@@ -48,5 +49,5 @@ private:
 	Shader* shadowPassShader;
 
 private:
-	bool saveAsImage(int width, int height, const std::string& filename);
+	bool saveAsImage(int32_t width, int32_t height, const std::string& filename);
 };

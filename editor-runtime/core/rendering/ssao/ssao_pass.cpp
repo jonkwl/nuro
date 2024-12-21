@@ -22,7 +22,7 @@ noiseTexture(0)
 {
 }
 
-void SSAOPass::create(float aoScale, int maxKernelSamples, float noiseResolution)
+void SSAOPass::create(float aoScale, int32_t maxKernelSamples, float noiseResolution)
 {
 	// Set members
 	this->aoScale = aoScale;
@@ -40,7 +40,7 @@ void SSAOPass::create(float aoScale, int maxKernelSamples, float noiseResolution
 	aoPassShader->setInt("normalInput", NORMAL_UNIT);
 	aoPassShader->setInt("noiseTexture", NOISE_UNIT);
 	aoPassShader->setFloat("noiseSize", noiseResolution);
-	for (int i = 0; i < maxKernelSamples; ++i)
+	for (int32_t i = 0; i < maxKernelSamples; ++i)
 	{
 		aoPassShader->setVec3("samples[" + std::to_string(i) + "]", kernel[i]);
 	}
@@ -120,7 +120,7 @@ void SSAOPass::destroy() {
 	noiseTexture = 0;
 }
 
-unsigned int SSAOPass::render(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
+uint32_t SSAOPass::render(const glm::mat4& projection, const PostProcessing::Profile& profile, uint32_t depthInput, uint32_t normalInput)
 {
 	// Disable depth testing and culling
 	glDisable(GL_DEPTH_TEST);
@@ -145,17 +145,17 @@ unsigned int SSAOPass::render(const glm::mat4& projection, const PostProcessing:
 	return aoOutput; // tmp return raw ao output
 }
 
-unsigned int SSAOPass::getOutputRaw()
+uint32_t SSAOPass::getOutputRaw()
 {
 	return aoOutput;
 }
 
-unsigned int SSAOPass::getOutputProcessed()
+uint32_t SSAOPass::getOutputProcessed()
 {
 	return blurredOutput;
 }
 
-void SSAOPass::ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, unsigned int depthInput, unsigned int normalInput)
+void SSAOPass::ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, uint32_t depthInput, uint32_t normalInput)
 {
 	// Set render target to ao output
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aoOutput, 0);
@@ -164,7 +164,7 @@ void SSAOPass::ambientOcclusionPass(const glm::mat4& projection, const PostProce
 	glViewport(0, 0, viewport.width * aoScale, viewport.height * aoScale);
 
 	// Get current sample amount, make sure its not higher than the maximum sample amount
-	int nSamples = profile.ambientOcclusion.samples;
+	int32_t nSamples = profile.ambientOcclusion.samples;
 	if (nSamples > maxKernelSamples)
 	{
 		nSamples = maxKernelSamples;
@@ -224,7 +224,7 @@ std::vector<glm::vec3> SSAOPass::generateKernel()
 {
 	std::vector<glm::vec3> kernel;
 
-	for (int i = 0; i < maxKernelSamples; ++i)
+	for (int32_t i = 0; i < maxKernelSamples; ++i)
 	{
 		// Generate raw sample with random values
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, random());
@@ -247,19 +247,19 @@ std::vector<glm::vec3> SSAOPass::generateKernel()
 	return kernel;
 }
 
-unsigned int SSAOPass::generateNoiseTexture()
+uint32_t SSAOPass::generateNoiseTexture()
 {
 	// Generate noise samples
 	std::vector<glm::vec3> noiseSamples;
 
-	for (int i = 0; i < maxKernelSamples; i++)
+	for (int32_t i = 0; i < maxKernelSamples; i++)
 	{
 		glm::vec3 sample = glm::vec3(random() * 2.0f - 1.0f, random() * 2.0f - 1.0f, 0.0f);
 		noiseSamples.push_back(sample);
 	}
 
 	// Generate noise texture with noise samples
-	unsigned int output = 0;
+	uint32_t output = 0;
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, noiseResolution, noiseResolution, 0, GL_RGB, GL_FLOAT, &noiseSamples[0]);

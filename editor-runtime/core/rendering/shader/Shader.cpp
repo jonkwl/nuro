@@ -12,7 +12,7 @@ uniformCache()
 {
 	shaderName = name;
 
-	unsigned int vertex, fragment;
+	uint32_t vertex, fragment;
 
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vertex_src, nullptr);
@@ -55,9 +55,9 @@ void Shader::bind()
 
 void Shader::setBool(const std::string& name, bool value)
 {
-	glUniform1i(getUniformLocation(name), (int)value);
+	glUniform1i(getUniformLocation(name), (int32_t)value);
 }
-void Shader::setInt(const std::string& name, int value)
+void Shader::setInt(const std::string& name, int32_t value)
 {
 	glUniform1i(getUniformLocation(name), value);
 }
@@ -86,22 +86,22 @@ void Shader::setMatrix4(const std::string& name, glm::mat4 value)
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-int Shader::getUniformLocation(const std::string& name)
+int32_t Shader::getUniformLocation(const std::string& name)
 {
 	if (uniformCache.find(name) != uniformCache.end())
 	{
 		return uniformCache[name];
 	}
 
-	int location = glGetUniformLocation(id, name.c_str());
+	int32_t location = glGetUniformLocation(id, name.c_str());
 	uniformCache[name] = location;
 
 	return location;
 }
 
-bool Shader::shader_compiled(std::string type, int shader)
+bool Shader::shader_compiled(std::string type, int32_t shader)
 {
-	int success;
+	int32_t success;
 	char shader_log[512];
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
@@ -113,9 +113,9 @@ bool Shader::shader_compiled(std::string type, int shader)
 	return true;
 }
 
-bool Shader::program_linked(int program)
+bool Shader::program_linked(int32_t program)
 {
-	int success;
+	int32_t success;
 	char shader_log[512];
 	glGetProgramiv(program, GL_COMPILE_STATUS, &success);
 	if (!success)

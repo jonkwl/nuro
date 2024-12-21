@@ -8,10 +8,10 @@
 
 namespace UIComponents {
 
-	std::string _formatInteger(int number)
+	std::string _formatInteger(int32_t number)
 	{
 		std::string numStr = std::to_string(number);
-		int insertPosition = numStr.length() - 3;
+		int32_t insertPosition = numStr.length() - 3;
 
 		while (insertPosition > 0)
 		{
@@ -171,7 +171,7 @@ namespace UIComponents {
 		UILayout::endFlex();
 	}
 
-	void input(std::string label, int& value, float speed)
+	void input(std::string label, int32_t& value, float speed)
 	{
 		UILayout::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
 		ImGui::Text(label.c_str());
@@ -204,12 +204,12 @@ namespace UIComponents {
 		}
 	}
 
-	void indicatorLabel(std::string label, int value, std::string additional)
+	void indicatorLabel(std::string label, int32_t value, std::string additional)
 	{
 		indicatorLabel(label, _formatInteger(value).c_str(), additional);
 	}
 
-	void indicatorLabel(std::string label, unsigned int value, std::string additional)
+	void indicatorLabel(std::string label, uint32_t value, std::string additional)
 	{
 		indicatorLabel(label, _formatInteger(value).c_str(), additional);
 	}
@@ -288,7 +288,7 @@ namespace UIComponents {
 		}
 	}
 
-	void sparklineGraph(const char* id, const float* values, int count, float min_v, float max_v, int offset, const ImVec4& color, const ImVec2& size)
+	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size)
 	{
 		ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
 		if (ImPlot::BeginPlot(id, size, ImPlotFlags_CanvasOnly))

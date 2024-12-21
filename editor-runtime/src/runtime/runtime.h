@@ -31,7 +31,7 @@ class ShadowMap;
 class Runtime
 {
 public:
-	static int START_LOOP(); // Main loop 
+	static int32_t START_LOOP(); // Main loop 
 	static void TERMINATE(); // Terminate and exit
 
 	// Context
@@ -61,5 +61,5 @@ private:
 	static void finishFrame(); // Call to finalize current frame
 
 	// Context callbacks
-	static void glfwErrorCallback(int error, const char* description);
+	static void glfwErrorCallback(int32_t error, const char* description);
 };

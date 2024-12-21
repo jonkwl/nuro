@@ -8,7 +8,7 @@
 
 #define M_PI 3.14159265358979323846
 
-ShadowDisk::ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigned int radius) : texture(0),
+ShadowDisk::ShadowDisk(uint32_t windowSize, uint32_t filterSize, uint32_t radius) : texture(0),
 windowSize(windowSize),
 filterSize(filterSize),
 radius(radius)
@@ -17,16 +17,16 @@ radius(radius)
 	std::vector<float> data;
 
 	// Generate sample disk texture data with random samples
-	int bufferSize = windowSize * windowSize * filterSize * filterSize * 2;
+	int32_t bufferSize = windowSize * windowSize * filterSize * filterSize * 2;
 	data.resize(bufferSize);
 	size_t index = 0;
-	for (int texY = 0; texY < windowSize; texY++)
+	for (int32_t texY = 0; texY < windowSize; texY++)
 	{
-		for (int texX = 0; texX < windowSize; texX++)
+		for (int32_t texX = 0; texX < windowSize; texX++)
 		{
-			for (int v = filterSize - 1; v >= 0; v--)
+			for (int32_t v = filterSize - 1; v >= 0; v--)
 			{
-				for (int u = 0; u < filterSize; u++)
+				for (int32_t u = 0; u < filterSize; u++)
 				{
 					float x = ((float)u + 0.5f + random()) / (float)filterSize;
 					float y = ((float)v + 0.5f + random()) / (float)filterSize;
@@ -40,7 +40,7 @@ radius(radius)
 	}
 
 	// Generate 3D sample disk texture
-	int nFilterSamples = filterSize * filterSize;
+	int32_t nFilterSamples = filterSize * filterSize;
 
 	// Generate texture
 	glGenTextures(1, &texture);
@@ -56,24 +56,24 @@ radius(radius)
 	glBindTexture(GL_TEXTURE_3D, 0);
 }
 
-void ShadowDisk::bind(unsigned int unit)
+void ShadowDisk::bind(uint32_t unit)
 {
 	// Bind shadow disk texture to given unit
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_3D, texture);
 }
 
-unsigned int ShadowDisk::getWindowSize()
+uint32_t ShadowDisk::getWindowSize()
 {
 	return windowSize;
 }
 
-unsigned int ShadowDisk::getFilterSize()
+uint32_t ShadowDisk::getFilterSize()
 {
 	return filterSize;
 }
 
-unsigned int ShadowDisk::getRadius()
+uint32_t ShadowDisk::getRadius()
 {
 	return radius;
 }

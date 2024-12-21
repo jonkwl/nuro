@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm.hpp>
+
 namespace GizmoColor
 {
 	static constexpr glm::vec3 RED = { 1.0f, 0.0f, 0.0f };

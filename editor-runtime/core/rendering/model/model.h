@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <glm.hpp>
 #include <assimp/scene.h>
@@ -13,10 +14,10 @@ public:
 
 	struct Metrics
 	{
-		unsigned int nMeshes = 0;	 // Total number of meshes in model
-		unsigned int nFaces = 0;	 // Total number of polygon faces in model
-		unsigned int nVertices = 0;	 // Total number of vertices in model
-		unsigned int nMaterials = 0; // Total number of materials in model
+		uint32_t nMeshes = 0;	 // Total number of meshes in model
+		uint32_t nFaces = 0;	 // Total number of polygon faces in model
+		uint32_t nVertices = 0;	 // Total number of vertices in model
+		uint32_t nMaterials = 0; // Total number of materials in model
 
 		glm::vec3 minPoint = glm::vec3(FLT_MAX); // Minimum vertex position (bounding box)
 		glm::vec3 maxPoint = glm::vec3(-FLT_MAX); // Maximum vertex position (bounding box)

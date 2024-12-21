@@ -43,7 +43,7 @@ void ConsoleWindow::render()
 		ImGui::BeginChild("Logs", ImVec2(windowSize.x, windowSize.y - toolbarHeight - latestLogTotalHeight * 2));
 		{
 			// Evaluate logs to add
-			for (int i = 0; i < logsToAdd.size(); i++) {
+			for (int32_t i = 0; i < logsToAdd.size(); i++) {
 				// Add new log
 				logs.push_back(logsToAdd[i]);
 
@@ -54,7 +54,7 @@ void ConsoleWindow::render()
 			}
 
 			// Draw logs
-			for (int i = 0; i < logs.size(); i++) {
+			for (int32_t i = 0; i < logs.size(); i++) {
 				drawLog(drawList, logs[i]);
 			}
 

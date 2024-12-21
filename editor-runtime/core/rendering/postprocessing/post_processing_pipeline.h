@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/texture/texture.h"
 #include "../core/rendering/postprocessing/motion_blur_pass.h"
@@ -16,12 +18,12 @@ public:
 	void create();	// Create post processing pipeline
 	void destroy(); // Destroy post processing pipeline
 
-	void render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput); // Render post processing by performing all post processing passes on input
+	void render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const uint32_t hdrInput, const uint32_t depthInput, const uint32_t velocityBufferInput); // Render post processing by performing all post processing passes on input
 
-	unsigned int getOutput(); // Get output of last post processing render
+	uint32_t getOutput(); // Get output of last post processing render
 
 private:
-	static constexpr int DEFAULT_BLOOM_MIP_DEPTH = 16;
+	static constexpr int32_t DEFAULT_BLOOM_MIP_DEPTH = 16;
 
 	enum TextureUnits
 	{
@@ -37,8 +39,8 @@ private:
 
 	void syncConfiguration(const PostProcessing::Profile& profile); // Sync the post processing configuration with final pass shader
 
-	unsigned int fbo;	 // Framebuffer
-	unsigned int output; // Post processing output
+	uint32_t fbo;	 // Framebuffer
+	uint32_t output; // Post processing output
 
 	Shader* finalPassShader; // Post processing final pass shader
 

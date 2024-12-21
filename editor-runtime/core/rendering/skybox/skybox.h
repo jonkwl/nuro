@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <glm.hpp>
@@ -19,9 +20,9 @@ public:
 	float emission;
 
 private:
-	unsigned int cubemapTexture;
-	unsigned int vao;
-	unsigned int vbo;
+	uint32_t cubemapTexture;
+	uint32_t vao;
+	uint32_t vbo;
 
 	void generate(Cubemap& cubemap);
 

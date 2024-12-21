@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <glm.hpp>
 #include <string>
 #include <unordered_map>
@@ -11,11 +12,11 @@ public:
 
 	void bind();
 
-	unsigned int getId() { return id; }
+	uint32_t getId() { return id; }
 	std::string getName() { return shaderName; }
 
 	void setBool(const std::string& name, bool value);
-	void setInt(const std::string& name, int value);
+	void setInt(const std::string& name, int32_t value);
 	void setFloat(const std::string& name, float value);
 	void setVec2(const std::string& name, glm::vec2 value);
 	void setVec3(const std::string& name, glm::vec3 value);
@@ -24,11 +25,11 @@ public:
 	void setMatrix4(const std::string& name, glm::mat4 value);
 
 private:
-	unsigned int id;
+	uint32_t id;
 	std::string shaderName;
-	std::unordered_map<std::string, int> uniformCache;
+	std::unordered_map<std::string, int32_t> uniformCache;
 
-	int getUniformLocation(const std::string& name);
-	bool shader_compiled(std::string type, int shader);
-	bool program_linked(int program);
+	int32_t getUniformLocation(const std::string& name);
+	bool shader_compiled(std::string type, int32_t shader);
+	bool program_linked(int32_t program);
 };

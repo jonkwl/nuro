@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
@@ -15,7 +16,7 @@ public:
 	void create();
 	void destroy();
 
-	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput);
+	uint32_t render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const uint32_t hdrInput, const uint32_t depthInput, const uint32_t velocityBufferInput);
 
 private:
 	enum TextureUnits
@@ -27,8 +28,8 @@ private:
 
 	const Viewport& viewport;
 
-	unsigned int fbo;
-	unsigned int output;
+	uint32_t fbo;
+	uint32_t output;
 
 	Shader* shader;
 

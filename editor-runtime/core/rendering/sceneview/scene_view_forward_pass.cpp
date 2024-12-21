@@ -25,7 +25,7 @@ defaultMaterial(nullptr)
 {
 }
 
-void SceneViewForwardPass::create(unsigned int msaaSamples)
+void SceneViewForwardPass::create(uint32_t msaaSamples)
 {
 	// Create outline material
 	selectionMaterial = new UnlitMaterial();
@@ -111,7 +111,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint32_t selected)
+uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint32_t selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);

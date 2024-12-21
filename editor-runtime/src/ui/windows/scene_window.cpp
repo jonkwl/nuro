@@ -92,7 +92,7 @@ void SceneWindow::renderToolbar()
 	{
 		UIComponents::space(1.0f, 0.0f);
 		UIComponents::tryIcon(ICON_FA_GAUGE);
-		UIComponents::label("Speed: " + std::to_string(static_cast<int>(movementSpeed)));
+		UIComponents::label("Speed: " + std::to_string(static_cast<int32_t>(movementSpeed)));
 	}
 	UILayout::endFlex();
 }
@@ -100,7 +100,7 @@ void SceneWindow::renderToolbar()
 void SceneWindow::renderSceneView()
 {
 	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline;
-	unsigned int output = pipeline.getOutput();
+	uint32_t output = pipeline.getOutput();
 
 	ImGui::BeginChild("SceneView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	{

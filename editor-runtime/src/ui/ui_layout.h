@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 struct ImVec2;
 
 enum class FlexType

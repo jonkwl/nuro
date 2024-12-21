@@ -4,7 +4,7 @@
 
 #include "../core/rendering/texture/texture.h"
 
-Mesh::Mesh(std::vector<VertexData> vertices, std::vector<unsigned int> indices, int materialIndex) : vao(0),
+Mesh::Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex) : vao(0),
 vbo(0),
 ebo(0),
 nVertices(vertices.size()),
@@ -25,7 +25,7 @@ materialIndex(materialIndex)
 
 	// Bind EBO, allocate its memory and send indice data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
 
 	// Set attributes for VAO
 	// Vertex position attribute (location = 0)
@@ -50,22 +50,22 @@ materialIndex(materialIndex)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-unsigned int Mesh::getVAO()
+uint32_t Mesh::getVAO()
 {
 	return vao;
 }
 
-unsigned int Mesh::getVerticeCount()
+uint32_t Mesh::getVerticeCount()
 {
 	return nVertices;
 }
 
-unsigned int Mesh::getIndiceCount()
+uint32_t Mesh::getIndiceCount()
 {
 	return nIndices;
 }
 
-unsigned int Mesh::getMaterialIndex()
+uint32_t Mesh::getMaterialIndex()
 {
 	return materialIndex;
 }

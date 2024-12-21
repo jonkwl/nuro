@@ -42,7 +42,7 @@ Image Cubemap::loadImage(std::string path)
 {
 	stbi_set_flip_vertically_on_load(false);
 
-	int width, height, channels;
+	int32_t width, height, channels;
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
@@ -72,14 +72,14 @@ void Cubemap::loadCubemapFaces(std::string cubemapPath)
 	Image image = loadImage(cubemapPath);
 
 	// Calculate dimensions of each face (assuming default 4x3 layout)
-	int faceWidth = image.width / 4;
-	int faceHeight = image.height / 3;
+	int32_t faceWidth = image.width / 4;
+	int32_t faceHeight = image.height / 3;
 
 	// Resize faces vector to hold 6 faces
 	faces.resize(6);
 
 	// Define offsets for each face
-	std::vector<std::pair<int, int>> offsets = {
+	std::vector<std::pair<int32_t, int32_t>> offsets = {
 		{2 * faceWidth, 1 * faceHeight}, // Positive X (Right)
 		{0 * faceWidth, 1 * faceHeight}, // Negative X (Left)
 		{1 * faceWidth, 0 * faceHeight}, // Positive Y (Top)
@@ -91,8 +91,8 @@ void Cubemap::loadCubemapFaces(std::string cubemapPath)
 	// Extract pixel data for each face
 	for (size_t i = 0; i < offsets.size(); ++i)
 	{
-		int xOffset = offsets[i].first;
-		int yOffset = offsets[i].second;
+		int32_t xOffset = offsets[i].first;
+		int32_t yOffset = offsets[i].second;
 
 		// Allocate memory for face data
 		faces[i].data.resize(faceWidth * faceHeight * image.channels);
@@ -101,12 +101,12 @@ void Cubemap::loadCubemapFaces(std::string cubemapPath)
 		faces[i].channels = image.channels;
 
 		// Copy pixel data for each face
-		for (int y = 0; y < faceHeight; ++y)
+		for (int32_t y = 0; y < faceHeight; ++y)
 		{
-			for (int x = 0; x < faceWidth; ++x)
+			for (int32_t x = 0; x < faceWidth; ++x)
 			{
-				int srcIndex = ((yOffset + y) * image.width + (xOffset + x)) * image.channels;
-				int dstIndex = (y * faceWidth + x) * image.channels;
+				int32_t srcIndex = ((yOffset + y) * image.width + (xOffset + x)) * image.channels;
+				int32_t dstIndex = (y * faceWidth + x) * image.channels;
 				memcpy(&faces[i].data[dstIndex], &image.data[srcIndex], image.channels);
 			}
 		}

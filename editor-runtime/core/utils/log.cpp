@@ -15,8 +15,8 @@ namespace Log
 	void _print(TextColor textColor, BackgroundColor bgColor, const std::string& text)
 	{
 		// Constructing the ANSI escape code
-		std::cout << "\033[" << static_cast<int>(textColor) << "m"
-			<< "\033[" << static_cast<int>(bgColor) << "m"
+		std::cout << "\033[" << static_cast<int32_t>(textColor) << "m"
+			<< "\033[" << static_cast<int32_t>(bgColor) << "m"
 			<< text
 			<< "\033[0m" << std::endl;
 	}

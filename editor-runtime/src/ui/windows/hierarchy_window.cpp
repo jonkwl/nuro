@@ -35,7 +35,7 @@ void HierarchyWindow::renderItems(ImDrawList& drawList)
 {
 
 	auto transforms = ECS::registry.view<TransformComponent>();
-	unsigned int i = 0;
+	uint32_t i = 0;
 	for (auto [entity, transform] : transforms.each()) {
 
 		i++;

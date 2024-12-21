@@ -26,7 +26,7 @@ defaultMaterial(nullptr)
 {
 }
 
-void ForwardPass::create(const unsigned int msaaSamples)
+void ForwardPass::create(const uint32_t msaaSamples)
 {
 	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &outputFbo);
@@ -108,7 +108,7 @@ void ForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
+uint32_t ForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -135,7 +135,7 @@ unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& project
 	// Bind pre pass shader
 	prePassShader->bind();
 	// Pre pass render each entity
-	for (int i = 0; i < entityStack.size(); i++) {
+	for (int32_t i = 0; i < entityStack.size(); i++) {
 		entityStack[i]->meshRenderer->prePass();
 	}
 	// Re-enable color writing after pre pass
@@ -172,7 +172,7 @@ unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& project
 	return outputColor;
 }
 
-unsigned int ForwardPass::getDepthOutput()
+uint32_t ForwardPass::getDepthOutput()
 {
 	return outputDepth;
 }

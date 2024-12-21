@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "../core/rendering/texture/texture.h"
 
 namespace PostProcessing
@@ -19,10 +21,10 @@ namespace PostProcessing
 
 		bool cameraEnabled = true;
 		float cameraIntensity = 0.8f;
-		int cameraSamples = 32;
+		int32_t cameraSamples = 32;
 
 		bool objectEnabled = false;
-		int objectSamples = 16;
+		int32_t objectSamples = 16;
 
 	};
 
@@ -45,7 +47,7 @@ namespace PostProcessing
 
 		bool enabled = true;
 		float intensity = 0.055f;
-		int iterations = 6;
+		int32_t iterations = 6;
 
 	};
 
@@ -64,7 +66,7 @@ namespace PostProcessing
 
 		bool enabled = false;
 		float radius = 0.2f;
-		int samples = 64;
+		int32_t samples = 64;
 		float power = 20.0f;
 		float bias = 0.03f;
 

@@ -56,7 +56,7 @@ GameViewPipeline Runtime::gameViewPipeline;
 //
 //
 
-int Runtime::START_LOOP()
+int32_t Runtime::START_LOOP()
 {
 	// CREATE CONTEXT AND LOAD GRAPHICS API //
 	Log::printProcessStart("Runtime", "Creating context...");
@@ -181,9 +181,9 @@ void Runtime::loadAssets() {
 	ShaderPool::loadAndCompile(shader_paths);
 
 	// Create shadow disk
-	unsigned int diskWindowSize = 4;
-	unsigned int diskFilterSize = 8;
-	unsigned int diskRadius = 5;
+	uint32_t diskWindowSize = 4;
+	uint32_t diskFilterSize = 8;
+	uint32_t diskRadius = 5;
 	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 	// Create default shadow map
@@ -276,7 +276,7 @@ void Runtime::finishFrame() {
 
 }
 
-void Runtime::glfwErrorCallback(int error, const char* description)
+void Runtime::glfwErrorCallback(int32_t error, const char* description)
 {
 
 	Log::printError("GLFW", "Error: " + std::to_string(error), description);

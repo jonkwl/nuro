@@ -1,21 +1,23 @@
 #pragma once
 
+#include <cstdint>
+
 class ShadowDisk
 {
 public:
-	explicit ShadowDisk(unsigned int windowSize, unsigned int filterSize, unsigned int radius);
-	void bind(unsigned int unit);
+	explicit ShadowDisk(uint32_t windowSize, uint32_t filterSize, uint32_t radius);
+	void bind(uint32_t unit);
 
-	unsigned int getWindowSize();
-	unsigned int getFilterSize();
-	unsigned int getRadius();
+	uint32_t getWindowSize();
+	uint32_t getFilterSize();
+	uint32_t getRadius();
 
 private:
 	float random();
 
-	unsigned int texture;
+	uint32_t texture;
 
-	unsigned int windowSize;
-	unsigned int filterSize;
-	unsigned int radius;
+	uint32_t windowSize;
+	uint32_t filterSize;
+	uint32_t radius;
 };

@@ -75,7 +75,7 @@ void Skybox::createTextures(Cubemap& cubemap)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
 	Log::printProcessInfo("Loading textures...");
-	for (int i = 0; i < cubemap.faces.size(); i++)
+	for (int32_t i = 0; i < cubemap.faces.size(); i++)
 	{
 		CubemapFace face = cubemap.faces[i];
 

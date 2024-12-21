@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <glm.hpp>
 
 #include "../imaterial.h"
@@ -23,7 +24,7 @@ public:
 	// Or rewrite matertial system for more modular and dynamic approach
 	static Viewport* viewport;
 	static TransformComponent* cameraTransform;
-	static unsigned int ssaoInput;
+	static uint32_t ssaoInput;
 	static PostProcessing::Profile* profile;
 	static bool castShadows;
 	static ShadowDisk* mainShadowDisk; // tmp until global shadow system

@@ -18,7 +18,7 @@ namespace GizmoIconPool {
 	{
 		Log::printProcessStart("Gizmo Icon Pool", "Loading icons from " + directoryPath);
 
-		unsigned int nLoaded = 0;
+		uint32_t nLoaded = 0;
 		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directoryPath, _validExtensions);
 		for (const auto& file : files) {
 			std::string filename = IOHandler::getFilenameRaw(file);

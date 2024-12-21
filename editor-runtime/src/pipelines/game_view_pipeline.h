@@ -22,12 +22,12 @@ public:
 
 	void render(); // Renders scene view
 
-	unsigned int getOutput(); // Returns color output from latest render
+	uint32_t getOutput(); // Returns color output from latest render
 
 	const Viewport& getViewport();
 	void resizeViewport(float width, float height);
 
-	void updateMsaaSamples(unsigned int msaaSamples);
+	void updateMsaaSamples(uint32_t msaaSamples);
 
 	PostProcessing::Profile& getProfile();
 
@@ -36,8 +36,8 @@ public:
 
 	bool getCameraAvailable();
 
-	unsigned int getSSAOOutput() const; // Returns the last ssao output
-	unsigned int getVelocityOutput() const; // Returns the velocity buffers last output
+	uint32_t getSSAOOutput() const; // Returns the last ssao output
+	uint32_t getVelocityOutput() const; // Returns the velocity buffers last output
 
 private:
 	void createPasses(); // Create all passes
@@ -49,7 +49,7 @@ private:
 	Skybox* skybox;
 
 	// Render settings
-	unsigned int msaaSamples; // MSAA Samples
+	uint32_t msaaSamples; // MSAA Samples
 
 	// Linked passes
 	PrePass prePass;
@@ -62,7 +62,7 @@ private:
 	bool cameraAvailable;
 
 	// Cached outputs
-	unsigned int ssaoOutput;
-	unsigned int velocityOutput;
+	uint32_t ssaoOutput;
+	uint32_t velocityOutput;
 };
 

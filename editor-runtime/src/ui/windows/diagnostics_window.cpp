@@ -21,9 +21,9 @@ void DiagnosticsWindow::render()
 
 	UIComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
 
-	const int values = 100;
+	const int32_t values = 100;
 	const float updateRate = 0.025f;
-	int maxValue = 1;
+	int32_t maxValue = 1;
 	if (fpsCache.size() > 0.0f)
 		maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
 

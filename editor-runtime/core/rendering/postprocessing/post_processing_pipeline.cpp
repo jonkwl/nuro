@@ -87,13 +87,13 @@ void PostProcessingPipeline::destroy()
 	finalPassShader = nullptr;
 }
 
-void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const unsigned int hdrInput, const unsigned int depthInput, const unsigned int velocityBufferInput)
+void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const PostProcessing::Profile& profile, const uint32_t hdrInput, const uint32_t depthInput, const uint32_t velocityBufferInput)
 {
 	// Disable any depth testing for whole post processing pass
 	glDisable(GL_DEPTH_TEST);
 
 	// Pass input through post processing pipeline
-	unsigned int POST_PROCESSING_PIPELINE_HDR = hdrInput;
+	uint32_t POST_PROCESSING_PIPELINE_HDR = hdrInput;
 
 	// Motion blur pass
 	if (profile.motionBlur.enabled)
@@ -103,7 +103,7 @@ void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& proj
 	}
 
 	// Seperate bloom pass
-	unsigned int BLOOM_PASS_OUTPUT = 0;
+	uint32_t BLOOM_PASS_OUTPUT = 0;
 	if (profile.bloom.enabled)
 	{
 		bloomPass.threshold = profile.bloom.threshold;
@@ -149,7 +149,7 @@ void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& proj
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-unsigned int PostProcessingPipeline::getOutput()
+uint32_t PostProcessingPipeline::getOutput()
 {
 	// Return output of post processing pipeline pass
 	return output;

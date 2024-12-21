@@ -21,21 +21,21 @@ namespace Cursor {
 		glfwSetCursorPos(_window, position.x, position.y);
 	}
 
-	void setType(int cursorType)
+	void setType(int32_t cursorType)
 	{
 		GLFWcursor* cursor = glfwCreateStandardCursor(cursorType);
 		glfwSetCursor(_window, cursor);
 		glfwDestroyCursor(cursor);
 	}
 
-	void setMode(int cursorMode)
+	void setMode(int32_t cursorMode)
 	{
 		glfwSetInputMode(_window, GLFW_CURSOR, cursorMode);
 	}
 
 	void center()
 	{
-		int windowWidth, windowHeight;
+		int32_t windowWidth, windowHeight;
 		glfwGetWindowSize(_window, &windowWidth, &windowHeight);
 		glm::vec2 cursorPosition = glm::vec2(windowWidth / 2.0f, windowHeight / 2.0f);
 		glfwSetCursorPos(_window, cursorPosition.x, cursorPosition.y);

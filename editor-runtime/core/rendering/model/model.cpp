@@ -35,7 +35,7 @@ void Model::resolveModel(std::string path)
 	Log::printProcessStart("Model", "Building model " + IOHandler::getFilename(path) + "...");
 
 	// Set model import flags
-	unsigned int importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+	uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
 	// Read file
 	Assimp::Importer import;
@@ -50,7 +50,7 @@ void Model::resolveModel(std::string path)
 
 	// Add all models materials
 	modelMaterials.reserve(scene->mNumMaterials);
-	for (int i = 0; i < scene->mNumMaterials; i++)
+	for (int32_t i = 0; i < scene->mNumMaterials; i++)
 	{
 		modelMaterials.push_back(scene->mMaterials[i]);
 	}
@@ -66,12 +66,12 @@ void Model::resolveModel(std::string path)
 
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
-	for (unsigned int i = 0; i < node->mNumMeshes; i++)
+	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		meshes.push_back(processMesh(mesh, scene));
 	}
-	for (unsigned int i = 0; i < node->mNumChildren; i++)
+	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
 		processNode(node->mChildren[i], scene);
 	}
@@ -83,10 +83,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	// Initialize mesh buffers
 	std::vector<Mesh::VertexData> vertices;
-	std::vector<unsigned int> indices;
-	unsigned int materialIndex;
+	std::vector<uint32_t> indices;
+	uint32_t materialIndex;
 
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+	for (uint32_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		Mesh::VertexData vertex;
 
@@ -116,10 +116,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		metrics.nVertices++;
 	}
 
-	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+	for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
+		for (uint32_t j = 0; j < face.mNumIndices; j++)
 		{
 			indices.push_back(face.mIndices[j]);
 		}
@@ -145,7 +145,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 void Model::addMeshToMetrics(std::vector<Mesh::VertexData> vertices)
 {
 	// Loop through all mesh vertices
-	for (int i = 0; i < vertices.size(); i++)
+	for (int32_t i = 0; i < vertices.size(); i++)
 	{
 		// Get current vertex
 		Mesh::VertexData vertex = vertices[i];

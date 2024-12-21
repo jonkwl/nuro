@@ -10,12 +10,12 @@ namespace Diagnostics {
 	float _averageFpsFrameCount = 0.0f; // Frame counter for average fps calculation
 	float _averageFpsElapsedTime = 0.0f; // Elapsed time since beginning of last fps period
 
-	unsigned int _currentDrawCalls = 0;
-	unsigned int _currentVertices = 0;
-	unsigned int _currentPolygons = 0;
+	uint32_t _currentDrawCalls = 0;
+	uint32_t _currentVertices = 0;
+	uint32_t _currentPolygons = 0;
 
-	unsigned int _nCPUEntities = 0;
-	unsigned int _nGPUEntities = 0;
+	uint32_t _nCPUEntities = 0;
+	uint32_t _nGPUEntities = 0;
 
 	void step()
 	{
@@ -54,52 +54,52 @@ namespace Diagnostics {
 		return _averageFps;
 	}
 
-	const unsigned int getCurrentDrawCalls()
+	const uint32_t getCurrentDrawCalls()
 	{
 		return _currentDrawCalls;
 	}
 
-	const unsigned int getCurrentVertices()
+	const uint32_t getCurrentVertices()
 	{
 		return _currentVertices;
 	}
 
-	const unsigned int getCurrentPolygons()
+	const uint32_t getCurrentPolygons()
 	{
 		return _currentPolygons;
 	}
 
-	const unsigned int getNEntitiesCPU()
+	const uint32_t getNEntitiesCPU()
 	{
 		return _nCPUEntities;
 	}
 
-	const unsigned int getNEntitiesGPU()
+	const uint32_t getNEntitiesGPU()
 	{
 		return _nGPUEntities;
 	}
 
-	const void addCurrentDrawCalls(const unsigned int increment)
+	const void addCurrentDrawCalls(const uint32_t increment)
 	{
 		_currentDrawCalls += increment;
 	}
 
-	const void addCurrentVertices(const unsigned int increment)
+	const void addCurrentVertices(const uint32_t increment)
 	{
 		_currentVertices += increment;
 	}
 
-	const void addCurrentPolygons(const unsigned int increment)
+	const void addCurrentPolygons(const uint32_t increment)
 	{
 		_currentPolygons += increment;
 	}
 
-	const void addNEntitiesCPU(const unsigned int increment)
+	const void addNEntitiesCPU(const uint32_t increment)
 	{
 		_nCPUEntities += increment;
 	}
 
-	const void addNEntitiesGPU(const unsigned int increment)
+	const void addNEntitiesGPU(const uint32_t increment)
 	{
 		_nGPUEntities += increment;
 	}

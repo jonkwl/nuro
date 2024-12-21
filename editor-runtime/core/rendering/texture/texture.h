@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 enum class TextureType
@@ -19,18 +20,18 @@ class Texture
 public:
 	Texture(); // Default constructor returning empty texture
 
-	void bind(unsigned int unit); // Bind texture for backend
+	void bind(uint32_t unit); // Bind texture for backend
 	void destroy(); // Delete texture in backend
 
-	unsigned int getBackendId(); // Returns the textures backend id
+	uint32_t getBackendId(); // Returns the textures backend id
 
 public:
 	static Texture empty(); // Get empty texture
 	static Texture load(std::string path, TextureType type); // Create texture of type from image data
-	static Texture fromBackendId(unsigned int backendId); // Create texture with existing backend texture attached
+	static Texture fromBackendId(uint32_t backendId); // Create texture with existing backend texture attached
 
 private:
-	explicit Texture(unsigned int backendId); // Construct texture class by backend texture id (0 for none)
+	explicit Texture(uint32_t backendId); // Construct texture class by backend texture id (0 for none)
 
-	unsigned int backendId; // Backend texture id
+	uint32_t backendId; // Backend texture id
 };

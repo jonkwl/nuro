@@ -97,17 +97,17 @@ namespace Input {
 		return glm::vec2(mouseX, mouseY);
 	}
 
-	bool keyDown(int key)
+	bool keyDown(int32_t key)
 	{
 		return glfwGetKey(_window, key) == GLFW_PRESS;
 	}
 
-	bool mouseDown(int mouseButton)
+	bool mouseDown(int32_t mouseButton)
 	{
 		return glfwGetMouseButton(_window, mouseButton) == GLFW_PRESS;
 	}
 
-	bool command(int key)
+	bool command(int32_t key)
 	{
 		return keyDown(Key::LEFT_CONTROL) && keyDown(key);
 	}

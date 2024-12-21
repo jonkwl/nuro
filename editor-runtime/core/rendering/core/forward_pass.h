@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <glm.hpp>
 
@@ -16,13 +17,13 @@ class ForwardPass
 public:
 	explicit ForwardPass(const Viewport& viewport);
 
-	void create(const unsigned int msaaSamples); // Creates forward pass
+	void create(const uint32_t msaaSamples); // Creates forward pass
 	void destroy(); // Destroys forward pass
 
 	// Forward passes all entity render targets and returns color output
-	unsigned int render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
+	uint32_t render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection);
 
-	unsigned int getDepthOutput(); // Returns depth output
+	uint32_t getDepthOutput(); // Returns depth output
 
 	void setSkybox(Skybox* source);
 	void disableSkybox();
@@ -38,13 +39,13 @@ private:
 	IMGizmo* imGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
 	glm::vec4 clearColor; // Clear color for forward pass
 
-	unsigned int outputFbo;	 // Output framebuffer
-	unsigned int outputColor; // Output texture
-	unsigned int outputDepth; // Output texture
+	uint32_t outputFbo;	 // Output framebuffer
+	uint32_t outputColor; // Output texture
+	uint32_t outputDepth; // Output texture
 
-	unsigned int multisampledFbo;		 // Anti-aliasing framebuffer
-	unsigned int multisampledRbo;		 // Anti-aliasing renderbuffer
-	unsigned int multisampledColorBuffer; // Anti-aliasing color buffer texture
+	uint32_t multisampledFbo;		 // Anti-aliasing framebuffer
+	uint32_t multisampledRbo;		 // Anti-aliasing renderbuffer
+	uint32_t multisampledColorBuffer; // Anti-aliasing color buffer texture
 
 	LitMaterial* defaultMaterial; // Some default material
 

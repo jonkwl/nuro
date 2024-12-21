@@ -17,13 +17,13 @@ namespace ShaderPool {
 		std::vector<std::string> shader_paths;
 		std::vector<std::string> shader_names;
 
-		for (int i = 0; i < paths.size(); i++)
+		for (int32_t i = 0; i < paths.size(); i++)
 		{
 
 			Log::printProcessInfo(paths[i] + ":");
 
 			std::vector<std::string> shaders_in_folder = IOHandler::getFolders(paths[i]);
-			for (int x = 0; x < shaders_in_folder.size(); x++)
+			for (int32_t x = 0; x < shaders_in_folder.size(); x++)
 			{
 
 				shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
@@ -33,7 +33,7 @@ namespace ShaderPool {
 		}
 
 		Log::printProcessState("ShaderPool", "Compiling shaders...");
-		for (int i = 0; i < shader_paths.size(); i++)
+		for (int32_t i = 0; i < shader_paths.size(); i++)
 		{
 			std::string vertex_code = IOHandler::readFile(shader_paths[i] + "/.vert");
 			std::string fragment_code = IOHandler::readFile(shader_paths[i] + "/.frag");
@@ -59,7 +59,7 @@ namespace ShaderPool {
 		auto it = std::find(_identifiers.begin(), _identifiers.end(), name);
 		if (it != _identifiers.end())
 		{
-			int index = std::distance(_identifiers.begin(), it);
+			int32_t index = std::distance(_identifiers.begin(), it);
 			return _shaders[index];
 		}
 		else

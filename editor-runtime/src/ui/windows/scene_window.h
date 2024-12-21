@@ -40,7 +40,7 @@ private:
 	glm::vec2 cursorLast; // Last mouse position
 	glm::vec2 cursorDelta; // Last mouse position
 
-	int gizmoOperation; // Last used gizmo operation
+	int32_t gizmoOperation; // Last used gizmo operation
 	float gizmoScaleMin; // Limit for downscaling an object with a gizmo
 
 	glm::vec3 cameraEulerAngles; // Cache for cameras euler angles

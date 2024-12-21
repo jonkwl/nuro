@@ -61,8 +61,8 @@ void GameViewPipeline::render()
 	Profiler::start("pre_pass");
 	prePass.render(viewProjection, viewNormal);
 	Profiler::stop("pre_pass");
-	const unsigned int PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
-	const unsigned int PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
+	const uint32_t PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
+	const uint32_t PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
 
 	//
 	// SCREEN SPACE AMBIENT OCCLUSION PASS
@@ -77,7 +77,7 @@ void GameViewPipeline::render()
 		ssaoOutput = ssaoPass.render(projection, profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 
-	const unsigned int SSAO_OUTPUT = ssaoOutput;
+	const uint32_t SSAO_OUTPUT = ssaoOutput;
 	Profiler::stop("ssao");
 
 	//
@@ -91,7 +91,7 @@ void GameViewPipeline::render()
 		velocityOutput = velocityBuffer.render(view, projection, profile);
 	}
 
-	const unsigned int VELOCITY_BUFFER_OUTPUT = velocityOutput;
+	const uint32_t VELOCITY_BUFFER_OUTPUT = velocityOutput;
 	Profiler::stop("velocity_buffer");
 
 	//
@@ -109,7 +109,7 @@ void GameViewPipeline::render()
 	LitMaterial::lightSpace = Runtime::mainShadowMap->getLightSpace();
 
 	Profiler::start("forward_pass");
-	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);
+	uint32_t FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);
 	Profiler::stop("forward_pass");
 
 	//
@@ -123,7 +123,7 @@ void GameViewPipeline::render()
 	Profiler::stop("render");
 }
 
-unsigned int GameViewPipeline::getOutput()
+uint32_t GameViewPipeline::getOutput()
 {
 	return postProcessingPipeline.getOutput();
 }
@@ -146,7 +146,7 @@ void GameViewPipeline::resizeViewport(float width, float height)
 	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }
 
-void GameViewPipeline::updateMsaaSamples(unsigned int _msaaSamples)
+void GameViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
 {
 	// Set new msaa samples and recreate scene view forward pass
 	msaaSamples = _msaaSamples;
@@ -175,12 +175,12 @@ bool GameViewPipeline::getCameraAvailable()
 	return cameraAvailable;
 }
 
-unsigned int GameViewPipeline::getSSAOOutput() const
+uint32_t GameViewPipeline::getSSAOOutput() const
 {
 	return ssaoOutput;
 }
 
-unsigned int GameViewPipeline::getVelocityOutput() const
+uint32_t GameViewPipeline::getVelocityOutput() const
 {
 	return velocityOutput;
 }

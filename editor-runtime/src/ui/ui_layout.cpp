@@ -32,7 +32,7 @@ ImVec2 UILayout::getFlexRowSize(float width, float height)
 	float contentWidth = ImGui::GetContentRegionAvail().x;
 	float rightPadding = windowWidth - contentWidth;
 	float fullWidth = windowWidth - rightPadding;
-	ImVec2 layoutSize = ImVec2((int)width == FULL_WIDTH ? fullWidth : width, height);
+	ImVec2 layoutSize = ImVec2((int32_t)width == FULL_WIDTH ? fullWidth : width, height);
 	return layoutSize;
 }
 

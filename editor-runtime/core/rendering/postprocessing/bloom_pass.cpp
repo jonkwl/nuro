@@ -23,7 +23,7 @@ upsamplingShader(nullptr)
 {
 }
 
-void BloomPass::create(const unsigned int mipDepth)
+void BloomPass::create(const uint32_t mipDepth)
 {
 	// Load shaders
 	prefilterShader = ShaderPool::get("bloom_prefilter");
@@ -48,7 +48,7 @@ void BloomPass::create(const unsigned int mipDepth)
 	inversedViewportSize = 1.0f / fViewportSize;
 
 	// Get initial viewport size
-	glm::ivec2 iMipSize = glm::ivec2((int)viewport.width, (int)viewport.height);
+	glm::ivec2 iMipSize = glm::ivec2((int32_t)viewport.width, (int32_t)viewport.height);
 	glm::vec2 fMipSize = glm::vec2((float)viewport.width, (float)viewport.height);
 
 	// Generate framebuffer
@@ -67,7 +67,7 @@ void BloomPass::create(const unsigned int mipDepth)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Generate all bloom mips
-	for (unsigned int i = 0; i < mipDepth; i++)
+	for (uint32_t i = 0; i < mipDepth; i++)
 	{
 		BloomPass::Mip mip;
 
@@ -97,7 +97,7 @@ void BloomPass::create(const unsigned int mipDepth)
 	// Set framebuffer attachments, set first mip to be the color attachment
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mipChain[0].texture, 0);
 
-	unsigned int fboAttachments[1] = {
+	uint32_t fboAttachments[1] = {
 		GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, fboAttachments);
 
@@ -137,13 +137,13 @@ void BloomPass::destroy()
 	upsamplingShader = nullptr;
 }
 
-unsigned int BloomPass::render(const unsigned int hdrInput)
+uint32_t BloomPass::render(const uint32_t hdrInput)
 {
 	// Bind bloom framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	// Perform prefiltering pass
-	unsigned int PREFILTERING_PASS_OUTPUT = prefilteringPass(hdrInput);
+	uint32_t PREFILTERING_PASS_OUTPUT = prefilteringPass(hdrInput);
 
 	// Perform downsampling pass
 	downsamplingPass(PREFILTERING_PASS_OUTPUT);
@@ -159,7 +159,7 @@ unsigned int BloomPass::render(const unsigned int hdrInput)
 	return mipChain[0].texture;
 }
 
-unsigned int BloomPass::prefilteringPass(const unsigned int hdrInput)
+uint32_t BloomPass::prefilteringPass(const uint32_t hdrInput)
 {
 	// Set prefilter uniforms
 	prefilterShader->bind();
@@ -181,7 +181,7 @@ unsigned int BloomPass::prefilteringPass(const unsigned int hdrInput)
 	return prefilterOutput;
 }
 
-void BloomPass::downsamplingPass(const unsigned int hdrInput)
+void BloomPass::downsamplingPass(const uint32_t hdrInput)
 {
 	// Set downsampling uniforms
 	downsamplingShader->bind();
@@ -192,7 +192,7 @@ void BloomPass::downsamplingPass(const unsigned int hdrInput)
 	glBindTexture(GL_TEXTURE_2D, hdrInput);
 
 	// Downsample through mip chain
-	for (int i = 0; i < mipChain.size(); i++)
+	for (int32_t i = 0; i < mipChain.size(); i++)
 	{
 		// Get current mip
 		const BloomPass::Mip& mip = mipChain[i];
@@ -229,7 +229,7 @@ void BloomPass::upsamplingPass()
 	glBlendEquation(GL_FUNC_ADD);
 
 	// Upsample through mip chain
-	for (int i = mipChain.size() - 1; i > 0; i--)
+	for (int32_t i = mipChain.size() - 1; i > 0; i--)
 	{
 		// Get current mip and target mip for current downsampling iteration
 		const BloomPass::Mip& mip = mipChain[i];
