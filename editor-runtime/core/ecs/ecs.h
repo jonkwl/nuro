@@ -2,18 +2,22 @@
 
 #include <cstdint>
 #include <entt.hpp>
-#include <tuple>
 #include <optional>
+#include <sstream>
 
+#include "../core/ecs/registry_state.h"
 #include "../core/ecs/composed.h"
 
 namespace ECS {
 
-	// Global registry
+	//
+	// GLOBAL REGISTRY
+	//
+
 	inline entt::basic_registry<uint32_t> registry;
 
 	//
-	// Entity related functions
+	// ENTITY RELATED FUNCTIONS
 	//
 
 	uint32_t createEntity();
@@ -41,9 +45,16 @@ namespace ECS {
 	}
 
 	//
-	// Helper functions
+	// HELPER FUNCTIONS
 	//
 
 	std::optional<Camera> getLatestCamera(); // Returns latest camera in register if existing
+
+	//
+	// SERIALIZATION FUNCTIONS
+	//
+
+	RegistryState captureState(); // Captures current state of registry
+	void loadState(RegistryState& state); // Loads given state into registry
 
 }

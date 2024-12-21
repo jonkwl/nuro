@@ -21,6 +21,7 @@
 
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/diagnostics/profiler.h"
+#include "../core/ecs/ecs_collection.h"
 #include "../core/viewport/viewport.h"
 #include "../core/input/cursor.h"
 #include "../core/input/input.h"
@@ -29,18 +30,24 @@
 
 namespace Runtime {
 
+	// Window context variables
 	GLFWwindow* _window = nullptr;
 	glm::vec2 _windowSize = glm::vec2(0.0f);
 	bool _fullscreen = true;
 
+	// Pipelines
 	SceneViewPipeline _sceneViewPipeline;
 	GameViewPipeline _gameViewPipeline;
 
+	// Shadow
 	ShadowDisk* _mainShadowDisk = nullptr;
 	ShadowMap* _mainShadowMap = nullptr;
 
+	// Default assets
 	Skybox _defaultSkybox;
 
+	// Game state management
+	RegistryState _sceneState;
 	bool _gameRunning = false;
 
 	//
@@ -287,20 +294,26 @@ namespace Runtime {
 
 	void startGame()
 	{
-		// perform awake logic
+		// Cache scene state
+		_sceneState = ECS::captureState();
+
+		// Perform awake logic
 		awake();
 
-		// set game running state
+		// Set game running state
 		_gameRunning = true;
 	}
 
 	void stopGame()
 	{
-		// perform quit logic
+		// Perform quit logic
 		quit();
 
-		// set game running state
+		// Set game running state
 		_gameRunning = false;
+
+		// Restore scene state
+		ECS::loadState(_sceneState);
 	}
 
 	bool gameRunning()

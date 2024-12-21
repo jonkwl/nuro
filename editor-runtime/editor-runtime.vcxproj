@@ -195,6 +195,7 @@
     <ClCompile Include="src\ui\windows\scene_window.cpp" />
     <ClCompile Include="core\misc\stb_image.cpp" />
     <ClCompile Include="src\ui\ui_utils.cpp" />
+    <ClCompile Include="core\ecs\registry_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\ecs\components.h" />
@@ -269,6 +270,7 @@
     <ClInclude Include="src\ui\windows\scene_window.h" />
     <ClInclude Include="src\ui\ui_utils.h" />
     <ClInclude Include="src\ui\windows\window_includes.h" />
+    <ClInclude Include="core\ecs\registry_state.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

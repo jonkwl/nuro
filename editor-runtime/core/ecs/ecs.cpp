@@ -26,4 +26,27 @@ namespace ECS {
 		return std::nullopt;
 	}
 
+	RegistryState captureState()
+	{
+		RegistryState state;
+		entt::basic_snapshot{ registry }
+			.get<uint32_t>(state)
+			.get<TransformComponent>(state)
+			.get<MeshRendererComponent>(state)
+			.get<CameraComponent>(state);
+
+		return state;
+	}
+
+	void loadState(RegistryState& state)
+	{
+		registry.clear();
+
+		entt::basic_snapshot_loader{ registry }
+			.get<uint32_t>(state)
+			.get<TransformComponent>(state)
+			.get<MeshRendererComponent>(state)
+			.get<CameraComponent>(state);
+	}
+
 }
