@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm.hpp>
+
 #include "../imaterial.h"
 
 #include "../core/rendering/postprocessing/post_processing.h"
@@ -26,6 +28,7 @@ public:
 	static bool castShadows;
 	static ShadowDisk* mainShadowDisk; // tmp until global shadow system
 	static ShadowMap* mainShadowMap; // tmp until global shadow system
+	static glm::mat4 lightSpace; // tmp until global shadow system
 
 	void bind();
 	Shader* getShader();

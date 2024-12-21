@@ -256,7 +256,7 @@ void SceneWindow::updateMovement()
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.15f; // 0.15f is a good factor to match movement speed
+		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.18f; // 0.18f is a good factor to match movement speed
 	}
 
 }

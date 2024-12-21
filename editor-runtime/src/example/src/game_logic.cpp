@@ -22,7 +22,7 @@ void awake() {
 	TransformComponent& cubeTransform = cube.addComponent<TransformComponent>();
 	MeshRendererComponent& cubeRenderer = cube.addComponent<MeshRendererComponent>(Model::load("../resources/primitives/cube.fbx")->meshes[0]);
 	cubeTransform.position.z = 10.0f;
-	cubeTransform.scale = glm::vec3(5.0f, 5.0f, 0.1f);
+	cubeTransform.scale = glm::vec3(8.0f, 8.0f, 0.1f);
 
 }
 

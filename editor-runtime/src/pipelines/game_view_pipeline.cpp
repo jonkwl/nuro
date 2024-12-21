@@ -8,6 +8,7 @@
 #include "../core/rendering/culling/bounding_volume.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/ecs/ecs_collection.h"
+#include "../core/rendering/shadows/shadow_map.h"
 
 #include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
@@ -105,6 +106,7 @@ void GameViewPipeline::render()
 	LitMaterial::castShadows = true;
 	LitMaterial::mainShadowDisk = Runtime::mainShadowDisk;
 	LitMaterial::mainShadowMap = Runtime::mainShadowMap;
+	LitMaterial::lightSpace = Runtime::mainShadowMap->getLightSpace();
 
 	Profiler::start("forward_pass");
 	unsigned int FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);

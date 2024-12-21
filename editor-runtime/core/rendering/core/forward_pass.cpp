@@ -163,7 +163,6 @@ unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& project
 		shader->setMatrix4("modelMatrix", transform.model);
 		glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
 		shader->setMatrix3("normalMatrix", normalMatrix);
-		// Handle light space
 
 		// Render mesh
 		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);

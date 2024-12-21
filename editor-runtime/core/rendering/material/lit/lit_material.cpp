@@ -15,6 +15,7 @@ PostProcessing::Profile* LitMaterial::profile = nullptr;
 bool LitMaterial::castShadows = true;
 ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
 ShadowMap* LitMaterial::mainShadowMap = nullptr;
+glm::mat4 LitMaterial::lightSpace = glm::mat4(1.0f);
 
 LitMaterial::LitMaterial() : shader(ShaderPool::get("lit")),
 tiling(1.0f, 1.0f),
@@ -51,6 +52,8 @@ void LitMaterial::bind()
 
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", castShadows);
+
+	shader->setMatrix4("lightSpaceMatrix", lightSpace);
 
 	mainShadowMap->bind(SHADOW_MAP_UNIT);
 	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(mainShadowMap->getResolutionWidth()));

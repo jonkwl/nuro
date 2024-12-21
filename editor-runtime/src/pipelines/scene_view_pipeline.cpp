@@ -6,6 +6,7 @@
 #include "../core/diagnostics/profiler.h"
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/culling/bounding_volume.h"
+#include "../core/rendering/shadows/shadow_map.h"
 
 #include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
@@ -120,6 +121,7 @@ void SceneViewPipeline::render()
 	LitMaterial::castShadows = renderShadows;
 	LitMaterial::mainShadowDisk = Runtime::mainShadowDisk;
 	LitMaterial::mainShadowMap = Runtime::mainShadowMap;
+	LitMaterial::lightSpace = Runtime::mainShadowMap->getLightSpace();
 
 	Profiler::start("forward_pass");
 	sceneViewForwardPass.wireframe = wireframe;
