@@ -22,3 +22,8 @@ bool Entity::isValid()
 {
 	return ECS::registry.valid(handle);
 }
+
+const entt::entity& Entity::getHandle() const
+{
+	return handle;
+}

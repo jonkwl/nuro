@@ -111,7 +111,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection)
+unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, Entity* selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -150,29 +150,24 @@ unsigned int SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4
 	// Render each entity
 	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
-		// Transform components model and mvp must have been calculated beforehand
 
-		// Bind mesh
-		glBindVertexArray(renderer.mesh.getVAO());
+		// Render entities mesh if entity isnt the selected entity
+		// Needs to be optimized, boilerplate
+		if (selected) {
+			if (selected->getHandle() != entity) {
+				renderMesh(transform, renderer, defaultMaterial);
+			}
+		}
+		else {
+			renderMesh(transform, renderer, defaultMaterial);
+		}
 
-		// Bind material
-		IMaterial* material = defaultMaterial; // implement new material system here
-		material->bind();
-
-		// Set shader uniforms
-		Shader* shader = material->getShader();
-		shader->setMatrix4("mvpMatrix", transform.mvp);
-		shader->setMatrix4("modelMatrix", transform.model);
-		glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
-		shader->setMatrix3("normalMatrix", normalMatrix);
-		// Handle light space
-
-		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
-	
+
 	// Render selected entity with outline
-	// renderSelectedEntity(..., ...);
+	if (selected) {
+		renderSelectedEntity(*selected, viewProjection);
+	}
 
 	// Disable wireframe if enabled
 	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -209,13 +204,39 @@ void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
 	imGizmo = source;
 }
 
-void SceneViewForwardPass::renderSelectedEntity(TransformComponent& transform, MeshRendererComponent& renderer)
+void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material)
 {
-	/*
+	// Transform components model and mvp must have been calculated beforehand
+	
+	// Bind mesh
+	glBindVertexArray(renderer.mesh.getVAO());
+
+	// Bind material
+	material->bind();
+
+	// Set shader uniforms
+	Shader* shader = material->getShader();
+	shader->setMatrix4("mvpMatrix", transform.mvp);
+	shader->setMatrix4("modelMatrix", transform.model);
+	glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
+	shader->setMatrix3("normalMatrix", normalMatrix);
+	// Handle light space
+
+	// Render mesh
+	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+}
+
+void SceneViewForwardPass::renderSelectedEntity(Entity& entity, const glm::mat4& viewProjection)
+{
+	TransformComponent& transform = entity.getComponent<TransformComponent>();
+	MeshRendererComponent& renderer = entity.getComponent<MeshRendererComponent>();
+
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
 	glStencilMask(0xFF); // Enable stencil writes
-	selected->meshRenderer.forwardPass();
+
+	// Render entities base mesh
+	renderMesh(transform, renderer, defaultMaterial);
 
 	// Render outline of selected entity
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // Pass if stencil value is NOT 1
@@ -228,23 +249,20 @@ void SceneViewForwardPass::renderSelectedEntity(TransformComponent& transform, M
 
 	// Temporarily increase scale for outline rendering
 	float scaleIncrease = 0.025f;
-	selected->transform.scale += scaleIncrease;
+	transform.scale += scaleIncrease;
 
-	// Temporarily overwrite all materials with selection material
-	std::vector<IMaterial*> originalMaterials = selected->meshRenderer.materials;
-	std::fill(selected->meshRenderer.materials.begin(), selected->meshRenderer.materials.end(), selectionMaterial);
+	// Recalculate entities transform matrices
+	transform.model = Transformation::model(transform);
+	transform.mvp = viewProjection * transform.model;
 
-	// Recalculate render matrices and render the outline entity
-	selected->meshRenderer.recalculateRenderMatrices();
-	selected->meshRenderer.forwardPass();
+	// Render mesh as outline
+	renderMesh(transform, renderer, selectionMaterial);
 
-	// Restore original materials, scale and position
-	selected->meshRenderer.materials = originalMaterials;
-	selected->transform.scale -= scaleIncrease;
+	// Restore entities original scale
+	transform.scale -= scaleIncrease;
 
 	// Reset state
 	glDisable(GL_BLEND);
 	glStencilMask(0xFF);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	*/
 }

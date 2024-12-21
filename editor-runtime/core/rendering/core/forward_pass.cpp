@@ -148,24 +148,7 @@ unsigned int ForwardPass::render(const glm::mat4& view, const glm::mat4& project
 	// Render each entity
 	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
-		// Transform components model and mvp must have been calculated beforehand
-
-		// Bind mesh
-		glBindVertexArray(renderer.mesh.getVAO());
-
-		// Bind material
-		IMaterial* material = defaultMaterial; // implement new material system here
-		material->bind();
-
-		// Set shader uniforms
-		Shader* shader = material->getShader();
-		shader->setMatrix4("mvpMatrix", transform.mvp);
-		shader->setMatrix4("modelMatrix", transform.model);
-		glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
-		shader->setMatrix3("normalMatrix", normalMatrix);
-
-		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		renderMesh(transform, renderer, defaultMaterial);
 	}
 
 	// Disable culling before rendering skybox
@@ -217,4 +200,25 @@ void ForwardPass::disableQuickGizmo()
 void ForwardPass::setClearColor(glm::vec4 _clearColor)
 {
 	clearColor = _clearColor;
+}
+
+void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material)
+{
+	// Transform components model and mvp must have been calculated beforehand
+	
+	// Bind mesh
+	glBindVertexArray(renderer.mesh.getVAO());
+
+	// Bind material
+	material->bind();
+
+	// Set shader uniforms
+	Shader* shader = material->getShader();
+	shader->setMatrix4("mvpMatrix", transform.mvp);
+	shader->setMatrix4("modelMatrix", transform.model);
+	glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
+	shader->setMatrix3("normalMatrix", normalMatrix);
+
+	// Render mesh
+	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 }

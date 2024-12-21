@@ -35,6 +35,8 @@ public:
 		ECS::registry.remove<T>(handle);
 	}
 
+	const entt::entity& getHandle() const;
+
 private:
 	entt::entity handle;
 };

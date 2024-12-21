@@ -5,7 +5,9 @@
 
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/imgizmo.h"
+#include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/lit/lit_material.h"
+#include "../core/ecs/components.h"
 
 class Skybox;
 
@@ -45,4 +47,6 @@ private:
 	unsigned int multisampledColorBuffer; // Anti-aliasing color buffer texture
 
 	LitMaterial* defaultMaterial; // Some default material
+
+	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material);
 };
