@@ -38,247 +38,271 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
 
-Skybox Runtime::defaultSkybox;
+namespace Runtime {
 
-GLFWwindow* Runtime::glfw = nullptr;
-glm::vec2 Runtime::windowSize;
-bool Runtime::fullscreen = true;
+	GLFWwindow* _window = nullptr;
+	glm::vec2 _windowSize = glm::vec2(0.0f);
+	bool _fullscreen = true;
 
-ShadowDisk* Runtime::mainShadowDisk = nullptr;
-ShadowMap* Runtime::mainShadowMap = nullptr;
+	SceneViewPipeline _sceneViewPipeline;
+	GameViewPipeline _gameViewPipeline;
 
-SceneViewPipeline Runtime::sceneViewPipeline;
-GameViewPipeline Runtime::gameViewPipeline;
+	ShadowDisk* _mainShadowDisk = nullptr;
+	ShadowMap* _mainShadowMap = nullptr;
 
-//
-//
-// RUNTIME BASE METHODS (START & TERMINATE)
-//
-//
+	Skybox _defaultSkybox;
 
-int32_t Runtime::START_LOOP()
-{
-	// CREATE CONTEXT AND LOAD GRAPHICS API //
-	Log::printProcessStart("Runtime", "Creating context...");
-	setupGlfw(); // Setup window
-	Log::printProcessDone("Runtime", "Context created");
+	//
+	//
+	// PRIVATE RUNTIME CORE METHODS
+	//
+	//
 
-	// LOAD ASSETS, COMPILE SHADERS
-	loadAssets();
-
-	// CALL ANY OTHER SCRIPTS NEEDING SETUP
-	setupScripts();
-
-	// PERFORM GAMES AWAKE LOGIC
-	awake();
-
-	while (!glfwWindowShouldClose(glfw))
+	void _glfwErrorCallback(int32_t error, const char* description)
 	{
-		// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
-		prepareFrame();
 
-		// UPDATE GAME LOGIC
-		update();
+		Log::printError("GLFW", "Error: " + std::to_string(error), description);
 
-		//
-		// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
-		//
-
-		// RENDER NEXT FRAME (full render pipeline pass)
-		renderShadows();
-		sceneViewPipeline.render();
-		gameViewPipeline.render();
-
-		// RENDER EDITOR
-		renderEditor();
-
-		// FINISH CURRENT FRAME
-		finishFrame();
 	}
 
-	// Exit application
+	void _setupGlfw() {
 
-	glfwTerminate();
-	return 0;
-}
+		// Set error callback and initialize context
+		glfwSetErrorCallback(_glfwErrorCallback);
+		glfwInit();
 
-void Runtime::TERMINATE()
-{
-	if (glfw != nullptr)
+		// Set versions
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		// Enable HDR output
+		glfwWindowHint(GLFW_RED_BITS, 10);
+		glfwWindowHint(GLFW_GREEN_BITS, 10);
+		glfwWindowHint(GLFW_BLUE_BITS, 10);
+		glfwWindowHint(GLFW_ALPHA_BITS, 2);
+
+		// Check for _fullscreen
+		if (_fullscreen)
+		{
+			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+
+			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+			_windowSize = glm::vec2(mode->width, mode->height);
+		}
+
+		// Create window
+		_window = glfwCreateWindow(_windowSize.x, _windowSize.y, "Rendering Alpha", nullptr, nullptr);
+
+		if (_window == nullptr)
+		{
+			Log::printError("GLFW", "Creation of window failed");
+		}
+
+		// Load graphics api
+		glfwMakeContextCurrent(_window);
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
+			Log::printError("GLFW", "Initialization of GLAD failed");
+		}
+
+		// Debug graphics api version
+		const char* version = (const char*)glGetString(GL_VERSION);
+		Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
+
+		// Disable vsync
+		glfwSwapInterval(0);
+	}
+
+	void _loadAssets() {
+
+		// Loading all shaders
+		std::vector<std::string> shader_paths = {
+			"../resources/shaders/materials",
+			"../resources/shaders/postprocessing",
+			"../resources/shaders/gizmo",
+			"../resources/shaders/passes" };
+		ShaderPool::loadAndCompile(shader_paths);
+
+		// Create shadow disk
+		uint32_t diskWindowSize = 4;
+		uint32_t diskFilterSize = 8;
+		uint32_t diskRadius = 5;
+		_mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
+
+		// Create default shadow map
+		bool shadow_map_saved = false;
+		_mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
+
+		// Create default skybox
+		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
+		_defaultSkybox = Skybox(defaultCubemap);
+
+		// Set default skybox as current skybox
+		_gameViewPipeline.setSkybox(&_defaultSkybox);
+
+		// Load gizmo icons
+		GizmoIconPool::loadAll("../resources/gizmos");
+	}
+
+	void _setupScripts() {
+
+		// Set context for scripts needing window context
+		Input::setContext(_window);
+		Cursor::setContext(_window);
+
+		// Setup pipelines
+		_sceneViewPipeline.setup();
+		_gameViewPipeline.setup();
+
+		// Create primitives
+		Quad::create();
+
+		// Setup engine ui
+		EditorUI::setup(_window);
+
+	}
+
+	void _prepareFrame() {
+
+		// Update time
+		Time::step(glfwGetTime());
+
+		// Update diagnostics
+		Diagnostics::step();
+
+		// Update input system
+		Input::step();
+
+		// Clear frame color
+		glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+	}
+
+	void _renderShadows()
 	{
-		glfwDestroyWindow(glfw);
+		// WARNING
+		// 
+		// Right now, the shadow passes will use the "current model matrix" from the mesh renderer.
+		// As the shadows will be rendered before the other rendering pipelines,
+		// which prepare the mesh renderer by among other things calculating and 
+		// settings its "current model matrix", the "current model matrix" will always be
+		// one frame delayed, ultimately delaying object movement for shadows by one frame
+		//
+		// Fix: Calculate transform matrices before rendering shadows
+
+		//
+		// SHADOW PASS
+		// Render shadow map
+		//
+		Profiler::start("shadow_pass");
+		_mainShadowMap->render();
+		Profiler::stop("shadow_pass");
+	}
+
+	void _renderEditor() {
+
+		Profiler::start("ui_pass");
+
+		EditorUI::newFrame();
+		EditorUI::render();
+
+		Profiler::stop("ui_pass");
+
+	}
+
+	void _finishFrame() {
+
+		// Sqap _window buffers and poll events
+		glfwSwapBuffers(_window);
+		glfwPollEvents();
+
+	}
+
+	//
+	//
+	// RUNTIME BASE METHODS (START & TERMINATE)
+	//
+	//
+
+	int32_t START_LOOP()
+	{
+		// CREATE CONTEXT AND LOAD GRAPHICS API //
+		Log::printProcessStart("Runtime", "Creating context...");
+		_setupGlfw(); // Setup window
+		Log::printProcessDone("Runtime", "Context created");
+
+		// LOAD ASSETS, COMPILE SHADERS
+		_loadAssets();
+
+		// CALL ANY OTHER SCRIPTS NEEDING SETUP
+		_setupScripts();
+
+		// PERFORM GAMES SETUP LOGIC
+		setup();
+
+		while (!glfwWindowShouldClose(_window))
+		{
+			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
+			_prepareFrame();
+
+			// UPDATE GAME LOGIC
+			update();
+
+			//
+			// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
+			//
+
+			// RENDER NEXT FRAME (full render pipeline pass)
+			_renderShadows();
+			_sceneViewPipeline.render();
+			_gameViewPipeline.render();
+
+			// RENDER EDITOR
+			_renderEditor();
+
+			// FINISH CURRENT FRAME
+			_finishFrame();
+		}
+
+		// Exit application
+
 		glfwTerminate();
+		return 0;
 	}
-	std::exit(0);
-}
 
-//
-//
-// PRIVATE RUNTIME CORE METHODS
-//
-//
-
-void Runtime::setupGlfw() {
-
-	// Set error callback and initialize context
-	glfwSetErrorCallback(glfwErrorCallback);
-	glfwInit();
-
-	// Set versions
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// Enable HDR output
-	glfwWindowHint(GLFW_RED_BITS, 10);
-	glfwWindowHint(GLFW_GREEN_BITS, 10);
-	glfwWindowHint(GLFW_BLUE_BITS, 10);
-	glfwWindowHint(GLFW_ALPHA_BITS, 2);
-
-	// Check for fullscreen
-	if (fullscreen)
+	void TERMINATE()
 	{
-		GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
-
-		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-		windowSize = glm::vec2(mode->width, mode->height);
+		if (_window != nullptr)
+		{
+			glfwDestroyWindow(_window);
+			glfwTerminate();
+		}
+		std::exit(0);
 	}
 
-	// Create window
-	glfw = glfwCreateWindow(windowSize.x, windowSize.y, "Rendering Alpha", nullptr, nullptr);
-
-	if (glfw == nullptr)
+	SceneViewPipeline& getSceneViewPipeline()
 	{
-		Log::printError("GLFW", "Creation of window failed");
+		return _sceneViewPipeline;
 	}
 
-	// Load graphics api
-	glfwMakeContextCurrent(glfw);
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	GameViewPipeline& getGameViewPipeline()
 	{
-		Log::printError("GLFW", "Initialization of GLAD failed");
+		return _gameViewPipeline;
 	}
 
-	// Debug graphics api version
-	const char* version = (const char*)glGetString(GL_VERSION);
-	Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
+	ShadowDisk* getMainShadowDisk()
+	{
+		return _mainShadowDisk;
+	}
 
-	// Disable vsync
-	glfwSwapInterval(0);
-}
-
-void Runtime::loadAssets() {
-
-	// Loading all shaders
-	std::vector<std::string> shader_paths = {
-		"../resources/shaders/materials",
-		"../resources/shaders/postprocessing",
-		"../resources/shaders/gizmo",
-		"../resources/shaders/passes" };
-	ShaderPool::loadAndCompile(shader_paths);
-
-	// Create shadow disk
-	uint32_t diskWindowSize = 4;
-	uint32_t diskFilterSize = 8;
-	uint32_t diskRadius = 5;
-	mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
-
-	// Create default shadow map
-	bool shadow_map_saved = false;
-	mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
-
-	// Create default skybox
-	Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
-	defaultSkybox = Skybox(defaultCubemap);
-
-	// Set default skybox as current skybox
-	gameViewPipeline.setSkybox(&defaultSkybox);
-
-	// Load gizmo icons
-	GizmoIconPool::loadAll("../resources/gizmos");
-}
-
-void Runtime::setupScripts() {
-
-	// Set context for scripts needed window context
-	Input::setContext(glfw);
-	Cursor::setContext(glfw);
-
-	// Setup pipelines
-	sceneViewPipeline.setup();
-	gameViewPipeline.setup();
-
-	// Create primitives
-	Quad::create();
-
-	// Setup engine ui
-	EditorUI::setup();
-
-}
-
-void Runtime::prepareFrame() {
-
-	// Update time
-	Time::step(glfwGetTime());
-
-	// Update diagnostics
-	Diagnostics::step();
-
-	// Update input system
-	Input::step();
-
-	// Clear frame color
-	glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-}
-
-void Runtime::renderShadows()
-{
-	// WARNING
-	// 
-	// Right now, the shadow passes will use the "current model matrix" from themesh renderer.
-	// As the shadows will be rendered before the other rendering pipelines,
-	// which prepare the mesh renderer by among other things calculating and 
-	// settings its "current model matrix", the "current model matrix" will always be
-	// one frame delayed, ultimately delaying object movement for shadows by one frame
-	//
-	// Needs fix
-	
-	//
-	// SHADOW PASS
-	// Render shadow map
-	//
-	Profiler::start("shadow_pass");
-	mainShadowMap->render();
-	Profiler::stop("shadow_pass");
-}
-
-void Runtime::renderEditor() {
-
-	Profiler::start("ui_pass");
-
-	EditorUI::newFrame();
-	EditorUI::render();
-
-	Profiler::stop("ui_pass");
-
-}
-
-void Runtime::finishFrame() {
-
-	// Sqap glfw buffers and poll events
-	glfwSwapBuffers(glfw);
-	glfwPollEvents();
-
-}
-
-void Runtime::glfwErrorCallback(int32_t error, const char* description)
-{
-
-	Log::printError("GLFW", "Error: " + std::to_string(error), description);
+	ShadowMap* getMainShadowMap()
+	{
+		return _mainShadowMap;
+	}
 
 }

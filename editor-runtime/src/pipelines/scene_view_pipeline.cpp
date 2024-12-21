@@ -67,7 +67,7 @@ void SceneViewPipeline::render()
 
 	// Select game profile if profile effects are enabled and not rendering wireframe
 	bool useDefaultProfile = !useProfileEffects || wireframe;
-	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewPipeline.getProfile();
+	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::getGameViewPipeline().getProfile();
 
 	// Get transformation matrices
 	view = Transformation::view(targetCamera.transform.position, targetCamera.transform.rotation);
@@ -119,14 +119,14 @@ void SceneViewPipeline::render()
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &targetProfile;
 	LitMaterial::castShadows = renderShadows;
-	LitMaterial::mainShadowDisk = Runtime::mainShadowDisk;
-	LitMaterial::mainShadowMap = Runtime::mainShadowMap;
-	LitMaterial::lightSpace = Runtime::mainShadowMap->getLightSpace();
+	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
+	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
+	LitMaterial::lightSpace = Runtime::getMainShadowMap()->getLightSpace();
 
 	Profiler::start("forward_pass");
 	sceneViewForwardPass.wireframe = wireframe;
 	sceneViewForwardPass.drawSkybox = showSkybox;
-	sceneViewForwardPass.setSkybox(Runtime::gameViewPipeline.getSkybox());
+	sceneViewForwardPass.setSkybox(Runtime::getGameViewPipeline().getSkybox());
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
 	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0);
 	Profiler::stop("forward_pass");

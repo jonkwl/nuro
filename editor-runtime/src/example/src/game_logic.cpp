@@ -7,7 +7,7 @@ uint32_t camera;
 uint32_t sphere;
 uint32_t cube;
 
-void awake() {
+void setup() {
 
 	camera = ECS::createEntity();
 	ECS::addComponent<TransformComponent>(camera);
@@ -23,6 +23,10 @@ void awake() {
 	MeshRendererComponent& cubeRenderer = ECS::addComponent<MeshRendererComponent>(cube, Model::load("../resources/primitives/cube.fbx")->meshes[0]);
 	cubeTransform.position.z = 10.0f;
 	cubeTransform.scale = glm::vec3(8.0f, 8.0f, 0.1f);
+
+}
+
+void awake() {
 
 }
 

@@ -104,9 +104,9 @@ void GameViewPipeline::render()
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &profile;
 	LitMaterial::castShadows = true;
-	LitMaterial::mainShadowDisk = Runtime::mainShadowDisk;
-	LitMaterial::mainShadowMap = Runtime::mainShadowMap;
-	LitMaterial::lightSpace = Runtime::mainShadowMap->getLightSpace();
+	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
+	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
+	LitMaterial::lightSpace = Runtime::getMainShadowMap()->getLightSpace();
 
 	Profiler::start("forward_pass");
 	uint32_t FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);

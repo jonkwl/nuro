@@ -74,7 +74,7 @@ void SceneWindow::render()
 
 void SceneWindow::renderToolbar()
 {
-	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline;
+	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 
 	// Render toggle buttons for render options
 	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
@@ -99,7 +99,7 @@ void SceneWindow::renderToolbar()
 
 void SceneWindow::renderSceneView()
 {
-	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline;
+	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 	uint32_t output = pipeline.getOutput();
 
 	ImGui::BeginChild("SceneView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -190,7 +190,7 @@ void SceneWindow::renderTransformGizmos()
 	const float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	// Draw transformation gizmo
-	ImGuizmo::Manipulate(glm::value_ptr(Runtime::sceneViewPipeline.getView()), glm::value_ptr(Runtime::sceneViewPipeline.getProjection()), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(model), nullptr, snapping ? snapValues : nullptr);
+	ImGuizmo::Manipulate(glm::value_ptr(Runtime::getSceneViewPipeline().getView()), glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(model), nullptr, snapping ? snapValues : nullptr);
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {
@@ -223,7 +223,7 @@ void SceneWindow::renderTransformGizmos()
 
 void SceneWindow::updateMovement()
 {
-	Camera& camera = Runtime::sceneViewPipeline.getFlyCamera();
+	Camera& camera = Runtime::getSceneViewPipeline().getFlyCamera();
 
 	// Get values needed
 	float deltaTime = Time::deltaf();

@@ -75,7 +75,7 @@ void GameWindow::renderToolbar()
 void GameWindow::renderGameView()
 {
 	// Prepare game view data
-	GameViewPipeline& pipeline = Runtime::gameViewPipeline;
+	GameViewPipeline& pipeline = Runtime::getGameViewPipeline();
 	bool availableCamera = pipeline.getCameraAvailable();
 	uint32_t output = pipeline.getOutput();
 

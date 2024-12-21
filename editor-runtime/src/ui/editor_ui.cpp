@@ -26,6 +26,7 @@ namespace EditorUI {
 
 	uint32_t _idCounter = 0;
 	std::vector<EditorWindow*> _windows;
+
 	Sizing _sizing;
 	Colors _colors;
 	WindowFlags _windowFlags;
@@ -35,7 +36,7 @@ namespace EditorUI {
 	int32_t _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
-	void setup()
+	void setup(GLFWwindow* window)
 	{
 		IMGUI_CHECKVERSION();
 
@@ -136,7 +137,7 @@ namespace EditorUI {
 		imguiColors[ImGuiCol_DockingEmptyBg] = _colors.elementActive;
 
 		// Initialize imgui backend
-		ImGui_ImplGlfw_InitForOpenGL(Runtime::glfw, true);
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 
 		// Create editor windows
@@ -146,7 +147,7 @@ namespace EditorUI {
 		GameWindow* gameWindow = new GameWindow();
 		_windows.push_back(gameWindow);
 
-		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::gameViewPipeline.getProfile());
+		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::getGameViewPipeline().getProfile());
 		_windows.push_back(postProcessingWindow);
 
 		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
