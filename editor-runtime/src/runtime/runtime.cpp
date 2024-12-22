@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
 #include <glm.hpp>
+#include <PxPhysicsAPI.h>
 
 #include "../src/example/src/game_logic.h"
 #include "../src/ui/editor_ui.h"
@@ -241,6 +241,92 @@ namespace Runtime {
 	//
 	//
 
+	using namespace physx;
+
+	static PxDefaultAllocator		gAllocator;
+	static PxDefaultErrorCallback	gErrorCallback;
+	static PxFoundation* gFoundation = NULL;
+	static PxPhysics* gPhysics = NULL;
+	static PxDefaultCpuDispatcher* gDispatcher = NULL;
+	static PxScene* gScene = NULL;
+	static PxMaterial* gMaterial = NULL;
+	static PxPvd* gPvd = NULL;
+
+	void _initPhysics()
+	{
+		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+		if (!gFoundation) {
+			Log::printError("Physics", "Failed to create PhysX Foundation.");
+			return;
+		}
+		else {
+			Log::printProcessInfo("PhysX Foundation created successfully.");
+		}
+
+		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+		if (!gPhysics) {
+			Log::printError("Physics", "Failed to create PhysX Physics object.");
+			return;
+		}
+		else {
+			Log::printProcessInfo("PhysX Physics object created successfully.");
+		}
+
+		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+		gDispatcher = PxDefaultCpuDispatcherCreate(2);
+		if (!gDispatcher) {
+			Log::printError("Physics", "Failed to create CPU Dispatcher.");
+			return;
+		}
+		else {
+			Log::printProcessInfo("CPU Dispatcher created successfully.");
+		}
+		sceneDesc.cpuDispatcher = gDispatcher;
+		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+
+		gScene = gPhysics->createScene(sceneDesc);
+		if (!gScene) {
+			Log::printError("Physics", "Failed to create PhysX Scene.");
+			return;
+		}
+		else {
+			Log::printProcessInfo("PhysX Scene created successfully.");
+		}
+
+		PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+		if (pvdClient) {
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+			Log::printProcessInfo("PVD Scene Client configured successfully.");
+		}
+		else {
+			Log::printError("Physics", "Failed to get PVD Scene Client.");
+		}
+
+		gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+		if (!gMaterial) {
+			Log::printError("Physics", "Failed to create material.");
+			return;
+		}
+		else {
+			Log::printProcessInfo("Material created successfully.");
+		}
+
+		PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial);
+		if (!groundPlane) {
+			Log::printError("Physics", "Failed to create ground plane.");
+			return;
+		}
+		else {
+			Log::printProcessInfo("Ground plane created successfully.");
+		}
+
+		gScene->addActor(*groundPlane);
+		Log::printProcessInfo("Ground plane added to the scene successfully.");
+	}
+
 	int32_t START_LOOP()
 	{
 		// CREATE CONTEXT AND LOAD GRAPHICS API //
@@ -256,6 +342,9 @@ namespace Runtime {
 
 		// PERFORM GAMES SETUP LOGIC
 		setup();
+
+		// tmp physics setup test
+		_initPhysics();
 
 		while (!glfwWindowShouldClose(_window))
 		{
