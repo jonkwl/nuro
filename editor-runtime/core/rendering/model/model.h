@@ -26,9 +26,8 @@ public:
 		float furthest = 0.0f;				  // Maximum distance of a vertice from object space center
 	};
 
-	bool castsShadow;
-	std::vector<Mesh> meshes;
-	Metrics getMetrics() const; // Returns the model metrics
+	Metrics getMetrics() const; // Returns models metrics
+	Mesh& getMesh(uint32_t index); // Returns models mesh at given index
 
 private:
 	explicit Model(std::string path);
@@ -37,6 +36,8 @@ private:
 
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+
+	std::vector<Mesh> meshes;
 
 	std::vector<aiMaterial*> modelMaterials;
 

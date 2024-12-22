@@ -8,6 +8,11 @@ mvp(glm::mat4(1.0f))
 {
 }
 
+Mesh nullMesh;
+MeshRendererComponent::MeshRendererComponent() : mesh(nullMesh)
+{
+}
+
 MeshRendererComponent::MeshRendererComponent(Mesh& mesh) : mesh(mesh)
 {
 }

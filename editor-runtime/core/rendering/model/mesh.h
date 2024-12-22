@@ -4,6 +4,14 @@
 #include <vector>
 #include <glm.hpp>
 
+struct MeshData {
+	MeshData();
+	MeshData(uint32_t nVertices, uint32_t nIndices);
+
+	uint32_t nVertices;
+	uint32_t nIndices;
+};
+
 class Mesh
 {
 public:
@@ -17,6 +25,7 @@ public:
 	};
 
 public:
+	Mesh();
 	explicit Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex);
 
 	uint32_t getVAO();
@@ -30,8 +39,7 @@ private:
 	uint32_t vbo;
 	uint32_t ebo;
 
-	uint32_t nVertices;
-	uint32_t nIndices;
+	MeshData meshData;
 
 	uint32_t materialIndex;
 };

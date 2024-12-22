@@ -4,7 +4,7 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 
-class Mesh;
+#include "../core/rendering/model/mesh.h"
 
 struct TransformComponent {
 
@@ -22,6 +22,7 @@ struct TransformComponent {
 
 struct MeshRendererComponent {
 
+	MeshRendererComponent();
 	MeshRendererComponent(Mesh& mesh);
 
 	Mesh& mesh; // Mesh render target

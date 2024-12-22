@@ -22,8 +22,12 @@ Model::Metrics Model::getMetrics() const
 	return metrics;
 }
 
-Model::Model(std::string path) : castsShadow(true),
-meshes(),
+Mesh& Model::getMesh(uint32_t index)
+{
+	return meshes[index];
+}
+
+Model::Model(std::string path) : meshes(),
 modelMaterials(),
 metrics()
 {

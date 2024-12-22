@@ -4,11 +4,28 @@
 
 #include "../core/rendering/texture/texture.h"
 
+MeshData::MeshData() : nVertices(0),
+nIndices(0)
+{
+}
+
+MeshData::MeshData(uint32_t nVertices, uint32_t nIndices) : nVertices(nVertices),
+nIndices(nIndices)
+{
+}
+
+Mesh::Mesh() : vao(0),
+vbo(0),
+ebo(0),
+meshData(),
+materialIndex(0)
+{
+}
+
 Mesh::Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex) : vao(0),
 vbo(0),
 ebo(0),
-nVertices(vertices.size()),
-nIndices(indices.size()),
+meshData(MeshData(vertices.size(), indices.size())),
 materialIndex(materialIndex)
 {
 	// Generate VAO, VBO and EBO
@@ -57,12 +74,12 @@ uint32_t Mesh::getVAO()
 
 uint32_t Mesh::getVerticeCount()
 {
-	return nVertices;
+	return meshData.nVertices;
 }
 
 uint32_t Mesh::getIndiceCount()
 {
-	return nIndices;
+	return meshData.nIndices;
 }
 
 uint32_t Mesh::getMaterialIndex()

@@ -12,11 +12,7 @@
 #include "../core/utils/log.h"
 
 // Global gizmo resources
-Shader* IMGizmo::fillShader = nullptr;
-Shader* IMGizmo::iconShader = nullptr;
-Model* IMGizmo::planeModel = nullptr;
-Model* IMGizmo::cubeModel = nullptr;
-Model* IMGizmo::sphereModel = nullptr;
+IMGizmo::StaticData IMGizmo::staticData;
 
 IMGizmo::IMGizmo() : color(glm::vec3(1.0f)),
 opacity(0.4f),
@@ -28,12 +24,17 @@ iconRenderStack()
 
 void IMGizmo::setup()
 {
-	// Load global gizmo shaders and models if not loaded already
-	if (!fillShader) fillShader = ShaderPool::get("gizmo_fill");
-	if (!iconShader) iconShader = ShaderPool::get("gizmo_icon");
-	if(!planeModel) planeModel = Model::load("../resources/primitives/plane.fbx");
-	if (!cubeModel) cubeModel = Model::load("../resources/primitives/cube.fbx");
-	if(!sphereModel) sphereModel = Model::load("../resources/primitives/sphere.fbx");
+	// Load all static data if not loaded already
+	if (!staticData.loaded) {
+
+		staticData.fillShader = ShaderPool::get("gizmo_fill");
+		staticData.iconShader = ShaderPool::get("gizmo_icon");
+
+		staticData.planeMesh = Model::load("../resources/primitives/plane.fbx")->getMesh(0);
+		staticData.cubeMesh = Model::load("../resources/primitives/cube.fbx")->getMesh(0);
+		staticData.sphereMesh = Model::load("../resources/primitives/sphere.fbx")->getMesh(0);
+
+	}
 }
 
 void IMGizmo::newFrame()
@@ -91,11 +92,6 @@ void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& came
 	iconRenderStack.push_back(gizmo);
 }
 
-Model* IMGizmo::getCubeModel()
-{
-	return cubeModel;
-}
-
 void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 {
 	// Cache current polygon mode
@@ -103,7 +99,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 	glGetIntegerv(GL_POLYGON_MODE, (GLint*)polygonState);
 
 	// Bind quick gizmo shader for upcoming renders
-	fillShader->bind();
+	staticData.fillShader->bind();
 
 	// Enable blending
 	glEnable(GL_BLEND);
@@ -124,11 +120,8 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Set material uniforms
-		fillShader->setMatrix4("mvpMatrix", mvpMatrix);
-		fillShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
-
-		// Get model
-		Model* model = getModel(gizmo.shape);
+		staticData.fillShader->setMatrix4("mvpMatrix", mvpMatrix);
+		staticData.fillShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 
 		// Set polygon mode for gizmo render
 		if (gizmo.wireframe)
@@ -140,13 +133,10 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		// Render each mesh
-		for (int32_t i = 0; i < model->meshes.size(); i++)
-		{
-			Mesh& mesh = model->meshes[i];
-			glBindVertexArray(mesh.getVAO());
-			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
-		}
+		// Render mesh
+		Mesh& mesh = getMesh(gizmo.shape);
+		glBindVertexArray(mesh.getVAO());
+		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Re-Enable depth testing if gizmo was in foreground
 		if (gizmo.state.foreground) {
@@ -164,7 +154,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 {
 	// Bind quick gizmo shader for upcoming renders
-	iconShader->bind();
+	staticData.iconShader->bind();
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -213,21 +203,15 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Set material uniforms
-		iconShader->setMatrix4("mvpMatrix", mvpMatrix);
-		iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
-		iconShader->setVec3("tint", glm::vec3(1.0f));
-		iconShader->setFloat("alpha", 0.35f);
+		staticData.iconShader->setMatrix4("mvpMatrix", mvpMatrix);
+		staticData.iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
+		staticData.iconShader->setVec3("tint", glm::vec3(1.0f));
+		staticData.iconShader->setFloat("alpha", 0.35f);
 
-		// Get model
-		Model* model = getModel(Shape::PLANE);
-
-		// Render each mesh
-		for (int32_t i = 0; i < model->meshes.size(); i++)
-		{
-			Mesh& mesh = model->meshes[i];
-			glBindVertexArray(mesh.getVAO());
-			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
-		}
+		// Get mesh
+		Mesh& mesh = getMesh(Shape::PLANE);
+		glBindVertexArray(mesh.getVAO());
+		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 
 	// Disable blending
@@ -242,17 +226,17 @@ IMGizmo::RenderState IMGizmo::getCurrentState() {
 	return state;
 }
 
-Model* IMGizmo::getModel(Shape shape)
+Mesh& IMGizmo::getMesh(Shape shape)
 {
 	switch (shape)
 	{
 	case Shape::PLANE:
-		return planeModel;
+		return staticData.planeMesh;
 	case Shape::BOX:
-		return cubeModel;
+		return staticData.cubeMesh;
 		break;
 	case Shape::SPHERE:
-		return sphereModel;
+		return staticData.sphereMesh;
 		break;
 	}
 }

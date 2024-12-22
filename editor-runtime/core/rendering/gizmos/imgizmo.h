@@ -38,6 +38,17 @@ public:
 	Model* getCubeModel(); // tmp
 
 private:
+	struct StaticData {
+		bool loaded;
+
+		Shader* fillShader;
+		Shader* iconShader;
+
+		Mesh planeMesh;
+		Mesh cubeMesh;
+		Mesh sphereMesh;
+	};
+
 	struct RenderState {
 		glm::vec3 color;
 		float opacity;
@@ -95,15 +106,11 @@ private:
 	void renderIcons(const glm::mat4& viewProjection);
 
 	// Initialized once by any instance being setup, these will be needed for the rest of the application lifetime
-	static Shader* fillShader;
-	static Shader* iconShader;
-	static Model* planeModel;
-	static Model* cubeModel;
-	static Model* sphereModel;
+	static StaticData staticData;
 
 private:
 	RenderState getCurrentState();
-	Model* getModel(Shape shape);
+	Mesh& getMesh(Shape shape);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 };
