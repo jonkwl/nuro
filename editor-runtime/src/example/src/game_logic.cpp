@@ -23,12 +23,12 @@ void setup() {
 	TransformComponent& cubeTransform = ECS::addComponent<TransformComponent>(cube);
 	MeshRendererComponent& cubeRenderer = ECS::addComponent<MeshRendererComponent>(cube, cubeMesh);
 	cubeTransform.position.z = 10.0f;
-	cubeTransform.scale = glm::vec3(8.0f, 8.0f, 0.1f);
+	cubeTransform.scale = glm::vec3(8.0f, 8.0f, 0.1f); */
 
 	sphere = ECS::createEntity();
 	TransformComponent& sphereTransform = ECS::addComponent<TransformComponent>(sphere);
 	MeshRendererComponent& sphereRenderer = ECS::addComponent<MeshRendererComponent>(sphere, sphereMesh);
-	sphereTransform.position.z = 8.0f; */
+	sphereTransform.position = glm::vec3(0.0f, 3.0f, 8.0f);
 
 	float offset = 3.0f;
 	int gridSize = 10;
