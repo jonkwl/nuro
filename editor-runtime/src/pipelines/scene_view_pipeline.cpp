@@ -17,7 +17,7 @@ useProfileEffects(false),
 showSkybox(false),
 showGizmos(false),
 renderShadows(false),
-alwaysUpdate(false),
+alwaysUpdate(true),
 viewport(),
 msaaSamples(8), // should lower this
 defaultProfile(),
@@ -117,6 +117,9 @@ void SceneViewPipeline::resizeViewport(float width, float height)
 	// Recreate all passes to match new viewport
 	destroyPasses();
 	createPasses();
+
+	// Re-render frame
+	render();
 
 	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }

@@ -112,7 +112,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)dependencies\lib\glfw;$(ProjectDir)dependencies\lib\assimp;$(ProjectDir)dependencies\lib\physx;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;assimp-vc143-mt.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;assimp-vc143-mt.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,6 +148,7 @@
     <ClCompile Include="imgui\implot.cpp" />
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
+    <ClCompile Include="core\physics\core\physics_instance.cpp" />
     <ClCompile Include="src\ui\windows\hierarchy_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="core\ecs\composed.h" />
     <ClInclude Include="core\ecs\ecs.h" />
     <ClInclude Include="core\ecs\ecs_collection.h" />
+    <ClInclude Include="core\physics\physics.h" />
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
     <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -217,6 +219,7 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="core\physics\core\physics_instance.h" />
     <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />

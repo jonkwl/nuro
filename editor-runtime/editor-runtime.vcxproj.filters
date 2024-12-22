@@ -210,6 +210,9 @@
     <ClCompile Include="core\ecs\components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\physics\core\physics_instance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -429,6 +432,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\registry_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\physics\core\physics_instance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\physics\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -60,6 +60,9 @@ void GameViewPipeline::resizeViewport(float width, float height)
 	destroyPasses();
 	createPasses();
 
+	// Re-render frame
+	render();
+
 	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }
 

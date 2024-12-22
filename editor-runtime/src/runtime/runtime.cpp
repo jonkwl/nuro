@@ -28,27 +28,31 @@
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 
+
 namespace Runtime {
 
 	// Window context variables
-	GLFWwindow* _window = nullptr;
-	glm::vec2 _windowSize = glm::vec2(0.0f);
-	bool _fullscreen = true;
+	GLFWwindow* gWindow = nullptr;
+	glm::vec2 gWindowSize = glm::vec2(0.0f);
+	bool gFullscreen = true;
 
 	// Pipelines
-	SceneViewPipeline _sceneViewPipeline;
-	GameViewPipeline _gameViewPipeline;
+	SceneViewPipeline gSceneViewPipeline;
+	GameViewPipeline gGameViewPipeline;
+
+	// Physics
+	PhysicsInstance gPhysicsInstance;
 
 	// Shadow
-	ShadowDisk* _mainShadowDisk = nullptr;
-	ShadowMap* _mainShadowMap = nullptr;
+	ShadowDisk* gMainShadowDisk = nullptr;
+	ShadowMap* gMainShadowMap = nullptr;
 
 	// Default assets
-	Skybox _defaultSkybox;
+	Skybox gDefaultSkybox;
 
 	// Game state management
-	RegistryState _sceneState;
-	bool _gameRunning = false;
+	RegistryState gSceneState;
+	bool gGameRunning = false;
 
 	//
 	//
@@ -80,8 +84,8 @@ namespace Runtime {
 		glfwWindowHint(GLFW_BLUE_BITS, 10);
 		glfwWindowHint(GLFW_ALPHA_BITS, 2);
 
-		// Check for _fullscreen
-		if (_fullscreen)
+		// Check for gFullscreen
+		if (gFullscreen)
 		{
 			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
@@ -89,19 +93,19 @@ namespace Runtime {
 			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-			_windowSize = glm::vec2(mode->width, mode->height);
+			gWindowSize = glm::vec2(mode->width, mode->height);
 		}
 
 		// Create window
-		_window = glfwCreateWindow(_windowSize.x, _windowSize.y, "Rendering Alpha", nullptr, nullptr);
+		gWindow = glfwCreateWindow(gWindowSize.x, gWindowSize.y, "Rendering Alpha", nullptr, nullptr);
 
-		if (_window == nullptr)
+		if (gWindow == nullptr)
 		{
 			Log::printError("GLFW", "Creation of window failed");
 		}
 
 		// Load graphics api
-		glfwMakeContextCurrent(_window);
+		glfwMakeContextCurrent(gWindow);
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
 			Log::printError("GLFW", "Initialization of GLAD failed");
@@ -129,18 +133,18 @@ namespace Runtime {
 		uint32_t diskWindowSize = 4;
 		uint32_t diskFilterSize = 8;
 		uint32_t diskRadius = 5;
-		_mainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
+		gMainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
 		// Create default shadow map
 		bool shadow_map_saved = false;
-		_mainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
+		gMainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
 
 		// Create default skybox
 		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
-		_defaultSkybox = Skybox(defaultCubemap);
+		gDefaultSkybox = Skybox(defaultCubemap);
 
 		// Set default skybox as current skybox
-		_gameViewPipeline.setSkybox(&_defaultSkybox);
+		gGameViewPipeline.setSkybox(&gDefaultSkybox);
 
 		// Load gizmo icons
 		GizmoIconPool::loadAll("../resources/gizmos");
@@ -149,18 +153,21 @@ namespace Runtime {
 	void _setupScripts() {
 
 		// Set context for scripts needing window context
-		Input::setContext(_window);
-		Cursor::setContext(_window);
+		Input::setContext(gWindow);
+		Cursor::setContext(gWindow);
 
 		// Setup pipelines
-		_sceneViewPipeline.setup();
-		_gameViewPipeline.setup();
+		gSceneViewPipeline.setup();
+		gGameViewPipeline.setup();
+
+		// Create physics instance
+		gPhysicsInstance.create();
 
 		// Create primitives
 		Quad::create();
 
 		// Setup engine ui
-		EditorUI::setup(_window);
+		EditorUI::setup(gWindow);
 
 	}
 
@@ -198,7 +205,7 @@ namespace Runtime {
 		// Render shadow map
 		//
 		Profiler::start("shadow_pass");
-		_mainShadowMap->render();
+		gMainShadowMap->render();
 		Profiler::stop("shadow_pass");
 	}
 
@@ -215,23 +222,22 @@ namespace Runtime {
 
 	void _finishFrame() {
 
-		// Swap _window buffers and poll events
-		glfwSwapBuffers(_window);
+		// Swap gWindow buffers and poll events
+		glfwSwapBuffers(gWindow);
 		glfwPollEvents();
 
 	}
 
 	void _stepGame() {
 
-		// Update game logic
+		// UPDATE GAME LOGIC
 		update();
 
-		// Update scene view pipeline
-		_sceneViewPipeline.setUpdated();
+		// STEP PHYSICS
+		gPhysicsInstance.step(Time::deltaf());
 
-		//
-		// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
-		//
+		// SET SCENE VIEW PIPELINE TO UPDATED
+		gSceneViewPipeline.setUpdated();
 
 	}
 
@@ -240,92 +246,6 @@ namespace Runtime {
 	// RUNTIME BASE METHODS (START & TERMINATE)
 	//
 	//
-
-	using namespace physx;
-
-	static PxDefaultAllocator		gAllocator;
-	static PxDefaultErrorCallback	gErrorCallback;
-	static PxFoundation* gFoundation = NULL;
-	static PxPhysics* gPhysics = NULL;
-	static PxDefaultCpuDispatcher* gDispatcher = NULL;
-	static PxScene* gScene = NULL;
-	static PxMaterial* gMaterial = NULL;
-	static PxPvd* gPvd = NULL;
-
-	void _initPhysics()
-	{
-		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-		if (!gFoundation) {
-			Log::printError("Physics", "Failed to create PhysX Foundation.");
-			return;
-		}
-		else {
-			Log::printProcessInfo("PhysX Foundation created successfully.");
-		}
-
-		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-		if (!gPhysics) {
-			Log::printError("Physics", "Failed to create PhysX Physics object.");
-			return;
-		}
-		else {
-			Log::printProcessInfo("PhysX Physics object created successfully.");
-		}
-
-		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-		gDispatcher = PxDefaultCpuDispatcherCreate(2);
-		if (!gDispatcher) {
-			Log::printError("Physics", "Failed to create CPU Dispatcher.");
-			return;
-		}
-		else {
-			Log::printProcessInfo("CPU Dispatcher created successfully.");
-		}
-		sceneDesc.cpuDispatcher = gDispatcher;
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-
-		gScene = gPhysics->createScene(sceneDesc);
-		if (!gScene) {
-			Log::printError("Physics", "Failed to create PhysX Scene.");
-			return;
-		}
-		else {
-			Log::printProcessInfo("PhysX Scene created successfully.");
-		}
-
-		PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-		if (pvdClient) {
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-			Log::printProcessInfo("PVD Scene Client configured successfully.");
-		}
-		else {
-			Log::printError("Physics", "Failed to get PVD Scene Client.");
-		}
-
-		gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-		if (!gMaterial) {
-			Log::printError("Physics", "Failed to create material.");
-			return;
-		}
-		else {
-			Log::printProcessInfo("Material created successfully.");
-		}
-
-		PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial);
-		if (!groundPlane) {
-			Log::printError("Physics", "Failed to create ground plane.");
-			return;
-		}
-		else {
-			Log::printProcessInfo("Ground plane created successfully.");
-		}
-
-		gScene->addActor(*groundPlane);
-		Log::printProcessInfo("Ground plane added to the scene successfully.");
-	}
 
 	int32_t START_LOOP()
 	{
@@ -343,23 +263,18 @@ namespace Runtime {
 		// PERFORM GAMES SETUP LOGIC
 		setup();
 
-		// tmp physics setup test
-		_initPhysics();
-
-		while (!glfwWindowShouldClose(_window))
+		while (!glfwWindowShouldClose(gWindow))
 		{
 			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
 			_prepareFrame();
 
 			// UPDATE GAME IF GAME IS RUNNING
-			if (_gameRunning) {
-				_stepGame();
-			}
+			if (gGameRunning) _stepGame();
 
 			// RENDER NEXT FRAME (full render pipeline pass)
-			// _renderShadows();
-			_sceneViewPipeline.tryRender();
-			// _gameViewPipeline.tryRender();
+			_renderShadows();
+			gSceneViewPipeline.tryRender();
+			gGameViewPipeline.tryRender();
 
 			// RENDER EDITOR
 			_renderEditor();
@@ -376,24 +291,28 @@ namespace Runtime {
 
 	void TERMINATE()
 	{
-		if (_window != nullptr)
+		// Should destroy pipelines here
+		gPhysicsInstance.destroy();
+
+		if (gWindow != nullptr)
 		{
-			glfwDestroyWindow(_window);
+			glfwDestroyWindow(gWindow);
 			glfwTerminate();
 		}
+
 		std::exit(0);
 	}
 
 	void startGame()
 	{
 		// Cache scene state
-		// _sceneState = ECS::captureState();
+		// gSceneState = ECS::captureState();
 
 		// Perform awake logic
 		awake();
 
 		// Set game running state
-		_gameRunning = true;
+		gGameRunning = true;
 	}
 
 	void stopGame()
@@ -402,35 +321,40 @@ namespace Runtime {
 		quit();
 
 		// Set game running state
-		_gameRunning = false;
+		gGameRunning = false;
 
 		// Restore scene state
-		// ECS::loadState(_sceneState);
+		// ECS::loadState(gSceneState);
 	}
 
 	bool gameRunning()
 	{
-		return _gameRunning;
+		return gGameRunning;
 	}
 
 	SceneViewPipeline& getSceneViewPipeline()
 	{
-		return _sceneViewPipeline;
+		return gSceneViewPipeline;
 	}
 
 	GameViewPipeline& getGameViewPipeline()
 	{
-		return _gameViewPipeline;
+		return gGameViewPipeline;
+	}
+
+	PhysicsInstance& getPhysicsInstance()
+	{
+		return gPhysicsInstance;
 	}
 
 	ShadowDisk* getMainShadowDisk()
 	{
-		return _mainShadowDisk;
+		return gMainShadowDisk;
 	}
 
 	ShadowMap* getMainShadowMap()
 	{
-		return _mainShadowMap;
+		return gMainShadowMap;
 	}
 
 }

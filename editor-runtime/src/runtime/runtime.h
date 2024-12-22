@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../core/physics/physics.h"
+
 #include "../src/pipelines/scene_view_pipeline.h"
 #include "../src/pipelines/game_view_pipeline.h"
 
@@ -20,6 +22,9 @@ namespace Runtime
 	// Pipelines getters
 	SceneViewPipeline& getSceneViewPipeline();
 	GameViewPipeline& getGameViewPipeline();
+
+	// Physics getters
+	PhysicsInstance& getPhysicsInstance();
 
 	// Shadow getters
 	ShadowDisk* getMainShadowDisk();

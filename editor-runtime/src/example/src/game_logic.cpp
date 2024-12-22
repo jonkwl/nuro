@@ -4,8 +4,48 @@
 #include "../src/runtime/runtime.h"
 
 entity camera;
-entity cube;
-entity sphere;
+
+entity cube1;
+PxRigidDynamic* cube1Rb = nullptr;
+
+entity cube2;
+PxRigidDynamic* cube2Rb = nullptr;
+
+entity cube3;
+PxRigidDynamic* cube3Rb = nullptr;
+
+entity cube4;
+PxRigidDynamic* cube4Rb = nullptr;
+
+entity cube5;
+PxRigidDynamic* cube5Rb = nullptr;
+
+// tmp
+void createPhysicsEntity(glm::vec3 position, glm::vec3 rotation, entity& e, PxRigidDynamic*& rb, Mesh& mesh) {
+	e = ECS::createEntity();
+
+	TransformComponent& cubeTransform = ECS::addComponent<TransformComponent>(e);
+	ECS::addComponent<MeshRendererComponent>(e, mesh);
+	cubeTransform.position = position;
+
+	Transform::rotateX(cubeTransform, rotation.x);
+	Transform::rotateY(cubeTransform, rotation.y);
+	Transform::rotateZ(cubeTransform, rotation.z);
+
+	rb = Runtime::getPhysicsInstance().createDynamicBox(
+		PxVec3(cubeTransform.position.x, cubeTransform.position.y, cubeTransform.position.z),
+		PxQuat(cubeTransform.rotation.x, cubeTransform.rotation.y, cubeTransform.rotation.z, cubeTransform.rotation.w),
+		PxVec3(cubeTransform.scale.x, cubeTransform.scale.y, cubeTransform.scale.z));
+}
+
+void updatePhysicsEntity(entity e, PxRigidDynamic* rb) {
+	TransformComponent& transform = ECS::getComponent<TransformComponent>(e);
+	PxTransform pose = rb->getGlobalPose();
+	PxVec3 position = pose.p;
+	PxQuat rotation = pose.q;
+	transform.position = glm::vec3(position.x, position.y, position.z);
+	transform.rotation = glm::quat(rotation.x, rotation.y, rotation.z, rotation.w);
+}
 
 void setup() {
 
@@ -19,27 +59,18 @@ void setup() {
 	ECS::addComponent<TransformComponent>(camera);
 	ECS::addComponent<CameraComponent>(camera);
 
-	cube = ECS::createEntity();
-	TransformComponent& cubeTransform = ECS::addComponent<TransformComponent>(cube);
-	MeshRendererComponent& cubeRenderer = ECS::addComponent<MeshRendererComponent>(cube, cubeMesh);
-	cubeTransform.position.z = 10.0f;
-	cubeTransform.scale = glm::vec3(8.0f, 8.0f, 0.1f);
+	createPhysicsEntity(glm::vec3(0.0f, 8.0f, 16.0f), glm::vec3(0.0f), cube1, cube1Rb, cubeMesh);
+	createPhysicsEntity(glm::vec3(0.2f, 5.0f, 16.0f), glm::vec3(0.0f), cube2, cube2Rb, cubeMesh);
+	createPhysicsEntity(glm::vec3(-0.8f, 3.0f, 18.0f), glm::vec3(0.0f), cube3, cube3Rb, cubeMesh);
+	createPhysicsEntity (glm::vec3(3.0f, 0.0f, 14.0f), glm::vec3(0.0f), cube4, cube4Rb, cubeMesh);
+	createPhysicsEntity(glm::vec3(4.0f, 1.5f, 16.0f), glm::vec3(0.0f), cube5, cube5Rb, cubeMesh);
 
-	sphere = ECS::createEntity();
-	TransformComponent& sphereTransform = ECS::addComponent<TransformComponent>(sphere);
-	MeshRendererComponent& sphereRenderer = ECS::addComponent<MeshRendererComponent>(sphere, sphereMesh);
-	sphereTransform.position = glm::vec3(0.0f, 3.0f, 8.0f);
-
-	/* float offset = 3.0f;
-	int gridSize = 25;
-	for (int x = 0; x < gridSize; x++) {
-		for (int z = 0; z < gridSize; z++) {
-			entity e = ECS::createEntity();
-			TransformComponent& transform = ECS::addComponent<TransformComponent>(e);
-			MeshRendererComponent& renderer = ECS::addComponent<MeshRendererComponent>(e, sphereMesh);
-			transform.position = glm::vec3(offset * x, 0.0f, offset * z);
-		}
-	} */
+	/*entity ground = ECS::createEntity();
+	TransformComponent& groundTransform = ECS::addComponent<TransformComponent>(ground);
+	ECS::addComponent<MeshRendererComponent>(ground, cubeMesh);
+	groundTransform.position = glm::vec3(0.0f, -8.45f, 16.0f);
+	groundTransform.scale = glm::vec3(18.0f, 0.1f, 18.0f);*/
+	Runtime::getPhysicsInstance().createStaticPlane(PxVec3(0.0f, 1.0, 0.0f), 8.0f);
 
 }
 
@@ -53,8 +84,11 @@ void quit()
 }
 
 void update() {
-	float delta = Time::deltaf();
 
-	TransformComponent& sphereTransform = ECS::getComponent<TransformComponent>(sphere);
-	Transform::rotateY(sphereTransform, 360.0f * delta);
+	updatePhysicsEntity(cube1, cube1Rb);
+	updatePhysicsEntity(cube2, cube2Rb);
+	updatePhysicsEntity(cube3, cube3Rb);
+	updatePhysicsEntity(cube4, cube4Rb);
+	updatePhysicsEntity(cube5, cube5Rb);
+
 }
