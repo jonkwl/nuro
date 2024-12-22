@@ -145,6 +145,9 @@ uint32_t ForwardPass::render(const glm::mat4& view, const glm::mat4& projection,
 	*/
 	// INJECTED PRE PASS END
 
+	// Bind material
+	defaultMaterial->bind();
+
 	// Render each entity
 	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
@@ -208,9 +211,6 @@ void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponen
 	
 	// Bind mesh
 	glBindVertexArray(renderer.mesh.getVAO());
-
-	// Bind material
-	material->bind();
 
 	// Set shader uniforms
 	Shader* shader = material->getShader();

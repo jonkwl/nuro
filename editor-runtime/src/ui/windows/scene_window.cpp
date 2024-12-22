@@ -84,6 +84,7 @@ void SceneWindow::renderToolbar()
 		UIComponents::toggleButton(ICON_FA_SPARKLES, pipeline.useProfileEffects, "Enable Post Processing");
 		UIComponents::toggleButton(ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Show Gizmos");
 		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Render Skybox");
+		UIComponents::toggleButton(ICON_FA_ROTATE, pipeline.alwaysUpdate, "Always Update");
 	}
 	UILayout::endFlex();
 
@@ -126,6 +127,9 @@ void SceneWindow::renderSceneView()
 
 		// Update cursor bounds and inputs if theres an interaction with scene view
 		if (sceneViewRightclicked || sceneViewMiddleclicked) {
+			// Set scene pipeline to interacted
+			pipeline.setUpdated();
+
 			// Make sure cursor is within scene view bounds
 			bool positionedCursor = false;
 			cursorCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
@@ -223,7 +227,8 @@ void SceneWindow::renderTransformGizmos()
 
 void SceneWindow::updateMovement()
 {
-	Camera& camera = Runtime::getSceneViewPipeline().getFlyCamera();
+	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+	Camera& camera = pipeline.getFlyCamera();
 
 	// Get values needed
 	float deltaTime = Time::deltaf();
@@ -257,5 +262,12 @@ void SceneWindow::updateMovement()
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
 		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.18f; // 0.18f is a good factor to match movement speed
 	}
+
+	// Set if fly camera moved this frame
+	const float movementThreshold = 0.001f;
+	bool moving = std::abs(movementDir.x) > movementThreshold ||
+		std::abs(movementDir.y) > movementThreshold ||
+		std::abs(movementDir.z) > movementThreshold;
+	if (moving) pipeline.setUpdated();
 
 }

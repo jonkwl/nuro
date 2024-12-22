@@ -435,6 +435,7 @@ depth_map.png
 
 /resources/skybox/default
 /resources/gizmos
+/resources/primitives/sphere.fbx
 /editor-runtime/src/example/assets
 
 **/fa-solid-900.ttf

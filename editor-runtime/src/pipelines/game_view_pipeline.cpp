@@ -35,6 +35,73 @@ void GameViewPipeline::setup()
 	createPasses();
 }
 
+void GameViewPipeline::tryRender()
+{
+	render();
+}
+
+uint32_t GameViewPipeline::getOutput()
+{
+	return postProcessingPipeline.getOutput();
+}
+
+const Viewport& GameViewPipeline::getViewport()
+{
+	return viewport;
+}
+
+void GameViewPipeline::resizeViewport(float width, float height)
+{
+	// Set new viewport size
+	viewport.width = width;
+	viewport.height = height;
+
+	// Recreate all passes to match new viewport
+	destroyPasses();
+	createPasses();
+
+	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
+}
+
+void GameViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
+{
+	// Set new msaa samples and recreate scene view forward pass
+	msaaSamples = _msaaSamples;
+	forwardPass.destroy();
+	forwardPass.create(msaaSamples);
+}
+
+PostProcessing::Profile& GameViewPipeline::getProfile()
+{
+	return profile;
+}
+
+void GameViewPipeline::setSkybox(Skybox* _skybox)
+{
+	skybox = _skybox;
+	forwardPass.setSkybox(skybox);
+}
+
+Skybox* GameViewPipeline::getSkybox()
+{
+	return skybox;
+}
+
+bool GameViewPipeline::getCameraAvailable()
+{
+	return cameraAvailable;
+}
+
+uint32_t GameViewPipeline::getSSAOOutput() const
+{
+	return ssaoOutput;
+}
+
+uint32_t GameViewPipeline::getVelocityOutput() const
+{
+	return velocityOutput;
+}
+
 void GameViewPipeline::render()
 {
 	Profiler::start("render");
@@ -121,68 +188,6 @@ void GameViewPipeline::render()
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
-}
-
-uint32_t GameViewPipeline::getOutput()
-{
-	return postProcessingPipeline.getOutput();
-}
-
-const Viewport& GameViewPipeline::getViewport()
-{
-	return viewport;
-}
-
-void GameViewPipeline::resizeViewport(float width, float height)
-{
-	// Set new viewport size
-	viewport.width = width;
-	viewport.height = height;
-
-	// Recreate all passes to match new viewport
-	destroyPasses();
-	createPasses();
-
-	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
-}
-
-void GameViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
-{
-	// Set new msaa samples and recreate scene view forward pass
-	msaaSamples = _msaaSamples;
-	forwardPass.destroy();
-	forwardPass.create(msaaSamples);
-}
-
-PostProcessing::Profile& GameViewPipeline::getProfile()
-{
-	return profile;
-}
-
-void GameViewPipeline::setSkybox(Skybox* _skybox)
-{
-	skybox = _skybox;
-	forwardPass.setSkybox(skybox);
-}
-
-Skybox* GameViewPipeline::getSkybox()
-{
-	return skybox;
-}
-
-bool GameViewPipeline::getCameraAvailable()
-{
-	return cameraAvailable;
-}
-
-uint32_t GameViewPipeline::getSSAOOutput() const
-{
-	return ssaoOutput;
-}
-
-uint32_t GameViewPipeline::getVelocityOutput() const
-{
-	return velocityOutput;
 }
 
 void GameViewPipeline::createPasses()

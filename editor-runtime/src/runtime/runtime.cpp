@@ -226,6 +226,9 @@ namespace Runtime {
 		// Update game logic
 		update();
 
+		// Update scene view pipeline
+		_sceneViewPipeline.setUpdated();
+
 		//
 		// EXTERNAL TRANSFORM MANIPULATION HERE (e.g. physics)
 		//
@@ -265,9 +268,9 @@ namespace Runtime {
 			}
 
 			// RENDER NEXT FRAME (full render pipeline pass)
-			_renderShadows();
-			_sceneViewPipeline.render();
-			_gameViewPipeline.render();
+			// _renderShadows();
+			_sceneViewPipeline.tryRender();
+			// _gameViewPipeline.tryRender();
 
 			// RENDER EDITOR
 			_renderEditor();

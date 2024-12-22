@@ -31,7 +31,7 @@ void setup() {
 	sphereTransform.position = glm::vec3(0.0f, 3.0f, 8.0f);
 
 	float offset = 3.0f;
-	int gridSize = 10;
+	int gridSize = 25;
 	for (int x = 0; x < gridSize; x++) {
 		for (int z = 0; z < gridSize; z++) {
 			entity e = ECS::createEntity();

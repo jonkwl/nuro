@@ -22,7 +22,7 @@ public:
 
 	void setup(); // Setup scene view pipeline
 
-	void render(); // Renders scene view
+	void tryRender(); // Renders scene view if conditions are met
 
 	uint32_t getOutput(); // Returns color output from latest render
 
@@ -33,11 +33,12 @@ public:
 	void resizeViewport(float width, float height);
 
 	// Public, always accessible render settings
-	bool wireframe;             // Wireframe option
-	bool useProfileEffects;     // Enable or disable games current post processing effects from
-	bool showSkybox;            // Enable or disable rendering of games current skybox
-	bool showGizmos;            // Enable or disable scene view gizmos
-	bool renderShadows;         // Enable or disable shadows
+	bool wireframe; // Wireframe option
+	bool useProfileEffects; // Enable or disable games current post processing effects from
+	bool showSkybox; // Enable or disable rendering of games current skybox
+	bool showGizmos; // Enable or disable scene view gizmos
+	bool renderShadows; // Enable or disable shadows
+	bool alwaysUpdate; // If set rendering is never skipped
 
 	void updateMsaaSamples(uint32_t msaaSamples);
 
@@ -46,7 +47,11 @@ public:
 	const glm::mat4& getView() const;
 	const glm::mat4& getProjection() const;
 
+	void setUpdated();
+
 private:
+	void render(); // Renders scene view
+
 	void createPasses(); // Create all passes
 	void destroyPasses(); // Destroy all passes
 
@@ -76,5 +81,9 @@ private:
 	// Matrix cache
 	glm::mat4 view;
 	glm::mat4 projection;
-};
 
+	// States
+	bool frameInitialized; // If scene view was rendered at least once
+	unsigned int initialRenderCount; // Render count for initial frames
+	bool updated; // If scene view was updated and therefore should be rerendered
+};

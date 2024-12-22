@@ -18,9 +18,9 @@ class GameViewPipeline
 public:
 	GameViewPipeline();
 
-	void setup(); // Setup scene view pipeline
+	void setup(); // Setup game view pipeline
 
-	void render(); // Renders scene view
+	void tryRender(); // Renders game view if conditions are met
 
 	uint32_t getOutput(); // Returns color output from latest render
 
@@ -40,6 +40,8 @@ public:
 	uint32_t getVelocityOutput() const; // Returns the velocity buffers last output
 
 private:
+	void render(); // Renders game view
+
 	void createPasses(); // Create all passes
 	void destroyPasses(); // Destroy all passes
 
