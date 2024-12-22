@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\include;$(ProjectDir)dependencies\physx_include;$(ProjectDir)dependencies\vendor\stb;$(ProjectDir)dependencies\vendor\glm;$(ProjectDir)dependencies\vendor\entt;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\include;$(ProjectDir)dependencies\include_seperate\physx;$(ProjectDir)dependencies\include_seperate\stb;$(ProjectDir)dependencies\include_seperate\glm;$(ProjectDir)dependencies\include_seperate\entt;$(ProjectDir)dependencies\include_seperate\json;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>

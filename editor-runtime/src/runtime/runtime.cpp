@@ -387,7 +387,7 @@ namespace Runtime {
 	void startGame()
 	{
 		// Cache scene state
-		_sceneState = ECS::captureState();
+		// _sceneState = ECS::captureState();
 
 		// Perform awake logic
 		awake();
@@ -405,7 +405,7 @@ namespace Runtime {
 		_gameRunning = false;
 
 		// Restore scene state
-		ECS::loadState(_sceneState);
+		// ECS::loadState(_sceneState);
 	}
 
 	bool gameRunning()
