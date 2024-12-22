@@ -19,7 +19,7 @@ void setup() {
 	ECS::addComponent<TransformComponent>(camera);
 	ECS::addComponent<CameraComponent>(camera);
 
-	cube = ECS::createEntity();
+	/* cube = ECS::createEntity();
 	TransformComponent& cubeTransform = ECS::addComponent<TransformComponent>(cube);
 	MeshRendererComponent& cubeRenderer = ECS::addComponent<MeshRendererComponent>(cube, cubeMesh);
 	cubeTransform.position.z = 10.0f;
@@ -28,7 +28,18 @@ void setup() {
 	sphere = ECS::createEntity();
 	TransformComponent& sphereTransform = ECS::addComponent<TransformComponent>(sphere);
 	MeshRendererComponent& sphereRenderer = ECS::addComponent<MeshRendererComponent>(sphere, sphereMesh);
-	sphereTransform.position.z = 8.0f;
+	sphereTransform.position.z = 8.0f; */
+
+	float offset = 3.0f;
+	int gridSize = 10;
+	for (int x = 0; x < gridSize; x++) {
+		for (int z = 0; z < gridSize; z++) {
+			entity e = ECS::createEntity();
+			TransformComponent& transform = ECS::addComponent<TransformComponent>(e);
+			MeshRendererComponent& renderer = ECS::addComponent<MeshRendererComponent>(e, sphereMesh);
+			transform.position = glm::vec3(offset * x, 0.0f, offset * z);
+		}
+	}
 
 }
 
