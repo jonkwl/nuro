@@ -3,31 +3,30 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
-#include <PxPhysicsAPI.h>
 
-#include "../src/example/src/game_logic.h"
 #include "../src/ui/editor_ui.h"
+#include "../src/example/src/game_logic.h"
 
-#include "../core/rendering/material/unlit/unlit_material.h"
-#include "../core/rendering/shadows/shadow_disk.h"
+#include "../core/rendering/model/model.h"
+#include "../core/rendering/shader/shader.h"
+#include "../core/rendering/skybox/cubemap.h"
+#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/texture/texture.h"
+#include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/core/transformation.h"
-#include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/texture/texture.h"
-#include "../core/rendering/shader/shader.h"
-#include "../core/rendering/primitives/quad.h"
-#include "../core/rendering/skybox/cubemap.h"
-#include "../core/rendering/model/model.h"
+#include "../core/rendering/shadows/shadow_disk.h"
+#include "../core/rendering/material/unlit/unlit_material.h"
 
-#include "../core/diagnostics/diagnostics.h"
-#include "../core/diagnostics/profiler.h"
-#include "../core/ecs/ecs_collection.h"
-#include "../core/viewport/viewport.h"
-#include "../core/input/cursor.h"
-#include "../core/input/input.h"
-#include "../core/time/time.h"
 #include "../core/utils/log.h"
-
+#include "../core/time/time.h"
+#include "../core/input/input.h"
+#include "../core/input/cursor.h"
+#include "../core/physics/physics.h"
+#include "../core/viewport/viewport.h"
+#include "../core/ecs/ecs_collection.h"
+#include "../core/diagnostics/profiler.h"
+#include "../core/diagnostics/diagnostics.h"
 
 namespace Runtime {
 
@@ -41,7 +40,7 @@ namespace Runtime {
 	GameViewPipeline gGameViewPipeline;
 
 	// Physics
-	PhysicsInstance gPhysicsInstance;
+	PhysicsController gPhysicsController;
 
 	// Shadow
 	ShadowDisk* gMainShadowDisk = nullptr;
@@ -161,7 +160,7 @@ namespace Runtime {
 		gGameViewPipeline.setup();
 
 		// Create physics instance
-		gPhysicsInstance.create();
+		gPhysicsController.create();
 
 		// Create primitives
 		Quad::create();
@@ -234,7 +233,7 @@ namespace Runtime {
 		update();
 
 		// STEP PHYSICS
-		gPhysicsInstance.step(Time::deltaf());
+		gPhysicsController.step(Time::deltaf());
 
 		// SET SCENE VIEW PIPELINE TO UPDATED
 		gSceneViewPipeline.setUpdated();
@@ -292,7 +291,7 @@ namespace Runtime {
 	void TERMINATE()
 	{
 		// Should destroy pipelines here
-		gPhysicsInstance.destroy();
+		gPhysicsController.destroy();
 
 		if (gWindow != nullptr)
 		{
@@ -342,9 +341,9 @@ namespace Runtime {
 		return gGameViewPipeline;
 	}
 
-	PhysicsInstance& getPhysicsInstance()
+	PhysicsController& getPhysicsController()
 	{
-		return gPhysicsInstance;
+		return gPhysicsController;
 	}
 
 	ShadowDisk* getMainShadowDisk()

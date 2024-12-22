@@ -1,6 +1,8 @@
-#include "physics_instance.h"
+#include "physics_controller.h"
 
-PhysicsInstance::PhysicsInstance() : allocator(),
+using namespace physx;
+
+PhysicsController::PhysicsController() : allocator(),
 errorCallback(),
 foundation(nullptr),
 physics(nullptr),
@@ -14,7 +16,7 @@ accumulatedTime(0.0f)
 {
 }
 
-void PhysicsInstance::create()
+void PhysicsController::create()
 {
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, allocator, errorCallback);
 
@@ -48,7 +50,7 @@ void PhysicsInstance::create()
 
 }
 
-void PhysicsInstance::destroy()
+void PhysicsController::destroy()
 {
 	PX_RELEASE(scene);
 	PX_RELEASE(dispatcher);
@@ -61,7 +63,7 @@ void PhysicsInstance::destroy()
 	PX_RELEASE(foundation);
 }
 
-void PhysicsInstance::step(float delta)
+void PhysicsController::step(float delta)
 {
 	accumulatedTime += delta;
 
@@ -74,7 +76,7 @@ void PhysicsInstance::step(float delta)
 	}
 }
 
-PxRigidStatic* PhysicsInstance::createStaticPlane(PxVec3 xyz, float distance) {
+PxRigidStatic* PhysicsController::createStaticPlane(PxVec3 xyz, float distance) {
 	PxRigidStatic* plane = PxCreatePlane(*physics, PxPlane(xyz.x, xyz.y, xyz.z, distance), *defaultMaterial);
 
 	scene->addActor(*plane);
@@ -82,7 +84,7 @@ PxRigidStatic* PhysicsInstance::createStaticPlane(PxVec3 xyz, float distance) {
 	return plane;
 }
 
-PxRigidDynamic* PhysicsInstance::createDynamicBox(PxVec3 position, PxQuat rotation, PxVec3 size)
+PxRigidDynamic* PhysicsController::createDynamicBox(PxVec3 position, PxQuat rotation, PxVec3 size)
 {
 	PxShape* shape = physics->createShape(PxBoxGeometry(size / 2), *defaultMaterial);
 	PxRigidDynamic* body = physics->createRigidDynamic(PxTransform(position, rotation));
@@ -91,21 +93,4 @@ PxRigidDynamic* PhysicsInstance::createDynamicBox(PxVec3 position, PxQuat rotati
 	scene->addActor(*body);
 	shape->release();
 	return body;
-}
-
-void PhysicsInstance::createPyramidTest() {
-	float halfExtent = 0.5f;
-	physx::PxShape* shape = physics->createShape(physx::PxBoxGeometry(halfExtent, halfExtent, halfExtent), *defaultMaterial);
-	physx::PxU32 size = 30;
-	physx::PxTransform t(physx::PxVec3(0));
-	for (physx::PxU32 i = 0; i < size; i++) {
-		for (physx::PxU32 j = 0; j < size - i; j++) {
-			physx::PxTransform localTm(physx::PxVec3(physx::PxReal(j * 2) - physx::PxReal(size - i), physx::PxReal(i * 2 + 1), 0) * halfExtent);
-			physx::PxRigidDynamic* body = physics->createRigidDynamic(t.transform(localTm));
-			body->attachShape(*shape);
-			physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			scene->addActor(*body);
-		}
-	}
-	shape->release();
 }

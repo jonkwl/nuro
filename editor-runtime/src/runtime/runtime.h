@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../core/physics/physics.h"
-
-#include "../src/pipelines/scene_view_pipeline.h"
 #include "../src/pipelines/game_view_pipeline.h"
+#include "../src/pipelines/scene_view_pipeline.h"
+#include "../core/physics/core/physics_controller.h"
 
 class ShadowDisk;
 class ShadowMap;
@@ -24,7 +23,7 @@ namespace Runtime
 	GameViewPipeline& getGameViewPipeline();
 
 	// Physics getters
-	PhysicsInstance& getPhysicsInstance();
+	PhysicsController& getPhysicsController();
 
 	// Shadow getters
 	ShadowDisk* getMainShadowDisk();
