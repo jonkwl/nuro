@@ -76,6 +76,11 @@ void PhysicsController::step(float delta)
 	}
 }
 
+const physx::PxMaterial* PhysicsController::getDefaultMaterial() const
+{
+	return defaultMaterial;
+}
+
 PxRigidStatic* PhysicsController::createStaticPlane(PxVec3 xyz, float distance) {
 	PxRigidStatic* plane = PxCreatePlane(*physics, PxPlane(xyz.x, xyz.y, xyz.z, distance), *defaultMaterial);
 

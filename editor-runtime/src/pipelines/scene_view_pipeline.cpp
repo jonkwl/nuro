@@ -15,7 +15,7 @@
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
 useProfileEffects(false),
 showSkybox(false),
-showGizmos(false),
+showGizmos(true),
 renderShadows(false),
 alwaysUpdate(true),
 viewport(),

@@ -12,6 +12,8 @@ public:
 
 	void step(float delta);
 
+	const physx::PxMaterial* getDefaultMaterial() const;
+
 public:
 	physx::PxRigidStatic* createStaticPlane(physx::PxVec3 xyz, float distance);
 	physx::PxRigidDynamic* createDynamicBox(physx::PxVec3 position, physx::PxQuat rotation, physx::PxVec3 size);

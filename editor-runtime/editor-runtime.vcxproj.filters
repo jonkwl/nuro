@@ -162,9 +162,6 @@
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\ecs\composed.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\ecs\ecs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -205,9 +202,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\ecs\registry_state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="core\ecs\components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\physics\core\physics_controller.cpp">

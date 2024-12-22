@@ -132,8 +132,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core\ecs\components.cpp" />
-    <ClCompile Include="core\ecs\composed.cpp" />
     <ClCompile Include="core\ecs\ecs.cpp" />
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
     <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp" />

@@ -6,7 +6,7 @@
 
 struct Camera {
 
-	explicit Camera(TransformComponent& transform, CameraComponent& root);
+	explicit Camera(TransformComponent& transform, CameraComponent& root) : transform(transform), root(root) {};
 
 	TransformComponent& transform;
 	CameraComponent& root;

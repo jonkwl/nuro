@@ -8,22 +8,23 @@
 
 struct TransformComponent {
 
-	TransformComponent();
-
-	glm::vec3 position;
-	glm::quat rotation;
-	glm::vec3 scale;
+	// Transform data
+	glm::vec3 position = glm::vec3(0.0f);
+	glm::quat rotation = glm::quat();
+	glm::vec3 scale = glm::vec3(1.0f);
 
 	// Matrix cache
-	glm::mat4 model;
-	glm::mat4 mvp;
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 mvp = glm::mat4(1.0f);
+
 
 };
 
+inline Mesh nullMesh;
 struct MeshRendererComponent {
 
-	MeshRendererComponent();
-	MeshRendererComponent(Mesh& mesh);
+	MeshRendererComponent() : mesh(nullMesh) {};
+	MeshRendererComponent(Mesh& mesh) : mesh(mesh) {};
 
 	Mesh& mesh; // Mesh render target
 
@@ -31,21 +32,15 @@ struct MeshRendererComponent {
 
 struct CameraComponent {
 
-	CameraComponent();
-
-	float fov; // Cameras y fov in degrees
-	float near; // Near clipping
-	float far; // Far clipping
+	float fov = 70.0f; // Cameras y fov in degrees
+	float near = 0.3f; // Near clipping
+	float far = 1000.0f; // Far clipping
 
 };
 
 struct VelocityComponent {
 
-	VelocityComponent();
-
-	float intensity; // Velocity impact
-
-	// Matrix cache
-	glm::mat4 lastModel;
+	float intensity = 1.0f; // Velocity impact
+	glm::mat4 lastModel = glm::mat4(1.0f); // Model matrix cache
 
 };
