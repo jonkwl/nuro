@@ -53,25 +53,6 @@ namespace UIComponents {
 		}
 	}
 
-	bool buttonBig(std::string label, std::string _tooltip)
-	{
-		bool pressed = false;
-
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
-		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
-
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, UIUtils::darken(EditorUI::getColors().elementActive, 0.3f));
-
-		pressed = ImGui::Button(label.c_str());
-
-		tooltip(_tooltip);
-
-		ImGui::PopStyleVar(2);
-		ImGui::PopStyleColor();
-
-		return pressed;
-	}
-
 	void toggleButton(std::string label, bool& value, std::string _tooltip)
 	{
 		ImVec4 inactiveButtonColor = UIUtils::darken(EditorUI::getColors().elementActive, 0.6f);
@@ -100,6 +81,39 @@ namespace UIComponents {
 		ImGui::PopID();
 		ImGui::PopStyleVar(3);
 		ImGui::PopStyleColor(4);
+	}
+
+	bool buttonBig(std::string label, std::string _tooltip)
+	{
+		bool pressed = false;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
+
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, UIUtils::darken(EditorUI::getColors().elementActive, 0.3f));
+
+		pressed = ImGui::Button(label.c_str());
+
+		tooltip(_tooltip);
+
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor();
+
+		return pressed;
+	}
+
+	bool buttonBig(std::string label, ImVec4 color, std::string _tooltip)
+	{
+		bool pressed = false;
+		
+		ImGui::PushStyleColor(ImGuiCol_Button, color);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, UIUtils::lighten(color, 0.2f)); // Optional: make hover slightly lighter
+		
+		pressed = buttonBig(label, _tooltip);
+		
+		ImGui::PopStyleColor(2);
+		
+		return pressed;
 	}
 
 	void label(std::string text)

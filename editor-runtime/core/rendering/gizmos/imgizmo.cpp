@@ -202,11 +202,20 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		// Calculate MVP matrix
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
+		// Calculate icon alpha based on distance to camera
+		float alpha = 0.35f;
+		float minDistance = 0.5f;
+		float maxDistance = 2.5f;
+		float distance = glm::distance(gizmoPosition, cameraPosition);
+		if (distance < maxDistance) {
+			alpha = glm::mix(0.0f, alpha, glm::smoothstep(minDistance, maxDistance, distance));
+		}
+
 		// Set material uniforms
 		staticData.iconShader->setMatrix4("mvpMatrix", mvpMatrix);
 		staticData.iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 		staticData.iconShader->setVec3("tint", glm::vec3(1.0f));
-		staticData.iconShader->setFloat("alpha", 0.35f);
+		staticData.iconShader->setFloat("alpha", alpha);
 
 		// Get mesh
 		Mesh& mesh = getMesh(Shape::PLANE);

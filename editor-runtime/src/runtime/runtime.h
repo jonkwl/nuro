@@ -2,7 +2,6 @@
 
 #include "../src/pipelines/game_view_pipeline.h"
 #include "../src/pipelines/scene_view_pipeline.h"
-#include "../core/physics/core/physics_controller.h"
 
 class ShadowDisk;
 class ShadowMap;
@@ -10,8 +9,8 @@ class ShadowMap;
 namespace Runtime
 {
 	// Base functions
-	int32_t START_LOOP(); // Main loop 
-	void TERMINATE(); // Terminate and exit
+	int START_LOOP(); // Main loop 
+	int TERMINATE(); // Terminate and exit
 
 	// Game functions
 	void startGame();
@@ -21,9 +20,6 @@ namespace Runtime
 	// Pipelines getters
 	SceneViewPipeline& getSceneViewPipeline();
 	GameViewPipeline& getGameViewPipeline();
-
-	// Physics getters
-	PhysicsController& getPhysicsController();
 
 	// Shadow getters
 	ShadowDisk* getMainShadowDisk();

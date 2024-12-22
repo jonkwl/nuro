@@ -14,8 +14,10 @@ namespace UIComponents
 {
 	void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool zeroMargin = false);
 	void tooltip(std::string tooltip);
-	bool buttonBig(std::string label, std::string tooltip = "");
 	void toggleButton(std::string label, bool& value, std::string tooltip = "");
+
+	bool buttonBig(std::string label, std::string tooltip = "");
+	bool buttonBig(std::string label, ImVec4 color, std::string tooltip = "");
 
 	void label(std::string text);
 	void label(std::string text, ImVec4 color);

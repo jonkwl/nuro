@@ -20,7 +20,8 @@ class SceneViewPipeline
 public:
 	SceneViewPipeline();
 
-	void setup(); // Setup scene view pipeline
+	void create(); // Create scene view pipeline
+	void destroy(); // Destroy scene view pipeline
 
 	void tryRender(); // Renders scene view if conditions are met
 

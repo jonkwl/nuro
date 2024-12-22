@@ -20,7 +20,9 @@ void setup() {
 	entity cube = ECS::createEntity();
 	TransformComponent& cubeTransform = ECS::addComponent<TransformComponent>(cube);
 	ECS::addComponent<MeshRendererComponent>(cube, cubeMesh);
-	cubeTransform.position = glm::vec3(0.0f, 0.0f, 8.0f);
+	cubeTransform.position = glm::vec3(0.0f, 0.0f, 14.0f);
+	ECS::addComponent<BoxColliderComponent>(cube);
+	ECS::addComponent<RigidbodyComponent>(cube);
 
 }
 

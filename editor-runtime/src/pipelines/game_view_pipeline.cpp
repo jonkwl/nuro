@@ -29,10 +29,16 @@ velocityOutput(0)
 {
 }
 
-void GameViewPipeline::setup()
+void GameViewPipeline::create()
 {
 	// Create passes
 	createPasses();
+}
+
+void GameViewPipeline::destroy()
+{
+	// Destroy passes
+	destroyPasses();
 }
 
 void GameViewPipeline::tryRender()

@@ -48,7 +48,7 @@ void DiagnosticsWindow::render()
 
 	ImVec4 low = ImVec4(1.0f, 0.0f, 0.5f, 1.0f);
 	ImVec4 high = ImVec4(0.0f, 1.0f, 0.5f, 1.0f);
-	ImVec4 color = UIUtils::lerpColors(low, high, remap(0.0f, maxValue, 0.0f, 1.0f, Diagnostics::getFps()));
+	ImVec4 color = UIUtils::lerpColors(low, high, glm::clamp((Diagnostics::getFps() - 0.0f) / (maxValue - 0.0f), 0.0f, 1.0f));
 	ImVec2 size = ImVec2(120.0f, 40.0f);
 	UIComponents::sparklineGraph("##spark", data, values, 0.0f, maxValue, 0.0f, color, size);
 
@@ -77,10 +77,4 @@ void DiagnosticsWindow::render()
 	UIComponents::indicatorLabel("UI Pass:", Profiler::get("ui_pass"), "ms");
 
 	ImGui::End();
-}
-
-float DiagnosticsWindow::remap(float old_min, float old_max, float new_min, float new_max, float value)
-{
-	value = glm::clamp(value, old_min, old_max);
-	return new_min + (value - old_min) * (new_max - new_min) / (old_max - old_min);
 }

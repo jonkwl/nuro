@@ -14,6 +14,4 @@ public:
 private:
 	std::deque<float> fpsCache;
 	float fpsUpdateTimer;
-
-	float remap(float old_min, float old_max, float new_min, float new_max, float value);
 };

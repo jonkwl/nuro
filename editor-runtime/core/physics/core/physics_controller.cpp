@@ -1,5 +1,9 @@
 #include "physics_controller.h"
 
+#include "../core/ecs/ecs_collection.h"
+
+#include "../core/utils/log.h"
+
 using namespace physx;
 
 PhysicsController::PhysicsController() : allocator(),
@@ -48,6 +52,10 @@ void PhysicsController::create()
 	// tmp
 	defaultMaterial->setRestitution(0.4f);
 
+	// tmp
+	exampleRigidbody = createDynamicBox(PxVec3(0.0f, 0.0f, 14.0f));
+	createStaticPlane(PxVec3(0.0f, 1.0f, 0.0f), 6.0f);
+
 }
 
 void PhysicsController::destroy()
@@ -66,13 +74,9 @@ void PhysicsController::destroy()
 void PhysicsController::step(float delta)
 {
 	accumulatedTime += delta;
-
 	while (accumulatedTime >= timeStep) {
-
-		scene->simulate(timeStep);
-		scene->fetchResults(true);
+		simulate();
 		accumulatedTime -= timeStep;
-
 	}
 }
 
@@ -81,7 +85,7 @@ const physx::PxMaterial* PhysicsController::getDefaultMaterial() const
 	return defaultMaterial;
 }
 
-PxRigidStatic* PhysicsController::createStaticPlane(PxVec3 xyz, float distance) {
+physx::PxRigidActor* PhysicsController::createStaticPlane(PxVec3 xyz, float distance) {
 	PxRigidStatic* plane = PxCreatePlane(*physics, PxPlane(xyz.x, xyz.y, xyz.z, distance), *defaultMaterial);
 
 	scene->addActor(*plane);
@@ -89,7 +93,7 @@ PxRigidStatic* PhysicsController::createStaticPlane(PxVec3 xyz, float distance) 
 	return plane;
 }
 
-PxRigidDynamic* PhysicsController::createDynamicBox(PxVec3 position, PxQuat rotation, PxVec3 size)
+physx::PxRigidActor* PhysicsController::createDynamicBox(PxVec3 position, PxQuat rotation, PxVec3 size)
 {
 	PxShape* shape = physics->createShape(PxBoxGeometry(size / 2), *defaultMaterial);
 	PxRigidDynamic* body = physics->createRigidDynamic(PxTransform(position, rotation));
@@ -98,4 +102,19 @@ PxRigidDynamic* PhysicsController::createDynamicBox(PxVec3 position, PxQuat rota
 	scene->addActor(*body);
 	shape->release();
 	return body;
+}
+
+void PhysicsController::simulate()
+{
+	// Simulate physics
+	scene->simulate(timeStep);
+	scene->fetchResults(true);
+
+	// Update rigidbody transform components
+	auto view = ECS::registry.view<TransformComponent, RigidbodyComponent>();
+	for (auto [entity, transform, rigidbody] : view.each()) {
+		PxTransform globalPose = exampleRigidbody->getGlobalPose();
+		transform.position = glm::vec3(globalPose.p.x, globalPose.p.y, globalPose.p.z);
+		transform.rotation = glm::quat(globalPose.q.x, globalPose.q.y, globalPose.q.z, globalPose.q.w);
+	}
 }

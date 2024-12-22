@@ -57,7 +57,7 @@ void GameWindow::renderToolbar()
 	{
 		if (gameRunning) {
 			UIComponents::toggleButton(ICON_FA_PAUSE, tmp, "Pause");
-			if (UIComponents::buttonBig(ICON_FA_STOP, "Stop")) {
+			if (UIComponents::buttonBig(ICON_FA_STOP, ImVec4(0.0f, 0.4f, 0.85f, 1.0f), "Stop")) {
 				Runtime::stopGame();
 			}
 			UIComponents::toggleButton(ICON_FA_FORWARD_STEP, tmp, "Step");

@@ -18,7 +18,8 @@ class GameViewPipeline
 public:
 	GameViewPipeline();
 
-	void setup(); // Setup game view pipeline
+	void create(); // Create game view pipeline
+	void destroy(); // Destroy game view pipeline
 
 	void tryRender(); // Renders game view if conditions are met
 

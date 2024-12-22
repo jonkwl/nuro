@@ -7,16 +7,22 @@ class PhysicsController
 public:
 	PhysicsController();
 
-	void create();
-	void destroy();
+	void create(); // Create physics
+	void destroy(); // Destroy physics
 
-	void step(float delta);
+	void step(float delta); // Steps physics and performs simulation iterations
 
 	const physx::PxMaterial* getDefaultMaterial() const;
 
 public:
-	physx::PxRigidStatic* createStaticPlane(physx::PxVec3 xyz, float distance);
-	physx::PxRigidDynamic* createDynamicBox(physx::PxVec3 position, physx::PxQuat rotation, physx::PxVec3 size);
+	physx::PxRigidActor* createStaticPlane(physx::PxVec3 xyz, float distance); // Creates a static rigidbody with a plane collider
+	physx::PxRigidActor* createDynamicBox(physx::PxVec3 position, physx::PxQuat rotation = physx::PxIdentity, physx::PxVec3 size = physx::PxVec3(1.0f)); // Creates a dynamic rigidbody with a box collider
+
+private:
+	void simulate(); // Simulates physics iteration
+
+	// tmp
+	physx::PxRigidActor* exampleRigidbody = nullptr;
 
 private:
 	physx::PxDefaultAllocator allocator;

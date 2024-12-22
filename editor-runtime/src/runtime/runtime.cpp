@@ -40,7 +40,7 @@ namespace Runtime {
 	GameViewPipeline gGameViewPipeline;
 
 	// Physics
-	PhysicsController gPhysicsController;
+	PhysicsController gGamePhysicsController;
 
 	// Shadow
 	ShadowDisk* gMainShadowDisk = nullptr;
@@ -155,12 +155,12 @@ namespace Runtime {
 		Input::setContext(gWindow);
 		Cursor::setContext(gWindow);
 
-		// Setup pipelines
-		gSceneViewPipeline.setup();
-		gGameViewPipeline.setup();
+		// Create pipelines
+		gSceneViewPipeline.create();
+		gGameViewPipeline.create();
 
-		// Create physics instance
-		gPhysicsController.create();
+		// Create game physics instance
+		gGamePhysicsController.create();
 
 		// Create primitives
 		Quad::create();
@@ -232,8 +232,8 @@ namespace Runtime {
 		// UPDATE GAME LOGIC
 		update();
 
-		// STEP PHYSICS
-		gPhysicsController.step(Time::deltaf());
+		// STEP GAME PHYSICS
+		gGamePhysicsController.step(Time::deltaf());
 
 		// SET SCENE VIEW PIPELINE TO UPDATED
 		gSceneViewPipeline.setUpdated();
@@ -246,7 +246,7 @@ namespace Runtime {
 	//
 	//
 
-	int32_t START_LOOP()
+	int START_LOOP()
 	{
 		// CREATE CONTEXT AND LOAD GRAPHICS API //
 		Log::printProcessStart("Runtime", "Creating context...");
@@ -284,22 +284,27 @@ namespace Runtime {
 
 		// Exit application
 
-		glfwTerminate();
-		return 0;
+		return TERMINATE();
 	}
 
-	void TERMINATE()
+	int TERMINATE()
 	{
-		// Should destroy pipelines here
-		gPhysicsController.destroy();
+		// Destroy all instances
+		gSceneViewPipeline.destroy();
+		gGameViewPipeline.destroy();
+		gGamePhysicsController.destroy();
 
+		// Destroy context
 		if (gWindow != nullptr)
 		{
 			glfwDestroyWindow(gWindow);
 			glfwTerminate();
 		}
 
+		// Exit application
 		std::exit(0);
+
+		return 0;
 	}
 
 	void startGame()
@@ -343,7 +348,7 @@ namespace Runtime {
 
 	PhysicsController& getPhysicsController()
 	{
-		return gPhysicsController;
+		return gGamePhysicsController;
 	}
 
 	ShadowDisk* getMainShadowDisk()

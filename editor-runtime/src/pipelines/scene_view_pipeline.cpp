@@ -36,7 +36,7 @@ updated(false)
 {
 }
 
-void SceneViewPipeline::setup()
+void SceneViewPipeline::create()
 {
 	// Setup quick gizmo
 	imGizmo.setup();
@@ -56,6 +56,12 @@ void SceneViewPipeline::setup()
 
 	// Create passes
 	createPasses();
+}
+
+void SceneViewPipeline::destroy()
+{
+	// Destroy passes
+	destroyPasses();
 }
 
 void SceneViewPipeline::tryRender()
