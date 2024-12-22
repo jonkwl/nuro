@@ -3,9 +3,9 @@
 #include "../core/engine.h";
 #include "../src/runtime/runtime.h"
 
-uint32_t camera;
-uint32_t cube;
-uint32_t sphere;
+entity camera;
+entity cube;
+entity sphere;
 
 void setup() {
 

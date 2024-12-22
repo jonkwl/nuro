@@ -6,7 +6,6 @@
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/core/transformation.h"
-#include "../core/ecs/ecs_collection.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -111,7 +110,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint32_t selected)
+uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint16_t nSelected, entity selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -159,7 +158,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	}
 
 	// Render selected entity with outline
-	if (selected) {
+	if (nSelected) {
 		renderSelectedEntity(selected, viewProjection);
 	}
 
@@ -220,7 +219,7 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 }
 
-void SceneViewForwardPass::renderSelectedEntity(uint32_t entity, const glm::mat4& viewProjection)
+void SceneViewForwardPass::renderSelectedEntity(entity entity, const glm::mat4& viewProjection)
 {
 	TransformComponent& transform = ECS::getComponent<TransformComponent>(entity);
 	MeshRendererComponent& renderer = ECS::getComponent<MeshRendererComponent>(entity);

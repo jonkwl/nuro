@@ -128,7 +128,7 @@ void SceneViewPipeline::render()
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.setSkybox(Runtime::getGameViewPipeline().getSkybox());
 	sceneViewForwardPass.drawQuickGizmos = showGizmos;
-	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0);
+	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0, entity());
 	Profiler::stop("forward_pass");
 
 	//

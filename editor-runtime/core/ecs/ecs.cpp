@@ -2,17 +2,17 @@
 
 namespace ECS {
 
-	uint32_t createEntity()
+	entity createEntity()
 	{
 		return registry.create();
 	}
 
-	void destroyEntity(uint32_t entity)
+	void destroyEntity(entity entity)
 	{
 		registry.destroy(entity);
 	}
 
-	bool verifyEntity(uint32_t entity)
+	bool verifyEntity(entity entity)
 	{
 		return registry.valid(entity);
 	}
@@ -29,8 +29,8 @@ namespace ECS {
 	RegistryState captureState()
 	{
 		RegistryState state;
-		entt::basic_snapshot{ registry }
-			.get<uint32_t>(state)
+		entt::snapshot{ registry }
+			.get<entity>(state)
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
 			.get<CameraComponent>(state);
@@ -42,8 +42,8 @@ namespace ECS {
 	{
 		registry.clear();
 
-		entt::basic_snapshot_loader{ registry }
-			.get<uint32_t>(state)
+		entt::snapshot_loader{ registry }
+			.get<entity>(state)
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
 			.get<CameraComponent>(state);

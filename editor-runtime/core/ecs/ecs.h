@@ -8,39 +8,41 @@
 #include "../core/ecs/registry_state.h"
 #include "../core/ecs/composed.h"
 
+using entity = entt::entity;
+
 namespace ECS {
 
 	//
 	// GLOBAL REGISTRY
 	//
 
-	inline entt::basic_registry<uint32_t> registry;
+	inline entt::registry registry;
 
 	//
 	// ENTITY RELATED FUNCTIONS
 	//
 
-	uint32_t createEntity();
-	void destroyEntity(uint32_t entity);
-	bool verifyEntity(uint32_t entity);
+	entity createEntity();
+	void destroyEntity(entity entity);
+	bool verifyEntity(entity entity);
 
 	template<typename T, typename... Args>
-	T& addComponent(uint32_t entity, Args&&... args) {
+	T& addComponent(entity entity, Args&&... args) {
 		return ECS::registry.emplace<T>(entity, std::forward<Args>(args)...);
 	}
 
 	template<typename T>
-	T& getComponent(uint32_t entity) {
+	T& getComponent(entity entity) {
 		return ECS::registry.get<T>(entity);
 	}
 
 	template<typename T>
-	bool hasComponent(uint32_t entity) {
+	bool hasComponent(entity entity) {
 		return ECS::registry.any_of<T>(entity);
 	}
 
 	template<typename T>
-	void removeComponent(uint32_t entity) {
+	void removeComponent(entity entity) {
 		ECS::registry.remove<T>(entity);
 	}
 
