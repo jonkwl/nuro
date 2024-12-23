@@ -1,6 +1,9 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
+#include <glm.hpp>
+
+#include "../core/physics/observer/physics_observer.hpp"
 
 class PhysicsController
 {
@@ -14,17 +17,17 @@ public:
 
 	const physx::PxMaterial* getDefaultMaterial() const;
 
-public:
-	physx::PxRigidActor* createStaticPlane(physx::PxVec3 xyz, float distance); // Creates a static rigidbody with a plane collider
-	physx::PxRigidActor* createDynamicBox(physx::PxVec3 position, physx::PxQuat rotation = physx::PxIdentity, physx::PxVec3 size = physx::PxVec3(1.0f)); // Creates a dynamic rigidbody with a box collider
-
-	physx::PxRigidActor* tmpGetExampleRigidbody() const;
-
 private:
-	void simulate(); // Simulates physics iteration
+	void simulate(float delta); // Simulates physics iteration
 
-	// tmp
-	physx::PxRigidActor* exampleRigidbody = nullptr;
+	// Apply transform of physics rigidbody on given rigidbody component
+	void syncRigidbodyComponent(RigidbodyComponent& rigidbody);
+
+	// Apply position and rotation of given rigidbody component to given transform component
+	void syncTransformComponent(float delta, TransformComponent& transform, RigidbodyComponent& rigidbody);
+
+	glm::vec3 interpolate(glm::vec3 lastPosition, glm::vec3 position, float factor);
+	glm::quat interpolate(glm::quat lastRotation, glm::quat rotation, float factor);
 
 private:
 	physx::PxDefaultAllocator allocator;
@@ -35,6 +38,8 @@ private:
 	physx::PxScene* scene;
 	physx::PxPvd* pvd;
 	physx::PxMaterial* defaultMaterial;
+
+	PhysicsObserver observer;
 
 private:
 	const physx::PxReal timeStep;

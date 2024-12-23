@@ -34,7 +34,7 @@ void HierarchyWindow::renderSearch(ImDrawList& drawList)
 void HierarchyWindow::renderItems(ImDrawList& drawList)
 {
 
-	auto transforms = ECS::registry.view<TransformComponent>();
+	auto transforms = ECS::gRegistry.view<TransformComponent>();
 	uint32_t i = 0;
 	for (auto [entity, transform] : transforms.each()) {
 

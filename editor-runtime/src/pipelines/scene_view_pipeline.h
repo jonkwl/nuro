@@ -12,8 +12,8 @@
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/ecs/components.h"
-#include "../core/ecs/composed.h"
+#include "../core/ecs/components.hpp"
+#include "../core/ecs/composed.hpp"
 
 class SceneViewPipeline
 {

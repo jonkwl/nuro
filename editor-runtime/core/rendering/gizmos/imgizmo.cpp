@@ -31,9 +31,8 @@ void IMGizmo::setup()
 		staticData.iconShader = ShaderPool::get("gizmo_icon");
 
 		staticData.planeMesh = Model::load("../resources/primitives/plane.fbx")->getMesh(0);
-		staticData.cubeMesh = Model::load("../resources/primitives/cube.fbx")->getMesh(0);
+		staticData.boxMesh = createWireframeBox(); // tmp solution for drawing line based meshes, move to shaders later
 		staticData.sphereMesh = Model::load("../resources/primitives/sphere.fbx")->getMesh(0);
-
 	}
 }
 
@@ -94,7 +93,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		// Render mesh
 		Mesh& mesh = getMesh(gizmo.shape);
 		glBindVertexArray(mesh.getVAO());
-		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Re-Enable depth testing if gizmo was in foreground
 		if (gizmo.state.foreground) {
@@ -248,7 +247,7 @@ Mesh& IMGizmo::getMesh(Shape shape)
 	case Shape::PLANE:
 		return staticData.planeMesh;
 	case Shape::BOX:
-		return staticData.cubeMesh;
+		return staticData.boxMesh;
 		break;
 	case Shape::SPHERE:
 		return staticData.sphereMesh;
@@ -305,4 +304,33 @@ float IMGizmo::get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3
 		alpha = glm::mix(0.0f, alpha, glm::smoothstep(minDistance, maxDistance, distance));
 	}
 	return alpha;
+}
+
+Mesh IMGizmo::createWireframeBox() // tmp
+{
+
+#define zeroVec2 glm::vec2(0.0f)
+#define zeroVec3 glm::vec3(0.0f)
+
+	// Define the 8 vertices of a unit cube (centered at origin)
+	std::vector<Mesh::VertexData> vertices = {
+		{glm::vec3(-1.0f, -1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},  // 0
+		{glm::vec3(1.0f, -1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 1
+		{glm::vec3(1.0f,  1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 2
+		{glm::vec3(-1.0f,  1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},  // 3
+		{glm::vec3(-1.0f, -1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},  // 4
+		{glm::vec3(1.0f, -1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 5
+		{glm::vec3(1.0f,  1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 6
+		{glm::vec3(-1.0f,  1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3}   // 7
+	};
+
+	// Define the indices for the wireframe (lines between vertices)
+	std::vector<uint32_t> indices = {
+		0, 1, 1, 2, 2, 3, 3, 0, // Bottom face (edges)
+		4, 5, 5, 6, 6, 7, 7, 4, // Top face (edges)
+		0, 4, 1, 5, 2, 6, 3, 7  // Side edges
+	};
+
+	// Create and return the Mesh with materialIndex = 0
+	return Mesh(vertices, indices, 0);
 }

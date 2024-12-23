@@ -5,7 +5,7 @@
 #include <glm.hpp>
 
 #include "../core/rendering/texture/texture.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 
 class Shader;
 class Model;
@@ -28,11 +28,11 @@ public:
 	bool foreground; // If gizmo should always be in foreground
 
 	// Shapes
-	void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::quat());
-	void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::quat());
+	void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
+	void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void sphere(glm::vec3 position, float radius = 0.5f);
-	void planeWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::quat());
-	void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::quat());
+	void planeWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
+	void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void sphereWire(glm::vec3 position, float radius = 0.5f);
 
 	// Icons
@@ -49,7 +49,7 @@ private:
 		Shader* iconShader;
 
 		Mesh planeMesh;
-		Mesh cubeMesh;
+		Mesh boxMesh;
 		Mesh sphereMesh;
 	};
 
@@ -116,4 +116,6 @@ private:
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
 	float get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition); // Gets the alpha of a 3D icon based on its distance to the camera
+
+	Mesh createWireframeBox();
 };

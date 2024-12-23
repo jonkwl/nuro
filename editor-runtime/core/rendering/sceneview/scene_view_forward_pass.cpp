@@ -147,7 +147,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
 	// Render each entity
-	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 
 		// Skip if target entity is selected entity

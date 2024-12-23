@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 
 namespace Transform
 {

@@ -11,13 +11,12 @@ struct TransformComponent {
 
 	// Transform data
 	glm::vec3 position = glm::vec3(0.0f);
-	glm::quat rotation = glm::quat();
+	glm::quat rotation = glm::identity<glm::quat>();
 	glm::vec3 scale = glm::vec3(1.0f);
 
 	// Matrix cache
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 mvp = glm::mat4(1.0f);
-
 
 };
 
@@ -71,11 +70,19 @@ struct RigidbodyComponent {
 		STATIC
 	};
 
+	enum class Interpolation {
+		NONE,
+		INTERPOLATE
+	};
+
 	Type type = Type::DYNAMIC; // Rigidbody type
+	Interpolation interpolation = Interpolation::INTERPOLATE; // Rigidbody interpolation
 	float mass = 0.0f; // Rigidbody mass
 	bool useGravity = true; // Gets affected by gravity if set
 
 	glm::vec3 velocity = glm::vec3(0.0f); // Current velocity
+	glm::vec3 position = glm::vec3(0.0f); // Current position
+	glm::quat rotation = glm::identity<glm::quat>(); // Current rotation
 
 	physx::PxRigidActor* actor = nullptr; // Actor handle
 

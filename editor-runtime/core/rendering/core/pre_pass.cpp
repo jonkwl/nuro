@@ -104,7 +104,7 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	prePassShader->bind();
 
 	// Pre pass render each entity
-	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		// Recalculate transforms matrix cache for all upcoming passes of current frame
 		transform.model = Transformation::model(transform);

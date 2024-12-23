@@ -77,7 +77,7 @@ void ShadowMap::render()
 
 	shadowPassShader->bind();
 
-	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		// Bind mesh
 		glBindVertexArray(renderer.mesh.getVAO());

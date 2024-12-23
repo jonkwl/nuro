@@ -8,7 +8,7 @@
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/texture/texture.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 
 class ShadowDisk;
 class ShadowMap;

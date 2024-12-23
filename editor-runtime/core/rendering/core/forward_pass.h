@@ -8,7 +8,7 @@
 #include "../core/rendering/gizmos/imgizmo.h"
 #include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/lit/lit_material.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 
 class Skybox;
 

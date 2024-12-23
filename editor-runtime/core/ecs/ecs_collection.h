@@ -2,7 +2,7 @@
 
 // Collection of ecs related includes
 #include <entt.hpp>
-#include "../core/ecs/registry_state.h"
-#include "../core/ecs/components.h"
-#include "../core/ecs/composed.h"
+#include "../core/ecs/registry_state.hpp"
+#include "../core/ecs/components.hpp"
+#include "../core/ecs/composed.hpp"
 #include "../core/ecs/ecs.h"

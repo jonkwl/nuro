@@ -10,6 +10,7 @@
 
 #include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
+#include "../src/collection/editor_gizmo_color.h"
 
 // initialize with users editor settings later
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
@@ -183,22 +184,18 @@ void SceneViewPipeline::render()
 	gizmos.opacity = 0.08f;
 	gizmos.icon3d(IconPool::get("light_gizmo"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.5f));
 
-	// Render collider gizmos (tmp boilerplate)
-	auto boxColliders = ECS::registry.view<TransformComponent, BoxColliderComponent>();
+	// Render box collider gizmos (tmp boilerplate)
+	auto boxColliders = ECS::gRegistry.view<TransformComponent, BoxColliderComponent>();
 	for (auto [entity, transform, collider] : boxColliders.each()) {
-		physx::PxShape* shapeBuffer[1];
-		physx::PxU32 shapeCount = Runtime::getGamePhysics().tmpGetExampleRigidbody()->getShapes(shapeBuffer, 1);
-		if (shapeCount > 0) {
-			physx::PxShape* shape = shapeBuffer[0];
-			const physx::PxGeometry& geometry = shape->getGeometry();
-			const physx::PxBoxGeometry& boxGeometry = static_cast<const physx::PxBoxGeometry&>(geometry);
-			glm::vec3 size = glm::vec3(boxGeometry.halfExtents.x * 2, boxGeometry.halfExtents.y * 2, boxGeometry.halfExtents.z * 2);
-			IMGizmo& gizmos = Runtime::getSceneGizmos();
-			gizmos.foreground = true;
-			gizmos.color = GizmoColor::LIGHT_DARK_GREEN;
-			gizmos.opacity = 0.1f;
-			gizmos.boxWire(transform.position, size, transform.rotation);
-		}
+		if (!collider.shape) continue;
+		const physx::PxGeometry& geometry = collider.shape->getGeometry();
+		const physx::PxBoxGeometry& boxGeometry = static_cast<const physx::PxBoxGeometry&>(geometry);
+		glm::vec3 size = glm::vec3(boxGeometry.halfExtents.x * 2, boxGeometry.halfExtents.y * 2, boxGeometry.halfExtents.z * 2);
+		IMGizmo& gizmos = Runtime::getSceneGizmos();
+		gizmos.foreground = true;
+		gizmos.color = EditorGizmoColor::COLLIDER;
+		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
+		gizmos.boxWire(transform.position, size, transform.rotation);
 	}
 
 	//

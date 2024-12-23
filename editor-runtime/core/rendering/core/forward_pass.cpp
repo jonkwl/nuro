@@ -151,7 +151,7 @@ uint32_t ForwardPass::render(const glm::mat4& view, const glm::mat4& projection,
 	defaultMaterial->bind();
 
 	// Render each entity
-	auto targets = ECS::registry.view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		renderMesh(transform, renderer, defaultMaterial);
 	}

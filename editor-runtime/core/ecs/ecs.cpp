@@ -2,23 +2,25 @@
 
 namespace ECS {
 
-	entity createEntity()
+	std::tuple<entity, TransformComponent&> createEntity()
 	{
-		return registry.create();
+		entity newEntity = gRegistry.create();
+		TransformComponent& newTransform = addComponent<TransformComponent>(newEntity);
+		return { newEntity, newTransform };
 	}
 
 	void destroyEntity(entity entity)
 	{
-		registry.destroy(entity);
+		gRegistry.destroy(entity);
 	}
 
 	bool verifyEntity(entity entity)
 	{
-		return registry.valid(entity);
+		return gRegistry.valid(entity);
 	}
 
 	std::optional<Camera> getLatestCamera() {
-		auto group = registry.group<TransformComponent>(entt::get<CameraComponent>);
+		auto group = gRegistry.group<TransformComponent>(entt::get<CameraComponent>);
 		for (auto entity : group) {
 			auto[transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 			return Camera(transform, camera);
@@ -29,7 +31,7 @@ namespace ECS {
 	RegistryState captureState()
 	{
 		RegistryState state;
-		entt::snapshot{ registry }
+		entt::snapshot{ gRegistry }
 			.get<entity>(state)
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
@@ -40,9 +42,9 @@ namespace ECS {
 
 	void loadState(RegistryState& state)
 	{
-		registry.clear();
+		gRegistry.clear();
 
-		entt::snapshot_loader{ registry }
+		entt::snapshot_loader{ gRegistry }
 			.get<entity>(state)
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
