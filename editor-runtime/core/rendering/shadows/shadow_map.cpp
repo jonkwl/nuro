@@ -59,7 +59,12 @@ void ShadowMap::render()
 
 	// Example directional light
 	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
-	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
+	// glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
+	
+	// tmp
+	glm::vec3 directionalPosition = glm::vec3(80.0f, 80.0f, -80.0f);
+	boundsWidth = 100.0f;
+	boundsHeight = 100.0f;
 
 	// Get shadow map view and projection
 	glm::mat4 projection = Transformation::lightProjection(boundsWidth, boundsHeight, near, far);

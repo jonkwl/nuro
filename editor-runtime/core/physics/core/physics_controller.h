@@ -3,7 +3,7 @@
 #include <PxPhysicsAPI.h>
 #include <glm.hpp>
 
-#include "../core/physics/observer/physics_observer.hpp"
+#include "../core/physics/events/physics_observer.hpp"
 
 class PhysicsController
 {
@@ -14,8 +14,6 @@ public:
 	void destroy(); // Destroy physics
 
 	void step(float delta); // Steps physics and performs simulation iterations
-
-	const physx::PxMaterial* getDefaultMaterial() const;
 
 private:
 	void simulate(float delta); // Simulates physics iteration
@@ -37,7 +35,6 @@ private:
 	physx::PxDefaultCpuDispatcher* dispatcher;
 	physx::PxScene* scene;
 	physx::PxPvd* pvd;
-	physx::PxMaterial* defaultMaterial;
 
 	PhysicsObserver observer;
 

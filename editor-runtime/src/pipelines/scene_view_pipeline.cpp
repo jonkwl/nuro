@@ -1,15 +1,16 @@
 #include "scene_view_pipeline.h"
 
-#include "../core/input/input.h"
-#include "../core/rendering/core/transformation.h"
 #include "../core/utils/log.h"
+#include "../core/input/input.h"
+#include "../core/physics/physics.h"
 #include "../core/diagnostics/profiler.h"
-#include "../core/rendering/material/lit/lit_material.h"
-#include "../core/rendering/culling/bounding_volume.h"
 #include "../core/rendering/shadows/shadow_map.h"
+#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/culling/bounding_volume.h"
+#include "../core/rendering/material/lit/lit_material.h"
 
-#include "../src/ui/windows/scene_window.h"
 #include "../src/runtime/runtime.h"
+#include "../src/ui/windows/scene_window.h"
 #include "../src/collection/editor_gizmo_color.h"
 
 // initialize with users editor settings later
@@ -185,17 +186,22 @@ void SceneViewPipeline::render()
 	gizmos.icon3d(IconPool::get("light_gizmo"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.5f));
 
 	// Render box collider gizmos (tmp boilerplate)
+	gizmos.foreground = false;
+	gizmos.color = EditorGizmoColor::COLLIDER;
+	gizmos.opacity = EditorGizmoColor::COLLIDER.a;
 	auto boxColliders = ECS::gRegistry.view<TransformComponent, BoxColliderComponent>();
 	for (auto [entity, transform, collider] : boxColliders.each()) {
 		if (!collider.shape) continue;
-		const physx::PxGeometry& geometry = collider.shape->getGeometry();
-		const physx::PxBoxGeometry& boxGeometry = static_cast<const physx::PxBoxGeometry&>(geometry);
-		glm::vec3 size = glm::vec3(boxGeometry.halfExtents.x * 2, boxGeometry.halfExtents.y * 2, boxGeometry.halfExtents.z * 2);
-		IMGizmo& gizmos = Runtime::getSceneGizmos();
-		gizmos.foreground = true;
-		gizmos.color = EditorGizmoColor::COLLIDER;
-		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
-		gizmos.boxWire(transform.position, size, transform.rotation);
+		const physx::PxBoxGeometry& boxGeometry = static_cast<const physx::PxBoxGeometry&>(collider.shape->getGeometry());
+		gizmos.boxWire(transform.position, PxTranslator::convert(boxGeometry.halfExtents), transform.rotation);
+	}
+
+	// Render sphere collider gizmos (tmp boilerplate)
+	auto sphereColliders = ECS::gRegistry.view<TransformComponent, SphereColliderComponent>();
+	for (auto [entity, transform, collider] : sphereColliders.each()) {
+		if (!collider.shape) continue;
+		const physx::PxSphereGeometry& sphereGeometry = static_cast<const physx::PxSphereGeometry&>(collider.shape->getGeometry());
+		gizmos.sphereWire(transform.position, sphereGeometry.radius, transform.rotation);
 	}
 
 	//

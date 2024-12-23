@@ -65,4 +65,9 @@ namespace Transform {
 		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f)));
 	}
 
+	glm::quat fromEuler(float x, float y, float z)
+	{
+		return glm::quat(glm::vec3(glm::radians(x), glm::radians(y), glm::radians(z)));
+	}
+
 }

@@ -13,8 +13,7 @@ physics(nullptr),
 dispatcher(nullptr),
 scene(nullptr),
 pvd(nullptr),
-defaultMaterial(nullptr),
-observer(physics, scene, defaultMaterial),
+observer(physics, scene),
 timeStep(1.0f / 60.0f),
 gravity(PxVec3(0.0f, -9.81f, 0.0f)),
 accumulatedTime(0.0f)
@@ -46,24 +45,18 @@ void PhysicsController::create()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 
-	// Create default material
-	defaultMaterial = physics->createMaterial(0.6f, 0.6f, 0.0f);
-	defaultMaterial->setFrictionCombineMode(PxCombineMode::eAVERAGE);
-	defaultMaterial->setRestitutionCombineMode(PxCombineMode::eAVERAGE);
+	// Setup observer
+	observer.setup();
 
 	// Register observer events
 	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsObserver::constructBoxCollider>(observer);
 	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsObserver::destroyBoxCollider>(observer);
 
+	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsObserver::constructSphereCollider>(observer);
+	ECS::gRegistry.on_destroy<SphereColliderComponent>().disconnect<&PhysicsObserver::destroySphereCollider>(observer);
+
 	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsObserver::constructRigidbody>(observer);
 	ECS::gRegistry.on_destroy<RigidbodyComponent>().disconnect<&PhysicsObserver::destroyRigidbody>(observer);
-
-	// tmp
-	defaultMaterial->setRestitution(0.4f);
-
-	// tmp
-	PxRigidStatic* plane = PxCreatePlane(*physics, PxPlane(0.0f, 1.0f, 0.0f, 8.0f), *defaultMaterial);
-	scene->addActor(*plane);
 
 }
 
@@ -101,11 +94,6 @@ void PhysicsController::step(float delta)
 	for (auto [entity, transform, rigidbody] : view.each()) {
 		syncTransformComponent(delta, transform, rigidbody);
 	}
-}
-
-const physx::PxMaterial* PhysicsController::getDefaultMaterial() const
-{
-	return defaultMaterial;
 }
 
 void PhysicsController::simulate(float delta)

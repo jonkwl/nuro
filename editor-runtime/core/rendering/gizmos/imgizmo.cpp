@@ -197,9 +197,9 @@ void IMGizmo::box(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::sphere(glm::vec3 position, float radius)
+void IMGizmo::sphere(glm::vec3 position, float radius, glm::quat rotation)
 {
-	ShapeRenderTarget gizmo(Shape::SPHERE, position, glm::vec3(0.0f), glm::vec3(radius * 2), false, getCurrentState());
+	ShapeRenderTarget gizmo(Shape::SPHERE, position, rotation, glm::vec3(radius * 2), false, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
@@ -215,9 +215,9 @@ void IMGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::sphereWire(glm::vec3 position, float radius)
+void IMGizmo::sphereWire(glm::vec3 position, float radius, glm::quat rotation)
 {
-	ShapeRenderTarget gizmo(Shape::SPHERE, position, glm::vec3(0.0f), glm::vec3(radius * 2), true, getCurrentState());
+	ShapeRenderTarget gizmo(Shape::SPHERE, position, rotation, glm::vec3(radius), true, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
@@ -225,11 +225,6 @@ void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& came
 {
 	IconRenderTarget gizmo(icon, position, scale, cameraTransform, getCurrentState());
 	iconRenderStack.push_back(gizmo);
-}
-
-glm::quat IMGizmo::euler(float x, float y, float z)
-{
-	return glm::quat(glm::vec3(glm::radians(x), glm::radians(y), glm::radians(z)));
 }
 
 IMGizmo::RenderState IMGizmo::getCurrentState() {

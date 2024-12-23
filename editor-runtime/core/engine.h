@@ -1,6 +1,8 @@
 #pragma once
 
 // Useful includes for applications using engine
+#include <glm.hpp>
+#include <gtc/quaternion.hpp>
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 #include "../core/input/input.h"

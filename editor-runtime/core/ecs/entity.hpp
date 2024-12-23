@@ -3,7 +3,7 @@
 #include <string>
 
 #include "../core/ecs/ecs.h"
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 
 static inline TransformComponent emptyTransform;
 
@@ -15,6 +15,9 @@ struct Entity {
 
 	// Construct entity with transform in global registry
 	Entity() : registry(ECS::gRegistry), handle(registry.create()), transform(add<TransformComponent>()) {};
+
+	// Construct entity with set values
+	Entity(entt::registry& registry, entt::entity handle, TransformComponent& transform) : registry(registry), handle(handle), transform(transform) {};
 	
 	// Construct empty entity with no instance in global registry
 	Entity(EmptyEntityFlag flag) : registry(ECS::gRegistry), handle(), transform(emptyTransform) {};

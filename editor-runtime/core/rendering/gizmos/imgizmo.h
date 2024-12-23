@@ -5,7 +5,7 @@
 #include <glm.hpp>
 
 #include "../core/rendering/texture/texture.h"
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 
 class Shader;
 class Model;
@@ -30,16 +30,13 @@ public:
 	// Shapes
 	void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
-	void sphere(glm::vec3 position, float radius = 0.5f);
+	void sphere(glm::vec3 position, float radius = 0.5f, glm::quat rotation = glm::identity<glm::quat>());
 	void planeWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
-	void sphereWire(glm::vec3 position, float radius = 0.5f);
+	void sphereWire(glm::vec3 position, float radius = 0.5f, glm::quat rotation = glm::identity<glm::quat>());
 
 	// Icons
 	void icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
-
-public:
-	static glm::quat euler(float x, float y, float z);
 
 private:
 	struct StaticData {

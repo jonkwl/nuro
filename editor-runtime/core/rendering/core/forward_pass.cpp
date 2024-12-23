@@ -80,8 +80,8 @@ void ForwardPass::create(const uint32_t msaaSamples)
 
 	// Create default material
 	defaultMaterial = new LitMaterial();
-	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.75f), 1.0f);
-	defaultMaterial->roughness = 0.3f;
+	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.95f), 1.0f);
+	defaultMaterial->roughness = 0.4f;
 }
 
 void ForwardPass::destroy() {

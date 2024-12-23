@@ -3,7 +3,8 @@
 #include "../core/engine.h";
 
 Entity camera;
-Entity cube;
+Entity ground;
+Entity sphere;
 
 void setup() {
 
@@ -15,10 +16,25 @@ void setup() {
 
 	camera.add<CameraComponent>();
 
-	cube.transform.position = glm::vec3(0.0f, 0.0f, 14.0f);
-	cube.add<MeshRendererComponent>(cubeMesh);
-	cube.add<BoxColliderComponent>();
-	cube.add<RigidbodyComponent>();
+	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
+	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
+	ground.add<MeshRendererComponent>(cubeMesh);
+
+	sphere.transform.position = glm::vec3(3.0f, 5.0f, 19.0f);
+	sphere.add<MeshRendererComponent>(sphereMesh);
+	sphere.add<SphereColliderComponent>();
+	sphere.add<RigidbodyComponent>();
+
+	int objectAmount = 200;
+	for (int x = 0; x < std::sqrt(objectAmount); x++) {
+		for (int y = 0; y < std::sqrt(objectAmount); y++) {
+			Entity e;
+			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
+			e.add<MeshRendererComponent>(cubeMesh);
+			e.add<BoxColliderComponent>();
+			e.add<RigidbodyComponent>();
+		}
+	}
 
 }
 
@@ -32,4 +48,8 @@ void quit()
 }
 
 void update() {
+	float delta = Time::deltaf();
+
+	// camera.transform.position = glm::mix(camera.transform.position, target.transform.position + glm::vec3(0.0f, 0.0f, -5.0f), 10.0f * delta);
+	// camera.transform.rotation = glm::slerp(camera.transform.rotation, Transform::fromEuler(0.0f, 0.0f, 0.0f), 10.0f * delta);
 }

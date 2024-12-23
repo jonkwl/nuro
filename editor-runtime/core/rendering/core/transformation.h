@@ -4,7 +4,7 @@
 #include <glm.hpp>
 
 #include "../core/viewport/viewport.h"
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 
 namespace Transformation
 {

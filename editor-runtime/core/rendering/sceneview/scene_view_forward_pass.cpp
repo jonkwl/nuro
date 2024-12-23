@@ -80,8 +80,8 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 
 	// Create default material
 	defaultMaterial = new LitMaterial();
-	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.75f), 1.0f);
-	defaultMaterial->roughness = 0.3f;
+	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.95f), 1.0f);
+	defaultMaterial->roughness = 0.4f;
 }
 
 void SceneViewForwardPass::destroy() {
@@ -129,9 +129,6 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	// Set viewport
 	glViewport(0, 0, viewport.width, viewport.height);
 
-	// Set wireframe if enabled
-	if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	// Set culling to back face
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -145,6 +142,15 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	glStencilMask(0x00);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+
+	// Set wireframe if enabled
+	if (wireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_CULL_FACE);
+	}
+
+	// Bind material
+	defaultMaterial->bind();
 
 	// Render each entity
 	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
@@ -203,9 +209,6 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	
 	// Bind mesh
 	glBindVertexArray(renderer.mesh.getVAO());
-
-	// Bind material
-	material->bind();
 
 	// Set shader uniforms
 	Shader* shader = material->getShader();

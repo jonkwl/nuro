@@ -210,6 +210,9 @@
     <ClCompile Include="core\physics\utils\px_translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\physics\core\physics_collection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -371,13 +374,13 @@
     <ClInclude Include="core\rendering\icons\icon_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\components.hpp">
+    <ClInclude Include="core\ecs\components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pipelines\game_view_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\composed.hpp">
+    <ClInclude Include="core\ecs\composed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\ecs_collection.h">
@@ -443,13 +446,16 @@
     <ClInclude Include="src\collection\editor_gizmo_color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\observer\physics_observer.hpp">
+    <ClInclude Include="core\physics\events\physics_observer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\utils\px_translator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\entity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\physics\core\physics_collection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 
 namespace Transform
 {
@@ -21,5 +21,8 @@ namespace Transform
 	void rotateX(TransformComponent& transform, float degrees);
 	void rotateY(TransformComponent& transform, float degrees);
 	void rotateZ(TransformComponent& transform, float degrees);
+
+	// Rotation conversion
+	glm::quat fromEuler(float x, float y, float z);
 
 };

@@ -56,7 +56,7 @@ namespace PostProcessing
 		bool enabled = true;
 		float intensity = 1.0f;
 		float color[3] = { 0.0f, 0.0f, 0.0f };
-		float radius = 0.68f;
+		float radius = 0.74f;
 		float softness = 0.35f;
 		float roundness = 1.8f;
 

@@ -3,17 +3,17 @@
 #include <vector>
 #include <glm.hpp>
 
+#include "../core/ecs/composed.h"
 #include "../core/viewport/viewport.h"
-#include "../core/rendering/postprocessing/post_processing.h"
-#include "../core/rendering/postprocessing/post_processing_pipeline.h"
+#include "../core/ecs/components.h"
 #include "../core/rendering/core/pre_pass.h"
-#include "../core/rendering/sceneview/scene_view_forward_pass.h"
-#include "../core/rendering/ssao/ssao_pass.h"
-#include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/ecs/components.hpp"
-#include "../core/ecs/composed.hpp"
+#include "../core/rendering/ssao/ssao_pass.h"
+#include "../core/rendering/velocitybuffer/velocity_buffer.h"
+#include "../core/rendering/postprocessing/post_processing.h"
+#include "../core/rendering/sceneview/scene_view_forward_pass.h"
+#include "../core/rendering/postprocessing/post_processing_pipeline.h"
 
 class SceneViewPipeline
 {

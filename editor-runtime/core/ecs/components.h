@@ -50,7 +50,8 @@ struct BoxColliderComponent {
 	glm::vec3 center = glm::vec3(0.0f); // Offset relative to transform origin
 	glm::vec3 size = glm::vec3(1.0f); // Scale relative to transforms scale
 
-	physx::PxShape* shape; // Shape handle
+	physx::PxMaterial* material = nullptr; // Physics material
+	physx::PxShape* shape = nullptr; // Shape handle
 
 };
 
@@ -59,7 +60,8 @@ struct SphereColliderComponent {
 	glm::vec3 center = glm::vec3(0.0f); // Colliders offset relative to transform origin
 	float radius = 1.0f; // Radius relative to transforms scale
 
-	physx::PxShape* shape; // Shape handle
+	physx::PxMaterial* material = nullptr; // Physics material
+	physx::PxShape* shape = nullptr; // Shape handle
 
 };
 
