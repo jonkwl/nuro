@@ -11,9 +11,9 @@ SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe
 clearColor(glm::vec4(0.0f)),
 viewport(viewport),
 drawSkybox(false),
-drawQuickGizmos(true),
+drawGizmos(true),
 skybox(nullptr),
-imGizmo(nullptr),
+gizmos(nullptr),
 outputFbo(0),
 outputColor(0),
 multisampledFbo(0),
@@ -173,8 +173,8 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	if (drawSkybox && skybox) skybox->render(view, projection);
 	glDepthFunc(GL_LESS);
 
-	// Render quick gizmos
-	if (drawQuickGizmos && imGizmo) imGizmo->render(viewProjection);
+	// Render gizmos
+	if (drawGizmos && gizmos) gizmos->renderAll(viewProjection);
 
 	// Disable stencil testing
 	glDisable(GL_STENCIL_TEST);
@@ -187,14 +187,14 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	return outputColor;
 }
 
-void SceneViewForwardPass::setSkybox(Skybox* source)
+void SceneViewForwardPass::linkSkybox(Skybox* source)
 {
 	skybox = source;
 }
 
-void SceneViewForwardPass::setQuickGizmo(IMGizmo* source)
+void SceneViewForwardPass::linkGizmos(IMGizmo* _gizmos)
 {
-	imGizmo = source;
+	gizmos = _gizmos;
 }
 
 void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material)

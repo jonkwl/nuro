@@ -76,15 +76,12 @@ private:
 	SSAOPass ssaoPass;
 	PostProcessingPipeline postProcessingPipeline;
 
-	// Other instances
-	IMGizmo imGizmo;
-
 	// Matrix cache
 	glm::mat4 view;
 	glm::mat4 projection;
 
 	// States
 	bool frameInitialized; // If scene view was rendered at least once
-	unsigned int initialRenderCount; // Render count for initial frames
+	uint32_t initialRenderCount; // Render count for initial frames
 	bool updated; // If scene view was updated and therefore should be rerendered
 };

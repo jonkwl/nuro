@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../core/rendering/gizmos/imgizmo.h"
+#include "../core/physics/core/physics_controller.h"
+
 #include "../src/pipelines/game_view_pipeline.h"
 #include "../src/pipelines/scene_view_pipeline.h"
 
@@ -20,6 +23,12 @@ namespace Runtime
 	// Pipelines getters
 	SceneViewPipeline& getSceneViewPipeline();
 	GameViewPipeline& getGameViewPipeline();
+
+	// Physics getters
+	PhysicsController& getGamePhysics();
+
+	// Gizmo getters
+	IMGizmo& getSceneGizmos();
 
 	// Shadow getters
 	ShadowDisk* getMainShadowDisk();

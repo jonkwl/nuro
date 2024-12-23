@@ -2,6 +2,9 @@
 
 #include "../core/ecs/ecs_collection.h"
 
+// tmp for debugging
+#include <glm.hpp>
+#include "../src/runtime/runtime.h"
 #include "../core/utils/log.h"
 
 using namespace physx;
@@ -102,6 +105,11 @@ physx::PxRigidActor* PhysicsController::createDynamicBox(PxVec3 position, PxQuat
 	scene->addActor(*body);
 	shape->release();
 	return body;
+}
+
+physx::PxRigidActor* PhysicsController::tmpGetExampleRigidbody() const
+{
+	return exampleRigidbody;
 }
 
 void PhysicsController::simulate()

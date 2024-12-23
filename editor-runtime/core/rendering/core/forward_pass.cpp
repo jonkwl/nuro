@@ -12,10 +12,12 @@
 
 #include "../src/runtime/runtime.h"
 
-ForwardPass::ForwardPass(const Viewport& viewport) : clearColor(glm::vec4(0.0f)),
+ForwardPass::ForwardPass(const Viewport& viewport) : drawSkybox(false),
+drawGizmos(false),
 viewport(viewport),
 skybox(nullptr),
-imGizmo(nullptr),
+gizmos(nullptr),
+clearColor(glm::vec4(0.0f)),
 outputFbo(0),
 outputColor(0),
 outputDepth(0),
@@ -159,13 +161,11 @@ uint32_t ForwardPass::render(const glm::mat4& view, const glm::mat4& projection,
 
 	// Render skybox to bound forward pass frame
 	glDepthFunc(GL_LEQUAL);
-	if (skybox) skybox->render(view, projection);
+	if (drawSkybox && skybox) skybox->render(view, projection);
 	glDepthFunc(GL_LESS);
 
-	// Render quick gizmos
-	if (imGizmo) {
-		imGizmo->render(viewProjection);
-	}
+	// Render gizmos, shapes only
+	if (drawGizmos && gizmos) gizmos->renderShapes(viewProjection);
 
 	// Bilt multisampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
@@ -180,24 +180,14 @@ uint32_t ForwardPass::getDepthOutput()
 	return outputDepth;
 }
 
-void ForwardPass::setSkybox(Skybox* _skybox)
+void ForwardPass::linkSkybox(Skybox* _skybox)
 {
 	skybox = _skybox;
 }
 
-void ForwardPass::disableSkybox()
+void ForwardPass::linkGizmos(IMGizmo* _gizmos)
 {
-	skybox = nullptr;
-}
-
-void ForwardPass::enableQuickGizmo(IMGizmo* source)
-{
-	imGizmo = source;
-}
-
-void ForwardPass::disableQuickGizmo()
-{
-	imGizmo = nullptr;
+	gizmos = _gizmos;
 }
 
 void ForwardPass::setClearColor(glm::vec4 _clearColor)

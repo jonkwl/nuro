@@ -14,10 +14,13 @@
 #include "../src/runtime/runtime.h"
 
 // initialize with users editor settings later
-GameViewPipeline::GameViewPipeline() : viewport(),
-msaaSamples(8), // should lower this
+GameViewPipeline::GameViewPipeline() : drawSkybox(true),
+drawGizmos(false),
+viewport(),
+msaaSamples(4),
 profile(),
 skybox(nullptr),
+gizmos(nullptr),
 prePass(viewport),
 forwardPass(viewport),
 ssaoPass(viewport),
@@ -85,15 +88,20 @@ PostProcessing::Profile& GameViewPipeline::getProfile()
 	return profile;
 }
 
-void GameViewPipeline::setSkybox(Skybox* _skybox)
+void GameViewPipeline::linkSkybox(Skybox* _skybox)
 {
 	skybox = _skybox;
-	forwardPass.setSkybox(skybox);
+	forwardPass.linkSkybox(skybox);
 }
 
-Skybox* GameViewPipeline::getSkybox()
+Skybox* GameViewPipeline::getLinkedSkybox()
 {
 	return skybox;
+}
+
+void GameViewPipeline::linkGizmos(IMGizmo* _gizmos)
+{
+	gizmos = _gizmos;
 }
 
 bool GameViewPipeline::getCameraAvailable()
@@ -147,12 +155,10 @@ void GameViewPipeline::render()
 	Profiler::start("ssao");
 	bool ssaoNeeded = profile.ambientOcclusion.enabled;
 	ssaoOutput = 0;
-
 	if (ssaoNeeded)
 	{
 		ssaoOutput = ssaoPass.render(projection, profile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
-
 	const uint32_t SSAO_OUTPUT = ssaoOutput;
 	Profiler::stop("ssao");
 
@@ -185,6 +191,9 @@ void GameViewPipeline::render()
 	LitMaterial::lightSpace = Runtime::getMainShadowMap()->getLightSpace();
 
 	Profiler::start("forward_pass");
+	forwardPass.drawSkybox = drawSkybox;
+	forwardPass.drawGizmos = drawGizmos && gizmos;
+	if(forwardPass.drawGizmos) forwardPass.linkGizmos(gizmos);
 	uint32_t FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);
 	Profiler::stop("forward_pass");
 

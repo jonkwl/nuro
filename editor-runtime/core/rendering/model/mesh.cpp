@@ -5,28 +5,35 @@
 #include "../core/rendering/texture/texture.h"
 
 MeshData::MeshData() : nVertices(0),
-nIndices(0)
+nIndices(0),
+materialIndex(0)
 {
 }
 
-MeshData::MeshData(uint32_t nVertices, uint32_t nIndices) : nVertices(nVertices),
-nIndices(nIndices)
+MeshData::MeshData(uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex) : nVertices(nVertices),
+nIndices(nIndices),
+materialIndex(materialIndex)
 {
 }
 
 Mesh::Mesh() : vao(0),
 vbo(0),
 ebo(0),
-meshData(),
-materialIndex(0)
+meshData()
+{
+}
+
+Mesh::Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshData meshData) : vao(vao),
+vbo(vbo),
+ebo(ebo),
+meshData(meshData)
 {
 }
 
 Mesh::Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex) : vao(0),
 vbo(0),
 ebo(0),
-meshData(MeshData(vertices.size(), indices.size())),
-materialIndex(materialIndex)
+meshData(MeshData(vertices.size(), indices.size(), materialIndex))
 {
 	// Generate VAO, VBO and EBO
 	glGenVertexArrays(1, &vao);
@@ -67,22 +74,32 @@ materialIndex(materialIndex)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-uint32_t Mesh::getVAO()
+uint32_t Mesh::getVAO() const
 {
 	return vao;
 }
 
-uint32_t Mesh::getVerticeCount()
+uint32_t Mesh::getVBO() const
+{
+	return vbo;
+}
+
+uint32_t Mesh::getEBO() const
+{
+	return ebo;
+}
+
+uint32_t Mesh::getVerticeCount() const
 {
 	return meshData.nVertices;
 }
 
-uint32_t Mesh::getIndiceCount()
+uint32_t Mesh::getIndiceCount() const
 {
 	return meshData.nIndices;
 }
 
-uint32_t Mesh::getMaterialIndex()
+uint32_t Mesh::getMaterialIndex() const
 {
-	return materialIndex;
+	return meshData.materialIndex;
 }

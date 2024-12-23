@@ -40,7 +40,10 @@ namespace Runtime {
 	GameViewPipeline gGameViewPipeline;
 
 	// Physics
-	PhysicsController gGamePhysicsController;
+	PhysicsController gGamePhysics;
+
+	// Scene gizmos
+	IMGizmo gSceneGizmos;
 
 	// Shadow
 	ShadowDisk* gMainShadowDisk = nullptr;
@@ -143,7 +146,7 @@ namespace Runtime {
 		gDefaultSkybox = Skybox(defaultCubemap);
 
 		// Set default skybox as current skybox
-		gGameViewPipeline.setSkybox(&gDefaultSkybox);
+		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 
 		// Load gizmo icons
 		IconPool::loadAll("../resources/icons");
@@ -160,7 +163,10 @@ namespace Runtime {
 		gGameViewPipeline.create();
 
 		// Create game physics instance
-		gGamePhysicsController.create();
+		gGamePhysics.create();
+
+		// Setup scene gizmos
+		gSceneGizmos.setup();
 
 		// Create primitives
 		Quad::create();
@@ -233,7 +239,7 @@ namespace Runtime {
 		update();
 
 		// STEP GAME PHYSICS
-		gGamePhysicsController.step(Time::deltaf());
+		gGamePhysics.step(Time::deltaf());
 
 		// SET SCENE VIEW PIPELINE TO UPDATED
 		gSceneViewPipeline.setUpdated();
@@ -292,7 +298,7 @@ namespace Runtime {
 		// Destroy all instances
 		gSceneViewPipeline.destroy();
 		gGameViewPipeline.destroy();
-		gGamePhysicsController.destroy();
+		gGamePhysics.destroy();
 
 		// Destroy context
 		if (gWindow != nullptr)
@@ -346,9 +352,19 @@ namespace Runtime {
 		return gGameViewPipeline;
 	}
 
+	PhysicsController& getGamePhysics()
+	{
+		return gGamePhysics;
+	}
+
+	IMGizmo& getSceneGizmos()
+	{
+		return gSceneGizmos;
+	}
+
 	PhysicsController& getPhysicsController()
 	{
-		return gGamePhysicsController;
+		return gGamePhysics;
 	}
 
 	ShadowDisk* getMainShadowDisk()

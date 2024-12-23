@@ -44,52 +44,10 @@ void IMGizmo::newFrame()
 	iconRenderStack.clear();
 }
 
-void IMGizmo::render(const glm::mat4& viewProjection)
+void IMGizmo::renderAll(const glm::mat4& viewProjection)
 {
 	renderShapes(viewProjection);
 	renderIcons(viewProjection);
-}
-
-void IMGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
-{
-	ShapeRenderTarget gizmo(Shape::PLANE, position, rotation, scale, false, getCurrentState());
-	shapeRenderStack.push_back(gizmo);
-}
-
-void IMGizmo::box(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
-{
-	ShapeRenderTarget gizmo(Shape::BOX, position, rotation, scale, false, getCurrentState());
-	shapeRenderStack.push_back(gizmo);
-}
-
-void IMGizmo::sphere(glm::vec3 position, float radius)
-{
-	ShapeRenderTarget gizmo(Shape::SPHERE, position, glm::vec3(0.0f), glm::vec3(radius * 2), false, getCurrentState());
-	shapeRenderStack.push_back(gizmo);
-}
-
-void IMGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
-{
-	ShapeRenderTarget gizmo(Shape::PLANE, position, rotation, scale, true, getCurrentState());
-	shapeRenderStack.push_back(gizmo);
-}
-
-void IMGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation)
-{
-	ShapeRenderTarget gizmo(Shape::BOX, position, rotation, scale, true, getCurrentState());
-	shapeRenderStack.push_back(gizmo);
-}
-
-void IMGizmo::sphereWire(glm::vec3 position, float radius)
-{
-	ShapeRenderTarget gizmo(Shape::SPHERE, position, glm::vec3(0.0f), glm::vec3(radius * 2), true, getCurrentState());
-	shapeRenderStack.push_back(gizmo);
-}
-
-void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale)
-{
-	IconRenderTarget gizmo(icon, position, scale, cameraTransform, getCurrentState());
-	iconRenderStack.push_back(gizmo);
 }
 
 void IMGizmo::renderShapes(const glm::mat4& viewProjection)
@@ -207,9 +165,9 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		staticData.iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 		staticData.iconShader->setVec3("tint", glm::vec3(1.0f));
 
-		auto alpha = [this, gizmoPosition, cameraPosition](float value) -> float { 
-			return get3DIconAlpha(value, gizmoPosition, cameraPosition); 
-		};
+		auto alpha = [this, gizmoPosition, cameraPosition](float value) -> float {
+			return get3DIconAlpha(value, gizmoPosition, cameraPosition);
+			};
 
 		// Render with full opacity and depth test
 		staticData.iconShader->setFloat("alpha", alpha(1.0f));
@@ -226,6 +184,53 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 
 	// Disable blending
 	glDisable(GL_BLEND);
+}
+
+void IMGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+{
+	ShapeRenderTarget gizmo(Shape::PLANE, position, rotation, scale, false, getCurrentState());
+	shapeRenderStack.push_back(gizmo);
+}
+
+void IMGizmo::box(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+{
+	ShapeRenderTarget gizmo(Shape::BOX, position, rotation, scale, false, getCurrentState());
+	shapeRenderStack.push_back(gizmo);
+}
+
+void IMGizmo::sphere(glm::vec3 position, float radius)
+{
+	ShapeRenderTarget gizmo(Shape::SPHERE, position, glm::vec3(0.0f), glm::vec3(radius * 2), false, getCurrentState());
+	shapeRenderStack.push_back(gizmo);
+}
+
+void IMGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+{
+	ShapeRenderTarget gizmo(Shape::PLANE, position, rotation, scale, true, getCurrentState());
+	shapeRenderStack.push_back(gizmo);
+}
+
+void IMGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+{
+	ShapeRenderTarget gizmo(Shape::BOX, position, rotation, scale, true, getCurrentState());
+	shapeRenderStack.push_back(gizmo);
+}
+
+void IMGizmo::sphereWire(glm::vec3 position, float radius)
+{
+	ShapeRenderTarget gizmo(Shape::SPHERE, position, glm::vec3(0.0f), glm::vec3(radius * 2), true, getCurrentState());
+	shapeRenderStack.push_back(gizmo);
+}
+
+void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale)
+{
+	IconRenderTarget gizmo(icon, position, scale, cameraTransform, getCurrentState());
+	iconRenderStack.push_back(gizmo);
+}
+
+glm::quat IMGizmo::euler(float x, float y, float z)
+{
+	return glm::quat(glm::vec3(glm::radians(x), glm::radians(y), glm::radians(z)));
 }
 
 IMGizmo::RenderState IMGizmo::getCurrentState() {
@@ -260,6 +265,7 @@ glm::mat4 IMGizmo::getModelMatrix(glm::vec3 position, glm::quat rotation, glm::v
 	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
+	rotation = Transformation::toBackendRotation(rotation);
 	rotation = glm::normalize(rotation);
 	glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
 	model = model * rotationMatrix;

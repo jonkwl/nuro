@@ -28,21 +28,17 @@ prePass(viewport),
 sceneViewForwardPass(viewport),
 ssaoPass(viewport),
 postProcessingPipeline(viewport, false),
-imGizmo(),
 view(glm::mat4(1.0f)),
 projection(glm::mat4(1.0f)),
 frameInitialized(false),
+initialRenderCount(0),
 updated(false)
 {
 }
 
 void SceneViewPipeline::create()
 {
-	// Setup quick gizmo
-	imGizmo.setup();
-
 	// Initialize default profile:
-
 	// Neutral color settings
 	defaultProfile.color.exposure = 1.0f;
 	defaultProfile.color.contrast = 1.0f;
@@ -56,6 +52,9 @@ void SceneViewPipeline::create()
 
 	// Create passes
 	createPasses();
+
+	// Set game view gizmos
+	Runtime::getGameViewPipeline().linkGizmos(&Runtime::getSceneGizmos());
 }
 
 void SceneViewPipeline::destroy()
@@ -163,7 +162,8 @@ void SceneViewPipeline::render()
 	Profiler::start("render");
 
 	// Start new frame for quick gizmos
-	imGizmo.newFrame();
+	IMGizmo& gizmos = Runtime::getSceneGizmos();
+	gizmos.newFrame();
 
 	// Pick variable items for rendering
 	Camera& targetCamera = flyCamera;
@@ -179,10 +179,27 @@ void SceneViewPipeline::render()
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	// Render test light gizmo
-	imGizmo.color = GizmoColor::BLUE;
-	imGizmo.foreground = false;
-	imGizmo.opacity = 0.08f;
-	imGizmo.icon3d(IconPool::get("light_gizmo"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.5f));
+	gizmos.color = GizmoColor::BLUE;
+	gizmos.opacity = 0.08f;
+	gizmos.icon3d(IconPool::get("light_gizmo"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.5f));
+
+	// Render collider gizmos (tmp boilerplate)
+	auto boxColliders = ECS::registry.view<TransformComponent, BoxColliderComponent>();
+	for (auto [entity, transform, collider] : boxColliders.each()) {
+		physx::PxShape* shapeBuffer[1];
+		physx::PxU32 shapeCount = Runtime::getGamePhysics().tmpGetExampleRigidbody()->getShapes(shapeBuffer, 1);
+		if (shapeCount > 0) {
+			physx::PxShape* shape = shapeBuffer[0];
+			const physx::PxGeometry& geometry = shape->getGeometry();
+			const physx::PxBoxGeometry& boxGeometry = static_cast<const physx::PxBoxGeometry&>(geometry);
+			glm::vec3 size = glm::vec3(boxGeometry.halfExtents.x * 2, boxGeometry.halfExtents.y * 2, boxGeometry.halfExtents.z * 2);
+			IMGizmo& gizmos = Runtime::getSceneGizmos();
+			gizmos.foreground = true;
+			gizmos.color = GizmoColor::LIGHT_DARK_GREEN;
+			gizmos.opacity = 0.1f;
+			gizmos.boxWire(transform.position, size, transform.rotation);
+		}
+	}
 
 	//
 	// PRE PASS
@@ -229,8 +246,8 @@ void SceneViewPipeline::render()
 	Profiler::start("forward_pass");
 	sceneViewForwardPass.wireframe = wireframe;
 	sceneViewForwardPass.drawSkybox = showSkybox;
-	sceneViewForwardPass.setSkybox(Runtime::getGameViewPipeline().getSkybox());
-	sceneViewForwardPass.drawQuickGizmos = showGizmos;
+	sceneViewForwardPass.linkSkybox(Runtime::getGameViewPipeline().getLinkedSkybox());
+	sceneViewForwardPass.drawGizmos = showGizmos;
 	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0, entity());
 	Profiler::stop("forward_pass");
 
@@ -249,7 +266,7 @@ void SceneViewPipeline::createPasses()
 {
 	prePass.create();
 	sceneViewForwardPass.create(msaaSamples);
-	sceneViewForwardPass.setQuickGizmo(&imGizmo);
+	sceneViewForwardPass.linkGizmos(&Runtime::getSceneGizmos());
 	ssaoPass.create();
 	postProcessingPipeline.create();
 }

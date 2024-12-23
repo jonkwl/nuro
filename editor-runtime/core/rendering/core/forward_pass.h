@@ -25,18 +25,19 @@ public:
 
 	uint32_t getDepthOutput(); // Returns depth output
 
-	void setSkybox(Skybox* source);
-	void disableSkybox();
+	void linkSkybox(Skybox* source);
+	bool drawSkybox;
 
-	void enableQuickGizmo(IMGizmo* source);
-	void disableQuickGizmo();
+	void linkGizmos(IMGizmo* gizmos);
+	bool drawGizmos;
 
 	void setClearColor(glm::vec4 clearColor); // Clear color for forward pass
 private:
 	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
-	IMGizmo* imGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+	IMGizmo* gizmos; // Gizmo instance that will be rendered during forward pass (optional)
+	
 	glm::vec4 clearColor; // Clear color for forward pass
 
 	uint32_t outputFbo;	 // Output framebuffer

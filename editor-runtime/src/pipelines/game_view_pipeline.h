@@ -32,8 +32,12 @@ public:
 
 	PostProcessing::Profile& getProfile();
 
-	void setSkybox(Skybox* skybox);
-	Skybox* getSkybox();
+	void linkSkybox(Skybox* skybox);
+	Skybox* getLinkedSkybox();
+	bool drawSkybox;
+
+	void linkGizmos(IMGizmo* gizmos);
+	bool drawGizmos;
 
 	bool getCameraAvailable();
 
@@ -49,7 +53,8 @@ private:
 	// Members
 	Viewport viewport;
 	PostProcessing::Profile profile;
-	Skybox* skybox;
+	Skybox* skybox; // Optional skybox
+	IMGizmo* gizmos; // Optional gizmos
 
 	// Render settings
 	uint32_t msaaSamples; // MSAA Samples

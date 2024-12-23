@@ -18,6 +18,8 @@ public:
 	physx::PxRigidActor* createStaticPlane(physx::PxVec3 xyz, float distance); // Creates a static rigidbody with a plane collider
 	physx::PxRigidActor* createDynamicBox(physx::PxVec3 position, physx::PxQuat rotation = physx::PxIdentity, physx::PxVec3 size = physx::PxVec3(1.0f)); // Creates a dynamic rigidbody with a box collider
 
+	physx::PxRigidActor* tmpGetExampleRigidbody() const;
+
 private:
 	void simulate(); // Simulates physics iteration
 

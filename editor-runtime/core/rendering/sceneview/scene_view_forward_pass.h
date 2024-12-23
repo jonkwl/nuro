@@ -25,11 +25,11 @@ public:
 	// Scene view forward passes all entity render targets and returns color output
 	uint32_t render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint16_t nSelected, entity selected);
 
-	void setSkybox(Skybox* skybox);
+	void linkSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
 
-	void setQuickGizmo(IMGizmo* source);
-	bool drawQuickGizmos;
+	void linkGizmos(IMGizmo* gizmos);
+	bool drawGizmos; // Draw gizmos in scene view
 
 	bool wireframe; // Wireframe rendering mode
 	glm::vec4 clearColor; // Clear color for forward pass
@@ -37,7 +37,7 @@ private:
 	const Viewport& viewport; // Viewport forward pass instance is linked to
 
 	Skybox* skybox; // Skybox that will be rendered during forward pass (optional)
-	IMGizmo* imGizmo; // Quick gizmo instance that will be rendered during forward pass (optional)
+	IMGizmo* gizmos; // Gizmo instance that will be rendered during forward pass (optional)
 
 	uint32_t outputFbo;	 // Output framebuffer
 	uint32_t outputColor; // Output color

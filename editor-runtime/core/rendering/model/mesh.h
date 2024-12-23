@@ -6,10 +6,12 @@
 
 struct MeshData {
 	MeshData();
-	MeshData(uint32_t nVertices, uint32_t nIndices);
+	MeshData(uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex);
 
 	uint32_t nVertices;
 	uint32_t nIndices;
+
+	uint32_t materialIndex;
 };
 
 class Mesh
@@ -25,14 +27,17 @@ public:
 	};
 
 public:
-	Mesh();
-	explicit Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex);
+	Mesh(); // Construct empty mesh
+	explicit Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshData meshData); // Construct mesh from existing backend buffers
+	explicit Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex); // Construct mesh by loading mesh into backend using given data
 
-	uint32_t getVAO();
-	uint32_t getVerticeCount();
-	uint32_t getIndiceCount();
+	uint32_t getVAO() const;
+	uint32_t getVBO() const;
+	uint32_t getEBO() const;
 
-	uint32_t getMaterialIndex();
+	uint32_t getVerticeCount() const;
+	uint32_t getIndiceCount() const;
+	uint32_t getMaterialIndex() const;
 
 private:
 	uint32_t vao;
@@ -40,6 +45,4 @@ private:
 	uint32_t ebo;
 
 	MeshData meshData;
-
-	uint32_t materialIndex;
 };
