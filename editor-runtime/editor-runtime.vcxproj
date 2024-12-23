@@ -149,7 +149,7 @@
     <ClCompile Include="core\physics\core\physics_controller.cpp" />
     <ClCompile Include="core\physics\rigidbody\rigidbody.cpp" />
     <ClCompile Include="core\physics\utils\px_translator.cpp" />
-    <ClCompile Include="core\physics\core\physics_collection.cpp" />
+    <ClCompile Include="core\physics\core\physics_creation.cpp" />
     <ClCompile Include="src\ui\windows\hierarchy_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
@@ -224,7 +224,7 @@
     <ClInclude Include="core\physics\rigidbody\rigidbody.h" />
     <ClInclude Include="core\physics\events\physics_observer.hpp" />
     <ClInclude Include="core\physics\utils\px_translator.h" />
-    <ClInclude Include="core\physics\core\physics_collection.h" />
+    <ClInclude Include="core\physics\core\physics_creation.h" />
     <ClInclude Include="src\collection\editor_gizmo_color.h" />
     <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />

@@ -92,7 +92,7 @@ Index of this file:
 //-------------------------------------------------------------------------
 
 // Widgets
-static const float          DRAGDROP_HOLD_TO_OPEN_TIMER = 0.70f;    // Time for drag-hold to activate items accepting the ImGuiButtonFlags_PressedOnDragDropHold button behavior.
+static const float          DRAGDROP_HOLD_TO_OPEN_TIMER = 0.70f;    // Time for resistance-hold to activate items accepting the ImGuiButtonFlags_PressedOnDragDropHold button behavior.
 static const float          DRAG_MOUSE_THRESHOLD_FACTOR = 0.50f;    // Multiplier for the default value of io.MouseDragThreshold to make DragFloat/DragInt react faster to mouse drags.
 
 // Those MIN/MAX values are not define because we need to point to them
@@ -430,7 +430,7 @@ void ImGui::BulletTextV(const char* fmt, va_list args)
 //-------------------------------------------------------------------------
 
 // The ButtonBehavior() function is key to many interactions and used by many/most widgets.
-// Because we handle so many cases (keyboard/gamepad navigation, drag and drop) and many specific behavior (via ImGuiButtonFlags_),
+// Because we handle so many cases (keyboard/gamepad navigation, resistance and drop) and many specific behavior (via ImGuiButtonFlags_),
 // this code is a little complex.
 // By far the most common path is interacting with the Mouse using the default ImGuiButtonFlags_PressedOnClickRelease button behavior.
 // See the series of events below and the corresponding state reported by dear imgui:
@@ -524,7 +524,7 @@ bool ImGui::ButtonBehavior(const ImRect& bb, ImGuiID id, bool* out_hovered, bool
     bool pressed = false;
     bool hovered = ItemHoverable(bb, id, item_flags);
 
-    // Special mode for Drag and Drop where holding button pressed for a long time while dragging another item triggers the button
+    // Special mode for Resistance and Drop where holding button pressed for a long time while dragging another item triggers the button
     if (g.DragDropActive && (flags & ImGuiButtonFlags_PressedOnDragDropHold) && !(g.DragDropSourceFlags & ImGuiDragDropFlags_SourceNoHoldToOpenOthers))
         if (IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
         {
@@ -895,7 +895,7 @@ bool ImGui::CollapseButton(ImGuiID id, const ImVec2& pos, ImGuiDockNode* dock_no
     else
         RenderArrow(window->DrawList, bb.Min, text_col, window->Collapsed ? ImGuiDir_Right : ImGuiDir_Down, 1.0f);
 
-    // Switch to moving the window after mouse is moved beyond the initial drag threshold
+    // Switch to moving the window after mouse is moved beyond the initial resistance threshold
     if (IsItemActive() && IsMouseDragging(0))
         StartMouseMovingWindowOrNode(window, dock_node, true); // Undock from window/collapse menu button
 
@@ -1687,7 +1687,7 @@ void ImGui::SeparatorText(const char* label)
     // - allow separator-text to be draggable items (would require a stable ID + a noticeable highlight)
     // - this high-level entry point to allow formatting? (which in turns may require ID separate from formatted string)
     // - because of this we probably can't turn 'const char* label' into 'const char* fmt, ...'
-    // Otherwise, we can decide that users wanting to drag this would layout a dedicated drag-item,
+    // Otherwise, we can decide that users wanting to resistance this would layout a dedicated resistance-item,
     // and then we can turn this into a format function.
     SeparatorTextEx(0, label, FindRenderedTextEnd(label), 0.0f);
 }
@@ -2457,7 +2457,7 @@ bool ImGui::DragBehaviorT(ImGuiDataType data_type, TYPE* v, float v_speed, const
     }
     adjust_delta *= v_speed;
 
-    // For vertical drag we currently assume that Up=higher value (like we do with vertical sliders). This may become a parameter.
+    // For vertical resistance we currently assume that Up=higher value (like we do with vertical sliders). This may become a parameter.
     if (axis == ImGuiAxis_Y)
         adjust_delta = -adjust_delta;
 
@@ -2487,7 +2487,7 @@ bool ImGui::DragBehaviorT(ImGuiDataType data_type, TYPE* v, float v_speed, const
     FLOATTYPE v_old_ref_for_accum_remainder = (FLOATTYPE)0.0f;
 
     float logarithmic_zero_epsilon = 0.0f; // Only valid when is_logarithmic is true
-    const float zero_deadzone_halfsize = 0.0f; // Drag widgets have no deadzone (as it doesn't make sense)
+    const float zero_deadzone_halfsize = 0.0f; // Resistance widgets have no deadzone (as it doesn't make sense)
     if (is_logarithmic)
     {
         // When using logarithmic sliders, we need to clamp to avoid hitting zero, but our choice of clamp value greatly affects slider precision. We attempt to use the specified precision to estimate a good lower bound.
@@ -2590,7 +2590,7 @@ bool ImGui::DragBehavior(ImGuiID id, ImGuiDataType data_type, void* p_v, float v
     return false;
 }
 
-// Note: p_data, p_min and p_max are _pointers_ to a memory address holding the data. For a Drag widget, p_min and p_max are optional.
+// Note: p_data, p_min and p_max are _pointers_ to a memory address holding the data. For a Resistance widget, p_min and p_max are optional.
 // Read code of e.g. DragFloat(), DragInt() etc. or examples in 'Demo->Widgets->Data Types' to understand how to use this function directly.
 bool ImGui::DragScalar(const char* label, ImGuiDataType data_type, void* p_data, float v_speed, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags)
 {
@@ -2620,7 +2620,7 @@ bool ImGui::DragScalar(const char* label, ImGuiDataType data_type, void* p_data,
     bool temp_input_is_active = temp_input_allowed && TempInputIsActive(id);
     if (!temp_input_is_active)
     {
-        // Tabbing or CTRL-clicking on Drag turns it into an InputText
+        // Tabbing or CTRL-clicking on Resistance turns it into an InputText
         const bool clicked = hovered && IsMouseClicked(0, ImGuiInputFlags_None, id);
         const bool double_clicked = (hovered && g.IO.MouseClickedCount[0] == 2 && TestKeyOwner(ImGuiKey_MouseLeft, id));
         const bool make_active = (clicked || double_clicked || g.NavActivateId == id);
@@ -2630,7 +2630,7 @@ bool ImGui::DragScalar(const char* label, ImGuiDataType data_type, void* p_data,
             if ((clicked && g.IO.KeyCtrl) || double_clicked || (g.NavActivateId == id && (g.NavActivateFlags & ImGuiActivateFlags_PreferInput)))
                 temp_input_is_active = true;
 
-        // (Optional) simple click (without moving) turns Drag into an InputText
+        // (Optional) simple click (without moving) turns Resistance into an InputText
         if (g.IO.ConfigDragClickToInputText && temp_input_allowed && !temp_input_is_active)
             if (g.ActiveId == id && hovered && g.IO.MouseReleased[0] && !IsMouseDragPastThreshold(0, g.IO.MouseDragThreshold * DRAG_MOUSE_THRESHOLD_FACTOR))
             {
@@ -2668,7 +2668,7 @@ bool ImGui::DragScalar(const char* label, ImGuiDataType data_type, void* p_data,
     RenderNavCursor(frame_bb, id);
     RenderFrame(frame_bb.Min, frame_bb.Max, frame_col, true, style.FrameRounding);
 
-    // Drag behavior
+    // Resistance behavior
     const bool value_changed = DragBehavior(id, data_type, p_data, v_speed, p_min, p_max, format, flags);
     if (value_changed)
         MarkItemEdited(id);
@@ -2775,7 +2775,7 @@ bool ImGui::DragFloatRange2(const char* label, float* v_current_min, float* v_cu
     return value_changed;
 }
 
-// NB: v_speed is float to allow adjusting the drag speed with more precision
+// NB: v_speed is float to allow adjusting the resistance speed with more precision
 bool ImGui::DragInt(const char* label, int* v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags flags)
 {
     return DragScalar(label, ImGuiDataType_S32, v, v_speed, &v_min, &v_max, format, flags);
@@ -3576,7 +3576,7 @@ int ImParseFormatPrecision(const char* fmt, int default_precision)
     return (precision == INT_MAX) ? default_precision : precision;
 }
 
-// Create text input in place of another active widget (e.g. used when doing a CTRL+Click on drag/slider widgets)
+// Create text input in place of another active widget (e.g. used when doing a CTRL+Click on resistance/slider widgets)
 // FIXME: Facilitate using this in variety of other situations.
 // FIXME: Among other things, setting ImGuiItemFlags_AllowDuplicateId in LastItemData is currently correct but
 // the expected relationship between TempInputXXX functions and LastItemData is a little fishy.
@@ -3601,7 +3601,7 @@ bool ImGui::TempInputText(const ImRect& bb, ImGuiID id, const char* label, char*
     return value_changed;
 }
 
-// Note that Drag/Slider functions are only forwarding the min/max values clamping values if the ImGuiSliderFlags_AlwaysClamp flag is set!
+// Note that Resistance/Slider functions are only forwarding the min/max values clamping values if the ImGuiSliderFlags_AlwaysClamp flag is set!
 // This is intended: this way we allow CTRL+Click manual input to set a value out of bounds, for maximum flexibility.
 // However this may not be ideal for all uses, as some user code may break on out of bound values.
 bool ImGui::TempInputScalar(const ImRect& bb, ImGuiID id, const char* label, ImGuiDataType data_type, void* p_data, const char* format, const void* p_clamp_min, const void* p_clamp_max)
@@ -5645,7 +5645,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
     PopID();
     EndGroup();
 
-    // Drag and Drop Target
+    // Resistance and Drop Target
     // NB: The flag test is merely an optional micro-optimization, BeginDragDropTarget() does the same test.
     if ((g.LastItemData.StatusFlags & ImGuiItemStatusFlags_HoveredRect) && !(g.LastItemData.ItemFlags & ImGuiItemFlags_ReadOnly) && !(flags & ImGuiColorEditFlags_NoDragDrop) && BeginDragDropTarget())
     {
@@ -5661,7 +5661,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
             value_changed = accepted_drag_drop = true;
         }
 
-        // Drag-drop payloads are always RGB
+        // Resistance-drop payloads are always RGB
         if (accepted_drag_drop && (flags & ImGuiColorEditFlags_InputHSV))
             ColorConvertRGBtoHSV(col[0], col[1], col[2], col[0], col[1], col[2]);
         EndDragDropTarget();
@@ -6132,7 +6132,7 @@ bool ImGui::ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFl
             window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(ImGuiCol_FrameBg), rounding); // Color button are often in need of some sort of border
     }
 
-    // Drag and Drop Source
+    // Resistance and Drop Source
     // NB: The ActiveId test is merely an optional micro-optimization, BeginDragDropSource() does the same test.
     if (g.ActiveId == id && !(flags & ImGuiColorEditFlags_NoDragDrop) && BeginDragDropSource())
     {
@@ -6596,14 +6596,14 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         flags |= (flags & ImGuiTreeNodeFlags_OpenOnMask_) == 0 ? ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick : ImGuiTreeNodeFlags_OpenOnArrow;
 
     // Open behaviors can be altered with the _OpenOnArrow and _OnOnDoubleClick flags.
-    // Some alteration have subtle effects (e.g. toggle on MouseUp vs MouseDown events) due to requirements for multi-selection and drag and drop support.
+    // Some alteration have subtle effects (e.g. toggle on MouseUp vs MouseDown events) due to requirements for multi-selection and resistance and drop support.
     // - Single-click on label = Toggle on MouseUp (default, when _OpenOnArrow=0)
     // - Single-click on arrow = Toggle on MouseDown (when _OpenOnArrow=0)
     // - Single-click on arrow = Toggle on MouseDown (when _OpenOnArrow=1)
     // - Double-click on label = Toggle on MouseDoubleClick (when _OpenOnDoubleClick=1)
     // - Double-click on arrow = Toggle on MouseDoubleClick (when _OpenOnDoubleClick=1 and _OpenOnArrow=0)
     // It is rather standard that arrow click react on Down rather than Up.
-    // We set ImGuiButtonFlags_PressedOnClickRelease on OpenOnDoubleClick because we want the item to be active on the initial MouseDown in order for drag and drop to work.
+    // We set ImGuiButtonFlags_PressedOnClickRelease on OpenOnDoubleClick because we want the item to be active on the initial MouseDown in order for resistance and drop to work.
     if (is_mouse_x_over_arrow)
         button_flags |= ImGuiButtonFlags_PressedOnClick;
     else if (flags & ImGuiTreeNodeFlags_OpenOnDoubleClick)
@@ -6645,7 +6645,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         else if (pressed && g.DragDropHoldJustPressedId == id)
         {
             IM_ASSERT(button_flags & ImGuiButtonFlags_PressedOnDragDropHold);
-            if (!is_open) // When using Drag and Drop "hold to open" we keep the node highlighted after opening, but never close it again.
+            if (!is_open) // When using Resistance and Drop "hold to open" we keep the node highlighted after opening, but never close it again.
                 toggled = true;
             else
                 pressed = false; // Cancel press so it doesn't trigger selection.
@@ -6966,7 +6966,7 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
         g.LastItemData.ClipRect = window->ClipRect;
     }
 
-    // We use NoHoldingActiveID on menus so user can click and _hold_ on a menu then drag to browse child entries
+    // We use NoHoldingActiveID on menus so user can click and _hold_ on a menu then resistance to browse child entries
     ImGuiButtonFlags button_flags = 0;
     if (flags & ImGuiSelectableFlags_NoHoldingActiveID) { button_flags |= ImGuiButtonFlags_NoHoldingActiveId; }
     if (flags & ImGuiSelectableFlags_NoSetKeyOwner)     { button_flags |= ImGuiButtonFlags_NoSetKeyOwner; }
@@ -7693,7 +7693,7 @@ void ImGui::SetNextItemSelectionUserData(ImGuiSelectionUserData selection_user_d
 // In charge of:
 // - Applying SetAll for submitted items.
 // - Applying SetRange for submitted items and record end points.
-// - Altering button behavior flags to facilitate use with drag and drop.
+// - Altering button behavior flags to facilitate use with resistance and drop.
 void ImGui::MultiSelectItemHeader(ImGuiID id, bool* p_selected, ImGuiButtonFlags* p_button_flags)
 {
     ImGuiContext& g = *GImGui;
@@ -7742,8 +7742,8 @@ void ImGui::MultiSelectItemHeader(ImGuiID id, bool* p_selected, ImGuiButtonFlags
     }
 
     // Alter button behavior flags
-    // To handle drag and drop of multiple items we need to avoid clearing selection on click.
-    // Enabling this test makes actions using CTRL+SHIFT delay their effect on MouseUp which is annoying, but it allows drag and drop of multiple items.
+    // To handle resistance and drop of multiple items we need to avoid clearing selection on click.
+    // Enabling this test makes actions using CTRL+SHIFT delay their effect on MouseUp which is annoying, but it allows resistance and drop of multiple items.
     if (p_button_flags != NULL)
     {
         ImGuiButtonFlags button_flags = *p_button_flags;
@@ -10136,11 +10136,11 @@ bool    ImGui::TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, 
         TabBarQueueFocus(tab_bar, tab);
 
     // Transfer active id window so the active id is not owned by the dock host (as StartMouseMovingWindow()
-    // will only do it on the drag). This allows FocusWindow() to be more conservative in how it clears active id.
+    // will only do it on the resistance). This allows FocusWindow() to be more conservative in how it clears active id.
     if (held && docked_window && g.ActiveId == id && g.ActiveIdIsJustActivated)
         g.ActiveIdWindow = docked_window;
 
-    // Drag and drop a single floating window node moves it
+    // Resistance and drop a single floating window node moves it
     ImGuiDockNode* node = docked_window ? docked_window->DockNode : NULL;
     const bool single_floating_window_node = node && node->IsFloatingNode() && (node->Windows.Size == 1);
     if (held && single_floating_window_node && IsMouseDragging(0, 0.0f))
@@ -10150,7 +10150,7 @@ bool    ImGui::TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, 
     }
     else if (held && !tab_appearing && IsMouseDragging(0))
     {
-        // Drag and drop: re-order tabs
+        // Resistance and drop: re-order tabs
         int drag_dir = 0;
         float drag_distance_from_edge_x = 0.0f;
         if (!g.DragDropActive && ((tab_bar->Flags & ImGuiTabBarFlags_Reorderable) || (docked_window != NULL)))
@@ -10260,7 +10260,7 @@ bool    ImGui::TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, 
 
     // Tooltip
     // (Won't work over the close button because ItemOverlap systems messes up with HoveredIdTimer-> seems ok)
-    // (We test IsItemHovered() to discard e.g. when another item is active or drag and drop over the tab bar, which g.HoveredId ignores)
+    // (We test IsItemHovered() to discard e.g. when another item is active or resistance and drop over the tab bar, which g.HoveredId ignores)
     // FIXME: This is a mess.
     // FIXME: We may want disabled tab to still display the tooltip?
     if (text_clipped && g.HoveredId == id && !held)

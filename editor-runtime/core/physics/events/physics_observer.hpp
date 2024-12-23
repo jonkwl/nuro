@@ -6,7 +6,7 @@
 #include "../core/utils/log.h"
 #include "../core/ecs/components.h"
 #include "../core/physics/utils/px_translator.h"
-#include "../core/physics/core/physics_collection.h"
+#include "../core/physics/core/physics_creation.h"
 
 class PhysicsObserver
 {
@@ -15,7 +15,7 @@ public:
 		physics(physics), scene(scene), defaultMaterial(nullptr) {};
 
 	void setup() {
-		defaultMaterial = PhysicsCollection::createMaterial(physics, 0.6f, 0.6f, 0.55f);
+		defaultMaterial = PhysicsCreation::createMaterial(physics, 0.6f, 0.6f, 0.55f);
 
 		// tmp
 		physx::PxRigidStatic* plane = PxCreatePlane(*physics, physx::PxPlane(0.0f, 1.0f, 0.0f, 10.0f), *defaultMaterial);
@@ -61,16 +61,16 @@ public:
 	}
 
 	// Attach any colliders already added to entity to given rigidbody actor
-	void try_rbAttachExistingColliders(entt::registry& reg, entt::entity ent, physx::PxRigidActor* rb) {
+	void try_rbAttachExistingColliders(entt::registry& reg, entt::entity ent, physx::PxRigidDynamic* rb) {
 
 		// Attach box collider if existing
 		if (has<BoxColliderComponent>(reg, ent)) {
-			PhysicsCollection::attachCollider(rb, get<BoxColliderComponent>(reg, ent).shape);
+			PhysicsCreation::attachCollider(rb, get<BoxColliderComponent>(reg, ent).shape);
 		}
 
 		// Attach sphere collider if existing
 		if (has<SphereColliderComponent>(reg, ent)) {
-			PhysicsCollection::attachCollider(rb, get<SphereColliderComponent>(reg, ent).shape);
+			PhysicsCreation::attachCollider(rb, get<SphereColliderComponent>(reg, ent).shape);
 		}
 
 	}
@@ -88,7 +88,7 @@ public:
 
 		// Create shape
 		boxCollider.material = defaultMaterial;
-		boxCollider.shape = PhysicsCollection::createBoxCollider(physics, boxCollider);
+		boxCollider.shape = PhysicsCreation::createBoxCollider(physics, boxCollider);
 
 		// Attach shape to rigidbody if existing
 		try_rbAttachShape(reg, ent, boxCollider.shape);
@@ -103,7 +103,7 @@ public:
 		try_rbDetachShape(reg, ent, boxCollider.shape);
 
 		// Destroy collider
-		PhysicsCollection::destroyCollider(boxCollider.shape);
+		PhysicsCreation::destroyCollider(boxCollider.shape);
 	}
 
 	void constructSphereCollider(entt::registry& reg, entt::entity ent)
@@ -113,7 +113,7 @@ public:
 
 		// Create shape
 		sphereCollider.material = defaultMaterial;
-		sphereCollider.shape = PhysicsCollection::createSphereCollider(physics, sphereCollider);
+		sphereCollider.shape = PhysicsCreation::createSphereCollider(physics, sphereCollider);
 
 		// Attach shape to rigidbody if existing
 		try_rbAttachShape(reg, ent, sphereCollider.shape);
@@ -128,7 +128,7 @@ public:
 		try_rbDetachShape(reg, ent, sphereCollider.shape);
 
 		// Destroy collider
-		PhysicsCollection::destroyCollider(sphereCollider.shape);
+		PhysicsCreation::destroyCollider(sphereCollider.shape);
 	}
 
 	void constructRigidbody(entt::registry& reg, entt::entity ent)
@@ -138,7 +138,7 @@ public:
 		TransformComponent& transform = get<TransformComponent>(reg, ent);
 
 		// Create rigidbody
-		physx::PxRigidActor* rbActor = PhysicsCollection::createRigidbody(physics, scene, transform, rigidbody);
+		physx::PxRigidDynamic* rbActor = PhysicsCreation::createRigidbody(physics, scene, transform, rigidbody);
 
 		// Attach all existing colliders to rigidbody actor
 		try_rbAttachExistingColliders(reg, ent, rbActor);
@@ -155,7 +155,7 @@ public:
 		RigidbodyComponent& rigidbody = get<RigidbodyComponent>(reg, ent);
 
 		// Destroy rigidbody
-		PhysicsCollection::destroyRigidbody(scene, rigidbody.actor);
+		PhysicsCreation::destroyRigidbody(scene, rigidbody.actor);
 	}
 
 private:

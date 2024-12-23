@@ -1014,7 +1014,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
     // - In principle we'd like to use the equivalent of IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem),
     //   but because our item is partially submitted at this point we use ItemHoverable() and a workaround (temporarily
     //   clear ActiveId, which is equivalent to the change provided by _AllowWhenBLockedByActiveItem).
-    // - This allows columns to be marked as hovered when e.g. clicking a button inside the column, or using drag and drop.
+    // - This allows columns to be marked as hovered when e.g. clicking a button inside the column, or using resistance and drop.
     ImGuiTableInstanceData* table_instance = TableGetInstanceData(table, table->InstanceCurrent);
     table_instance->HoveredRowLast = table_instance->HoveredRowNext;
     table_instance->HoveredRowNext = -1;
@@ -3145,7 +3145,7 @@ void ImGui::TableHeader(const char* label)
         table->HeldHeaderColumn = (ImGuiTableColumnIdx)column_n;
     window->DC.CursorPos.y -= g.Style.ItemSpacing.y * 0.5f;
 
-    // Drag and drop to re-order columns.
+    // Resistance and drop to re-order columns.
     // FIXME-TABLE: Scroll request while reordering a column and it lands out of the scrolling zone.
     if (held && (table->Flags & ImGuiTableFlags_Reorderable) && IsMouseDragging(0) && !g.DragDropActive)
     {
@@ -4084,7 +4084,7 @@ static float GetDraggedColumnOffset(ImGuiOldColumns* columns, int column_index)
     // window creates a feedback loop because we store normalized positions. So while dragging we enforce absolute positioning.
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
-    IM_ASSERT(column_index > 0); // We are not supposed to drag column 0.
+    IM_ASSERT(column_index > 0); // We are not supposed to resistance column 0.
     IM_ASSERT(g.ActiveId == columns->ID + ImGuiID(column_index));
 
     float x = g.IO.MousePos.x - g.ActiveIdClickOffset.x + ImTrunc(COLUMNS_HIT_RECT_HALF_THICKNESS * g.CurrentDpiScale) - window->Pos.x;

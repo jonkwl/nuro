@@ -8,6 +8,7 @@
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
 #include "../core/utils/transform.h"
+#include "../core/physics/physics.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/model/model.h"
 #include "../core/rendering/gizmos/gizmos.h"

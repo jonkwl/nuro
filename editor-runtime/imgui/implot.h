@@ -36,7 +36,7 @@
 // [SECTION] Plot Tools
 // [SECTION] Plot Utils
 // [SECTION] Legend Utils
-// [SECTION] Drag and Drop
+// [SECTION] Resistance and Drop
 // [SECTION] Styling
 // [SECTION] Colormaps
 // [SECTION] Input Mapping
@@ -205,8 +205,8 @@ enum ImPlotMouseTextFlags_ {
 // Options for DragPoint, DragLine, DragRect
 enum ImPlotDragToolFlags_ {
     ImPlotDragToolFlags_None      = 0,      // default
-    ImPlotDragToolFlags_NoCursors = 1 << 0, // drag tools won't change cursor icons when hovered or held
-    ImPlotDragToolFlags_NoFit     = 1 << 1, // the drag tool won't be considered for plot fits
+    ImPlotDragToolFlags_NoCursors = 1 << 0, // resistance tools won't change cursor icons when hovered or held
+    ImPlotDragToolFlags_NoFit     = 1 << 1, // the resistance tool won't be considered for plot fits
     ImPlotDragToolFlags_NoInputs  = 1 << 2, // lock the tool from user inputs
     ImPlotDragToolFlags_Delayed   = 1 << 3, // tool rendering will be delayed one frame; useful when applying position-constraints
 };
@@ -908,7 +908,7 @@ IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count
 // #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
 IMPLOT_TMP double PlotHistogram2D(const char* label_id, const T* xs, const T* ys, int count, int x_bins=ImPlotBin_Sturges, int y_bins=ImPlotBin_Sturges, ImPlotRect range=ImPlotRect(), ImPlotHistogramFlags flags=0);
 
-// Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
+// Plots digital data. Digital plots do not respond to y resistance or zoom, and are always referenced to the bottom of the plot.
 IMPLOT_TMP void PlotDigital(const char* label_id, const T* xs, const T* ys, int count, ImPlotDigitalFlags flags=0, int offset=0, int stride=sizeof(T));
 IMPLOT_API void PlotDigitalG(const char* label_id, ImPlotGetter getter, void* data, int count, ImPlotDigitalFlags flags=0);
 
@@ -1022,28 +1022,28 @@ IMPLOT_API void EndLegendPopup();
 IMPLOT_API bool IsLegendEntryHovered(const char* label_id);
 
 //-----------------------------------------------------------------------------
-// [SECTION] Drag and Drop
+// [SECTION] Resistance and Drop
 //-----------------------------------------------------------------------------
 
-// Turns the current plot's plotting area into a drag and drop target. Don't forget to call EndDragDropTarget!
+// Turns the current plot's plotting area into a resistance and drop target. Don't forget to call EndDragDropTarget!
 IMPLOT_API bool BeginDragDropTargetPlot();
-// Turns the current plot's X-axis into a drag and drop target. Don't forget to call EndDragDropTarget!
+// Turns the current plot's X-axis into a resistance and drop target. Don't forget to call EndDragDropTarget!
 IMPLOT_API bool BeginDragDropTargetAxis(ImAxis axis);
-// Turns the current plot's legend into a drag and drop target. Don't forget to call EndDragDropTarget!
+// Turns the current plot's legend into a resistance and drop target. Don't forget to call EndDragDropTarget!
 IMPLOT_API bool BeginDragDropTargetLegend();
-// Ends a drag and drop target (currently just an alias for ImGui::EndDragDropTarget).
+// Ends a resistance and drop target (currently just an alias for ImGui::EndDragDropTarget).
 IMPLOT_API void EndDragDropTarget();
 
-// NB: By default, plot and axes drag and drop *sources* require holding the Ctrl modifier to initiate the drag.
+// NB: By default, plot and axes resistance and drop *sources* require holding the Ctrl modifier to initiate the resistance.
 // You can change the modifier if desired. If ImGuiMod_None is provided, the axes will be locked from panning.
 
-// Turns the current plot's plotting area into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!
+// Turns the current plot's plotting area into a resistance and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!
 IMPLOT_API bool BeginDragDropSourcePlot(ImGuiDragDropFlags flags=0);
-// Turns the current plot's X-axis into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!
+// Turns the current plot's X-axis into a resistance and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!
 IMPLOT_API bool BeginDragDropSourceAxis(ImAxis axis, ImGuiDragDropFlags flags=0);
-// Turns an item in the current plot's legend into drag and drop source. Don't forget to call EndDragDropSource!
+// Turns an item in the current plot's legend into resistance and drop source. Don't forget to call EndDragDropSource!
 IMPLOT_API bool BeginDragDropSourceItem(const char* label_id, ImGuiDragDropFlags flags=0);
-// Ends a drag and drop source (currently just an alias for ImGui::EndDragDropSource).
+// Ends a resistance and drop source (currently just an alias for ImGui::EndDragDropSource).
 IMPLOT_API void EndDragDropSource();
 
 //-----------------------------------------------------------------------------
@@ -1205,9 +1205,9 @@ IMPLOT_API void BustColorCache(const char* plot_title_id = nullptr);
 // Provides access to input mapping structure for permanant modifications to controls for pan, select, etc.
 IMPLOT_API ImPlotInputMap& GetInputMap();
 
-// Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.
+// Default input mapping: pan = LMB resistance, box select = RMB resistance, fit = LMB double click, context menu = RMB click, zoom = scroll.
 IMPLOT_API void MapInputDefault(ImPlotInputMap* dst = nullptr);
-// Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.
+// Reverse input mapping: pan = RMB resistance, box select = LMB resistance, fit = LMB double click, context menu = RMB click, zoom = scroll.
 IMPLOT_API void MapInputReverse(ImPlotInputMap* dst = nullptr);
 
 //-----------------------------------------------------------------------------

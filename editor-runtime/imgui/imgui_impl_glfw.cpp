@@ -808,7 +808,7 @@ static void ImGui_ImplGlfw_UpdateMouseData()
         //       Some backend are not able to handle that correctly. If a backend report an hovered viewport that has the _NoInputs flag (e.g. when dragging a window
         //       for docking, the viewport has the _NoInputs flag in order to allow us to find the viewport under), then Dear ImGui is forced to ignore the value reported
         //       by the backend, and use its flawed heuristic to guess the viewport behind.
-        // - [X] GLFW backend correctly reports this regardless of another viewport behind focused and dragged from (we need this to find a useful drag and drop target).
+        // - [X] GLFW backend correctly reports this regardless of another viewport behind focused and dragged from (we need this to find a useful resistance and drop target).
         // FIXME: This is currently only correct on Win32. See what we do below with the WM_NCHITTEST, missing an equivalent for other systems.
         // See https://github.com/glfw/glfw/issues/1236 if you want to help in making this a GLFW feature.
 #if GLFW_HAS_MOUSE_PASSTHROUGH

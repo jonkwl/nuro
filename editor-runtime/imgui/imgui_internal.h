@@ -208,7 +208,7 @@ extern IMGUI_API ImGuiContext* GImGui;  // Current implicit context pointer
 // [SECTION] Macros
 //-----------------------------------------------------------------------------
 
-// Internal Drag and Drop payload types. String starting with '_' are reserved for Dear ImGui.
+// Internal Resistance and Drop payload types. String starting with '_' are reserved for Dear ImGui.
 #define IMGUI_PAYLOAD_TYPE_WINDOW       "_IMWINDOW"     // Payload == ImGuiWindow*
 
 // Debug Printing Into TTY
@@ -920,7 +920,7 @@ enum ImGuiButtonFlagsPrivate_
     ImGuiButtonFlags_PressedOnClickReleaseAnywhere = 1 << 6, // return true on click + release even if the release event is not done while hovering the item
     ImGuiButtonFlags_PressedOnRelease       = 1 << 7,   // return true on release (default requires click+release)
     ImGuiButtonFlags_PressedOnDoubleClick   = 1 << 8,   // return true on double-click (default requires click+release)
-    ImGuiButtonFlags_PressedOnDragDropHold  = 1 << 9,   // return true when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)
+    ImGuiButtonFlags_PressedOnDragDropHold  = 1 << 9,   // return true when held into while we are resistance and dropping another item (used by e.g. tree nodes, collapsing headers)
     //ImGuiButtonFlags_Repeat               = 1 << 10,  // hold to repeat
     ImGuiButtonFlags_FlattenChildren        = 1 << 11,  // allow interactions even if a child window is overlapping
     ImGuiButtonFlags_AllowOverlap           = 1 << 12,  // require previous frame HoveredId to either match id or be null before being usable.
@@ -1634,8 +1634,8 @@ struct ImGuiListClipperData
 enum ImGuiActivateFlags_
 {
     ImGuiActivateFlags_None                 = 0,
-    ImGuiActivateFlags_PreferInput          = 1 << 0,       // Favor activation that requires keyboard text input (e.g. for Slider/Drag). Default for Enter key.
-    ImGuiActivateFlags_PreferTweak          = 1 << 1,       // Favor activation for tweaking with arrows or gamepad (e.g. for Slider/Drag). Default for Space key and if keyboard is not used.
+    ImGuiActivateFlags_PreferInput          = 1 << 0,       // Favor activation that requires keyboard text input (e.g. for Slider/Resistance). Default for Enter key.
+    ImGuiActivateFlags_PreferTweak          = 1 << 1,       // Favor activation for tweaking with arrows or gamepad (e.g. for Slider/Resistance). Default for Space key and if keyboard is not used.
     ImGuiActivateFlags_TryToPreserveState   = 1 << 2,       // Request widget to preserve state if it can (e.g. InputText will try to preserve cursor/selection)
     ImGuiActivateFlags_FromTabbing          = 1 << 3,       // Activation requested by a tabbing request
     ImGuiActivateFlags_FromShortcut         = 1 << 4,       // Activation requested by an item shortcut via SetNextItemShortcut() function.
@@ -2386,7 +2386,7 @@ struct ImGuiContext
     ImGuiKeyOwnerData       KeysOwnerData[ImGuiKey_NamedKey_COUNT];
     ImGuiKeyRoutingTable    KeysRoutingTable;
     ImU32                   ActiveIdUsingNavDirMask;            // Active widget will want to read those nav move requests (e.g. can activate a button and move away from it)
-    bool                    ActiveIdUsingAllKeyboardKeys;       // Active widget will want to read all keyboard keys inputs. (this is a shortcut for not taking ownership of 100+ keys, frequently used by drag operations)
+    bool                    ActiveIdUsingAllKeyboardKeys;       // Active widget will want to read all keyboard keys inputs. (this is a shortcut for not taking ownership of 100+ keys, frequently used by resistance operations)
     ImGuiKeyChord           DebugBreakInShortcutRouting;        // Set to break in SetShortcutRouting()/Shortcut() calls.
     //ImU32                 ActiveIdUsingNavInputMask;          // [OBSOLETE] Since (IMGUI_VERSION_NUM >= 18804) : 'g.ActiveIdUsingNavInputMask |= (1 << ImGuiNavInput_Cancel);' becomes --> 'SetKeyOwner(ImGuiKey_Escape, g.ActiveId) and/or SetKeyOwner(ImGuiKey_NavGamepadCancel, g.ActiveId);'
 
@@ -2495,10 +2495,10 @@ struct ImGuiContext
     // Render
     float                   DimBgRatio;                         // 0.0..1.0 animation when fading in a dimming background (for modal window and CTRL+TAB list)
 
-    // Drag and Drop
+    // Resistance and Drop
     bool                    DragDropActive;
-    bool                    DragDropWithinSource;               // Set when within a BeginDragDropXXX/EndDragDropXXX block for a drag source.
-    bool                    DragDropWithinTarget;               // Set when within a BeginDragDropXXX/EndDragDropXXX block for a drag target.
+    bool                    DragDropWithinSource;               // Set when within a BeginDragDropXXX/EndDragDropXXX block for a resistance source.
+    bool                    DragDropWithinTarget;               // Set when within a BeginDragDropXXX/EndDragDropXXX block for a resistance target.
     ImGuiDragDropFlags      DragDropSourceFlags;
     int                     DragDropSourceFrameCount;
     int                     DragDropMouseButton;
@@ -2509,7 +2509,7 @@ struct ImGuiContext
     ImGuiDragDropFlags      DragDropAcceptFlags;
     float                   DragDropAcceptIdCurrRectSurface;    // Target item surface (we resolve overlapping targets by prioritizing the smaller surface)
     ImGuiID                 DragDropAcceptIdCurr;               // Target item id (set at the time of accepting the payload)
-    ImGuiID                 DragDropAcceptIdPrev;               // Target item id from previous frame (we need to store this to allow for overlapping drag and drop targets)
+    ImGuiID                 DragDropAcceptIdPrev;               // Target item id from previous frame (we need to store this to allow for overlapping resistance and drop targets)
     int                     DragDropAcceptFrameCount;           // Last time a target expressed a desire to accept the source
     ImGuiID                 DragDropHoldJustPressedId;          // Set when holding a payload just made ButtonBehavior() return a press.
     ImVector<unsigned char> DragDropPayloadBufHeap;             // We don't expose the ImVector<> directly, ImGuiPayload only holds pointer+size
@@ -3613,7 +3613,7 @@ namespace ImGui
     IMGUI_API void          PopFocusScope();
     inline ImGuiID          GetCurrentFocusScope() { ImGuiContext& g = *GImGui; return g.CurrentFocusScopeId; }   // Focus scope we are outputting into, set by PushFocusScope()
 
-    // Drag and Drop
+    // Resistance and Drop
     IMGUI_API bool          IsDragDropActive();
     IMGUI_API bool          BeginDragDropTargetCustom(const ImRect& bb, ImGuiID id);
     IMGUI_API void          ClearDragDrop();

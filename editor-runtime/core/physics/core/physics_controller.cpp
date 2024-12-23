@@ -111,7 +111,11 @@ void PhysicsController::simulate(float delta)
 
 void PhysicsController::syncRigidbodyComponent(RigidbodyComponent& rigidbody)
 {
-	// Get new transform data
+	// Update rigidbody components velocity data
+	rigidbody.velocity = PxTranslator::convert(rigidbody.actor->getLinearVelocity());
+	rigidbody.angularVelocity = PxTranslator::convert(rigidbody.actor->getAngularVelocity());
+
+	// Update rigidbody components transform data
 	PxTransform globalPose = rigidbody.actor->getGlobalPose();
 	rigidbody.position = PxTranslator::convert(globalPose.p);
 	rigidbody.rotation = PxTranslator::convert(globalPose.q);
@@ -124,15 +128,16 @@ void PhysicsController::syncTransformComponent(float delta, TransformComponent& 
 	glm::quat rotation = rigidbody.rotation;
 
 	// Interpolation
-	if (rigidbody.interpolation == RigidbodyComponent::Interpolation::INTERPOLATE) {
-		float factor = delta / timeStep;
-
-		// Get current transform data without update
-		glm::vec3 lastPosition = transform.position;
-		glm::quat lastRotation = transform.rotation;
-
-		position = interpolate(lastPosition, position, factor);
-		rotation = interpolate(lastRotation, rotation, factor);
+	float factor = delta / timeStep;
+	switch (rigidbody.interpolation) {
+	case RigidbodyComponent::Interpolation::INTERPOLATE:
+		position = interpolate(transform.position, position, factor);
+		rotation = interpolate(transform.rotation, rotation, factor);
+		break;
+	case RigidbodyComponent::Interpolation::EXTRAPOLATE:
+		position = transform.position + rigidbody.velocity * delta;
+		rotation = transform.rotation * glm::normalize(glm::quat(1.0f, rigidbody.angularVelocity * delta));
+		break;
 	}
 
 	// Apply to transform

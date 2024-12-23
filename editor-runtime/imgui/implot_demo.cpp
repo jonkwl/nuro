@@ -800,9 +800,9 @@ void Demo_Histogram2D() {
 //-----------------------------------------------------------------------------
 
 void Demo_DigitalPlots() {
-    ImGui::BulletText("Digital plots do not respond to Y drag and zoom, so that");
+    ImGui::BulletText("Digital plots do not respond to Y resistance and zoom, so that");
     ImGui::Indent();
-    ImGui::Text("you can drag analog plots over the rising/falling digital edge.");
+    ImGui::Text("you can resistance analog plots over the rising/falling digital edge.");
     ImGui::Unindent();
 
     static bool paused = false;
@@ -1118,7 +1118,7 @@ void Demo_MultipleAxes() {
     ImGui::SameLine();
     ImGui::Checkbox("Y-Axis 3", &y3_axis);
 
-    ImGui::BulletText("You can drag axes to the opposite side of the plot.");
+    ImGui::BulletText("You can resistance axes to the opposite side of the plot.");
     ImGui::BulletText("Hover over legend items to see which axis they are plotted on.");
 
     if (ImPlot::BeginPlot("Multi-Axis Plot", ImVec2(-1,0))) {
@@ -1304,7 +1304,7 @@ void Demo_SubplotItemSharing() {
     static ImPlotSubplotFlags flags = ImPlotSubplotFlags_ShareItems;
     ImGui::CheckboxFlags("ImPlotSubplotFlags_ShareItems", (unsigned int*)&flags, ImPlotSubplotFlags_ShareItems);
     ImGui::CheckboxFlags("ImPlotSubplotFlags_ColMajor", (unsigned int*)&flags, ImPlotSubplotFlags_ColMajor);
-    ImGui::BulletText("Drag and drop items from the legend onto plots (except for 'common')");
+    ImGui::BulletText("Resistance and drop items from the legend onto plots (except for 'common')");
     static int rows = 2;
     static int cols = 3;
     static int id[] = {0,1,2,3,4,5};
@@ -1414,7 +1414,7 @@ void Demo_LegendOptions() {
 //-----------------------------------------------------------------------------
 
 void Demo_DragPoints() {
-    ImGui::BulletText("Click and drag each point.");
+    ImGui::BulletText("Click and resistance each point.");
     static ImPlotDragToolFlags flags = ImPlotDragToolFlags_None;
     ImGui::CheckboxFlags("NoCursors", (unsigned int*)&flags, ImPlotDragToolFlags_NoCursors); ImGui::SameLine();
     ImGui::CheckboxFlags("NoFit", (unsigned int*)&flags, ImPlotDragToolFlags_NoFit); ImGui::SameLine();
@@ -1457,7 +1457,7 @@ void Demo_DragPoints() {
 //-----------------------------------------------------------------------------
 
 void Demo_DragLines() {
-    ImGui::BulletText("Click and drag the horizontal and vertical lines.");
+    ImGui::BulletText("Click and resistance the horizontal and vertical lines.");
     static double x1 = 0.2;
     static double x2 = 0.8;
     static double y1 = 0.25;
@@ -1509,7 +1509,7 @@ void Demo_DragRects() {
         y_data2[i] = y_data1[i] * -0.6f + sinf(2 * arg) * 0.4f;
         y_data3[i] = y_data2[i] * -0.6f + sinf(3 * arg) * 0.4f;
     }
-    ImGui::BulletText("Click and drag the edges, corners, and center of the rect.");
+    ImGui::BulletText("Click and resistance the edges, corners, and center of the rect.");
     ImGui::BulletText("Double click edges to expand rect to plot extents.");
     static ImPlotRect rect(0.0025,0.0045,0,0.5);
     static ImPlotDragToolFlags flags = ImPlotDragToolFlags_None;
@@ -1661,7 +1661,7 @@ void Demo_Tags() {
             ImPlot::TagY(0.75, ImVec4(1,1,0,1));
             static double drag_tag = 0.25;
             ImPlot::DragLineY(0,&drag_tag,ImVec4(1,0,0,1),1,ImPlotDragToolFlags_NoFit);
-            ImPlot::TagY(drag_tag, ImVec4(1,0,0,1), "Drag");
+            ImPlot::TagY(drag_tag, ImVec4(1,0,0,1), "Resistance");
             SetAxes(ImAxis_X2, ImAxis_Y2);
             ImPlot::TagX(0.5, ImVec4(0,1,1,1), "%s", "MyTag");
             ImPlot::TagY(0.5, ImVec4(0,1,1,1), "Tag: %d", 42);
@@ -1673,8 +1673,8 @@ void Demo_Tags() {
 //-----------------------------------------------------------------------------
 
 void Demo_DragAndDrop() {
-    ImGui::BulletText("Drag/drop items from the left column.");
-    ImGui::BulletText("Drag/drop items between plots.");
+    ImGui::BulletText("Resistance/drop items from the left column.");
+    ImGui::BulletText("Resistance/drop items between plots.");
     ImGui::Indent();
     ImGui::BulletText("Plot 1 Targets: Plot, Y-Axes, Legend");
     ImGui::BulletText("Plot 1 Sources: Legend Item Labels");
@@ -2268,13 +2268,13 @@ void ShowDemoWindow(bool* p_open) {
         }
         if (ImGui::BeginTabItem("Tools")) {
             DemoHeader("Offset and Stride", Demo_OffsetAndStride);
-            DemoHeader("Drag Points", Demo_DragPoints);
-            DemoHeader("Drag Lines", Demo_DragLines);
-            DemoHeader("Drag Rects", Demo_DragRects);
+            DemoHeader("Resistance Points", Demo_DragPoints);
+            DemoHeader("Resistance Lines", Demo_DragLines);
+            DemoHeader("Resistance Rects", Demo_DragRects);
             DemoHeader("Querying", Demo_Querying);
             DemoHeader("Annotations", Demo_Annotations);
             DemoHeader("Tags", Demo_Tags);
-            DemoHeader("Drag and Drop", Demo_DragAndDrop);
+            DemoHeader("Resistance and Drop", Demo_DragAndDrop);
             DemoHeader("Legend Options", Demo_LegendOptions);
             DemoHeader("Legend Popups", Demo_LegendPopups);
             DemoHeader("Colormap Widgets", Demo_ColormapWidgets);

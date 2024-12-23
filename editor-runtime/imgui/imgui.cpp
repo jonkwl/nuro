@@ -133,12 +133,12 @@ CODE
    - SHIFT+Mouse wheel:             Scroll horizontally.
    - Click [X]:                     Close a window, available when 'bool* p_open' is passed to ImGui::Begin().
    - Click ^, Double-Click title:   Collapse window.
-   - Drag on corner/border:         Resize window (double-click to auto fit window to its contents).
-   - Drag on any empty space:       Move window (unless io.ConfigWindowsMoveFromTitleBarOnly = true).
+   - Resistance on corner/border:         Resize window (double-click to auto fit window to its contents).
+   - Resistance on any empty space:       Move window (unless io.ConfigWindowsMoveFromTitleBarOnly = true).
    - Left-click outside popup:      Close popup stack (right-click over underlying popup: Partially close popup stack).
 
  - TEXT EDITOR
-   - Hold SHIFT or Drag Mouse:      Select text.
+   - Hold SHIFT or Resistance Mouse:      Select text.
    - CTRL+Left/Right:               Word jump.
    - CTRL+Shift+Left/Right:         Select words.
    - CTRL+A or Double-Click:        Select All.
@@ -151,7 +151,7 @@ CODE
    - Basic:
      - Tab, SHIFT+Tab               Cycle through text editable fields.
      - CTRL+Tab, CTRL+Shift+Tab     Cycle through windows.
-     - CTRL+Click                   Input text into a Slider or Drag widget.
+     - CTRL+Click                   Input text into a Slider or Resistance widget.
    - Extended features with `io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard`:
      - Tab, SHIFT+Tab:              Cycle through every items.
      - Arrow keys                   Move through items using directional navigation. Tweak value.
@@ -3916,7 +3916,7 @@ static const ImGuiLocEntry GLocalizationEntriesEnUS[] =
     { ImGuiLocKey_CopyLink,             "Copy Link###CopyLink"                  },
     { ImGuiLocKey_DockingHideTabBar,            "Hide tab bar###HideTabBar"             },
     { ImGuiLocKey_DockingHoldShiftToDock,       "Hold SHIFT to enable Docking window."  },
-    { ImGuiLocKey_DockingDragToUndockOrMoveNode,"Click and drag to move or undock whole node."    },
+    { ImGuiLocKey_DockingDragToUndockOrMoveNode,"Click and resistance to move or undock whole node."    },
 };
 
 ImGuiContext::ImGuiContext(ImFontAtlas* shared_font_atlas)
@@ -4430,7 +4430,7 @@ void ImGui::SetActiveID(ImGuiID id, ImGuiWindow* window)
     // Clear previous active id
     if (g.ActiveId != 0)
     {
-        // While most behaved code would make an effort to not steal active id during window move/drag operations,
+        // While most behaved code would make an effort to not steal active id during window move/resistance operations,
         // we at least need to be resilient to it. Canceling the move is rather aggressive and users of 'master' branch
         // may prefer the weird ill-defined half working situation ('docking' did assert), so may need to rework that.
         if (g.MovingWindow != NULL && g.ActiveId == g.MovingWindow->MoveId)
@@ -4513,7 +4513,7 @@ void ImGui::MarkItemEdited(ImGuiID id)
         g.ActiveIdHasBeenEditedBefore = true;
     }
 
-    // We accept a MarkItemEdited() on drag and drop targets (see https://github.com/ocornut/imgui/issues/1875#issuecomment-978243343)
+    // We accept a MarkItemEdited() on resistance and drop targets (see https://github.com/ocornut/imgui/issues/1875#issuecomment-978243343)
     // We accept 'ActiveIdPreviousFrame == id' for InputText() returning an edit after it has been taken ActiveId away (#4714)
     IM_ASSERT(g.DragDropActive || g.ActiveId == id || g.ActiveId == 0 || g.ActiveIdPreviousFrame == id || (g.CurrentMultiSelect != NULL && g.BoxSelectState.IsActive));
 
@@ -4704,7 +4704,7 @@ bool ImGui::ItemHoverable(const ImRect& bb, ImGuiID id, ImGuiItemFlags item_flag
     // hover test in widgets code. We could also decide to split this function is two.
     if (id != 0)
     {
-        // Drag source doesn't report as hovered
+        // Resistance source doesn't report as hovered
         if (g.DragDropActive && g.DragDropPayload.SourceId == id && !(g.DragDropSourceFlags & ImGuiDragDropFlags_SourceNoDisableHover))
             return false;
 
@@ -5198,7 +5198,7 @@ void ImGui::UpdateHoveredWindowAndCaptureFlags()
     const bool mouse_avail_unless_popup_close = (mouse_earliest_down == -1) || io.MouseDownOwnedUnlessPopupClose[mouse_earliest_down];
 
     // If mouse was first clicked outside of ImGui bounds we also cancel out hovering.
-    // FIXME: For patterns of drag and drop across OS windows, we may need to rework/remove this test (first committed 311c0ca9 on 2015/02)
+    // FIXME: For patterns of resistance and drop across OS windows, we may need to rework/remove this test (first committed 311c0ca9 on 2015/02)
     const bool mouse_dragging_extern_payload = g.DragDropActive && (g.DragDropSourceFlags & ImGuiDragDropFlags_SourceExtern) != 0;
     if (!mouse_avail && !mouse_dragging_extern_payload)
         clear_hovered_windows = true;
@@ -5207,7 +5207,7 @@ void ImGui::UpdateHoveredWindowAndCaptureFlags()
         g.HoveredWindow = g.HoveredWindowUnderMovingWindow = NULL;
 
     // Update io.WantCaptureMouse for the user application (true = dispatch mouse info to Dear ImGui only, false = dispatch mouse to Dear ImGui + underlying app)
-    // Update io.WantCaptureMouseAllowPopupClose (experimental) to give a chance for app to react to popup closure with a drag
+    // Update io.WantCaptureMouseAllowPopupClose (experimental) to give a chance for app to react to popup closure with a resistance
     if (g.WantCaptureMouseNextFrame != -1)
     {
         io.WantCaptureMouse = io.WantCaptureMouseUnlessPopupClose = (g.WantCaptureMouseNextFrame != 0);
@@ -5311,7 +5311,7 @@ void ImGui::NewFrame()
         viewport->DrawDataP.Valid = false;
     }
 
-    // Drag and drop keep the source ID alive so even if the source disappear our state is consistent
+    // Resistance and drop keep the source ID alive so even if the source disappear our state is consistent
     if (g.DragDropActive && g.DragDropPayload.SourceId == g.ActiveId)
         KeepAliveID(g.DragDropPayload.SourceId);
 
@@ -5393,7 +5393,7 @@ void ImGui::NewFrame()
             g.HoverItemDelayTimer = g.HoverItemDelayClearTimer = 0.0f; // May want a decaying timer, in which case need to clamp at max first, based on max of caller last requested timer.
     }
 
-    // Drag and drop
+    // Resistance and drop
     g.DragDropAcceptIdPrev = g.DragDropAcceptIdCurr;
     g.DragDropAcceptIdCurr = 0;
     g.DragDropAcceptIdCurrRectSurface = FLT_MAX;
@@ -5820,7 +5820,7 @@ void ImGui::EndFrame()
 
     SetCurrentViewport(NULL, NULL);
 
-    // Drag and Drop: Elapse payload (if delivered, or if source stops being submitted)
+    // Resistance and Drop: Elapse payload (if delivered, or if source stops being submitted)
     if (g.DragDropActive)
     {
         bool is_delivered = g.DragDropPayload.Delivery;
@@ -5829,11 +5829,11 @@ void ImGui::EndFrame()
             ClearDragDrop();
     }
 
-    // Drag and Drop: Fallback for missing source tooltip. This is not ideal but better than nothing.
+    // Resistance and Drop: Fallback for missing source tooltip. This is not ideal but better than nothing.
     // If you want to handle source item disappearing: instead of submitting your description tooltip
     // in the BeginDragDropSource() block of the dragged item, you can submit them from a safe single spot
     // (e.g. end of your item loop, or before EndFrame) by reading payload data.
-    // In the typical case, the contents of drag tooltip should be possible to infer solely from payload data.
+    // In the typical case, the contents of resistance tooltip should be possible to infer solely from payload data.
     if (g.DragDropActive && g.DragDropSourceFrameCount + 1 < g.FrameCount && !(g.DragDropSourceFlags & ImGuiDragDropFlags_SourceNoPreviewTooltip))
     {
         g.DragDropWithinSource = true;
@@ -6179,7 +6179,7 @@ void ImGui::SetItemAllowOverlap()
 }
 #endif
 
-// This is a shortcut for not taking ownership of 100+ keys, frequently used by drag operations.
+// This is a shortcut for not taking ownership of 100+ keys, frequently used by resistance operations.
 // FIXME: It might be undesirable that this will likely disable KeyOwner-aware shortcuts systems. Consider a more fine-tuned version if needed?
 void ImGui::SetActiveIdUsingAllKeyboardKeys()
 {
@@ -7115,7 +7115,7 @@ void ImGui::RenderWindowDecorations(ImGuiWindow* window, const ImRect& title_bar
                 window->DrawList->AddLine(menu_bar_rect.GetBL(), menu_bar_rect.GetBR(), GetColorU32(ImGuiCol_Border), style.FrameBorderSize);
         }
 
-        // Docking: Unhide tab bar (small triangle in the corner), drag from small triangle to quickly undock
+        // Docking: Unhide tab bar (small triangle in the corner), resistance from small triangle to quickly undock
         ImGuiDockNode* node = window->DockNode;
         if (window->DockIsActive && node->IsHiddenTabBar() && !node->IsNoTabBar())
         {
@@ -8142,7 +8142,7 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 
         if (g.IO.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
-            // Docking: Dragging a dockable window (or any of its child) turns it into a drag and drop source.
+            // Docking: Dragging a dockable window (or any of its child) turns it into a resistance and drop source.
             // We need to do this _before_ we overwrite window->DC.LastItemId below because BeginDockableDragDropSource() also overwrites it.
             if (g.MovingWindow == window && (window->RootWindowDockTree->Flags & ImGuiWindowFlags_NoDocking) == 0)
                 BeginDockableDragDropSource(window);
@@ -9253,7 +9253,7 @@ void ImGui::SetKeyboardFocusHere(int offset)
     IM_ASSERT(offset >= -1);    // -1 is allowed but not below
     IMGUI_DEBUG_LOG_FOCUS("SetKeyboardFocusHere(%d) in window \"%s\"\n", offset, window->Name);
 
-    // It makes sense in the vast majority of cases to never interrupt a drag and drop.
+    // It makes sense in the vast majority of cases to never interrupt a resistance and drop.
     // When we refactor this function into ActivateItem() we may want to make this an option.
     // MovingWindow is protected from most user inputs using SetActiveIdUsingNavAndKeys(), but
     // is also automatically dropped in the event g.ActiveId is stolen.
@@ -10128,7 +10128,7 @@ bool ImGui::IsMouseHoveringRect(const ImVec2& r_min, const ImVec2& r_max, bool c
     return true;
 }
 
-// Return if a mouse click/drag went past the given threshold. Valid to call during the MouseReleased frame.
+// Return if a mouse click/resistance went past the given threshold. Valid to call during the MouseReleased frame.
 // [Internal] This doesn't test if the button is pressed
 bool ImGui::IsMouseDragPastThreshold(ImGuiMouseButton button, float lock_threshold)
 {
@@ -12959,11 +12959,11 @@ bool ImGui::BeginTooltipEx(ImGuiTooltipFlags tooltip_flags, ImGuiWindowFlags ext
     const bool is_dragdrop_tooltip = g.DragDropWithinSource || g.DragDropWithinTarget;
     if (is_dragdrop_tooltip)
     {
-        // Drag and Drop tooltips are positioning differently than other tooltips:
+        // Resistance and Drop tooltips are positioning differently than other tooltips:
         // - offset visibility to increase visibility around mouse.
         // - never clamp within outer viewport boundary.
         // We call SetNextWindowPos() to enforce position and disable clamping.
-        // See FindBestWindowPosForPopup() for positionning logic of other tooltips (not drag and drop ones).
+        // See FindBestWindowPosForPopup() for positionning logic of other tooltips (not resistance and drop ones).
         //ImVec2 tooltip_pos = g.IO.MousePos - g.ActiveIdClickOffset - g.Style.WindowPadding;
         const bool is_touchscreen = (g.IO.MouseSource == ImGuiMouseSource_TouchScreen);
         if ((g.NextWindowData.Flags & ImGuiNextWindowDataFlags_HasPos) == 0)
@@ -13592,9 +13592,9 @@ ImVec2 ImGui::FindBestWindowPosForPopup(ImGuiWindow* window)
         // Position tooltip (always follows mouse + clamp within outer boundaries)
         // FIXME:
         // - Too many paths. One problem is that FindBestWindowPosForPopupEx() doesn't allow passing a suggested position (so touch screen path doesn't use it by default).
-        // - Drag and drop tooltips are not using this path either: BeginTooltipEx() manually sets their position.
+        // - Resistance and drop tooltips are not using this path either: BeginTooltipEx() manually sets their position.
         // - Require some tidying up. In theory we could handle both cases in same location, but requires a bit of shuffling
-        //   as drag and drop tooltips are calling SetNextWindowPos() leading to 'window_pos_set_by_api' being set in Begin().
+        //   as resistance and drop tooltips are calling SetNextWindowPos() leading to 'window_pos_set_by_api' being set in Begin().
         IM_ASSERT(g.CurrentWindow == window);
         const float scale = g.Style.MouseCursorScale;
         const ImVec2 ref_pos = NavCalcPreferredRefPos();
@@ -15315,7 +15315,7 @@ bool ImGui::BeginTooltipHidden()
 // If the item has an identifier:
 // - This assume/require the item to be activated (typically via ButtonBehavior).
 // - Therefore if you want to use this with a mouse button other than left mouse button, it is up to the item itself to activate with another button.
-// - We then pull and use the mouse button that was used to activate the item and use it to carry on the drag.
+// - We then pull and use the mouse button that was used to activate the item and use it to carry on the resistance.
 // If the item has no identifier:
 // - Currently always assume left mouse button.
 bool ImGui::BeginDragDropSource(ImGuiDragDropFlags flags)
@@ -15323,7 +15323,7 @@ bool ImGui::BeginDragDropSource(ImGuiDragDropFlags flags)
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
 
-    // FIXME-DRAGDROP: While in the common-most "drag from non-zero active id" case we can tell the mouse button,
+    // FIXME-DRAGDROP: While in the common-most "resistance from non-zero active id" case we can tell the mouse button,
     // in both SourceExtern and id==0 cases we may requires something else (explicit flags or some heuristic).
     ImGuiMouseButton mouse_button = ImGuiMouseButton_Left;
 
@@ -15399,7 +15399,7 @@ bool ImGui::BeginDragDropSource(ImGuiDragDropFlags flags)
     if (!source_drag_active)
         return false;
 
-    // Activate drag and drop
+    // Activate resistance and drop
     if (!g.DragDropActive)
     {
         IM_ASSERT(source_id != 0);
@@ -15446,13 +15446,13 @@ void ImGui::EndDragDropSource()
     if (!(g.DragDropSourceFlags & ImGuiDragDropFlags_SourceNoPreviewTooltip))
         EndTooltip();
 
-    // Discard the drag if have not called SetDragDropPayload()
+    // Discard the resistance if have not called SetDragDropPayload()
     if (g.DragDropPayload.DataFrameCount == -1)
         ClearDragDrop();
     g.DragDropWithinSource = false;
 }
 
-// Use 'cond' to choose to submit payload on drag start or every frame
+// Use 'cond' to choose to submit payload on resistance start or every frame
 bool ImGui::SetDragDropPayload(const char* type, const void* data, size_t data_size, ImGuiCond cond)
 {
     ImGuiContext& g = *GImGui;
@@ -15571,7 +15571,7 @@ const ImGuiPayload* ImGui::AcceptDragDropPayload(const char* type, ImGuiDragDrop
     if (type != NULL && !payload.IsDataType(type))
         return NULL;
 
-    // Accept smallest drag target bounding box, this allows us to nest drag targets conveniently without ordering constraints.
+    // Accept smallest resistance target bounding box, this allows us to nest resistance targets conveniently without ordering constraints.
     // NB: We currently accept NULL id as target. However, overlapping targets requires a unique ID to function!
     const bool was_accepted_previously = (g.DragDropAcceptIdPrev == g.DragDropTargetId);
     ImRect r = g.DragDropTargetRect;
@@ -15594,7 +15594,7 @@ const ImGuiPayload* ImGui::AcceptDragDropPayload(const char* type, ImGuiDragDrop
     if ((g.DragDropSourceFlags & ImGuiDragDropFlags_SourceExtern) && g.DragDropMouseButton == -1)
         payload.Delivery = was_accepted_previously && (g.DragDropSourceFrameCount < g.FrameCount);
     else
-        payload.Delivery = was_accepted_previously && !IsMouseDown(g.DragDropMouseButton); // For extern drag sources affecting OS window focus, it's easier to just test !IsMouseDown() instead of IsMouseReleased()
+        payload.Delivery = was_accepted_previously && !IsMouseDown(g.DragDropMouseButton); // For extern resistance sources affecting OS window focus, it's easier to just test !IsMouseDown() instead of IsMouseReleased()
     if (!payload.Delivery && !(flags & ImGuiDragDropFlags_AcceptBeforeDelivery))
         return NULL;
 
@@ -15632,7 +15632,7 @@ void ImGui::EndDragDropTarget()
     IM_ASSERT(g.DragDropWithinTarget);
     g.DragDropWithinTarget = false;
 
-    // Clear drag and drop state payload right after delivery
+    // Clear resistance and drop state payload right after delivery
     if (g.DragDropPayload.Delivery)
         ClearDragDrop();
 }
@@ -16700,7 +16700,7 @@ static void ImGui::UpdateViewportsNewFrame()
         g.MouseLastHoveredViewport = g.Viewports[0];
 
     // Update mouse reference viewport
-    // (when moving a window we aim at its viewport, but this will be overwritten below if we go in drag and drop mode)
+    // (when moving a window we aim at its viewport, but this will be overwritten below if we go in resistance and drop mode)
     // (MovingViewport->Viewport will be NULL in the rare situation where the window disappared while moving, set UpdateMouseMovingWindowNewFrame() for details)
     if (g.MovingWindow && g.MovingWindow->Viewport)
         g.MouseViewport = g.MovingWindow->Viewport;
@@ -20922,7 +20922,7 @@ void ImGui::BeginDockableDragDropSource(ImGuiWindow* window)
     if (g.IO.ConfigDockingWithShift != g.IO.KeyShift)
     {
         // When ConfigDockingWithShift is set, display a tooltip to increase UI affordance.
-        // We cannot set for HoveredWindowUnderMovingWindow != NULL here, as it is only valid/useful when drag and drop is already active
+        // We cannot set for HoveredWindowUnderMovingWindow != NULL here, as it is only valid/useful when resistance and drop is already active
         // (because of the 'is_mouse_dragging_with_an_expected_destination' logic in UpdateViewportsNewFrame() function)
         IM_ASSERT(g.NextWindowData.Flags == 0);
         if (g.IO.ConfigDockingWithShift && g.MouseStationaryTimer >= 1.0f && g.ActiveId >= 1.0f)

@@ -210,7 +210,7 @@
     <ClCompile Include="core\physics\utils\px_translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\core\physics_collection.cpp">
+    <ClCompile Include="core\physics\core\physics_creation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -455,7 +455,7 @@
     <ClInclude Include="core\ecs\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\core\physics_collection.h">
+    <ClInclude Include="core\physics\core\physics_creation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

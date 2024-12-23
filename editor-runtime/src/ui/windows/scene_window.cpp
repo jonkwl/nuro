@@ -22,7 +22,7 @@ windowHovered(false),
 sceneViewRightclicked(false),
 sceneViewMiddleclicked(false),
 sceneViewBounds(0.0f),
-movementSpeed(12.0f),
+movementSpeed(16.0f),
 mouseSensitivity(0.08f),
 scrollIncrementSpeed(2.0f),
 moveAxis(glm::vec2(0.0f)),
@@ -260,7 +260,7 @@ void SceneWindow::updateMovement()
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.18f; // 0.18f is a good factor to match movement speed
+		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.1f; // 0.1f is a good factor to match movement speed
 	}
 
 	// Set if fly camera moved this frame

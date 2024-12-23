@@ -67,25 +67,34 @@ struct SphereColliderComponent {
 
 struct RigidbodyComponent {
 
-	enum class Type {
-		DYNAMIC,
-		STATIC
-	};
-
 	enum class Interpolation {
 		NONE,
-		INTERPOLATE
+		INTERPOLATE,
+		EXTRAPOLATE
 	};
 
-	Type type = Type::DYNAMIC; // Rigidbody type
-	Interpolation interpolation = Interpolation::INTERPOLATE; // Rigidbody interpolation
-	float mass = 0.0f; // Rigidbody mass
-	bool useGravity = true; // Gets affected by gravity if set
+	enum class CollisionDetection {
+		DISCRETE,
+		CONTINUOUS,
+		CONTINUOUS_SPECULATIVE
+	};
 
-	glm::vec3 velocity = glm::vec3(0.0f); // Current velocity
+	Interpolation interpolation = Interpolation::INTERPOLATE; // Rigidbody interpolation mode
+	CollisionDetection collisionDetection = CollisionDetection::DISCRETE; // Rigidbody collision detection mode
+	
+	float mass = 1.0f; // Rigidbody mass
+	float resistance = 0.0f; // Resistance coefficient
+	float angularResistance = 0.05f; // Angular resistance coefficient
+
+	bool gravity = true; // Gets affected by gravity if set
+	bool kinematic = false; // Rigidbody not being affected by physics if set
+
+	glm::vec3 velocity = glm::vec3(0.0f); // Current linear velocity
+	glm::vec3 angularVelocity = glm::vec3(0.0f); // Current angular velocity 
+
 	glm::vec3 position = glm::vec3(0.0f); // Current position
 	glm::quat rotation = glm::identity<glm::quat>(); // Current rotation
 
-	physx::PxRigidActor* actor = nullptr; // Actor handle
+	physx::PxRigidDynamic* actor = nullptr; // Actor handle
 
 };

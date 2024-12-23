@@ -2697,7 +2697,7 @@ namespace ImGuizmo
       }
       isInside = ImRect(position, position + size).Contains(io.MousePos);
 
-      // drag view
+      // resistance view
       if (!isDraging && io.MouseDown[0] && isInside && (fabsf(io.MouseDelta.x) > 0.f || fabsf(io.MouseDelta.y) > 0.f))
       {
          isDraging = true;

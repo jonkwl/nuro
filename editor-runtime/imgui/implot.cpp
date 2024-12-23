@@ -88,7 +88,7 @@ You can read releases logs https://github.com/epezent/implot/releases for more d
 - 2021/03/08 (0.9)  - SetColormap and PushColormap(ImVec4*) were removed. Use AddColormap for custom colormap support. LerpColormap was changed to SampleColormap.
                       ShowColormapScale was changed to ColormapScale and requires additional arguments.
 - 2021/03/07 (0.9)  - The signature of ShowColormapScale was modified to accept a ImVec2 size.
-- 2021/02/28 (0.9)  - BeginLegendDragDropSource was changed to BeginDragDropSourceItem with a number of other drag and drop improvements.
+- 2021/02/28 (0.9)  - BeginLegendDragDropSource was changed to BeginDragDropSourceItem with a number of other resistance and drop improvements.
 - 2021/01/18 (0.9)  - The default behavior for opening context menus was change from double right-click to single right-click. ImPlotInputMap and related functions were moved
                       to implot_internal.h due to its immaturity.
 - 2020/10/16 (0.8)  - ImPlotStyleVar_InfoPadding was changed to ImPlotStyleVar_MousePosPadding
@@ -4275,7 +4275,7 @@ void ShowAltLegend(const char* title_id, bool vertical, const ImVec2 size, bool 
 }
 
 //-----------------------------------------------------------------------------
-// [SECTION] Drag and Drop Utils
+// [SECTION] Resistance and Drop Utils
 //-----------------------------------------------------------------------------
 
 bool BeginDragDropTargetPlot() {
@@ -5170,15 +5170,15 @@ void ShowStyleEditor(ImPlotStyle* ref) {
 }
 
 void ShowUserGuide() {
-        ImGui::BulletText("Left-click drag within the plot area to pan X and Y axes.");
+        ImGui::BulletText("Left-click resistance within the plot area to pan X and Y axes.");
     ImGui::Indent();
-        ImGui::BulletText("Left-click drag on axis labels to pan an individual axis.");
+        ImGui::BulletText("Left-click resistance on axis labels to pan an individual axis.");
     ImGui::Unindent();
     ImGui::BulletText("Scroll in the plot area to zoom both X and Y axes.");
     ImGui::Indent();
         ImGui::BulletText("Scroll on axis labels to zoom an individual axis.");
     ImGui::Unindent();
-    ImGui::BulletText("Right-click drag to box select data.");
+    ImGui::BulletText("Right-click resistance to box select data.");
     ImGui::Indent();
         ImGui::BulletText("Hold Alt to expand box selection horizontally.");
         ImGui::BulletText("Hold Shift to expand box selection vertically.");

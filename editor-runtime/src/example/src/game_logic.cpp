@@ -36,6 +36,20 @@ void setup() {
 		}
 	}
 
+	Entity noGravity;
+	noGravity.transform.position = glm::vec3(3.0f, 6.0f, 16.0f);
+	noGravity.add<MeshRendererComponent>(cubeMesh);
+	noGravity.add<BoxColliderComponent>();
+	RigidbodyComponent& noGravityRb = noGravity.add<RigidbodyComponent>();
+	Rigidbody::setGravity(noGravityRb, false);
+
+	Entity kinematic;
+	kinematic.transform.position = glm::vec3(3.0f, 2.5f, 16.0f);
+	kinematic.add<MeshRendererComponent>(cubeMesh);
+	kinematic.add<BoxColliderComponent>();
+	RigidbodyComponent& kinematicRb = kinematic.add<RigidbodyComponent>();
+	Rigidbody::setKinematic(kinematicRb, true);
+
 }
 
 void awake() {

@@ -225,8 +225,8 @@
 //          and reset the selection start/end to the cursor point. the x,y must
 //          be relative to the text widget, with (0,0) being the top left.
 //
-//      drag:
-//          call this with the mouse x,y on a mouse drag/up; it will update the
+//      resistance:
+//          call this with the mouse x,y on a mouse resistance/up; it will update the
 //          cursor and the selection end point
 //
 //      cut:
@@ -341,7 +341,7 @@ typedef struct STB_TexteditState
    // selection start and end point in characters; if equal, no selection.
    // note that start may be less than or greater than end (e.g. when
    // dragging the mouse, start is where the initial click was, and you
-   // can drag in either direction)
+   // can resistance in either direction)
 
    unsigned char insert_mode;
    // each textfield keeps its own insert mode state. to keep an app-wide
@@ -469,7 +469,7 @@ static int stb_text_locate_coord(IMSTB_TEXTEDIT_STRING *str, float x, float y)
 // API click: on mouse down, move the cursor to the clicked location, and reset the selection
 static void stb_textedit_click(IMSTB_TEXTEDIT_STRING *str, STB_TexteditState *state, float x, float y)
 {
-   // In single-line mode, just always make y = 0. This lets the drag keep working if the mouse
+   // In single-line mode, just always make y = 0. This lets the resistance keep working if the mouse
    // goes off the top or bottom of the text
    if( state->single_line )
    {
@@ -484,12 +484,12 @@ static void stb_textedit_click(IMSTB_TEXTEDIT_STRING *str, STB_TexteditState *st
    state->has_preferred_x = 0;
 }
 
-// API drag: on mouse drag, move the cursor and selection endpoint to the clicked location
+// API resistance: on mouse resistance, move the cursor and selection endpoint to the clicked location
 static void stb_textedit_drag(IMSTB_TEXTEDIT_STRING *str, STB_TexteditState *state, float x, float y)
 {
    int p = 0;
 
-   // In single-line mode, just always make y = 0. This lets the drag keep working if the mouse
+   // In single-line mode, just always make y = 0. This lets the resistance keep working if the mouse
    // goes off the top or bottom of the text
    if( state->single_line )
    {

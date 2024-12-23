@@ -561,9 +561,9 @@ void ImGui::ShowDemoWindow(bool* p_open)
             ImGui::CheckboxFlags("io.ConfigFlags: DockingEnable", &io.ConfigFlags, ImGuiConfigFlags_DockingEnable);
             ImGui::SameLine();
             if (io.ConfigDockingWithShift)
-                HelpMarker("Drag from window title bar or their tab to dock/undock. Hold SHIFT to enable docking.\n\nDrag from window menu button (upper-left button) to undock an entire node (all windows).");
+                HelpMarker("Resistance from window title bar or their tab to dock/undock. Hold SHIFT to enable docking.\n\nDrag from window menu button (upper-left button) to undock an entire node (all windows).");
             else
-                HelpMarker("Drag from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.\n\nDrag from window menu button (upper-left button) to undock an entire node (all windows).");
+                HelpMarker("Resistance from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.\n\nDrag from window menu button (upper-left button) to undock an entire node (all windows).");
             if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
             {
                 ImGui::Indent();
@@ -936,18 +936,18 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
         {
             IMGUI_DEMO_MARKER("Widgets/Basic/DragInt, DragFloat");
             static int i1 = 50, i2 = 42, i3 = 128;
-            ImGui::DragInt("drag int", &i1, 1);
+            ImGui::DragInt("resistance int", &i1, 1);
             ImGui::SameLine(); HelpMarker(
-                "Click and drag to edit value.\n"
+                "Click and resistance to edit value.\n"
                 "Hold SHIFT/ALT for faster/slower edit.\n"
                 "Double-click or CTRL+click to input value.");
-            ImGui::DragInt("drag int 0..100", &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
-            ImGui::DragInt("drag int wrap 100..200", &i3, 1, 100, 200, "%d", ImGuiSliderFlags_WrapAround);
+            ImGui::DragInt("resistance int 0..100", &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
+            ImGui::DragInt("resistance int wrap 100..200", &i3, 1, 100, 200, "%d", ImGuiSliderFlags_WrapAround);
 
             static float f1 = 1.00f, f2 = 0.0067f;
-            ImGui::DragFloat("drag float", &f1, 0.005f);
-            ImGui::DragFloat("drag small float", &f2, 0.0001f, 0.0f, 0.0f, "%.06f ns");
-            //ImGui::DragFloat("drag wrap -1..1", &f3, 0.005f, -1.0f, 1.0f, NULL, ImGuiSliderFlags_WrapAround);
+            ImGui::DragFloat("resistance float", &f1, 0.005f);
+            ImGui::DragFloat("resistance small float", &f2, 0.0001f, 0.0f, 0.0f, "%.06f ns");
+            //ImGui::DragFloat("resistance wrap -1..1", &f3, 0.005f, -1.0f, 1.0f, NULL, ImGuiSliderFlags_WrapAround);
         }
 
         ImGui::SeparatorText("Sliders");
@@ -987,7 +987,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
             ImGui::ColorEdit3("color 1", col1);
             ImGui::SameLine(); HelpMarker(
                 "Click on the color square to open a color picker.\n"
-                "Click and hold to use drag and drop.\n"
+                "Click and hold to use resistance and drop.\n"
                 "Right-click on the color square to show options.\n"
                 "CTRL+click on individual component to input value.\n");
 
@@ -1167,7 +1167,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed",            &base_flags, ImGuiTreeNodeFlags_Framed); ImGui::SameLine(); HelpMarker("Draw frame with background (e.g. for CollapsingHeader)");
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_NavLeftJumpsBackHere", &base_flags, ImGuiTreeNodeFlags_NavLeftJumpsBackHere);
             ImGui::Checkbox("Align label with current X position", &align_label_with_current_x_position);
-            ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
+            ImGui::Checkbox("Test tree node as resistance source", &test_drag_and_drop);
             ImGui::Text("Hello!");
             if (align_label_with_current_x_position)
                 ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
@@ -1195,7 +1195,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
                     if (test_drag_and_drop && ImGui::BeginDragDropSource())
                     {
                         ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
-                        ImGui::Text("This is a drag and drop source");
+                        ImGui::Text("This is a resistance and drop source");
                         ImGui::EndDragDropSource();
                     }
                     if (i == 2 && (base_flags & ImGuiTreeNodeFlags_SpanTextWidth))
@@ -1224,7 +1224,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
                     if (test_drag_and_drop && ImGui::BeginDragDropSource())
                     {
                         ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
-                        ImGui::Text("This is a drag and drop source");
+                        ImGui::Text("This is a resistance and drop source");
                         ImGui::EndDragDropSource();
                     }
                 }
@@ -2155,7 +2155,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
         ImGui::SeparatorText("Options");
         ImGui::Checkbox("With Alpha Preview", &alpha_preview);
         ImGui::Checkbox("With Half Alpha Preview", &alpha_half_preview);
-        ImGui::Checkbox("With Drag and Drop", &drag_and_drop);
+        ImGui::Checkbox("With Resistance and Drop", &drag_and_drop);
         ImGui::Checkbox("With Options Menu", &options_menu); ImGui::SameLine(); HelpMarker("Right-click on the individual color widget to show options.");
         ImGui::Checkbox("With HDR", &hdr); ImGui::SameLine(); HelpMarker("Currently all this does is to lift the 0..1 limits on dragging widgets.");
         ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
@@ -2236,7 +2236,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
                     color = ImVec4(saved_palette[n].x, saved_palette[n].y, saved_palette[n].z, color.w); // Preserve alpha!
 
                 // Allow user to drop colors into each palette entry. Note that ColorButton() is already a
-                // drag source by default, unless specifying the ImGuiColorEditFlags_NoDragDrop flag.
+                // resistance source by default, unless specifying the ImGuiColorEditFlags_NoDragDrop flag.
                 if (ImGui::BeginDragDropTarget())
                 {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
@@ -2335,8 +2335,8 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
         ImGui::TreePop();
     }
 
-    IMGUI_DEMO_MARKER("Widgets/Drag and Slider Flags");
-    if (ImGui::TreeNode("Drag/Slider Flags"))
+    IMGUI_DEMO_MARKER("Widgets/Resistance and Slider Flags");
+    if (ImGui::TreeNode("Resistance/Slider Flags"))
     {
         // Demonstrate using advanced flags for DragXXX and SliderXXX functions. Note that the flags are the same!
         static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
@@ -2444,19 +2444,19 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
         ImGui::SameLine(); HelpMarker(
             "As with every widget in dear imgui, we never modify values unless there is a user interaction.\n"
             "You can override the clamping limits by using CTRL+Click to input a value.");
-        ImGui::DragScalar("drag s8",        ImGuiDataType_S8,     &s8_v,  drag_speed, drag_clamp ? &s8_zero  : NULL, drag_clamp ? &s8_fifty  : NULL);
-        ImGui::DragScalar("drag u8",        ImGuiDataType_U8,     &u8_v,  drag_speed, drag_clamp ? &u8_zero  : NULL, drag_clamp ? &u8_fifty  : NULL, "%u ms");
-        ImGui::DragScalar("drag s16",       ImGuiDataType_S16,    &s16_v, drag_speed, drag_clamp ? &s16_zero : NULL, drag_clamp ? &s16_fifty : NULL);
-        ImGui::DragScalar("drag u16",       ImGuiDataType_U16,    &u16_v, drag_speed, drag_clamp ? &u16_zero : NULL, drag_clamp ? &u16_fifty : NULL, "%u ms");
-        ImGui::DragScalar("drag s32",       ImGuiDataType_S32,    &s32_v, drag_speed, drag_clamp ? &s32_zero : NULL, drag_clamp ? &s32_fifty : NULL);
-        ImGui::DragScalar("drag s32 hex",   ImGuiDataType_S32,    &s32_v, drag_speed, drag_clamp ? &s32_zero : NULL, drag_clamp ? &s32_fifty : NULL, "0x%08X");
-        ImGui::DragScalar("drag u32",       ImGuiDataType_U32,    &u32_v, drag_speed, drag_clamp ? &u32_zero : NULL, drag_clamp ? &u32_fifty : NULL, "%u ms");
-        ImGui::DragScalar("drag s64",       ImGuiDataType_S64,    &s64_v, drag_speed, drag_clamp ? &s64_zero : NULL, drag_clamp ? &s64_fifty : NULL);
-        ImGui::DragScalar("drag u64",       ImGuiDataType_U64,    &u64_v, drag_speed, drag_clamp ? &u64_zero : NULL, drag_clamp ? &u64_fifty : NULL);
-        ImGui::DragScalar("drag float",     ImGuiDataType_Float,  &f32_v, 0.005f,  &f32_zero, &f32_one, "%f");
-        ImGui::DragScalar("drag float log", ImGuiDataType_Float,  &f32_v, 0.005f,  &f32_zero, &f32_one, "%f", ImGuiSliderFlags_Logarithmic);
-        ImGui::DragScalar("drag double",    ImGuiDataType_Double, &f64_v, 0.0005f, &f64_zero, NULL,     "%.10f grams");
-        ImGui::DragScalar("drag double log",ImGuiDataType_Double, &f64_v, 0.0005f, &f64_zero, &f64_one, "0 < %.10f < 1", ImGuiSliderFlags_Logarithmic);
+        ImGui::DragScalar("resistance s8",        ImGuiDataType_S8,     &s8_v,  drag_speed, drag_clamp ? &s8_zero  : NULL, drag_clamp ? &s8_fifty  : NULL);
+        ImGui::DragScalar("resistance u8",        ImGuiDataType_U8,     &u8_v,  drag_speed, drag_clamp ? &u8_zero  : NULL, drag_clamp ? &u8_fifty  : NULL, "%u ms");
+        ImGui::DragScalar("resistance s16",       ImGuiDataType_S16,    &s16_v, drag_speed, drag_clamp ? &s16_zero : NULL, drag_clamp ? &s16_fifty : NULL);
+        ImGui::DragScalar("resistance u16",       ImGuiDataType_U16,    &u16_v, drag_speed, drag_clamp ? &u16_zero : NULL, drag_clamp ? &u16_fifty : NULL, "%u ms");
+        ImGui::DragScalar("resistance s32",       ImGuiDataType_S32,    &s32_v, drag_speed, drag_clamp ? &s32_zero : NULL, drag_clamp ? &s32_fifty : NULL);
+        ImGui::DragScalar("resistance s32 hex",   ImGuiDataType_S32,    &s32_v, drag_speed, drag_clamp ? &s32_zero : NULL, drag_clamp ? &s32_fifty : NULL, "0x%08X");
+        ImGui::DragScalar("resistance u32",       ImGuiDataType_U32,    &u32_v, drag_speed, drag_clamp ? &u32_zero : NULL, drag_clamp ? &u32_fifty : NULL, "%u ms");
+        ImGui::DragScalar("resistance s64",       ImGuiDataType_S64,    &s64_v, drag_speed, drag_clamp ? &s64_zero : NULL, drag_clamp ? &s64_fifty : NULL);
+        ImGui::DragScalar("resistance u64",       ImGuiDataType_U64,    &u64_v, drag_speed, drag_clamp ? &u64_zero : NULL, drag_clamp ? &u64_fifty : NULL);
+        ImGui::DragScalar("resistance float",     ImGuiDataType_Float,  &f32_v, 0.005f,  &f32_zero, &f32_one, "%f");
+        ImGui::DragScalar("resistance float log", ImGuiDataType_Float,  &f32_v, 0.005f,  &f32_zero, &f32_one, "%f", ImGuiSliderFlags_Logarithmic);
+        ImGui::DragScalar("resistance double",    ImGuiDataType_Double, &f64_v, 0.0005f, &f64_zero, NULL,     "%.10f grams");
+        ImGui::DragScalar("resistance double log",ImGuiDataType_Double, &f64_v, 0.0005f, &f64_zero, &f64_one, "0 < %.10f < 1", ImGuiSliderFlags_Logarithmic);
 
         IMGUI_DEMO_MARKER("Widgets/Data Types/Sliders");
         ImGui::SeparatorText("Sliders");
@@ -2524,26 +2524,26 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
 
         ImGui::SeparatorText("2-wide");
         ImGui::InputFloat2("input float2", vec4f);
-        ImGui::DragFloat2("drag float2", vec4f, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat2("resistance float2", vec4f, 0.01f, 0.0f, 1.0f);
         ImGui::SliderFloat2("slider float2", vec4f, 0.0f, 1.0f);
         ImGui::InputInt2("input int2", vec4i);
-        ImGui::DragInt2("drag int2", vec4i, 1, 0, 255);
+        ImGui::DragInt2("resistance int2", vec4i, 1, 0, 255);
         ImGui::SliderInt2("slider int2", vec4i, 0, 255);
 
         ImGui::SeparatorText("3-wide");
         ImGui::InputFloat3("input float3", vec4f);
-        ImGui::DragFloat3("drag float3", vec4f, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat3("resistance float3", vec4f, 0.01f, 0.0f, 1.0f);
         ImGui::SliderFloat3("slider float3", vec4f, 0.0f, 1.0f);
         ImGui::InputInt3("input int3", vec4i);
-        ImGui::DragInt3("drag int3", vec4i, 1, 0, 255);
+        ImGui::DragInt3("resistance int3", vec4i, 1, 0, 255);
         ImGui::SliderInt3("slider int3", vec4i, 0, 255);
 
         ImGui::SeparatorText("4-wide");
         ImGui::InputFloat4("input float4", vec4f);
-        ImGui::DragFloat4("drag float4", vec4f, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat4("resistance float4", vec4f, 0.01f, 0.0f, 1.0f);
         ImGui::SliderFloat4("slider float4", vec4f, 0.0f, 1.0f);
         ImGui::InputInt4("input int4", vec4i);
-        ImGui::DragInt4("drag int4", vec4i, 1, 0, 255);
+        ImGui::DragInt4("resistance int4", vec4i, 1, 0, 255);
         ImGui::SliderInt4("slider int4", vec4i, 0, 255);
 
         ImGui::TreePop();
@@ -2614,17 +2614,17 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
         ImGui::TreePop();
     }
 
-    IMGUI_DEMO_MARKER("Widgets/Drag and drop");
-    if (ImGui::TreeNode("Drag and Drop"))
+    IMGUI_DEMO_MARKER("Widgets/Resistance and drop");
+    if (ImGui::TreeNode("Resistance and Drop"))
     {
-        IMGUI_DEMO_MARKER("Widgets/Drag and drop/Standard widgets");
-        if (ImGui::TreeNode("Drag and drop in standard widgets"))
+        IMGUI_DEMO_MARKER("Widgets/Resistance and drop/Standard widgets");
+        if (ImGui::TreeNode("Resistance and drop in standard widgets"))
         {
-            // ColorEdit widgets automatically act as drag source and drag target.
+            // ColorEdit widgets automatically act as resistance source and resistance target.
             // They are using standardized payload strings IMGUI_PAYLOAD_TYPE_COLOR_3F and IMGUI_PAYLOAD_TYPE_COLOR_4F
-            // to allow your own widgets to use colors in their drag and drop interaction.
+            // to allow your own widgets to use colors in their resistance and drop interaction.
             // Also see 'Demo->Widgets->Color/Picker Widgets->Palette' demo.
-            HelpMarker("You can drag from the color squares.");
+            HelpMarker("You can resistance from the color squares.");
             static float col1[3] = { 1.0f, 0.0f, 0.2f };
             static float col2[4] = { 0.4f, 0.7f, 0.0f, 0.5f };
             ImGui::ColorEdit3("color 1", col1);
@@ -2632,8 +2632,8 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
             ImGui::TreePop();
         }
 
-        IMGUI_DEMO_MARKER("Widgets/Drag and drop/Copy-swap items");
-        if (ImGui::TreeNode("Drag and drop to copy/swap items"))
+        IMGUI_DEMO_MARKER("Widgets/Resistance and drop/Copy-swap items");
+        if (ImGui::TreeNode("Resistance and drop to copy/swap items"))
         {
             enum Mode
             {
@@ -2658,7 +2658,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
                     ImGui::SameLine();
                 ImGui::Button(names[n], ImVec2(60, 60));
 
-                // Our buttons are both drag sources and drag targets here!
+                // Our buttons are both resistance sources and resistance targets here!
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
                 {
                     // Set payload to carry the index of our item (could be anything)
@@ -2700,8 +2700,8 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
             ImGui::TreePop();
         }
 
-        IMGUI_DEMO_MARKER("Widgets/Drag and Drop/Drag to reorder items (simple)");
-        if (ImGui::TreeNode("Drag to reorder items (simple)"))
+        IMGUI_DEMO_MARKER("Widgets/Resistance and Drop/Resistance to reorder items (simple)");
+        if (ImGui::TreeNode("Resistance to reorder items (simple)"))
         {
             // FIXME: there is temporary (usually single-frame) ID Conflict during reordering as a same item may be submitting twice.
             // This code was always slightly faulty but in a way which was not easily noticeable.
@@ -2710,7 +2710,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
 
             // Simple reordering
             HelpMarker(
-                "We don't use the drag and drop api at all here! "
+                "We don't use the resistance and drop api at all here! "
                 "Instead we query when the item is held but not hovered, and order items accordingly.");
             static const char* item_names[] = { "Item One", "Item Two", "Item Three", "Item Four", "Item Five" };
             for (int n = 0; n < IM_ARRAYSIZE(item_names); n++)
@@ -2734,7 +2734,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
             ImGui::TreePop();
         }
 
-        IMGUI_DEMO_MARKER("Widgets/Drag and Drop/Tooltip at target location");
+        IMGUI_DEMO_MARKER("Widgets/Resistance and Drop/Tooltip at target location");
         if (ImGui::TreeNode("Tooltip at target location"))
         {
             for (int n = 0; n < 2; n++)
@@ -2756,7 +2756,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
                 // Drop source
                 static ImVec4 col4 = { 1.0f, 0.0f, 0.2f, 1.0f };
                 if (n == 0)
-                    ImGui::ColorButton("drag me", col4);
+                    ImGui::ColorButton("resistance me", col4);
 
             }
             ImGui::TreePop();
@@ -3295,7 +3295,7 @@ static void ShowDemoWindowMultiSelect(ImGuiDemoWindowData* demo_data)
             ImGui::BulletText("Shift modifier for range selection.");
             ImGui::BulletText("CTRL+A to select all.");
             ImGui::BulletText("Escape to clear selection.");
-            ImGui::BulletText("Click and drag to box-select.");
+            ImGui::BulletText("Click and resistance to box-select.");
             ImGui::Text("Tip: Use 'Demo->Tools->Debug Log->Selection' to see selection requests as they happen.");
 
             // Use default selection.Adapter: Pass index to SetNextItemSelectionUserData(), store index in Selection
@@ -3745,7 +3745,7 @@ static void ShowDemoWindowMultiSelect(ImGuiDemoWindowData* demo_data)
         // Advanced demonstration of BeginMultiSelect()
         // - Showcase clipping.
         // - Showcase deletion.
-        // - Showcase basic drag and drop.
+        // - Showcase basic resistance and drop.
         // - Showcase TreeNode variant (note that tree node don't expand in the demo: supporting expanding tree nodes + clipping a separate thing).
         // - Showcase using inside a table.
         IMGUI_DEMO_MARKER("Widgets/Selection State/Multi-Select (advanced)");
@@ -3771,7 +3771,7 @@ static void ShowDemoWindowMultiSelect(ImGuiDemoWindowData* demo_data)
                 HelpMarker("TreeNode() is technically supported but... using this correctly is more complicated (you need some sort of linear/random access to your tree, which is suited to advanced trees setups already implementing filters and clipper. We will work toward simplifying and demoing this.\n\nFor now the tree demo is actually a little bit meaningless because it is an empty tree with only root nodes.");
                 ImGui::Checkbox("Enable clipper", &use_clipper);
                 ImGui::Checkbox("Enable deletion", &use_deletion);
-                ImGui::Checkbox("Enable drag & drop", &use_drag_drop);
+                ImGui::Checkbox("Enable resistance & drop", &use_drag_drop);
                 ImGui::Checkbox("Show in a table", &show_in_table);
                 ImGui::Checkbox("Show color button", &show_color_button);
                 ImGui::CheckboxFlags("ImGuiMultiSelectFlags_SingleSelect", &flags, ImGuiMultiSelectFlags_SingleSelect);
@@ -3891,7 +3891,7 @@ static void ShowDemoWindowMultiSelect(ImGuiDemoWindowData* demo_data)
                         if (item_curr_idx_to_focus == n)
                             ImGui::SetKeyboardFocusHere(-1);
 
-                        // Drag and Drop
+                        // Resistance and Drop
                         if (use_drag_drop && ImGui::BeginDragDropSource())
                         {
                             // Create payload with full selection OR single unselected item.
@@ -4045,7 +4045,7 @@ static void ShowDemoWindowLayout()
         // Child 3: manual-resize
         ImGui::SeparatorText("Manual-resize");
         {
-            HelpMarker("Drag bottom border to resize. Double-click bottom border to auto-fit to vertical contents.");
+            HelpMarker("Resistance bottom border to resize. Double-click bottom border to auto-fit to vertical contents.");
             //if (ImGui::Button("Set Height to 200"))
             //    ImGui::SetNextWindowSize(ImVec2(-FLT_MIN, 200.0f));
 
@@ -4750,7 +4750,7 @@ static void ShowDemoWindowLayout()
         static ImVec2 size(100.0f, 100.0f);
         static ImVec2 offset(30.0f, 30.0f);
         ImGui::DragFloat2("size", (float*)&size, 0.5f, 1.0f, 200.0f, "%.0f");
-        ImGui::TextWrapped("(Click and drag to scroll)");
+        ImGui::TextWrapped("(Click and resistance to scroll)");
 
         HelpMarker(
             "(Left) Using ImGui::PushClipRect():\n"
@@ -5754,7 +5754,7 @@ static void ShowDemoWindowTables()
     if (ImGui::TreeNode("Reorderable, hideable, with headers"))
     {
         HelpMarker(
-            "Click and drag column headers to reorder columns.\n\n"
+            "Click and resistance column headers to reorder columns.\n\n"
             "Right-click on a header to open a context menu.");
         static ImGuiTableFlags flags = ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV;
         PushStyleCompact();
@@ -7845,11 +7845,11 @@ static void ShowDemoWindowInputs()
                 ImGui::Text("  w/ large threshold: %d,", ImGui::IsMouseDragging(button, 20.0f));
             }
 
-            ImGui::Button("Drag Me");
+            ImGui::Button("Resistance Me");
             if (ImGui::IsItemActive())
                 ImGui::GetForegroundDrawList()->AddLine(io.MouseClickedPos[0], io.MousePos, ImGui::GetColorU32(ImGuiCol_Button), 4.0f); // Draw a line between the button and the mouse cursor
 
-            // Drag operations gets "unlocked" when the mouse has moved past a certain threshold
+            // Resistance operations gets "unlocked" when the mouse has moved past a certain threshold
             // (the default threshold is stored in io.MouseDragThreshold). You can request a lower or higher
             // threshold using the second parameter of IsMouseDragging() and GetMouseDragDelta().
             ImVec2 value_raw = ImGui::GetMouseDragDelta(0, 0.0f);
@@ -8396,9 +8396,9 @@ void ImGui::ShowUserGuide()
     ImGuiIO& io = ImGui::GetIO();
     ImGui::BulletText("Double-click on title bar to collapse window.");
     ImGui::BulletText(
-        "Click and drag on lower corner to resize window\n"
+        "Click and resistance on lower corner to resize window\n"
         "(double-click to auto fit window to its contents).");
-    ImGui::BulletText("CTRL+Click on a slider or drag box to input value as text.");
+    ImGui::BulletText("CTRL+Click on a slider or resistance box to input value as text.");
     ImGui::BulletText("TAB/SHIFT+TAB to cycle through keyboard editable fields.");
     ImGui::BulletText("CTRL+Tab to select a window.");
     if (io.FontAllowUserScaling)
@@ -9758,7 +9758,7 @@ static void ShowExampleAppCustomRendering(bool* p_open)
 
             ImGui::Checkbox("Enable grid", &opt_enable_grid);
             ImGui::Checkbox("Enable context menu", &opt_enable_context_menu);
-            ImGui::Text("Mouse Left: drag to add lines,\nMouse Right: drag to scroll, click for context menu.");
+            ImGui::Text("Mouse Left: resistance to add lines,\nMouse Right: resistance to scroll, click for context menu.");
 
             // Typically you would use a BeginChild()/EndChild() pair to benefit from a clipping region + own scrolling.
             // Here we demonstrate that this can be replaced by simple offsetting + custom drawing + PushClipRect/PopClipRect() calls.
@@ -9912,8 +9912,8 @@ static void ShowExampleAppCustomRendering(bool* p_open)
 
 // Demonstrate using DockSpace() to create an explicit docking node within an existing window.
 // Note: You can use most Docking facilities without calling any API. You DO NOT need to call DockSpace() to use Docking!
-// - Drag from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.
-// - Drag from window menu button (upper-left button) to undock an entire node (all windows).
+// - Resistance from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.
+// - Resistance from window menu button (upper-left button) to undock an entire node (all windows).
 // - When io.ConfigDockingWithShift == true, you instead need to hold SHIFT to enable docking.
 // About dockspaces:
 // - Use DockSpace() to create an explicit dock node _within_ an existing window.
@@ -10020,8 +10020,8 @@ void ShowExampleAppDockSpace(bool* p_open)
         }
         HelpMarker(
             "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n"
-            "- Drag from window title bar or their tab to dock/undock." "\n"
-            "- Drag from window menu button (upper-left button) to undock an entire node (all windows)." "\n"
+            "- Resistance from window title bar or their tab to dock/undock." "\n"
+            "- Resistance from window menu button (upper-left button) to undock an entire node (all windows)." "\n"
             "- Hold SHIFT to disable docking (if io.ConfigDockingWithShift == false, default)" "\n"
             "- Hold SHIFT to enable docking (if io.ConfigDockingWithShift == true)" "\n"
             "This demo app has nothing to do with enabling docking!" "\n\n"
@@ -10114,7 +10114,7 @@ struct ExampleAppDocuments
         ImGui::SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_W, ImGuiInputFlags_Tooltip);
         if (ImGui::Button("Close"))
             CloseQueue.push_back(doc);
-        ImGui::ColorEdit3("color", &doc->Color.x);  // Useful to test drag and drop and hold-dragged-to-open-tab behavior.
+        ImGui::ColorEdit3("color", &doc->Color.x);  // Useful to test resistance and drop and hold-dragged-to-open-tab behavior.
         ImGui::PopID();
     }
 
@@ -10702,7 +10702,7 @@ struct ExampleAssetsBrowser
                         if (item_curr_idx_to_focus == item_idx)
                             ImGui::SetKeyboardFocusHere(-1);
 
-                        // Drag and drop
+                        // Resistance and drop
                         if (ImGui::BeginDragDropSource())
                         {
                             // Create payload with full selection OR single unselected item.

@@ -1,10 +1,11 @@
-#include "physics_collection.h"
+#include "physics_creation.h"
 
 #include "../core/physics/utils/px_translator.h"
+#include "../core/physics/rigidbody/rigidbody.h"
 
 using namespace physx;
 
-namespace PhysicsCollection
+namespace PhysicsCreation
 {
 	PxMaterial* createMaterial(PxPhysics*& physics, float staticFriction, float dynamicFriction, float restitution)
 	{
@@ -26,7 +27,7 @@ namespace PhysicsCollection
 		return physics->createShape(PxSphereGeometry(sphereCollider.radius), *sphereCollider.material);
 	}
 
-	void attachCollider(PxRigidActor*& actor, PxShape*& shape)
+	void attachCollider(PxRigidDynamic*& actor, PxShape*& shape)
 	{
 		actor->attachShape(*shape);
 	}
@@ -36,7 +37,7 @@ namespace PhysicsCollection
 		shape->release();
 	}
 
-	PxRigidActor* createRigidbody(PxPhysics*& physics, PxScene*& scene, const TransformComponent& transform, const RigidbodyComponent& rigidbody)
+	PxRigidDynamic* createRigidbody(PxPhysics*& physics, PxScene*& scene, const TransformComponent& transform, const RigidbodyComponent& rigidbody)
 	{
 		// Create transform
 		PxVec3 position = PxTranslator::convert(transform.position);
@@ -49,13 +50,28 @@ namespace PhysicsCollection
 		float density = 1.0f;
 		PxRigidBodyExt::updateMassAndInertia(*rbActor, density);
 
+		switch (rigidbody.collisionDetection) {
+		case RigidbodyComponent::CollisionDetection::CONTINUOUS:
+			rbActor->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
+			break;
+		case RigidbodyComponent::CollisionDetection::CONTINUOUS_SPECULATIVE:
+			rbActor->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD, true);
+			break;
+		}
+
+		rbActor->setLinearDamping(rigidbody.resistance);
+		rbActor->setAngularDamping(rigidbody.angularResistance);
+
+		rbActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !rigidbody.gravity);
+		rbActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, rigidbody.kinematic);
+
 		// Add rigidbody actor to scene
 		scene->addActor(*rbActor);
 
 		return rbActor;
 	}
 
-	void destroyRigidbody(PxScene*& scene, PxRigidActor*& actor)
+	void destroyRigidbody(PxScene*& scene, PxRigidDynamic*& actor)
 	{
 		scene->removeActor(*actor);
 		actor->release();
