@@ -110,7 +110,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint16_t nSelected, entity selected)
+uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint16_t nSelected, Entity selected)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -219,10 +219,10 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 }
 
-void SceneViewForwardPass::renderSelectedEntity(entity entity, const glm::mat4& viewProjection)
+void SceneViewForwardPass::renderSelectedEntity(Entity entity, const glm::mat4& viewProjection)
 {
-	TransformComponent& transform = ECS::getComponent<TransformComponent>(entity);
-	MeshRendererComponent& renderer = ECS::getComponent<MeshRendererComponent>(entity);
+	TransformComponent& transform = entity.get<TransformComponent>();
+	MeshRendererComponent& renderer = entity.get<MeshRendererComponent>();
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer

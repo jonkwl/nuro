@@ -449,5 +449,8 @@
     <ClInclude Include="core\physics\utils\px_translator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="core\ecs\entity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

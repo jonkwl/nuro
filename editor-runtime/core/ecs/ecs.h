@@ -10,8 +10,6 @@
 #include "../core/ecs/components.hpp"
 #include "../core/ecs/composed.hpp"
 
-using entity = entt::entity;
-
 namespace ECS {
 
 	//
@@ -19,34 +17,6 @@ namespace ECS {
 	//
 
 	inline entt::registry gRegistry;
-
-	//
-	// ENTITY RELATED FUNCTIONS
-	//
-
-	std::tuple<entity, TransformComponent&> createEntity();
-	void destroyEntity(entity entity);
-	bool verifyEntity(entity entity);
-
-	template<typename T, typename... Args>
-	T& addComponent(entity entity, Args&&... args) {
-		return ECS::gRegistry.emplace<T>(entity, std::forward<Args>(args)...);
-	}
-
-	template<typename T>
-	T& getComponent(entity entity) {
-		return ECS::gRegistry.get<T>(entity);
-	}
-
-	template<typename T>
-	bool hasComponent(entity entity) {
-		return ECS::gRegistry.any_of<T>(entity);
-	}
-
-	template<typename T>
-	void removeComponent(entity entity) {
-		ECS::gRegistry.remove<T>(entity);
-	}
 
 	//
 	// HELPER FUNCTIONS

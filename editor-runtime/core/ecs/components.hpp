@@ -20,10 +20,10 @@ struct TransformComponent {
 
 };
 
-inline Mesh nullMesh;
+static inline Mesh emptyMesh;
 struct MeshRendererComponent {
 
-	MeshRendererComponent() : mesh(nullMesh) {};
+	MeshRendererComponent() : mesh(emptyMesh) {};
 	MeshRendererComponent(Mesh& mesh) : mesh(mesh) {};
 
 	Mesh& mesh; // Mesh render target
