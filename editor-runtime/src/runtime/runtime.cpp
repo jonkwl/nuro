@@ -146,7 +146,7 @@ namespace Runtime {
 		gGameViewPipeline.setSkybox(&gDefaultSkybox);
 
 		// Load gizmo icons
-		GizmoIconPool::loadAll("../resources/gizmos");
+		IconPool::loadAll("../resources/icons");
 	}
 
 	void _setupScripts() {

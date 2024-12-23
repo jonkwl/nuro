@@ -182,7 +182,7 @@ void SceneViewPipeline::render()
 	imGizmo.color = GizmoColor::BLUE;
 	imGizmo.foreground = false;
 	imGizmo.opacity = 0.08f;
-	imGizmo.icon3d(GizmoIconPool::get("fa_lightbulb"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.35f));
+	imGizmo.icon3d(IconPool::get("light_gizmo"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.5f));
 
 	//
 	// PRE PASS

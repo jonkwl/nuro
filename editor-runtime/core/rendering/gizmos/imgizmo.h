@@ -113,4 +113,6 @@ private:
 	Mesh& getMesh(Shape shape);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+
+	float get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition); // Gets the alpha of a 3D icon based on its distance to the camera
 };

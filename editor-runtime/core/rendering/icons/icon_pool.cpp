@@ -1,4 +1,4 @@
-#include "gizmo_icon_pool.h"
+#include "icon_pool.h"
 
 #include <vector>
 #include <unordered_map>
@@ -7,7 +7,7 @@
 #include "../core/utils/iohandler.h"
 #include "../core/utils/log.h"
 
-namespace GizmoIconPool {
+namespace IconPool {
 
 	std::vector<std::string> _validExtensions = { ".png", ".jpg", ".jpeg" };
 

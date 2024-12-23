@@ -134,7 +134,7 @@
   <ItemGroup>
     <ClCompile Include="core\ecs\ecs.cpp" />
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
-    <ClCompile Include="core\rendering\gizmos\gizmo_icon_pool.cpp" />
+    <ClCompile Include="core\rendering\icons\icon_pool.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuizmo.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="core\ecs\ecs_collection.h" />
     <ClInclude Include="core\physics\physics.h" />
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
-    <ClInclude Include="core\rendering\gizmos\gizmo_icon_pool.h" />
+    <ClInclude Include="core\rendering\icons\icon_pool.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\ImGuizmo.h" />

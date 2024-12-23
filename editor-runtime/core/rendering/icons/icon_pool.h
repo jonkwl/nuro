@@ -4,7 +4,7 @@
 
 #include "../core/rendering/texture/texture.h"
 
-namespace GizmoIconPool {
+namespace IconPool {
 	
 	void loadAll(std::string directoryPath);
 

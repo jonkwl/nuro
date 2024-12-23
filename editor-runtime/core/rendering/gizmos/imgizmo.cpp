@@ -156,9 +156,6 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 	// Bind quick gizmo shader for upcoming renders
 	staticData.iconShader->bind();
 
-	// Enable depth testing
-	glEnable(GL_DEPTH_TEST);
-
 	// Enable blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -202,23 +199,27 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		// Calculate MVP matrix
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
-		// Calculate icon alpha based on distance to camera
-		float alpha = 0.35f;
-		float minDistance = 0.5f;
-		float maxDistance = 2.5f;
-		float distance = glm::distance(gizmoPosition, cameraPosition);
-		if (distance < maxDistance) {
-			alpha = glm::mix(0.0f, alpha, glm::smoothstep(minDistance, maxDistance, distance));
-		}
+		// Get mesh
+		Mesh& mesh = getMesh(Shape::PLANE);
 
-		// Set material uniforms
+		// Set static material uniforms
 		staticData.iconShader->setMatrix4("mvpMatrix", mvpMatrix);
 		staticData.iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 		staticData.iconShader->setVec3("tint", glm::vec3(1.0f));
-		staticData.iconShader->setFloat("alpha", alpha);
 
-		// Get mesh
-		Mesh& mesh = getMesh(Shape::PLANE);
+		auto alpha = [this, gizmoPosition, cameraPosition](float value) -> float { 
+			return get3DIconAlpha(value, gizmoPosition, cameraPosition); 
+		};
+
+		// Render with full opacity and depth test
+		staticData.iconShader->setFloat("alpha", alpha(1.0f));
+		glEnable(GL_DEPTH_TEST);
+		glBindVertexArray(mesh.getVAO());
+		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+
+		// Render with transparency but without depth test
+		staticData.iconShader->setFloat("alpha", alpha(0.05f));
+		glDisable(GL_DEPTH_TEST);
 		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
@@ -286,4 +287,16 @@ glm::mat4 IMGizmo::getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::v
 	model = glm::scale(model, scale);
 
 	return model;
+}
+
+float IMGizmo::get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition)
+{
+	float alpha = baseAlpha;
+	float minDistance = 0.5f;
+	float maxDistance = 2.5f;
+	float distance = glm::distance(iconPosition, cameraPosition);
+	if (distance < maxDistance) {
+		alpha = glm::mix(0.0f, alpha, glm::smoothstep(minDistance, maxDistance, distance));
+	}
+	return alpha;
 }
