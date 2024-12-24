@@ -270,7 +270,6 @@ namespace Runtime {
 
 		// GENERATE ALL INITIAL QUEUES
 		ECS::generateRenderQueue();
-		ECS::generateRigidbodyQueue();
 
 		while (!glfwWindowShouldClose(gWindow))
 		{

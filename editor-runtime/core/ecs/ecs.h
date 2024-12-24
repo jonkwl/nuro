@@ -6,9 +6,9 @@
 #include <sstream>
 #include <tuple>
 
-#include "../core/ecs/registry_state.hpp"
-#include "../core/ecs/components.h"
 #include "../core/ecs/composed.h"
+#include "../core/ecs/components.h"
+#include "../core/ecs/registry_state.hpp"
 
 using RenderQueue = std::vector<std::tuple<entt::entity, TransformComponent&, MeshRendererComponent&>>;
 
@@ -23,6 +23,9 @@ namespace ECS {
 	//
 	// CORE FUNCTIONS
 	//
+
+	// Create entity
+	std::tuple<entt::entity, TransformComponent&> createEntity();
 
 	// Returns the global render queue
 	RenderQueue& getRenderQueue();

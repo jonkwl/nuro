@@ -452,7 +452,7 @@
     <ClInclude Include="core\physics\utils\px_translator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\entity.hpp">
+    <ClInclude Include="core\ecs\entity_container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\core\physics_creation.h">

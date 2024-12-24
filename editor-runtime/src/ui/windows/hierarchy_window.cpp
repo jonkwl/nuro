@@ -40,7 +40,7 @@ void HierarchyWindow::renderItems(ImDrawList& drawList)
 
 		i++;
 
-		if (ImGui::TreeNodeEx(("Entity " + std::to_string(i)).c_str())) {
+		if (ImGui::TreeNodeEx(("EntityContainer " + std::to_string(i)).c_str())) {
 
 			ImGui::TreePop();
 

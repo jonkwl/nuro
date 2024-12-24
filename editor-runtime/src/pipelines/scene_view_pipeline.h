@@ -3,9 +3,8 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "../core/ecs/composed.h"
 #include "../core/viewport/viewport.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/core/pre_pass.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"

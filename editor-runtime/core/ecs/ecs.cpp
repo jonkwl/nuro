@@ -28,6 +28,13 @@ namespace ECS {
 		}
 	}
 
+	std::tuple<entt::entity, TransformComponent&> createEntity()
+	{
+		entt::entity entity = gRegistry.create();
+		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
+		return std::tuple<entt::entity, TransformComponent&>(entity, transform);
+	}
+
 	RenderQueue& getRenderQueue()
 	{
 		return gRenderQueue;
