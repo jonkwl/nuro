@@ -1,14 +1,36 @@
 #include "ecs.h"
 
+#include <random>
+#include <algorithm>
+#include "../core/utils/log.h"
+
 namespace ECS {
 
-	std::optional<Camera> getLatestCamera() {
-		auto group = gRegistry.group<TransformComponent>(entt::get<CameraComponent>);
-		for (auto entity : group) {
-			auto[transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
-			return Camera(transform, camera);
+	RenderQueue gRenderQueue;
+
+	void generateRenderQueue()
+	{
+		// Fill unsorted queue
+		std::vector<entt::entity> unsortedQueue;
+		gRegistry.view<MeshRendererComponent>().each([&](auto entity, const auto&) { unsortedQueue.push_back(entity); });
+
+		// Sort by shader and material
+		std::sort(unsortedQueue.begin(), unsortedQueue.end(), [&](auto lhsEntity, auto rhsEntity) {
+			MeshRendererComponent& lhs = gRegistry.get<MeshRendererComponent>(lhsEntity);
+			MeshRendererComponent& rhs = gRegistry.get<MeshRendererComponent>(rhsEntity);
+			return std::tie(lhs.material.shader, lhs.material.id) < std::tie(rhs.material.shader, rhs.material.id);
+			});
+
+		// Fill render queue
+		gRenderQueue.clear();
+		for (auto entity : unsortedQueue) {
+			gRenderQueue.emplace_back(entity, gRegistry.get<TransformComponent>(entity), gRegistry.get<MeshRendererComponent>(entity));
 		}
-		return std::nullopt;
+	}
+
+	RenderQueue& getRenderQueue()
+	{
+		return gRenderQueue;
 	}
 
 	RegistryState captureState()
@@ -32,6 +54,15 @@ namespace ECS {
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
 			.get<CameraComponent>(state);
+	}
+
+	std::optional<Camera> getLatestCamera() {
+		auto group = gRegistry.group<TransformComponent>(entt::get<CameraComponent>);
+		for (auto entity : group) {
+			auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+			return Camera(transform, camera);
+		}
+		return std::nullopt;
 	}
 
 }

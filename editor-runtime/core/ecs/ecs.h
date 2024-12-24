@@ -10,6 +10,8 @@
 #include "../core/ecs/components.h"
 #include "../core/ecs/composed.h"
 
+using RenderQueue = std::vector<std::tuple<entt::entity, TransformComponent&, MeshRendererComponent&>>;
+
 namespace ECS {
 
 	//
@@ -19,16 +21,30 @@ namespace ECS {
 	inline entt::registry gRegistry;
 
 	//
-	// HELPER FUNCTIONS
+	// CORE FUNCTIONS
 	//
 
-	std::optional<Camera> getLatestCamera(); // Returns latest camera in register if existing
+	// Returns the global render queue
+	RenderQueue& getRenderQueue();
+
+	// (Re-)Generates the global render queue
+	void generateRenderQueue();
 
 	//
 	// SERIALIZATION FUNCTIONS
 	//
 
-	RegistryState captureState(); // Captures current state of registry
-	void loadState(RegistryState& state); // Loads given state into registry
+	// Captures current state of registry
+	RegistryState captureState();
+
+	// Loads given state into registry
+	void loadState(RegistryState& state);
+
+	//
+	// HELPER FUNCTIONS
+	//
+
+	// Returns latest camera in register if existing
+	std::optional<Camera> getLatestCamera();
 
 }

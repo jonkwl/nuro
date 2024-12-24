@@ -2,6 +2,8 @@
 
 #include "../core/engine.h";
 
+#include <random>
+
 Entity camera;
 Entity ground;
 Entity sphere;
@@ -14,6 +16,18 @@ void setup() {
 	Mesh& cubeMesh = cubeModel->getMesh(0);
 	Mesh& sphereMesh = sphereModel->getMesh(0);
 
+	DebugMaterial metalMaterial{ 1, 1, "Lit Shader", "Metal Material" };
+	DebugMaterial plasticMaterial{ 1, 2, "Lit Shader", "Plastic Material" };
+	DebugMaterial bulletMaterial{ 1, 3, "Lit Shader", "Bullet Material" };
+	DebugMaterial skyMaterial{ 1, 4, "Lit Shader", "Sky Material" };
+	DebugMaterial boxMaterial{ 1, 5, "Lit Shader", "Box Material" };
+	DebugMaterial glassMaterial{ 2, 6, "Transparent Shader", "Glass Material" };
+	DebugMaterial waterMaterial{ 2, 7, "Transparent Shader", "Water Material" };
+	DebugMaterial bottleMaterial{ 2, 8, "Transparent Shader", "Bottle Material" };
+	DebugMaterial customMaterial{ 3, 9, "Custom Shader", "Custom Material" };
+	DebugMaterial magicMaterial{ 3, 10, "Custom Shader", "Magic Material" };
+	DebugMaterial materials[10] = { metalMaterial, plasticMaterial, bulletMaterial, skyMaterial, boxMaterial, glassMaterial, waterMaterial, bottleMaterial, customMaterial, magicMaterial };
+
 	camera.add<CameraComponent>();
 
 	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
@@ -25,14 +39,20 @@ void setup() {
 	sphere.add<SphereColliderComponent>();
 	sphere.add<RigidbodyComponent>();
 
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distrib(0, 9);
+
 	int objectAmount = 200;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			Entity e;
 			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
-			e.add<MeshRendererComponent>(cubeMesh);
+			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh);
 			e.add<BoxColliderComponent>();
 			e.add<RigidbodyComponent>();
+
+			r.material = materials[distrib(gen)];
 		}
 	}
 

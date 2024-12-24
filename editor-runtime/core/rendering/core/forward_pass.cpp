@@ -10,8 +10,6 @@
 #include "../core/rendering/model/mesh.h"
 #include "../core/ecs/ecs_collection.h"
 
-#include "../src/runtime/runtime.h"
-
 ForwardPass::ForwardPass(const Viewport& viewport) : drawSkybox(false),
 drawGizmos(false),
 viewport(viewport),
@@ -151,8 +149,7 @@ uint32_t ForwardPass::render(const glm::mat4& view, const glm::mat4& projection,
 	defaultMaterial->bind();
 
 	// Render each entity
-	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
-	for (auto [entity, transform, renderer] : targets.each()) {
+	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
 		renderMesh(transform, renderer, defaultMaterial);
 	}
 

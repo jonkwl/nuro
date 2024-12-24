@@ -268,6 +268,10 @@ namespace Runtime {
 		// PERFORM GAMES SETUP LOGIC
 		setup();
 
+		// GENERATE ALL INITIAL QUEUES
+		ECS::generateRenderQueue();
+		ECS::generateRigidbodyQueue();
+
 		while (!glfwWindowShouldClose(gWindow))
 		{
 			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
@@ -315,6 +319,8 @@ namespace Runtime {
 
 	void startGame()
 	{
+		// Re-Generate render queue
+
 		// Cache scene state
 		// gSceneState = ECS::captureState();
 

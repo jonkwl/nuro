@@ -153,8 +153,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	defaultMaterial->bind();
 
 	// Render each entity
-	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
-	for (auto [entity, transform, renderer] : targets.each()) {
+	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
 
 		// Skip if target entity is selected entity
 		if (selected == entity) continue;
