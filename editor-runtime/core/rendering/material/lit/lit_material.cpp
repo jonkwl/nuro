@@ -258,7 +258,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setVec3("pointLights[0].position", Transformation::toBackendPosition(glm::vec3(0.0f, 6.0f, 3.0f)));
 	shader->setVec3("pointLights[0].position", glm::vec3(0.0f));
 	shader->setVec3("pointLights[0].color", glm::vec3(0.8f, 0.8f, 1.0f));
-	shader->setFloat("pointLights[0].intensity", 3.0f);
+	shader->setFloat("pointLights[0].intensity", 1.5f);
 	shader->setFloat("pointLights[0].range", 40.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);
 	
