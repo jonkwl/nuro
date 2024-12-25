@@ -1,9 +1,5 @@
 #include "game_window.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <gtc/type_ptr.hpp>
-#include <gtx/matrix_decompose.hpp>
-
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
@@ -107,11 +103,16 @@ void GameWindow::renderGameView()
 		bool currentlyResizing = currentWindowSize != lastWindowSize;
 		if (currentlyResizing) output = 0;
 
-		float aspectRatio = 16.0f / 9.0f;
+		// float aspectRatio = 16.0f / 9.0f;
+		float aspectRatio = 0.0f;
 		ImVec2 size, offset;
-		UIUtils::calculateAspectFitting(aspectRatio, size, offset);
-
-		ImGui::SetCursorPos(offset);
+		if (aspectRatio) {
+			UIUtils::calculateAspectFitting(aspectRatio, size, offset);
+			ImGui::SetCursorPos(offset);
+		}
+		else {
+			size = ImGui::GetContentRegionAvail();
+		}
 
 		// Render target
 		ImGui::Image(output, size, ImVec2(0, 1), ImVec2(1, 0));

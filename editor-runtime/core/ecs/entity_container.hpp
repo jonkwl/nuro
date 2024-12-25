@@ -11,11 +11,11 @@
 
 struct EntityContainer {
 
-	// Construct entity by root (non-explicit)
-	EntityContainer(entt::entity root) : root(root), transform(G_REGISTRY.get<TransformComponent>(root)), registry(G_REGISTRY) {};
+	// Construct entity by root
+	explicit EntityContainer(entt::entity root) : root(root), transform(G_REGISTRY.get<TransformComponent>(root)), registry(G_REGISTRY) {};
 
-	// Construct entity container with data tuple (non-explicit)
-	EntityContainer(std::tuple<entt::entity, TransformComponent&> data) : root(std::get<0>(data)), transform(std::get<1>(data)), registry(G_REGISTRY) {};
+	// Construct entity container with data tuple
+	explicit EntityContainer(std::tuple<entt::entity, TransformComponent&> data) : root(std::get<0>(data)), transform(std::get<1>(data)), registry(G_REGISTRY) {};
 
 	// entt::entity root
 	entt::entity root;

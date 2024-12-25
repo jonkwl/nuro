@@ -123,6 +123,12 @@ void PhysicsController::syncRigidbodyComponent(RigidbodyComponent& rigidbody)
 
 void PhysicsController::syncTransformComponent(float delta, TransformComponent& transform, RigidbodyComponent& rigidbody)
 {
+	// Handle kinematic rigidbodies: Set rigidbody actors global pose but dont change transform component
+	if (rigidbody.kinematic) {
+		rigidbody.actor->setGlobalPose(PxTransform(PxTranslator::convert(transform.position), PxTranslator::convert(transform.rotation)));
+		return;
+	}
+
 	// Get new transform data
 	glm::vec3 position = rigidbody.position;
 	glm::quat rotation = rigidbody.rotation;

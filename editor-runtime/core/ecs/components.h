@@ -5,9 +5,8 @@
 #include <gtc/quaternion.hpp>
 #include <PxPhysicsAPI.h>
 
-#include <string>
-
 #include "../core/rendering/model/mesh.h"
+#include "../core/rendering/material/imaterial.h"
 
 struct TransformComponent {
 
@@ -22,23 +21,17 @@ struct TransformComponent {
 
 };
 
-struct DebugMaterial {
-	unsigned int shader;
-	unsigned int id;
-
-	std::string shaderName;
-	std::string materialName;
-};
-
 static inline Mesh emptyMesh;
 struct MeshRendererComponent {
 
-	MeshRendererComponent() : mesh(emptyMesh) {};
-	MeshRendererComponent(Mesh& mesh) : mesh(mesh) {};
+	MeshRendererComponent() : mesh(emptyMesh), material(nullptr), materialId(0), shaderId(0) {};
+	MeshRendererComponent(Mesh& mesh, IMaterial* material) : mesh(mesh), material(material), materialId(material->getId()), shaderId(material->getShaderId()) {};
 
 	Mesh& mesh; // Mesh render target
+	IMaterial* material; // Mesh material | Unsafe!
 
-	DebugMaterial material; // tmp debug material for sorting algorithm testing
+	uint32_t materialId;
+	uint32_t shaderId;
 };
 
 struct CameraComponent {

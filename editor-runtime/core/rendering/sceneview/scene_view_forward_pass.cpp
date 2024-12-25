@@ -3,8 +3,8 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
-#include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/model/mesh.h"
+#include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/core/transformation.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
@@ -19,8 +19,7 @@ outputColor(0),
 multisampledFbo(0),
 multisampledRbo(0),
 multisampledColorBuffer(0),
-selectionMaterial(nullptr),
-defaultMaterial(nullptr)
+selectionMaterial(nullptr)
 {
 }
 
@@ -77,11 +76,6 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// Create default material
-	defaultMaterial = new LitMaterial();
-	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.95f), 1.0f);
-	defaultMaterial->roughness = 0.4f;
 }
 
 void SceneViewForwardPass::destroy() {
@@ -149,18 +143,8 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 		glDisable(GL_CULL_FACE);
 	}
 
-	// Bind material
-	defaultMaterial->bind();
-
 	// Render each entity
-	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
-
-		// Skip if target entity is selected entity
-		if (selected == entity) continue;
-
-		renderMesh(transform, renderer, defaultMaterial);
-
-	}
+	renderMeshes(selected);
 
 	// Render selected entity with outline
 	if (nSelected) {
@@ -205,9 +189,9 @@ void SceneViewForwardPass::linkGizmos(IMGizmo* _gizmos)
 void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material)
 {
 	// Transform components model and mvp must have been calculated beforehand
-	
-	// Bind mesh
-	glBindVertexArray(renderer.mesh.getVAO());
+
+	// Bind material
+	material->bind();
 
 	// Set shader uniforms
 	Shader* shader = material->getShader();
@@ -215,10 +199,49 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	shader->setMatrix4("modelMatrix", transform.model);
 	glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
 	shader->setMatrix3("normalMatrix", normalMatrix);
-	// Handle light space
+
+	// Bind mesh
+	glBindVertexArray(renderer.mesh.getVAO());
 
 	// Render mesh
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+}
+
+#include "../src/runtime/runtime.h"
+
+void SceneViewForwardPass::renderMeshes(entt::entity skip)
+{
+	uint32_t currentShaderId = 0;
+	uint32_t currentMaterialId = 0;
+
+	uint16_t newBoundShaders = 0;
+	uint16_t newBoundMaterials = 0;
+
+	// Render each entity except for skipped one
+	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
+
+		// Skip if target entity is selected entity
+		if (entity == skip) continue;
+
+		uint32_t shaderId = renderer.shaderId;
+		if (shaderId != currentShaderId) {
+			renderer.material->getShader()->bind();
+			currentShaderId = shaderId;
+			newBoundShaders++;
+		}
+
+		uint32_t materialId = renderer.materialId;
+		if (materialId != currentMaterialId) {
+			renderer.material->bind();
+			currentMaterialId = materialId;
+			newBoundMaterials++;
+		}
+
+		renderMesh(transform, renderer, renderer.material);
+
+	}
+
+	// Log::printProcessInfo("New bound - Shaders / Materials : " + std::to_string(newBoundShaders) + " / " + std::to_string(newBoundMaterials));
 }
 
 void SceneViewForwardPass::renderSelectedEntity(entt::entity entity, const glm::mat4& viewProjection)
@@ -231,7 +254,7 @@ void SceneViewForwardPass::renderSelectedEntity(entt::entity entity, const glm::
 	glStencilMask(0xFF); // Enable stencil writes
 
 	// Render entities base mesh
-	renderMesh(transform, renderer, defaultMaterial);
+	renderMesh(transform, renderer, renderer.material);
 
 	// Render outline of selected entity
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // Pass if stencil value is NOT 1

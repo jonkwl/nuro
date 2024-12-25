@@ -18,6 +18,33 @@ class LitMaterial : public IMaterial
 public:
 	LitMaterial();
 
+	void bind();
+
+	uint32_t getId();
+	Shader* getShader();
+	uint32_t getShaderId();
+
+	glm::vec4 baseColor = glm::vec4(1.0f);
+	glm::vec2 tiling = glm::vec2(1.0f);
+	glm::vec2 offset = glm::vec2(0.0f);
+	float roughness = 0.0f;
+	float metallic = 0.0f;
+	float normalMapIntensity;
+	bool emission;
+	float emissionIntensity;
+	glm::vec3 emissionColor;
+
+	void setAlbedoMap(Texture texture);
+	void setNormalMap(Texture texture);
+	void setRoughnessMap(Texture texture);
+	void setMetallicMap(Texture texture);
+	void setOcclusionMap(Texture texture);
+	void setEmissionMap(Texture texture);
+
+public:
+	// Instance counter
+	static uint32_t instances;
+
 	// Needed to be set before binding lit material
 	// Replace this through some state object and add a function to push a state
 	// Eg "RenderState" and pushRenderState(state)
@@ -30,30 +57,6 @@ public:
 	static ShadowDisk* mainShadowDisk; // tmp until global shadow system
 	static ShadowMap* mainShadowMap; // tmp until global shadow system
 	static glm::mat4 lightSpace; // tmp until global shadow system
-
-	void bind();
-	Shader* getShader();
-
-	glm::vec4 baseColor = glm::vec4(1.0f);
-
-	glm::vec2 tiling = glm::vec2(1.0f);
-	glm::vec2 offset = glm::vec2(0.0f);
-
-	float roughness = 0.0f;
-	float metallic = 0.0f;
-
-	float normalMapIntensity;
-
-	bool emission;
-	float emissionIntensity;
-	glm::vec3 emissionColor;
-
-	void setAlbedoMap(Texture texture);
-	void setNormalMap(Texture texture);
-	void setRoughnessMap(Texture texture);
-	void setMetallicMap(Texture texture);
-	void setOcclusionMap(Texture texture);
-	void setEmissionMap(Texture texture);
 
 private:
 	enum TextureUnits
@@ -69,7 +72,9 @@ private:
 		SSAO_UNIT
 	};
 
+	uint32_t id;
 	Shader* shader;
+	uint32_t shaderId;
 
 	bool enableAlbedoMap;
 	Texture albedoMap;
@@ -90,5 +95,4 @@ private:
 	Texture emissionMap;
 
 	void syncStaticUniforms();
-	void syncLightUniforms();
 };

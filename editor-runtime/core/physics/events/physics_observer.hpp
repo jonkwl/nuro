@@ -3,8 +3,12 @@
 #include <entt.hpp>
 #include <PxPhysicsAPI.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <gtx/component_wise.hpp>
+
 #include "../core/utils/log.h"
 #include "../core/ecs/components.h"
+#include "../core/physics/rigidbody/rigidbody.h"
 #include "../core/physics/utils/px_translator.h"
 #include "../core/physics/core/physics_creation.h"
 
@@ -85,8 +89,10 @@ public:
 	{
 		// Get components
 		BoxColliderComponent& boxCollider = get<BoxColliderComponent>(reg, ent);
+		TransformComponent& transform = get<TransformComponent>(reg, ent);
 
 		// Create shape
+		boxCollider.size = transform.scale;
 		boxCollider.material = defaultMaterial;
 		boxCollider.shape = PhysicsCreation::createBoxCollider(physics, boxCollider);
 
@@ -110,8 +116,10 @@ public:
 	{
 		// Get components
 		SphereColliderComponent& sphereCollider = get<SphereColliderComponent>(reg, ent);
+		TransformComponent& transform = get<TransformComponent>(reg, ent);
 
 		// Create shape
+		sphereCollider.radius = glm::compMax(transform.scale);
 		sphereCollider.material = defaultMaterial;
 		sphereCollider.shape = PhysicsCreation::createSphereCollider(physics, sphereCollider);
 
@@ -143,10 +151,19 @@ public:
 		// Attach all existing colliders to rigidbody actor
 		try_rbAttachExistingColliders(reg, ent, rbActor);
 
-		// Set rigidbody component data
+		// Set rigidbody actor
+		rigidbody.actor = rbActor;
+
+		// Set rigidbody actor specific default values
+		Rigidbody::setCollisionDetection(rigidbody, rigidbody.collisionDetection);
+		Rigidbody::setResistance(rigidbody, rigidbody.resistance);
+		Rigidbody::setAngularResistance(rigidbody, rigidbody.angularResistance);
+		Rigidbody::setGravity(rigidbody, rigidbody.gravity);
+		Rigidbody::setKinematic(rigidbody, rigidbody.kinematic);
+
+		// Set rigidbodies initial transform
 		rigidbody.position = transform.position;
 		rigidbody.rotation = transform.rotation;
-		rigidbody.actor = rbActor;
 	}
 
 	void destroyRigidbody(entt::registry& reg, entt::entity ent)

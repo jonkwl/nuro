@@ -172,7 +172,7 @@
     <ClCompile Include="core\rendering\postprocessing\motion_blur_pass.cpp" />
     <ClCompile Include="core\rendering\postprocessing\post_processing_pipeline.cpp" />
     <ClCompile Include="core\rendering\primitives\quad.cpp" />
-    <ClCompile Include="core\rendering\shader\Shader.cpp" />
+    <ClCompile Include="core\rendering\shader\shader.cpp" />
     <ClCompile Include="core\rendering\shader\shader_pool.cpp" />
     <ClCompile Include="core\rendering\shadows\shadow_disk.cpp" />
     <ClCompile Include="core\rendering\shadows\shadow_map.cpp" />
@@ -253,7 +253,7 @@
     <ClInclude Include="core\rendering\postprocessing\post_processing.h" />
     <ClInclude Include="core\rendering\postprocessing\post_processing_pipeline.h" />
     <ClInclude Include="core\rendering\primitives\quad.h" />
-    <ClInclude Include="core\rendering\shader\Shader.h" />
+    <ClInclude Include="core\rendering\shader\shader.h" />
     <ClInclude Include="core\rendering\shader\shader_pool.h" />
     <ClInclude Include="core\rendering\shadows\shadow_disk.h" />
     <ClInclude Include="core\rendering\shadows\shadow_map.h" />

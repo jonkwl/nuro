@@ -5,6 +5,9 @@
 namespace Rigidbody
 {
 
+	// Sets collision detection of rigidbody
+	void setCollisionDetection(RigidbodyComponent& rigidbody, RigidbodyComponent::CollisionDetection value);
+
 	// Sets resistance coefficient of rigidbody
 	void setResistance(RigidbodyComponent& rigidbody, float value);
 

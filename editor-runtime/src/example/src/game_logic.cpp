@@ -4,6 +4,8 @@
 
 #include <random>
 
+Entity kinematicEntity;
+
 void setup() {
 
 	Model* cubeModel = Model::load("../resources/primitives/cube.fbx");
@@ -12,62 +14,48 @@ void setup() {
 	Mesh& cubeMesh = cubeModel->getMesh(0);
 	Mesh& sphereMesh = sphereModel->getMesh(0);
 
-	DebugMaterial metalMaterial{ 1, 1, "Lit Shader", "Metal Material" };
-	DebugMaterial plasticMaterial{ 1, 2, "Lit Shader", "Plastic Material" };
-	DebugMaterial bulletMaterial{ 1, 3, "Lit Shader", "Bullet Material" };
-	DebugMaterial skyMaterial{ 1, 4, "Lit Shader", "Sky Material" };
-	DebugMaterial boxMaterial{ 1, 5, "Lit Shader", "Box Material" };
-	DebugMaterial glassMaterial{ 2, 6, "Transparent Shader", "Glass Material" };
-	DebugMaterial waterMaterial{ 2, 7, "Transparent Shader", "Water Material" };
-	DebugMaterial bottleMaterial{ 2, 8, "Transparent Shader", "Bottle Material" };
-	DebugMaterial customMaterial{ 3, 9, "Custom Shader", "Custom Material" };
-	DebugMaterial magicMaterial{ 3, 10, "Custom Shader", "Magic Material" };
-	DebugMaterial materials[10] = { metalMaterial, plasticMaterial, bulletMaterial, skyMaterial, boxMaterial, glassMaterial, waterMaterial, bottleMaterial, customMaterial, magicMaterial };
+	LitMaterial* standardMaterial = new LitMaterial();
+	standardMaterial->baseColor = glm::vec4(glm::vec3(0.25f), 1.0f);
+	standardMaterial->roughness = 0.4f;
 
-	EntityContainer camera = ECS::createEntity();
+	Texture albedo = Texture::load("./src/example/assets/textures/painted-concrete/albedo.jpg", TextureType::ALBEDO);
+	Texture roughness = Texture::load("./src/example/assets/textures/painted-concrete/roughness.jpg", TextureType::ROUGHNESS);
+	Texture metallic = Texture::load("./src/example/assets/textures/painted-concrete/metallic.jpg", TextureType::METALLIC);
+	Texture normal = Texture::load("./src/example/assets/textures/painted-concrete/normal.jpg", TextureType::NORMAL);
+	LitMaterial* paintedConcrete = new LitMaterial();
+	paintedConcrete->setAlbedoMap(albedo);
+	paintedConcrete->setRoughnessMap(roughness);
+	paintedConcrete->setMetallicMap(metallic);
+	paintedConcrete->setNormalMap(normal);
+
+	EntityContainer camera(ECS::createEntity());
 	camera.add<CameraComponent>();
 
-	EntityContainer ground = ECS::createEntity();
+	EntityContainer ground(ECS::createEntity());
 	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
 	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
-	ground.add<MeshRendererComponent>(cubeMesh);
+	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
-	EntityContainer sphere = ECS::createEntity();
-	sphere.transform.position = glm::vec3(3.0f, 5.0f, 19.0f);
-	sphere.add<MeshRendererComponent>(sphereMesh);
-	sphere.add<SphereColliderComponent>();
-	sphere.add<RigidbodyComponent>();
-
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> distrib(0, 9);
-
-	int objectAmount = 200;
+	int objectAmount = 140;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e = ECS::createEntity();
+			EntityContainer e(ECS::createEntity());
 			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
-			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh);
+			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 			e.add<BoxColliderComponent>();
-			e.add<RigidbodyComponent>();
-
-			r.material = materials[distrib(gen)];
+			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
 		}
 	}
 
-	EntityContainer noGravity = ECS::createEntity();
-	noGravity.transform.position = glm::vec3(3.0f, 6.0f, 16.0f);
-	noGravity.add<MeshRendererComponent>(cubeMesh);
-	noGravity.add<BoxColliderComponent>();
-	RigidbodyComponent& noGravityRb = noGravity.add<RigidbodyComponent>();
-	Rigidbody::setGravity(noGravityRb, false);
-
-	EntityContainer kinematic = ECS::createEntity();
-	kinematic.transform.position = glm::vec3(3.0f, 2.5f, 16.0f);
-	kinematic.add<MeshRendererComponent>(cubeMesh);
-	kinematic.add<BoxColliderComponent>();
+	EntityContainer kinematic(ECS::createEntity());
+	kinematic.transform.position = glm::vec3(12.0f, 6.0f, 100.0f);
+	kinematic.transform.scale = glm::vec3(6.0f);
+	kinematic.add<MeshRendererComponent>(sphereMesh, standardMaterial);
+	kinematic.add<SphereColliderComponent>();
 	RigidbodyComponent& kinematicRb = kinematic.add<RigidbodyComponent>();
+	Rigidbody::setCollisionDetection(kinematicRb, RigidbodyComponent::CollisionDetection::CONTINUOUS);
 	Rigidbody::setKinematic(kinematicRb, true);
+	kinematicEntity = kinematic.root;
 
 }
 
@@ -81,4 +69,8 @@ void quit()
 }
 
 void update() {
+
+	EntityContainer kinematic = EntityContainer(kinematicEntity);
+	kinematic.transform.position += glm::vec3(0.0f, 0.0f, -32.0f * Time::deltaf());
+
 }

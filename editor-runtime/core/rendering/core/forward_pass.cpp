@@ -3,12 +3,12 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
-#include "../core/rendering/skybox/skybox.h"
-#include "../core/rendering/material/imaterial.h"
-#include "../core/diagnostics/diagnostics.h"
-#include "../core/rendering/core/transformation.h"
-#include "../core/rendering/model/mesh.h"
 #include "../core/ecs/ecs_collection.h"
+#include "../core/rendering/model/mesh.h"
+#include "../core/rendering/skybox/skybox.h"
+#include "../core/diagnostics/diagnostics.h"
+#include "../core/rendering/material/imaterial.h"
+#include "../core/rendering/core/transformation.h"
 
 ForwardPass::ForwardPass(const Viewport& viewport) : drawSkybox(false),
 drawGizmos(false),
@@ -21,8 +21,7 @@ outputColor(0),
 outputDepth(0),
 multisampledFbo(0),
 multisampledRbo(0),
-multisampledColorBuffer(0),
-defaultMaterial(nullptr)
+multisampledColorBuffer(0)
 {
 }
 
@@ -75,11 +74,6 @@ void ForwardPass::create(const uint32_t msaaSamples)
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// Create default material
-	defaultMaterial = new LitMaterial();
-	defaultMaterial->baseColor = glm::vec4(glm::vec3(0.95f), 1.0f);
-	defaultMaterial->roughness = 0.4f;
 }
 
 void ForwardPass::destroy() {
@@ -145,13 +139,8 @@ uint32_t ForwardPass::render(const glm::mat4& view, const glm::mat4& projection,
 	*/
 	// INJECTED PRE PASS END
 
-	// Bind material
-	defaultMaterial->bind();
-
 	// Render each entity
-	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
-		renderMesh(transform, renderer, defaultMaterial);
-	}
+	renderMeshes();
 
 	// Disable culling before rendering skybox
 	glDisable(GL_CULL_FACE);
@@ -192,20 +181,45 @@ void ForwardPass::setClearColor(glm::vec4 _clearColor)
 	clearColor = _clearColor;
 }
 
-void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material)
+void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponent& renderer)
 {
 	// Transform components model and mvp must have been calculated beforehand
-	
-	// Bind mesh
-	glBindVertexArray(renderer.mesh.getVAO());
 
 	// Set shader uniforms
-	Shader* shader = material->getShader();
+	Shader* shader = renderer.material->getShader();
 	shader->setMatrix4("mvpMatrix", transform.mvp);
 	shader->setMatrix4("modelMatrix", transform.model);
 	glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
 	shader->setMatrix3("normalMatrix", normalMatrix);
 
+	// Bind mesh
+	glBindVertexArray(renderer.mesh.getVAO());
+
 	// Render mesh
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+}
+
+void ForwardPass::renderMeshes()
+{
+	uint32_t currentShaderId = 0;
+	uint32_t currentMaterialId = 0;
+
+	// Render each entity
+	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
+
+		uint32_t shaderId = renderer.shaderId;
+		if (shaderId != currentShaderId) {
+			renderer.material->getShader()->bind();
+			currentShaderId = shaderId;
+		}
+
+		uint32_t materialId = renderer.materialId;
+		if (materialId != currentMaterialId) {
+			renderer.material->bind();
+			currentMaterialId = materialId;
+		}
+
+		renderMesh(transform, renderer);
+
+	}
 }

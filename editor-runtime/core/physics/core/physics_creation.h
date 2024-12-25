@@ -16,7 +16,7 @@ namespace PhysicsCreation
 	void attachCollider(physx::PxRigidDynamic*& actor, physx::PxShape*& shape);
 	void destroyCollider(physx::PxShape*& shape);
 
-	physx::PxRigidDynamic* createRigidbody(physx::PxPhysics*& physics, physx::PxScene*& scene, const TransformComponent& transform, const RigidbodyComponent& rigidbody);
+	physx::PxRigidDynamic* createRigidbody(physx::PxPhysics*& physics, physx::PxScene*& scene, const TransformComponent& transform, RigidbodyComponent& rigidbody);
 	void destroyRigidbody(physx::PxScene*& scene, physx::PxRigidDynamic*& actor);
 
 };

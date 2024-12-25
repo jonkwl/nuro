@@ -4,11 +4,9 @@
 #include <vector>
 #include <glm.hpp>
 
+#include "../core/ecs/components.h"
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/imgizmo.h"
-#include "../core/rendering/material/imaterial.h"
-#include "../core/rendering/material/lit/lit_material.h"
-#include "../core/ecs/components.h"
 
 class Skybox;
 
@@ -48,7 +46,6 @@ private:
 	uint32_t multisampledRbo;		 // Anti-aliasing renderbuffer
 	uint32_t multisampledColorBuffer; // Anti-aliasing color buffer texture
 
-	LitMaterial* defaultMaterial; // Some default material
-
-	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material);
+	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer);
+	void renderMeshes();
 };

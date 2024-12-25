@@ -8,9 +8,7 @@
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/gizmos/imgizmo.h"
 #include "../core/rendering/material/imaterial.h"
-#include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
-#include "../core/rendering/material/lit/lit_material.h"
 
 class Skybox;
 
@@ -47,9 +45,9 @@ private:
 	uint32_t multisampledColorBuffer; // Anti-aliasing colorbuffer
 
 	UnlitMaterial* selectionMaterial; // Material for selection outline
-	LitMaterial* defaultMaterial; // Some default material
 
 	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material); // Renders a given entities mesh
+	void renderMeshes(entt::entity skip); // Renders all meshes
 
 	void renderSelectedEntity(entt::entity entity, const glm::mat4& viewProjection); // Renders the selected entity with an outline
 };

@@ -15,11 +15,11 @@ namespace ECS {
 		gRegistry.view<MeshRendererComponent>().each([&](auto entity, const auto&) { unsortedQueue.push_back(entity); });
 
 		// Sort by shader and material
-		std::sort(unsortedQueue.begin(), unsortedQueue.end(), [&](auto lhsEntity, auto rhsEntity) {
+		/*std::sort(unsortedQueue.begin(), unsortedQueue.end(), [&](auto lhsEntity, auto rhsEntity) {
 			MeshRendererComponent& lhs = gRegistry.get<MeshRendererComponent>(lhsEntity);
 			MeshRendererComponent& rhs = gRegistry.get<MeshRendererComponent>(rhsEntity);
-			return std::tie(lhs.material.shader, lhs.material.id) < std::tie(rhs.material.shader, rhs.material.id);
-			});
+			return std::tie(lhs.material->getShaderId(), lhs.material->getId()) < std::tie(rhs.material->getShaderId(), rhs.material->getId());
+			}); */
 
 		// Fill render queue
 		gRenderQueue.clear();
