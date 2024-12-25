@@ -47,6 +47,9 @@ public:
 	// Instance counter
 	static uint32_t instances;
 
+	// Tmp
+	static glm::vec3 tmpPointLightPosition;
+
 	// Needed to be set before binding lit material
 	// Replace this through some state object and add a function to push a state
 	// Eg "RenderState" and pushRenderState(state)

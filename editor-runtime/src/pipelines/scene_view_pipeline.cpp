@@ -15,7 +15,7 @@
 
 // initialize with users editor settings later
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
-useProfileEffects(false),
+useProfileEffects(true),
 showSkybox(false),
 showGizmos(true),
 renderShadows(true),
@@ -183,7 +183,7 @@ void SceneViewPipeline::render()
 	// Render test light gizmo
 	gizmos.color = GizmoColor::BLUE;
 	gizmos.opacity = 0.08f;
-	gizmos.icon3d(IconPool::get("light_gizmo"), glm::vec3(0.0f, 0.0f, 6.5f), targetCamera.transform, glm::vec3(0.5f));
+	gizmos.icon3d(IconPool::get("light_gizmo"), LitMaterial::tmpPointLightPosition, targetCamera.transform, glm::vec3(0.5f));
 
 	// Render box collider gizmos (tmp boilerplate)
 	gizmos.foreground = false;
