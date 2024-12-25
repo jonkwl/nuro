@@ -70,22 +70,22 @@ struct SphereColliderComponent {
 
 };
 
+enum class RB_Interpolation {
+	NONE,
+	INTERPOLATE,
+	EXTRAPOLATE
+};
+
+enum class RB_CollisionDetection {
+	DISCRETE,
+	CONTINUOUS,
+	CONTINUOUS_SPECULATIVE
+};
+
 struct RigidbodyComponent {
 
-	enum class Interpolation {
-		NONE,
-		INTERPOLATE,
-		EXTRAPOLATE
-	};
-
-	enum class CollisionDetection {
-		DISCRETE,
-		CONTINUOUS,
-		CONTINUOUS_SPECULATIVE
-	};
-
-	Interpolation interpolation = Interpolation::INTERPOLATE; // Rigidbody interpolation mode
-	CollisionDetection collisionDetection = CollisionDetection::DISCRETE; // Rigidbody collision detection mode
+	RB_Interpolation interpolation = RB_Interpolation::INTERPOLATE; // Rigidbody interpolation mode
+	RB_CollisionDetection collisionDetection = RB_CollisionDetection::DISCRETE; // Rigidbody collision detection mode
 	
 	float mass = 1.0f; // Rigidbody mass
 	float resistance = 0.0f; // Resistance coefficient

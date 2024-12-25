@@ -18,7 +18,7 @@ SceneViewPipeline::SceneViewPipeline() : wireframe(false),
 useProfileEffects(false),
 showSkybox(false),
 showGizmos(true),
-renderShadows(false),
+renderShadows(true),
 alwaysUpdate(true),
 viewport(),
 msaaSamples(8), // should lower this

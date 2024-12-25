@@ -18,16 +18,16 @@ ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
 ShadowMap* LitMaterial::mainShadowMap = nullptr;
 glm::mat4 LitMaterial::lightSpace = glm::mat4(1.0f);
 
-LitMaterial::LitMaterial() : baseColor(1.0f),
-tiling(1.0f, 1.0f),
-offset(0.0f, 0.0f),
+LitMaterial::LitMaterial() : baseColor(glm::vec4(1.0f)),
+tiling(glm::vec2(1.0f, 1.0f)),
+offset(glm::vec2(0.0f, 0.0f)),
 roughness(0.0f),
 metallic(0.0f),
 normalMapIntensity(1.0f),
 emission(false),
 emissionIntensity(0.0f),
-emissionColor(1.0f, 1.0f, 1.0f),
-heightMapScale(1.0f),
+emissionColor(glm::vec3(1.0f)),
+heightMapScale(0.1f),
 enableAlbedoMap(false),
 albedoMap(Texture::empty()),
 enableNormalMap(false),
@@ -38,6 +38,8 @@ enableMetallicMap(false),
 metallicMap(Texture::empty()),
 enableEmissiveMap(false),
 emissiveMap(Texture::empty()),
+enableHeightMap(false),
+heightMap(Texture::empty()),
 id(0),
 shader(ShaderPool::get("lit")),
 shaderId(0)
@@ -212,7 +214,8 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.roughnessMap", ROUGHNESS_UNIT);
 	shader->setInt("material.metallicMap", METALLIC_UNIT);
 	shader->setInt("material.ambientOcclusionMap", OCCLUSION_UNIT);
-	shader->setInt("material.emissionMap", EMISSIVE_UNIT);
+	shader->setInt("material.emissiveMap", EMISSIVE_UNIT);
+	shader->setInt("material.heightMap", HEIGHT_UNIT);
 	shader->setInt("configuration.shadowDisk", SHADOW_DISK_UNIT);
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
 	shader->setInt("configuration.ssaoBuffer", SSAO_UNIT);
@@ -238,7 +241,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("configuration.numSpotLights", 1);
 	
 	// Example directional light
-	float directionalIntensity = 0.5f;
+	float directionalIntensity = 0.3f;
 	glm::vec3 directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);

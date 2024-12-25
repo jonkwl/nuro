@@ -91,7 +91,7 @@ Texture Texture::load(std::string path, TextureType type)
 		format = GL_RGB;
 		break;
 	case TextureType::HEIGHT:
-		internalFormat = GL_R;
+		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
 	case TextureType::IMAGE_RGB:

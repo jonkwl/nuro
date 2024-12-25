@@ -1,12 +1,24 @@
 #pragma once
 
+#include <glm.hpp>
+
 #include "../core/ecs/components.h"
+
+enum class RB_ForceMode {
+	LINEAR,
+	IMPULSE,
+	VELOCITY_CHANGE,
+	ACCELERATION
+};
 
 namespace Rigidbody
 {
 
+	// Sets interpolation of rigidbody
+	void setInterpolation(RigidbodyComponent& rigidbody, RB_Interpolation value);
+
 	// Sets collision detection of rigidbody
-	void setCollisionDetection(RigidbodyComponent& rigidbody, RigidbodyComponent::CollisionDetection value);
+	void setCollisionDetection(RigidbodyComponent& rigidbody, RB_CollisionDetection value);
 
 	// Sets resistance coefficient of rigidbody
 	void setResistance(RigidbodyComponent& rigidbody, float value);
@@ -19,5 +31,8 @@ namespace Rigidbody
 
 	// Sets if rigidbody should not be affected by physics
 	void setKinematic(RigidbodyComponent& rigidbody, bool value);
+
+	// Add force
+	void addForce(RigidbodyComponent& rigidbody, glm::vec3 value, RB_ForceMode mode = RB_ForceMode::LINEAR);
 
 };

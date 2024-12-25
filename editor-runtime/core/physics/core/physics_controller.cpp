@@ -136,11 +136,11 @@ void PhysicsController::syncTransformComponent(float delta, TransformComponent& 
 	// Interpolation
 	float factor = delta / timeStep;
 	switch (rigidbody.interpolation) {
-	case RigidbodyComponent::Interpolation::INTERPOLATE:
+	case RB_Interpolation::INTERPOLATE:
 		position = interpolate(transform.position, position, factor);
 		rotation = interpolate(transform.rotation, rotation, factor);
 		break;
-	case RigidbodyComponent::Interpolation::EXTRAPOLATE:
+	case RB_Interpolation::EXTRAPOLATE:
 		position = transform.position + rigidbody.velocity * delta;
 		rotation = transform.rotation * glm::normalize(glm::quat(1.0f, rigidbody.angularVelocity * delta));
 		break;

@@ -139,7 +139,7 @@ vec3 getShadowCoords() {
 
 float getDirectionalShadowBias(vec3 lightDirection) {
     /* float diffuseFactor = dot(normal, -lightDirection);
-                        float bias = mix(0.0001, 0.0, diffuseFactor); */
+                                float bias = mix(0.0001, 0.0, diffuseFactor); */
     float bias = 0.0;
     return bias;
 }
@@ -320,48 +320,52 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec2 transformUvByHeightmap(vec2 inputUv) {
+vec2 transformUvByHeightmap(vec2 uvInput) {
     // Calculate view direction
-    vec3 viewDirection = v_tbnMatrix * normalize(configuration.cameraPosition - v_fragmentWorldPosition);
+    vec3 V = v_tbnMatrix * normalize(configuration.cameraPosition - v_fragmentWorldPosition);
 
-    // Calculate layer depth
-	float minLayers = 8.0;
-    float maxLayers = 64.0;
-    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDirection)));
-	float layerDepth = 1.0 / numLayers;
-	
-    // Current layer depth cache
-    float currentLayerDepth = 0.0;
-	
-	// Calculate delta uv
-	vec2 P = viewDirection.xy / viewDirection.z * material.heightMapScale; 
-    vec2 deltaUv = P / numLayers;
+    // Setup layer amount
+    const int quality = 8;
+    const float minLayers = 32.0f;
+    const float maxLayers = 64.0f;
+    float nLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0f, 0.0f, 1.0f), V)));
 
-    // Initialize output uvs with input
-    vec2 outputUv = inputUv;
-	
-    // Get height sample
-	float heightSample = texture(material.heightMap, outputUv).r;
-	
-	// Loop until layer sample depth is smaller than heightmap sample depth
-	while(currentLayerDepth < heightSample)
+    // Layer depth
+    float layerDepth = 1.0f / nLayers;
+    float currentLayerDepth = 0.0f;
+
+    // Calculate uv delta
+    vec2 P = V.xy / V.z * material.heightMapScale;
+    vec2 uvDelta = P / nLayers;
+
+    // Initialize uv output
+    vec2 uvOutput = uvInput;
+    float depthSample = 1.0f - texture(material.heightMap, uvOutput).r;
+
+    // Loop until depth sample is reached
+    while (currentLayerDepth < depthSample)
     {
-        outputUv -= deltaUv;
-        heightSample = texture(material.heightMap, outputUv).r;
+        uvOutput -= uvDelta;
+        depthSample = 1.0f - texture(material.heightMap, uvOutput).r;
         currentLayerDepth += layerDepth;
     }
 
-	// Apply occlusion
-	vec2 previousUv = outputUv + deltaUv;
-	float depthAfter  = heightSample - currentLayerDepth;
-	float depthBefore = texture(material.heightMap, previousUv).r - currentLayerDepth + layerDepth;
-	float weight = depthAfter / (depthAfter - depthBefore);
-	outputUv = previousUv * weight + outputUv * (1.0 - weight);
+    // Calculate occlusion
+    vec2 uvPrevious = uvOutput + uvDelta;
+    float depthAfter = depthSample - currentLayerDepth;
+    float depthBefore = 1.0f - texture(material.heightMap, uvPrevious).r - currentLayerDepth + layerDepth;
+    float weight = depthAfter / (depthAfter - depthBefore);
+    
+    // Calculate final uv output
+    uvOutput = uvPrevious * weight + uvOutput * (1.0f - weight);
 
-    // Ensure output uvs are in range
-	if(outputUv.x > 1.0 || outputUv.y > 1.0 || outputUv.x < 0.0 || outputUv.y < 0.0) discard;
+    // Discard if uv output isnt valid
+    if (uvOutput.x > 1.0 || uvOutput.y > 1.0 || uvOutput.x < 0.0 || uvOutput.y < 0.0){
+        discard;
+    }
 
-    return outputUv;
+    // Return uv output
+    return uvOutput;
 }
 
 vec2 getUv() {
@@ -481,6 +485,11 @@ float getSSAO() {
 }
 
 vec3 getEmission() {
+    // return zero if emission isnt enabled
+    if (!material.emission) {
+        return vec3(0.0);
+    }
+
     // get emission by intensity and color
     vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
 
@@ -613,7 +622,7 @@ vec4 shadePBR() {
     vec3 emission = getEmission();
 
     // fragment has emission and therefore emits light
-    if (material.emission || material.enableEmissiveMap) {
+    if (emission.r > 1.0 || emission.g > 1.0 || emission.b > 1.0) {
         Lo = emission;
     }
 
