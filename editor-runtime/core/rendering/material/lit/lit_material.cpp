@@ -27,6 +27,7 @@ normalMapIntensity(1.0f),
 emission(false),
 emissionIntensity(0.0f),
 emissionColor(1.0f, 1.0f, 1.0f),
+heightMapScale(1.0f),
 enableAlbedoMap(false),
 albedoMap(Texture::empty()),
 enableNormalMap(false),
@@ -35,8 +36,8 @@ enableRoughnessMap(false),
 roughnessMap(Texture::empty()),
 enableMetallicMap(false),
 metallicMap(Texture::empty()),
-enableEmissionMap(false),
-emissionMap(Texture::empty()),
+enableEmissiveMap(false),
+emissiveMap(Texture::empty()),
 id(0),
 shader(ShaderPool::get("lit")),
 shaderId(0)
@@ -53,14 +54,16 @@ shaderId(0)
 void LitMaterial::bind()
 {
 	// World parameters
-	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
 	shader->setMatrix4("lightSpaceMatrix", lightSpace);
+	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
 
 	// General configuration
 	shader->setFloat("configuration.gamma", profile->color.gamma);
 	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
 
 	// Shadow parameters
+	shader->setBool("configuration.castShadows", castShadows);
+
 	shader->setFloat("configuration.shadowMapResolutionWidth", static_cast<float>(mainShadowMap->getResolutionWidth()));
 	shader->setFloat("configuration.shadowMapResolutionHeight", static_cast<float>(mainShadowMap->getResolutionHeight()));
 
@@ -94,13 +97,6 @@ void LitMaterial::bind()
 		albedoMap.bind(ALBEDO_UNIT);
 	}
 
-	shader->setBool("material.enableNormalMap", enableNormalMap);
-	if (enableNormalMap)
-	{
-		normalMap.bind(NORMAL_UNIT);
-	}
-	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
-
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
 	if (enableRoughnessMap)
 	{
@@ -121,17 +117,31 @@ void LitMaterial::bind()
 		shader->setFloat("material.metallic", metallic);
 	}
 
-	shader->setBool("material.enableAmbientOcclusionMap", enableOcclusionMap);
+	shader->setBool("material.enableNormalMap", enableNormalMap);
+	if (enableNormalMap)
+	{
+		normalMap.bind(NORMAL_UNIT);
+	}
+	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
+
+	shader->setBool("material.enableOcclusionMap", enableOcclusionMap);
 	if (enableOcclusionMap)
 	{
-		occlusionMap.bind(AMBIENT_OCCLUSION_UNIT);
+		occlusionMap.bind(OCCLUSION_UNIT);
 	}
 
-	shader->setBool("material.enableEmissionMap", enableEmissionMap);
-	if (enableEmissionMap)
+	shader->setBool("material.enableEmissiveMap", enableEmissiveMap);
+	if (enableEmissiveMap)
 	{
-		emissionMap.bind(EMISSIVE_UNIT);
+		emissiveMap.bind(EMISSIVE_UNIT);
 	}
+
+	shader->setBool("material.enableHeightMap", enableHeightMap);
+	if (enableHeightMap)
+	{
+		heightMap.bind(HEIGHT_UNIT);
+	}
+	shader->setFloat("material.heightMapScale", heightMapScale);
 }
 
 uint32_t LitMaterial::getId()
@@ -155,12 +165,6 @@ void LitMaterial::setAlbedoMap(Texture texture)
 	albedoMap = texture;
 }
 
-void LitMaterial::setNormalMap(Texture texture)
-{
-	enableNormalMap = true;
-	normalMap = texture;
-}
-
 void LitMaterial::setRoughnessMap(Texture texture)
 {
 	enableRoughnessMap = true;
@@ -173,16 +177,28 @@ void LitMaterial::setMetallicMap(Texture texture)
 	metallicMap = texture;
 }
 
+void LitMaterial::setNormalMap(Texture texture)
+{
+	enableNormalMap = true;
+	normalMap = texture;
+}
+
 void LitMaterial::setOcclusionMap(Texture texture)
 {
 	enableOcclusionMap = true;
 	occlusionMap = texture;
 }
 
-void LitMaterial::setEmissionMap(Texture texture)
+void LitMaterial::setEmissiveMap(Texture texture)
 {
-	enableEmissionMap = true;
-	emissionMap = texture;
+	enableEmissiveMap = true;
+	emissiveMap = texture;
+}
+
+void LitMaterial::setHeightMap(Texture texture)
+{
+	enableHeightMap = true;
+	heightMap = texture;
 }
 
 void LitMaterial::syncStaticUniforms()
@@ -195,7 +211,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("material.normalMap", NORMAL_UNIT);
 	shader->setInt("material.roughnessMap", ROUGHNESS_UNIT);
 	shader->setInt("material.metallicMap", METALLIC_UNIT);
-	shader->setInt("material.ambientOcclusionMap", AMBIENT_OCCLUSION_UNIT);
+	shader->setInt("material.ambientOcclusionMap", OCCLUSION_UNIT);
 	shader->setInt("material.emissionMap", EMISSIVE_UNIT);
 	shader->setInt("configuration.shadowDisk", SHADOW_DISK_UNIT);
 	shader->setInt("configuration.shadowMap", SHADOW_MAP_UNIT);
@@ -212,9 +228,6 @@ void LitMaterial::syncStaticUniforms()
 	// shader->setVec3("fog.color", glm::vec3(1.0f, 1.0f, 1.0f));
 	// shader->setFloat("fog.data[0]", 0.01);
 
-	// Shadow parameters
-	shader->setBool("configuration.castShadows", castShadows);
-
 	// 
 	// Sync lights
 	//
@@ -225,8 +238,8 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("configuration.numSpotLights", 1);
 	
 	// Example directional light
-	// float directionalIntensity = 0.1f;
-	float directionalIntensity = 0.5f;
+	// float directionalIntensity = 0.5f;
+	float directionalIntensity = 0.0f;
 	glm::vec3 directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
@@ -236,9 +249,9 @@ void LitMaterial::syncStaticUniforms()
 	shader->setVec3("directionalLights[0].position", Transformation::toBackendPosition(directionalPosition));
 	
 	// Example point light
-	shader->setVec3("pointLights[0].position", Transformation::toBackendPosition(glm::vec3(0.0f, 0.0f, 6.5f)));
-	shader->setVec3("pointLights[0].color", glm::vec3(0.0f, 0.78f, 0.95f));
-	shader->setFloat("pointLights[0].intensity", 0.25f);
+	shader->setVec3("pointLights[0].position", Transformation::toBackendPosition(glm::vec3(0.0f, 6.0f, 3.0f)));
+	shader->setVec3("pointLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setFloat("pointLights[0].intensity", 2.0f);
 	shader->setFloat("pointLights[0].range", 10.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);
 	
@@ -246,7 +259,8 @@ void LitMaterial::syncStaticUniforms()
 	shader->setVec3("spotLights[0].position", Transformation::toBackendPosition(glm::vec3(12.0f, 1.9f, -4.0f)));
 	shader->setVec3("spotLights[0].direction", Transformation::toBackendPosition(glm::vec3(-0.4, -0.2f, 1.0f)));
 	shader->setVec3("spotLights[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setFloat("spotLights[0].intensity", 5.0);
+	// shader->setFloat("spotLights[0].intensity", 5.0f);
+	shader->setFloat("spotLights[0].intensity", 0.0f);
 	shader->setFloat("spotLights[0].range", 25.0f);
 	shader->setFloat("spotLights[0].falloff", 10.0f);
 	shader->setFloat("spotLights[0].innerCutoff", glm::cos(glm::radians(9.0f)));

@@ -33,13 +33,15 @@ public:
 	bool emission;
 	float emissionIntensity;
 	glm::vec3 emissionColor;
+	float heightMapScale;
 
 	void setAlbedoMap(Texture texture);
-	void setNormalMap(Texture texture);
 	void setRoughnessMap(Texture texture);
 	void setMetallicMap(Texture texture);
+	void setNormalMap(Texture texture);
 	void setOcclusionMap(Texture texture);
-	void setEmissionMap(Texture texture);
+	void setEmissiveMap(Texture texture);
+	void setHeightMap(Texture texture);
 
 public:
 	// Instance counter
@@ -65,8 +67,9 @@ private:
 		NORMAL_UNIT,
 		ROUGHNESS_UNIT,
 		METALLIC_UNIT,
-		AMBIENT_OCCLUSION_UNIT,
+		OCCLUSION_UNIT,
 		EMISSIVE_UNIT,
+		HEIGHT_UNIT,
 		SHADOW_DISK_UNIT,
 		SHADOW_MAP_UNIT,
 		SSAO_UNIT
@@ -79,20 +82,23 @@ private:
 	bool enableAlbedoMap;
 	Texture albedoMap;
 
-	bool enableNormalMap;
-	Texture normalMap;
-
 	bool enableRoughnessMap;
 	Texture roughnessMap;
 
 	bool enableMetallicMap;
 	Texture metallicMap;
 
+	bool enableNormalMap;
+	Texture normalMap;
+
 	bool enableOcclusionMap;
 	Texture occlusionMap;
 
-	bool enableEmissionMap;
-	Texture emissionMap;
+	bool enableEmissiveMap;
+	Texture emissiveMap;
+
+	bool enableHeightMap;
+	Texture heightMap;
 
 	void syncStaticUniforms();
 };

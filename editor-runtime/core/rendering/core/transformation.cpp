@@ -20,7 +20,7 @@ namespace Transformation {
 		return rotation;
 	}
 
-	glm::mat4 model(TransformComponent& transform)
+	glm::mat4 model(const TransformComponent& transform)
 	{
 		glm::mat4 model(1.0f);
 
@@ -74,6 +74,11 @@ namespace Transformation {
 	{
 		glm::mat4 projection = glm::perspective(glm::radians(fov), viewport.width / viewport.height, near, far);
 		return projection;
+	}
+
+	glm::mat4 normal(glm::mat4 model)
+	{
+		return glm::transpose(glm::inverse(model));
 	}
 
 	glm::mat4 lightView(glm::vec3 lightPosition, glm::vec3 lightDirection)

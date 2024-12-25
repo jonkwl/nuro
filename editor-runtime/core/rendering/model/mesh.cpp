@@ -4,13 +4,13 @@
 
 #include "../core/rendering/texture/texture.h"
 
-MeshData::MeshData() : nVertices(0),
+MeshInfo::MeshInfo() : nVertices(0),
 nIndices(0),
 materialIndex(0)
 {
 }
 
-MeshData::MeshData(uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex) : nVertices(nVertices),
+MeshInfo::MeshInfo(uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex) : nVertices(nVertices),
 nIndices(nIndices),
 materialIndex(materialIndex)
 {
@@ -23,17 +23,17 @@ meshData()
 {
 }
 
-Mesh::Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshData meshData) : vao(vao),
+Mesh::Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshInfo meshData) : vao(vao),
 vbo(vbo),
 ebo(ebo),
 meshData(meshData)
 {
 }
 
-Mesh::Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex) : vao(0),
+Mesh::Mesh(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices, int32_t materialIndex) : vao(0),
 vbo(0),
 ebo(0),
-meshData(MeshData(vertices.size(), indices.size(), materialIndex))
+meshData(MeshInfo(vertices.size(), indices.size(), materialIndex))
 {
 	// Generate VAO, VBO and EBO
 	glGenVertexArrays(1, &vao);

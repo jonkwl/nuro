@@ -99,10 +99,6 @@ struct Material {
     bool enableAlbedoMap;
     sampler2D albedoMap;
 
-    bool enableNormalMap;
-    sampler2D normalMap;
-    float normalMapIntensity;
-
     float roughness;
     bool enableRoughnessMap;
     sampler2D roughnessMap;
@@ -111,32 +107,28 @@ struct Material {
     bool enableMetallicMap;
     sampler2D metallicMap;
 
+    bool enableNormalMap;
+    sampler2D normalMap;
+    float normalMapIntensity;
+
     bool enableOcclusionMap;
     sampler2D occlusionMap;
 
     bool emission;
     float emissionIntensity;
     vec3 emissionColor;
-    bool enableEmissionMap;
-    sampler2D emissionMap;
+    bool enableEmissiveMap;
+    sampler2D emissiveMap;
+
+    bool enableHeightMap;
+    sampler2D heightMap;
+    float heightMapScale;
 };
 uniform Material material;
 
 float sqr(float x)
 {
     return x * x;
-}
-
-vec3 getNormal() {
-    if (!material.enableNormalMap) {
-        return normalize(v_normal);
-    }
-
-    vec3 N = texture(material.normalMap, uv).rgb;
-    N = N * 2.0 - vec3(1.0);
-    N.xy *= material.normalMapIntensity;
-    N = normalize(v_tbnMatrix * N);
-    return N;
 }
 
 vec3 getShadowCoords() {
@@ -147,7 +139,7 @@ vec3 getShadowCoords() {
 
 float getDirectionalShadowBias(vec3 lightDirection) {
     /* float diffuseFactor = dot(normal, -lightDirection);
-                    float bias = mix(0.0001, 0.0, diffuseFactor); */
+                        float bias = mix(0.0001, 0.0, diffuseFactor); */
     float bias = 0.0;
     return bias;
 }
@@ -328,60 +320,137 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
+vec2 transformUvByHeightmap(vec2 input_uv) {
+    // transform input uvs by heightmap here
+    return input_uv;
+}
+
+vec2 getUv() {
+    // calculate scaled texture coordinates by material properties
+    vec2 _uv = v_uv * material.tiling + material.offset;
+
+    // height map enabled, transform texture coordinates by heightmap
+    if (material.enableHeightMap) {
+        _uv = transformUvByHeightmap(_uv);
+    }
+
+    // return texture coordinates
+    return _uv;
+}
+
+vec3 getNormal() {
+    // no normal mapping, return input normal
+    if (!material.enableNormalMap) {
+        return v_normal;
+    }
+
+    // normal mapping enabled
+
+    // sample normal map
+    vec3 N = texture(material.normalMap, uv).rgb;
+
+    // normalize sampled normal
+    N = N * 2.0 - vec3(1.0);
+
+    // scale normal x and y by normal map intensity
+    N.xy *= material.normalMapIntensity;
+
+    // transform normal into world space
+    N = normalize(v_tbnMatrix * N);
+
+    // return normal
+    return N;
+}
+
 vec3 getAlbedo()
 {
+    // default albedo is white
     vec3 albedo = vec3(1.0);
+
+    // sample albedo map if enabled
     if (material.enableAlbedoMap) {
-        albedo = pow(texture(material.albedoMap, uv).rgb, vec3(configuration.gamma));
+        vec3 albedoSample = texture(material.albedoMap, uv).rgb;
+        albedo = pow(albedoSample, vec3(configuration.gamma));
     }
+
+    // tint albedo by materials base color
     albedo *= vec3(material.baseColor);
+
+    // return final albedo
     return albedo;
 }
 
 float getRoughness()
 {
+    // initialize roughness
     float roughness = 0.0;
+
+    // roughness map enabled, sample roughness by roughness map
     if (material.enableRoughnessMap) {
         roughness = texture(material.roughnessMap, uv).r;
+        // no roughness map, set to materials roughness property
     } else {
         roughness = material.roughness;
     }
+
+    // return roughness
     return roughness;
 }
 
 float getMetallic()
 {
+    // initialize metallic
     float metallic = 0.0;
+
+    // metallic map enabled, sample metallic by metallic map
     if (material.enableMetallicMap) {
         metallic = texture(material.metallicMap, uv).r;
+        // no metallic map, set to materials metallic property
     } else {
         metallic = material.metallic;
     }
+
+    // return metallic
     return metallic;
 }
 
 float getOcclusionMapSample()
 {
+    // initialize occlusion map sample with no occlusion
     float occlusionMapSample = 1.0;
+
+    // occlusion map enabled, sample by occlusion map
     if (material.enableOcclusionMap) {
         occlusionMapSample = texture(material.occlusionMap, uv).r;
     }
+
+    // return occlusion map sample
     return occlusionMapSample;
 }
 
 float getSSAO() {
+    // initialize ssao sample with no occlusion
     float ssao = 1.0;
+
+    // ssao enabled, sample by ssao buffer
     if (configuration.enableSSAO) {
         ssao = texture(configuration.ssaoBuffer, viewportUv).r;
     }
+
+    // return ssao sample
     return ssao;
 }
 
 vec3 getEmission() {
+    // get emission by intensity and color
     vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
-    if (material.enableEmissionMap) {
-        emission *= texture(material.emissionMap, uv).rgb;
+
+    // emissive map enabled, tint emission by emissive map sample
+    if (material.enableEmissiveMap) {
+        emission *= texture(material.emissiveMap, uv).rgb;
     }
+
+    // return emission
     return emission;
 }
 
@@ -505,7 +574,7 @@ vec4 shadePBR() {
     vec3 emission = getEmission();
 
     // fragment has emission and therefore emits light
-    if (material.emission || material.enableEmissionMap) {
+    if (material.emission || material.enableEmissiveMap) {
         Lo = emission;
     }
 
@@ -712,8 +781,8 @@ vec4 shadeShadowMap() {
 
 void main()
 {
-    uv = v_uv * material.tiling + material.offset;
     viewportUv = gl_FragCoord.xy / vec2(configuration.viewportResolution.x, configuration.viewportResolution.y);
+    uv = getUv();
     normal = getNormal();
 
     if (!configuration.solidMode) {

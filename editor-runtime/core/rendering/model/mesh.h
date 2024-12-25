@@ -4,9 +4,9 @@
 #include <vector>
 #include <glm.hpp>
 
-struct MeshData {
-	MeshData();
-	MeshData(uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex);
+struct MeshInfo {
+	MeshInfo();
+	MeshInfo(uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex);
 
 	uint32_t nVertices;
 	uint32_t nIndices;
@@ -28,8 +28,8 @@ public:
 
 public:
 	Mesh(); // Construct empty mesh
-	explicit Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshData meshData); // Construct mesh from existing backend buffers
-	explicit Mesh(std::vector<VertexData> vertices, std::vector<uint32_t> indices, int32_t materialIndex); // Construct mesh by loading mesh into backend using given data
+	explicit Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshInfo meshData); // Construct mesh from existing backend buffers
+	explicit Mesh(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices, int32_t materialIndex = 0); // Construct mesh by loading mesh into backend using given data
 
 	uint32_t getVAO() const;
 	uint32_t getVBO() const;
@@ -44,5 +44,5 @@ private:
 	uint32_t vbo;
 	uint32_t ebo;
 
-	MeshData meshData;
+	MeshInfo meshData;
 };

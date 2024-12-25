@@ -70,10 +70,6 @@ Texture Texture::load(std::string path, TextureType type)
 		internalFormat = GL_SRGB;
 		format = GL_RGB;
 		break;
-	case TextureType::NORMAL:
-		internalFormat = GL_RGB;
-		format = GL_RGB;
-		break;
 	case TextureType::ROUGHNESS:
 		internalFormat = GL_RED;
 		format = GL_RED;
@@ -82,6 +78,10 @@ Texture Texture::load(std::string path, TextureType type)
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
+	case TextureType::NORMAL:
+		internalFormat = GL_RGB;
+		format = GL_RGB;
+		break;
 	case TextureType::OCCLUSION:
 		internalFormat = GL_RED;
 		format = GL_RED;
@@ -89,6 +89,10 @@ Texture Texture::load(std::string path, TextureType type)
 	case TextureType::EMISSIVE:
 		internalFormat = GL_RGB;
 		format = GL_RGB;
+		break;
+	case TextureType::HEIGHT:
+		internalFormat = GL_R;
+		format = GL_RED;
 		break;
 	case TextureType::IMAGE_RGB:
 		internalFormat = GL_SRGB;

@@ -109,6 +109,7 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 		// Recalculate transforms matrix cache for all upcoming passes of current frame
 		transform.model = Transformation::model(transform);
 		transform.mvp = viewProjection * transform.model;
+		transform.normal = Transformation::normal(transform.model);
 
 		// Bind mesh
 		glBindVertexArray(renderer.mesh.getVAO());
