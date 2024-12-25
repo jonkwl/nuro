@@ -177,7 +177,7 @@ void setup() {
 
 	// Smeared Wall Plane
 	EntityContainer smearedWall(ECS::createEntity());
-	smearedWall.transform.position = glm::vec3(-40.0f, 0.0f, 18.0f);
+	smearedWall.transform.position = glm::vec3(-40.0f, 0.0f, 24.0f);
 	smearedWall.transform.scale = glm::vec3(5.0f);
 	smearedWall.add<MeshRendererComponent>(*planeMesh, smearedWallMaterial);
 
