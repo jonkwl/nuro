@@ -238,8 +238,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("configuration.numSpotLights", 1);
 	
 	// Example directional light
-	// float directionalIntensity = 0.5f;
-	float directionalIntensity = 0.0f;
+	float directionalIntensity = 0.5f;
 	glm::vec3 directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);

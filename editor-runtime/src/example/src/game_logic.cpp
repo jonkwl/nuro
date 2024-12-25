@@ -107,15 +107,7 @@ void setup() {
 	EntityContainer ground(ECS::createEntity());
 	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
 	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
-	ground.add<MeshRendererComponent>(*planeMesh, standardMaterial);
-
-	// Concrete
-	EntityContainer concreteBlock(ECS::createEntity());
-	concreteBlock.transform.position = glm::vec3(0.0f, 0.0f, 5.0f);
-	concreteBlock.add<MeshRendererComponent>(cubeMesh, standardMaterial);
-	concreteBlock.add<BoxColliderComponent>();
-	RigidbodyComponent& concreteRb = concreteBlock.add<RigidbodyComponent>();
-	Rigidbody::setGravity(concreteRb, false);  
+	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
 	int objectAmount = 140;

@@ -320,9 +320,48 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec2 transformUvByHeightmap(vec2 input_uv) {
-    // transform input uvs by heightmap here
-    return input_uv;
+vec2 transformUvByHeightmap(vec2 inputUv) {
+    // Calculate view direction
+    vec3 viewDirection = v_tbnMatrix * normalize(configuration.cameraPosition - v_fragmentWorldPosition);
+
+    // Calculate layer depth
+	float minLayers = 8.0;
+    float maxLayers = 64.0;
+    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDirection)));
+	float layerDepth = 1.0 / numLayers;
+	
+    // Current layer depth cache
+    float currentLayerDepth = 0.0;
+	
+	// Calculate delta uv
+	vec2 P = viewDirection.xy / viewDirection.z * material.heightMapScale; 
+    vec2 deltaUv = P / numLayers;
+
+    // Initialize output uvs with input
+    vec2 outputUv = inputUv;
+	
+    // Get height sample
+	float heightSample = texture(material.heightMap, outputUv).r;
+	
+	// Loop until layer sample depth is smaller than heightmap sample depth
+	while(currentLayerDepth < heightSample)
+    {
+        outputUv -= deltaUv;
+        heightSample = texture(material.heightMap, outputUv).r;
+        currentLayerDepth += layerDepth;
+    }
+
+	// Apply occlusion
+	vec2 previousUv = outputUv + deltaUv;
+	float depthAfter  = heightSample - currentLayerDepth;
+	float depthBefore = texture(material.heightMap, previousUv).r - currentLayerDepth + layerDepth;
+	float weight = depthAfter / (depthAfter - depthBefore);
+	outputUv = previousUv * weight + outputUv * (1.0 - weight);
+
+    // Ensure output uvs are in range
+	if(outputUv.x > 1.0 || outputUv.y > 1.0 || outputUv.x < 0.0 || outputUv.y < 0.0) discard;
+
+    return outputUv;
 }
 
 vec2 getUv() {
