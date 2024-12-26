@@ -198,8 +198,7 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	Shader* shader = material->getShader();
 	shader->setMatrix4("mvpMatrix", transform.mvp);
 	shader->setMatrix4("modelMatrix", transform.model);
-	glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform.model));
-	shader->setMatrix3("normalMatrix", normalMatrix);
+	shader->setMatrix3("normalMatrix", Transformation::normal(transform.model));
 
 	// Bind mesh
 	glBindVertexArray(renderer.mesh.getVAO());

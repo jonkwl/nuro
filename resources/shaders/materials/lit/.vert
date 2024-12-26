@@ -13,7 +13,8 @@ uniform mat4 lightSpaceMatrix;
 
 out vec3 v_normal;
 out vec2 v_uv;
-out mat3 v_tbnMatrix;
+out mat3 v_tbn;
+out mat3 v_tbnTransposed;
 out vec3 v_fragmentWorldPosition;
 out vec4 v_fragmentLightSpacePosition;
 
@@ -40,7 +41,8 @@ void main()
 {
     v_normal = getNormal();
     v_uv = uv_in;
-    v_tbnMatrix = getTBNMatrix();
+    v_tbn = getTBNMatrix();
+    v_tbnTransposed = transpose(v_tbn);
     v_fragmentWorldPosition = getFragmentWorldPosition();
     v_fragmentLightSpacePosition = getFragmentLightSpacePosition();
 

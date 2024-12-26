@@ -2,19 +2,24 @@
 
 #define PI 3.14159265359
 
+#define NO_FOG 0
+#define LINEAR_FOG 1
+#define EXPONENTIAL_FOG 2
+#define EXPONENTIAL_SQUARED_FOG 3
+
 #define MAX_DIRECTIONAL_LIGHTS 1
 #define MAX_POINT_LIGHTS 15
-#define MAX_SPOT_LIGHTS 2
+#define MAX_SPOT_LIGHTS 8
 
 out vec4 FragColor;
 
 in vec3 v_normal;
 in vec2 v_uv;
-in mat3 v_tbnMatrix;
+in mat3 v_tbn;
+in mat3 v_tbnTransposed;
 in vec3 v_fragmentWorldPosition;
 in vec4 v_fragmentLightSpacePosition;
 
-vec3 fragmentWorldPosition;
 vec2 viewportUv;
 vec2 uv;
 vec3 normal;
@@ -79,11 +84,6 @@ struct SpotLight {
 };
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-#define NO_FOG 0
-#define LINEAR_FOG 1
-#define EXPONENTIAL_FOG 2
-#define EXPONENTIAL_SQUARED_FOG 3
-
 struct Fog {
     int type;
     vec3 color;
@@ -127,17 +127,27 @@ struct Material {
 };
 uniform Material material;
 
+//
+// HELPERS
+//
+
 float sqr(float x)
 {
     return x * x;
 }
 
+//
+// SHADOWING
+//
+
+// get fragment position as shadow coordinates
 vec3 getShadowCoords() {
     vec3 projectionCoords = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
     vec3 shadowCoords = projectionCoords * 0.5 + vec3(0.5);
     return shadowCoords;
 }
 
+// get bias for directional light
 float getDirectionalShadowBias(vec3 lightDirection) {
     // float diffuseFactor = dot(normal, -lightDirection);
     // float bias = mix(0.0001, 0.0, diffuseFactor);
@@ -145,7 +155,8 @@ float getDirectionalShadowBias(vec3 lightDirection) {
     return bias;
 }
 
-float getDirectionalHardShadow(vec3 lightDirection)
+// get hard shadow casted by directional light
+float getDirectionalShadowHard(vec3 lightDirection)
 {
     // make sure shadows are enabled
     if (!configuration.castShadows) {
@@ -167,7 +178,8 @@ float getDirectionalHardShadow(vec3 lightDirection)
     return shadow;
 }
 
-float getDirectionalSoftShadow(vec3 lightDirection)
+// get soft shadow casted by directional light
+float getDirectionalShadowSoft(vec3 lightDirection)
 {
     // make sure shadows are enabled
     if (!configuration.castShadows) {
@@ -266,31 +278,41 @@ float getDirectionalSoftShadow(vec3 lightDirection)
     return shadow;
 }
 
+//
+// FOG
+//
+
+// get linear fog factor
 float getLinearFog(float start, float end) {
-    float depth = length(fragmentWorldPosition - configuration.cameraPosition);
+    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float fogRange = end - start;
     float fogDistance = end - depth;
     float factor = clamp(fogDistance / fogRange, 0.0, 1.0);
     return factor;
 }
 
+// get exponential fog factor
 float getExponentialFog(float density) {
-    float depth = length(fragmentWorldPosition - configuration.cameraPosition);
+    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(depth * density);
     return factor;
 }
 
+// get exponential squared fog factor
 float getExponentialSquaredFog(float density) {
-    float depth = length(fragmentWorldPosition - configuration.cameraPosition);
+    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(sqr(depth * density));
     return factor;
 }
+
+//
+// PBR FUNCTIONS
+//
 
 vec3 fresnelSchlick(float VdotN, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - VdotN, 0.0, 1.0), 5.0);
 }
-
 float distributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness * roughness;
@@ -302,7 +324,6 @@ float distributionGGX(vec3 N, vec3 H, float roughness)
     denominator = PI * denominator * denominator;
     return numerator / denominator;
 }
-
 float geometrySchlickGGX(float NdotV, float roughness)
 {
     float r = (roughness + 1.0);
@@ -311,7 +332,6 @@ float geometrySchlickGGX(float NdotV, float roughness)
     float denominator = NdotV * (1.0 - k) + k;
     return numerator / denominator;
 }
-
 float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
     float NdotV = max(dot(N, V), 0.0);
@@ -321,278 +341,7 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-// parallax occlusion mapping of given uv coordinates
-vec2 POM_getUv(vec2 uvInput) {
-    // calculate view direction
-    vec3 tangentCameraPosition = v_tbnMatrix * configuration.cameraPosition;
-    vec3 tangentFragmentPosition = v_tbnMatrix * fragmentWorldPosition;
-    vec3 V = normalize(tangentCameraPosition - tangentFragmentPosition);
-
-    // setup layers
-    const int quality = 8;
-    const float minLayers = 32.0;
-    const float maxLayers = 64.0;
-    float nLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), V)));
-
-    // calculate layer depth
-    float layerDepth = 1.0 / nLayers;
-
-    // calculate p and uv delta
-    vec2 P = V.xy / V.z * material.heightMapScale;
-    vec2 uvDelta = P / nLayers;
-
-    // initialize current uv with input uv
-    vec2 uvCurrent = uvInput;
-
-    // sample depth at current uv
-    float depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
-
-    // march along view direction, starting from the beginning
-    // loop until current layer depth exceeds or equals sampled depth
-    // determines approximate surface intersection point where ray intersects height field
-    float currentLayerDepth = 0.0;
-    while (currentLayerDepth < depthSample)
-    {
-        // move uv to next layer
-        uvCurrent -= uvDelta;
-
-        // resample depth at new uv current
-        depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
-
-        // add depth to current layer
-        currentLayerDepth += layerDepth;
-    }
-
-    // calculate occlusion
-    vec2 uvPrevious = uvCurrent + uvDelta;
-    float depthAfter = depthSample - currentLayerDepth;
-    float depthBefore = 1.0 - texture(material.heightMap, uvPrevious).r - currentLayerDepth + layerDepth;
-    float weight = depthAfter / (depthAfter - depthBefore);
-
-    // calculate final uv output
-    uvCurrent = uvPrevious * weight + uvCurrent * (1.0 - weight);
-
-    // discard if uv output isnt valid
-    if (uvCurrent.x > 1.0 || uvCurrent.y > 1.0 || uvCurrent.x < 0.0 || uvCurrent.y < 0.0) {
-        discard;
-    }
-
-    // return current uv as output
-    return uvCurrent;
-}
-
-// get shadow value according to parallax occlusion mapped surface
-float POM_getShadow(vec3 tangentLightDirection, vec2 uvOffset)
-{
-    // tangent light direction facing away from surface, early out
-    if (tangentLightDirection.z >= 0.0){
-        return 0.0;
-    }
-
-    // setup layers
-    const int quality = 1;
-    const float minLayers = 32.0;
-    const float maxLayers = 64.0;
-    float numLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), tangentLightDirection)));
-
-    // initialize current uv with uv mapped by parallax occlusion mapping before and optional offset
-    // note: no offset for single sampled hard shadows; needed when multisampling for softshadows
-    vec2 uvCurrent = uv + uvOffset;
-
-    // sample depth at current uv
-    float depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
-    
-    // calculate layer depth
-    float layerDepth = 1.0 / numLayers;
-
-    // calculate p and uv delta
-    vec2 P = tangentLightDirection.xy / tangentLightDirection.z * material.heightMapScale;
-    vec2 uvDelta = P / numLayers;
-
-    // march along light direction in reverse, starting from parallax occlusion mapped depth of pixel
-    // loop until:
-    // case a) current layer depth exceeds sampled depth (intersection with height field, fragment is in shadow)
-    // case b) current layer depth falls below 0 (no intersection with height field, fragment is not in shadow)
-    float currentLayerDepth = depthSample;
-    while (currentLayerDepth <= depthSample && currentLayerDepth > 0.0)
-    {
-        uvCurrent += uvDelta;
-        depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
-        currentLayerDepth -= layerDepth;
-    }
-
-    // determine shadow value, set shaodw if current layer depth exceeded sampled depth (see above)
-    float shadow = currentLayerDepth > depthSample ? 1.0 : 0.0;
-    
-    // return shadow value
-    return shadow;
-}
-
-// get softened shadow value from parallax occlusion mapped height differences using 3x3 pcf
-float POM_getShadowSoft(vec3 tangentLightDirection)
-{
-    // get texel size
-    vec2 texelSize = 1.0 / textureSize(material.heightMap, 0);
-
-    // 3x3 pcf kernel offsets
-    vec2 offsets[9] = vec2[](
-        vec2(-1.0, 1.0), vec2(0.0, 1.0), vec2(1.0, 1.0),
-        vec2(-1.0, 0.0), vec2(0.0, 0.0), vec2(1.0, 0.0),
-        vec2(-1.0, -1.0), vec2(0.0, -1.0), vec2(1.0, -1.0)
-    );
-
-    // sample using pcf
-    int samples = 0;
-    float shadow = 0.0;
-    for (int i = 0; i < 9; i++) {
-        // compute offset for each sample
-        vec2 offset = offsets[i] * texelSize;
-
-        // sample parallax shadow with offset
-        shadow += POM_getShadow(tangentLightDirection, offset);
-
-        // add to samples
-        samples++;
-    }
-
-    // average results
-    return shadow / float(samples);
-}
-
-vec2 getUv() {
-    // calculate scaled texture coordinates by material properties
-    vec2 _uv = v_uv * material.tiling + material.offset;
-
-    // height map enabled, transform texture coordinates by heightmap
-    if (material.enableHeightMap) {
-        _uv = POM_getUv(_uv);
-    }
-
-    // return texture coordinates
-    return _uv;
-}
-
-vec3 getNormal() {
-    // no normal mapping, return input normal
-    if (!material.enableNormalMap) {
-        return v_normal;
-    }
-
-    // normal mapping enabled
-
-    // sample normal map
-    vec3 N = texture(material.normalMap, uv).rgb;
-
-    // normalize sampled normal
-    N = N * 2.0 - vec3(1.0);
-
-    // scale normal x and y by normal map intensity
-    N.xy *= material.normalMapIntensity;
-
-    // transform normal into world space
-    N = normalize(v_tbnMatrix * N);
-
-    // return normal
-    return N;
-}
-
-vec3 getAlbedo()
-{
-    // default albedo is white
-    vec3 albedo = vec3(1.0);
-
-    // sample albedo map if enabled
-    if (material.enableAlbedoMap) {
-        vec3 albedoSample = texture(material.albedoMap, uv).rgb;
-        albedo = pow(albedoSample, vec3(configuration.gamma));
-    }
-
-    // tint albedo by materials base color
-    albedo *= vec3(material.baseColor);
-
-    // return final albedo
-    return albedo;
-}
-
-float getRoughness()
-{
-    // initialize roughness
-    float roughness = 0.0;
-
-    // roughness map enabled, sample roughness by roughness map
-    if (material.enableRoughnessMap) {
-        roughness = texture(material.roughnessMap, uv).r;
-        // no roughness map, set to materials roughness property
-    } else {
-        roughness = material.roughness;
-    }
-
-    // return roughness
-    return roughness;
-}
-
-float getMetallic()
-{
-    // initialize metallic
-    float metallic = 0.0;
-
-    // metallic map enabled, sample metallic by metallic map
-    if (material.enableMetallicMap) {
-        metallic = texture(material.metallicMap, uv).r;
-        // no metallic map, set to materials metallic property
-    } else {
-        metallic = material.metallic;
-    }
-
-    // return metallic
-    return metallic;
-}
-
-float getOcclusionMapSample()
-{
-    // initialize occlusion map sample with no occlusion
-    float occlusionMapSample = 1.0;
-
-    // occlusion map enabled, sample by occlusion map
-    if (material.enableOcclusionMap) {
-        occlusionMapSample = texture(material.occlusionMap, uv).r;
-    }
-
-    // return occlusion map sample
-    return occlusionMapSample;
-}
-
-float getSSAO() {
-    // initialize ssao sample with no occlusion
-    float ssao = 1.0;
-
-    // ssao enabled, sample by ssao buffer
-    if (configuration.enableSSAO) {
-        ssao = texture(configuration.ssaoBuffer, viewportUv).r;
-    }
-
-    // return ssao sample
-    return ssao;
-}
-
-vec3 getEmission() {
-    // return zero if emission isnt enabled
-    if (!material.emission) {
-        return vec3(0.0);
-    }
-
-    // get emission by intensity and color
-    vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
-
-    // emissive map enabled, tint emission by emissive map sample
-    if (material.enableEmissiveMap) {
-        emission *= texture(material.emissiveMap, uv).rgb;
-    }
-
-    // return emission
-    return emission;
-}
-
+// evaluate light source contribution 
 vec3 evaluateLightSource(
     vec3 V,
     vec3 N,
@@ -652,18 +401,328 @@ vec3 evaluateLightSource(
     return contribution;
 }
 
+//
+// PARALLAX OCCLUSION MAPPING
+//
+
+// parallax occlusion mapping of given texture coordinates
+vec2 POM_getUv(vec2 uvInput) {
+    // calculate view direction in tangent space
+    vec3 tangentCameraPosition = v_tbnTransposed * configuration.cameraPosition;
+    vec3 tangentFragmentPosition = v_tbnTransposed * v_fragmentWorldPosition;
+    vec3 V = normalize(tangentCameraPosition - tangentFragmentPosition);
+
+    // setup layers
+    const int quality = 8;
+    const float minLayers = 32.0;
+    const float maxLayers = 64.0;
+    float nLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), V)));
+
+    // calculate layer depth
+    float layerDepth = 1.0 / nLayers;
+
+    // calculate p and uv delta
+    vec2 P = V.xy / V.z * material.heightMapScale;
+    vec2 uvDelta = P / nLayers;
+
+    // initialize current uv with input uv
+    vec2 uvCurrent = uvInput;
+
+    // sample depth at current uv
+    float depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+
+    // march along view direction, starting from the beginning
+    // loop until current layer depth exceeds or equals sampled depth
+    // determines approximate surface intersection point where ray intersects height field
+    float currentLayerDepth = 0.0;
+    while (currentLayerDepth < depthSample)
+    {
+        // move uv to next layer
+        uvCurrent -= uvDelta;
+
+        // resample depth at new uv current
+        depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+
+        // add depth to current layer
+        currentLayerDepth += layerDepth;
+    }
+
+    // calculate occlusion
+    vec2 uvPrevious = uvCurrent + uvDelta;
+    float depthAfter = depthSample - currentLayerDepth;
+    float depthBefore = 1.0 - texture(material.heightMap, uvPrevious).r - currentLayerDepth + layerDepth;
+    float weight = depthAfter / (depthAfter - depthBefore);
+
+    // calculate final uv output
+    uvCurrent = uvPrevious * weight + uvCurrent * (1.0 - weight);
+
+    // discard if uv output isnt valid
+    if (uvCurrent.x > 1.0 || uvCurrent.y > 1.0 || uvCurrent.x < 0.0 || uvCurrent.y < 0.0) {
+        discard;
+    }
+
+    // return current uv as output
+    return uvCurrent;
+}
+
+// sample shadow value of given light direction according to parallax occlusion mapped surface with given offset
+float POM_sampleShadow(vec3 tangentLightDirection, vec2 uvOffset)
+{
+    // tangent light direction facing away from surface, early out
+    if (tangentLightDirection.z >= 0.0){
+        return 0.0;
+    }
+
+    // setup layers
+    const int quality = 1;
+    const float minLayers = 32.0;
+    const float maxLayers = 64.0;
+    float numLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), tangentLightDirection)));
+
+    // initialize current uv with uv mapped by parallax occlusion mapping before and optional offset
+    // note: no offset for single sampled hard shadows; needed when multisampling for softshadows
+    vec2 uvCurrent = uv + uvOffset;
+
+    // sample depth at current uv
+    float depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+    
+    // calculate layer depth
+    float layerDepth = 1.0 / numLayers;
+
+    // calculate p and uv delta
+    vec2 P = tangentLightDirection.xy / tangentLightDirection.z * material.heightMapScale;
+    vec2 uvDelta = P / numLayers;
+
+    // march along light direction in reverse, starting from parallax occlusion mapped depth of pixel
+    // loop until:
+    // case a) current layer depth exceeds sampled depth (intersection with height field, fragment is in shadow)
+    // case b) current layer depth falls below 0 (no intersection with height field, fragment is not in shadow)
+    float currentLayerDepth = depthSample;
+    while (currentLayerDepth <= depthSample && currentLayerDepth > 0.0)
+    {
+        uvCurrent += uvDelta;
+        depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+        currentLayerDepth -= layerDepth;
+    }
+
+    // determine shadow value, set shaodw if current layer depth exceeded sampled depth (see above)
+    float shadow = currentLayerDepth > depthSample ? 1.0 : 0.0;
+    
+    // return shadow value
+    return shadow;
+}
+
+// multisample shadow value of given light direction according to parallax occlusion mapped surface and average samples together
+float POM_multisampleShadowAverage(vec3 tangentLightDirection)
+{
+    // get texel size
+    vec2 texelSize = 1.0 / textureSize(material.heightMap, 0);
+
+    // calculate square kernel
+    int sampleCount = 9;
+    int kernelSize = int(sqrt(float(sampleCount)));
+    float halfKernel = float(kernelSize) * 0.5;
+
+    // create offsets dynamically based on sample count
+    float offsetStep = 2.0 / float(kernelSize); // spacing between offsets
+    int samples = 0;
+    float shadow = 0.0;
+
+    for (int y = 0; y < kernelSize; y++) {
+        for (int x = 0; x < kernelSize; x++) {
+            // Compute the offset for each sample
+            vec2 offset = vec2(float(x) - halfKernel, float(y) - halfKernel) * texelSize;
+
+            // Sample parallax occlusion shadow with offset
+            shadow += POM_sampleShadow(tangentLightDirection, offset);
+
+            // Count the sample
+            samples++;
+        }
+    }
+
+    // Average the shadow values
+    return shadow / float(samples);
+}
+
+// get hard shadow value for specific light from parallax occlusion mapped height differences
+float POM_getShadowHard(vec3 lightPosition){
+    // calculate light direction in tangent space
+    vec3 tangentLightDirection = normalize(v_tbnTransposed * v_fragmentWorldPosition - v_tbnTransposed * lightPosition);
+
+    // sample shadow once without offset for tangent light direction
+    return POM_sampleShadow(tangentLightDirection, vec2(0.0));
+}
+
+// get soft shadow value for specific light from parallax occlusion mapped height differences
+float POM_getShadowSoft(vec3 lightPosition){
+    // calculate light direction in tangent space
+    vec3 tangentLightDirection = normalize(v_tbnTransposed * v_fragmentWorldPosition - v_tbnTransposed * lightPosition);
+
+    // multisample shadow for tangent light direction
+    return POM_multisampleShadowAverage(tangentLightDirection);
+}
+
+//
+// TEXTURE SAMPLING
+//
+
+// get processed texture coordinates
+vec2 getUv() {
+    // calculate scaled texture coordinates by material properties
+    vec2 _uv = v_uv * material.tiling + material.offset;
+
+    // height map enabled, transform texture coordinates by heightmap
+    if (material.enableHeightMap) {
+        _uv = POM_getUv(_uv);
+    }
+
+    // return texture coordinates
+    return _uv;
+}
+
+// get normal vector
+vec3 getNormal() {
+    // no normal mapping, return input normal
+    if (!material.enableNormalMap) {
+        return v_normal;
+    }
+
+    // normal mapping enabled
+
+    // sample normal map
+    vec3 N = texture(material.normalMap, uv).rgb;
+
+    // normalize sampled normal
+    N = N * 2.0 - vec3(1.0);
+
+    // scale normal x and y by normal map intensity
+    N.xy *= material.normalMapIntensity;
+
+    // transform normal into world space
+    N = normalize(v_tbn * N);
+
+    // return normal
+    return N;
+}
+
+// get albedo color
+vec3 getAlbedo()
+{
+    // default albedo is white
+    vec3 albedo = vec3(1.0);
+
+    // sample albedo map if enabled
+    if (material.enableAlbedoMap) {
+        vec3 albedoSample = texture(material.albedoMap, uv).rgb;
+        albedo = pow(albedoSample, vec3(configuration.gamma));
+    }
+
+    // tint albedo by materials base color
+    albedo *= vec3(material.baseColor);
+
+    // return final albedo
+    return albedo;
+}
+
+// get roughness value
+float getRoughness()
+{
+    // initialize roughness
+    float roughness = 0.0;
+
+    // roughness map enabled, sample roughness by roughness map
+    if (material.enableRoughnessMap) {
+        roughness = texture(material.roughnessMap, uv).r;
+        // no roughness map, set to materials roughness property
+    } else {
+        roughness = material.roughness;
+    }
+
+    // return roughness
+    return roughness;
+}
+
+// get metallic value
+float getMetallic()
+{
+    // initialize metallic
+    float metallic = 0.0;
+
+    // metallic map enabled, sample metallic by metallic map
+    if (material.enableMetallicMap) {
+        metallic = texture(material.metallicMap, uv).r;
+        // no metallic map, set to materials metallic property
+    } else {
+        metallic = material.metallic;
+    }
+
+    // return metallic
+    return metallic;
+}
+
+// get occlusion map sample value
+float getOcclusionMapSample()
+{
+    // initialize occlusion map sample with no occlusion
+    float occlusionMapSample = 1.0;
+
+    // occlusion map enabled, sample by occlusion map
+    if (material.enableOcclusionMap) {
+        occlusionMapSample = texture(material.occlusionMap, uv).r;
+    }
+
+    // return occlusion map sample
+    return occlusionMapSample;
+}
+
+// get ssao sample value
+float getSSAO() {
+    // initialize ssao sample with no occlusion
+    float ssao = 1.0;
+
+    // ssao enabled, sample by ssao buffer
+    if (configuration.enableSSAO) {
+        ssao = texture(configuration.ssaoBuffer, viewportUv).r;
+    }
+
+    // return ssao sample
+    return ssao;
+}
+
+// get emission color
+vec3 getEmission() {
+    // return zero if emission isnt enabled
+    if (!material.emission) {
+        return vec3(0.0);
+    }
+
+    // get emission by intensity and color
+    vec3 emission = vec3(material.emissionIntensity) * material.emissionColor;
+
+    // emissive map enabled, tint emission by emissive map sample
+    if (material.enableEmissiveMap) {
+        emission *= texture(material.emissiveMap, uv).rgb;
+    }
+
+    // return emission
+    return emission;
+}
+
+//
+// ATTENUATION CALCULATION
+//
+
 float getAttenuation_linear_quadratic(float distance, float linear, float quadratic)
 {
     float attenuation = 1.0 / (1.0 + linear * distance + quadratic * (distance * distance));
     return attenuation;
 }
-
 float getAttenuation_range_infinite(float distance, float range)
 {
     float attenuation = 1.0 / (1.0 + sqr((distance / range)));
     return attenuation;
 }
-
 float getAttenuation_range_falloff_no_cusp(float distance, float range, float falloff)
 {
     float s = distance / range;
@@ -673,7 +732,6 @@ float getAttenuation_range_falloff_no_cusp(float distance, float range, float fa
     float s2 = sqr(s);
     return sqr(1 - s2) / (1 + falloff * s2);
 }
-
 float getAttenuation_range_falloff_cusp(float distance, float range, float falloff)
 {
     float s = distance / range;
@@ -683,6 +741,10 @@ float getAttenuation_range_falloff_cusp(float distance, float range, float fallo
     float s2 = sqr(s);
     return sqr(1 - s2) / (1 + falloff * s);
 }
+
+//
+// DEFAULT SHADING STYLES
+//
 
 vec4 shadePBR() {
     // get albedo
@@ -701,7 +763,7 @@ vec4 shadePBR() {
     float ssao = getSSAO();
 
     vec3 N = normal;
-    vec3 V = normalize(configuration.cameraPosition - fragmentWorldPosition); // view direction
+    vec3 V = normalize(configuration.cameraPosition - v_fragmentWorldPosition); // view direction
 
     float dialectricReflecitivity = 0.04;
     vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
@@ -732,15 +794,12 @@ vec4 shadePBR() {
             vec3 L = normalize(-directionalLight.direction);
 
             float shadow = 0.0;
-            shadow += getDirectionalSoftShadow(L);
-            // PARALLAX OCCLUSION MAPPED SHADOW FOR DIRECTIONAL LIGHT: //
-            /*
-            if (material.enableHeightMap && i == 0) {
-                vec3 tangentLightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - directionalLight.position); // can be calculated once beforehand
-                shadow += POM_getShadow(tangentLightDirection, vec2(0.0));
-            }
-            */
-            // Currently not enabled //
+            shadow += getDirectionalShadowSoft(L);
+            // PARALLAX OCCLUSION MAPPED SHADOW FOR DIRECTIONAL LIGHT //
+            /*if (material.enableHeightMap && i == 0) {
+                vec3 tangentLightDirection = normalize(v_tbnTransposed * v_fragmentWorldPosition - v_tbnTransposed * directionalLight.position);
+                shadow += POM_sampleShadow(tangentLightDirection, vec2(0.0));
+            }*/
 
             Lo += evaluateLightSource(
                     V,
@@ -763,15 +822,14 @@ vec4 shadePBR() {
         for (int i = 0; i < configuration.numPointLights; i++) {
             PointLight pointLight = pointLights[i];
 
-            float distance = length(pointLight.position - fragmentWorldPosition);
+            float distance = length(pointLight.position - v_fragmentWorldPosition);
             float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-            vec3 L = normalize(pointLight.position - fragmentWorldPosition);
+            vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
 
             float shadow = 0.0;
             // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
             if (material.enableHeightMap && i == 0) {
-                vec3 tangentLightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - pointLight.position);
-                shadow += POM_getShadow(tangentLightDirection, vec2(0.0));
+                shadow += POM_getShadowHard(pointLight.position);
             }
 
             Lo += evaluateLightSource(
@@ -795,23 +853,19 @@ vec4 shadePBR() {
         for (int i = 0; i < configuration.numSpotLights; i++) {
             SpotLight spotLight = spotLights[i];
 
-            float distance = length(spotLight.position - fragmentWorldPosition);
+            float distance = length(spotLight.position - v_fragmentWorldPosition);
             float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
-            vec3 L = normalize(spotLight.position - fragmentWorldPosition);
+            vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
 
             float theta = dot(L, normalize(-spotLight.direction));
             float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
             float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
 
             float shadow = 0.0;
-            // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
-            /*
-            if (material.enableHeightMap && i == 0) {
-                vec3 tangentLightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - spotLight.position); // can be calculated once beforehand
-                shadow += POM_getShadow(tangentLightDirection, vec2(0.0));
-            }
-            */
-            // Currently not enabled //
+            // PARALLAX OCCLUSION MAPPED SHADOW FOR SPOT LIGHT //
+            /*if (material.enableHeightMap && i == 0) {
+                shadow += POM_getShadowHard(spotLight.position);
+            }*/
 
             Lo += evaluateLightSource(
                     V,
@@ -857,12 +911,14 @@ vec4 shadePBR() {
     // return shaded color
     return vec4(color, 1.0);
 }
-
 vec4 shadeSolid()
 {
     vec3 diffuse = vec3(0.0);
 
     vec3 N = normal;
+
+    // static directional light
+    vec3 direction = vec3(-0.5, -0.5, 1.0);
 
     for (int i = 0; i < configuration.numDirectionalLights; i++)
     {
@@ -871,23 +927,10 @@ vec4 shadeSolid()
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
 
-        vec3 shadowDirection = normalize(directionalLight.position - fragmentWorldPosition);
-        float shadow = getDirectionalHardShadow(shadowDirection);
+        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentWorldPosition);
+        float shadow = getDirectionalShadowHard(shadowDirection);
 
         diffuse += max(dot(N, L), 0.0) * directionalLight.color * directionalLight.intensity * attenuation * (1.0 - shadow);
-    }
-
-    for (int i = 0; i < configuration.numPointLights; i++)
-    {
-        PointLight pointLight = pointLights[i];
-
-        float distance = length(pointLight.position - fragmentWorldPosition);
-        float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-        vec3 L = normalize(pointLight.position - fragmentWorldPosition);
-
-        float shadow = 0.0;
-
-        diffuse += max(dot(N, L), 0.0) * pointLight.color * pointLight.intensity * attenuation * (1.0 - shadow);
     }
 
     vec3 albedo = vec3(1.0);
@@ -900,7 +943,6 @@ vec4 shadeSolid()
 
     return vec4(color, 1.0);
 }
-
 vec4 shadeNormal() {
     // get normal
     vec3 colorNormal = normal;
@@ -914,17 +956,14 @@ vec4 shadeNormal() {
     float shadow = 0.0;
     float shadowIntensity = 0.5;
 
-    for (int i = 0; i < configuration.numDirectionalLights; i++) {
-        DirectionalLight directionalLight = directionalLights[i];
-        vec3 L = normalize(-directionalLight.direction);
+    // static directional light
+    vec3 direction = vec3(-0.5, -0.5, 1.0);
+    vec3 L = normalize(direction);
 
-        diffuse = vec3(max(dot(normal, L), 0.0));
-        diffuse = mix(diffuse, vec3(0.0), diffuseFactor);
+    diffuse = vec3(max(dot(normal, L), 0.0));
+    diffuse = mix(diffuse, vec3(0.0), diffuseFactor);
 
-        shadow = getDirectionalHardShadow(L) * shadowIntensity;
-
-        break;
-    }
+    shadow = getDirectionalShadowHard(L) * shadowIntensity;
 
     // get color from normal and shadow
     vec3 color = colorNormal * diffuse * (1.0 - shadow);
@@ -932,7 +971,6 @@ vec4 shadeNormal() {
     // return normal as color
     return vec4(color, 1.0);
 }
-
 vec4 shadeDepth() {
     // camera clipping default variables
     float near = 0.3;
@@ -945,17 +983,31 @@ vec4 shadeDepth() {
     // retun depth as color
     return vec4(vec3(depth), 1.0);
 }
-
 vec4 shadeShadowMap() {
     vec3 projectionCoordinates = v_fragmentLightSpacePosition.xyz / v_fragmentLightSpacePosition.w;
     projectionCoordinates = projectionCoordinates * 0.5 + 0.5;
     float depth = texture(configuration.shadowMap, projectionCoordinates.xy).r;
     return vec4(vec3(depth), 1.0);
 }
+vec4 shadeUv(){
+    return vec4(uv, 0.0, 1.0);
+}
+vec4 shadeTangentSpace() {
+    // extract the tangent, bitangent, and normal from tbn matrix
+    vec3 tangent = normalize(v_tbn[0]);
+    vec3 bitangent = normalize(v_tbn[1]);
+    vec3 normal = normalize(v_tbn[2]);
+
+    // map vectors to [0, 1] range for visualization
+    vec3 tangentColor = (tangent * 0.5) + 0.5;
+    vec3 bitangentColor = (bitangent * 0.5) + 0.5;
+    vec3 normalColor = (normal * 0.5) + 0.5;
+
+    return vec4(tangentColor.r, bitangentColor.g, normalColor.b, 1.0);
+}
 
 void main()
 {
-    fragmentWorldPosition = v_fragmentWorldPosition;
     viewportUv = gl_FragCoord.xy / vec2(configuration.viewportResolution.x, configuration.viewportResolution.y);
     uv = getUv();
     normal = getNormal();

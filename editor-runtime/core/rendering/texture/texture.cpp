@@ -28,6 +28,17 @@ uint32_t Texture::getBackendId()
 	return backendId;
 }
 
+void Texture::maxAnisotropicFiltering()
+{
+	glBindTexture(GL_TEXTURE_2D, backendId);
+
+	GLfloat maxAniso = 0.0f;
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAniso);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, maxAniso);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 Texture Texture::empty()
 {
 	return Texture();

@@ -84,6 +84,7 @@ Mesh* getQuadMesh() {
 Entity cameraEntity;
 Entity kinematicEntity;
 Entity playerEntity;
+Entity planeEntity;
 
 static bool jumped = false;
 static float zoom = -20.0f;
@@ -156,9 +157,24 @@ void setup() {
 	planeMaterial->emission = true;
 	planeMaterial->emissionIntensity = 14.0f;
 	planeMaterial->setHeightMap(height);
+	planeMaterial->heightMapScale = 0.05f;
 
-	// Sci-Fi Plane
+	// Test Material
+	Texture albedoTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/albedo.jpg", TextureType::ALBEDO);
+	Texture roughnessTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/roughness.jpg", TextureType::ROUGHNESS);
+	Texture normalTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/normal.jpg", TextureType::NORMAL);
+	Texture occlusionTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/occlusion.jpg", TextureType::OCCLUSION);
+	Texture heightTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/height.jpg", TextureType::HEIGHT);
+	LitMaterial* testMaterial = new LitMaterial();
+	testMaterial->setAlbedoMap(albedoTest);
+	testMaterial->setRoughnessMap(roughnessTest);
+	testMaterial->setNormalMap(normalTest);
+	testMaterial->setOcclusionMap(occlusionTest);
+	testMaterial->setHeightMap(heightTest);
+
+	// Material Test Plane
 	EntityContainer plane(ECS::createEntity());
+	planeEntity = plane.root;
 	plane.transform.position = glm::vec3(-24.0f, 0.0f, 18.0f);
 	plane.transform.scale = glm::vec3(5.0f);
 	plane.add<MeshRendererComponent>(*planeMesh, planeMaterial);
@@ -199,7 +215,7 @@ void quit()
 void update() {
 	float delta = Time::deltaf();
 
-	EntityContainer kinematic = EntityContainer(kinematicEntity);
+	EntityContainer kinematic(kinematicEntity);
 	kinematic.transform.position += glm::vec3(0.0f, 0.0f, -32.0f * delta);
 
 	float force = 20.0f;
@@ -228,7 +244,7 @@ void update() {
 
 	// LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 
-	EntityContainer camera = EntityContainer(cameraEntity);
+	EntityContainer camera(cameraEntity);
 	float zoomStrength = 150.0f;
 	glm::vec2 scrollDelta = Input::scrollDelta();
 	if (scrollDelta.y > 0.0f) zoom += zoomStrength * delta;
@@ -236,4 +252,5 @@ void update() {
 	zoom = glm::clamp(zoom, -20.0f, -5.0f);
 	glm::vec3 offset = glm::vec3(0.0f, 1.5f, zoom);
 	camera.transform.position = glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta);
+
 }
