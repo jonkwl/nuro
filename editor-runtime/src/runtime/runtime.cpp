@@ -40,7 +40,7 @@ namespace Runtime {
 	GameViewPipeline gGameViewPipeline;
 
 	// Physics
-	PhysicsController gGamePhysics;
+	PhysicsContext gGamePhysics;
 
 	// Scene gizmos
 	IMGizmo gSceneGizmos;
@@ -357,7 +357,7 @@ namespace Runtime {
 		return gGameViewPipeline;
 	}
 
-	PhysicsController& getGamePhysics()
+	PhysicsContext& getGamePhysics()
 	{
 		return gGamePhysics;
 	}
@@ -367,7 +367,7 @@ namespace Runtime {
 		return gSceneGizmos;
 	}
 
-	PhysicsController& getPhysicsController()
+	PhysicsContext& getPhysicsContext()
 	{
 		return gGamePhysics;
 	}

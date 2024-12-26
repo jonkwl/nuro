@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../core/rendering/gizmos/imgizmo.h"
-#include "../core/physics/core/physics_controller.h"
+#include "../core/physics/core/physics_context.h"
 
 #include "../src/pipelines/game_view_pipeline.h"
 #include "../src/pipelines/scene_view_pipeline.h"
@@ -25,7 +25,7 @@ namespace Runtime
 	GameViewPipeline& getGameViewPipeline();
 
 	// Physics getters
-	PhysicsController& getGamePhysics();
+	PhysicsContext& getGamePhysics();
 
 	// Gizmo getters
 	IMGizmo& getSceneGizmos();

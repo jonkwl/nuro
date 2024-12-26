@@ -3,20 +3,22 @@
 #include <PxPhysicsAPI.h>
 #include <glm.hpp>
 
-#include "../core/physics/events/physics_observer.hpp"
+#include "../core/physics/events/physics_ecs_listener.hpp"
 
-class PhysicsController
+class PhysicsContext
 {
 public:
-	PhysicsController();
+	PhysicsContext();
 
 	void create(); // Create physics
 	void destroy(); // Destroy physics
 
-	void step(float delta); // Steps physics and performs simulation iterations
+	// Steps physics and performs simulation iterations
+	void step(float delta);
 
 private:
-	void simulate(float delta); // Simulates physics iteration
+	// Simulates physics iteration
+	void simulate(float delta);
 
 	// Apply transform of physics rigidbody on given rigidbody component
 	void syncRigidbodyComponent(RigidbodyComponent& rigidbody);
@@ -36,7 +38,7 @@ private:
 	physx::PxScene* scene;
 	physx::PxPvd* pvd;
 
-	PhysicsObserver observer;
+	PhysicsEcsListener ecsListener;
 
 private:
 	const physx::PxReal timeStep;

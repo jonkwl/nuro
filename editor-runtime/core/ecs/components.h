@@ -25,14 +25,11 @@ struct TransformComponent {
 static inline Mesh emptyMesh;
 struct MeshRendererComponent {
 
-	MeshRendererComponent() : mesh(emptyMesh), material(nullptr), materialId(0), shaderId(0) {};
-	MeshRendererComponent(Mesh& mesh, IMaterial* material) : mesh(mesh), material(material), materialId(material->getId()), shaderId(material->getShaderId()) {};
+	MeshRendererComponent() : mesh(emptyMesh), material(nullptr) {};
+	MeshRendererComponent(Mesh& mesh, IMaterial* material) : mesh(mesh), material(material) {};
 
 	Mesh& mesh; // Mesh render target
 	IMaterial* material; // Mesh material | Unsafe!
-
-	uint32_t materialId;
-	uint32_t shaderId;
 };
 
 struct CameraComponent {

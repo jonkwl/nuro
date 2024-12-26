@@ -96,7 +96,7 @@
     <ClCompile Include="core\time\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\utils\transform.cpp">
+    <ClCompile Include="core\transform\transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\utils\iohandler.cpp">
@@ -201,7 +201,7 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\core\physics_controller.cpp">
+    <ClCompile Include="core\physics\core\physics_context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\physics\rigidbody\rigidbody.cpp">
@@ -210,7 +210,7 @@
     <ClCompile Include="core\physics\utils\px_translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\core\physics_creation.cpp">
+    <ClCompile Include="core\physics\core\physics_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -311,7 +311,7 @@
     <ClInclude Include="core\time\time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\utils\transform.h">
+    <ClInclude Include="core\transform\transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\utils\iohandler.h">
@@ -434,7 +434,7 @@
     <ClInclude Include="core\ecs\registry_state.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\core\physics_controller.h">
+    <ClInclude Include="core\physics\core\physics_context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\physics.h">
@@ -446,7 +446,7 @@
     <ClInclude Include="src\collection\editor_gizmo_color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\events\physics_observer.hpp">
+    <ClInclude Include="core\physics\events\physics_ecs_listener.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\utils\px_translator.h">
@@ -455,7 +455,7 @@
     <ClInclude Include="core\ecs\entity_container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\core\physics_creation.h">
+    <ClInclude Include="core\physics\core\physics_factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

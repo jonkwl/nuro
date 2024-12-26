@@ -206,13 +206,13 @@ void ForwardPass::renderMeshes()
 	// Render each entity
 	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
 
-		uint32_t shaderId = renderer.shaderId;
+		uint32_t shaderId = renderer.material->getShaderId();
 		if (shaderId != currentShaderId) {
 			renderer.material->getShader()->bind();
 			currentShaderId = shaderId;
 		}
 
-		uint32_t materialId = renderer.materialId;
+		uint32_t materialId = renderer.material->getId();
 		if (materialId != currentMaterialId) {
 			renderer.material->bind();
 			currentMaterialId = materialId;

@@ -1,4 +1,4 @@
-#include "physics_controller.h"
+#include "physics_context.h"
 
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs_collection.h"
@@ -6,21 +6,21 @@
 
 using namespace physx;
 
-PhysicsController::PhysicsController() : allocator(),
+PhysicsContext::PhysicsContext() : allocator(),
 errorCallback(),
 foundation(nullptr),
 physics(nullptr),
 dispatcher(nullptr),
 scene(nullptr),
 pvd(nullptr),
-observer(physics, scene),
+ecsListener(physics, scene),
 timeStep(1.0f / 60.0f),
 gravity(PxVec3(0.0f, -9.81f, 0.0f)),
 accumulatedTime(0.0f)
 {
 }
 
-void PhysicsController::create()
+void PhysicsContext::create()
 {
 	// Create physx native instances
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, allocator, errorCallback);
@@ -45,22 +45,22 @@ void PhysicsController::create()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 
-	// Setup observer
-	observer.setup();
+	// Setup ecs listener
+	ecsListener.setup();
 
 	// Register observer events
-	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsObserver::constructBoxCollider>(observer);
-	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsObserver::destroyBoxCollider>(observer);
+	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsEcsListener::constructBoxCollider>(ecsListener);
+	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsEcsListener::destroyBoxCollider>(ecsListener);
 
-	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsObserver::constructSphereCollider>(observer);
-	ECS::gRegistry.on_destroy<SphereColliderComponent>().disconnect<&PhysicsObserver::destroySphereCollider>(observer);
+	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsEcsListener::constructSphereCollider>(ecsListener);
+	ECS::gRegistry.on_destroy<SphereColliderComponent>().disconnect<&PhysicsEcsListener::destroySphereCollider>(ecsListener);
 
-	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsObserver::constructRigidbody>(observer);
-	ECS::gRegistry.on_destroy<RigidbodyComponent>().disconnect<&PhysicsObserver::destroyRigidbody>(observer);
+	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsEcsListener::constructRigidbody>(ecsListener);
+	ECS::gRegistry.on_destroy<RigidbodyComponent>().disconnect<&PhysicsEcsListener::destroyRigidbody>(ecsListener);
 
 }
 
-void PhysicsController::destroy()
+void PhysicsContext::destroy()
 {
 	PX_RELEASE(scene);
 	PX_RELEASE(dispatcher);
@@ -73,7 +73,7 @@ void PhysicsController::destroy()
 	PX_RELEASE(foundation);
 }
 
-void PhysicsController::step(float delta)
+void PhysicsContext::step(float delta)
 {
 	//
 	// PHYSICS SIMULATION TIME STEP UPDATE
@@ -96,7 +96,7 @@ void PhysicsController::step(float delta)
 	}
 }
 
-void PhysicsController::simulate(float delta)
+void PhysicsContext::simulate(float delta)
 {
 	// Simulate physics
 	scene->simulate(timeStep);
@@ -109,7 +109,7 @@ void PhysicsController::simulate(float delta)
 	}
 }
 
-void PhysicsController::syncRigidbodyComponent(RigidbodyComponent& rigidbody)
+void PhysicsContext::syncRigidbodyComponent(RigidbodyComponent& rigidbody)
 {
 	// Update rigidbody components velocity data
 	rigidbody.velocity = PxTranslator::convert(rigidbody.actor->getLinearVelocity());
@@ -121,7 +121,7 @@ void PhysicsController::syncRigidbodyComponent(RigidbodyComponent& rigidbody)
 	rigidbody.rotation = PxTranslator::convert(globalPose.q);
 }
 
-void PhysicsController::syncTransformComponent(float delta, TransformComponent& transform, RigidbodyComponent& rigidbody)
+void PhysicsContext::syncTransformComponent(float delta, TransformComponent& transform, RigidbodyComponent& rigidbody)
 {
 	// Handle kinematic rigidbodies: Set rigidbody actors global pose but dont change transform component
 	if (rigidbody.kinematic) {
@@ -151,12 +151,12 @@ void PhysicsController::syncTransformComponent(float delta, TransformComponent& 
 	transform.rotation = rotation;
 }
 
-glm::vec3 PhysicsController::interpolate(glm::vec3 lastPosition, glm::vec3 position, float factor)
+glm::vec3 PhysicsContext::interpolate(glm::vec3 lastPosition, glm::vec3 position, float factor)
 {
 	return glm::mix(lastPosition, position, factor);
 }
 
-glm::quat PhysicsController::interpolate(glm::quat lastRotation, glm::quat rotation, float factor)
+glm::quat PhysicsContext::interpolate(glm::quat lastRotation, glm::quat rotation, float factor)
 {
 	return glm::slerp(lastRotation, rotation, factor);
 }

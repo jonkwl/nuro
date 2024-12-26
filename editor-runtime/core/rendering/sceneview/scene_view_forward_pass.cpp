@@ -223,14 +223,14 @@ void SceneViewForwardPass::renderMeshes(entt::entity skip)
 		// Skip if target entity is selected entity
 		if (entity == skip) continue;
 
-		uint32_t shaderId = renderer.shaderId;
+		uint32_t shaderId = renderer.material->getShaderId();
 		if (shaderId != currentShaderId) {
 			renderer.material->getShader()->bind();
 			currentShaderId = shaderId;
 			newBoundShaders++;
 		}
 
-		uint32_t materialId = renderer.materialId;
+		uint32_t materialId = renderer.material->getId();
 		if (materialId != currentMaterialId) {
 			renderer.material->bind();
 			currentMaterialId = materialId;

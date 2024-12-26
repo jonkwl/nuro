@@ -12,7 +12,7 @@
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
-#include "../core/utils/transform.h"
+#include "../core/transform/transform.h"
 #include "../core/ecs/components.h"
 
 SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),

@@ -10,20 +10,30 @@ namespace ECS {
 
 	void generateRenderQueue()
 	{
-		// Fill unsorted queue
-		std::vector<entt::entity> unsortedQueue;
-		gRegistry.view<MeshRendererComponent>().each([&](auto entity, const auto&) { unsortedQueue.push_back(entity); });
+		// Fill target queue
+		std::vector<entt::entity> targetQueue;
 
-		// Sort by shader and material
-		/*std::sort(unsortedQueue.begin(), unsortedQueue.end(), [&](auto lhsEntity, auto rhsEntity) {
+		gRegistry.view<MeshRendererComponent>().each([&](auto entity, const auto&) { 
+			targetQueue.push_back(entity); 
+		});
+
+		// Sort targets by shader and material
+		std::sort(targetQueue.begin(), targetQueue.end(), [&](auto lhsEntity, auto rhsEntity) {
 			MeshRendererComponent& lhs = gRegistry.get<MeshRendererComponent>(lhsEntity);
+			auto lhsShaderId = lhs.material ? lhs.material->getShaderId() : -1;
+			auto lhsMaterialId = lhs.material ? lhs.material->getId() : -1;
+
 			MeshRendererComponent& rhs = gRegistry.get<MeshRendererComponent>(rhsEntity);
-			return std::tie(lhs.material->getShaderId(), lhs.material->getId()) < std::tie(rhs.material->getShaderId(), rhs.material->getId());
-			}); */
+			auto rhsShaderId = rhs.material ? rhs.material->getShaderId() : -1;
+			auto rhsMaterialId = rhs.material ? rhs.material->getId() : -1;
+
+			return std::tie(lhsShaderId, lhsMaterialId) < std::tie(rhsShaderId, rhsMaterialId);
+		});
 
 		// Fill render queue
 		gRenderQueue.clear();
-		for (auto entity : unsortedQueue) {
+
+		for (auto entity : targetQueue) {
 			gRenderQueue.emplace_back(entity, gRegistry.get<TransformComponent>(entity), gRegistry.get<MeshRendererComponent>(entity));
 		}
 	}

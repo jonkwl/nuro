@@ -146,10 +146,10 @@
     <ClCompile Include="imgui\implot.cpp" />
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
-    <ClCompile Include="core\physics\core\physics_controller.cpp" />
+    <ClCompile Include="core\physics\core\physics_context.cpp" />
     <ClCompile Include="core\physics\rigidbody\rigidbody.cpp" />
     <ClCompile Include="core\physics\utils\px_translator.cpp" />
-    <ClCompile Include="core\physics\core\physics_creation.cpp" />
+    <ClCompile Include="core\physics\core\physics_factory.cpp" />
     <ClCompile Include="src\ui\windows\hierarchy_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
@@ -182,7 +182,7 @@
     <ClCompile Include="core\rendering\texture\texture.cpp" />
     <ClCompile Include="core\rendering\velocitybuffer\velocity_buffer.cpp" />
     <ClCompile Include="core\time\time.cpp" />
-    <ClCompile Include="core\utils\transform.cpp" />
+    <ClCompile Include="core\transform\transform.cpp" />
     <ClCompile Include="core\utils\iohandler.cpp" />
     <ClCompile Include="core\utils\log.cpp" />
     <ClCompile Include="core\utils\string_helper.cpp" />
@@ -220,11 +220,11 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="core\physics\core\physics_controller.h" />
+    <ClInclude Include="core\physics\core\physics_context.h" />
     <ClInclude Include="core\physics\rigidbody\rigidbody.h" />
-    <ClInclude Include="core\physics\events\physics_observer.hpp" />
+    <ClInclude Include="core\physics\events\physics_ecs_listener.hpp" />
     <ClInclude Include="core\physics\utils\px_translator.h" />
-    <ClInclude Include="core\physics\core\physics_creation.h" />
+    <ClInclude Include="core\physics\core\physics_factory.h" />
     <ClInclude Include="src\collection\editor_gizmo_color.h" />
     <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
@@ -263,7 +263,7 @@
     <ClInclude Include="core\rendering\texture\texture.h" />
     <ClInclude Include="core\rendering\velocitybuffer\velocity_buffer.h" />
     <ClInclude Include="core\time\time.h" />
-    <ClInclude Include="core\utils\transform.h" />
+    <ClInclude Include="core\transform\transform.h" />
     <ClInclude Include="core\utils\iohandler.h" />
     <ClInclude Include="core\utils\log.h" />
     <ClInclude Include="core\utils\string_helper.h" />

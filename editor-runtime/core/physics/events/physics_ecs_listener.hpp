@@ -10,16 +10,16 @@
 #include "../core/ecs/components.h"
 #include "../core/physics/rigidbody/rigidbody.h"
 #include "../core/physics/utils/px_translator.h"
-#include "../core/physics/core/physics_creation.h"
+#include "../core/physics/core/physics_factory.h"
 
-class PhysicsObserver
+class PhysicsEcsListener
 {
 public:
-	PhysicsObserver(physx::PxPhysics*& physics, physx::PxScene*& scene) : 
+	PhysicsEcsListener(physx::PxPhysics*& physics, physx::PxScene*& scene) : 
 		physics(physics), scene(scene), defaultMaterial(nullptr) {};
 
 	void setup() {
-		defaultMaterial = PhysicsCreation::createMaterial(physics, 0.6f, 0.6f, 0.55f);
+		defaultMaterial = PhysicsFactory::createMaterial(physics, 0.6f, 0.6f, 0.55f);
 
 		// tmp
 		physx::PxRigidStatic* plane = PxCreatePlane(*physics, physx::PxPlane(0.0f, 1.0f, 0.0f, 10.0f), *defaultMaterial);
@@ -69,12 +69,12 @@ public:
 
 		// Attach box collider if existing
 		if (has<BoxColliderComponent>(reg, ent)) {
-			PhysicsCreation::attachCollider(rb, get<BoxColliderComponent>(reg, ent).shape);
+			rb->attachShape(*get<BoxColliderComponent>(reg, ent).shape);
 		}
 
 		// Attach sphere collider if existing
 		if (has<SphereColliderComponent>(reg, ent)) {
-			PhysicsCreation::attachCollider(rb, get<SphereColliderComponent>(reg, ent).shape);
+			rb->attachShape(*get<SphereColliderComponent>(reg, ent).shape);
 		}
 
 	}
@@ -91,10 +91,10 @@ public:
 		BoxColliderComponent& boxCollider = get<BoxColliderComponent>(reg, ent);
 		TransformComponent& transform = get<TransformComponent>(reg, ent);
 
-		// Create shape
+		// Create box collider
 		boxCollider.size = transform.scale;
 		boxCollider.material = defaultMaterial;
-		boxCollider.shape = PhysicsCreation::createBoxCollider(physics, boxCollider);
+		boxCollider.shape = PhysicsFactory::createBoxShape(physics, boxCollider.material, boxCollider.size);
 
 		// Attach shape to rigidbody if existing
 		try_rbAttachShape(reg, ent, boxCollider.shape);
@@ -108,8 +108,8 @@ public:
 		// Remove shape from rigidbody if existing
 		try_rbDetachShape(reg, ent, boxCollider.shape);
 
-		// Destroy collider
-		PhysicsCreation::destroyCollider(boxCollider.shape);
+		// Release shape
+		boxCollider.shape->release();
 	}
 
 	void constructSphereCollider(entt::registry& reg, entt::entity ent)
@@ -118,10 +118,10 @@ public:
 		SphereColliderComponent& sphereCollider = get<SphereColliderComponent>(reg, ent);
 		TransformComponent& transform = get<TransformComponent>(reg, ent);
 
-		// Create shape
+		// Create sphere collider
 		sphereCollider.radius = glm::compMax(transform.scale);
 		sphereCollider.material = defaultMaterial;
-		sphereCollider.shape = PhysicsCreation::createSphereCollider(physics, sphereCollider);
+		sphereCollider.shape = PhysicsFactory::createSphereShape(physics, sphereCollider.material, sphereCollider.radius);
 
 		// Attach shape to rigidbody if existing
 		try_rbAttachShape(reg, ent, sphereCollider.shape);
@@ -135,8 +135,8 @@ public:
 		// Remove shape from rigidbody if existing
 		try_rbDetachShape(reg, ent, sphereCollider.shape);
 
-		// Destroy collider
-		PhysicsCreation::destroyCollider(sphereCollider.shape);
+		// Release shape
+		sphereCollider.shape->release();
 	}
 
 	void constructRigidbody(entt::registry& reg, entt::entity ent)
@@ -146,13 +146,13 @@ public:
 		TransformComponent& transform = get<TransformComponent>(reg, ent);
 
 		// Create rigidbody
-		physx::PxRigidDynamic* rbActor = PhysicsCreation::createRigidbody(physics, scene, transform, rigidbody);
+		physx::PxRigidDynamic* rbActor = PhysicsFactory::createDynamicRigidbody(physics, scene, transform.position, transform.rotation);
+		
+		// Set rigidbody actor
+		rigidbody.actor = rbActor;
 
 		// Attach all existing colliders to rigidbody actor
 		try_rbAttachExistingColliders(reg, ent, rbActor);
-
-		// Set rigidbody actor
-		rigidbody.actor = rbActor;
 
 		// Set rigidbody actor specific default values
 		Rigidbody::setCollisionDetection(rigidbody, rigidbody.collisionDetection);
@@ -171,14 +171,17 @@ public:
 		// Get components
 		RigidbodyComponent& rigidbody = get<RigidbodyComponent>(reg, ent);
 
-		// Destroy rigidbody
-		PhysicsCreation::destroyRigidbody(scene, rigidbody.actor);
+		// Remove rigidbody from scene
+		scene->removeActor(*rigidbody.actor);
+
+		// Release rigidbody
+		rigidbody.actor->release();
 	}
 
 private:
 	physx::PxPhysics*& physics;
 	physx::PxScene*& scene;
 
-	physx::PxMaterial* defaultMaterial;
+	physx::PxMaterial* defaultMaterial; // tmp
 
 };
