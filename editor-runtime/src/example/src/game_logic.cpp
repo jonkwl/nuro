@@ -154,7 +154,7 @@ void setup() {
 	planeMaterial->setOcclusionMap(occlusion);
 	planeMaterial->setEmissiveMap(emissive);
 	planeMaterial->emission = true;
-	planeMaterial->emissionIntensity = 8.0f;
+	planeMaterial->emissionIntensity = 14.0f;
 	planeMaterial->setHeightMap(height);
 
 	// Sci-Fi Plane
@@ -162,24 +162,6 @@ void setup() {
 	plane.transform.position = glm::vec3(-24.0f, 0.0f, 18.0f);
 	plane.transform.scale = glm::vec3(5.0f);
 	plane.add<MeshRendererComponent>(*planeMesh, planeMaterial);
-
-	// Smeared Wall Material
-	Texture albedo2 = Texture::load("./src/example/assets/textures/Smeared_Wall_BaseColor.jpg", TextureType::ALBEDO);
-	Texture metallic2 = Texture::load("./src/example/assets/textures/Smeared_Wall_Metallic.jpg", TextureType::METALLIC);
-	Texture normal2 = Texture::load("./src/example/assets/textures/Smeared_Wall_Normal.jpg", TextureType::NORMAL);
-	Texture height2 = Texture::load("./src/example/assets/textures/Smeared_Wall_Height.jpg", TextureType::HEIGHT);
-	LitMaterial* smearedWallMaterial = new LitMaterial();
-	smearedWallMaterial->baseColor = glm::vec4(0.9f, 0.9f, 0.7f, 1.0f);
-	smearedWallMaterial->roughness = 0.5f;
-	smearedWallMaterial->setAlbedoMap(albedo2);
-	smearedWallMaterial->setNormalMap(normal2);
-	smearedWallMaterial->setHeightMap(height2);
-
-	// Smeared Wall Plane
-	EntityContainer smearedWall(ECS::createEntity());
-	smearedWall.transform.position = glm::vec3(-40.0f, 0.0f, 24.0f);
-	smearedWall.transform.scale = glm::vec3(5.0f);
-	smearedWall.add<MeshRendererComponent>(*planeMesh, smearedWallMaterial);
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
@@ -201,6 +183,7 @@ void setup() {
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
 
 	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
+	// LitMaterial::tmpPointLightPosition = glm::vec3(-22.5f, 8.0f, 16.0f);
 
 }
 
@@ -243,7 +226,7 @@ void update() {
 		jumped = false;
 	}
 
-	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
+	// LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 
 	EntityContainer camera = EntityContainer(cameraEntity);
 	float zoomStrength = 150.0f;

@@ -14,8 +14,9 @@ in mat3 v_tbnMatrix;
 in vec3 v_fragmentWorldPosition;
 in vec4 v_fragmentLightSpacePosition;
 
-vec2 uv;
+vec3 fragmentWorldPosition;
 vec2 viewportUv;
+vec2 uv;
 vec3 normal;
 
 struct Configuration {
@@ -138,8 +139,8 @@ vec3 getShadowCoords() {
 }
 
 float getDirectionalShadowBias(vec3 lightDirection) {
-    /* float diffuseFactor = dot(normal, -lightDirection);
-                                float bias = mix(0.0001, 0.0, diffuseFactor); */
+    // float diffuseFactor = dot(normal, -lightDirection);
+    // float bias = mix(0.0001, 0.0, diffuseFactor);
     float bias = 0.0;
     return bias;
 }
@@ -266,7 +267,7 @@ float getDirectionalSoftShadow(vec3 lightDirection)
 }
 
 float getLinearFog(float start, float end) {
-    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
+    float depth = length(fragmentWorldPosition - configuration.cameraPosition);
     float fogRange = end - start;
     float fogDistance = end - depth;
     float factor = clamp(fogDistance / fogRange, 0.0, 1.0);
@@ -274,13 +275,13 @@ float getLinearFog(float start, float end) {
 }
 
 float getExponentialFog(float density) {
-    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
+    float depth = length(fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(depth * density);
     return factor;
 }
 
 float getExponentialSquaredFog(float density) {
-    float depth = length(v_fragmentWorldPosition - configuration.cameraPosition);
+    float depth = length(fragmentWorldPosition - configuration.cameraPosition);
     float factor = 1 / exp(sqr(depth * density));
     return factor;
 }
@@ -320,19 +321,24 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec2 transformUvByHeightmap(vec2 uvInput) {
-    // Calculate view direction
-    vec3 V = v_tbnMatrix * normalize(configuration.cameraPosition - v_fragmentWorldPosition);
+float POM_depthResult = 0.0;
 
-    // Setup layer amount
+// Parallax occlusion mapping of given uv coordinates
+vec2 POM_getUv(vec2 uvInput) {
+    // Calculate view direction
+    vec3 tangentCameraPosition = v_tbnMatrix * configuration.cameraPosition;
+    vec3 tangentFragmentPosition = v_tbnMatrix * fragmentWorldPosition;
+    vec3 V = normalize(tangentCameraPosition - tangentFragmentPosition);
+
+    // Setup layers
     const int quality = 8;
-    const float minLayers = 32.0f;
-    const float maxLayers = 64.0f;
-    float nLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0f, 0.0f, 1.0f), V)));
+    const float minLayers = 32.0;
+    const float maxLayers = 64.0;
+    float nLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), V)));
 
     // Layer depth
-    float layerDepth = 1.0f / nLayers;
-    float currentLayerDepth = 0.0f;
+    float layerDepth = 1.0 / nLayers;
+    float currentLayerDepth = 0.0;
 
     // Calculate uv delta
     vec2 P = V.xy / V.z * material.heightMapScale;
@@ -340,32 +346,105 @@ vec2 transformUvByHeightmap(vec2 uvInput) {
 
     // Initialize uv output
     vec2 uvOutput = uvInput;
-    float depthSample = 1.0f - texture(material.heightMap, uvOutput).r;
+    float depthSample = 1.0 - texture(material.heightMap, uvOutput).r;
 
     // Loop until depth sample is reached
     while (currentLayerDepth < depthSample)
     {
         uvOutput -= uvDelta;
-        depthSample = 1.0f - texture(material.heightMap, uvOutput).r;
+        depthSample = 1.0 - texture(material.heightMap, uvOutput).r;
         currentLayerDepth += layerDepth;
     }
 
     // Calculate occlusion
     vec2 uvPrevious = uvOutput + uvDelta;
     float depthAfter = depthSample - currentLayerDepth;
-    float depthBefore = 1.0f - texture(material.heightMap, uvPrevious).r - currentLayerDepth + layerDepth;
+    float depthBefore = 1.0 - texture(material.heightMap, uvPrevious).r - currentLayerDepth + layerDepth;
     float weight = depthAfter / (depthAfter - depthBefore);
-    
+
+    // Cache depth result
+    POM_depthResult = depthAfter;
+
     // Calculate final uv output
-    uvOutput = uvPrevious * weight + uvOutput * (1.0f - weight);
+    uvOutput = uvPrevious * weight + uvOutput * (1.0 - weight);
 
     // Discard if uv output isnt valid
-    if (uvOutput.x > 1.0 || uvOutput.y > 1.0 || uvOutput.x < 0.0 || uvOutput.y < 0.0){
+    if (uvOutput.x > 1.0 || uvOutput.y > 1.0 || uvOutput.x < 0.0 || uvOutput.y < 0.0) {
         discard;
     }
 
     // Return uv output
     return uvOutput;
+}
+
+// Get shadow value from parallax occlusion mapped height differences
+float POM_getShadow(vec3 lightDirection, vec2 uvOffset)
+{
+    if (lightDirection.z >= 0.0){
+        return 0.0;
+    }
+
+    const int quality = 1;
+    const float minLayers = 32.0;
+    const float maxLayers = 64.0;
+    float numLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), lightDirection)));
+
+    vec2 uvCurrent = uv + uvOffset;
+    float currentDepthMapValue = 1.0 - texture(material.heightMap, uvCurrent).r;
+    
+    float layerDepth = 1.0 / numLayers;
+    float currentLayerDepth = currentDepthMapValue;
+
+    vec2 P = lightDirection.xy / lightDirection.z * material.heightMapScale;
+    vec2 uvDelta = P / numLayers;
+
+    while (currentLayerDepth <= currentDepthMapValue && currentLayerDepth > 0.0)
+    {
+        uvCurrent += uvDelta;
+        currentDepthMapValue = 1.0 - texture(material.heightMap, uvCurrent).r;
+        currentLayerDepth -= layerDepth;
+    }
+
+    float diffuseFactor = dot(normal, -lightDirection);
+    // float bias = mix(0.005, 0.0, diffuseFactor);
+    float bias = 0.0;
+
+    float r = currentLayerDepth > currentDepthMapValue - bias ? 0.0 : 1.0;
+
+    float shadow = 1.0 - (diffuseFactor > 0.0 ? r : 0.0);
+
+    return shadow;
+}
+
+// Get softened shadow value from parallax occlusion mapped height differences using 3x3 pcf
+float POM_getShadowSoft(vec3 lightDirection)
+{
+    // get texel size
+    vec2 texelSize = 1.0 / textureSize(material.heightMap, 0);
+
+    // 3x3 pcf kernel offsets
+    vec2 offsets[9] = vec2[](
+        vec2(-1.0, 1.0), vec2(0.0, 1.0), vec2(1.0, 1.0),
+        vec2(-1.0, 0.0), vec2(0.0, 0.0), vec2(1.0, 0.0),
+        vec2(-1.0, -1.0), vec2(0.0, -1.0), vec2(1.0, -1.0)
+    );
+
+    // sample using pcf
+    int samples = 0;
+    float shadow = 0.0;
+    for (int i = 0; i < 9; i++) {
+        // compute offset for each sample
+        vec2 offset = offsets[i] * texelSize;
+
+        // sample parallax shadow with offset
+        shadow += POM_getShadow(lightDirection, offset);
+
+        // add to samples
+        samples++;
+    }
+
+    // average results
+    return shadow / float(samples);
 }
 
 vec2 getUv() {
@@ -374,7 +453,7 @@ vec2 getUv() {
 
     // height map enabled, transform texture coordinates by heightmap
     if (material.enableHeightMap) {
-        _uv = transformUvByHeightmap(_uv);
+        _uv = POM_getUv(_uv);
     }
 
     // return texture coordinates
@@ -610,7 +689,7 @@ vec4 shadePBR() {
     float ssao = getSSAO();
 
     vec3 N = normal;
-    vec3 V = normalize(configuration.cameraPosition - v_fragmentWorldPosition); // view direction
+    vec3 V = normalize(configuration.cameraPosition - fragmentWorldPosition); // view direction
 
     float dialectricReflecitivity = 0.04;
     vec3 F0 = mix(vec3(dialectricReflecitivity), albedo, metallic); // base reflectivity
@@ -629,7 +708,10 @@ vec4 shadePBR() {
     // fragment doesnt have emission and therefore reflects light from light sources
     else {
 
-        // directional lights
+        //
+        // DIRECTIONAL LIGHTS
+        //
+
         for (int i = 0; i < configuration.numDirectionalLights; i++)
         {
             DirectionalLight directionalLight = directionalLights[i];
@@ -637,7 +719,16 @@ vec4 shadePBR() {
             float attenuation = 1.0;
             vec3 L = normalize(-directionalLight.direction);
 
-            float shadow = getDirectionalSoftShadow(L);
+            float shadow = 0.0;
+            shadow += getDirectionalSoftShadow(L);
+            // PARALLAX OCCLUSION MAPPED SHADOW FOR DIRECTIONAL LIGHT: //
+            /*
+            if (material.enableHeightMap && i == 0) {
+                vec3 lightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - directionalLight.position);
+                shadow += POM_getShadow(lightDirection, vec2(0.0));
+            }
+            */
+            // Currently not enabled //
 
             Lo += evaluateLightSource(
                     V,
@@ -653,13 +744,23 @@ vec4 shadePBR() {
                     shadow);
         }
 
-        // point lights
+        //
+        // POINT LIGHTS
+        //
+
         for (int i = 0; i < configuration.numPointLights; i++) {
             PointLight pointLight = pointLights[i];
 
-            float distance = length(pointLight.position - v_fragmentWorldPosition);
+            float distance = length(pointLight.position - fragmentWorldPosition);
             float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-            vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
+            vec3 L = normalize(pointLight.position - fragmentWorldPosition);
+
+            float shadow = 0.0;
+            // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
+            if (material.enableHeightMap && i == 0) {
+                vec3 lightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - pointLight.position);
+                shadow += POM_getShadow(lightDirection, vec2(0.0));
+            }
 
             Lo += evaluateLightSource(
                     V,
@@ -672,20 +773,33 @@ vec4 shadePBR() {
                     L,
                     pointLight.color,
                     pointLight.intensity,
-                    0.0);
+                    shadow);
         }
 
-        // spot lights
+        //
+        // SPOT LIGHTS
+        //
+
         for (int i = 0; i < configuration.numSpotLights; i++) {
             SpotLight spotLight = spotLights[i];
 
-            float distance = length(spotLight.position - v_fragmentWorldPosition);
+            float distance = length(spotLight.position - fragmentWorldPosition);
             float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
-            vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
+            vec3 L = normalize(spotLight.position - fragmentWorldPosition);
 
             float theta = dot(L, normalize(-spotLight.direction));
             float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
             float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
+
+            float shadow = 0.0;
+            // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
+            /*
+            if (material.enableHeightMap && i == 0) {
+                vec3 lightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - spotLight.position);
+                shadow += POM_getShadow(lightDirection, vec2(0.0));
+            }
+            */
+            // Currently not enabled //
 
             Lo += evaluateLightSource(
                     V,
@@ -698,7 +812,7 @@ vec4 shadePBR() {
                     L,
                     spotLight.color,
                     spotLight.intensity * intensityScaling,
-                    0.0);
+                    shadow);
         }
     }
 
@@ -745,7 +859,7 @@ vec4 shadeSolid()
         float attenuation = 1.0;
         vec3 L = normalize(-directionalLight.direction);
 
-        vec3 shadowDirection = normalize(directionalLight.position - v_fragmentWorldPosition);
+        vec3 shadowDirection = normalize(directionalLight.position - fragmentWorldPosition);
         float shadow = getDirectionalHardShadow(shadowDirection);
 
         diffuse += max(dot(N, L), 0.0) * directionalLight.color * directionalLight.intensity * attenuation * (1.0 - shadow);
@@ -755,9 +869,9 @@ vec4 shadeSolid()
     {
         PointLight pointLight = pointLights[i];
 
-        float distance = length(pointLight.position - v_fragmentWorldPosition);
+        float distance = length(pointLight.position - fragmentWorldPosition);
         float attenuation = getAttenuation_range_falloff_cusp(distance, pointLight.range, pointLight.falloff);
-        vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
+        vec3 L = normalize(pointLight.position - fragmentWorldPosition);
 
         float shadow = 0.0;
 
@@ -829,6 +943,7 @@ vec4 shadeShadowMap() {
 
 void main()
 {
+    fragmentWorldPosition = v_fragmentWorldPosition;
     viewportUv = gl_FragCoord.xy / vec2(configuration.viewportResolution.x, configuration.viewportResolution.y);
     uv = getUv();
     normal = getNormal();

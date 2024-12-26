@@ -8,6 +8,7 @@ using namespace physx;
 
 namespace Rigidbody {
 
+	// Get current force mode
 	PxForceMode::Enum getForceMode(RB_ForceMode mode) {
 		switch (mode)
 		{
@@ -37,6 +38,11 @@ namespace Rigidbody {
 
 	void setCollisionDetection(RigidbodyComponent& rigidbody, RB_CollisionDetection value)
 	{
+		// If actor is kinematic, always fall back to discrete collision detection
+		if (rigidbody.kinematic) {
+			value = RB_CollisionDetection::DISCRETE;
+		}
+
 		// Set actors collision detection according to given value
 		switch (value) {
 		case RB_CollisionDetection::DISCRETE:
@@ -86,6 +92,9 @@ namespace Rigidbody {
 
 	void setKinematic(RigidbodyComponent& rigidbody, bool value)
 	{
+		// Make sure actors collision detection is discrete
+		setCollisionDetection(rigidbody, RB_CollisionDetection::DISCRETE);
+
 		// Make actor kinematic or non-kinematic according to value
 		rigidbody.actor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, value);
 

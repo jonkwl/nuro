@@ -14,6 +14,7 @@
 #include "../core/rendering/core/transformation.h"
 #include "../core/transform/transform.h"
 #include "../core/ecs/components.h"
+#include "../core/rendering/material/lit/lit_material.h"
 
 SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
@@ -140,7 +141,7 @@ void SceneWindow::renderSceneView()
 		}
 
 		// Render scene views transformation gizmos
-		renderTransformGizmos();
+		tmpRenderLightTransformationGizmos(); // tmp
 
 		// Check if scene window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
@@ -194,7 +195,14 @@ void SceneWindow::renderTransformGizmos()
 	const float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	// Draw transformation gizmo
-	ImGuizmo::Manipulate(glm::value_ptr(Runtime::getSceneViewPipeline().getView()), glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), (ImGuizmo::OPERATION)gizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(model), nullptr, snapping ? snapValues : nullptr);
+	ImGuizmo::Manipulate(
+		glm::value_ptr(Runtime::getSceneViewPipeline().getView()), 
+		glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), 
+		(ImGuizmo::OPERATION)gizmoOperation, 
+		ImGuizmo::MODE::LOCAL, 
+		glm::value_ptr(model), 
+		nullptr, 
+		snapping ? snapValues : nullptr);
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {
@@ -223,6 +231,71 @@ void SceneWindow::renderTransformGizmos()
 
 		transform.scale = scale;
 	}
+}
+
+void SceneWindow::tmpRenderLightTransformationGizmos()
+{
+	// Get boundaries
+	ImVec2 itemPosition = ImGui::GetItemRectMin();
+	ImVec2 itemSize = ImGui::GetItemRectSize();
+	float itemX = itemPosition.x;
+	float itemY = itemPosition.y;
+	float itemWidth = itemSize.x;
+	float itemHeight = itemSize.y;
+
+	// Setup imguizmo
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(itemX, itemY, itemWidth, itemHeight);
+
+	// Set gizmo operation
+	gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+	// Get gizmo matrices
+	TransformComponent transform; // Get transform component of selected entity here
+	transform.position = LitMaterial::tmpPointLightPosition;
+	transform.rotation = glm::identity<glm::quat>();
+	transform.scale = glm::vec3(1.0f);
+	glm::mat4 model = Transformation::model(transform);
+
+	// Draw transformation gizmo
+	ImGuizmo::Manipulate(
+		glm::value_ptr(Runtime::getSceneViewPipeline().getView()), 
+		glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), 
+		(ImGuizmo::OPERATION)gizmoOperation, 
+		ImGuizmo::MODE::LOCAL, 
+		glm::value_ptr(model));
+
+	// Update entities transform if gizmo is being used
+	if (ImGuizmo::IsUsing()) {
+		// Get components from transform matrix
+		glm::vec3 position, scale, skew;
+		glm::vec4 perspective;
+		glm::quat rotation;
+		glm::decompose(model, scale, rotation, position, skew, perspective);
+
+		// Update transforms position
+		transform.position = Transformation::toBackendPosition(position);
+
+		// Update transforms rotation
+		transform.rotation = Transformation::toBackendRotation(rotation);
+
+		// Dont change scale, if its being decreased and is smaller than minimum
+		if (scale.x < transform.scale.x && scale.x < gizmoScaleMin) {
+			scale.x = transform.scale.x;
+		}
+		if (scale.y < transform.scale.y && scale.y < gizmoScaleMin) {
+			scale.y = transform.scale.y;
+		}
+		if (scale.z < transform.scale.z && scale.z < gizmoScaleMin) {
+			scale.z = transform.scale.z;
+		}
+
+		transform.scale = scale;
+	}
+
+	// Set new light position
+	LitMaterial::tmpPointLightPosition = transform.position;
 }
 
 void SceneWindow::updateMovement()

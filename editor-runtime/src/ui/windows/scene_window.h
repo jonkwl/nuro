@@ -15,6 +15,7 @@ private:
 	void renderToolbar();
 	void renderSceneView();
 	void renderTransformGizmos();
+	void tmpRenderLightTransformationGizmos();
 
 	void updateMovement(); // Update movement within scene view
 

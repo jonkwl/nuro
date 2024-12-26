@@ -235,7 +235,7 @@ void LitMaterial::syncStaticUniforms()
 	// shader->setVec3("fog.color", glm::vec3(1.0f, 1.0f, 1.0f));
 	// shader->setFloat("fog.data[0]", 0.01);
 
-	// 
+	//
 	// Sync lights
 	//
 
@@ -245,7 +245,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("configuration.numSpotLights", 0);
 	
 	// Example directional light
-	float directionalIntensity = 0.226f;
+	float directionalIntensity = 0.05f;
 	glm::vec3 directionalColor = glm::vec3(0.8f, 0.8f, 1.0f);
 	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 	glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
@@ -258,7 +258,7 @@ void LitMaterial::syncStaticUniforms()
 	shader->setVec3("pointLights[0].position", Transformation::toBackendPosition(glm::vec3(0.0f, 6.0f, 3.0f)));
 	shader->setVec3("pointLights[0].position", glm::vec3(0.0f));
 	shader->setVec3("pointLights[0].color", glm::vec3(0.8f, 0.8f, 1.0f));
-	shader->setFloat("pointLights[0].intensity", 1.5f);
+	shader->setFloat("pointLights[0].intensity", 3.5f);
 	shader->setFloat("pointLights[0].range", 40.0f);
 	shader->setFloat("pointLights[0].falloff", 5.0f);
 	
