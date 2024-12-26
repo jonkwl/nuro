@@ -112,11 +112,12 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	// Clear framebuffer
 	if (!wireframe)
 	{
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f); // Default scene view clearing outputColor
+		// glClearColor(0.2f, 0.2f, 0.2f, 1.0f); // Default scene view clearing output
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // tmp
 	}
 	else
 	{
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Wireframe clearing outputColor
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Wireframe clearing output
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 

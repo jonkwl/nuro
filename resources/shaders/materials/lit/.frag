@@ -321,103 +321,115 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-float POM_depthResult = 0.0;
-
-// Parallax occlusion mapping of given uv coordinates
+// parallax occlusion mapping of given uv coordinates
 vec2 POM_getUv(vec2 uvInput) {
-    // Calculate view direction
+    // calculate view direction
     vec3 tangentCameraPosition = v_tbnMatrix * configuration.cameraPosition;
     vec3 tangentFragmentPosition = v_tbnMatrix * fragmentWorldPosition;
     vec3 V = normalize(tangentCameraPosition - tangentFragmentPosition);
 
-    // Setup layers
+    // setup layers
     const int quality = 8;
     const float minLayers = 32.0;
     const float maxLayers = 64.0;
     float nLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), V)));
 
-    // Layer depth
+    // calculate layer depth
     float layerDepth = 1.0 / nLayers;
-    float currentLayerDepth = 0.0;
 
-    // Calculate uv delta
+    // calculate p and uv delta
     vec2 P = V.xy / V.z * material.heightMapScale;
     vec2 uvDelta = P / nLayers;
 
-    // Initialize uv output
-    vec2 uvOutput = uvInput;
-    float depthSample = 1.0 - texture(material.heightMap, uvOutput).r;
+    // initialize current uv with input uv
+    vec2 uvCurrent = uvInput;
 
-    // Loop until depth sample is reached
+    // sample depth at current uv
+    float depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+
+    // march along view direction, starting from the beginning
+    // loop until current layer depth exceeds or equals sampled depth
+    // determines approximate surface intersection point where ray intersects height field
+    float currentLayerDepth = 0.0;
     while (currentLayerDepth < depthSample)
     {
-        uvOutput -= uvDelta;
-        depthSample = 1.0 - texture(material.heightMap, uvOutput).r;
+        // move uv to next layer
+        uvCurrent -= uvDelta;
+
+        // resample depth at new uv current
+        depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+
+        // add depth to current layer
         currentLayerDepth += layerDepth;
     }
 
-    // Calculate occlusion
-    vec2 uvPrevious = uvOutput + uvDelta;
+    // calculate occlusion
+    vec2 uvPrevious = uvCurrent + uvDelta;
     float depthAfter = depthSample - currentLayerDepth;
     float depthBefore = 1.0 - texture(material.heightMap, uvPrevious).r - currentLayerDepth + layerDepth;
     float weight = depthAfter / (depthAfter - depthBefore);
 
-    // Cache depth result
-    POM_depthResult = depthAfter;
+    // calculate final uv output
+    uvCurrent = uvPrevious * weight + uvCurrent * (1.0 - weight);
 
-    // Calculate final uv output
-    uvOutput = uvPrevious * weight + uvOutput * (1.0 - weight);
-
-    // Discard if uv output isnt valid
-    if (uvOutput.x > 1.0 || uvOutput.y > 1.0 || uvOutput.x < 0.0 || uvOutput.y < 0.0) {
+    // discard if uv output isnt valid
+    if (uvCurrent.x > 1.0 || uvCurrent.y > 1.0 || uvCurrent.x < 0.0 || uvCurrent.y < 0.0) {
         discard;
     }
 
-    // Return uv output
-    return uvOutput;
+    // return current uv as output
+    return uvCurrent;
 }
 
-// Get shadow value from parallax occlusion mapped height differences
-float POM_getShadow(vec3 lightDirection, vec2 uvOffset)
+// get shadow value according to parallax occlusion mapped surface
+float POM_getShadow(vec3 tangentLightDirection, vec2 uvOffset)
 {
-    if (lightDirection.z >= 0.0){
+    // tangent light direction facing away from surface, early out
+    if (tangentLightDirection.z >= 0.0){
         return 0.0;
     }
 
+    // setup layers
     const int quality = 1;
     const float minLayers = 32.0;
     const float maxLayers = 64.0;
-    float numLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), lightDirection)));
+    float numLayers = mix(maxLayers * quality, minLayers * quality, abs(dot(vec3(0.0, 0.0, 1.0), tangentLightDirection)));
 
+    // initialize current uv with uv mapped by parallax occlusion mapping before and optional offset
+    // note: no offset for single sampled hard shadows; needed when multisampling for softshadows
     vec2 uvCurrent = uv + uvOffset;
-    float currentDepthMapValue = 1.0 - texture(material.heightMap, uvCurrent).r;
-    
-    float layerDepth = 1.0 / numLayers;
-    float currentLayerDepth = currentDepthMapValue;
 
-    vec2 P = lightDirection.xy / lightDirection.z * material.heightMapScale;
+    // sample depth at current uv
+    float depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
+    
+    // calculate layer depth
+    float layerDepth = 1.0 / numLayers;
+
+    // calculate p and uv delta
+    vec2 P = tangentLightDirection.xy / tangentLightDirection.z * material.heightMapScale;
     vec2 uvDelta = P / numLayers;
 
-    while (currentLayerDepth <= currentDepthMapValue && currentLayerDepth > 0.0)
+    // march along light direction in reverse, starting from parallax occlusion mapped depth of pixel
+    // loop until:
+    // case a) current layer depth exceeds sampled depth (intersection with height field, fragment is in shadow)
+    // case b) current layer depth falls below 0 (no intersection with height field, fragment is not in shadow)
+    float currentLayerDepth = depthSample;
+    while (currentLayerDepth <= depthSample && currentLayerDepth > 0.0)
     {
         uvCurrent += uvDelta;
-        currentDepthMapValue = 1.0 - texture(material.heightMap, uvCurrent).r;
+        depthSample = 1.0 - texture(material.heightMap, uvCurrent).r;
         currentLayerDepth -= layerDepth;
     }
 
-    float diffuseFactor = dot(normal, -lightDirection);
-    // float bias = mix(0.005, 0.0, diffuseFactor);
-    float bias = 0.0;
-
-    float r = currentLayerDepth > currentDepthMapValue - bias ? 0.0 : 1.0;
-
-    float shadow = 1.0 - (diffuseFactor > 0.0 ? r : 0.0);
-
+    // determine shadow value, set shaodw if current layer depth exceeded sampled depth (see above)
+    float shadow = currentLayerDepth > depthSample ? 1.0 : 0.0;
+    
+    // return shadow value
     return shadow;
 }
 
-// Get softened shadow value from parallax occlusion mapped height differences using 3x3 pcf
-float POM_getShadowSoft(vec3 lightDirection)
+// get softened shadow value from parallax occlusion mapped height differences using 3x3 pcf
+float POM_getShadowSoft(vec3 tangentLightDirection)
 {
     // get texel size
     vec2 texelSize = 1.0 / textureSize(material.heightMap, 0);
@@ -437,7 +449,7 @@ float POM_getShadowSoft(vec3 lightDirection)
         vec2 offset = offsets[i] * texelSize;
 
         // sample parallax shadow with offset
-        shadow += POM_getShadow(lightDirection, offset);
+        shadow += POM_getShadow(tangentLightDirection, offset);
 
         // add to samples
         samples++;
@@ -724,8 +736,8 @@ vec4 shadePBR() {
             // PARALLAX OCCLUSION MAPPED SHADOW FOR DIRECTIONAL LIGHT: //
             /*
             if (material.enableHeightMap && i == 0) {
-                vec3 lightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - directionalLight.position);
-                shadow += POM_getShadow(lightDirection, vec2(0.0));
+                vec3 tangentLightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - directionalLight.position); // can be calculated once beforehand
+                shadow += POM_getShadow(tangentLightDirection, vec2(0.0));
             }
             */
             // Currently not enabled //
@@ -758,8 +770,8 @@ vec4 shadePBR() {
             float shadow = 0.0;
             // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
             if (material.enableHeightMap && i == 0) {
-                vec3 lightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - pointLight.position);
-                shadow += POM_getShadow(lightDirection, vec2(0.0));
+                vec3 tangentLightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - pointLight.position);
+                shadow += POM_getShadow(tangentLightDirection, vec2(0.0));
             }
 
             Lo += evaluateLightSource(
@@ -795,8 +807,8 @@ vec4 shadePBR() {
             // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
             /*
             if (material.enableHeightMap && i == 0) {
-                vec3 lightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - spotLight.position);
-                shadow += POM_getShadow(lightDirection, vec2(0.0));
+                vec3 tangentLightDirection = v_tbnMatrix * normalize(fragmentWorldPosition - spotLight.position); // can be calculated once beforehand
+                shadow += POM_getShadow(tangentLightDirection, vec2(0.0));
             }
             */
             // Currently not enabled //
