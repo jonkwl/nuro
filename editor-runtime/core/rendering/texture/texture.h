@@ -26,8 +26,6 @@ public:
 
 	uint32_t getBackendId(); // Returns the textures backend id
 
-	void maxAnisotropicFiltering(); // Enables maximum anisotropic filtering 
-
 public:
 	static Texture empty(); // Get empty texture
 	static Texture load(std::string path, TextureType type); // Create texture of type from image data

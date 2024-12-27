@@ -24,7 +24,7 @@ namespace ECS {
 	// CORE FUNCTIONS
 	//
 
-	// Create entity
+	// Creates an entity
 	std::tuple<entt::entity, TransformComponent&> createEntity();
 
 	// Returns the global render queue

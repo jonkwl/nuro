@@ -1,7 +1,10 @@
 #include "editor_ui.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+
 #include <implot.h>
 #include <ImGuizmo.h>
 
@@ -36,7 +39,7 @@ namespace EditorUI {
 	int32_t _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
-	void setup(GLFWwindow* window)
+	void setup(ApplicationContext* context)
 	{
 		IMGUI_CHECKVERSION();
 
@@ -137,7 +140,7 @@ namespace EditorUI {
 		imguiColors[ImGuiCol_DockingEmptyBg] = _colors.elementActive;
 
 		// Initialize imgui backend
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(context->getWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 
 		// Create editor windows

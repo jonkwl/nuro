@@ -47,12 +47,22 @@ void GameWindow::renderToolbar()
 	bool tmp = false;
 
 	bool gameRunning = Runtime::gameRunning();
+	bool gamePaused = Runtime::gamePaused();
 
 	// Render toggle buttons for render options
 	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
 		if (gameRunning) {
-			UIComponents::toggleButton(ICON_FA_PAUSE, tmp, "Pause");
+			if (gamePaused) {
+				if (UIComponents::buttonBig(ICON_FA_PLAY, ImVec4(0.78f, 0.44f, 0.0f, 1.0f), "Continue")) {
+					Runtime::continueGame();
+				}
+			}
+			else {
+				if (UIComponents::buttonBig(ICON_FA_PAUSE, "Pause")) {
+					Runtime::pauseGame();
+				}
+			}
 			if (UIComponents::buttonBig(ICON_FA_STOP, ImVec4(0.0f, 0.4f, 0.85f, 1.0f), "Stop")) {
 				Runtime::stopGame();
 			}

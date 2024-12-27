@@ -157,7 +157,7 @@ void setup() {
 	planeMaterial->emission = true;
 	planeMaterial->emissionIntensity = 14.0f;
 	planeMaterial->setHeightMap(height);
-	planeMaterial->heightMapScale = 0.05f;
+	planeMaterial->heightMapScale = 0.066f;
 
 	// Test Material
 	Texture albedoTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/albedo.jpg", TextureType::ALBEDO);
@@ -242,7 +242,7 @@ void update() {
 		jumped = false;
 	}
 
-	// LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
+	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 
 	EntityContainer camera(cameraEntity);
 	float zoomStrength = 150.0f;

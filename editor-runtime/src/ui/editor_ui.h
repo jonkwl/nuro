@@ -3,8 +3,8 @@
 #include <imgui.h>
 #include <vector>
 #include <string>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
+#include "../core/context/application_context.h"
 
 namespace EditorUI
 {
@@ -50,7 +50,7 @@ namespace EditorUI
 		ImFont* uiIcons;
 	};
 
-	void setup(GLFWwindow* window);
+	void setup(ApplicationContext* context);
 	void newFrame();
 	void render();
 

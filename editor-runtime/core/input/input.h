@@ -2,160 +2,202 @@
 
 #include <cstdint>
 #include <glm.hpp>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
+#include "../core/context/application_context.h"
 
 namespace Input
 {
 
-	void setContext(GLFWwindow* window); // Sets context for input system
-	void step(); // Fetches inputs of current frame
+	// Sets context for input system
+	void setContext(ApplicationContext* context);
 
-	glm::vec2 moveAxis(); // Returns WASD input axis
-	glm::vec2 mouseDelta(); // Returns mouse movement delta
-	glm::vec2 scrollDelta(); // Returns mouse scroll delta
+	// Fetches inputs of current frame
+	void step();
 
-	glm::vec2 mousePosition(); // Returns mouse position on screen
+	// Returns WASD input axis
+	glm::vec2 moveAxis();
 
-	bool keyDown(int32_t key); // Returns if given key is pressed
-	bool mouseDown(int32_t mouseButton); // Returns if given mouse button is pressed
-	bool command(int32_t key); // Returns if given key and any control key is pressed
+	// Returns mouse movement delta
+	glm::vec2 mouseDelta();
+
+	// Returns mouse scroll delta
+	glm::vec2 scrollDelta();
+
+	// Returns mouse position on screen
+	glm::vec2 mousePosition();
+
+	// Returns if given key is pressed
+	bool keyDown(int32_t key);
+
+	// Returns if given mouse button is pressed
+	bool mouseDown(int32_t mouseButton);
+
+	// Returns if given key and any control key is pressed
+	bool command(int32_t key);
 
 };
 
 namespace Key {
-	// Letters
-	static constexpr int32_t A = GLFW_KEY_A;
-	static constexpr int32_t B = GLFW_KEY_B;
-	static constexpr int32_t C = GLFW_KEY_C;
-	static constexpr int32_t D = GLFW_KEY_D;
-	static constexpr int32_t E = GLFW_KEY_E;
-	static constexpr int32_t F = GLFW_KEY_F;
-	static constexpr int32_t G = GLFW_KEY_G;
-	static constexpr int32_t H = GLFW_KEY_H;
-	static constexpr int32_t I = GLFW_KEY_I;
-	static constexpr int32_t J = GLFW_KEY_J;
-	static constexpr int32_t K = GLFW_KEY_K;
-	static constexpr int32_t L = GLFW_KEY_L;
-	static constexpr int32_t M = GLFW_KEY_M;
-	static constexpr int32_t N = GLFW_KEY_N;
-	static constexpr int32_t O = GLFW_KEY_O;
-	static constexpr int32_t P = GLFW_KEY_P;
-	static constexpr int32_t Q = GLFW_KEY_Q;
-	static constexpr int32_t R = GLFW_KEY_R;
-	static constexpr int32_t S = GLFW_KEY_S;
-	static constexpr int32_t T = GLFW_KEY_T;
-	static constexpr int32_t U = GLFW_KEY_U;
-	static constexpr int32_t V = GLFW_KEY_V;
-	static constexpr int32_t W = GLFW_KEY_W;
-	static constexpr int32_t X = GLFW_KEY_X;
-	static constexpr int32_t Y = GLFW_KEY_Y;
-	static constexpr int32_t Z = GLFW_KEY_Z;
 
-	// Numbers
-	static constexpr int32_t _0 = GLFW_KEY_0;
-	static constexpr int32_t _1 = GLFW_KEY_1;
-	static constexpr int32_t _2 = GLFW_KEY_2;
-	static constexpr int32_t _3 = GLFW_KEY_3;
-	static constexpr int32_t _4 = GLFW_KEY_4;
-	static constexpr int32_t _5 = GLFW_KEY_5;
-	static constexpr int32_t _6 = GLFW_KEY_6;
-	static constexpr int32_t _7 = GLFW_KEY_7;
-	static constexpr int32_t _8 = GLFW_KEY_8;
-	static constexpr int32_t _9 = GLFW_KEY_9;
+    //
+    // Letters
+    //
 
-	// Function keys
-	static constexpr int32_t F1 = GLFW_KEY_F1;
-	static constexpr int32_t F2 = GLFW_KEY_F2;
-	static constexpr int32_t F3 = GLFW_KEY_F3;
-	static constexpr int32_t F4 = GLFW_KEY_F4;
-	static constexpr int32_t F5 = GLFW_KEY_F5;
-	static constexpr int32_t F6 = GLFW_KEY_F6;
-	static constexpr int32_t F7 = GLFW_KEY_F7;
-	static constexpr int32_t F8 = GLFW_KEY_F8;
-	static constexpr int32_t F9 = GLFW_KEY_F9;
-	static constexpr int32_t F10 = GLFW_KEY_F10;
-	static constexpr int32_t F11 = GLFW_KEY_F11;
-	static constexpr int32_t F12 = GLFW_KEY_F12;
+    static constexpr int32_t A = 65; // ASCII value for 'A'
+    static constexpr int32_t B = 66; // ASCII value for 'B'
+    static constexpr int32_t C = 67; // ASCII value for 'C'
+    static constexpr int32_t D = 68; // ASCII value for 'D'
+    static constexpr int32_t E = 69; // ASCII value for 'E'
+    static constexpr int32_t F = 70; // ASCII value for 'F'
+    static constexpr int32_t G = 71; // ASCII value for 'G'
+    static constexpr int32_t H = 72; // ASCII value for 'H'
+    static constexpr int32_t I = 73; // ASCII value for 'I'
+    static constexpr int32_t J = 74; // ASCII value for 'J'
+    static constexpr int32_t K = 75; // ASCII value for 'K'
+    static constexpr int32_t L = 76; // ASCII value for 'L'
+    static constexpr int32_t M = 77; // ASCII value for 'M'
+    static constexpr int32_t N = 78; // ASCII value for 'N'
+    static constexpr int32_t O = 79; // ASCII value for 'O'
+    static constexpr int32_t P = 80; // ASCII value for 'P'
+    static constexpr int32_t Q = 81; // ASCII value for 'Q'
+    static constexpr int32_t R = 82; // ASCII value for 'R'
+    static constexpr int32_t S = 83; // ASCII value for 'S'
+    static constexpr int32_t T = 84; // ASCII value for 'T'
+    static constexpr int32_t U = 85; // ASCII value for 'U'
+    static constexpr int32_t V = 86; // ASCII value for 'V'
+    static constexpr int32_t W = 87; // ASCII value for 'W'
+    static constexpr int32_t X = 88; // ASCII value for 'X'
+    static constexpr int32_t Y = 89; // ASCII value for 'Y'
+    static constexpr int32_t Z = 90; // ASCII value for 'Z'
 
-	// Arrow keys
-	static constexpr int32_t UP = GLFW_KEY_UP;
-	static constexpr int32_t DOWN = GLFW_KEY_DOWN;
-	static constexpr int32_t LEFT = GLFW_KEY_LEFT;
-	static constexpr int32_t RIGHT = GLFW_KEY_RIGHT;
+    //
+    // Numbers
+    //
 
-	// Modifier keys
-	static constexpr int32_t LEFT_SHIFT = GLFW_KEY_LEFT_SHIFT;
-	static constexpr int32_t LEFT_CONTROL = GLFW_KEY_LEFT_CONTROL;
-	static constexpr int32_t LEFT_ALT = GLFW_KEY_LEFT_ALT;
-	static constexpr int32_t LEFT_SUPER = GLFW_KEY_LEFT_SUPER;
-	static constexpr int32_t RIGHT_SHIFT = GLFW_KEY_RIGHT_SHIFT;
-	static constexpr int32_t RIGHT_CONTROL = GLFW_KEY_RIGHT_CONTROL;
-	static constexpr int32_t RIGHT_ALT = GLFW_KEY_RIGHT_ALT;
-	static constexpr int32_t RIGHT_SUPER = GLFW_KEY_RIGHT_SUPER;
+    static constexpr int32_t _0 = 48; // ASCII value for '0'
+    static constexpr int32_t _1 = 49; // ASCII value for '1'
+    static constexpr int32_t _2 = 50; // ASCII value for '2'
+    static constexpr int32_t _3 = 51; // ASCII value for '3'
+    static constexpr int32_t _4 = 52; // ASCII value for '4'
+    static constexpr int32_t _5 = 53; // ASCII value for '5'
+    static constexpr int32_t _6 = 54; // ASCII value for '6'
+    static constexpr int32_t _7 = 55; // ASCII value for '7'
+    static constexpr int32_t _8 = 56; // ASCII value for '8'
+    static constexpr int32_t _9 = 57; // ASCII value for '9'
 
-	// Special keys
-	static constexpr int32_t ESCAPE = GLFW_KEY_ESCAPE;
-	static constexpr int32_t ENTER = GLFW_KEY_ENTER;
-	static constexpr int32_t TAB = GLFW_KEY_TAB;
-	static constexpr int32_t BACKSPACE = GLFW_KEY_BACKSPACE;
-	static constexpr int32_t INSERT = GLFW_KEY_INSERT;
-	static constexpr int32_t DELETE = GLFW_KEY_DELETE;
-	static constexpr int32_t HOME = GLFW_KEY_HOME;
-	static constexpr int32_t END = GLFW_KEY_END;
-	static constexpr int32_t PAGE_UP = GLFW_KEY_PAGE_UP;
-	static constexpr int32_t PAGE_DOWN = GLFW_KEY_PAGE_DOWN;
-	static constexpr int32_t CAPS_LOCK = GLFW_KEY_CAPS_LOCK;
-	static constexpr int32_t SCROLL_LOCK = GLFW_KEY_SCROLL_LOCK;
-	static constexpr int32_t NUM_LOCK = GLFW_KEY_NUM_LOCK;
-	static constexpr int32_t PRINT_SCREEN = GLFW_KEY_PRINT_SCREEN;
-	static constexpr int32_t PAUSE = GLFW_KEY_PAUSE;
+    //
+    // Function keys
+    //
 
-	// Keypad (numpad) keys
-	static constexpr int32_t KP_0 = GLFW_KEY_KP_0;
-	static constexpr int32_t KP_1 = GLFW_KEY_KP_1;
-	static constexpr int32_t KP_2 = GLFW_KEY_KP_2;
-	static constexpr int32_t KP_3 = GLFW_KEY_KP_3;
-	static constexpr int32_t KP_4 = GLFW_KEY_KP_4;
-	static constexpr int32_t KP_5 = GLFW_KEY_KP_5;
-	static constexpr int32_t KP_6 = GLFW_KEY_KP_6;
-	static constexpr int32_t KP_7 = GLFW_KEY_KP_7;
-	static constexpr int32_t KP_8 = GLFW_KEY_KP_8;
-	static constexpr int32_t KP_9 = GLFW_KEY_KP_9;
-	static constexpr int32_t KP_DECIMAL = GLFW_KEY_KP_DECIMAL;
-	static constexpr int32_t KP_DIVIDE = GLFW_KEY_KP_DIVIDE;
-	static constexpr int32_t KP_MULTIPLY = GLFW_KEY_KP_MULTIPLY;
-	static constexpr int32_t KP_SUBTRACT = GLFW_KEY_KP_SUBTRACT;
-	static constexpr int32_t KP_ADD = GLFW_KEY_KP_ADD;
-	static constexpr int32_t KP_ENTER = GLFW_KEY_KP_ENTER;
-	static constexpr int32_t KP_EQUAL = GLFW_KEY_KP_EQUAL;
+    static constexpr int32_t F1 = 290;
+    static constexpr int32_t F2 = 291;
+    static constexpr int32_t F3 = 292;
+    static constexpr int32_t F4 = 293;
+    static constexpr int32_t F5 = 294;
+    static constexpr int32_t F6 = 295;
+    static constexpr int32_t F7 = 296;
+    static constexpr int32_t F8 = 297;
+    static constexpr int32_t F9 = 298;
+    static constexpr int32_t F10 = 299;
+    static constexpr int32_t F11 = 300;
+    static constexpr int32_t F12 = 301;
 
-	// Miscellaneous keys
-	static constexpr int32_t SPACE = GLFW_KEY_SPACE;
-	static constexpr int32_t APOSTROPHE = GLFW_KEY_APOSTROPHE;
-	static constexpr int32_t COMMA = GLFW_KEY_COMMA;
-	static constexpr int32_t MINUS = GLFW_KEY_MINUS;
-	static constexpr int32_t PERIOD = GLFW_KEY_PERIOD;
-	static constexpr int32_t SLASH = GLFW_KEY_SLASH;
-	static constexpr int32_t SEMICOLON = GLFW_KEY_SEMICOLON;
-	static constexpr int32_t EQUAL = GLFW_KEY_EQUAL;
-	static constexpr int32_t LEFT_BRACKET = GLFW_KEY_LEFT_BRACKET;
-	static constexpr int32_t BACKSLASH = GLFW_KEY_BACKSLASH;
-	static constexpr int32_t RIGHT_BRACKET = GLFW_KEY_RIGHT_BRACKET;
-	static constexpr int32_t GRAVE_ACCENT = GLFW_KEY_GRAVE_ACCENT;
-	static constexpr int32_t WORLD_1 = GLFW_KEY_WORLD_1;
-	static constexpr int32_t WORLD_2 = GLFW_KEY_WORLD_2;
+    //
+    // Arrow keys
+    //
+
+    static constexpr int32_t UP = 265;
+    static constexpr int32_t DOWN = 264;
+    static constexpr int32_t LEFT = 263;
+    static constexpr int32_t RIGHT = 262;
+
+    //
+    // Modifier keys
+    //
+
+    static constexpr int32_t LEFT_SHIFT = 340;
+    static constexpr int32_t LEFT_CONTROL = 341;
+    static constexpr int32_t LEFT_ALT = 342;
+    static constexpr int32_t LEFT_SUPER = 343;
+    static constexpr int32_t RIGHT_SHIFT = 344;
+    static constexpr int32_t RIGHT_CONTROL = 345;
+    static constexpr int32_t RIGHT_ALT = 346;
+    static constexpr int32_t RIGHT_SUPER = 347;
+
+    //
+    // Special keys
+    //
+
+    static constexpr int32_t ESCAPE = 256;
+    static constexpr int32_t ENTER = 257;
+    static constexpr int32_t TAB = 258;
+    static constexpr int32_t BACKSPACE = 259;
+    static constexpr int32_t INSERT = 260;
+    static constexpr int32_t DELETE = 261;
+    static constexpr int32_t HOME = 268;
+    static constexpr int32_t END = 269;
+    static constexpr int32_t PAGE_UP = 266;
+    static constexpr int32_t PAGE_DOWN = 267;
+    static constexpr int32_t CAPS_LOCK = 280;
+    static constexpr int32_t SCROLL_LOCK = 281;
+    static constexpr int32_t NUM_LOCK = 282;
+    static constexpr int32_t PRINT_SCREEN = 283;
+    static constexpr int32_t PAUSE = 284;
+
+    //
+    // Keypad (numpad) keys
+    //
+
+    static constexpr int32_t KP_0 = 320;
+    static constexpr int32_t KP_1 = 321;
+    static constexpr int32_t KP_2 = 322;
+    static constexpr int32_t KP_3 = 323;
+    static constexpr int32_t KP_4 = 324;
+    static constexpr int32_t KP_5 = 325;
+    static constexpr int32_t KP_6 = 326;
+    static constexpr int32_t KP_7 = 327;
+    static constexpr int32_t KP_8 = 328;
+    static constexpr int32_t KP_9 = 329;
+    static constexpr int32_t KP_DECIMAL = 330;
+    static constexpr int32_t KP_DIVIDE = 331;
+    static constexpr int32_t KP_MULTIPLY = 332;
+    static constexpr int32_t KP_SUBTRACT = 333;
+    static constexpr int32_t KP_ADD = 334;
+    static constexpr int32_t KP_ENTER = 335;
+    static constexpr int32_t KP_EQUAL = 336;
+
+    //
+    // Miscellaneous keys
+    //
+
+    static constexpr int32_t SPACE = 32;           // ASCII value for space
+    static constexpr int32_t APOSTROPHE = 39;      // ASCII value for '\''
+    static constexpr int32_t COMMA = 44;           // ASCII value for ','
+    static constexpr int32_t MINUS = 45;           // ASCII value for '-'
+    static constexpr int32_t PERIOD = 46;          // ASCII value for '.'
+    static constexpr int32_t SLASH = 47;           // ASCII value for '/'
+    static constexpr int32_t SEMICOLON = 59;       // ASCII value for ';'
+    static constexpr int32_t EQUAL = 61;           // ASCII value for '='
+    static constexpr int32_t LEFT_BRACKET = 91;    // ASCII value for '['
+    static constexpr int32_t BACKSLASH = 92;       // ASCII value for '\\'
+    static constexpr int32_t RIGHT_BRACKET = 93;   // ASCII value for ']'
+    static constexpr int32_t GRAVE_ACCENT = 96;    // ASCII value for '`'
+    static constexpr int32_t WORLD_1 = 161;        // Non-US #1
+    static constexpr int32_t WORLD_2 = 162;        // Non-US #2
+
 }
 
 namespace MouseButton {
-	static constexpr int32_t LEFT = GLFW_MOUSE_BUTTON_1;
-	static constexpr int32_t RIGHT = GLFW_MOUSE_BUTTON_2;
-	static constexpr int32_t MIDDLE = GLFW_MOUSE_BUTTON_3;
+    
+    static constexpr int32_t LEFT = 0;             // GLFW_MOUSE_BUTTON_1
+    static constexpr int32_t RIGHT = 1;            // GLFW_MOUSE_BUTTON_2
+    static constexpr int32_t MIDDLE = 2;           // GLFW_MOUSE_BUTTON_3
 
-	static constexpr int32_t BACK = GLFW_MOUSE_BUTTON_4;
-	static constexpr int32_t FORWARD = GLFW_MOUSE_BUTTON_5;
+    static constexpr int32_t BACK = 3;             // GLFW_MOUSE_BUTTON_4
+    static constexpr int32_t FORWARD = 4;          // GLFW_MOUSE_BUTTON_5
 
-	static constexpr int32_t EXTRA_1 = GLFW_MOUSE_BUTTON_6;
-	static constexpr int32_t EXTRA_2 = GLFW_MOUSE_BUTTON_7;
-	static constexpr int32_t EXTRA_3 = GLFW_MOUSE_BUTTON_8;
+    static constexpr int32_t EXTRA_1 = 5;          // GLFW_MOUSE_BUTTON_6
+    static constexpr int32_t EXTRA_2 = 6;          // GLFW_MOUSE_BUTTON_7
+    static constexpr int32_t EXTRA_3 = 7;          // GLFW_MOUSE_BUTTON_8
+
 }

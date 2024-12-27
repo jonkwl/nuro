@@ -1,5 +1,8 @@
 #include "input.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Input {
 
 	GLFWwindow* _window = nullptr;
@@ -13,22 +16,22 @@ namespace Input {
 
 	// Context callbacks
 
-	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+	void _scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		_scrollOffset = glm::vec2(xoffset, yoffset);
 	}
 
 	// Input functions
 
-	void setContext(GLFWwindow* window)
+	void setContext(ApplicationContext* context)
 	{
-		_window = window;
+		_window = context->getWindow();
 
 		double mouseX, mouseY;
 		glfwGetCursorPos(_window, &mouseX, &mouseY);
 		_mouseLast = glm::vec2(mouseX, mouseY);
 
-		glfwSetScrollCallback(_window, scroll_callback);
+		glfwSetScrollCallback(_window, _scrollCallback);
 	}
 
 	void step()

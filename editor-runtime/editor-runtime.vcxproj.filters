@@ -213,6 +213,9 @@
     <ClCompile Include="core\physics\core\physics_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\context\application_context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -456,6 +459,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\core\physics_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\context\application_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\backend\api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,12 +1,15 @@
 #include "cursor.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Cursor {
 
 	GLFWwindow* _window;
 
-	void setContext(GLFWwindow* window)
+	void setContext(ApplicationContext* context)
 	{
-		_window = window;
+		_window = context->getWindow();
 	}
 
 	glm::vec2 getPosition()

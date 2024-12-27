@@ -27,13 +27,12 @@
 #include "../core/ecs/ecs_collection.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/diagnostics/diagnostics.h"
+#include "../core/context/application_context.h"
 
 namespace Runtime {
 
-	// Window context variables
-	GLFWwindow* gWindow = nullptr;
-	glm::vec2 gWindowSize = glm::vec2(0.0f);
-	bool gFullscreen = true;
+	// Application context
+	ApplicationContext applicationContext;
 
 	// Pipelines
 	SceneViewPipeline gSceneViewPipeline;
@@ -55,71 +54,13 @@ namespace Runtime {
 	// Game state management
 	RegistryState gSceneState;
 	bool gGameRunning = false;
+	bool gGamePaused = false;
 
 	//
 	//
 	// PRIVATE RUNTIME CORE METHODS
 	//
 	//
-
-	void _glfwErrorCallback(int32_t error, const char* description)
-	{
-
-		Log::printError("GLFW", "Error: " + std::to_string(error), description);
-
-	}
-
-	void _setupGlfw() {
-
-		// Set error callback and initialize context
-		glfwSetErrorCallback(_glfwErrorCallback);
-		glfwInit();
-
-		// Set versions
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		// Enable HDR output
-		glfwWindowHint(GLFW_RED_BITS, 10);
-		glfwWindowHint(GLFW_GREEN_BITS, 10);
-		glfwWindowHint(GLFW_BLUE_BITS, 10);
-		glfwWindowHint(GLFW_ALPHA_BITS, 2);
-
-		// Check for gFullscreen
-		if (gFullscreen)
-		{
-			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-			const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
-
-			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-			gWindowSize = glm::vec2(mode->width, mode->height);
-		}
-
-		// Create window
-		gWindow = glfwCreateWindow(gWindowSize.x, gWindowSize.y, "Rendering Alpha", nullptr, nullptr);
-
-		if (gWindow == nullptr)
-		{
-			Log::printError("GLFW", "Creation of window failed");
-		}
-
-		// Load graphics api
-		glfwMakeContextCurrent(gWindow);
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			Log::printError("GLFW", "Initialization of GLAD failed");
-		}
-
-		// Debug graphics api version
-		const char* version = (const char*)glGetString(GL_VERSION);
-		Log::printProcessDone("GLFW", "Initialized, OpenGL version: " + std::string(version));
-
-		// Disable vsync
-		glfwSwapInterval(0);
-	}
 
 	void _loadAssets() {
 
@@ -155,8 +96,8 @@ namespace Runtime {
 	void _setupScripts() {
 
 		// Set context for scripts needing window context
-		Input::setContext(gWindow);
-		Cursor::setContext(gWindow);
+		Input::setContext(&applicationContext);
+		Cursor::setContext(&applicationContext);
 
 		// Create pipelines
 		gSceneViewPipeline.create();
@@ -172,7 +113,7 @@ namespace Runtime {
 		Quad::create();
 
 		// Setup engine ui
-		EditorUI::setup(gWindow);
+		EditorUI::setup(&applicationContext);
 
 	}
 
@@ -225,14 +166,6 @@ namespace Runtime {
 
 	}
 
-	void _finishFrame() {
-
-		// Swap gWindow buffers and poll events
-		glfwSwapBuffers(gWindow);
-		glfwPollEvents();
-
-	}
-
 	void _stepGame() {
 
 		// UPDATE GAME LOGIC
@@ -255,9 +188,11 @@ namespace Runtime {
 	int START_LOOP()
 	{
 		// CREATE CONTEXT AND LOAD GRAPHICS API //
-		Log::printProcessStart("Runtime", "Creating context...");
-		_setupGlfw(); // Setup window
-		Log::printProcessDone("Runtime", "Context created");
+		ApplicationContext::Configuration config;
+		config.api = API::OPENGL;
+		config.vsync = false;
+
+		applicationContext.create(config);
 
 		// LOAD ASSETS, COMPILE SHADERS
 		_loadAssets();
@@ -271,13 +206,16 @@ namespace Runtime {
 		// GENERATE ALL INITIAL QUEUES
 		ECS::generateRenderQueue();
 
-		while (!glfwWindowShouldClose(gWindow))
+		while (applicationContext.running())
 		{
+			// START NEW APPLICATION CONTEXT FRAME
+			applicationContext.startFrame();
+
 			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
 			_prepareFrame();
 
 			// UPDATE GAME IF GAME IS RUNNING
-			if (gGameRunning) _stepGame();
+			if (gGameRunning && !gGamePaused) _stepGame();
 
 			// RENDER NEXT FRAME (full render pipeline pass)
 			_renderShadows();
@@ -287,8 +225,8 @@ namespace Runtime {
 			// RENDER EDITOR
 			_renderEditor();
 
-			// FINISH CURRENT FRAME
-			_finishFrame();
+			// END CURRENT FRAME
+			applicationContext.endFrame();
 		}
 
 		// Exit application
@@ -304,11 +242,7 @@ namespace Runtime {
 		gGamePhysics.destroy();
 
 		// Destroy context
-		if (gWindow != nullptr)
-		{
-			glfwDestroyWindow(gWindow);
-			glfwTerminate();
-		}
+		applicationContext.destroy();
 
 		// Exit application
 		std::exit(0);
@@ -328,6 +262,7 @@ namespace Runtime {
 
 		// Set game running state
 		gGameRunning = true;
+		gGamePaused = false;
 	}
 
 	void stopGame()
@@ -337,14 +272,30 @@ namespace Runtime {
 
 		// Set game running state
 		gGameRunning = false;
+		gGamePaused = false;
 
 		// Restore scene state
 		// ECS::loadState(gSceneState);
 	}
 
+	void pauseGame() {
+		// Set game to paused
+		gGamePaused = true;
+	}
+
+	void continueGame() {
+		// Set game to not paused anymore
+		gGamePaused = false;
+	}
+
 	bool gameRunning()
 	{
 		return gGameRunning;
+	}
+
+	bool gamePaused()
+	{
+		return gGamePaused;
 	}
 
 	SceneViewPipeline& getSceneViewPipeline()

@@ -2,38 +2,46 @@
 
 #include <cstdint>
 #include <glm.hpp>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
+#include "../core/context/application_context.h"
 
 namespace Cursor
 {
 
-	void setContext(GLFWwindow* window); // Set context for cursor system
+    // Sets context for cursor system
+	void setContext(ApplicationContext* context);
 
-	glm::vec2 getPosition(); // Return the current cursor position relative to window
-	void setPosition(glm::vec2 position); // Set the cursor position relative to window
+    // Returns the current cursor position relative to window
+	glm::vec2 getPosition();
 
-	void setType(int32_t cursorType); // Set cursor type
-	void setMode(int32_t cursorMode); // Set cursor mode
+    // Sets the cursor position relative to window
+	void setPosition(glm::vec2 position);
 
-	void center(); // Center the cursor relative to window
+    // Sets cursor type
+	void setType(int32_t cursorType);
+
+    // Sets cursor mode
+	void setMode(int32_t cursorMode);
+
+    // Centers the cursor relative to window
+	void center();
 
 };
 
 namespace CursorType {
-	static constexpr int32_t DEFAULT = GLFW_ARROW_CURSOR;
-	static constexpr int32_t POINTER = GLFW_HAND_CURSOR;
-	static constexpr int32_t TEXT = GLFW_IBEAM_CURSOR;
-	static constexpr int32_t CROSSHAIR = GLFW_CROSSHAIR_CURSOR;
-	static constexpr int32_t RESIZE_HORIZONTAL = GLFW_HRESIZE_CURSOR;
-	static constexpr int32_t RESIZE_VERTICAL = GLFW_VRESIZE_CURSOR;
+	static constexpr int32_t DEFAULT = 0x00036001;
+	static constexpr int32_t POINTER = 0x00036004;
+	static constexpr int32_t TEXT = 0x00036002;
+	static constexpr int32_t CROSSHAIR = 0x00036003;
+	static constexpr int32_t RESIZE_HORIZONTAL = 0x00036005;
+	static constexpr int32_t RESIZE_VERTICAL = 0x00036006;
 };
 
 namespace CursorMode
 {
-	static constexpr int32_t NORMAL = GLFW_CURSOR_NORMAL;
-	static constexpr int32_t HIDDEN = GLFW_CURSOR_HIDDEN;
-	static constexpr int32_t UNAVAILABLE = GLFW_CURSOR_UNAVAILABLE;
-	static constexpr int32_t CONFINED = GLFW_CURSOR_CAPTURED;
-	static constexpr int32_t LOCKED = GLFW_CURSOR_DISABLED;
+	static constexpr int32_t NORMAL = 0x00036006;
+	static constexpr int32_t HIDDEN = 0x00034002;
+	static constexpr int32_t UNAVAILABLE = 0x00034002;
+	static constexpr int32_t CONFINED = 0x00034004;
+	static constexpr int32_t LOCKED = 0x00034003;
 };

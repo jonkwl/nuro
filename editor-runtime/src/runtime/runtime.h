@@ -18,7 +18,10 @@ namespace Runtime
 	// Game functions
 	void startGame();
 	void stopGame();
+	void pauseGame();
+	void continueGame();
 	bool gameRunning();
+	bool gamePaused();
 
 	// Pipelines getters
 	SceneViewPipeline& getSceneViewPipeline();
