@@ -34,7 +34,7 @@ namespace Input {
 		glfwSetScrollCallback(_window, _scrollCallback);
 	}
 
-	void step()
+	void update()
 	{
 		// set mouse
 		double mouseX, mouseY;

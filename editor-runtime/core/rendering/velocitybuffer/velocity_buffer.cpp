@@ -5,7 +5,7 @@
 
 #include "../core/utils/log.h"
 #include "../core/rendering/shader/shader.h"
-#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/primitives/global_quad.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/ecs/ecs_collection.h"
@@ -173,8 +173,8 @@ uint32_t VelocityBuffer::postfilteringPass()
 	glBindTexture(GL_TEXTURE_2D, output);
 
 	// Bind and render to quad
-	Quad::bind();
-	Quad::render();
+	GlobalQuad::bind();
+	GlobalQuad::render();
 
 	return postfilteredOutput;
 }

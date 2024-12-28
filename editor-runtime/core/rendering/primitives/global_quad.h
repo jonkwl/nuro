@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace Quad
+namespace GlobalQuad
 {
 
 	void create();

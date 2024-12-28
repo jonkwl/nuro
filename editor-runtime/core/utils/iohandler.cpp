@@ -87,6 +87,20 @@ namespace IOHandler
 		return "";
 	}
 
+	std::string getFileExtension(const std::string& filename) {
+		// Find last period in filename
+		size_t pos = filename.find_last_of(".");
+
+		// Period found and period is not at beginning or end of filename
+		if (pos != std::string::npos && pos != 0) {
+			// Extract the extension
+			return filename.substr(pos);
+		}
+
+		// Return empty string if no extension was found
+		return "";
+	}
+
 	std::vector<std::string> getFilesWithExtensions(const std::string& path, const std::vector<std::string>& extensions)
 	{
 		std::vector<std::string> files;

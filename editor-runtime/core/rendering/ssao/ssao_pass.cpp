@@ -5,7 +5,7 @@
 
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
-#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/primitives/global_quad.h"
 #include "../core/utils/log.h"
 
 SSAOPass::SSAOPass(Viewport& viewport) : viewport(viewport),
@@ -196,8 +196,8 @@ void SSAOPass::ambientOcclusionPass(const glm::mat4& projection, const PostProce
 	glBindTexture(GL_TEXTURE_2D, noiseTexture);
 
 	// Bind and render to quad
-	Quad::bind();
-	Quad::render();
+	GlobalQuad::bind();
+	GlobalQuad::render();
 }
 
 void SSAOPass::blurPass(const PostProcessing::Profile& profile)
@@ -216,8 +216,8 @@ void SSAOPass::blurPass(const PostProcessing::Profile& profile)
 	glBindTexture(GL_TEXTURE_2D, aoOutput);
 
 	// Bind and render to quad
-	Quad::bind();
-	Quad::render();
+	GlobalQuad::bind();
+	GlobalQuad::render();
 }
 
 std::vector<glm::vec3> SSAOPass::generateKernel()

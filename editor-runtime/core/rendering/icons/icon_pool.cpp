@@ -22,7 +22,8 @@ namespace IconPool {
 		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directoryPath, _validExtensions);
 		for (const auto& file : files) {
 			std::string filename = IOHandler::getFilenameRaw(file);
-			icons.insert({ filename, Texture::load(file, TextureType::IMAGE_RGBA) });
+			TextureType type = IOHandler::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
+			icons.insert({ filename, Texture::load(file, type) });
 			nLoaded++;
 		}
 

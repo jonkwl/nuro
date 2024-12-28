@@ -1,8 +1,8 @@
-#include "quad.h"
+#include "global_quad.h"
 
 #include <glad/glad.h>
 
-namespace Quad {
+namespace GlobalQuad {
 
 	uint32_t _vbo = 0;
 	uint32_t _vao = 0;

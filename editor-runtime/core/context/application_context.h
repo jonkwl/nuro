@@ -6,6 +6,7 @@
 #include "../core/backend/api.h"
 
 struct GLFWwindow;
+struct GLFWmonitor;
 
 class ApplicationContext
 {
@@ -13,11 +14,10 @@ public:
 	// Represents the configuration settings for an application context
 	struct Configuration {
 		API api = API::NONE;
-
 		std::string windowTitle = "Runtime";
-		glm::vec2 windowSize = glm::vec2(1280.0f, 720.0f);
+		glm::ivec2 windowSize = glm::vec2(1280, 720);
 		bool fullscreen = false;
-
+		bool menubarVisible = true;
 		bool vsync = true;
 	};
 
@@ -39,6 +39,15 @@ public:
 	// Returns if application is still running
 	bool running();
 
+	// Sets window to fullscreen
+	void setFullscreen();
+
+	// Sets window to windowed with last saved window size
+	void setWindowed();
+
+	// Updates the windows menu bar visibility
+	void setMenubarVisibility(bool value);
+
 	// Updates the vsync configuration option
 	void setVSync(bool value);
 
@@ -49,10 +58,17 @@ public:
 	const Configuration& readConfiguration() const;
 
 private:
+	// Default glfw error callback
 	static void glfwErrorCallback(int32_t error, const char* description);
+
+	// Loads graphics backend
+	void loadBackend();
 
 private:
 	GLFWwindow* window;
+	GLFWmonitor* monitor;
 	Configuration configuration;
+
+	glm::ivec2 lastWindowSize;
 
 };

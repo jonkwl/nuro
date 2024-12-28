@@ -17,6 +17,14 @@ Model* Model::load(std::string path)
 	return new Model(path);
 }
 
+Model::~Model()
+{
+	// Destroy all meshes
+	for (auto mesh : meshes) {
+		mesh.destroy();
+	}
+}
+
 Model::Metrics Model::getMetrics() const
 {
 	return metrics;

@@ -4,7 +4,7 @@
 
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
-#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/primitives/global_quad.h"
 #include "../core/utils/log.h"
 
 BloomPass::BloomPass(const Viewport& viewport) : viewport(viewport),
@@ -174,8 +174,8 @@ uint32_t BloomPass::prefilteringPass(const uint32_t hdrInput)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, prefilterOutput, 0);
 
 	// Bind and render to quad
-	Quad::bind();
-	Quad::render();
+	GlobalQuad::bind();
+	GlobalQuad::render();
 
 	// Return prefiltering pass target (now the output after rendering)
 	return prefilterOutput;
@@ -202,8 +202,8 @@ void BloomPass::downsamplingPass(const uint32_t hdrInput)
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.texture, 0);
 
 		// Bind and render to quad
-		Quad::bind();
-		Quad::render();
+		GlobalQuad::bind();
+		GlobalQuad::render();
 
 		// Set inversed resolution for next downsample iteration
 		downsamplingShader->setVec2("inversedResolution", mip.inversedSize);
@@ -244,8 +244,8 @@ void BloomPass::upsamplingPass()
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, targetMip.texture, 0);
 
 		// Bind and render to quad
-		Quad::bind();
-		Quad::render();
+		GlobalQuad::bind();
+		GlobalQuad::render();
 	}
 
 	// Disable additive blending

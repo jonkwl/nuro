@@ -136,6 +136,10 @@
     <ClCompile Include="core\ecs\ecs.cpp" />
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
     <ClCompile Include="core\rendering\icons\icon_pool.cpp" />
+    <ClCompile Include="core\physics\core\physics_context.cpp" />
+    <ClCompile Include="core\physics\rigidbody\rigidbody.cpp" />
+    <ClCompile Include="core\physics\utils\px_translator.cpp" />
+    <ClCompile Include="core\physics\core\physics_factory.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuizmo.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -147,10 +151,6 @@
     <ClCompile Include="imgui\implot.cpp" />
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
-    <ClCompile Include="core\physics\core\physics_context.cpp" />
-    <ClCompile Include="core\physics\rigidbody\rigidbody.cpp" />
-    <ClCompile Include="core\physics\utils\px_translator.cpp" />
-    <ClCompile Include="core\physics\core\physics_factory.cpp" />
     <ClCompile Include="src\ui\windows\hierarchy_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
@@ -172,7 +172,7 @@
     <ClCompile Include="core\rendering\postprocessing\bloom_pass.cpp" />
     <ClCompile Include="core\rendering\postprocessing\motion_blur_pass.cpp" />
     <ClCompile Include="core\rendering\postprocessing\post_processing_pipeline.cpp" />
-    <ClCompile Include="core\rendering\primitives\quad.cpp" />
+    <ClCompile Include="core\rendering\primitives\global_quad.cpp" />
     <ClCompile Include="core\rendering\shader\shader.cpp" />
     <ClCompile Include="core\rendering\shader\shader_pool.cpp" />
     <ClCompile Include="core\rendering\shadows\shadow_disk.cpp" />
@@ -211,6 +211,11 @@
     <ClInclude Include="core\physics\physics.h" />
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h" />
     <ClInclude Include="core\rendering\icons\icon_pool.h" />
+    <ClInclude Include="core\physics\core\physics_context.h" />
+    <ClInclude Include="core\physics\rigidbody\rigidbody.h" />
+    <ClInclude Include="core\physics\events\physics_ecs_listener.hpp" />
+    <ClInclude Include="core\physics\utils\px_translator.h" />
+    <ClInclude Include="core\physics\core\physics_factory.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\ImGuizmo.h" />
@@ -223,11 +228,6 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="core\physics\core\physics_context.h" />
-    <ClInclude Include="core\physics\rigidbody\rigidbody.h" />
-    <ClInclude Include="core\physics\events\physics_ecs_listener.hpp" />
-    <ClInclude Include="core\physics\utils\px_translator.h" />
-    <ClInclude Include="core\physics\core\physics_factory.h" />
     <ClInclude Include="src\collection\editor_gizmo_color.h" />
     <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
@@ -255,7 +255,7 @@
     <ClInclude Include="core\rendering\postprocessing\motion_blur_pass.h" />
     <ClInclude Include="core\rendering\postprocessing\post_processing.h" />
     <ClInclude Include="core\rendering\postprocessing\post_processing_pipeline.h" />
-    <ClInclude Include="core\rendering\primitives\quad.h" />
+    <ClInclude Include="core\rendering\primitives\global_quad.h" />
     <ClInclude Include="core\rendering\shader\shader.h" />
     <ClInclude Include="core\rendering\shader\shader_pool.h" />
     <ClInclude Include="core\rendering\shadows\shadow_disk.h" />

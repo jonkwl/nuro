@@ -10,24 +10,47 @@
 class Model
 {
 public:
-	static Model* load(std::string path); // Creates a new model on the heap using the corresponding constructor
+	// Loads and returns the model from provided path
+	static Model* load(std::string path);
+
+	// Destroys the model and all of its meshes
+	~Model();
 
 	struct Metrics
 	{
-		uint32_t nMeshes = 0;	 // Total number of meshes in model
-		uint32_t nFaces = 0;	 // Total number of polygon faces in model
-		uint32_t nVertices = 0;	 // Total number of vertices in model
-		uint32_t nMaterials = 0; // Total number of materials in model
+		// Total number of meshes in model
+		uint32_t nMeshes = 0;
 
-		glm::vec3 minPoint = glm::vec3(FLT_MAX); // Minimum vertex position (bounding box)
-		glm::vec3 maxPoint = glm::vec3(-FLT_MAX); // Maximum vertex position (bounding box)
-		glm::vec3 origin = glm::vec3(0.0f);	  // Center of model (midpoint of min/max points)
-		glm::vec3 centroid = glm::vec3(0.0f); // Geometric center (average of all vertices)
-		float furthest = 0.0f;				  // Maximum distance of a vertice from object space center
+		// Total number of polygon faces in model
+		uint32_t nFaces = 0;
+
+		// Total number of vertices in model
+		uint32_t nVertices = 0;
+
+		// Total number of materials in model
+		uint32_t nMaterials = 0;
+
+		// Minimum vertex position (bounding box)
+		glm::vec3 minPoint = glm::vec3(FLT_MAX);
+
+		// Maximum vertex position (bounding box)
+		glm::vec3 maxPoint = glm::vec3(-FLT_MAX);
+
+		// Center of model (midpoint of min/max points)
+		glm::vec3 origin = glm::vec3(0.0f);
+
+		// Geometric center (average of all vertices)
+		glm::vec3 centroid = glm::vec3(0.0f);
+
+		// Maximum distance of a vertice from object space center
+		float furthest = 0.0f;
 	};
 
-	Metrics getMetrics() const; // Returns models metrics
-	Mesh& getMesh(uint32_t index); // Returns models mesh at given index
+	// Returns models metrics
+	Metrics getMetrics() const;
+
+	// Returns models mesh at given index
+	Mesh& getMesh(uint32_t index);
 
 private:
 	explicit Model(std::string path);

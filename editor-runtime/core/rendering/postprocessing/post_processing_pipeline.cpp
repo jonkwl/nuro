@@ -6,7 +6,7 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/primitives/global_quad.h"
 #include "../core/rendering/ssao/ssao_pass.h"
 #include "../core/rendering/core/pre_pass.h"
 #include "../core/rendering/core/forward_pass.h"
@@ -142,8 +142,8 @@ void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& proj
 	}
 
 	// Bind quad and render to screen
-	Quad::bind();
-	Quad::render();
+	GlobalQuad::bind();
+	GlobalQuad::render();
 
 	// Unbind post processing framebuffer (redundant if rendering to screen)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

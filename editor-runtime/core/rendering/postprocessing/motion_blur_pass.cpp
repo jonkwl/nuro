@@ -5,7 +5,7 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
-#include "../core/rendering/primitives/quad.h"
+#include "../core/rendering/primitives/global_quad.h"
 #include "../core/diagnostics/diagnostics.h"
 
 MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),
@@ -119,8 +119,8 @@ uint32_t MotionBlurPass::render(const glm::mat4& view, const glm::mat4& projecti
 	shader->setMatrix4("previousViewProjectionMatrix", previousViewProjectionMatrix);
 
 	// Bind and render to quad
-	Quad::bind();
-	Quad::render();
+	GlobalQuad::bind();
+	GlobalQuad::render();
 
 	// Cache current view projection matrix
 	previousViewProjectionMatrix = viewProjection;

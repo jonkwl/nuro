@@ -27,16 +27,34 @@ public:
 	};
 
 public:
-	Mesh(); // Construct empty mesh
-	explicit Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshInfo meshData); // Construct mesh from existing backend buffers
-	explicit Mesh(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices, int32_t materialIndex = 0); // Construct mesh by loading mesh into backend using given data
+	// Constructs empty mesh
+	Mesh();
 
+	// Constructs mesh from existing backend buffers
+	explicit Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshInfo meshInfo);
+
+	// Constructs mesh by loading mesh into backend using given data
+	explicit Mesh(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices, int32_t materialIndex = 0);
+
+	// Destroys the mesh by unloading all of its data
+	void destroy();
+	
+	// Returns the meshes vertex array object
 	uint32_t getVAO() const;
+
+	// Returns the meshes vertex buffer object
 	uint32_t getVBO() const;
+
+	// Return the meshes element buffer object
 	uint32_t getEBO() const;
 
+	// Returns the meshes amount of vertices
 	uint32_t getVerticeCount() const;
+
+	// Returns the meshes amount of indices
 	uint32_t getIndiceCount() const;
+
+	// Returns the meshes material index related to the parent model
 	uint32_t getMaterialIndex() const;
 
 private:
@@ -44,5 +62,5 @@ private:
 	uint32_t vbo;
 	uint32_t ebo;
 
-	MeshInfo meshData;
+	MeshInfo meshInfo;
 };

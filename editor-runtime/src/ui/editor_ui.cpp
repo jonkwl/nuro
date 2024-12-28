@@ -140,8 +140,15 @@ namespace EditorUI {
 		imguiColors[ImGuiCol_DockingEmptyBg] = _colors.elementActive;
 
 		// Initialize imgui backend
-		ImGui_ImplGlfw_InitForOpenGL(context->getWindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 460");
+		switch (context->readConfiguration().api) {
+		case API::OPENGL:
+			ImGui_ImplGlfw_InitForOpenGL(context->getWindow(), true);
+			ImGui_ImplOpenGL3_Init("#version 460");
+			break;
+		default:
+			Log::printError("Editor UI", "Couldn't setup editor ui, backend api is invalid");
+			break;
+		}
 
 		// Create editor windows
 		SceneWindow* sceneWindow = new SceneWindow();

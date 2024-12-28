@@ -19,21 +19,21 @@ materialIndex(materialIndex)
 Mesh::Mesh() : vao(0),
 vbo(0),
 ebo(0),
-meshData()
+meshInfo()
 {
 }
 
-Mesh::Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshInfo meshData) : vao(vao),
+Mesh::Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, MeshInfo meshInfo) : vao(vao),
 vbo(vbo),
 ebo(ebo),
-meshData(meshData)
+meshInfo(meshInfo)
 {
 }
 
 Mesh::Mesh(const std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices, int32_t materialIndex) : vao(0),
 vbo(0),
 ebo(0),
-meshData(MeshInfo(vertices.size(), indices.size(), materialIndex))
+meshInfo(MeshInfo(vertices.size(), indices.size(), materialIndex))
 {
 	// Generate VAO, VBO and EBO
 	glGenVertexArrays(1, &vao);
@@ -74,6 +74,19 @@ meshData(MeshInfo(vertices.size(), indices.size(), materialIndex))
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Mesh::destroy() {
+	// Delete backend buffers
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
+
+	// Reset mesh
+	vao = 0;
+	vbo = 0;
+	ebo = 0;
+	meshInfo = MeshInfo();
+}
+
 uint32_t Mesh::getVAO() const
 {
 	return vao;
@@ -91,15 +104,15 @@ uint32_t Mesh::getEBO() const
 
 uint32_t Mesh::getVerticeCount() const
 {
-	return meshData.nVertices;
+	return meshInfo.nVertices;
 }
 
 uint32_t Mesh::getIndiceCount() const
 {
-	return meshData.nIndices;
+	return meshInfo.nIndices;
 }
 
 uint32_t Mesh::getMaterialIndex() const
 {
-	return meshData.materialIndex;
+	return meshInfo.materialIndex;
 }

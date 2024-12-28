@@ -12,7 +12,7 @@ namespace Input
 	void setContext(ApplicationContext* context);
 
 	// Fetches inputs of current frame
-	void step();
+	void update();
 
 	// Returns WASD input axis
 	glm::vec2 moveAxis();

@@ -1,14 +1,25 @@
 #pragma once
 namespace Time
 {
-	void step(double time); // Calculate times for current frame, provide context application start time
+	// Calculate times for current frame (handled by application context)
+	void step(double time);
 
-	const double now(); // Get current application time
-	const double last(); // Get application time of last frame
-	const double delta(); // Get current delta time
+	// Get current application time as double
+	const double now();
 
-	const float nowf(); // As float
-	const float lastf(); // As float
-	const float deltaf(); // As float
+	// Get application time of last frame as double
+	const double last();
+
+	// Get current delta time as double
+	const double delta();
+
+	// Get current application time as float
+	const float nowf();
+
+	// Get application time of last frame as float
+	const float lastf();
+
+	// Get current delta time as float
+	const float deltaf();
 
 };
