@@ -76,12 +76,12 @@ namespace EditorUI {
 		style.TableAngledHeadersTextAlign = ImVec2(0.0f, 0.0f);
 		style.WindowTitleAlign = ImVec2(0.0f, 0.0f);
 
-		style.WindowPadding = ImVec2(30.0f, 30.0f);
+		style.WindowPadding = ImVec2(EditorSizing::windowPadding, EditorSizing::windowPadding);
 		style.WindowRounding = 4.0f;
 		style.WindowMenuButtonPosition = ImGuiDir_None;
 		style.WindowBorderSize = 0.5f;
 
-		style.FramePadding = ImVec2(3.0f, 3.0f);
+		style.FramePadding = ImVec2(EditorSizing::framePadding, EditorSizing::framePadding);
 		style.FrameRounding = 2.0f;
 
 		style.GrabMinSize = 5.0f;

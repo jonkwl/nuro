@@ -1,6 +1,7 @@
 #pragma once
 
 // Include collection to editor windows
+#include <cstdint>
 #include <imgui.h>
 #include "../core/utils/log.h"
 #include "../src/ui/ui_utils.h"

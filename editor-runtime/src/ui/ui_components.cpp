@@ -55,8 +55,8 @@ namespace UIComponents {
 
 	void toggleButton(std::string label, bool& value, std::string _tooltip)
 	{
-		ImU32 inactiveButtonColor = UIUtils::darken(EditorUI::getColors().elementActive, 0.6f);
-		ImU32 activeButtonColor = EditorUI::getColors().elementActive;
+		ImU32 inactiveButtonColor = UIUtils::darken(EditorColors::elementActive, 0.6f);
+		ImU32 activeButtonColor = EditorColors::elementActive;
 		ImU32 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
@@ -90,7 +90,7 @@ namespace UIComponents {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
 		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
 
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, UIUtils::darken(EditorUI::getColors().elementActive, 0.3f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, UIUtils::darken(EditorColors::elementActive, 0.3f));
 
 		pressed = ImGui::Button(label.c_str());
 
@@ -107,7 +107,7 @@ namespace UIComponents {
 		bool pressed = false;
 		
 		ImGui::PushStyleColor(ImGuiCol_Button, color);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, UIUtils::lighten(color, 0.2f)); // Optional: make hover slightly lighter
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, UIUtils::lighten(color, 0.35f));
 		
 		pressed = buttonBig(label, _tooltip);
 		

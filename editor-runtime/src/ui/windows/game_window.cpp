@@ -19,7 +19,7 @@ gameViewBounds(glm::vec4(0.0f))
 void GameWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("  Game  ", nullptr, EditorUI::getWindowFlags().standard);
+	ImGui::Begin("  Game  ", nullptr, EditorFlags::standard);
 	{
 
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
@@ -54,7 +54,7 @@ void GameWindow::renderToolbar()
 	{
 		if (gameRunning) {
 			if (gamePaused) {
-				if (UIComponents::buttonBig(ICON_FA_PLAY, IM_COL32(199, 112, 0, 255), "Continue")) {
+				if (UIComponents::buttonBig(ICON_FA_PLAY, IM_COL32(255, 165, 50, 255), "Continue")) {
 					Runtime::continueGame();
 				}
 			}
@@ -63,7 +63,7 @@ void GameWindow::renderToolbar()
 					Runtime::pauseGame();
 				}
 			}
-			if (UIComponents::buttonBig(ICON_FA_STOP, IM_COL32(0, 102, 216, 255), "Stop")) {
+			if (UIComponents::buttonBig(ICON_FA_STOP, EditorColors::selection, "Stop")) {
 				Runtime::stopGame();
 			}
 			UIComponents::toggleButton(ICON_FA_FORWARD_STEP, tmp, "Step");

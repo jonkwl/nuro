@@ -43,7 +43,7 @@ void SceneWindow::render()
 	cursorCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("  Scene  ", nullptr, EditorUI::getWindowFlags().standard);
+	ImGui::Begin("  Scene  ", nullptr, EditorFlags::standard);
 	{
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);

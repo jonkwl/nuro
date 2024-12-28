@@ -12,7 +12,7 @@ showErrors(true)
 void ConsoleWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("Console", nullptr, EditorUI::getWindowFlags().standard);
+	ImGui::Begin("Console", nullptr, EditorFlags::standard);
 	{
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();

@@ -35,6 +35,9 @@ struct EditorSizing
 	static constexpr float iconFontSize = 22.0f;
 	static constexpr float headlineFontSize = 15.0f;
 	static constexpr float smallFontSize = 12.0f;
+
+	static constexpr float windowPadding = 30.0f;
+	static constexpr float framePadding = 3.0f;
 };
 
 struct EditorColors
@@ -48,7 +51,7 @@ struct EditorColors
 	static constexpr ImU32 elementComponent = IM_COL32(178, 178, 178, 255);
 
 	static constexpr ImU32 borderColor = IM_COL32(0, 0, 0, 255);
-	static constexpr ImU32 selection = IM_COL32(0, 0, 255, 255);
+	static constexpr ImU32 selection = IM_COL32(85, 125, 255, 255);
 	static constexpr ImU32 tabColor = IM_COL32(38, 38, 38, 255);
 };
 
