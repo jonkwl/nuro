@@ -10,9 +10,6 @@
 
 struct TransformComponent {
 
-	// Optional parent
-	TransformComponent* parent;
-
 	// Current position of transform
 	glm::vec3 position = glm::vec3(0.0f);
 
@@ -21,6 +18,9 @@ struct TransformComponent {
 
 	// Current scale of transform
 	glm::vec3 scale = glm::vec3(1.0f);
+
+	// Optional parent
+	TransformComponent* parent;
 
 	// Latest computed model-view-projection matrix
 	glm::mat4 mvp = glm::mat4(1.0f);

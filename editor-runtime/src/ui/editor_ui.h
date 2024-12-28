@@ -32,15 +32,17 @@ namespace EditorUI
 struct EditorSizing
 {
 	static constexpr float regularFontSize = 14.0f;
-	static constexpr float iconFontSize = 22.0f;
 	static constexpr float headlineFontSize = 15.0f;
 	static constexpr float smallFontSize = 12.0f;
+
+	static constexpr float iconsFontSize = 22.0f;
+	static constexpr float iconsBoldFontSize = 25.0f;
 
 	static constexpr float windowPadding = 30.0f;
 	static constexpr float framePadding = 3.0f;
 };
 
-struct EditorColors
+struct EditorColor
 {
 	static constexpr ImU32 background = IM_COL32(20, 20, 20, 242);
 	static constexpr ImU32 text = IM_COL32(255, 255, 255, 255);
@@ -55,9 +57,16 @@ struct EditorColors
 	static constexpr ImU32 tabColor = IM_COL32(38, 38, 38, 255);
 };
 
-struct EditorFlags
+struct EditorFlag
 {
 	static constexpr ImGuiWindowFlags viewport = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground;
 	static constexpr ImGuiWindowFlags standard = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
 	static constexpr ImGuiWindowFlags fixed = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar;
+};
+
+struct EditorFontPath
+{
+	static constexpr const char* normal = "../resources/fonts/Inter_18pt-Light.ttf";
+	static constexpr const char* bold = "../resources/fonts/Inter_18pt-SemiBold.ttf";
+	static constexpr const char* icons = "../resources/fonts/fa-solid-900.ttf";
 };

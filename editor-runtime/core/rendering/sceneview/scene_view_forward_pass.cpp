@@ -266,7 +266,7 @@ void SceneViewForwardPass::renderSelectedEntity(entt::entity entity, const glm::
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Temporarily increase scale for outline rendering
-	float scaleIncrease = 0.025f;
+	float scaleIncrease = 0.05f;
 	transform.scale += scaleIncrease;
 
 	// Recalculate entities transform matrices

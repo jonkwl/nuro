@@ -5,6 +5,7 @@
 
 namespace UIUtils
 {
+
 	// Lightens color by given amount
 	ImU32 lighten(ImU32 color, float amount);
 
@@ -20,8 +21,7 @@ namespace UIUtils
 	// Keeps the cursor in the given boundaries, returns the new cursor position and sets if the cursor was positioned by method
 	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor, float offset = 40.0f);
 
-	// Size: Maximum size an image can have with a given aspect ratio in the current content avail
-	// Offset: Offset for image to be centered
+	// Calculate the size and offset an image can have to be displayed at the biggest size possible centered with the given aspect ratio
 	void calculateAspectFitting(float aspectRatio, ImVec2& size, ImVec2& offset);
 
 	// Returns title for window with adjusted spacing

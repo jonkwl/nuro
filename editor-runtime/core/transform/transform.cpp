@@ -9,16 +9,18 @@ namespace Transform {
 
 	void evaluate(TransformComponent& transform, const glm::mat4 viewProjection)
 	{
-		// Apply parents transform components to transform
-		if (transform.parent) {
-			transform.position += transform.parent->position;
-			transform.rotation = transform.parent->rotation * transform.rotation;
-			transform.scale *= transform.parent->scale;
+		// Compute model matrix
+		if (!transform.parent) {
+			transform.model = Transformation::model(transform);
+		}
+		else {
+			transform.model = transform.parent->model * Transformation::model(transform);
 		}
 
-		// Calculate transformation matrices
-		transform.model = Transformation::model(transform);
+		// Compute model-view-projection matrix
 		transform.mvp = viewProjection * transform.model;
+
+		// Compute normal matrix
 		transform.normal = Transformation::normal(transform.model);
 	}
 

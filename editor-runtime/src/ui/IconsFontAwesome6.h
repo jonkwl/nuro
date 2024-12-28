@@ -1423,3 +1423,4 @@
 #define ICON_FA_BRROM_WIDE "\xEE\x97\x91" // U+e5d1
 #define ICON_FA_CLOUDS_SUN "\xEF\x9D\x86" // U+f746
 #define ICON_FA_DRAW_SQUARE "\xEF\x97\xAF" // U+f5ef
+#define ICON_FA_LOCATION_PLUS "\xEF\x98\x8A" // U+f60a

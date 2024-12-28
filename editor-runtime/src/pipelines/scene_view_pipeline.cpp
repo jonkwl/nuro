@@ -32,6 +32,7 @@ ssaoPass(viewport),
 postProcessingPipeline(viewport, false),
 view(glm::mat4(1.0f)),
 projection(glm::mat4(1.0f)),
+selectedEntities(),
 frameInitialized(false),
 initialRenderCount(0),
 updated(false)
@@ -67,7 +68,7 @@ void SceneViewPipeline::destroy()
 
 void SceneViewPipeline::tryRender()
 {
-	// This is a boilerplate mess
+	// This is a BOILERPLATE MESS
 	// Must improve in the future
 
 	// Make sure frame has been rendered at least 100 times
@@ -137,6 +138,21 @@ void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
 	msaaSamples = _msaaSamples;
 	sceneViewForwardPass.destroy();
 	sceneViewForwardPass.create(msaaSamples);
+}
+
+void SceneViewPipeline::setSelectedEntity(entt::entity _selected)
+{
+	selectedEntities = { _selected };
+}
+
+void SceneViewPipeline::unselectEntities()
+{
+	selectedEntities = {};
+}
+
+const std::vector<entt::entity>& SceneViewPipeline::getSelectedEntities() const
+{
+	return selectedEntities;
 }
 
 Camera& SceneViewPipeline::getFlyCamera()
@@ -251,7 +267,8 @@ void SceneViewPipeline::render()
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.linkSkybox(Runtime::getGameViewPipeline().getLinkedSkybox());
 	sceneViewForwardPass.drawGizmos = showGizmos;
-	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, 0, entt::entity());
+	entt::entity selected = selectedEntities.size() > 0 ? selectedEntities[0] : entt::entity(); // tmp
+	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, selectedEntities.size(), selected);
 	Profiler::stop("forward_pass");
 
 	//

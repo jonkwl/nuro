@@ -1,9 +1,10 @@
 #pragma once
 
 // Include collection to editor windows
-#include <cstdint>
 #include <imgui.h>
+#include <glm.hpp>
 #include "../core/utils/log.h"
+#include "../core/time/time.h"
 #include "../src/ui/ui_utils.h"
 #include "../src/ui/ui_layout.h"
 #include "../src/ui/editor_ui.h"

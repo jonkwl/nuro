@@ -11,6 +11,7 @@
 #include "../core/input/cursor.h"
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
+#include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/transform/transform.h"
 #include "../core/ecs/components.h"
@@ -43,7 +44,7 @@ void SceneWindow::render()
 	cursorCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("  Scene  ", nullptr, EditorFlags::standard);
+	ImGui::Begin("  Scene  ", nullptr, EditorFlag::standard);
 	{
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
@@ -140,8 +141,8 @@ void SceneWindow::renderSceneView()
 			cursorDelta = glm::vec2(cursorCurrent.x - cursorLast.x, -(cursorCurrent.y - cursorLast.y));
 		}
 
-		// Render scene views transformation gizmos
-		tmpRenderLightTransformationGizmos(); // tmp
+		// Render transform gizmos
+		renderTransformGizmos();
 
 		// Check if scene window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
@@ -154,7 +155,11 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
-	return;
+	std::vector<entt::entity> selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
+
+	if (selectedEntities.size() < 1) return;
+
+	EntityContainer selected(selectedEntities[0]);
 
 	// Dont render transform gizmos if scene view is interacted with
 	if (sceneViewRightclicked || sceneViewMiddleclicked) return;
@@ -186,7 +191,8 @@ void SceneWindow::renderTransformGizmos()
 	}
 
 	// Get gizmo matrices
-	TransformComponent transform; // Get transform component of selected entity here
+
+	TransformComponent transform = selected.transform;
 	glm::mat4 model = Transformation::model(transform);
 
 	// Check for snapping
@@ -231,71 +237,6 @@ void SceneWindow::renderTransformGizmos()
 
 		transform.scale = scale;
 	}
-}
-
-void SceneWindow::tmpRenderLightTransformationGizmos()
-{
-	// Get boundaries
-	ImVec2 itemPosition = ImGui::GetItemRectMin();
-	ImVec2 itemSize = ImGui::GetItemRectSize();
-	float itemX = itemPosition.x;
-	float itemY = itemPosition.y;
-	float itemWidth = itemSize.x;
-	float itemHeight = itemSize.y;
-
-	// Setup imguizmo
-	ImGuizmo::SetOrthographic(false);
-	ImGuizmo::SetDrawlist();
-	ImGuizmo::SetRect(itemX, itemY, itemWidth, itemHeight);
-
-	// Set gizmo operation
-	gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-
-	// Get gizmo matrices
-	TransformComponent transform; // Get transform component of selected entity here
-	transform.position = LitMaterial::tmpPointLightPosition;
-	transform.rotation = glm::identity<glm::quat>();
-	transform.scale = glm::vec3(1.0f);
-	glm::mat4 model = Transformation::model(transform);
-
-	// Draw transformation gizmo
-	ImGuizmo::Manipulate(
-		glm::value_ptr(Runtime::getSceneViewPipeline().getView()), 
-		glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), 
-		(ImGuizmo::OPERATION)gizmoOperation, 
-		ImGuizmo::MODE::LOCAL, 
-		glm::value_ptr(model));
-
-	// Update entities transform if gizmo is being used
-	if (ImGuizmo::IsUsing()) {
-		// Get components from transform matrix
-		glm::vec3 position, scale, skew;
-		glm::vec4 perspective;
-		glm::quat rotation;
-		glm::decompose(model, scale, rotation, position, skew, perspective);
-
-		// Update transforms position
-		transform.position = Transformation::toBackendPosition(position);
-
-		// Update transforms rotation
-		transform.rotation = Transformation::toBackendRotation(rotation);
-
-		// Dont change scale, if its being decreased and is smaller than minimum
-		if (scale.x < transform.scale.x && scale.x < gizmoScaleMin) {
-			scale.x = transform.scale.x;
-		}
-		if (scale.y < transform.scale.y && scale.y < gizmoScaleMin) {
-			scale.y = transform.scale.y;
-		}
-		if (scale.z < transform.scale.z && scale.z < gizmoScaleMin) {
-			scale.z = transform.scale.z;
-		}
-
-		transform.scale = scale;
-	}
-
-	// Set new light position
-	LitMaterial::tmpPointLightPosition = transform.position;
 }
 
 void SceneWindow::updateMovement()

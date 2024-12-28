@@ -38,10 +38,17 @@ namespace EditorUI {
 
 	void setup(ApplicationContext* context)
 	{
+		//
+		// CREATE IMGUI CONTEXT
+		//
 		IMGUI_CHECKVERSION();
 
 		ImGui::CreateContext();
 		ImPlot::CreateContext();
+
+		//
+		// SETUP IO
+		//
 
 		ImGuiIO& io = ImGui::GetIO();
 		(void)io;
@@ -49,25 +56,43 @@ namespace EditorUI {
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+		//
+		// LOAD FONTS
+		//
+
 		// Load default font
-		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-Light.ttf", EditorSizing::regularFontSize);
+		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::regularFontSize);
 
-		// Merge icons into regular size font
-		float iconFontSize = EditorSizing::iconFontSize * 2.0f / 3.0f;
-		static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		ImFontConfig icons_config;
-		icons_config.MergeMode = true;
-		icons_config.PixelSnapH = true;
-		icons_config.GlyphMinAdvanceX = iconFontSize;
-		_fonts.uiIcons = io.Fonts->AddFontFromFileTTF("../resources/fonts/fa-solid-900.ttf", iconFontSize, &icons_config, icons_ranges);
+		// Merge icons into regular font
+		float iconsFontSize = EditorSizing::iconsFontSize * 2.0f / 3.0f;
+		static const ImWchar iconsRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+		ImFontConfig iconsConfig;
+		iconsConfig.MergeMode = true;
+		iconsConfig.PixelSnapH = true;
+		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
+		_fonts.uiIcons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, iconsRanges);
 
-		// Load other _fonts
-		_fonts.uiBold = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-SemiBold.ttf", EditorSizing::regularFontSize);
-		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-SemiBold.ttf", EditorSizing::headlineFontSize);
-		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF("../resources/fonts/Inter_18pt-Light.ttf", EditorSizing::smallFontSize);
+		// Load bold font
+		_fonts.uiBold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::regularFontSize);
+
+		// Merge icons into bold font
+		float iconsBoldFontSize = EditorSizing::iconsBoldFontSize * 2.0f / 3.0f;
+		ImFontConfig iconsConfigBold;
+		iconsConfigBold.MergeMode = true;
+		iconsConfigBold.PixelSnapH = true;
+		iconsConfigBold.GlyphMinAdvanceX = iconsBoldFontSize;
+		io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsBoldFontSize, &iconsConfigBold, iconsRanges);
+
+		// Load other fonts
+		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::headlineFontSize);
+		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::smallFontSize);
+
+
+		//
+		// STYLE COLORS
+		//
 
 		ImGui::StyleColorsDark();
-
 		ImGuiStyle& style = ImGui::GetStyle();
 
 		style.ButtonTextAlign = ImVec2(0.0f, 0.0f);
@@ -94,48 +119,51 @@ namespace EditorUI {
 
 		ImVec4* imguiColors = style.Colors;
 
-		imguiColors[ImGuiCol_WindowBg] = ImColor(EditorColors::background);
-		imguiColors[ImGuiCol_TitleBg] = ImColor(EditorColors::background);
-		imguiColors[ImGuiCol_TitleBgActive] = ImColor(EditorColors::background);
-		imguiColors[ImGuiCol_TitleBgCollapsed] = ImColor(EditorColors::background);
+		imguiColors[ImGuiCol_WindowBg] = ImColor(EditorColor::background);
+		imguiColors[ImGuiCol_TitleBg] = ImColor(EditorColor::background);
+		imguiColors[ImGuiCol_TitleBgActive] = ImColor(EditorColor::background);
+		imguiColors[ImGuiCol_TitleBgCollapsed] = ImColor(EditorColor::background);
 
-		imguiColors[ImGuiCol_Text] = ImColor(EditorColors::text);
-		imguiColors[ImGuiCol_Button] = ImColor(EditorColors::element);
-		imguiColors[ImGuiCol_ButtonHovered] = ImColor(EditorColors::elementHovered);
-		imguiColors[ImGuiCol_ButtonActive] = ImColor(EditorColors::elementActive);
+		imguiColors[ImGuiCol_Text] = ImColor(EditorColor::text);
+		imguiColors[ImGuiCol_Button] = ImColor(EditorColor::element);
+		imguiColors[ImGuiCol_ButtonHovered] = ImColor(EditorColor::elementHovered);
+		imguiColors[ImGuiCol_ButtonActive] = ImColor(EditorColor::elementActive);
 
-		imguiColors[ImGuiCol_FrameBg] = ImColor(EditorColors::element);
-		imguiColors[ImGuiCol_FrameBgHovered] = ImColor(EditorColors::elementHovered);
-		imguiColors[ImGuiCol_FrameBgActive] = ImColor(EditorColors::elementActive);
+		imguiColors[ImGuiCol_FrameBg] = ImColor(EditorColor::element);
+		imguiColors[ImGuiCol_FrameBgHovered] = ImColor(EditorColor::elementHovered);
+		imguiColors[ImGuiCol_FrameBgActive] = ImColor(EditorColor::elementActive);
 
-		imguiColors[ImGuiCol_SliderGrab] = ImColor(EditorColors::elementComponent);
-		imguiColors[ImGuiCol_SliderGrabActive] = ImColor(EditorColors::elementComponent);
-		imguiColors[ImGuiCol_CheckMark] = ImColor(EditorColors::elementComponent);
+		imguiColors[ImGuiCol_SliderGrab] = ImColor(EditorColor::elementComponent);
+		imguiColors[ImGuiCol_SliderGrabActive] = ImColor(EditorColor::elementComponent);
+		imguiColors[ImGuiCol_CheckMark] = ImColor(EditorColor::elementComponent);
 
-		imguiColors[ImGuiCol_ResizeGrip] = ImColor(EditorColors::element);
-		imguiColors[ImGuiCol_ResizeGripActive] = ImColor(EditorColors::elementActive);
-		imguiColors[ImGuiCol_ResizeGripHovered] = ImColor(EditorColors::elementHovered);
+		imguiColors[ImGuiCol_ResizeGrip] = ImColor(EditorColor::element);
+		imguiColors[ImGuiCol_ResizeGripActive] = ImColor(EditorColor::elementActive);
+		imguiColors[ImGuiCol_ResizeGripHovered] = ImColor(EditorColor::elementHovered);
 
-		imguiColors[ImGuiCol_Header] = ImColor(EditorColors::element);
-		imguiColors[ImGuiCol_HeaderHovered] = ImColor(EditorColors::elementHovered);
-		imguiColors[ImGuiCol_HeaderActive] = ImColor(EditorColors::elementActive);
+		imguiColors[ImGuiCol_Header] = ImColor(EditorColor::element);
+		imguiColors[ImGuiCol_HeaderHovered] = ImColor(EditorColor::elementHovered);
+		imguiColors[ImGuiCol_HeaderActive] = ImColor(EditorColor::elementActive);
 
-		imguiColors[ImGuiCol_SeparatorHovered] = ImColor(EditorColors::element);
-		imguiColors[ImGuiCol_SeparatorActive] = ImColor(EditorColors::elementActive);
+		imguiColors[ImGuiCol_SeparatorHovered] = ImColor(EditorColor::element);
+		imguiColors[ImGuiCol_SeparatorActive] = ImColor(EditorColor::elementActive);
 
-		imguiColors[ImGuiCol_Border] = ImColor(EditorColors::borderColor);
+		imguiColors[ImGuiCol_Border] = ImColor(EditorColor::borderColor);
 
-		imguiColors[ImGuiCol_Tab] = ImColor(EditorColors::tabColor);
-		imguiColors[ImGuiCol_TabHovered] = ImColor(EditorColors::tabColor);
-		imguiColors[ImGuiCol_TabActive] = ImColor(EditorColors::tabColor);
-		imguiColors[ImGuiCol_TabDimmed] = ImColor(EditorColors::tabColor);
-		imguiColors[ImGuiCol_TabDimmedSelected] = ImColor(EditorColors::tabColor);
-		imguiColors[ImGuiCol_TabDimmedSelectedOverline] = ImColor(EditorColors::elementActive);
+		imguiColors[ImGuiCol_Tab] = ImColor(EditorColor::tabColor);
+		imguiColors[ImGuiCol_TabHovered] = ImColor(EditorColor::tabColor);
+		imguiColors[ImGuiCol_TabActive] = ImColor(EditorColor::tabColor);
+		imguiColors[ImGuiCol_TabDimmed] = ImColor(EditorColor::tabColor);
+		imguiColors[ImGuiCol_TabDimmedSelected] = ImColor(EditorColor::tabColor);
+		imguiColors[ImGuiCol_TabDimmedSelectedOverline] = ImColor(EditorColor::elementActive);
 
-		imguiColors[ImGuiCol_DockingPreview] = ImColor(EditorColors::elementActive);
-		imguiColors[ImGuiCol_DockingEmptyBg] = ImColor(EditorColors::elementActive);
+		imguiColors[ImGuiCol_DockingPreview] = ImColor(EditorColor::elementActive);
+		imguiColors[ImGuiCol_DockingEmptyBg] = ImColor(EditorColor::elementActive);
 
-		// Initialize imgui backend
+		//
+		// IMPLEMENT IMGUI BACKEND
+		//
+
 		switch (context->readConfiguration().api) {
 		case API::OPENGL:
 			ImGui_ImplGlfw_InitForOpenGL(context->getWindow(), true);
@@ -146,7 +174,10 @@ namespace EditorUI {
 			break;
 		}
 
-		// Create editor windows
+		//
+		// CREATE EDITOR WINDOWS
+		//
+
 		SceneWindow* sceneWindow = new SceneWindow();
 		_windows.push_back(sceneWindow);
 
@@ -199,7 +230,7 @@ namespace EditorUI {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("Engine", nullptr, EditorFlags::viewport);
+		ImGui::Begin("Engine", nullptr, EditorFlag::viewport);
 
 		ImGuiID dockspace_id = ImGui::GetID("ViewportDockspace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruCentralNode);

@@ -195,8 +195,13 @@ void setup() {
 	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
-	Rigidbody::setInterpolation(playerRb, RB_Interpolation::EXTRAPOLATE);
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
+
+	// Player child
+	EntityContainer playerChild(ECS::createEntity(&player.transform));
+	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
+	playerChild.transform.scale = glm::vec3(0.5f);
+	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 	// LitMaterial::tmpPointLightPosition = glm::vec3(-22.5f, 8.0f, 16.0f);

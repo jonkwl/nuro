@@ -15,7 +15,7 @@ fpsUpdateTimer(0.0f)
 
 void DiagnosticsWindow::render()
 {
-	ImGui::Begin("Diagnostics", nullptr, EditorFlags::fixed);
+	ImGui::Begin("Diagnostics", nullptr, EditorFlag::fixed);
 
 	UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
