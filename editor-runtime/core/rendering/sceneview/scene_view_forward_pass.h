@@ -21,7 +21,7 @@ public:
 	void destroy(); // Destroys forward pass
 
 	// Scene view forward passes all entity render targets and returns color output
-	uint32_t render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint16_t nSelected, entt::entity selected);
+	uint32_t render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const std::vector<entt::entity>& selectedEntities);
 
 	void linkSkybox(Skybox* skybox);
 	bool drawSkybox; // Draw skybox in scene view
@@ -47,7 +47,6 @@ private:
 	UnlitMaterial* selectionMaterial; // Material for selection outline
 
 	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material); // Renders a given entities mesh
-	void renderMeshes(entt::entity skip); // Renders all meshes
-
+	void renderMeshes(const std::vector<entt::entity>& skippedEntities); // Renders all meshes
 	void renderSelectedEntity(entt::entity entity, const glm::mat4& viewProjection); // Renders the selected entity with an outline
 };

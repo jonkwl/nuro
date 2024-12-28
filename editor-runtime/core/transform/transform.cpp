@@ -10,11 +10,9 @@ namespace Transform {
 	void evaluate(TransformComponent& transform, const glm::mat4 viewProjection)
 	{
 		// Compute model matrix
-		if (!transform.parent) {
-			transform.model = Transformation::model(transform);
-		}
-		else {
-			transform.model = transform.parent->model * Transformation::model(transform);
+		transform.model = Transformation::model(transform);
+		if (transform.parent) {
+			transform.model = Transformation::model(*transform.parent) * Transformation::model(transform);
 		}
 
 		// Compute model-view-projection matrix

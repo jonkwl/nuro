@@ -1,6 +1,6 @@
 #include "hierarchy_window.h"
 
-#include "../core/ecs/ecs_collection.h"
+#include "../core/transform/transform.h"
 
 HierarchyWindow::HierarchyWindow() : searchBuffer(""),
 currentHierarchy(),
@@ -91,7 +91,13 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	bool clicked = ImGui::IsMouseClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y;
 	if (clicked) {
 		selectedItemId = item.id;
-		Runtime::getSceneViewPipeline().setSelectedEntity(item.handle);
+		Runtime::getSceneViewPipeline().setSelectedEntity(item.entity.root);
+	}
+
+	// Check for moving to entity
+	bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y;
+	if (doubleClicked) {
+		Runtime::getSceneViewPipeline().getFlyCamera().transform.position = item.entity.transform.position + Transform::backward(item.entity.transform) * 5.0f;
 	}
 
 	// Calculate text position
@@ -176,7 +182,7 @@ void HierarchyWindow::buildSceneHierarchy()
 	auto transforms = ECS::gRegistry.view<TransformComponent>();
 	uint32_t i = 1;
 	for (auto [entity, transform] : transforms.each()) {
-		currentHierarchy.push_back(HierarchyItem(i, entity, "Item " + std::to_string(i), {}));
+		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(entity), "Item " + std::to_string(i), {}));
 		i++;
 	}
 }

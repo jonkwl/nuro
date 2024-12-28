@@ -155,11 +155,11 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
-	std::vector<entt::entity> selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
+	const std::vector<entt::entity>& selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
 
 	if (selectedEntities.size() < 1) return;
 
-	EntityContainer selected(selectedEntities[0]);
+	entt::entity selected = selectedEntities[0];
 
 	// Dont render transform gizmos if scene view is interacted with
 	if (sceneViewRightclicked || sceneViewMiddleclicked) return;
@@ -190,9 +190,8 @@ void SceneWindow::renderTransformGizmos()
 		}
 	}
 
-	// Get gizmo matrices
-
-	TransformComponent transform = selected.transform;
+	// Get gizmo model matrix
+	TransformComponent& transform = ECS::gRegistry.get<TransformComponent>(selected);
 	glm::mat4 model = Transformation::model(transform);
 
 	// Check for snapping
@@ -201,41 +200,46 @@ void SceneWindow::renderTransformGizmos()
 	const float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	// Draw transformation gizmo
+	glm::mat4 delta = glm::mat4(1.0f);
 	ImGuizmo::Manipulate(
 		glm::value_ptr(Runtime::getSceneViewPipeline().getView()), 
 		glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), 
 		(ImGuizmo::OPERATION)gizmoOperation, 
 		ImGuizmo::MODE::LOCAL, 
 		glm::value_ptr(model), 
-		nullptr, 
+		glm::value_ptr(delta),
 		snapping ? snapValues : nullptr);
 
 	// Update entities transform if gizmo is being used
 	if (ImGuizmo::IsUsing()) {
 		// Get components from transform matrix
-		glm::vec3 position, scale, skew;
-		glm::vec4 perspective;
-		glm::quat rotation;
-		glm::decompose(model, scale, rotation, position, skew, perspective);
+		glm::vec3 positionDelta, scaleDelta, skewDelta;
+		glm::vec4 perspectiveDelta;
+		glm::quat rotationDelta;
+		glm::decompose(delta, scaleDelta, rotationDelta, positionDelta, skewDelta, perspectiveDelta);
 
 		// Update transforms position
-		transform.position = Transformation::toBackendPosition(position);
+		transform.position += Transformation::toBackendPosition(positionDelta);
 
 		// Update transforms rotation
-		transform.rotation = Transformation::toBackendRotation(rotation);
+		// transform.rotation = Transformation::toBackendRotation(rotationDelta) * transform.rotation;
 
-		// Dont change scale, if its being decreased and is smaller than minimum
-		if (scale.x < transform.scale.x && scale.x < gizmoScaleMin) {
-			scale.x = transform.scale.x;
+		// Get transforms new scale
+		glm::vec3 newScale = transform.scale * scaleDelta;
+
+		// Dont change scale axis, if its being decreased and is smaller than minimum
+		if (newScale.x < transform.scale.x && newScale.x < gizmoScaleMin) {
+			newScale.x = transform.scale.x;
 		}
-		if (scale.y < transform.scale.y && scale.y < gizmoScaleMin) {
-			scale.y = transform.scale.y;
+		if (newScale.y < transform.scale.y && newScale.y < gizmoScaleMin) {
+			newScale.y = transform.scale.y;
 		}
-		if (scale.z < transform.scale.z && scale.z < gizmoScaleMin) {
-			scale.z = transform.scale.z;
+		if (newScale.z < transform.scale.z && newScale.z < gizmoScaleMin) {
+			newScale.z = transform.scale.z;
 		}
 
-		transform.scale = scale;
+		// Apply new scale
+		transform.scale = newScale;
 	}
 }
 
@@ -277,7 +281,7 @@ void SceneWindow::updateMovement()
 		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.1f; // 0.1f is a good factor to match movement speed
 	}
 
-	// Set if fly camera moved this frame
+	// Evaluate if fly camera moved this frame
 	const float movementThreshold = 0.001f;
 	bool moving = std::abs(movementDir.x) > movementThreshold ||
 		std::abs(movementDir.y) > movementThreshold ||

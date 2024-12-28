@@ -17,13 +17,16 @@ struct EntityContainer {
 	// Construct entity container with data tuple
 	explicit EntityContainer(std::tuple<entt::entity, TransformComponent&> data) : root(std::get<0>(data)), transform(std::get<1>(data)), registry(G_REGISTRY) {};
 
-	// entt::entity root
+	// Copy entity container
+	EntityContainer(const EntityContainer& other) : root(other.root), transform(other.transform), registry(other.registry) {}
+
+	// Entity containers backend entity handle
 	entt::entity root;
 	
-	// entt::entity transform
+	// Transform component of entity
 	TransformComponent& transform;
 
-	// entt::entity registry
+	// Registry entity container is bound to
 	entt::registry& registry;
 
 	// Returns if entity is valid in registry

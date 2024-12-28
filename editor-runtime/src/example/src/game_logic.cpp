@@ -140,15 +140,15 @@ void setup() {
 	Rigidbody::setKinematic(kinematicRb, true);
 
 	// Sci-Fi Plane Material
-	/*Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
+	Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
 	Texture roughness = Texture::load("./src/example/assets/textures/sci-fi/roughness.jpg", TextureType::ROUGHNESS);
 	Texture metallic = Texture::load("./src/example/assets/textures/sci-fi/metallic.jpg", TextureType::METALLIC);
 	Texture normal = Texture::load("./src/example/assets/textures/sci-fi/normal.jpg", TextureType::NORMAL);
 	Texture occlusion = Texture::load("./src/example/assets/textures/sci-fi/occlusion.jpg", TextureType::OCCLUSION);
 	Texture emissive = Texture::load("./src/example/assets/textures/sci-fi/emissive.jpg", TextureType::EMISSIVE);
-	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);*/
+	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);
 	LitMaterial* planeMaterial = new LitMaterial();
-	/*planeMaterial->setAlbedoMap(albedo);
+	planeMaterial->setAlbedoMap(albedo);
 	planeMaterial->setRoughnessMap(roughness);
 	planeMaterial->setMetallicMap(metallic);
 	planeMaterial->setNormalMap(normal);
@@ -157,7 +157,7 @@ void setup() {
 	planeMaterial->emission = true;
 	planeMaterial->emissionIntensity = 14.0f;
 	planeMaterial->setHeightMap(height);
-	planeMaterial->heightMapScale = 0.066f;*/
+	planeMaterial->heightMapScale = 0.066f;
 
 	// Test Material
 	/*Texture albedoTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/albedo.jpg", TextureType::ALBEDO);
@@ -192,9 +192,10 @@ void setup() {
 	EntityContainer player(ECS::createEntity());
 	playerEntity = player.root;
 	player.transform.position = glm::vec3(8.0f, 0.0f, -4.0f);
-	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
+	player.add<MeshRendererComponent>(sphereMesh, planeMaterial);
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
+	Rigidbody::setInterpolation(playerRb, RB_Interpolation::EXTRAPOLATE);
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
 
 	// Player child

@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "../core/utils/log.h"
+#include "../core/transform/transform.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/core/transformation.h"
@@ -104,7 +105,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, uint16_t nSelected, entt::entity selected)
+uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const std::vector<entt::entity>& selectedEntities)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -145,11 +146,11 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	}
 
 	// Render each entity
-	renderMeshes(selected);
+	renderMeshes(selectedEntities);
 
 	// Render selected entity with outline
-	if (nSelected) {
-		renderSelectedEntity(selected, viewProjection);
+	for (auto& entity : selectedEntities) {
+		renderSelectedEntity(entity, viewProjection);
 	}
 
 	// Disable wireframe if enabled
@@ -209,7 +210,7 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 
 #include "../src/runtime/runtime.h"
 
-void SceneViewForwardPass::renderMeshes(entt::entity skip)
+void SceneViewForwardPass::renderMeshes(const std::vector<entt::entity>& skippedEntities)
 {
 	uint32_t currentShaderId = 0;
 	uint32_t currentMaterialId = 0;
@@ -221,7 +222,10 @@ void SceneViewForwardPass::renderMeshes(entt::entity skip)
 	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
 
 		// Skip if target entity is selected entity
-		if (entity == skip) continue;
+		// tmp
+		if (skippedEntities.size() > 0) {
+			if (skippedEntities[0] == entity) break;
+		}
 
 		uint32_t shaderId = renderer.material->getShaderId();
 		if (shaderId != currentShaderId) {
@@ -265,19 +269,16 @@ void SceneViewForwardPass::renderSelectedEntity(entt::entity entity, const glm::
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Temporarily increase scale for outline rendering
-	float scaleIncrease = 0.05f;
-	transform.scale += scaleIncrease;
-
-	// Recalculate entities transform matrices
-	transform.model = Transformation::model(transform);
-	transform.mvp = viewProjection * transform.model;
+	// Temporary transform component
+	TransformComponent outlineTransform;
+	outlineTransform.position = transform.position;
+	outlineTransform.rotation = transform.rotation;
+	outlineTransform.scale = transform.scale + 0.05f;
+	outlineTransform.parent = transform.parent;
+	Transform::evaluate(outlineTransform, viewProjection);
 
 	// Render mesh as outline
-	renderMesh(transform, renderer, selectionMaterial);
-
-	// Restore entities original scale
-	transform.scale -= scaleIncrease;
+	renderMesh(outlineTransform, renderer, selectionMaterial);
 
 	// Reset state
 	glDisable(GL_BLEND);
