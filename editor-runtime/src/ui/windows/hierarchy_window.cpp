@@ -64,7 +64,6 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, std::string name, uint32_
 	const float indentationOffset = 30.0f;
 	const ImVec2 textPadding = ImVec2(10.0f, 6.5f);
 
-
 	const float textHeight = ImGui::GetFontSize();
 	const float textOffset = indentation * indentationOffset;
 	const char* caret = children ? (opened ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
@@ -77,9 +76,14 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, std::string name, uint32_
 	ImVec2 rectMin = ImVec2(cursorPos.x, cursorPos.y);
 	ImVec2 rectMax = ImVec2(cursorPos.x + contentRegion.x, cursorPos.y + textHeight + textPadding.y * 2);
 	bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
-	ImU32 color = selected ? EditorColors::selection : (hovered ? UIUtils::lighten(EditorColors::background, 0.25f) : EditorColors::background);
+	ImU32 color = selected ? EditorColors::selection : (hovered ? UIUtils::lighten(EditorColors::background, 0.6f) : EditorColors::background);
 	drawList.AddRectFilled(rectMin, rectMax, color, 5.0f);
 
+	// Check for selection
+	if (ImGui::IsMouseClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y) {
+		Log::printProcessInfo("Clicked " + name);
+	}
+	
 	// Draw text
 	ImVec2 textPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + textPadding.y);
 	std::string textValue = std::string(caret + ("  " + name));

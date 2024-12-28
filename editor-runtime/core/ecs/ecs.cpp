@@ -38,10 +38,16 @@ namespace ECS {
 		}
 	}
 
-	std::tuple<entt::entity, TransformComponent&> createEntity()
+	std::tuple<entt::entity, TransformComponent&> createEntity(TransformComponent* parent)
 	{
+		// Create new entity and emplace transform component
 		entt::entity entity = gRegistry.create();
 		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
+
+		// Add parent if set
+		if (parent) transform.parent = parent;
+
+		// Return entity and transform component
 		return std::tuple<entt::entity, TransformComponent&>(entity, transform);
 	}
 

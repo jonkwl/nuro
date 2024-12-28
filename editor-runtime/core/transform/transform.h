@@ -8,6 +8,9 @@
 namespace Transform
 {
 
+	// Computes and updates the transformation matrices of given transform component
+	void evaluate(TransformComponent& transform, const glm::mat4 viewProjection);
+
 	// Transform related direction vectors
 	glm::vec3 forward(TransformComponent& transform);
 	glm::vec3 backward(TransformComponent& transform);

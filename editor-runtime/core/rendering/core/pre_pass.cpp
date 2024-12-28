@@ -6,6 +6,7 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/model/mesh.h"
+#include "../core/transform/transform.h"
 #include "../core/ecs/ecs_collection.h"
 
 PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
@@ -106,10 +107,8 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	// Pre pass render each entity
 	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
-		// Recalculate transforms matrix cache for all upcoming passes of current frame
-		transform.model = Transformation::model(transform);
-		transform.mvp = viewProjection * transform.model;
-		transform.normal = Transformation::normal(transform.model);
+		// Compute transform matrices
+		Transform::evaluate(transform, viewProjection);
 
 		// Bind mesh
 		glBindVertexArray(renderer.mesh.getVAO());

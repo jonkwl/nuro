@@ -7,6 +7,21 @@
 
 namespace Transform {
 
+	void evaluate(TransformComponent& transform, const glm::mat4 viewProjection)
+	{
+		// Apply parents transform components to transform
+		if (transform.parent) {
+			transform.position += transform.parent->position;
+			transform.rotation = transform.parent->rotation * transform.rotation;
+			transform.scale *= transform.parent->scale;
+		}
+
+		// Calculate transformation matrices
+		transform.model = Transformation::model(transform);
+		transform.mvp = viewProjection * transform.model;
+		transform.normal = Transformation::normal(transform.model);
+	}
+
 	glm::vec3 forward(TransformComponent& transform)
 	{
 		glm::vec3 forward_local = glm::vec3(0.0f, 0.0f, 1.0f);

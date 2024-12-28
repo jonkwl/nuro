@@ -25,7 +25,7 @@ namespace ECS {
 	//
 
 	// Creates an entity
-	std::tuple<entt::entity, TransformComponent&> createEntity();
+	std::tuple<entt::entity, TransformComponent&> createEntity(TransformComponent* parent = nullptr);
 
 	// Returns the global render queue
 	RenderQueue& getRenderQueue();
