@@ -17,17 +17,17 @@ namespace UIComponents
 	void toggleButton(std::string label, bool& value, std::string tooltip = "");
 
 	bool buttonBig(std::string label, std::string tooltip = "");
-	bool buttonBig(std::string label, ImVec4 color, std::string tooltip = "");
+	bool buttonBig(std::string label, ImU32 color, std::string tooltip = "");
 
 	void label(std::string text);
-	void label(std::string text, ImVec4 color);
+	void label(std::string text, ImU32 color);
 	void labelBold(std::string text);
-	void labelBold(std::string text, ImVec4 color);
+	void labelBold(std::string text, ImU32 color);
 	void labelSmall(std::string text);
-	void labelSmall(std::string text, ImVec4 color);
+	void labelSmall(std::string text, ImU32 color);
 
 	void tryIcon(const char* icon, float yPadding = 2.5f);
-	void tryIcon(const char* icon, ImVec4 color, float yPadding = 2.5f);
+	void tryIcon(const char* icon, ImU32 color, float yPadding = 2.5f);
 
 	void input(std::string label, bool& value);
 	void input(std::string label, int32_t& value, float speed = 0.1f);

@@ -6,12 +6,6 @@
 
 namespace UIUtils {
 
-	ImVec4 lighten(ImVec4 color, float amount)
-	{
-		float factor = 1.0f + amount;
-		return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
-	}
-
 	ImU32 lighten(ImU32 color, float amount)
 	{
 		// Extract RGBA components
@@ -27,12 +21,6 @@ namespace UIUtils {
 
 		// Convert back to ImU32 (with clamped RGB values)
 		return ((int32_t)(r * 255) << 16) | ((int32_t)(g * 255) << 8) | ((int32_t)(b * 255)) | (color & 0xFF000000);
-	}
-
-	ImVec4 darken(ImVec4 color, float amount)
-	{
-		float factor = 1.0f - amount;
-		return ImVec4(color.x * factor, color.y * factor, color.z * factor, color.w);
 	}
 
 	ImU32 darken(ImU32 color, float amount)

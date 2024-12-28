@@ -140,15 +140,15 @@ void setup() {
 	Rigidbody::setKinematic(kinematicRb, true);
 
 	// Sci-Fi Plane Material
-	Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
+	/*Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
 	Texture roughness = Texture::load("./src/example/assets/textures/sci-fi/roughness.jpg", TextureType::ROUGHNESS);
 	Texture metallic = Texture::load("./src/example/assets/textures/sci-fi/metallic.jpg", TextureType::METALLIC);
 	Texture normal = Texture::load("./src/example/assets/textures/sci-fi/normal.jpg", TextureType::NORMAL);
 	Texture occlusion = Texture::load("./src/example/assets/textures/sci-fi/occlusion.jpg", TextureType::OCCLUSION);
 	Texture emissive = Texture::load("./src/example/assets/textures/sci-fi/emissive.jpg", TextureType::EMISSIVE);
-	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);
+	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);*/
 	LitMaterial* planeMaterial = new LitMaterial();
-	planeMaterial->setAlbedoMap(albedo);
+	/*planeMaterial->setAlbedoMap(albedo);
 	planeMaterial->setRoughnessMap(roughness);
 	planeMaterial->setMetallicMap(metallic);
 	planeMaterial->setNormalMap(normal);
@@ -157,10 +157,10 @@ void setup() {
 	planeMaterial->emission = true;
 	planeMaterial->emissionIntensity = 14.0f;
 	planeMaterial->setHeightMap(height);
-	planeMaterial->heightMapScale = 0.066f;
+	planeMaterial->heightMapScale = 0.066f;*/
 
 	// Test Material
-	Texture albedoTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/albedo.jpg", TextureType::ALBEDO);
+	/*Texture albedoTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/albedo.jpg", TextureType::ALBEDO);
 	Texture roughnessTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/roughness.jpg", TextureType::ROUGHNESS);
 	Texture normalTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/normal.jpg", TextureType::NORMAL);
 	Texture occlusionTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/occlusion.jpg", TextureType::OCCLUSION);
@@ -170,7 +170,7 @@ void setup() {
 	testMaterial->setRoughnessMap(roughnessTest);
 	testMaterial->setNormalMap(normalTest);
 	testMaterial->setOcclusionMap(occlusionTest);
-	testMaterial->setHeightMap(heightTest);
+	testMaterial->setHeightMap(heightTest);*/
 
 	// Material Test Plane
 	EntityContainer plane(ECS::createEntity());
@@ -181,12 +181,12 @@ void setup() {
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
-	playerMaterial->setAlbedoMap(albedo);
+	/*playerMaterial->setAlbedoMap(albedo);
 	playerMaterial->setRoughnessMap(roughness);
 	playerMaterial->setMetallicMap(metallic);
 	playerMaterial->setNormalMap(normal);
 	playerMaterial->setOcclusionMap(occlusion);
-	playerMaterial->setEmissiveMap(emissive);
+	playerMaterial->setEmissiveMap(emissive);*/
 
 	// Player sphere
 	EntityContainer player(ECS::createEntity());

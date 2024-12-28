@@ -54,7 +54,7 @@ void GameWindow::renderToolbar()
 	{
 		if (gameRunning) {
 			if (gamePaused) {
-				if (UIComponents::buttonBig(ICON_FA_PLAY, ImVec4(0.78f, 0.44f, 0.0f, 1.0f), "Continue")) {
+				if (UIComponents::buttonBig(ICON_FA_PLAY, IM_COL32(199, 112, 0, 255), "Continue")) {
 					Runtime::continueGame();
 				}
 			}
@@ -63,7 +63,7 @@ void GameWindow::renderToolbar()
 					Runtime::pauseGame();
 				}
 			}
-			if (UIComponents::buttonBig(ICON_FA_STOP, ImVec4(0.0f, 0.4f, 0.85f, 1.0f), "Stop")) {
+			if (UIComponents::buttonBig(ICON_FA_STOP, IM_COL32(0, 102, 216, 255), "Stop")) {
 				Runtime::stopGame();
 			}
 			UIComponents::toggleButton(ICON_FA_FORWARD_STEP, tmp, "Step");
@@ -98,7 +98,7 @@ void GameWindow::renderGameView()
 
 	// Warn if camera isn't available
 	if (!pipeline.getCameraAvailable()) {
-		ImVec4 color = ImVec4(0.94f, 0.72f, 0.29f, 1.0f);
+		ImU32 color = IM_COL32(239, 183, 74, 255);
 		ImGui::SetCursorPosX(25.0f);
 		UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION, color, 1.0f);
 		ImGui::SetCursorPosX(45.0f);

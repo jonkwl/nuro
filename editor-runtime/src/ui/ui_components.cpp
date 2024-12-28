@@ -55,9 +55,9 @@ namespace UIComponents {
 
 	void toggleButton(std::string label, bool& value, std::string _tooltip)
 	{
-		ImVec4 inactiveButtonColor = UIUtils::darken(EditorUI::getColors().elementActive, 0.6f);
-		ImVec4 activeButtonColor = EditorUI::getColors().elementActive;
-		ImVec4 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
+		ImU32 inactiveButtonColor = UIUtils::darken(EditorUI::getColors().elementActive, 0.6f);
+		ImU32 activeButtonColor = EditorUI::getColors().elementActive;
+		ImU32 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
 		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
@@ -102,7 +102,7 @@ namespace UIComponents {
 		return pressed;
 	}
 
-	bool buttonBig(std::string label, ImVec4 color, std::string _tooltip)
+	bool buttonBig(std::string label, ImU32 color, std::string _tooltip)
 	{
 		bool pressed = false;
 		
@@ -121,7 +121,7 @@ namespace UIComponents {
 		ImGui::Text(text.c_str());
 	}
 
-	void label(std::string text, ImVec4 color)
+	void label(std::string text, ImU32 color)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, color);
 		label(text);
@@ -135,7 +135,7 @@ namespace UIComponents {
 		ImGui::PopFont();
 	}
 
-	void labelBold(std::string text, ImVec4 color)
+	void labelBold(std::string text, ImU32 color)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, color);
 		labelBold(text);
@@ -149,7 +149,7 @@ namespace UIComponents {
 		ImGui::PopFont();
 	}
 
-	void labelSmall(std::string text, ImVec4 color)
+	void labelSmall(std::string text, ImU32 color)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, color);
 		labelSmall(text);
@@ -167,7 +167,7 @@ namespace UIComponents {
 		}
 	}
 
-	void tryIcon(const char* icon, ImVec4 color, float yPadding)
+	void tryIcon(const char* icon, ImU32 color, float yPadding)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, color);
 		tryIcon(icon, yPadding);

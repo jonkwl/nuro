@@ -84,14 +84,14 @@ namespace Runtime {
 		// Create default shadow map
 		bool shadow_map_saved = false;
 		gMainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
-
+		/*
 		// Create default skybox
 		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
 		gDefaultSkybox = Skybox(defaultCubemap);
 
 		// Set default skybox as current skybox
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
-
+		*/
 		// Load gizmo icons
 		IconPool::loadAll("../resources/icons");
 	}
@@ -325,7 +325,10 @@ namespace Runtime {
 		ECS::generateRenderQueue();
 
 		// CREATE LOADING SCREEN
-		_createLoadingScreen();
+		// _createLoadingScreen();
+
+		// TMP Set to fullscreen
+		applicationContext.setFullscreen();
 
 		while (applicationContext.running())
 		{

@@ -4,10 +4,7 @@
 #include <deque>
 #include <vector>
 
-#include "../src/ui/editor_window.h"
 #include "window_includes.h"
-
-#include "../src/ui/IconsFontAwesome6.h"
 
 struct ImVec2;
 
