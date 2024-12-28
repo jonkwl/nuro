@@ -56,13 +56,13 @@ public:
 	void updateMsaaSamples(uint32_t msaaSamples);
 
 	// Sets the currently selected entity
-	void setSelectedEntity(entt::entity selected);
+	void setSelectedEntity(EntityContainer* selected);
 
 	// Unselects all selected entitites
 	void unselectEntities();
 
 	// Returns the selected entities
-	const std::vector<entt::entity>& getSelectedEntities() const;
+	const std::vector<EntityContainer*>& getSelectedEntities() const;
 
 	// Returns the scene views fly camera
 	Camera& getFlyCamera();
@@ -117,7 +117,7 @@ private:
 
 	// Entity selection
 	
-	std::vector<entt::entity> selectedEntities;
+	std::vector<EntityContainer*> selectedEntities;
 
 	// States
 

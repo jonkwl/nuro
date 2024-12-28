@@ -155,11 +155,11 @@ void SceneWindow::renderSceneView()
 
 void SceneWindow::renderTransformGizmos()
 {
-	const std::vector<entt::entity>& selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
+	const std::vector<EntityContainer*>& selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
 
 	if (selectedEntities.size() < 1) return;
 
-	entt::entity selected = selectedEntities[0];
+	EntityContainer* selected = selectedEntities[0];
 
 	// Dont render transform gizmos if scene view is interacted with
 	if (sceneViewRightclicked || sceneViewMiddleclicked) return;
@@ -191,7 +191,7 @@ void SceneWindow::renderTransformGizmos()
 	}
 
 	// Get gizmo model matrix
-	TransformComponent& transform = ECS::gRegistry.get<TransformComponent>(selected);
+	TransformComponent& transform = selected->get<TransformComponent>();
 	glm::mat4 model = Transformation::model(transform);
 
 	// Check for snapping

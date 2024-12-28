@@ -105,7 +105,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const std::vector<entt::entity>& selectedEntities)
+uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const std::vector<EntityContainer*>& selectedEntities)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -210,7 +210,7 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 
 #include "../src/runtime/runtime.h"
 
-void SceneViewForwardPass::renderMeshes(const std::vector<entt::entity>& skippedEntities)
+void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& skippedEntities)
 {
 	uint32_t currentShaderId = 0;
 	uint32_t currentMaterialId = 0;
@@ -224,7 +224,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<entt::entity>& skipped
 		// Skip if target entity is selected entity
 		// tmp
 		if (skippedEntities.size() > 0) {
-			if (skippedEntities[0] == entity) break;
+			if (skippedEntities[0]->root == entity) break;
 		}
 
 		uint32_t shaderId = renderer.material->getShaderId();
@@ -248,10 +248,10 @@ void SceneViewForwardPass::renderMeshes(const std::vector<entt::entity>& skipped
 	// Log::printProcessInfo("New bound - Shaders / Materials : " + std::to_string(newBoundShaders) + " / " + std::to_string(newBoundMaterials));
 }
 
-void SceneViewForwardPass::renderSelectedEntity(entt::entity entity, const glm::mat4& viewProjection)
+void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection)
 {
-	TransformComponent& transform = ECS::gRegistry.get<TransformComponent>(entity);
-	MeshRendererComponent& renderer = ECS::gRegistry.get<MeshRendererComponent>(entity);
+	TransformComponent& transform = entity->transform;
+	MeshRendererComponent& renderer = entity->get<MeshRendererComponent>();
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer

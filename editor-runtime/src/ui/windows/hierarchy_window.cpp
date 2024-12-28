@@ -91,7 +91,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	bool clicked = ImGui::IsMouseClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y;
 	if (clicked) {
 		selectedItemId = item.id;
-		Runtime::getSceneViewPipeline().setSelectedEntity(item.entity.root);
+		Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
 	}
 
 	// Check for moving to entity

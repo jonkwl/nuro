@@ -140,7 +140,7 @@ void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
 	sceneViewForwardPass.create(msaaSamples);
 }
 
-void SceneViewPipeline::setSelectedEntity(entt::entity _selected)
+void SceneViewPipeline::setSelectedEntity(EntityContainer* _selected)
 {
 	selectedEntities = { _selected };
 }
@@ -150,7 +150,7 @@ void SceneViewPipeline::unselectEntities()
 	selectedEntities = {};
 }
 
-const std::vector<entt::entity>& SceneViewPipeline::getSelectedEntities() const
+const std::vector<EntityContainer*>& SceneViewPipeline::getSelectedEntities() const
 {
 	return selectedEntities;
 }
