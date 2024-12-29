@@ -167,6 +167,7 @@ void HierarchyWindow::renderDraggedItem(ImDrawList& drawList)
 		return;
 	}
 
+	/*
 	// Setup
 	const float width = 100.0f;
 	const float height = ImGui::GetFontSize();
@@ -183,6 +184,29 @@ void HierarchyWindow::renderDraggedItem(ImDrawList& drawList)
 
 	// Cache last dragged item position
 	lastDraggedItemPosition = smoothPosition;
+	*/
+
+	UIText text1(EditorUI::getFonts().uiBold);
+	text1.text = draggedItem->entity.name + " Some Longer Text ....";
+	text1.padding = ImVec2(0.0f, 2.5f);
+
+	UIText text2(EditorUI::getFonts().uiBold);
+	text2.text = draggedItem->entity.name;
+	text2.padding = ImVec2(0.0f, 2.5f);
+
+	UIText text3(EditorUI::getFonts().uiBold);
+	text3.text = draggedItem->entity.name + " Other";
+	text3.padding = ImVec2(0.0f, 2.5f);
+
+	UIContentRect drag;
+	drag.position = ImGui::GetMousePos();
+	drag.padding = ImVec2(25.0f, 10.0f);
+	
+	drag.addContent(text1);
+	drag.addContent(text2);
+	drag.addContent(text3);
+
+	drag.draw(drawList);
 }
 
 void HierarchyWindow::moveCamera()
