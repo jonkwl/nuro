@@ -85,6 +85,6 @@ private:
 	// Calculate smoothed color
 	ImU32 getFinalColor();
 
-	// All text content elements
-	std::vector<UIText> textContent = std::vector<UIText>();
+	// All text content elements (text reference and last cached text size) 
+	std::vector<std::tuple<UIText, ImVec2>> textContent = std::vector<std::tuple<UIText, ImVec2>>();
 };

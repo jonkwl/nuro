@@ -57,9 +57,26 @@ void UIContentRect::draw()
 	ImVec2 contentCursor = rectMin + padding;
 
 	// Draw text content
-	for (UIText text : textContent) {
+	for (auto& [text, textSize] : textContent) {
+		// Set texts final position to content cursor
+		ImVec2 textPosition = contentCursor;
+		
+		// Adjust texts final horizontal position according to its alignment
+		float freeSpaceX = finalSize.x - textSize.x - padding.x * 2;
+		switch (text.alignment) {
+		case TEXT_LEFT:
+			textPosition.x += 0.0f;
+			break;
+		case TEXT_CENTERED:
+			textPosition.x += freeSpaceX * 0.5f;
+			break;
+		case TEXT_RIGHT:
+			textPosition.x += freeSpaceX;
+			break;
+		}
+		
 		// Set text position
-		text.position = contentCursor;
+		text.position = textPosition;
 
 		// Draw text
 		text.draw(drawList);
@@ -80,7 +97,7 @@ void UIContentRect::draw()
 
 void UIContentRect::addContent(UIText text)
 {
-	textContent.push_back(text);
+	textContent.push_back(std::make_tuple(text, ImVec2(0.0f, 0.0f)));
 }
 
 void UIContentRect::getGeometry(ImVec2& finalPosition, ImVec2& finalSize)
@@ -96,9 +113,9 @@ void UIContentRect::getGeometry(ImVec2& finalPosition, ImVec2& finalSize)
 	float contentWidth = 0.0f;
 
 	// Calculate text related sizes
-	for (UIText text : textContent) {
+	for (auto& [text, textSize] : textContent) {
 		// Get absolute text size
-		ImVec2 textSize = text.getSize();
+		textSize = text.getSize();
 
 		// Update content width if it exceeds previous
 		contentWidth = std::max(contentWidth, textSize.x);
@@ -140,6 +157,7 @@ ImU32 UIContentRect::getFinalColor()
 {
 	ImU32 finalColor = color;
 
+	// Smooth color
 	if (smoothing) {
 		ImU32 smoothedColor = DrawUtils::lerp(lastColor, color, colorSmoothingSpeed * delta);
 		finalColor = smoothedColor;

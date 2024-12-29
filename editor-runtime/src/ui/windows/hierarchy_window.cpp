@@ -19,7 +19,14 @@ draggedItem(nullptr)
 	text.text = icon  + "   Dragged item name";
 	text.padding = ImVec2(0.0f, 2.5f);
 	text.color = IM_COL32(255, 255, 255, 255);
+	text.alignment = TEXT_CENTERED;
 	dragRect.addContent(text);
+
+	std::string icon2(ICON_FA_EXPLOSION);
+	UIText text2(EditorUI::getFonts().uiRegular);
+	text2.text = icon2 + "   EXAMPLE EXAMPLE EXAMPLE EXAMPLE EXAMPLE";
+	text2.color = IM_COL32(255, 255, 255, 255);
+	dragRect.addContent(text2);
 }
 
 void HierarchyWindow::render()
