@@ -16,7 +16,7 @@ struct UIText
 	ImVec2 padding = ImVec2(0.0f, 0.0f);
 
 	// Draws the ui text
-	void draw(ImDrawList& drawList);
+	void draw(ImDrawList* drawList);
 
 	// Returns the absolute size of the text in px
 	ImVec2 getSize() const;

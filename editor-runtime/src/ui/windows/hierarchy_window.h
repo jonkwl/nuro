@@ -37,7 +37,7 @@ private:
 	void renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation);
 
 	// Renders the indicator for the item currently dragged
-	void renderDraggedItem(ImDrawList& drawList);
+	void renderDraggedItem();
 
 	// Moves camera to the focused object
 	void moveCamera();
@@ -49,8 +49,9 @@ private:
 
 	std::vector<HierarchyItem> currentHierarchy;
 	uint32_t selectedItemId;
+
+	UIContentRect dragRect;
 	HierarchyItem* draggedItem;
-	glm::vec4 lastDraggedItemPosition;
 
 	bool cameraMoving;
 	float cameraMovementTime;

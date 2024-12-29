@@ -4,13 +4,13 @@ UIText::UIText(ImFont* font) : font(font)
 {
 }
 
-void UIText::draw(ImDrawList& drawList)
+void UIText::draw(ImDrawList* drawList)
 {
 	// Calculate draw position with text position and padding
 	ImVec2 drawPosition = position + padding;
 
 	// Add to draw list
-	drawList.AddText(font, font->FontSize, drawPosition, color, text.c_str());
+	drawList->AddText(font, font->FontSize, drawPosition, color, text.c_str());
 }
 
 ImVec2 UIText::getSize() const

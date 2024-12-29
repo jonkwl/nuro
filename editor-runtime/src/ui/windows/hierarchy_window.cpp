@@ -5,8 +5,21 @@
 HierarchyWindow::HierarchyWindow() : searchBuffer(""),
 currentHierarchy(),
 selectedItemId(0),
+dragRect(),
 draggedItem(nullptr)
 {
+	// Setup drag rect
+	dragRect.padding = ImVec2(10.0f, 8.0f);
+	dragRect.foreground = true;
+	dragRect.rounding = 5.0f;
+	dragRect.color = EditorColor::selection;
+	dragRect.positionSmoothingFactor = 10.0f;
+
+	UIText text(EditorUI::getFonts().uiBold);
+	text.text = "Dragged item name";
+	text.padding = ImVec2(0.0f, 2.5f);
+	text.color = IM_COL32(255, 255, 255, 255);
+	dragRect.addContent(text);
 }
 
 void HierarchyWindow::render()
@@ -21,7 +34,7 @@ void HierarchyWindow::render()
 
 	renderSearch(drawList);
 	renderHierarchy(drawList);
-	renderDraggedItem(drawList);
+	renderDraggedItem();
 
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -149,12 +162,12 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	if (hovered && ImGui::IsMouseDragging(0)) {
 		if (!draggedItem) {
 			draggedItem = &item;
-			lastDraggedItemPosition = glm::vec4(rectMin.x, rectMin.y, rectMax.x, rectMax.y);
+			dragRect.lastPosition = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
 		}
 	}
 }
 
-void HierarchyWindow::renderDraggedItem(ImDrawList& drawList)
+void HierarchyWindow::renderDraggedItem()
 {
 	// Dont proceed if theres no item dragged
 	if (!draggedItem) {
@@ -186,27 +199,8 @@ void HierarchyWindow::renderDraggedItem(ImDrawList& drawList)
 	lastDraggedItemPosition = smoothPosition;
 	*/
 
-	UIText text1(EditorUI::getFonts().uiBold);
-	text1.text = draggedItem->entity.name + " Some Longer Text ....";
-	text1.padding = ImVec2(0.0f, 2.5f);
-
-	UIText text2(EditorUI::getFonts().uiBold);
-	text2.text = draggedItem->entity.name;
-	text2.padding = ImVec2(0.0f, 2.5f);
-
-	UIText text3(EditorUI::getFonts().uiBold);
-	text3.text = draggedItem->entity.name + " Other";
-	text3.padding = ImVec2(0.0f, 2.5f);
-
-	UIContentRect drag;
-	drag.position = ImGui::GetMousePos();
-	drag.padding = ImVec2(25.0f, 10.0f);
-	
-	drag.addContent(text1);
-	drag.addContent(text2);
-	drag.addContent(text3);
-
-	drag.draw(drawList);
+	dragRect.position = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
+	dragRect.draw();
 }
 
 void HierarchyWindow::moveCamera()

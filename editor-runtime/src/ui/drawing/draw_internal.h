@@ -1,0 +1,12 @@
+#pragma once
+
+//
+// THIS FILE CREATES A DELTA DEFINITION FOR THE UI DRAWING
+//
+
+// INCLUDE OBJECT PROVIDING DELTA TIME GETTER
+#include "../core/time/time.h"
+
+// DEFINE DELTA GETTER AS "delta"
+// DELTA CAN ALSO BE VALUE 0, DONT USE SMOOTHING THEN
+#define delta Time::deltaf()

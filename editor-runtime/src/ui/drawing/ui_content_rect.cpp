@@ -1,16 +1,32 @@
 #include "ui_content_rect.h"
 
+#include "draw_internal.h"
+#include "draw_utils.h"
+
 #include <algorithm>
 
-void UIContentRect::draw(ImDrawList& drawList)
+void UIContentRect::draw()
 {
+	// Get draw list according to foreground setting
+	ImDrawList* drawList = nullptr;
+	if (foreground) {
+		drawList = ImGui::GetForegroundDrawList();
+	}
+	else {
+		drawList = ImGui::GetWindowDrawList();
+	}
+
+	// Calculate and use smoothed position if needed
+	if (positionSmoothing) {
+		ImVec2 smoothedPosition = DrawUtils::lerp(lastPosition, position, positionSmoothingFactor * delta);
+		position = smoothedPosition;
+		lastPosition = position;
+	}
+
 	// Initialize
 	ImVec2 rectMin = position;
 	ImVec2 rectMax = position;
 	float contentWidth = 0.0f;
-
-	// Get content region avail
-	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 
 	// Calculate text related sizes
 	for (UIText text : textContent) {
@@ -27,11 +43,17 @@ void UIContentRect::draw(ImDrawList& drawList)
 	// Add content width to rect max
 	rectMax.x += contentWidth;
 
+	// Overwrite rect max x if using fixed width
+	if (useFixedWidth) rectMax.x = position.x + fixedWidth;
+
+	// Overwrite rect max y if using fixed height
+	if (useFixedWidth) rectMax.y = position.y + fixedHeight;
+
 	// Add total padding to rect max
 	rectMax += padding * 2;
 
 	// Draw rect
-	drawList.AddRectFilled(rectMin, rectMax, color, rounding);
+	drawList->AddRectFilled(rectMin, rectMax, color, rounding);
 
 	// Initialize content cursor
 	ImVec2 contentCursor = rectMin + padding;
@@ -49,6 +71,7 @@ void UIContentRect::draw(ImDrawList& drawList)
 	}
 
 	// Advance backend cursor 
+	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
 	ImGui::Dummy(ImVec2(contentRegion.x, rectMax.y - rectMin.y));
 	ImGui::PopStyleVar();
