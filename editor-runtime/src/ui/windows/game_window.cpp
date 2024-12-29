@@ -50,7 +50,7 @@ void GameWindow::renderToolbar()
 	bool gamePaused = Runtime::gamePaused();
 
 	// Render toggle buttons for render options
-	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
+	UIFlex::beginFlex("toggles", FlexType::ROW, UIFlex::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
 		if (gameRunning) {
 			if (gamePaused) {
@@ -74,19 +74,19 @@ void GameWindow::renderToolbar()
 			}
 		}
 	}
-	UILayout::endFlex();
+	UIFlex::endFlex();
 
 	// Spacing
 	UIComponents::space(0.0f, 5.0f);
 
 	// Render indicators for game view setup
-	/*UILayout::beginFlex("setup", FlexType::ROW, UILayout::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
+	/*UIFlex::beginFlex("setup", FlexType::ROW, UIFlex::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
 	{
 		UIComponents::space(1.0f, 0.0f);
 		UIComponents::tryIcon(ICON_FA_GAUGE);
 		UIComponents::label("FPS: " + 0);
 	}
-	UILayout::endFlex();*/
+	UIFlex::endFlex();*/
 }
 
 void GameWindow::renderGameView()

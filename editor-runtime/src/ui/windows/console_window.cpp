@@ -24,7 +24,7 @@ void ConsoleWindow::render()
 		float toolbarHeight = 40.0f;
 		float toolbarPaddingTop = 3.0f;
 		UIComponents::space(0.0f, toolbarPaddingTop);
-		UILayout::beginFlex("Toolbar", FlexType::ROW, UILayout::FULL_WIDTH, toolbarHeight, Justification::START, Alignment::CENTER, 1.0f);
+		UIFlex::beginFlex("Toolbar", FlexType::ROW, UIFlex::FULL_WIDTH, toolbarHeight, Justification::START, Alignment::CENTER, 1.0f);
 		{
 			UIComponents::space(10.0f, 0.0f);
 			UIComponents::toggleButton(messageIcon, showMessages, "Show Messages");
@@ -32,7 +32,7 @@ void ConsoleWindow::render()
 			UIComponents::toggleButton(errorIcon, showErrors, "Show Errors");
 			if (UIComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
 		}
-		UILayout::endFlex();
+		UIFlex::endFlex();
 
 		// Get latest log element sizing
 		float latestLogHeight = 11.0f;

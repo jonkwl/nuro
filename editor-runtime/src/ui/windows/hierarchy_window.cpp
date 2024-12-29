@@ -132,7 +132,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	const char* icon = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
 
 	// Draw text
-	std::string textValue = std::string(icon + ("  " + item.name));
+	std::string textValue = std::string(icon + ("  " + item.entity.name));
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	// Layout dummy
@@ -174,8 +174,10 @@ void HierarchyWindow::renderDraggedItem(ImDrawList& drawList)
 	// Get the current window position and cursor position
 	ImVec2 mousePos = ImGui::GetMousePos();
 
-	// Draw the filled rectangle
-	glm::vec4 position = glm::vec4(mousePos.x, mousePos.y, mousePos.x + width, mousePos.y + height);
+	// Draw background
+	ImVec2 rectMin = ImVec2(mousePos.x, mousePos.y);
+	ImVec2 rectMax = ImVec2(mousePos.x + width, mousePos.y + height);
+	glm::vec4 position = glm::vec4(rectMin.x, rectMin.y, rectMax.x, rectMax.y);
 	glm::vec4 smoothPosition = glm::mix(lastDraggedItemPosition, position, 15.0f * Time::deltaf());
 	drawList.AddRectFilled(ImVec2(smoothPosition.x, smoothPosition.y), ImVec2(smoothPosition.z, smoothPosition.w), EditorColor::selection, 5.0f);
 
@@ -239,7 +241,7 @@ void HierarchyWindow::buildSceneHierarchy()
 	auto transforms = ECS::gRegistry.view<TransformComponent>();
 	uint32_t i = 1;
 	for (auto [entity, transform] : transforms.each()) {
-		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(entity), "Item " + std::to_string(i), {}));
+		currentHierarchy.push_back(HierarchyItem(i, EntityContainer("Item " + std::to_string(i), entity), {}));
 		i++;
 	}
 }

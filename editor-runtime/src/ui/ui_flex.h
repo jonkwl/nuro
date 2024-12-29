@@ -46,7 +46,7 @@ struct FlexBuffer
 	Margin margin;
 };
 
-class UILayout
+class UIFlex
 {
 public:
 	static bool debugMode;

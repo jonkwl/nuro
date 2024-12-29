@@ -11,7 +11,7 @@
 #include "IconsFontAwesome6.h"
 
 #include "../src/ui/ui_components.h"
-#include "../src/ui/ui_layout.h"
+#include "../src/ui/ui_flex.h"
 #include "../src/ui/editor_window.h"
 #include "../src/runtime/runtime.h"
 

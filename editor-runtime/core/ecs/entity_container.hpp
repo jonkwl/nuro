@@ -2,48 +2,40 @@
 
 #define G_REGISTRY ECS::gRegistry
 
-#include <entt.hpp>
 #include <tuple>
+#include <cctype>
 #include <string>
+#include <entt.hpp>
+#include <typeinfo>
+#include <type_traits>
 
 #include "../core/ecs/ecs.h"
+#include "../core/utils/log.h"
 #include "../core/ecs/components.h"
 
 struct EntityContainer {
 
 	// Construct entity by root
-	explicit EntityContainer(entt::entity root) : root(root), transform(G_REGISTRY.get<TransformComponent>(root)), registry(G_REGISTRY) {};
+	explicit EntityContainer(std::string name, entt::entity root) : name(name), root(root), registry(G_REGISTRY), transform(get<TransformComponent>()) {};
 
 	// Construct entity container with data tuple
-	explicit EntityContainer(std::tuple<entt::entity, TransformComponent&> data) : root(std::get<0>(data)), transform(std::get<1>(data)), registry(G_REGISTRY) {};
+	explicit EntityContainer(std::string name, std::tuple<entt::entity, TransformComponent&> data) : name(name), root(std::get<0>(data)), registry(G_REGISTRY), transform(std::get<1>(data)) {};
 
-	// Copy entity container
-	EntityContainer(const EntityContainer& other) : root(other.root), transform(other.transform), registry(other.registry) {}
+	// Entity containers name
+	std::string name;
 
 	// Entity containers backend entity handle
 	entt::entity root;
-	
-	// Transform component of entity
-	TransformComponent& transform;
 
 	// Registry entity container is bound to
 	entt::registry& registry;
 
+	// Transform component of entity
+	TransformComponent& transform;
+
 	// Returns if entity is valid in registry
 	bool verify() {
 		return registry.valid(root);
-	}
-
-	// Adds a component of given component type with given arguments to the entity
-	template<typename T, typename... Args>
-	T& add(Args&&... args) {
-		return registry.emplace<T>(root, std::forward<Args>(args)...);
-	}
-
-	// Returns component of given component type if attached to entity
-	template<typename T>
-	T& get() {
-		return registry.get<T>(root);
 	}
 
 	// Returns true if entity has a component of given component type
@@ -52,10 +44,75 @@ struct EntityContainer {
 		return registry.any_of<T>(root);
 	}
 
+	// Adds a component of given component type with given arguments to the entity
+	template<typename T, typename... Args>
+	T& add(Args&&... args) {
+
+		// Fail if entity isn't valid
+		if (!verify()) {
+			verifyFailed();
+			static T defaultComponent;
+			return defaultComponent;
+		}
+
+		// Fail if entity already has component
+		if (has<T>()) {
+			operationFailed<T>("add", "already owns an instance of it");
+			static T defaultComponent;
+			return defaultComponent;
+		}
+
+		// Emplace component
+		return registry.emplace<T>(root, std::forward<Args>(args)...);
+	}
+
+	// Returns component of given component type if attached to entity
+	template<typename T>
+	T& get() {
+
+		// Fail if entity isn't valid
+		if (!verify()) {
+			verifyFailed();
+			static T defaultComponent;
+			return defaultComponent;
+		}
+
+		// Use EnTT's try_get to safely attempt to get the component
+		auto component = registry.try_get<T>(root);
+		if (!component) {
+			operationFailed<T>("get", "doesn't own an instance of it");
+			static T defaultComponent;
+			return defaultComponent;
+		}
+
+		// Return component
+		return *component;
+	}
+
 	// Removes component of given component type if attached to entity
 	template<typename T>
 	void remove() {
-		registry.remove<T>(root);
+
+		// Fail if entity isn't valid
+		if (!verify()) {
+			verifyFailed();
+			return;
+		}
+
+		// Use EnTT's has to check if the entity has the component
+		if (!has<T>()) {
+			operationFailed<T>("remove", "doesn't own an instance of it");
+			return;
+		}
+
+		// Fail if component to remove is transform component
+		if (std::is_same<T, TransformComponent>::value) {
+			operationFailed<T>("remove", "must own a transform component");
+			return;
+		}
+
+		// Erase component
+		registry.erase<T>(root);
 	}
 
 	// Compares entity class with ecs root
@@ -63,4 +120,34 @@ struct EntityContainer {
 		return root == other;
 	}
 
+private:
+	template<typename T>
+	std::string getTypename() {
+		// Get base typename
+		std::string base = typeid(T).name();
+
+		// Remove "struct " keyword if present (.name() is compiler dependant)
+		size_t pos = base.find("struct ");
+		if (pos != std::string::npos) base.erase(pos, 7);
+
+		// Construct formatted typename
+		std::string result;
+		for (char c : base) {
+			if (std::isupper(c) && !result.empty()) {
+				result += ' ';
+			}
+			result += std::tolower(c);
+		}
+
+		return result;
+	}
+
+	template<typename T>
+	void operationFailed(std::string operation, std::string reason) {
+		Log::printWarning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity " + name + " " + reason + ".");
+	}
+
+	void verifyFailed() {
+		Log::printWarning("Entity Container", "Couldn't perform operation on entity " + name + " because it doesn't exist anymore.");
+	}
 };

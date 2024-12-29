@@ -126,7 +126,7 @@
     <ClCompile Include="src\ui\ui_components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\ui_layout.cpp">
+    <ClCompile Include="src\ui\ui_flex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\windows\diagnostics_window.cpp">
@@ -347,7 +347,7 @@
     <ClInclude Include="src\ui\ui_components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\ui_layout.h">
+    <ClInclude Include="src\ui\ui_flex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\diagnostics_window.h">

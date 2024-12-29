@@ -37,20 +37,20 @@ void PostProcessingWindow::render()
 		UIComponents::input("Samples:", targetProfile.motionBlur.objectSamples, 0.1f);
 
 		/*UIComponents::space(0.0f, 2.0f);
-		UILayout::beginFlex("SilhouetteExtension", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
+		UIFlex::beginFlex("SilhouetteExtension", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
 		{
 			UIComponents::tryIcon(ICON_FA_FLASK);
 			UIComponents::labelBold("Experimental: ");
 			UIComponents::input("Extend Silhouettes", configuration.motionBlurObjectSilhouetteExtension);
 		}
-		UILayout::endFlex();
+		UIFlex::endFlex();
 		if (configuration.motionBlurObjectSilhouetteExtension) {
-			UILayout::beginFlex("SilhouetteExtensionWarning", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
+			UIFlex::beginFlex("SilhouetteExtensionWarning", ROW, FULL_WIDTH, 20.0f, JUSTIFY_START, ALIGN_CENTER);
 			{
 				UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION);
 				UIComponents::label("May introduce artifacts when blurred object is in background");
 			}
-			UILayout::endFlex();
+			UIFlex::endFlex();
 		}*/
 
 		UIComponents::space(0.0f, 8.0f);

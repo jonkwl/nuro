@@ -105,7 +105,7 @@ void SceneViewForwardPass::destroy() {
 	multisampledFbo = 0;
 }
 
-uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const std::vector<EntityContainer*>& selectedEntities)
+uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& projection, const glm::mat4& viewProjection, const Camera& camera, const std::vector<EntityContainer*>& selectedEntities)
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, multisampledFbo);
@@ -150,7 +150,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 
 	// Render selected entity with outline
 	for (auto& entity : selectedEntities) {
-		renderSelectedEntity(entity, viewProjection);
+		renderSelectedEntity(entity, viewProjection, camera);
 	}
 
 	// Disable wireframe if enabled
@@ -248,7 +248,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 	// Log::printProcessInfo("New bound - Shaders / Materials : " + std::to_string(newBoundShaders) + " / " + std::to_string(newBoundMaterials));
 }
 
-void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection)
+void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)
 {
 	TransformComponent& transform = entity->transform;
 	MeshRendererComponent& renderer = entity->get<MeshRendererComponent>();
@@ -269,11 +269,17 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// Get outline thickness according to camera distance
+	float distance = glm::distance(camera.transform.position, transform.position);
+	float baseThickness = 0.05f;
+	float baseDistance = 5.0f;
+	float thickness = (distance / baseDistance) * baseThickness;
+
 	// Temporary transform component
 	TransformComponent outlineTransform;
 	outlineTransform.position = transform.position;
 	outlineTransform.rotation = transform.rotation;
-	outlineTransform.scale = transform.scale + 0.05f;
+	outlineTransform.scale = transform.scale + thickness;
 	outlineTransform.parent = transform.parent;
 	Transform::evaluate(outlineTransform, viewProjection);
 

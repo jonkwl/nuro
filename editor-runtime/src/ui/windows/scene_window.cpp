@@ -79,7 +79,7 @@ void SceneWindow::renderToolbar()
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 
 	// Render toggle buttons for render options
-	UILayout::beginFlex("toggles", FlexType::ROW, UILayout::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
+	UIFlex::beginFlex("toggles", FlexType::ROW, UIFlex::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
 		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe");
 		UIComponents::toggleButton(ICON_FA_ECLIPSE, pipeline.renderShadows, "Render Shadows");
@@ -88,16 +88,16 @@ void SceneWindow::renderToolbar()
 		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Render Skybox");
 		UIComponents::toggleButton(ICON_FA_ROTATE, pipeline.alwaysUpdate, "Always Update");
 	}
-	UILayout::endFlex();
+	UIFlex::endFlex();
 
 	// Render indicators for scene view setup
-	UILayout::beginFlex("setup", FlexType::ROW, UILayout::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
+	UIFlex::beginFlex("setup", FlexType::ROW, UIFlex::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
 	{
 		UIComponents::space(1.0f, 0.0f);
 		UIComponents::tryIcon(ICON_FA_GAUGE);
 		UIComponents::label("Speed: " + std::to_string(static_cast<int32_t>(movementSpeed)));
 	}
-	UILayout::endFlex();
+	UIFlex::endFlex();
 }
 
 void SceneWindow::renderSceneView()
@@ -198,6 +198,7 @@ void SceneWindow::renderTransformGizmos()
 	// Get gizmo model matrix
 	TransformComponent& transform = selected->get<TransformComponent>();
 	glm::mat4 model = Transformation::model(transform);
+	if (transform.parent) model = transform.parent->model * model;
 
 	// Check for snapping
 	bool snapping = Input::keyDown(Key::LEFT_CONTROL);

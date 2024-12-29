@@ -193,7 +193,7 @@
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\ui\editor_ui.cpp" />
     <ClCompile Include="src\ui\ui_components.cpp" />
-    <ClCompile Include="src\ui\ui_layout.cpp" />
+    <ClCompile Include="src\ui\ui_flex.cpp" />
     <ClCompile Include="src\ui\windows\diagnostics_window.cpp" />
     <ClCompile Include="src\ui\windows\post_processing_window.cpp" />
     <ClCompile Include="src\ui\windows\scene_window.cpp" />
@@ -277,7 +277,7 @@
     <ClInclude Include="src\ui\editor_window.h" />
     <ClInclude Include="src\ui\IconsFontAwesome6.h" />
     <ClInclude Include="src\ui\ui_components.h" />
-    <ClInclude Include="src\ui\ui_layout.h" />
+    <ClInclude Include="src\ui\ui_flex.h" />
     <ClInclude Include="src\ui\windows\diagnostics_window.h" />
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\scene_window.h" />

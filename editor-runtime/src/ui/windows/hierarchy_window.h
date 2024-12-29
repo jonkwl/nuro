@@ -10,11 +10,10 @@
 
 struct HierarchyItem {
 
-	HierarchyItem(uint32_t id, EntityContainer entity, std::string name, std::vector<HierarchyItem> children) : id(id), entity(entity), name(name), children(children), expanded(false) {};
+	HierarchyItem(uint32_t id, EntityContainer entity, std::vector<HierarchyItem> children) : id(id), entity(entity), children(children), expanded(false) {};
 
 	uint32_t id;
 	EntityContainer entity;
-	std::string name;
 	std::vector<HierarchyItem> children;
 	bool expanded;
 

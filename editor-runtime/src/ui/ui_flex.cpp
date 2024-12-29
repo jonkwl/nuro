@@ -1,20 +1,20 @@
-#include "ui_layout.h"
+#include "ui_flex.h"
 
 #include <imgui.h>
 #include <cmath>
 
-bool UILayout::debugMode = false;
+bool UIFlex::debugMode = false;
 
-float UILayout::defaultWidth = UILayout::FULL_WIDTH;
-float UILayout::defaultHeight = UILayout::FULL_HEIGHT;
-Justification UILayout::defaultJustification = Justification::CENTER;
-Alignment UILayout::defaultAlignment = Alignment::CENTER;
-float UILayout::defaultSpacing = 0.0f;
-Margin UILayout::defaultMargin = Margin();
+float UIFlex::defaultWidth = UIFlex::FULL_WIDTH;
+float UIFlex::defaultHeight = UIFlex::FULL_HEIGHT;
+Justification UIFlex::defaultJustification = Justification::CENTER;
+Alignment UIFlex::defaultAlignment = Alignment::CENTER;
+float UIFlex::defaultSpacing = 0.0f;
+Margin UIFlex::defaultMargin = Margin();
 
-FlexBuffer UILayout::lastFlex;
+FlexBuffer UIFlex::lastFlex;
 
-float UILayout::mapAlignment(Alignment alignment)
+float UIFlex::mapAlignment(Alignment alignment)
 {
 	switch (alignment) {
 	case Alignment::START:
@@ -26,7 +26,7 @@ float UILayout::mapAlignment(Alignment alignment)
 	}
 }
 
-ImVec2 UILayout::getFlexRowSize(float width, float height)
+ImVec2 UIFlex::getFlexRowSize(float width, float height)
 {
 	float windowWidth = ImGui::GetWindowWidth();
 	float contentWidth = ImGui::GetContentRegionAvail().x;
@@ -36,7 +36,7 @@ ImVec2 UILayout::getFlexRowSize(float width, float height)
 	return layoutSize;
 }
 
-void UILayout::beginFlex(const char* name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
+void UIFlex::beginFlex(const char* name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
 {
 	if (type == FlexType::ROW)
 	{
@@ -66,7 +66,7 @@ void UILayout::beginFlex(const char* name, FlexType type, float width, float hei
 	}
 }
 
-void UILayout::endFlex()
+void UIFlex::endFlex()
 {
 	if (lastFlex.type == FlexType::ROW)
 	{

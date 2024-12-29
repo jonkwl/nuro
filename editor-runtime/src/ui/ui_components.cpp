@@ -3,7 +3,7 @@
 #include <implot.h>
 
 #include "../src/ui/editor_ui.h"
-#include "../src/ui/ui_layout.h"
+#include "../src/ui/ui_flex.h"
 #include "../src/ui/ui_utils.h"
 
 namespace UIComponents {
@@ -25,14 +25,14 @@ namespace UIComponents {
 	void headline(std::string title, const char* icon, HeadlineJustification justification, bool zeroMargin)
 	{
 		Margin margin = zeroMargin ? Margin() : Margin(0.0f, 0.0f, 5.0f, 0.0f);
-		UILayout::beginFlex(title.c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, margin);
+		UIFlex::beginFlex(title.c_str(), FlexType::ROW, UIFlex::FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, margin);
 
 		tryIcon(icon);
 		ImGui::PushFont(EditorUI::getFonts().uiHeadline);
 		ImGui::Text(title.c_str());
 		ImGui::PopFont();
 
-		UILayout::endFlex();
+		UIFlex::endFlex();
 	}
 
 	void tooltip(std::string tooltip)
@@ -176,31 +176,31 @@ namespace UIComponents {
 
 	void input(std::string label, bool& value)
 	{
-		UILayout::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
+		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UIFlex::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
 		ImGui::Text(label.c_str());
 		ImGui::Spring(1.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 		ImGui::Checkbox(EditorUI::generateId().c_str(), &value);
 		ImGui::PopStyleVar();
-		UILayout::endFlex();
+		UIFlex::endFlex();
 	}
 
 	void input(std::string label, int32_t& value, float speed)
 	{
-		UILayout::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
+		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UIFlex::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
 		ImGui::Text(label.c_str());
 		ImGui::Spring(1.0f);
 		ImGui::DragInt(EditorUI::generateId().c_str(), &value, speed);
-		UILayout::endFlex();
+		UIFlex::endFlex();
 	}
 
 	void input(std::string label, float& value, float speed)
 	{
-		UILayout::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
+		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UIFlex::FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
 		ImGui::Text(label.c_str());
 		ImGui::Spring(1.0f);
 		ImGui::DragFloat(EditorUI::generateId().c_str(), &value, speed);
-		UILayout::endFlex();
+		UIFlex::endFlex();
 		// ImGui::DragFloat(std::string(label + EditorUI::generateId()).c_str(), &value, speed);
 	}
 
@@ -248,7 +248,7 @@ namespace UIComponents {
 
 	bool extendableSettings(std::string label, bool& value, const char* icon)
 	{
-		UILayout::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UILayout::FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
+		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, UIFlex::FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
 
 		ImGui::Checkbox(EditorUI::generateId().c_str(), &value);
 		space(1.0f, 1.5f);
@@ -259,7 +259,7 @@ namespace UIComponents {
 
 			space(4.0f, 2.5f);
 			bool extended = ImGui::CollapsingHeader(label.c_str());
-			UILayout::endFlex();
+			UIFlex::endFlex();
 
 			if (extended)
 			{
@@ -277,7 +277,7 @@ namespace UIComponents {
 			ImGui::Text(label.c_str());
 		}
 
-		UILayout::endFlex();
+		UIFlex::endFlex();
 
 		return false;
 	}

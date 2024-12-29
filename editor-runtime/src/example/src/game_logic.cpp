@@ -106,12 +106,12 @@ void setup() {
 	standardMaterial->roughness = 0.4f;
 
 	// Camera
-	EntityContainer camera(ECS::createEntity());
+	EntityContainer camera("Camera", ECS::createEntity());
 	cameraEntity = camera.root;
 	camera.add<CameraComponent>();
 
 	// Ground
-	EntityContainer ground(ECS::createEntity());
+	EntityContainer ground("Ground", ECS::createEntity());
 	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
 	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
@@ -120,7 +120,7 @@ void setup() {
 	int objectAmount = 140;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e(ECS::createEntity());
+			EntityContainer e("Cube", ECS::createEntity());
 			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
 			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 			e.add<BoxColliderComponent>();
@@ -129,7 +129,7 @@ void setup() {
 	}
 
 	// Kinematic sphere
-	EntityContainer kinematic(ECS::createEntity());
+	EntityContainer kinematic("Kinematic", ECS::createEntity());
 	kinematicEntity = kinematic.root;
 	kinematic.transform.position = glm::vec3(12.0f, 6.0f, 70.0f);
 	kinematic.transform.scale = glm::vec3(6.0f);
@@ -173,7 +173,7 @@ void setup() {
 	testMaterial->setHeightMap(heightTest);*/
 
 	// Material Test Plane
-	EntityContainer plane(ECS::createEntity());
+	EntityContainer plane("Plane", ECS::createEntity());
 	planeEntity = plane.root;
 	plane.transform.position = glm::vec3(-24.0f, 0.0f, 18.0f);
 	plane.transform.scale = glm::vec3(5.0f);
@@ -189,7 +189,7 @@ void setup() {
 	playerMaterial->setEmissiveMap(emissive);*/
 
 	// Player sphere
-	EntityContainer player(ECS::createEntity());
+	EntityContainer player("Player", ECS::createEntity());
 	playerEntity = player.root;
 	player.transform.position = glm::vec3(8.0f, 0.0f, -4.0f);
 	player.add<MeshRendererComponent>(sphereMesh, planeMaterial);
@@ -199,13 +199,22 @@ void setup() {
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
 
 	// Player child
-	EntityContainer playerChild(ECS::createEntity(&player.transform));
+	EntityContainer playerChild("Player Child", ECS::createEntity(&player.transform));
 	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 	// LitMaterial::tmpPointLightPosition = glm::vec3(-22.5f, 8.0f, 16.0f);
+
+	entt::entity invaliddd = entt::entity();
+	EntityContainer x("Some", invaliddd);
+	x.add<TransformComponent>();
+	x.remove<TransformComponent>();
+
+	EntityContainer playerEC("Player", player.root);
+	playerEC.get<VelocityComponent>();
+	playerEC.remove<TransformComponent>();
 
 }
 
@@ -221,7 +230,7 @@ void quit()
 void update() {
 	float delta = Time::deltaf();
 
-	EntityContainer kinematic(kinematicEntity);
+	EntityContainer kinematic("Kinematic", kinematicEntity);
 	kinematic.transform.position += glm::vec3(0.0f, 0.0f, -32.0f * delta);
 
 	float force = 20.0f;
@@ -235,7 +244,7 @@ void update() {
 	else if (Input::keyDown(Key::D)) forceDirection.x = force;
 	else forceDirection.x = 0.0f;
 
-	EntityContainer player = EntityContainer(playerEntity);
+	EntityContainer player = EntityContainer("Player", playerEntity);
 	RigidbodyComponent& playerRb = player.get<RigidbodyComponent>();
 	Rigidbody::addForce(playerRb, forceDirection);
 	
@@ -250,7 +259,7 @@ void update() {
 
 	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 
-	EntityContainer camera(cameraEntity);
+	EntityContainer camera("Camera", cameraEntity);
 	float zoomStrength = 150.0f;
 	glm::vec2 scrollDelta = Input::scrollDelta();
 	if (scrollDelta.y > 0.0f) zoom += zoomStrength * delta;

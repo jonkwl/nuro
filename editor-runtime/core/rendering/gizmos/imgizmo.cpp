@@ -175,7 +175,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
-		staticData.iconShader->setFloat("alpha", alpha(0.05f));
+		staticData.iconShader->setFloat("alpha", alpha(0.15f));
 		glDisable(GL_DEPTH_TEST);
 		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
