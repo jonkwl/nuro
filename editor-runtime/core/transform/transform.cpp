@@ -22,62 +22,84 @@ namespace Transform {
 		transform.normal = Transformation::normal(transform.model);
 	}
 
-	glm::vec3 forward(TransformComponent& transform)
+	glm::vec3 forward(const TransformComponent& transform)
 	{
 		glm::vec3 forward_local = glm::vec3(0.0f, 0.0f, 1.0f);
 		glm::vec3 forward_vector = glm::rotate(transform.rotation, forward_local);
 		return forward_vector;
 	}
 
-	glm::vec3 backward(TransformComponent& transform)
+	glm::vec3 backward(const TransformComponent& transform)
 	{
 		glm::vec3 backward_local = glm::vec3(0.0f, 0.0f, -1.0f);
 		glm::vec3 backward_vector = glm::rotate(transform.rotation, backward_local);
 		return backward_vector;
 	}
 
-	glm::vec3 right(TransformComponent& transform)
+	glm::vec3 right(const TransformComponent& transform)
 	{
 		glm::vec3 right_local = glm::vec3(1.0f, 0.0f, 0.0f);
 		glm::vec3 right_vector = glm::rotate(transform.rotation, right_local);
 		return right_vector;
 	}
 
-	glm::vec3 left(TransformComponent& transform)
+	glm::vec3 left(const TransformComponent& transform)
 	{
 		glm::vec3 left_local = glm::vec3(-1.0f, 0.0f, 0.0f);
 		glm::vec3 left_vector = glm::rotate(transform.rotation, left_local);
 		return left_vector;
 	}
 
-	glm::vec3 up(TransformComponent& transform)
+	glm::vec3 up(const TransformComponent& transform)
 	{
 		glm::vec3 up_local = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::vec3 up_vector = glm::rotate(transform.rotation, up_local);
 		return up_vector;
 	}
 
-	glm::vec3 down(TransformComponent& transform)
+	glm::vec3 down(const TransformComponent& transform)
 	{
 		glm::vec3 down_local = glm::vec3(0.0f, -1.0f, 0.0f);
 		glm::vec3 down_vector = glm::rotate(transform.rotation, down_local);
 		return down_vector;
 	}
 
-	void rotate(TransformComponent& transform, float degrees, glm::vec3 axis) {
-		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::normalize(axis)));
+	glm::quat rotate(const TransformComponent& transform, float degrees, glm::vec3 axis) {
+		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::normalize(axis)));
 	}
 
-	void rotateX(TransformComponent& transform, float degrees) {
-		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f)));
+	glm::quat rotateX(const TransformComponent& transform, float degrees) {
+		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f)));
 	}
 
-	void rotateY(TransformComponent& transform, float degrees) {
-		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 1.0f, 0.0f)));
+	glm::quat rotateY(const TransformComponent& transform, float degrees) {
+		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 1.0f, 0.0f)));
 	}
 
-	void rotateZ(TransformComponent& transform, float degrees) {
-		transform.rotation = glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f)));
+	glm::quat rotateZ(const TransformComponent& transform, float degrees) {
+		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f)));
+	}
+
+	glm::quat lookAt(const TransformComponent& transform, const TransformComponent& target)
+	{
+		// Get direction vector from current position to target position
+		glm::vec3 direction = glm::normalize(target.position - transform.position);
+
+		// Get local forward vector
+		glm::vec3 forwardLocal = glm::vec3(0.0f, 0.0f, 1.0f);
+
+		// Get rotation that aligns forward direction with direction
+		glm::quat rotation = glm::rotation(forwardLocal, direction);
+
+		return rotation;
+	}
+
+	glm::quat lookFromAt(const glm::vec3 from, const TransformComponent& target)
+	{
+		glm::vec3 direction = glm::normalize(target.position - from);
+		glm::vec3 forwardLocal = glm::vec3(0.0f, 0.0f, 1.0f);
+		glm::quat rotation = glm::rotation(forwardLocal, direction);
+		return rotation;
 	}
 
 	glm::quat fromEuler(float x, float y, float z)

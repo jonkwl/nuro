@@ -33,6 +33,8 @@ private:
 	void renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation);
 	void renderDraggedItem(ImDrawList& drawList);
 
+	void moveCamera();
+
 	void buildSceneHierarchy();
 
 	char searchBuffer[128];
@@ -41,4 +43,8 @@ private:
 	uint32_t selectedItemId;
 	HierarchyItem* draggedItem;
 	glm::vec4 lastDraggedItemPosition;
+
+	bool cameraMoving;
+	float cameraMovementTime;
+	TransformComponent* cameraTarget;
 };

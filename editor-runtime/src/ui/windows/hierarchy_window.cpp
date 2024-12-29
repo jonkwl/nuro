@@ -55,6 +55,9 @@ void HierarchyWindow::renderEntityItems(ImDrawList& drawList)
 		renderItem(drawList, item, 0);
 	}
 
+	// Move camera if needed
+	moveCamera();
+
 	// Pop font
 	ImGui::PopFont();
 }
@@ -97,7 +100,12 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// Check for moving to entity
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y;
 	if (doubleClicked) {
-		Runtime::getSceneViewPipeline().getFlyCamera().transform.position = item.entity.transform.position + Transform::backward(item.entity.transform) * 5.0f;
+		cameraTarget = &item.entity.transform;
+		cameraMoving = true;
+	}
+	if (selected && ImGui::IsKeyPressed(ImGuiKey_F)) {
+		cameraTarget = &item.entity.transform;
+		cameraMoving = true;
 	}
 
 	// Calculate text position
@@ -173,6 +181,55 @@ void HierarchyWindow::renderDraggedItem(ImDrawList& drawList)
 
 	// Cache last dragged item position
 	lastDraggedItemPosition = smoothPosition;
+}
+
+void HierarchyWindow::moveCamera()
+{
+	if (!cameraMoving) return;
+
+	if (!cameraTarget) return;
+
+	// Get fly camera
+	Camera& flyCamera = Runtime::getSceneViewPipeline().getFlyCamera();
+
+	// Get target transform
+	TransformComponent& targetTransform = *cameraTarget;
+
+	// Get targets
+	float distance = 5.0f + cameraTarget->scale.z;
+	glm::vec3 targetPosition = targetTransform.position + Transform::backward(targetTransform) * distance;
+	glm::quat targetRotation = Transform::lookFromAt(targetPosition, targetTransform);
+
+	float duration = 0.5f;
+	if (cameraMovementTime < duration) {
+		// Calculate position and rotation delta
+		float t = glm::clamp(cameraMovementTime / duration, 0.0f, 1.0f);
+
+		// Get smoothed targets
+		glm::vec3 newPosition = glm::mix(flyCamera.transform.position, targetPosition, t);
+		glm::vec3 positionDelta = newPosition - flyCamera.transform.position;
+
+		glm::quat newRotation = glm::slerp(flyCamera.transform.rotation, targetRotation, t);
+		glm::quat rotationDelta = newRotation * glm::inverse(flyCamera.transform.rotation);
+
+		// Set new position and rotation
+		/*flyCamera.transform.position = positionDelta;
+		flyCamera.transform.rotation = rotationDelta * flyCamera.transform.rotation;*/
+		flyCamera.transform.position = newPosition;
+		flyCamera.transform.rotation = newRotation;
+
+		// Add to elapsed camera movement time
+		cameraMovementTime += Time::deltaf();
+	}
+	else {
+		// Stop camera movement
+		flyCamera.transform.position = targetPosition;
+		flyCamera.transform.rotation = targetRotation;
+
+		// Reset
+		cameraMoving = false;
+		cameraMovementTime = 0.0f;
+	}
 }
 
 void HierarchyWindow::buildSceneHierarchy()

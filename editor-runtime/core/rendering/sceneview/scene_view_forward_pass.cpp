@@ -224,7 +224,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 		// Skip if target entity is selected entity
 		// tmp
 		if (skippedEntities.size() > 0) {
-			if (skippedEntities[0]->root == entity) break;
+			if (skippedEntities[0]->root == entity) continue;
 		}
 
 		uint32_t shaderId = renderer.material->getShaderId();

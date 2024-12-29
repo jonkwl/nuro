@@ -249,22 +249,22 @@ void SceneWindow::updateMovement()
 	Camera& camera = pipeline.getFlyCamera();
 
 	// Get values needed
-	float deltaTime = Time::deltaf();
+	float delta = Time::deltaf();
 	glm::vec3 camForward = Transform::forward(camera.transform);
 	glm::vec3 camRight = Transform::right(camera.transform);
 	glm::vec3 camUp = Transform::up(camera.transform);
 
 	// Move in scene view
 	glm::vec2 currentKeyAxis = !sceneViewRightclicked ? glm::vec2(0.0f) : Input::moveAxis();
-	moveAxis = glm::mix(moveAxis, currentKeyAxis, moveAxisSmoothingFactor * deltaTime);
+	moveAxis = glm::mix(moveAxis, currentKeyAxis, moveAxisSmoothingFactor * delta);
 	glm::vec3 movementDir = camForward * moveAxis.x + camRight * moveAxis.y;
-	camera.transform.position += movementDir * movementSpeed * deltaTime;
+	camera.transform.position += movementDir * movementSpeed * delta;
 
 	// If theres a right click interaction with scene view
 	if (sceneViewRightclicked) {
 		// Check for scrolling movement speed changes
-		glm::vec2 currentScrollAxis = Input::scrollDelta();
-		movementSpeed = glm::clamp(movementSpeed + currentScrollAxis.y * scrollIncrementSpeed, 1.0f, 100.0f);
+		float currentScroll = ImGui::GetIO().MouseWheel;
+		movementSpeed = glm::clamp(movementSpeed + currentScroll * scrollIncrementSpeed, 1.0f, 100.0f);
 
 		// Rotate in scene view
 		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
@@ -278,7 +278,7 @@ void SceneWindow::updateMovement()
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
-		camera.transform.position += panningDir * movementSpeed * deltaTime * 0.1f; // 0.1f is a good factor to match movement speed
+		camera.transform.position += panningDir * movementSpeed * delta * 0.1f; // 0.1f is a good factor to match movement speed
 	}
 
 	// Evaluate if fly camera moved this frame
