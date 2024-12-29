@@ -9,11 +9,11 @@ dragRect(),
 draggedItem(nullptr)
 {
 	// Setup drag rect
-	dragRect.padding = ImVec2(10.0f, 8.0f);
+	dragRect.padding = ImVec2(16.0f, 8.0f);
 	dragRect.foreground = true;
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
-	dragRect.positionSmoothingFactor = 10.0f;
+	dragRect.sizeSmoothingSpeed = 5.0f;
 
 	UIText text(EditorUI::getFonts().uiBold);
 	text.text = "Dragged item name";
@@ -161,8 +161,12 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// Check for new drag
 	if (hovered && ImGui::IsMouseDragging(0)) {
 		if (!draggedItem) {
+			// Update dragged item
 			draggedItem = &item;
-			dragRect.lastPosition = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
+
+			// Set last position and size of drag rect for smooth transition
+			dragRect.lastPosition = ImVec2(cursorPos.x, cursorPos.y);
+			dragRect.lastSize = ImVec2(contentRegion.x, textHeight + textPadding.y * 2);
 		}
 	}
 }

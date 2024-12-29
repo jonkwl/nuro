@@ -7,7 +7,10 @@
 
 void UIContentRect::draw()
 {
-	// Get draw list according to foreground setting
+	//
+	// GET DRAW LIST
+	//
+
 	ImDrawList* drawList = nullptr;
 	if (foreground) {
 		drawList = ImGui::GetForegroundDrawList();
@@ -16,44 +19,40 @@ void UIContentRect::draw()
 		drawList = ImGui::GetWindowDrawList();
 	}
 
-	// Calculate and use smoothed position if needed
-	if (positionSmoothing) {
-		ImVec2 smoothedPosition = DrawUtils::lerp(lastPosition, position, positionSmoothingFactor * delta);
-		position = smoothedPosition;
-		lastPosition = position;
+	//
+	// GET GEOMETRY
+	//
+
+	ImVec2 finalPosition, finalSize;
+	if (smoothing) {
+		getGeometrySmoothed(finalPosition, finalSize);
+	}
+	else {
+		getGeometry(finalPosition, finalSize);
 	}
 
-	// Initialize
-	ImVec2 rectMin = position;
-	ImVec2 rectMax = position;
-	float contentWidth = 0.0f;
+	//
+	// CALCULATE FINAL MIN AND MAX OF RECT
+	//
+	
+	ImVec2 rectMin = finalPosition;
+	ImVec2 rectMax = finalPosition + finalSize;
 
-	// Calculate text related sizes
-	for (UIText text : textContent) {
-		// Get absolute text size
-		ImVec2 size = text.getSize();
+	//
+	// GET FINAL COLOR
+	//
 
-		// Update content width if it exceeds previous
-		contentWidth = std::max(contentWidth, size.x);
+	ImU32 finalColor = color;
+	if (smoothing) finalColor = getColorSmoothed();
 
-		// Add text height to rect max
-		rectMax.y += size.y;
-	}
+	// 
+	// DRAW RECT
+	// 
 
-	// Add content width to rect max
-	rectMax.x += contentWidth;
+	drawList->AddRectFilled(rectMin, rectMax, finalColor, rounding);
 
-	// Overwrite rect max x if using fixed width
-	if (useFixedWidth) rectMax.x = position.x + fixedWidth;
-
-	// Overwrite rect max y if using fixed height
-	if (useFixedWidth) rectMax.y = position.y + fixedHeight;
-
-	// Add total padding to rect max
-	rectMax += padding * 2;
-
-	// Draw rect
-	drawList->AddRectFilled(rectMin, rectMax, color, rounding);
+	//
+	// DRAW CONTENT OF RECT
 
 	// Initialize content cursor
 	ImVec2 contentCursor = rectMin + padding;
@@ -70,7 +69,10 @@ void UIContentRect::draw()
 		contentCursor += ImVec2(0.0f, text.getSize().y);
 	}
 
-	// Advance backend cursor 
+	//
+	// ADVANCE BACKEND CURSOR
+	//
+
 	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
 	ImGui::Dummy(ImVec2(contentRegion.x, rectMax.y - rectMin.y));
@@ -80,4 +82,64 @@ void UIContentRect::draw()
 void UIContentRect::addContent(UIText text)
 {
 	textContent.push_back(text);
+}
+
+void UIContentRect::getGeometry(ImVec2& finalPosition, ImVec2& finalSize)
+{
+	// Pass on rect position
+	finalPosition = position;
+
+	//
+	// CALCULATE FINAL SIZE OF RECT
+	//
+
+	finalSize = ImVec2(0.0f, 0.0);
+	float contentWidth = 0.0f;
+
+	// Calculate text related sizes
+	for (UIText text : textContent) {
+		// Get absolute text size
+		ImVec2 textSize = text.getSize();
+
+		// Update content width if it exceeds previous
+		contentWidth = std::max(contentWidth, textSize.x);
+
+		// Add text height to rect max
+		finalSize.y += textSize.y;
+	}
+
+	// Set rect size to content width
+	finalSize.x = contentWidth;
+
+	// Overwrite rect size x if using fixed width
+	if (useFixedWidth) finalSize.x = fixedWidth;
+
+	// Overwrite rect size y if using fixed height
+	if (useFixedWidth) finalSize.y = fixedHeight;
+
+	// Add total padding to rect size
+	finalSize += padding * 2;
+}
+
+void UIContentRect::getGeometrySmoothed(ImVec2& finalPosition, ImVec2& finalSize)
+{
+	// Get non smoothed geometry
+	getGeometry(finalPosition, finalSize);
+
+	// Smooth position
+	ImVec2 smoothedPosition = DrawUtils::lerp(lastPosition, finalPosition, positionSmoothingSpeed * delta);
+	finalPosition = smoothedPosition;
+	lastPosition = smoothedPosition;
+
+	// Smooth size
+	ImVec2 smoothedSize = DrawUtils::lerp(lastSize, finalSize, sizeSmoothingSpeed * delta);
+	finalSize = smoothedSize;
+	lastSize = smoothedSize;
+}
+
+ImU32 UIContentRect::getColorSmoothed()
+{
+	ImU32 smoothedColor = DrawUtils::lerp(lastColor, color, colorSmoothingSpeed * delta);
+	lastColor = smoothedColor;
+	return smoothedColor;
 }

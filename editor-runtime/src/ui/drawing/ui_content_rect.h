@@ -51,32 +51,40 @@ struct UIContentRect
 	void addContent(UIText text);
 
 	//
-	// SMOOTHING POSITION
+	// SMOOTHING
 	//
 	
-	// Enables smoothing for position changes
-	bool positionSmoothing = true;
+	// Enables smoothing for various properties
+	bool smoothing = true;
 
-	// Smoothing factor when position changes
-	float positionSmoothingFactor = 10.0f;
+	// Smoothing position speed factor
+	float positionSmoothingSpeed = 10.0f;
 
-	// Last position that was cached for smoothing
+	// Smoothing size speed factor
+	float sizeSmoothingSpeed = 10.0f;
+
+	// Smoothing color speed factor
+	float colorSmoothingSpeed = 10.0f;
+
+	// Last position cached for smoothing
 	ImVec2 lastPosition;
 
-	//
-	// SMOOTHING WIDTH
-	//
+	// Last size cached for smoothing
+	ImVec2 lastSize;
 
-	// Enables smoothing for size changes
-	bool sizeSmoothing = true;
-
-	// Smoothing factor when size changes
-	float sizeSmoothingFactor = 10.0f;
-
-	// Last size that was cached for smoothing
-	ImVec4 lastSizeMinMax;
+	// Last color cached for smoothing
+	ImU32 lastColor;
 
 private:
+	// Calculate size and position
+	void getGeometry(ImVec2& finalPosition, ImVec2& finalSize);
+
+	// Calculate size and position smoothed
+	void getGeometrySmoothed(ImVec2& finalPosition, ImVec2& finalSize);
+
+	// Calculate smoothed color
+	ImU32 getColorSmoothed();
+
 	// All text content elements
 	std::vector<UIText> textContent;
 };
