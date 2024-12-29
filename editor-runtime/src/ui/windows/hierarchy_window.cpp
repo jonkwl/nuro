@@ -20,7 +20,7 @@ void HierarchyWindow::render()
 	UIComponents::headline("Hierarchy", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
 
 	renderSearch(drawList);
-	renderEntityItems(drawList);
+	renderHierarchy(drawList);
 	renderDraggedItem(drawList);
 
 	ImGui::End();
@@ -42,7 +42,7 @@ void HierarchyWindow::renderSearch(ImDrawList& drawList)
 	UIComponents::space(0.0f, 5.0f);
 }
 
-void HierarchyWindow::renderEntityItems(ImDrawList& drawList)
+void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
 {
 	// tmp
 	buildSceneHierarchy();

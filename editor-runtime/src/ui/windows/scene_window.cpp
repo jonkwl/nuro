@@ -44,7 +44,7 @@ void SceneWindow::render()
 	cursorCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("  Scene  ", nullptr, EditorFlag::standard);
+	ImGui::Begin(UIUtils::windowTitle("Scene"), nullptr, EditorFlag::standard);
 	{
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
@@ -123,6 +123,11 @@ void SceneWindow::renderSceneView()
 		float width = boundsMax.x - boundsMin.x;
 		float height = boundsMax.y - boundsMin.y;
 
+		// Check for new rightclick interaction to sync current cameras rotation euler angles
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right) && !sceneViewRightclicked) {
+			cameraEulerAngles = glm::degrees(glm::eulerAngles(pipeline.getFlyCamera().transform.rotation));
+		}
+
 		// Check if scene view is interacted with
 		sceneViewRightclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right);
 		sceneViewMiddleclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Middle);
@@ -133,9 +138,9 @@ void SceneWindow::renderSceneView()
 			pipeline.setUpdated();
 
 			// Make sure cursor is within scene view bounds
-			bool positionedCursor = false;
-			cursorCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
-			if (positionedCursor) cursorLast = cursorCurrent;
+			bool cursorMoved = false;
+			cursorCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, cursorMoved);
+			if (cursorMoved) cursorLast = cursorCurrent;
 
 			// Calculate cursor axis
 			cursorDelta = glm::vec2(cursorCurrent.x - cursorLast.x, -(cursorCurrent.y - cursorLast.y));

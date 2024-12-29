@@ -64,7 +64,7 @@ namespace UIUtils {
 		return scrollY / maxScrollY;
 	}
 
-	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor, float offset)
+	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& cursorMoved, float offset)
 	{
 		glm::vec2 currentPos = Cursor::getPosition();
 		glm::vec2 updatedPos = currentPos;
@@ -76,24 +76,24 @@ namespace UIUtils {
 		if (currentPos.x < min.x + offset) {
 			updatedPos = glm::vec2(max.x - offset, currentPos.y);
 			Cursor::setPosition(updatedPos);
-			positionedCursor = true;
+			cursorMoved = true;
 		}
 		else if (currentPos.x > max.x - offset) {
 			updatedPos = glm::vec2(min.x + offset, currentPos.y);
 			Cursor::setPosition(updatedPos);
-			positionedCursor = true;
+			cursorMoved = true;
 		}
 
 		// Vertical boundaries
 		if (currentPos.y < min.y + offset) {
 			updatedPos = glm::vec2(currentPos.x, max.y - offset);
 			Cursor::setPosition(updatedPos);
-			positionedCursor = true;
+			cursorMoved = true;
 		}
 		else if (currentPos.y > max.y - offset) {
 			updatedPos = glm::vec2(currentPos.x, min.y + offset);
 			Cursor::setPosition(updatedPos);
-			positionedCursor = true;
+			cursorMoved = true;
 		}
 
 		return updatedPos;

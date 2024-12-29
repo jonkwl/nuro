@@ -28,13 +28,22 @@ public:
 	void render();
 
 private:
+	// Renders the search bar
 	void renderSearch(ImDrawList& drawList);
-	void renderEntityItems(ImDrawList& drawList);
+
+	// Renders the current hierarchy as a whole
+	void renderHierarchy(ImDrawList& drawList);
+
+	// Renders a given item and all of its children
 	void renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation);
+
+	// Renders the indicator for the item currently dragged
 	void renderDraggedItem(ImDrawList& drawList);
 
+	// Moves camera to the focused object
 	void moveCamera();
 
+	// Builds the opened scene into a hierarchy
 	void buildSceneHierarchy();
 
 	char searchBuffer[128];

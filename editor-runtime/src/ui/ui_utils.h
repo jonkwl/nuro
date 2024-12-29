@@ -19,7 +19,7 @@ namespace UIUtils
 	float getChildScrollValue();
 
 	// Keeps the cursor in the given boundaries, returns the new cursor position and sets if the cursor was positioned by method
-	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& positionedCursor, float offset = 40.0f);
+	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& cursorMoved, float offset = 40.0f);
 
 	// Calculate the size and offset an image can have to be displayed at the biggest size possible centered with the given aspect ratio
 	void calculateAspectFitting(float aspectRatio, ImVec2& size, ImVec2& offset);

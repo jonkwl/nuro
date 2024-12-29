@@ -1262,9 +1262,11 @@ namespace ImGuizmo
    {
       for (int j = 1; j < 10; j++)
       {
-         ImVec2 baseSSpace2 = worldToPos(axis * 0.05f * (float)(j * 2) * gContext.mScreenFactor, gContext.mMVP);
+         // Additional axis for dashed color on axis when translation gizmo is "reversed"
+         // Dont draw
+         /*ImVec2 baseSSpace2 = worldToPos(axis * 0.05f * (float)(j * 2) * gContext.mScreenFactor, gContext.mMVP);
          ImVec2 worldDirSSpace2 = worldToPos(axis * 0.05f * (float)(j * 2 + 1) * gContext.mScreenFactor, gContext.mMVP);
-         gContext.mDrawList->AddLine(baseSSpace2, worldDirSSpace2, IM_COL32(0, 0, 0, 0x80), HatchedAxisThickness);
+         gContext.mDrawList->AddLine(baseSSpace2, worldDirSSpace2, IM_COL32(0, 0, 0, 0x80), HatchedAxisThickness);*/
       }
    }
 
