@@ -83,8 +83,8 @@ private:
 	void getGeometrySmoothed(ImVec2& finalPosition, ImVec2& finalSize);
 
 	// Calculate smoothed color
-	ImU32 getColorSmoothed();
+	ImU32 getFinalColor();
 
 	// All text content elements
-	std::vector<UIText> textContent;
+	std::vector<UIText> textContent = std::vector<UIText>();
 };

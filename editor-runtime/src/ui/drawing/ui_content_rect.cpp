@@ -42,8 +42,7 @@ void UIContentRect::draw()
 	// GET FINAL COLOR
 	//
 
-	ImU32 finalColor = color;
-	if (smoothing) finalColor = getColorSmoothed();
+	ImU32 finalColor = getFinalColor();
 
 	// 
 	// DRAW RECT
@@ -137,9 +136,15 @@ void UIContentRect::getGeometrySmoothed(ImVec2& finalPosition, ImVec2& finalSize
 	lastSize = smoothedSize;
 }
 
-ImU32 UIContentRect::getColorSmoothed()
+ImU32 UIContentRect::getFinalColor()
 {
-	ImU32 smoothedColor = DrawUtils::lerp(lastColor, color, colorSmoothingSpeed * delta);
-	lastColor = smoothedColor;
-	return smoothedColor;
+	ImU32 finalColor = color;
+
+	if (smoothing) {
+		ImU32 smoothedColor = DrawUtils::lerp(lastColor, color, colorSmoothingSpeed * delta);
+		finalColor = smoothedColor;
+		lastColor = smoothedColor;
+	}
+
+	return finalColor;
 }

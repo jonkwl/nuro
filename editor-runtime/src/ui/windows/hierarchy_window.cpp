@@ -13,10 +13,10 @@ draggedItem(nullptr)
 	dragRect.foreground = true;
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
-	dragRect.sizeSmoothingSpeed = 5.0f;
 
+	std::string icon(ICON_FA_HAND);
 	UIText text(EditorUI::getFonts().uiBold);
-	text.text = "Dragged item name";
+	text.text = icon  + "   Dragged item name";
 	text.padding = ImVec2(0.0f, 2.5f);
 	text.color = IM_COL32(255, 255, 255, 255);
 	dragRect.addContent(text);
