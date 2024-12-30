@@ -232,7 +232,8 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\collection\editor_gizmo_color.h" />
     <ClInclude Include="src\ui\drawing\drawing.h" />
-    <ClInclude Include="src\ui\drawing\draw_internal.h" />
+    <ClInclude Include="src\ui\drawing\draw_collection.h" />
+    <ClInclude Include="src\ui\drawing\draw_definitions.h" />
     <ClInclude Include="src\ui\drawing\draw_utils.h" />
     <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />

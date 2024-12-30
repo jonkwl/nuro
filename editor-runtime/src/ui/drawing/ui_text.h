@@ -5,15 +5,15 @@
 #include <cstdint>
 #include <string>
 
-enum TextAlignment {
-	TEXT_LEFT,
-	TEXT_CENTERED,
-	TEXT_RIGHT
-};
+#include "draw_collection.h"
 
 struct UIText
 {
 	UIText(ImFont* font);
+
+	//
+	// PROPERTIES
+	//
 
 	// Pointer to font text is using
 	ImFont* font;
@@ -31,7 +31,11 @@ struct UIText
 	ImVec2 padding = ImVec2(0.0f, 0.0f);
 
 	// Text alignment within parent component if it has any
-	TextAlignment alignment = TEXT_LEFT;
+	DrawAlignment alignment = ALIGN_LEFT;
+
+	//
+	// VIRTUAL CONTENT ELEMENT FUNCTIONS
+	//
 
 	// Draws the ui text
 	void draw(ImDrawList* drawList);

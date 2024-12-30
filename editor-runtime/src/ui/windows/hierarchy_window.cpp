@@ -15,18 +15,12 @@ draggedItem(nullptr)
 	dragRect.color = EditorColor::selection;
 
 	std::string icon(ICON_FA_HAND);
-	UIText text(EditorUI::getFonts().uiBold);
-	text.text = icon  + "   Dragged item name";
-	text.padding = ImVec2(0.0f, 2.5f);
-	text.color = IM_COL32(255, 255, 255, 255);
-	text.alignment = TEXT_CENTERED;
-	dragRect.addContent(text);
-
-	std::string icon2(ICON_FA_EXPLOSION);
-	UIText text2(EditorUI::getFonts().uiRegular);
-	text2.text = icon2 + "   EXAMPLE EXAMPLE EXAMPLE EXAMPLE EXAMPLE";
-	text2.color = IM_COL32(255, 255, 255, 255);
-	dragRect.addContent(text2);
+	UIText dragRectText(EditorUI::getFonts().uiBold);
+	dragRectText.text = icon  + "   Dragged item name";
+	dragRectText.padding = ImVec2(0.0f, 2.5f);
+	dragRectText.color = IM_COL32(255, 255, 255, 255);
+	dragRectText.alignment = ALIGN_CENTER;
+	dragRect.addContent(dragRectText);
 }
 
 void HierarchyWindow::render()
@@ -111,14 +105,14 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	drawList.AddRectFilled(rectMin, rectMax, color, 5.0f);
 
 	// Check for selection
-	bool clicked = ImGui::IsMouseClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y;
+	bool clicked = ImGui::IsMouseClicked(0) && hovered;
 	if (clicked) {
 		selectedItemId = item.id;
 		Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
 	}
 
 	// Check for moving to entity
-	bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && ImGui::GetMousePos().x >= rectMin.x && ImGui::GetMousePos().x <= rectMax.x && ImGui::GetMousePos().y >= rectMin.y && ImGui::GetMousePos().y <= rectMax.y;
+	bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
 	if (doubleClicked) {
 		cameraTarget = &item.entity.transform;
 		cameraMoving = true;
@@ -166,7 +160,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	}
 
 	// Check for new drag
-	if (hovered && ImGui::IsMouseDragging(0)) {
+	if (ImGui::IsMouseDragging(0) && hovered) {
 		if (!draggedItem) {
 			// Update dragged item
 			draggedItem = &item;
@@ -211,6 +205,7 @@ void HierarchyWindow::renderDraggedItem()
 	*/
 
 	dragRect.position = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
+	dragRect.update();
 	dragRect.draw();
 }
 

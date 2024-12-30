@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "../src/ui/drawing/ui_text.h"
+#include "ui_text.h"
 
 struct UIContentRect
 {
@@ -41,11 +41,26 @@ struct UIContentRect
 	float fixedHeight = 0.0f;
 
 	//
-	// MEMBERS
+	// FUNCTIONALITY
 	//
 
-	// Draws the rect with its content
+	// Prepares the rect for the next frame
+	void update();
+
+	// Draws the rect with its content, call after update()
 	void draw();
+
+	// If mouse is currently hovering over rect, call after update()
+	bool hovered();
+
+	// If mouse clicked on rect with given mouse button, call after update()
+	bool clicked(ImGuiMouseButton mouseButton);
+
+	// If mouse double clicked on rect with given mouse button, call after update()
+	bool doubleClicked(ImGuiMouseButton mouseButton);
+
+	// If mouse dragged rect with given mouse button, call after update()
+	bool dragged(ImGuiMouseButton mouseButton);
 
 	// Adds given text content to the rect content
 	void addContent(UIText text);
@@ -77,14 +92,22 @@ struct UIContentRect
 
 private:
 	// Calculate size and position
-	void getGeometry(ImVec2& finalPosition, ImVec2& finalSize);
+	void getGeometry(ImVec2& _position, ImVec2& _size);
 
 	// Calculate size and position smoothed
-	void getGeometrySmoothed(ImVec2& finalPosition, ImVec2& finalSize);
+	void getGeometrySmoothed(ImVec2& _position, ImVec2& _size);
 
 	// Calculate smoothed color
 	ImU32 getFinalColor();
 
 	// All text content elements (text reference and last cached text size) 
 	std::vector<std::tuple<UIText, ImVec2>> textContent = std::vector<std::tuple<UIText, ImVec2>>();
+
+	// Current rect geometry
+
+	ImVec2 rectMin;
+	ImVec2 rectMax;
+	ImVec2 finalPosition;
+	ImVec2 finalSize;
+
 };

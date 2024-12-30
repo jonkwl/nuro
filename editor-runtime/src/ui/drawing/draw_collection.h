@@ -1,0 +1,11 @@
+#pragma once
+
+//
+// COLLECTION OF ENUMS THE DRAWING API USES
+//
+
+enum DrawAlignment {
+	ALIGN_LEFT,
+	ALIGN_CENTER,
+	ALIGN_RIGHT
+};

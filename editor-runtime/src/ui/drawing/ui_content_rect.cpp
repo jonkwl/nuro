@@ -1,9 +1,31 @@
 #include "ui_content_rect.h"
 
-#include "draw_internal.h"
 #include "draw_utils.h"
+#include "draw_collection.h"
+#include "draw_definitions.h"
 
 #include <algorithm>
+
+void UIContentRect::update()
+{
+	//
+	// UPDATE GEOMETRY, GET FINAL POSITION AND SIZE
+	//
+
+	if (smoothing) {
+		getGeometrySmoothed(finalPosition, finalSize);
+	}
+	else {
+		getGeometry(finalPosition, finalSize);
+	}
+
+	//
+	// CALCULATE FINAL RECT MIN AND MAX
+	//
+
+	rectMin = finalPosition;
+	rectMax = finalPosition + finalSize;
+}
 
 void UIContentRect::draw()
 {
@@ -18,25 +40,6 @@ void UIContentRect::draw()
 	else {
 		drawList = ImGui::GetWindowDrawList();
 	}
-
-	//
-	// GET GEOMETRY
-	//
-
-	ImVec2 finalPosition, finalSize;
-	if (smoothing) {
-		getGeometrySmoothed(finalPosition, finalSize);
-	}
-	else {
-		getGeometry(finalPosition, finalSize);
-	}
-
-	//
-	// CALCULATE FINAL MIN AND MAX OF RECT
-	//
-	
-	ImVec2 rectMin = finalPosition;
-	ImVec2 rectMax = finalPosition + finalSize;
 
 	//
 	// GET FINAL COLOR
@@ -64,13 +67,13 @@ void UIContentRect::draw()
 		// Adjust texts final horizontal position according to its alignment
 		float freeSpaceX = finalSize.x - textSize.x - padding.x * 2;
 		switch (text.alignment) {
-		case TEXT_LEFT:
+		case ALIGN_LEFT:
 			textPosition.x += 0.0f;
 			break;
-		case TEXT_CENTERED:
+		case ALIGN_CENTER:
 			textPosition.x += freeSpaceX * 0.5f;
 			break;
-		case TEXT_RIGHT:
+		case ALIGN_RIGHT:
 			textPosition.x += freeSpaceX;
 			break;
 		}
@@ -82,7 +85,7 @@ void UIContentRect::draw()
 		text.draw(drawList);
 
 		// Advance cursor
-		contentCursor += ImVec2(0.0f, text.getSize().y);
+		contentCursor.y += textSize.y;
 	}
 
 	//
@@ -95,21 +98,41 @@ void UIContentRect::draw()
 	ImGui::PopStyleVar();
 }
 
+bool UIContentRect::hovered()
+{
+	return ImGui::IsMouseHoveringRect(rectMin, rectMax);
+}
+
+bool UIContentRect::clicked(ImGuiMouseButton mouseButton)
+{
+	return ImGui::IsMouseClicked(mouseButton) && hovered();
+}
+
+bool UIContentRect::doubleClicked(ImGuiMouseButton mouseButton)
+{
+	return ImGui::IsMouseDoubleClicked(mouseButton) && hovered();
+}
+
+bool UIContentRect::dragged(ImGuiMouseButton mouseButton)
+{
+	return ImGui::IsMouseDragging(mouseButton) && hovered();
+}
+
 void UIContentRect::addContent(UIText text)
 {
 	textContent.push_back(std::make_tuple(text, ImVec2(0.0f, 0.0f)));
 }
 
-void UIContentRect::getGeometry(ImVec2& finalPosition, ImVec2& finalSize)
+void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
 {
 	// Pass on rect position
-	finalPosition = position;
+	_position = position;
 
 	//
 	// CALCULATE FINAL SIZE OF RECT
 	//
 
-	finalSize = ImVec2(0.0f, 0.0);
+	_size = ImVec2(0.0f, 0.0);
 	float contentWidth = 0.0f;
 
 	// Calculate text related sizes
@@ -121,35 +144,35 @@ void UIContentRect::getGeometry(ImVec2& finalPosition, ImVec2& finalSize)
 		contentWidth = std::max(contentWidth, textSize.x);
 
 		// Add text height to rect max
-		finalSize.y += textSize.y;
+		_size.y += textSize.y;
 	}
 
 	// Set rect size to content width
-	finalSize.x = contentWidth;
+	_size.x = contentWidth;
 
 	// Overwrite rect size x if using fixed width
-	if (useFixedWidth) finalSize.x = fixedWidth;
+	if (useFixedWidth) _size.x = fixedWidth;
 
 	// Overwrite rect size y if using fixed height
-	if (useFixedWidth) finalSize.y = fixedHeight;
+	if (useFixedWidth) _size.y = fixedHeight;
 
 	// Add total padding to rect size
-	finalSize += padding * 2;
+	_size += padding * 2;
 }
 
-void UIContentRect::getGeometrySmoothed(ImVec2& finalPosition, ImVec2& finalSize)
+void UIContentRect::getGeometrySmoothed(ImVec2& _position, ImVec2& _size)
 {
 	// Get non smoothed geometry
-	getGeometry(finalPosition, finalSize);
+	getGeometry(_position, _size);
 
 	// Smooth position
-	ImVec2 smoothedPosition = DrawUtils::lerp(lastPosition, finalPosition, positionSmoothingSpeed * delta);
-	finalPosition = smoothedPosition;
+	ImVec2 smoothedPosition = DrawUtils::lerp(lastPosition, _position, positionSmoothingSpeed * delta);
+	_position = smoothedPosition;
 	lastPosition = smoothedPosition;
 
 	// Smooth size
-	ImVec2 smoothedSize = DrawUtils::lerp(lastSize, finalSize, sizeSmoothingSpeed * delta);
-	finalSize = smoothedSize;
+	ImVec2 smoothedSize = DrawUtils::lerp(lastSize, _size, sizeSmoothingSpeed * delta);
+	_size = smoothedSize;
 	lastSize = smoothedSize;
 }
 
