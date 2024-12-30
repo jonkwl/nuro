@@ -62,8 +62,11 @@ struct UIContentRect
 	// If mouse dragged rect with given mouse button, call after update()
 	bool dragged(ImGuiMouseButton mouseButton);
 
-	// Adds given text content to the rect content
-	void addContent(UIText text);
+	// Adds given text to the rect content
+	void addText(UIText text);
+
+	// Returns text content by index; returns nullptr if index is invalid
+	UIText* getText(uint32_t index);
 
 	//
 	// SMOOTHING

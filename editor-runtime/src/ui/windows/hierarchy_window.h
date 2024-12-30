@@ -39,11 +39,14 @@ private:
 	// Renders the indicator for the item currently dragged
 	void renderDraggedItem();
 
-	// Moves camera to the focused object
-	void moveCamera();
+	// Updates camera movement
+	void updateCameraMovement();
 
 	// Builds the opened scene into a hierarchy
 	void buildSceneHierarchy();
+
+	// Sets a new target for the camera movement
+	void setCameraTarget(TransformComponent* target);
 
 	char searchBuffer[128];
 

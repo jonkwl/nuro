@@ -8,19 +8,20 @@ selectedItemId(0),
 dragRect(),
 draggedItem(nullptr)
 {
-	// Setup drag rect
-	dragRect.padding = ImVec2(16.0f, 8.0f);
+	//
+	// SETUP DRAG RECT
+	//
+
+	dragRect.padding = ImVec2(20.0f, 10.0f);
 	dragRect.foreground = true;
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
 
-	std::string icon(ICON_FA_HAND);
 	UIText dragRectText(EditorUI::getFonts().uiBold);
-	dragRectText.text = icon  + "   Dragged item name";
-	dragRectText.padding = ImVec2(0.0f, 2.5f);
 	dragRectText.color = IM_COL32(255, 255, 255, 255);
 	dragRectText.alignment = ALIGN_CENTER;
-	dragRect.addContent(dragRectText);
+	dragRect.addText(dragRectText);
+
 }
 
 void HierarchyWindow::render()
@@ -69,8 +70,8 @@ void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
 		renderItem(drawList, item, 0);
 	}
 
-	// Move camera if needed
-	moveCamera();
+	// Update camera movement
+	updateCameraMovement();
 
 	// Pop font
 	ImGui::PopFont();
@@ -78,96 +79,152 @@ void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
 
 void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation)
 {
-	// Setup
+	//
+	// PROPERTIES
+	//
 	const float indentationOffset = 30.0f;
 	const ImVec2 textPadding = ImVec2(10.0f, 6.5f);
 
+	//
+	// EVALUATE
+	//
+
 	const bool selected = item.id == selectedItemId;
 	const bool hasChildren = item.children.size() > 0;
-	const float textHeight = ImGui::GetFontSize();
+	const float itemHeight = ImGui::GetFontSize();
 	const float textOffset = indentation * indentationOffset;
 
-	// Get the current window position and cursor position
-	ImVec2 cursorPos = ImGui::GetCursorScreenPos();
-	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+	const ImVec2 cursorPosition = ImGui::GetCursorScreenPos();
+	const ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 
-	// Draw the filled rectangle
-	ImVec2 rectMin = ImVec2(cursorPos.x, cursorPos.y);
-	ImVec2 rectMax = ImVec2(cursorPos.x + contentRegion.x, cursorPos.y + textHeight + textPadding.y * 2);
-	bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
-	bool dropHover = hovered && draggedItem;
+	const ImVec2 rectMin = ImVec2(cursorPosition.x, cursorPosition.y);
+	const ImVec2 rectMax = ImVec2(cursorPosition.x + contentRegion.x, cursorPosition.y + itemHeight + textPadding.y * 2);
 
+	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
+	const bool dropHover = hovered && draggedItem;
+	const bool clicked = ImGui::IsMouseClicked(0) && hovered;
+	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
+	const bool dragging = ImGui::IsMouseDragging(0) && hovered;
+
+	//
+	// EVALUATE COLOR
+	//
+
+	// Base:
 	ImU32 color = EditorColor::background;
+	// Priority #3:
 	if (hovered) UIUtils::lighten(EditorColor::background, 0.38f);
+	// Priority #2:
 	if (selected) color = EditorColor::selection;
+	// Priority #1:
 	if (dropHover) color = UIUtils::darken(EditorColor::selection, 0.5f);
+
+	//
+	// DRAW ITEM BACKGROUND
+	//
 
 	drawList.AddRectFilled(rectMin, rectMax, color, 5.0f);
 
-	// Check for selection
-	bool clicked = ImGui::IsMouseClicked(0) && hovered;
+	//
+	// CHECK FOR SELECTION
+	//
+
 	if (clicked) {
 		selectedItemId = item.id;
 		Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
 	}
 
-	// Check for moving to entity
-	bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
+	//
+	// CHECK FOR DOUBLE CLICK (-> move to entity)
+	//
+
 	if (doubleClicked) {
-		cameraTarget = &item.entity.transform;
-		cameraMoving = true;
-	}
-	if (selected && ImGui::IsKeyPressed(ImGuiKey_F)) {
-		cameraTarget = &item.entity.transform;
-		cameraMoving = true;
+		setCameraTarget(&item.entity.transform);
 	}
 
-	// Calculate text position
+	//
+	// CHECK FOR F KEYPRESS WHEN SELECTED (-> move to entity)
+	// 
+
+	if (selected && ImGui::IsKeyPressed(ImGuiKey_F)) {
+		setCameraTarget(&item.entity.transform);
+	}
+
+	//
+	// EVALUATE ITEM TEXT POSITION
+	//
+
 	ImVec2 textPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + textPadding.y);
 
+	//
+	// DRAW ITEM CARET CIRCLE
+	// 
+
 	if (hasChildren) {
-		// Draw caret circle
+		// Circle geometry
 		float circleRadius = 11.0f;
 		ImVec2 circlePosition = ImVec2(textPos.x + circleRadius, textPos.y + circleRadius * 0.5f + 1.0f);
 		ImVec2 mousePos = ImGui::GetMousePos();
-		float distance = (mousePos.x - circlePosition.x) * (mousePos.x - circlePosition.x) + (mousePos.y - circlePosition.y) * (mousePos.y - circlePosition.y);
-		bool isHovered = distance <= (circleRadius * circleRadius);
-		bool isClicked = ImGui::IsMouseClicked(0) && isHovered;
-		if (isClicked) item.expanded = !item.expanded;
-		ImU32 circleColor = isHovered && !dropHover ? UIUtils::lighten(color, 1.0f) : color;
+
+		// Fetch circle interactions
+		float circleDistance = (mousePos.x - circlePosition.x) * (mousePos.x - circlePosition.x) + (mousePos.y - circlePosition.y) * (mousePos.y - circlePosition.y);
+		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
+		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
+		
+		// Check for circle click (-> expand)
+		if (circleClicked) item.expanded = !item.expanded;
+		
+		// Evaluate color
+		ImU32 circleColor = circleHovered && !dropHover ? UIUtils::lighten(color, 1.0f) : color;
+		
+		// Draw circle
 		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);
 	}
 
-	// Check for expansion
-	bool caretClicked = false;
-	if (caretClicked && hasChildren) item.expanded = !item.expanded;
+	//
+	// EVALUATE ICON
+	//
 
-	// Evaluate icon
-	const char* icon = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
+	const char* icon1 = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
+	const char* icon2 = dropHover ? "   " ICON_FA_OCTAGON_PLUS "   " : "";
 
-	// Draw text
-	std::string textValue = std::string(icon + ("  " + item.entity.name));
+	//
+	// DRAW TEXT
+	//
+
+	std::string textValue = std::string(icon1) + std::string(icon2) + "  " + item.entity.name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
-	// Layout dummy
+	//
+	// ADVANCE CURSOR
+	//
+
 	ImGui::Dummy(ImVec2(contentRegion.x, rectMax.y - rectMin.y - EditorSizing::framePadding * 2 + 2.0f));
 
-	// Render children if item has any and is expanded
+	//
+	// CHECK FOR DRAG
+	//
+
+	if (dragging && !draggedItem) {
+		// Update dragged item
+		draggedItem = &item;
+
+		// Update drag rect text
+		std::string icon(ICON_FA_LEFT_LONG);
+		dragRect.getText(0)->text = icon + "   " + draggedItem->entity.name;
+
+		// Match drag rects geometry to items geometry for a smooth transition
+		dragRect.lastPosition = ImVec2(cursorPosition.x, cursorPosition.y);
+		dragRect.lastSize = ImVec2(contentRegion.x, itemHeight + textPadding.y * 2);
+	}
+
+	//
+	// RENDER CHILDREN
+	//
+
 	if (hasChildren && item.expanded) {
 		for (auto& child : item.children) {
 			renderItem(drawList, child, indentation + 1);
-		}
-	}
-
-	// Check for new drag
-	if (ImGui::IsMouseDragging(0) && hovered) {
-		if (!draggedItem) {
-			// Update dragged item
-			draggedItem = &item;
-
-			// Set last position and size of drag rect for smooth transition
-			dragRect.lastPosition = ImVec2(cursorPos.x, cursorPos.y);
-			dragRect.lastSize = ImVec2(contentRegion.x, textHeight + textPadding.y * 2);
 		}
 	}
 }
@@ -185,31 +242,12 @@ void HierarchyWindow::renderDraggedItem()
 		return;
 	}
 
-	/*
-	// Setup
-	const float width = 100.0f;
-	const float height = ImGui::GetFontSize();
-
-	// Get the current window position and cursor position
-	ImVec2 mousePos = ImGui::GetMousePos();
-
-	// Draw background
-	ImVec2 rectMin = ImVec2(mousePos.x, mousePos.y);
-	ImVec2 rectMax = ImVec2(mousePos.x + width, mousePos.y + height);
-	glm::vec4 position = glm::vec4(rectMin.x, rectMin.y, rectMax.x, rectMax.y);
-	glm::vec4 smoothPosition = glm::mix(lastDraggedItemPosition, position, 15.0f * Time::deltaf());
-	drawList.AddRectFilled(ImVec2(smoothPosition.x, smoothPosition.y), ImVec2(smoothPosition.z, smoothPosition.w), EditorColor::selection, 5.0f);
-
-	// Cache last dragged item position
-	lastDraggedItemPosition = smoothPosition;
-	*/
-
 	dragRect.position = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
 	dragRect.update();
 	dragRect.draw();
 }
 
-void HierarchyWindow::moveCamera()
+void HierarchyWindow::updateCameraMovement()
 {
 	if (!cameraMoving) return;
 
@@ -233,14 +271,9 @@ void HierarchyWindow::moveCamera()
 
 		// Get smoothed targets
 		glm::vec3 newPosition = glm::mix(flyCamera.transform.position, targetPosition, t);
-		glm::vec3 positionDelta = newPosition - flyCamera.transform.position;
-
 		glm::quat newRotation = glm::slerp(flyCamera.transform.rotation, targetRotation, t);
-		glm::quat rotationDelta = newRotation * glm::inverse(flyCamera.transform.rotation);
 
 		// Set new position and rotation
-		/*flyCamera.transform.position = positionDelta;
-		flyCamera.transform.rotation = rotationDelta * flyCamera.transform.rotation;*/
 		flyCamera.transform.position = newPosition;
 		flyCamera.transform.rotation = newRotation;
 
@@ -268,4 +301,10 @@ void HierarchyWindow::buildSceneHierarchy()
 		currentHierarchy.push_back(HierarchyItem(i, EntityContainer("Item " + std::to_string(i), entity), {}));
 		i++;
 	}
+}
+
+void HierarchyWindow::setCameraTarget(TransformComponent* target)
+{
+	cameraTarget = target;
+	cameraMoving = true;
 }

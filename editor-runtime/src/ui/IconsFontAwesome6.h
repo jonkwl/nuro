@@ -1424,3 +1424,7 @@
 #define ICON_FA_CLOUDS_SUN "\xEF\x9D\x86" // U+f746
 #define ICON_FA_DRAW_SQUARE "\xEF\x97\xAF" // U+f5ef
 #define ICON_FA_LOCATION_PLUS "\xEF\x98\x8A" // U+f60a
+#define ICON_FA_ARROW_TURN_DOWN_RIGHT "\xEE\x8F\x96" // U+e3d6
+#define ICON_FA_ARROW_TURN_DOWN_LEFT "\xEE\x8B\xA1" // U+e2e1
+#define ICON_FA_LEFT_FROM_LINE "\xEF\x8D\x88" // U+f348
+#define ICON_FA_OCTAGON_PLUS "\xEF\x8C\x81" // U+f301

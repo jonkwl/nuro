@@ -92,9 +92,8 @@ void UIContentRect::draw()
 	// ADVANCE BACKEND CURSOR
 	//
 
-	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, rectMax.y - rectMin.y));
+	ImGui::Dummy(ImVec2(0.0f, rectMax.y - rectMin.y));
 	ImGui::PopStyleVar();
 }
 
@@ -118,9 +117,17 @@ bool UIContentRect::dragged(ImGuiMouseButton mouseButton)
 	return ImGui::IsMouseDragging(mouseButton) && hovered();
 }
 
-void UIContentRect::addContent(UIText text)
+void UIContentRect::addText(UIText text)
 {
 	textContent.push_back(std::make_tuple(text, ImVec2(0.0f, 0.0f)));
+}
+
+UIText* UIContentRect::getText(uint32_t index)
+{
+	if (textContent.size() - 1 < index) {
+		return nullptr;
+	}
+	return &std::get<0>(textContent[index]);
 }
 
 void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
