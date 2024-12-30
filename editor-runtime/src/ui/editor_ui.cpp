@@ -64,7 +64,7 @@ namespace EditorUI {
 		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::regularFontSize);
 
 		// Merge icons into regular font
-		float iconsFontSize = EditorSizing::iconsFontSize * 2.0f / 3.0f;
+		float iconsFontSize = EditorSizing::iconsRegularFontSize * 2.0f / 3.0f;
 		static const ImWchar iconsRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 		ImFontConfig iconsConfig;
 		iconsConfig.MergeMode = true;
@@ -83,10 +83,22 @@ namespace EditorUI {
 		iconsConfigBold.GlyphMinAdvanceX = iconsBoldFontSize;
 		io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsBoldFontSize, &iconsConfigBold, iconsRanges);
 
-		// Load other fonts
+		// Load headline font
 		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::headlineFontSize);
-		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::smallFontSize);
+		
+		// Load big font
+		_fonts.uiBig = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::bigFontSize);
+		
+		// Merge icons into big font
+		float iconsBigFontSize = EditorSizing::iconsBigFontSize * 2.0f / 3.0f;
+		ImFontConfig iconsConfigBig;
+		iconsConfigBig.MergeMode = true;
+		iconsConfigBig.PixelSnapH = true;
+		iconsConfigBig.GlyphMinAdvanceX = iconsBigFontSize;
+		io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsBigFontSize, &iconsConfigBig, iconsRanges);
 
+		// Load small font
+		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::smallFontSize);
 
 		//
 		// STYLE COLORS

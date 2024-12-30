@@ -14,6 +14,7 @@ private:
 	void renderToolbar();
 	void renderSceneView();
 	void renderTransformGizmos();
+	void renderSpeedChangeIndicator();
 
 	void updateMovement(); // Update movement within scene view
 
@@ -32,12 +33,14 @@ private:
 	float movementSpeed; // Speed of camera movement within scene viewport
 	float mouseSensitivity; // Scene viewport mouse sensitivity
 	float scrollIncrementSpeed; // Speed for incrementing movement speed through mouse scrolling
+	float speedChangeTimer; // Timer resetting when the speed is changed
+	UIContentRect speedChangeIndicator; // Speed change indicator rect for speed change
 
 	glm::vec2 moveAxis; // Current input axis for evaluating scene view movement
 	float moveAxisSmoothingFactor; // Smoothing for key axis
-	glm::vec2 cursorCurrent; // Current mouse position
-	glm::vec2 cursorLast; // Last mouse position
-	glm::vec2 cursorDelta; // Last mouse position
+	glm::vec2 mouseCurrent; // Current mouse position
+	glm::vec2 mouseLast; // Last mouse position
+	glm::vec2 mouseDelta; // Last mouse position
 
 	int32_t gizmoOperation; // Last used gizmo operation
 	float gizmoScaleMin; // Limit for downscaling an object with a gizmo

@@ -81,6 +81,12 @@ void UIContentRect::draw()
 		// Set text position
 		text.position = textPosition;
 
+		// Scale text alpha by final color alpha
+		uint32_t r, g, b, a;
+		DrawUtils::extractRGB(text.color, r, g, b);
+		a = DrawUtils::extractAlpha(finalColor);
+		text.color = IM_COL32(r, g, b, a);
+
 		// Draw text
 		text.draw(drawList);
 
@@ -89,12 +95,14 @@ void UIContentRect::draw()
 	}
 
 	//
-	// ADVANCE BACKEND CURSOR
+	// ADVANCE BACKEND CURSOR IF NOT IN FOREGROUND
 	//
 
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(0.0f, rectMax.y - rectMin.y));
-	ImGui::PopStyleVar();
+	if (!foreground) {
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
+		ImGui::Dummy(ImVec2(0.0f, rectMax.y - rectMin.y));
+		ImGui::PopStyleVar();
+	}
 }
 
 bool UIContentRect::hovered()

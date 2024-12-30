@@ -4,6 +4,7 @@
 // CONTAINS ALL UTILITY FUNCTIONS THE DRAWING API USES
 //
 
+#include <cstdint>
 #include <imgui.h>
 
 namespace DrawUtils {
@@ -40,6 +41,35 @@ namespace DrawUtils {
 
     inline float lerp(float a, float b, float t) {
         return a + t * (b - a);
+    }
+
+    inline void extractRGBA(ImU32 color, uint32_t& r, uint32_t& g, uint32_t& b, uint32_t& a) {
+        r = (color >> IM_COL32_R_SHIFT) & 0xFF;
+        g = (color >> IM_COL32_G_SHIFT) & 0xFF;
+        b = (color >> IM_COL32_B_SHIFT) & 0xFF;
+        a = (color >> IM_COL32_A_SHIFT) & 0xFF;
+    }
+
+    inline void extractRGB(ImU32 color, uint32_t& r, uint32_t& g, uint32_t& b) {
+        r = (color >> IM_COL32_R_SHIFT) & 0xFF;
+        g = (color >> IM_COL32_G_SHIFT) & 0xFF;
+        b = (color >> IM_COL32_B_SHIFT) & 0xFF;
+    }
+
+    inline uint32_t extractRed(ImU32 color) {
+        return (color >> IM_COL32_R_SHIFT) & 0xFF;
+    }
+
+    inline uint32_t extractGreen(ImU32 color) {
+        return (color >> IM_COL32_G_SHIFT) & 0xFF;
+    }
+
+    inline uint32_t extractBlue(ImU32 color) {
+        return (color >> IM_COL32_B_SHIFT) & 0xFF;
+    }
+
+    inline uint32_t extractAlpha(ImU32 color) {
+        return (color >> IM_COL32_A_SHIFT) & 0xFF;
     }
 
 }

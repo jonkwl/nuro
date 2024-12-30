@@ -7,8 +7,6 @@
 #include <ImGuizmo.h>
 
 #include "../core/rendering/postprocessing/post_processing.h"
-#include "../core/input/input.h"
-#include "../core/input/cursor.h"
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs_collection.h"
@@ -16,6 +14,9 @@
 #include "../core/transform/transform.h"
 #include "../core/ecs/components.h"
 #include "../core/rendering/material/lit/lit_material.h"
+
+#include "../core/input/input.h"
+#include "../core/input/cursor.h"
 
 SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
@@ -27,21 +28,34 @@ sceneViewBounds(0.0f),
 movementSpeed(16.0f),
 mouseSensitivity(0.08f),
 scrollIncrementSpeed(2.0f),
+speedChangeTimer(100.0f),
+speedChangeIndicator(),
 moveAxis(glm::vec2(0.0f)),
 moveAxisSmoothingFactor(5.0f),
-cursorCurrent(glm::vec2(0.0f)),
-cursorLast(glm::vec2(0.0f)),
-cursorDelta(glm::vec2(0.0f)),
+mouseCurrent(glm::vec2(0.0f)),
+mouseLast(glm::vec2(0.0f)),
+mouseDelta(glm::vec2(0.0f)),
 gizmoOperation(ImGuizmo::OPERATION::TRANSLATE),
 gizmoScaleMin(0.1f),
 cameraEulerAngles(glm::vec3(0.0f))
 {
-	cursorLast = Cursor::getPosition();
+	// Initialize last mouse position
+	mouseLast = Cursor::getPosition();
+
+	// Setup speed change indicator rect
+	speedChangeIndicator.color = IM_COL32(0, 0, 0, 0);
+	speedChangeIndicator.padding = ImVec2(45.0f, 30.0f);
+	speedChangeIndicator.rounding = 25.0f;
+	speedChangeIndicator.foreground = true;
+	UIText speedChangeText(EditorUI::getFonts().uiBig);
+	speedChangeText.color = IM_COL32(255, 255, 255, 255);
+	speedChangeText.alignment = ALIGN_CENTER;
+	speedChangeIndicator.addText(speedChangeText);
 }
 
 void SceneWindow::render()
 {
-	cursorCurrent = Cursor::getPosition();
+	mouseCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(UIUtils::windowTitle("Scene"), nullptr, EditorFlag::standard);
@@ -62,10 +76,14 @@ void SceneWindow::render()
 		renderSceneView();
 
 	}
+
+	// Try render speed change indicator
+	renderSpeedChangeIndicator();
+
 	ImGui::End();
 	ImGui::PopStyleVar();
 
-	cursorLast = cursorCurrent;
+	mouseLast = mouseCurrent;
 
 	// Hide cursor if theres an interaction with scene view
 	if (sceneViewRightclicked || sceneViewMiddleclicked) EditorUI::setCursorMode(CursorMode::HIDDEN);
@@ -139,11 +157,11 @@ void SceneWindow::renderSceneView()
 
 			// Make sure cursor is within scene view bounds
 			bool cursorMoved = false;
-			cursorCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, cursorMoved);
-			if (cursorMoved) cursorLast = cursorCurrent;
+			mouseCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, cursorMoved);
+			if (cursorMoved) mouseLast = mouseCurrent;
 
 			// Calculate cursor axis
-			cursorDelta = glm::vec2(cursorCurrent.x - cursorLast.x, -(cursorCurrent.y - cursorLast.y));
+			mouseDelta = glm::vec2(mouseCurrent.x - mouseLast.x, -(mouseCurrent.y - mouseLast.y));
 		}
 
 		// Render transform gizmos
@@ -249,6 +267,31 @@ void SceneWindow::renderTransformGizmos()
 	}
 }
 
+void SceneWindow::renderSpeedChangeIndicator()
+{
+	// Properties
+	const uint32_t visibleAlpha = 180.0f;
+	
+	// Determine visibility
+	bool visible = false;
+	speedChangeTimer += Time::deltaf();
+	if (speedChangeTimer < 0.5f) visible = true;
+
+	// Set alpha color according to visibility
+	speedChangeIndicator.color = IM_COL32(0, 0, 0, visible ? visibleAlpha : 0);
+
+	// Set text
+	std::string icon = std::string(ICON_FA_GAUGE);
+	speedChangeIndicator.getText(0)->text = icon + "   " + std::to_string(movementSpeed);
+
+	// Update and draw speed change indicator
+	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+	ImVec2 windowPosition = ImGui::GetWindowPos();
+	speedChangeIndicator.position = ImVec2(windowPosition.x + contentRegion.x * 0.5f, windowPosition.x + contentRegion.y * 0.5f);
+	speedChangeIndicator.update();
+	speedChangeIndicator.draw();
+}
+
 void SceneWindow::updateMovement()
 {
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
@@ -270,10 +313,13 @@ void SceneWindow::updateMovement()
 	if (sceneViewRightclicked) {
 		// Check for scrolling movement speed changes
 		float currentScroll = ImGui::GetIO().MouseWheel;
-		movementSpeed = glm::clamp(movementSpeed + currentScroll * scrollIncrementSpeed, 1.0f, 100.0f);
+		if (currentScroll) {
+			movementSpeed = glm::clamp(movementSpeed + currentScroll * scrollIncrementSpeed, 1.0f, 100.0f);
+			speedChangeTimer = 0.0f;
+		}
 
 		// Rotate in scene view
-		glm::vec3 rotationDir = glm::vec3(-cursorDelta.y, cursorDelta.x, 0.0f);
+		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
 		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
 		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
 		camera.transform.rotation = glm::quat(glm::radians(newRotation));
@@ -283,7 +329,7 @@ void SceneWindow::updateMovement()
 	// If theres a middle click interaction with scene view
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
-		glm::vec3 panningDir = (camRight * -cursorDelta.x) + (camUp * -cursorDelta.y);
+		glm::vec3 panningDir = (camRight * -mouseDelta.x) + (camUp * -mouseDelta.y);
 		camera.transform.position += panningDir * movementSpeed * delta * 0.1f; // 0.1f is a good factor to match movement speed
 	}
 

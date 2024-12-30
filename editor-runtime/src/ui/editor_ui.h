@@ -13,6 +13,7 @@ namespace EditorUI
 		ImFont* uiRegular;
 		ImFont* uiBold;
 		ImFont* uiHeadline;
+		ImFont* uiBig;
 		ImFont* uiSmall;
 		ImFont* uiIcons;
 	};
@@ -33,10 +34,12 @@ struct EditorSizing
 {
 	static constexpr float regularFontSize = 14.0f;
 	static constexpr float headlineFontSize = 15.0f;
+	static constexpr float bigFontSize = 20.0f;
 	static constexpr float smallFontSize = 12.0f;
 
-	static constexpr float iconsFontSize = 22.0f;
+	static constexpr float iconsRegularFontSize = 22.0f;
 	static constexpr float iconsBoldFontSize = 25.0f;
+	static constexpr float iconsBigFontSize = 30.0f;
 
 	static constexpr float windowPadding = 30.0f;
 	static constexpr float framePadding = 3.0f;
