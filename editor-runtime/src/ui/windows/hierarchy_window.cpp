@@ -16,6 +16,7 @@ draggedItem(nullptr)
 	dragRect.foreground = true;
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
+	dragRect.lastColor = EditorColor::selection;
 
 	UIText dragRectText(EditorUI::getFonts().uiBold);
 	dragRectText.color = IM_COL32(255, 255, 255, 255);
@@ -186,13 +187,13 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	//
 
 	const char* icon1 = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
-	const char* icon2 = dropHover ? "   " ICON_FA_OCTAGON_PLUS "   " : "";
+	const char* icon2 = dropHover ? "   " ICON_FA_OCTAGON_PLUS : "";
 
 	//
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon1) + std::string(icon2) + "  " + item.entity.name;
+	std::string textValue = std::string(icon1) + std::string(icon2) + "    " + item.entity.name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
