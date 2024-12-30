@@ -3,13 +3,11 @@
 #include <cstdint>
 #include <glm.hpp>
 
-#include "../core/context/application_context.h"
-
 namespace Cursor
 {
 
-    // Sets context for cursor system
-	void setContext(ApplicationContext* context);
+    // Sets up cursor
+	void setup();
 
     // Returns the current cursor position relative to window
 	glm::vec2 getPosition();

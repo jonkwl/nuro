@@ -138,6 +138,13 @@ UIText* UIContentRect::getText(uint32_t index)
 	return &std::get<0>(textContent[index]);
 }
 
+ImVec2 UIContentRect::getSize()
+{
+	ImVec2 _position, _size;
+	getGeometry(_position, _size);
+	return _size;
+}
+
 void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
 {
 	// Pass on rect position

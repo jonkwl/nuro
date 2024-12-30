@@ -10,20 +10,20 @@
 
 #include "IconsFontAwesome6.h"
 
-#include "../src/ui/ui_components.h"
-#include "../src/ui/ui_flex.h"
-#include "../src/ui/editor_window.h"
-#include "../src/runtime/runtime.h"
-
 #include "../core/utils/log.h"
 #include "../core/input/cursor.h"
+#include "../core/context/application_context.h"
 
-#include "../src/ui/windows/scene_window.h"
+#include "../src/ui/ui_flex.h"
+#include "../src/runtime/runtime.h"
+#include "../src/ui/ui_components.h"
+#include "../src/ui/editor_window.h"
 #include "../src/ui/windows/game_window.h"
-#include "../src/ui/windows/post_processing_window.h"
-#include "../src/ui/windows/diagnostics_window.h"
+#include "../src/ui/windows/scene_window.h"
 #include "../src/ui/windows/console_window.h"
 #include "../src/ui/windows/hierarchy_window.h"
+#include "../src/ui/windows/diagnostics_window.h"
+#include "../src/ui/windows/post_processing_window.h"
 
 namespace EditorUI {
 
@@ -36,7 +36,7 @@ namespace EditorUI {
 	int32_t _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
-	void setup(ApplicationContext* context)
+	void setup()
 	{
 		//
 		// CREATE IMGUI CONTEXT
@@ -176,9 +176,9 @@ namespace EditorUI {
 		// IMPLEMENT IMGUI BACKEND
 		//
 
-		switch (context->readConfiguration().api) {
+		switch (ApplicationContext::readConfiguration().api) {
 		case API::OPENGL:
-			ImGui_ImplGlfw_InitForOpenGL(context->getWindow(), true);
+			ImGui_ImplGlfw_InitForOpenGL(ApplicationContext::getWindow(), true);
 			ImGui_ImplOpenGL3_Init("#version 460");
 			break;
 		default:

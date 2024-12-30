@@ -68,6 +68,9 @@ struct UIContentRect
 	// Returns text content by index; returns nullptr if index is invalid
 	UIText* getText(uint32_t index);
 
+	// Computes and returns the current rects total size
+	ImVec2 getSize();
+
 	//
 	// SMOOTHING
 	//

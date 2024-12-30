@@ -3,13 +3,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "../core/context/application_context.h"
+
 namespace Cursor {
 
 	GLFWwindow* _window;
 
-	void setContext(ApplicationContext* context)
+	void setup()
 	{
-		_window = context->getWindow();
+		_window = ApplicationContext::getWindow();
 	}
 
 	glm::vec2 getPosition()

@@ -31,9 +31,6 @@
 
 namespace Runtime {
 
-	// Application context
-	ApplicationContext applicationContext;
-
 	// Pipelines
 	SceneViewPipeline gSceneViewPipeline;
 	GameViewPipeline gGameViewPipeline;
@@ -98,10 +95,6 @@ namespace Runtime {
 
 	void _setupScripts() {
 
-		// Set context for scripts needing window context
-		Input::setContext(&applicationContext);
-		Cursor::setContext(&applicationContext);
-
 		// Create pipelines
 		gSceneViewPipeline.create();
 		gGameViewPipeline.create();
@@ -115,8 +108,12 @@ namespace Runtime {
 		// Create primitives
 		GlobalQuad::create();
 
+		// Setup input and cursor
+		Input::setup();
+		Cursor::setup();
+
 		// Setup engine ui
-		EditorUI::setup(&applicationContext);
+		EditorUI::setup();
 
 	}
 
@@ -221,7 +218,7 @@ namespace Runtime {
 		while(passed < duration){
 
 			// Start new frame
-			applicationContext.startFrame();
+			ApplicationContext::startFrame();
 
 			// Clear color buffer
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -265,7 +262,7 @@ namespace Runtime {
 			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 			// End frame
-			applicationContext.endFrame();
+			ApplicationContext::endFrame();
 
 			// Update passed time
 			passed += delta;
@@ -273,16 +270,16 @@ namespace Runtime {
 		}
 
 		// Clear frame
-		applicationContext.startFrame();
+		ApplicationContext::startFrame();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		applicationContext.endFrame();
+		ApplicationContext::endFrame();
 
 		// Delete model
 		delete model;
 
 		// Set to fullscreen
-		applicationContext.setFullscreen();
+		ApplicationContext::setFullscreen();
 
 	}
 
@@ -297,7 +294,7 @@ namespace Runtime {
 		config.vsync = false;
 
 		// Create application context instance
-		applicationContext.create(config);
+		ApplicationContext::create(config);
 
 	}
 
@@ -328,12 +325,12 @@ namespace Runtime {
 		// _createLoadingScreen();
 
 		// TMP Set to fullscreen
-		applicationContext.setFullscreen();
+		ApplicationContext::setFullscreen();
 
-		while (applicationContext.running())
+		while (ApplicationContext::running())
 		{
 			// START NEW APPLICATION CONTEXT FRAME
-			applicationContext.startFrame();
+			ApplicationContext::startFrame();
 
 			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
 			_prepareFrame();
@@ -350,7 +347,7 @@ namespace Runtime {
 			_renderEditor();
 
 			// END CURRENT FRAME
-			applicationContext.endFrame();
+			ApplicationContext::endFrame();
 		}
 
 		// Exit application
@@ -366,7 +363,7 @@ namespace Runtime {
 		gGamePhysics.destroy();
 
 		// Destroy context
-		applicationContext.destroy();
+		ApplicationContext::destroy();
 
 		// Exit application
 		std::exit(0);

@@ -3,13 +3,11 @@
 #include <cstdint>
 #include <glm.hpp>
 
-#include "../core/context/application_context.h"
-
 namespace Input
 {
 
-	// Sets context for input system
-	void setContext(ApplicationContext* context);
+	// Sets up input system
+	void setup();
 
 	// Fetches inputs of current frame
 	void update();

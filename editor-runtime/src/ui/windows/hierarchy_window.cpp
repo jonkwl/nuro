@@ -15,21 +15,16 @@ selectedItemId(0),
 dragRect(),
 draggedItem(nullptr)
 {
-	//
-	// SETUP DRAG RECT
-	//
-
+	// Setup drag rect
 	dragRect.padding = ImVec2(20.0f, 10.0f);
 	dragRect.foreground = true;
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
 	dragRect.lastColor = EditorColor::selection;
-
 	UIText dragRectText(EditorUI::getFonts().uiBold);
 	dragRectText.color = IM_COL32(255, 255, 255, 255);
 	dragRectText.alignment = ALIGN_CENTER;
 	dragRect.addText(dragRectText);
-
 }
 
 void HierarchyWindow::render()
@@ -112,7 +107,9 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	const ImVec2 mousePosition = ImGui::GetMousePos();
 
 	const ImVec2 rectMin = ImVec2(cursorPosition.x, cursorPosition.y);
-	const ImVec2 rectMax = ImVec2(cursorPosition.x + contentRegion.x, cursorPosition.y + itemHeight + textPadding.y * 2);
+	const ImVec2 rectMax = ImVec2(
+		cursorPosition.x + contentRegion.x, 
+		cursorPosition.y + itemHeight + textPadding.y * 2);
 	const ImVec2 finalSize = rectMax - rectMin;
 
 	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
@@ -142,13 +139,22 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// CHECK FOR MOVING ITEM DISPLAY
 	//
 
-	const float moveLineThickness = 2.0f;
+	const float moveLineThickness = 1.0f;
+	const float moveLineOffet = 2.0f;
 	switch (dropType) {
 	case MOVE_ITEM_UP:
-		foregroundDrawList->AddLine(ImVec2(rectMin.x, rectMin.y - 3.0f), ImVec2(rectMax.x, rectMin.y - 3.0f), IM_COL32(255, 255, 255, 255), moveLineThickness);
+		foregroundDrawList->AddLine(
+			ImVec2(rectMin.x, rectMin.y - moveLineOffet), 
+			ImVec2(rectMax.x, rectMin.y - moveLineOffet), 
+			IM_COL32(255, 255, 255, 255), 
+			moveLineThickness);
 		break;
 	case MOVE_ITEM_DOWN:
-		foregroundDrawList->AddLine(ImVec2(rectMin.x, rectMax.y + 3.0f), ImVec2(rectMax.x, rectMax.y + 3.0f), IM_COL32(255, 255, 255, 255), moveLineThickness);
+		foregroundDrawList->AddLine(ImVec2(
+			rectMin.x, rectMax.y + moveLineOffet), 
+			ImVec2(rectMax.x, rectMax.y + moveLineOffet), 
+			IM_COL32(255, 255, 255, 255), 
+			moveLineThickness);
 		break;
 	}
 
@@ -203,16 +209,23 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	ImVec2 textPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + textPadding.y);
 
 	//
-	// DRAW ITEM CARET CIRCLE
+	// DRAW ITEM CAR ET CIRCLE
 	// 
 
 	if (hasChildren) {
 		// Circle geometry
 		float circleRadius = 11.0f;
-		ImVec2 circlePosition = ImVec2(textPos.x + circleRadius, textPos.y + circleRadius * 0.5f + 1.0f);
+		ImVec2 circlePosition = ImVec2(
+			textPos.x + circleRadius, 
+			textPos.y + circleRadius * 0.5f + 1.0f);
 
 		// Fetch circle interactions
-		float circleDistance = (mousePosition.x - circlePosition.x) * (mousePosition.x - circlePosition.x) + (mousePosition.y - circlePosition.y) * (mousePosition.y - circlePosition.y);
+		float circleDistance = 
+			(mousePosition.x - circlePosition.x) * 
+			(mousePosition.x - circlePosition.x) + 
+			(mousePosition.y - circlePosition.y) * 
+			(mousePosition.y - circlePosition.y);
+
 		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
 		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
 		
@@ -245,7 +258,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	//
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 4.0f));
 	ImGui::PopStyleVar();
 
 	//
@@ -270,8 +283,6 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	//
 
 	if (draggedItem && !ImGui::IsMouseDown(0) && dropType != NO_DROP) {
-		draggedItem = nullptr;
-
 		switch (dropType) {
 		case DROP_ITEM:
 			// Drop dragged item here action
@@ -303,6 +314,12 @@ void HierarchyWindow::renderDraggedItem()
 		return;
 	}
 
+	// If not dragging anymore, stop
+	if (draggedItem && !ImGui::IsMouseDown(0)) {
+		draggedItem = nullptr;
+	}
+
+	// Update and draw drag rect
 	dragRect.position = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
 	dragRect.update();
 	dragRect.draw();

@@ -35,6 +35,7 @@ private:
 	float scrollIncrementSpeed; // Speed for incrementing movement speed through mouse scrolling
 	float speedChangeTimer; // Timer resetting when the speed is changed
 	UIContentRect speedChangeIndicator; // Speed change indicator rect for speed change
+	ImVec2 speedChangeIndicatorSize; // Size of speed change indicator
 
 	glm::vec2 moveAxis; // Current input axis for evaluating scene view movement
 	float moveAxisSmoothingFactor; // Smoothing for key axis

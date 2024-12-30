@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "../core/context/application_context.h"
+
 namespace Input {
 
 	GLFWwindow* _window = nullptr;
@@ -23,9 +25,9 @@ namespace Input {
 
 	// Input functions
 
-	void setContext(ApplicationContext* context)
+	void setup()
 	{
-		_window = context->getWindow();
+		_window = ApplicationContext::getWindow();
 
 		double mouseX, mouseY;
 		glfwGetCursorPos(_window, &mouseX, &mouseY);

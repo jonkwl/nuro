@@ -8,9 +8,8 @@
 struct GLFWwindow;
 struct GLFWmonitor;
 
-class ApplicationContext
+namespace ApplicationContext
 {
-public:
 	// Represents the configuration settings for an application context
 	struct Configuration {
 		API api = API::NONE;
@@ -20,9 +19,6 @@ public:
 		bool menubarVisible = true;
 		bool vsync = true;
 	};
-
-public:
-	ApplicationContext();
 
 	// Creates application context with given configuration
 	void create(Configuration configuration);
@@ -52,23 +48,9 @@ public:
 	void setVSync(bool value);
 
 	// Returns a pointer to the applications window
-	GLFWwindow* getWindow() const;
+	GLFWwindow* getWindow();
 
 	// Returns a read-only reference to the currently active configuration
-	const Configuration& readConfiguration() const;
-
-private:
-	// Default glfw error callback
-	static void glfwErrorCallback(int32_t error, const char* description);
-
-	// Loads graphics backend
-	void loadBackend();
-
-private:
-	GLFWwindow* window;
-	GLFWmonitor* monitor;
-	Configuration configuration;
-
-	glm::ivec2 lastWindowSize;
+	const Configuration& readConfiguration();
 
 };

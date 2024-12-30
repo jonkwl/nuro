@@ -4,8 +4,6 @@
 #include <vector>
 #include <string>
 
-#include "../core/context/application_context.h"
-
 namespace EditorUI
 {
 	struct Fonts
@@ -18,15 +16,25 @@ namespace EditorUI
 		ImFont* uiIcons;
 	};
 
-	void setup(ApplicationContext* context);
+	// Sets up editor ui
+	void setup();
+
+	// Begins a new frame for the editor ui
 	void newFrame();
+
+	// Renders the ui frame
 	void render();
 
+	// Generates a imgui id
 	std::string generateId();
 
+	// Returns all loaded fonts
 	const Fonts& getFonts();
 
+	// Sets the current editor ui cursor type
 	void setCursorType(int32_t cursorType);
+
+	// Sets the current editor ui cursor mode
 	void setCursorMode(int32_t cursorMode);
 };
 
