@@ -2,6 +2,13 @@
 
 #include "../core/transform/transform.h"
 
+enum DropType {
+	NO_DROP,
+	DROP_ITEM,
+	MOVE_ITEM_UP,
+	MOVE_ITEM_DOWN
+};
+
 HierarchyWindow::HierarchyWindow() : searchBuffer(""),
 currentHierarchy(),
 selectedItemId(0),
@@ -81,6 +88,11 @@ void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
 void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation)
 {
 	//
+	// ADDITIONALLY GET FOREGROUND DRAW LIST
+	//
+	ImDrawList* foregroundDrawList = ImGui::GetForegroundDrawList();
+
+	//
 	// PROPERTIES
 	//
 	const float indentationOffset = 30.0f;
@@ -97,15 +109,48 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 	const ImVec2 cursorPosition = ImGui::GetCursorScreenPos();
 	const ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+	const ImVec2 mousePosition = ImGui::GetMousePos();
 
 	const ImVec2 rectMin = ImVec2(cursorPosition.x, cursorPosition.y);
 	const ImVec2 rectMax = ImVec2(cursorPosition.x + contentRegion.x, cursorPosition.y + itemHeight + textPadding.y * 2);
+	const ImVec2 finalSize = rectMax - rectMin;
 
 	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
-	const bool dropHover = hovered && draggedItem;
 	const bool clicked = ImGui::IsMouseClicked(0) && hovered;
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
 	const bool dragging = ImGui::IsMouseDragging(0) && hovered;
+
+	//
+	// CHECK FOR DROP TYPE ON THIS ITEM IF SOME ITEM IS CURRENTLY BEING DRAGGED
+	//
+
+	DropType dropType = NO_DROP;
+	if (hovered && draggedItem) {
+		// Mouse in the top quarter of item element (-> move item up)
+		if (mousePosition.y < rectMin.y + finalSize.y * 0.25f) {
+			dropType = MOVE_ITEM_UP;
+		// Mouse in the bottom quarter of item element (-> move item down)
+		} else if (mousePosition.y > rectMax.y - finalSize.y * 0.25f) {
+			dropType = MOVE_ITEM_DOWN;
+		// Mouse in the middle of item element (-> drop item)
+		} else {
+			dropType = DROP_ITEM;
+		}
+	}
+
+	//
+	// CHECK FOR MOVING ITEM DISPLAY
+	//
+
+	const float moveLineThickness = 2.0f;
+	switch (dropType) {
+	case MOVE_ITEM_UP:
+		foregroundDrawList->AddLine(ImVec2(rectMin.x, rectMin.y - 3.0f), ImVec2(rectMax.x, rectMin.y - 3.0f), IM_COL32(255, 255, 255, 255), moveLineThickness);
+		break;
+	case MOVE_ITEM_DOWN:
+		foregroundDrawList->AddLine(ImVec2(rectMin.x, rectMax.y + 3.0f), ImVec2(rectMax.x, rectMax.y + 3.0f), IM_COL32(255, 255, 255, 255), moveLineThickness);
+		break;
+	}
 
 	//
 	// EVALUATE COLOR
@@ -118,7 +163,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// Priority #2:
 	if (selected) color = EditorColor::selection;
 	// Priority #1:
-	if (dropHover) color = UIUtils::darken(EditorColor::selection, 0.5f);
+	if (dropType == DROP_ITEM) color = UIUtils::darken(EditorColor::selection, 0.5f);
 
 	//
 	// DRAW ITEM BACKGROUND
@@ -165,10 +210,9 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		// Circle geometry
 		float circleRadius = 11.0f;
 		ImVec2 circlePosition = ImVec2(textPos.x + circleRadius, textPos.y + circleRadius * 0.5f + 1.0f);
-		ImVec2 mousePos = ImGui::GetMousePos();
 
 		// Fetch circle interactions
-		float circleDistance = (mousePos.x - circlePosition.x) * (mousePos.x - circlePosition.x) + (mousePos.y - circlePosition.y) * (mousePos.y - circlePosition.y);
+		float circleDistance = (mousePosition.x - circlePosition.x) * (mousePosition.x - circlePosition.x) + (mousePosition.y - circlePosition.y) * (mousePosition.y - circlePosition.y);
 		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
 		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
 		
@@ -176,7 +220,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		if (circleClicked) item.expanded = !item.expanded;
 		
 		// Evaluate color
-		ImU32 circleColor = circleHovered && !dropHover ? UIUtils::lighten(color, 1.0f) : color;
+		ImU32 circleColor = circleHovered && dropType == NO_DROP ? UIUtils::lighten(color, 1.0f) : color;
 		
 		// Draw circle
 		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);
@@ -187,7 +231,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	//
 
 	const char* icon1 = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
-	const char* icon2 = dropHover ? "   " ICON_FA_OCTAGON_PLUS : "";
+	const char* icon2 = dropType == DROP_ITEM ? "   " ICON_FA_OCTAGON_PLUS : "";
 
 	//
 	// DRAW TEXT
@@ -200,10 +244,12 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// ADVANCE CURSOR
 	//
 
-	ImGui::Dummy(ImVec2(contentRegion.x, rectMax.y - rectMin.y - EditorSizing::framePadding * 2 + 2.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y));
+	ImGui::PopStyleVar();
 
 	//
-	// CHECK FOR DRAG
+	// CHECK FOR BEGINNING TO DRAG THIS ITEM
 	//
 
 	if (dragging && !draggedItem) {
@@ -220,6 +266,26 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	}
 
 	//
+	// CHECK FOR ENDING DRAG ON THIS ITEM (-> DROPPING HERE)
+	//
+
+	if (draggedItem && !ImGui::IsMouseDown(0) && dropType != NO_DROP) {
+		draggedItem = nullptr;
+
+		switch (dropType) {
+		case DROP_ITEM:
+			// Drop dragged item here action
+			break;
+		case MOVE_ITEM_UP:
+			// Move dragged item up action
+			break;
+		case MOVE_ITEM_DOWN:
+			// Movw dragged item down action
+			break;
+		}
+	}
+
+	//
 	// RENDER CHILDREN
 	//
 
@@ -232,14 +298,8 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 void HierarchyWindow::renderDraggedItem()
 {
-	// Dont proceed if theres no item dragged
+	// Dont proceed if theres no item being dragged
 	if (!draggedItem) {
-		return;
-	}
-
-	// Stop drag if mouse isnt hold anymore
-	if (!ImGui::IsMouseDown(0)) {
-		draggedItem = nullptr;
 		return;
 	}
 
