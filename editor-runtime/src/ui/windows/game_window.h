@@ -13,15 +13,19 @@ public:
 private:
 	void renderToolbar();
 	void renderGameView();
+	void renderForegroundIndicators();
 
 private:
-	glm::vec2 currentWindowSize; // Current windows size
-	glm::vec2 lastWindowSize; // Cache last windows size
+	ImVec2 currentContentAvail; // Current windows size
+	ImVec2 lastContentAvail; // Cache last windows size
+
+	ImVec2 lastWindowPosition; // Cache for last window position
+	ImVec2 lastWindowSize; // Cache for last window size
 
 	bool windowFocused; // Set if game window is currently focused
 	bool windowHovered; // Set if game window is currently hovered
 
-	glm::vec4 gameViewBounds; // Bounds of game view (min x, min y, max x, max y)
+	ImVec4 gameViewBounds; // Bounds of game view (min x, min y, max x, max y)
 
 	UIContentRect noCameraIndicator; // Indicator for when theres no camera to render game view
 };

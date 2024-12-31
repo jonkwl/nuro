@@ -48,6 +48,9 @@ private:
 	// Sets a new target for the camera movement
 	void setCameraTarget(TransformComponent* target);
 
+	// Performs vertical auto scroll if an item is dragged
+	void performAutoScroll();
+
 	char searchBuffer[128];
 
 	std::vector<HierarchyItem> currentHierarchy;

@@ -41,6 +41,8 @@ void HierarchyWindow::render()
 	renderHierarchy(drawList);
 	renderDraggedItem();
 
+	performAutoScroll();
+
 	ImGui::End();
 	ImGui::PopStyleVar();
 }
@@ -384,4 +386,38 @@ void HierarchyWindow::setCameraTarget(TransformComponent* target)
 {
 	cameraTarget = target;
 	cameraMoving = true;
+}
+
+void HierarchyWindow::performAutoScroll()
+{
+	// No item dragged -> no auto scroll
+	if (!draggedItem) return;
+
+	// Properties
+	const float maxScrollSpeed = 80.0f;
+	const float scrollThreshold = 0.35f;
+
+	// Get data
+	float mouseY = ImGui::GetMousePos().y;
+	float windowY = ImGui::GetWindowPos().y;
+	float windowHeight = ImGui::GetWindowHeight();
+
+	auto rangeFactor = [](float x, const float range[2]) -> float {
+		return 1.0 - glm::clamp((x - range[0]) / (range[1] - range[0]), 0.0f, 1.0f);
+	};
+
+	// Scroll up
+	float upRange[2] = { windowY, windowY + windowHeight * scrollThreshold };
+	if (mouseY < upRange[1]) {
+		float scrollSpeed = maxScrollSpeed * rangeFactor(mouseY, upRange);
+		ImGui::SetScrollY(ImGui::GetScrollY() - scrollSpeed);
+		return;
+	}
+
+	// Scroll down
+	float downRange[2] = { windowY + windowHeight, windowY + windowHeight * (1.0f - scrollThreshold) };
+	if (mouseY > downRange[1]) {
+		float scrollSpeed = maxScrollSpeed * rangeFactor(mouseY, downRange);
+		ImGui::SetScrollY(ImGui::GetScrollY() + scrollSpeed);
+	}
 }

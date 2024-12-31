@@ -8,11 +8,12 @@
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/shadows/shadow_map.h"
 
-GameWindow::GameWindow() : currentWindowSize(glm::vec2(0.0f)),
-lastWindowSize(glm::vec2(0.0f)),
+GameWindow::GameWindow() : currentContentAvail(ImVec2(0.0f, 0.0f)),
+lastContentAvail(ImVec2(0.0f, 0.0f)),
+lastWindowSize(ImVec2(0.0f, 0.0f)),
 windowFocused(false),
 windowHovered(false),
-gameViewBounds(glm::vec4(0.0f))
+gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 {
 	// Setup no camera indicator
 	noCameraIndicator.color = IM_COL32(50, 35, 0, 255);
@@ -22,8 +23,6 @@ gameViewBounds(glm::vec4(0.0f))
 	noCameraIndicator.outline = true;
 	noCameraIndicator.outlineStrength = 1.0f;
 	noCameraIndicator.outlineColor = IM_COL32(255, 180, 0, 125);
-	noCameraIndicator.horizontalAlignment = Horizontal::CENTER;
-	noCameraIndicator.verticalAlignment = Vertical::CENTER;
 	noCameraIndicator.smoothing = false;
 	UIText noCameraText(EditorUI::getFonts().uiBig);
 	std::string noCameraIcon = ICON_FA_EYE_SLASH;
@@ -36,7 +35,7 @@ gameViewBounds(glm::vec4(0.0f))
 void GameWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("  Game  ", nullptr, EditorFlag::standard);
+	bool windowVisible = ImGui::Begin("  Game  ", nullptr, EditorFlag::standard);
 	{
 
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
@@ -46,7 +45,7 @@ void GameWindow::render()
 		UIComponents::headline("Game", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER);
 
 		// Get game window size
-		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+		currentContentAvail = ImGui::GetContentRegionAvail();
 
 		// Render game windows toolbar
 		renderToolbar();
@@ -54,9 +53,15 @@ void GameWindow::render()
 		// Render game view
 		renderGameView();
 
+		// Cache window position and size
+		lastWindowPosition = ImGui::GetWindowPos();
+		lastWindowSize = ImGui::GetWindowSize();
+
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
+
+	if (windowVisible) renderForegroundIndicators();
 }
 
 void GameWindow::renderToolbar()
@@ -113,19 +118,16 @@ void GameWindow::renderGameView()
 	bool availableCamera = pipeline.getCameraAvailable();
 	uint32_t output = pipeline.getOutput();
 
-	// Warn if camera isn't available
-	if (!pipeline.getCameraAvailable()) {
-		noCameraIndicator.draw();
+	// If no camera is available
+	if (!availableCamera) {
 		output = 0;
 	}
-
-	noCameraIndicator.draw();
 
 	// Render game view
 	ImGui::BeginChild("GameView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	{
 		// Check if window is currently being resized
-		bool currentlyResizing = currentWindowSize != lastWindowSize;
+		bool currentlyResizing = currentContentAvail != lastContentAvail;
 		if (currentlyResizing) output = 0;
 
 		// float aspectRatio = 16.0f / 9.0f;
@@ -144,15 +146,30 @@ void GameWindow::renderGameView()
 
 		ImVec2 boundsMin = ImGui::GetItemRectMin();
 		ImVec2 boundsMax = ImGui::GetItemRectMax();
-		gameViewBounds = glm::vec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
+		gameViewBounds = ImVec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
 
 		// UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
 
 		// Check if game window has been resized
 		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
 			pipeline.resizeViewport(size.x, size.y);
-			lastWindowSize = currentWindowSize;
+			lastContentAvail = currentContentAvail;
 		}
 	}
 	ImGui::EndChild();
+}
+
+void GameWindow::renderForegroundIndicators()
+{
+	GameViewPipeline& pipeline = Runtime::getGameViewPipeline();
+
+	// Render no camera indicator if no camera is available
+	if (!pipeline.getCameraAvailable()) {
+		ImVec2 size = noCameraIndicator.getSize();
+		noCameraIndicator.position = ImVec2(
+			lastWindowPosition.x + lastWindowSize.x * 0.5f - size.x * 0.5f,
+			lastWindowPosition.y + lastWindowSize.y * 0.5f - size.y * 0.5f
+		);
+		noCameraIndicator.draw();
+	}
 }
