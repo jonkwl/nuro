@@ -7,6 +7,8 @@
 
 #include "ui_text.h"
 
+
+
 struct UIContentRect
 {
 	//
@@ -16,14 +18,26 @@ struct UIContentRect
 	// Top left starting position of the rect in screen space coordinates
 	ImVec2 position = ImVec2(0.0f, 0.0f);
 
-	// Horizontal and vertical padding of rect content
+	// Horizontal and vertical padding of rect content (space inside rect between content) 
 	ImVec2 padding = ImVec2(0.0f, 0.0f);
 
+	// Horizontal and vertical margin of rect content (space outside rect when using non free alignment)
+	ImVec2 margin = ImVec2(0.0f, 0.0f);
+
 	// Background color of rect
-	uint32_t color = IM_COL32(255, 255, 255, 255);
+	ImU32 color = IM_COL32(255, 255, 255, 255);
 
 	// Border rounding of rect in px
 	float rounding = 0.0f;
+
+	// If rect should have an outline
+	bool outline = false;
+
+	// Thickness of outline rect
+	float outlineStrength = 0.0f;
+
+	// Color of outline rect
+	ImU32 outlineColor;
 
 	// If rect is always in foreground
 	bool foreground = false;
@@ -40,35 +54,38 @@ struct UIContentRect
 	// Rects height if using fixed height
 	float fixedHeight = 0.0f;
 
+	// Horizontal alignment of rect relative to parent window (use FREE for custom positioning)
+	Horizontal horizontalAlignment = Horizontal::FREE;
+	
+	// Vertical alignment of rect relative to parent window (use FREE for custom positioning)
+	Vertical verticalAlignment = Vertical::FREE;
+
 	//
 	// FUNCTIONALITY
 	//
 
-	// Prepares the rect for the next frame
-	void update();
-
-	// Draws the rect with its content, call after update()
+	// Draws the rect with its content
 	void draw();
 
-	// If mouse is currently hovering over rect, call after update()
+	// If mouse is currently hovering over rect
 	bool hovered();
 
-	// If mouse clicked on rect with given mouse button, call after update()
+	// If mouse clicked on rect with given mouse button
 	bool clicked(ImGuiMouseButton mouseButton);
 
-	// If mouse double clicked on rect with given mouse button, call after update()
+	// If mouse double clicked on rect with given mouse button
 	bool doubleClicked(ImGuiMouseButton mouseButton);
 
-	// If mouse dragged rect with given mouse button, call after update()
+	// If mouse dragged rect with given mouse button
 	bool dragged(ImGuiMouseButton mouseButton);
 
-	// Adds given text to the rect content
+	// Adds given text element to the rect content
 	void addText(UIText text);
 
-	// Returns text content by index; returns nullptr if index is invalid
-	UIText* getText(uint32_t index);
+	// Returns content text element by index (never cache this, only modify directly)
+	UIText& modifyText(uint32_t index);
 
-	// Computes and returns the current rects total size
+	// Computes and returns the rects total size
 	ImVec2 getSize();
 
 	//
@@ -109,11 +126,20 @@ private:
 	// All text content elements (text reference and last cached text size) 
 	std::vector<std::tuple<UIText, ImVec2>> textContent = std::vector<std::tuple<UIText, ImVec2>>();
 
-	// Current rect geometry
+	//
+	// CURRENT RECT GEOMETRY
+	//
 
 	ImVec2 rectMin;
 	ImVec2 rectMax;
 	ImVec2 finalPosition;
 	ImVec2 finalSize;
+
+	//
+	// CURRENT RECT CONTENT GEOMETRY
+	//
+
+	bool contentDirty;
+	ImVec2 contentSize;
 
 };

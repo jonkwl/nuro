@@ -6,8 +6,14 @@
 
 #include <algorithm>
 
-void UIContentRect::update()
+void UIContentRect::draw()
 {
+	//
+	// EARLY OUT IF WINDOW IS INVISIBLE
+	//
+
+	//
+
 	//
 	// UPDATE GEOMETRY, GET FINAL POSITION AND SIZE
 	//
@@ -25,10 +31,7 @@ void UIContentRect::update()
 
 	rectMin = finalPosition;
 	rectMax = finalPosition + finalSize;
-}
 
-void UIContentRect::draw()
-{
 	//
 	// GET DRAW LIST
 	//
@@ -54,6 +57,14 @@ void UIContentRect::draw()
 	drawList->AddRectFilled(rectMin, rectMax, finalColor, rounding);
 
 	//
+	// DRAW OUTLINE
+	//
+
+	if (outline) {
+		drawList->AddRect(rectMin, rectMax, DrawUtils::blend(color, outlineColor), rounding, ImDrawFlags_None, outlineStrength);
+	}
+
+	//
 	// DRAW CONTENT OF RECT
 
 	// Initialize content cursor
@@ -67,13 +78,13 @@ void UIContentRect::draw()
 		// Adjust texts final horizontal position according to its alignment
 		float freeSpaceX = finalSize.x - textSize.x - padding.x * 2;
 		switch (text.alignment) {
-		case ALIGN_LEFT:
+		case TextAlign::LEFT:
 			textPosition.x += 0.0f;
 			break;
-		case ALIGN_CENTER:
+		case TextAlign::CENTER:
 			textPosition.x += freeSpaceX * 0.5f;
 			break;
-		case ALIGN_RIGHT:
+		case TextAlign::RIGHT:
 			textPosition.x += freeSpaceX;
 			break;
 		}
@@ -81,11 +92,13 @@ void UIContentRect::draw()
 		// Set text position
 		text.position = textPosition;
 
-		// Scale text alpha by final color alpha
-		uint32_t r, g, b, a;
-		DrawUtils::extractRGB(text.color, r, g, b);
-		a = DrawUtils::extractAlpha(finalColor);
-		text.color = IM_COL32(r, g, b, a);
+		// Blend text if needed
+		uint32_t a = DrawUtils::extractAlpha(finalColor);
+		if (a < 255) {
+			uint32_t r, g, b;
+			DrawUtils::extractRGB(text.color, r, g, b);
+			text.color = IM_COL32(r, g, b, a);
+		}
 
 		// Draw text
 		text.draw(drawList);
@@ -127,15 +140,14 @@ bool UIContentRect::dragged(ImGuiMouseButton mouseButton)
 
 void UIContentRect::addText(UIText text)
 {
+	contentDirty = true;
 	textContent.push_back(std::make_tuple(text, ImVec2(0.0f, 0.0f)));
 }
 
-UIText* UIContentRect::getText(uint32_t index)
+UIText& UIContentRect::modifyText(uint32_t index)
 {
-	if (textContent.size() - 1 < index) {
-		return nullptr;
-	}
-	return &std::get<0>(textContent[index]);
+	contentDirty = true;
+	return std::get<0>(textContent[index]);
 }
 
 ImVec2 UIContentRect::getSize()
@@ -147,30 +159,37 @@ ImVec2 UIContentRect::getSize()
 
 void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
 {
-	// Pass on rect position
-	_position = position;
+	_size = ImVec2(0.0f, 0.0);
+
+	//
+	// RECALCULATE RECT CONTENT SIZE IF NEEDED
+	//
+
+	if (contentDirty) {
+
+		// Reset content size
+		contentSize = ImVec2(0.0f, 0.0f);
+
+		// Calculate text related sizes
+		for (auto& [text, textSize] : textContent) {
+			// Get absolute text size
+			textSize = text.getSize();
+
+			// Update content width if it exceeds previous
+			contentSize.x = std::max(contentSize.x, textSize.x);
+
+			// Add text height to rect max
+			contentSize.y += textSize.y;
+		}
+
+	}
 
 	//
 	// CALCULATE FINAL SIZE OF RECT
 	//
 
-	_size = ImVec2(0.0f, 0.0);
-	float contentWidth = 0.0f;
-
-	// Calculate text related sizes
-	for (auto& [text, textSize] : textContent) {
-		// Get absolute text size
-		textSize = text.getSize();
-
-		// Update content width if it exceeds previous
-		contentWidth = std::max(contentWidth, textSize.x);
-
-		// Add text height to rect max
-		_size.y += textSize.y;
-	}
-
-	// Set rect size to content width
-	_size.x = contentWidth;
+	// First match rect size to current content size
+	_size = contentSize;
 
 	// Overwrite rect size x if using fixed width
 	if (useFixedWidth) _size.x = fixedWidth;
@@ -180,6 +199,53 @@ void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
 
 	// Add total padding to rect size
 	_size += padding * 2;
+
+	//
+	// CALCULATE FINAL POSITION OF RECT
+	//
+
+	// All alignments are free -> early out, pass on current position property
+	if (horizontalAlignment == Horizontal::FREE && verticalAlignment == Vertical::FREE) {
+		_position = position;
+		return;
+	}
+
+	// Get window position and size
+	ImVec2 windowPosition = ImGui::GetWindowPos();
+	ImVec2 windowSize = ImGui::GetWindowSize();
+
+	// Calculate horizontal position based on horizontal alignment
+	switch (horizontalAlignment) {
+	case Horizontal::FREE:
+		_position.x = position.x;
+		break;
+	case Horizontal::LEFT:
+		_position.x = windowPosition.x + margin.x;
+		break;
+	case Horizontal::CENTER:
+		_position.x = windowPosition.x + windowSize.x * 0.5f - _size.x * 0.5f;
+		break;
+	case Horizontal::RIGHT:
+		_position.x = windowPosition.x + windowSize.x - _size.x - margin.x;
+		break;
+	}
+
+	// Calculate vertical position based on vertical alignment
+	switch (verticalAlignment) {
+	case Vertical::FREE:
+		_position.y = position.y;
+		break;
+	case Vertical::TOP:
+		_position.y = windowPosition.y + margin.y;
+		break;
+	case Vertical::CENTER:
+		_position.y = windowPosition.y + windowSize.y * 0.5f - _size.y * 0.5f;
+		break;
+	case Vertical::BOTTOM:
+		_position.y = windowPosition.y + windowSize.y - _size.y - margin.y;
+		break;
+	}
+	
 }
 
 void UIContentRect::getGeometrySmoothed(ImVec2& _position, ImVec2& _size)

@@ -23,7 +23,7 @@ draggedItem(nullptr)
 	dragRect.lastColor = EditorColor::selection;
 	UIText dragRectText(EditorUI::getFonts().uiBold);
 	dragRectText.color = IM_COL32(255, 255, 255, 255);
-	dragRectText.alignment = ALIGN_CENTER;
+	dragRectText.alignment = TextAlign::CENTER;
 	dragRect.addText(dragRectText);
 }
 
@@ -271,7 +271,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 		// Update drag rect text
 		std::string icon(ICON_FA_LEFT_LONG);
-		dragRect.getText(0)->text = icon + "   " + draggedItem->entity.name;
+		dragRect.modifyText(0).text = icon + "   " + draggedItem->entity.name;
 
 		// Match drag rects geometry to items geometry for a smooth transition
 		dragRect.lastPosition = ImVec2(cursorPosition.x, cursorPosition.y);
@@ -319,9 +319,8 @@ void HierarchyWindow::renderDraggedItem()
 		draggedItem = nullptr;
 	}
 
-	// Update and draw drag rect
+	// Draw drag rect
 	dragRect.position = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
-	dragRect.update();
 	dragRect.draw();
 }
 

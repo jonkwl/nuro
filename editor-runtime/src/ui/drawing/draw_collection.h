@@ -4,8 +4,22 @@
 // COLLECTION OF ENUMS THE DRAWING API USES
 //
 
-enum DrawAlignment {
-	ALIGN_LEFT,
-	ALIGN_CENTER,
-	ALIGN_RIGHT
+enum class TextAlign {
+	LEFT,
+	CENTER,
+	RIGHT
+};
+
+enum class Horizontal {
+	FREE,
+	LEFT,
+	CENTER,
+	RIGHT
+};
+
+enum class Vertical {
+	FREE,
+	TOP,
+	CENTER,
+	BOTTOM
 };

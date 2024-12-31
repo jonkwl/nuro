@@ -22,4 +22,6 @@ private:
 	bool windowHovered; // Set if game window is currently hovered
 
 	glm::vec4 gameViewBounds; // Bounds of game view (min x, min y, max x, max y)
+
+	UIContentRect noCameraIndicator; // Indicator for when theres no camera to render game view
 };

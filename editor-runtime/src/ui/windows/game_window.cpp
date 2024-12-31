@@ -14,6 +14,23 @@ windowFocused(false),
 windowHovered(false),
 gameViewBounds(glm::vec4(0.0f))
 {
+	// Setup no camera indicator
+	noCameraIndicator.color = IM_COL32(50, 35, 0, 255);
+	noCameraIndicator.padding = ImVec2(45.0f, 30.0f);
+	noCameraIndicator.rounding = 25.0f;
+	noCameraIndicator.foreground = true;
+	noCameraIndicator.outline = true;
+	noCameraIndicator.outlineStrength = 1.0f;
+	noCameraIndicator.outlineColor = IM_COL32(255, 180, 0, 125);
+	noCameraIndicator.horizontalAlignment = Horizontal::CENTER;
+	noCameraIndicator.verticalAlignment = Vertical::CENTER;
+	noCameraIndicator.smoothing = false;
+	UIText noCameraText(EditorUI::getFonts().uiBig);
+	std::string noCameraIcon = ICON_FA_EYE_SLASH;
+	noCameraText.text = noCameraIcon + "     No camera found, can't render";
+	noCameraText.color = IM_COL32(255, 255, 255, 255);
+	noCameraText.alignment = TextAlign::CENTER;
+	noCameraIndicator.addText(noCameraText);
 }
 
 void GameWindow::render()
@@ -98,13 +115,11 @@ void GameWindow::renderGameView()
 
 	// Warn if camera isn't available
 	if (!pipeline.getCameraAvailable()) {
-		ImU32 color = IM_COL32(239, 183, 74, 255);
-		ImGui::SetCursorPosX(25.0f);
-		UIComponents::tryIcon(ICON_FA_TRIANGLE_EXCLAMATION, color, 1.0f);
-		ImGui::SetCursorPosX(45.0f);
-		UIComponents::labelBold("Warning: No camera found, can't render", color);
+		noCameraIndicator.draw();
 		output = 0;
 	}
+
+	noCameraIndicator.draw();
 
 	// Render game view
 	ImGui::BeginChild("GameView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);

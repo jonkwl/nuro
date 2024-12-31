@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <imgui.h>
+#include <algorithm>
 
 namespace DrawUtils {
 
@@ -70,6 +71,41 @@ namespace DrawUtils {
 
     inline uint32_t extractAlpha(ImU32 color) {
         return (color >> IM_COL32_A_SHIFT) & 0xFF;
+    }
+
+    inline ImU32 blend(ImU32 source, ImU32 target) {
+        uint32_t sr, sg, sb, sa, tr, tg, tb, ta;
+
+        //
+        // Extract RGBA components
+        //
+
+        sr = (source >> IM_COL32_R_SHIFT) & 0xFF;
+        sg = (source >> IM_COL32_G_SHIFT) & 0xFF;
+        sb = (source >> IM_COL32_B_SHIFT) & 0xFF;
+        sa = (source >> IM_COL32_A_SHIFT) & 0xFF;
+
+        // Early out if source alpha is fully opaque
+        if (sa == 255) {
+            return target;
+        }
+
+        tr = (target >> IM_COL32_R_SHIFT) & 0xFF;
+        tg = (target >> IM_COL32_G_SHIFT) & 0xFF;
+        tb = (target >> IM_COL32_B_SHIFT) & 0xFF;
+        ta = (target >> IM_COL32_A_SHIFT) & 0xFF;
+
+        // Normalize alpha values to [0, 1] and blend
+        float blendedAlpha = ((sa / 255.0f) * (ta / 255.0f)) * 255.0f;
+
+        // Clamp the result to [0, 255] and cast back
+        ta = static_cast<uint32_t>(std::clamp(blendedAlpha, 0.0f, 255.0f));
+
+        // Reconstruct the target color with the new alpha
+        target = IM_COL32(tr, tg, tb, ta);
+
+        // Return blended target color
+        return target;
     }
 
 }

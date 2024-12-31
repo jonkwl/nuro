@@ -25,13 +25,13 @@ struct UIText
 	ImVec2 position = ImVec2(0.0f, 0.0f);
 
 	// Color of text
-	uint32_t color = IM_COL32(0, 0, 0, 255);
+	ImU32 color = IM_COL32(0, 0, 0, 255);
 
 	// Horizontal and vertical padding of text
 	ImVec2 padding = ImVec2(0.0f, 0.0f);
 
 	// Text alignment within parent component if it has any
-	DrawAlignment alignment = ALIGN_LEFT;
+	TextAlign alignment = TextAlign::LEFT;
 
 	//
 	// VIRTUAL CONTENT ELEMENT FUNCTIONS

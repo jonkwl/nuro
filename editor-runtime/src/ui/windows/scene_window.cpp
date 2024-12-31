@@ -42,17 +42,20 @@ cameraEulerAngles(glm::vec3(0.0f))
 	// Initialize last mouse position
 	mouseLast = Cursor::getPosition();
 
-	// Setup speed change indicator rect
+	// Setup speed change indicator
 	speedChangeIndicator.color = IM_COL32(0, 0, 0, 0);
 	speedChangeIndicator.padding = ImVec2(45.0f, 30.0f);
 	speedChangeIndicator.rounding = 25.0f;
 	speedChangeIndicator.foreground = true;
-	speedChangeIndicator.fixedWidth = 150.0f;
+	speedChangeIndicator.outline = true;
+	speedChangeIndicator.outlineStrength = 1.0f;
+	speedChangeIndicator.outlineColor = IM_COL32(255, 255, 255, 125);
+	speedChangeIndicator.horizontalAlignment = Horizontal::CENTER;
+	speedChangeIndicator.verticalAlignment = Vertical::CENTER;
 	UIText speedChangeText(EditorUI::getFonts().uiBig);
 	speedChangeText.color = IM_COL32(255, 255, 255, 255);
-	speedChangeText.alignment = ALIGN_CENTER;
+	speedChangeText.alignment = TextAlign::CENTER;
 	speedChangeIndicator.addText(speedChangeText);
-	speedChangeIndicatorSize = speedChangeIndicator.getSize();
 }
 
 void SceneWindow::render()
@@ -284,17 +287,9 @@ void SceneWindow::renderSpeedChangeIndicator()
 
 	// Set text
 	std::string icon = std::string(ICON_FA_GAUGE);
-	speedChangeIndicator.getText(0)->text = icon + "   " + std::to_string(movementSpeed);
-
-	// Evaluate speed change indicator position
-	ImVec2 windowPosition = ImGui::GetWindowPos();
-	ImVec2 windowSize = ImGui::GetWindowSize();
-	speedChangeIndicator.position = ImVec2(
-		windowPosition.x + windowSize.x * 0.5f - speedChangeIndicatorSize.x * 0.5f, 
-		windowPosition.y + windowSize.y * 0.5f - speedChangeIndicatorSize.y * 0.5f);
+	speedChangeIndicator.modifyText(0).text = icon + "   " + std::to_string(movementSpeed);
 	
 	// Update and draw speed change indicator
-	speedChangeIndicator.update();
 	speedChangeIndicator.draw();
 }
 
