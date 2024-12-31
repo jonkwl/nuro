@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "window_includes.h"
 
@@ -54,10 +55,10 @@ private:
 	char searchBuffer[128];
 
 	std::vector<HierarchyItem> currentHierarchy;
-	uint32_t selectedItemId;
+	std::unordered_map<uint32_t, HierarchyItem*> selectedItems;
 
 	UIContentRect dragRect;
-	HierarchyItem* draggedItem;
+	bool draggingHierarchy;
 
 	bool cameraMoving;
 	float cameraMovementTime;

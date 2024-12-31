@@ -11,9 +11,12 @@ enum DropType {
 
 HierarchyWindow::HierarchyWindow() : searchBuffer(""),
 currentHierarchy(),
-selectedItemId(0),
+selectedItems(),
 dragRect(),
-draggedItem(nullptr)
+draggingHierarchy(false),
+cameraMoving(false),
+cameraMovementTime(0.0f),
+cameraTarget(nullptr)
 {
 	// Setup drag rect
 	dragRect.padding = ImVec2(20.0f, 10.0f);
@@ -99,7 +102,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// EVALUATE
 	//
 
-	const bool selected = item.id == selectedItemId;
+	const bool selected = selectedItems.count(item.id) > 0;
 	const bool hasChildren = item.children.size() > 0;
 	const float itemHeight = ImGui::GetFontSize();
 	const float textOffset = indentation * indentationOffset;
@@ -110,29 +113,31 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 	const ImVec2 rectMin = ImVec2(cursorPosition.x, cursorPosition.y);
 	const ImVec2 rectMax = ImVec2(
-		cursorPosition.x + contentRegion.x, 
+		cursorPosition.x + contentRegion.x,
 		cursorPosition.y + itemHeight + textPadding.y * 2);
 	const ImVec2 finalSize = rectMax - rectMin;
 
 	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
 	const bool clicked = ImGui::IsMouseClicked(0) && hovered;
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
-	const bool dragging = ImGui::IsMouseDragging(0) && hovered;
+	const bool draggingThis = ImGui::IsMouseDragging(0) && hovered;
 
 	//
 	// CHECK FOR DROP TYPE ON THIS ITEM IF SOME ITEM IS CURRENTLY BEING DRAGGED
 	//
 
 	DropType dropType = NO_DROP;
-	if (hovered && draggedItem) {
+	if (hovered && draggingHierarchy) {
 		// Mouse in the top quarter of item element (-> move item up)
 		if (mousePosition.y < rectMin.y + finalSize.y * 0.25f) {
 			dropType = MOVE_ITEM_UP;
-		// Mouse in the bottom quarter of item element (-> move item down)
-		} else if (mousePosition.y > rectMax.y - finalSize.y * 0.25f) {
+			// Mouse in the bottom quarter of item element (-> move item down)
+		}
+		else if (mousePosition.y > rectMax.y - finalSize.y * 0.25f) {
 			dropType = MOVE_ITEM_DOWN;
-		// Mouse in the middle of item element (-> drop item)
-		} else {
+			// Mouse in the middle of item element (-> drop item)
+		}
+		else {
 			dropType = DROP_ITEM;
 		}
 	}
@@ -146,16 +151,16 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	switch (dropType) {
 	case MOVE_ITEM_UP:
 		foregroundDrawList->AddLine(
-			ImVec2(rectMin.x, rectMin.y - moveLineOffet), 
-			ImVec2(rectMax.x, rectMin.y - moveLineOffet), 
-			IM_COL32(255, 255, 255, 255), 
+			ImVec2(rectMin.x, rectMin.y - moveLineOffet),
+			ImVec2(rectMax.x, rectMin.y - moveLineOffet),
+			IM_COL32(255, 255, 255, 255),
 			moveLineThickness);
 		break;
 	case MOVE_ITEM_DOWN:
 		foregroundDrawList->AddLine(ImVec2(
-			rectMin.x, rectMax.y + moveLineOffet), 
-			ImVec2(rectMax.x, rectMax.y + moveLineOffet), 
-			IM_COL32(255, 255, 255, 255), 
+			rectMin.x, rectMax.y + moveLineOffet),
+			ImVec2(rectMax.x, rectMax.y + moveLineOffet),
+			IM_COL32(255, 255, 255, 255),
 			moveLineThickness);
 		break;
 	}
@@ -183,8 +188,36 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// CHECK FOR SELECTION
 	//
 
+	// Only update selection if this item is not being dragged
 	if (clicked) {
-		selectedItemId = item.id;
+
+		ImGuiIO& io = ImGui::GetIO();
+
+		auto select = [this, &item]() {
+			selectedItems[item.id] = &item;
+			Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
+		};
+
+		// Just add current item to selected items
+		if (io.KeyCtrl) {
+			select();
+		}
+		// Select all between latest selection and this item
+		else if (io.KeyShift) {
+			// Add actual select in all between functionality here
+			selectedItems.clear();
+			select();
+		}
+		// Only select this item
+		else {
+			selectedItems.clear();
+			select();
+		}
+
+	}
+
+	if (clicked && !selected) {
+		selectedItems[item.id] = &item;
 		Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
 	}
 
@@ -267,13 +300,14 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// CHECK FOR BEGINNING TO DRAG THIS ITEM
 	//
 
-	if (dragging && !draggedItem) {
-		// Update dragged item
-		draggedItem = &item;
+	if (draggingThis && !draggingHierarchy) {
+		draggingHierarchy = true;
 
 		// Update drag rect text
+		size_t nSelectedItems = selectedItems.size();
+		std::string text = nSelectedItems > 1 ? "Selected " + std::to_string(selectedItems.size()) + " items" : "Selected " + item.entity.name;
 		std::string icon(ICON_FA_LEFT_LONG);
-		dragRect.modifyText(0).text = icon + "   " + draggedItem->entity.name;
+		dragRect.modifyText(0).text = icon + text;
 
 		// Match drag rects geometry to items geometry for a smooth transition
 		dragRect.lastPosition = ImVec2(cursorPosition.x, cursorPosition.y);
@@ -284,7 +318,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// CHECK FOR ENDING DRAG ON THIS ITEM (-> DROPPING HERE)
 	//
 
-	if (draggedItem && !ImGui::IsMouseDown(0) && dropType != NO_DROP) {
+	if (draggingHierarchy && !ImGui::IsMouseDown(0) && dropType != NO_DROP) {
 		switch (dropType) {
 		case DROP_ITEM:
 			// Drop dragged item here action
@@ -312,13 +346,13 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 void HierarchyWindow::renderDraggedItem()
 {
 	// Dont proceed if theres no item being dragged
-	if (!draggedItem) {
+	if (!draggingHierarchy) {
 		return;
 	}
 
 	// If not dragging anymore, stop
-	if (draggedItem && !ImGui::IsMouseDown(0)) {
-		draggedItem = nullptr;
+	if (!ImGui::IsMouseDown(0)) {
+		draggingHierarchy = false;
 	}
 
 	// Draw drag rect
@@ -391,7 +425,7 @@ void HierarchyWindow::setCameraTarget(TransformComponent* target)
 void HierarchyWindow::performAutoScroll()
 {
 	// No item dragged -> no auto scroll
-	if (!draggedItem) return;
+	if (!draggingHierarchy) return;
 
 	// Properties
 	const float maxScrollSpeed = 80.0f;
