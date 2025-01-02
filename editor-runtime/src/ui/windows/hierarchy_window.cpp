@@ -10,8 +10,11 @@ enum DropType {
 };
 
 HierarchyWindow::HierarchyWindow() : searchBuffer(""),
+contextMenuUsed(false),
 currentHierarchy(),
 selectedItems(),
+lastSelected(nullptr),
+lastHovered(nullptr),
 dragRect(),
 draggingHierarchy(false),
 cameraMoving(false),
@@ -34,18 +37,20 @@ void HierarchyWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20.0f, 20.0f));
 	ImGui::Begin(UIUtils::windowTitle("Hierarchy"), nullptr, EditorFlag::fixed);
+	{
+		renderContextMenu();
 
-	// Get draw list
-	ImDrawList& drawList = *ImGui::GetWindowDrawList();
+		// Get draw list
+		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
-	UIComponents::headline("Hierarchy", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
+		UIComponents::headline("Hierarchy", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
 
-	renderSearch(drawList);
-	renderHierarchy(drawList);
-	renderDraggedItem();
+		renderSearch(drawList);
+		renderHierarchy(drawList);
+		renderDraggedItem();
 
-	performAutoScroll();
-
+		performAutoScroll();
+	}
 	ImGui::End();
 	ImGui::PopStyleVar();
 }
@@ -117,10 +122,12 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		cursorPosition.y + itemHeight + textPadding.y * 2);
 	const ImVec2 finalSize = rectMax - rectMin;
 
-	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
+	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax) && !contextMenuUsed;
 	const bool clicked = ImGui::IsMouseClicked(0) && hovered;
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
 	const bool draggingThis = ImGui::IsMouseDragging(0) && hovered;
+
+	if (hovered) lastHovered = &item;
 
 	//
 	// CHECK FOR DROP TYPE ON THIS ITEM IF SOME ITEM IS CURRENTLY BEING DRAGGED
@@ -172,7 +179,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// Base:
 	ImU32 color = EditorColor::background;
 	// Priority #3:
-	if (hovered) UIUtils::lighten(EditorColor::background, 0.38f);
+	if (hovered) color = UIUtils::lighten(EditorColor::background, 0.38f);
 	// Priority #2:
 	if (selected) color = EditorColor::selection;
 	// Priority #1:
@@ -228,8 +235,18 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		}
 		// Only select this item
 		else {
-			selectedItems.clear();
-			select(item);
+			// If theres multiple selected items, only select this item if its not among the multiple selected ones
+			if (selectedItems.size() > 1) {
+				if (selectedItems.find(item.id) == selectedItems.end()) {
+					selectedItems.clear();
+					select(item);
+				}
+			}
+			// Not multiple selected items, just select this item
+			else {
+				selectedItems.clear();
+				select(item);
+			}
 		}
 
 		// Cache last selected item
@@ -309,7 +326,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	//
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 4.0f));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 6.0f));
 	ImGui::PopStyleVar();
 
 	//
@@ -374,6 +391,125 @@ void HierarchyWindow::renderDraggedItem()
 	// Draw drag rect
 	dragRect.position = ImGui::GetMousePos() + ImVec2(12.0f, 12.0f);
 	dragRect.draw();
+}
+
+void HierarchyWindow::renderContextMenu()
+{
+	/*ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.5f, 0.8f, 1.0f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.3f, 0.5f, 0.8f, 1.0f));
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));*/
+
+	if (ImGui::BeginPopupContextWindow("WindowContextMenu", ImGuiPopupFlags_MouseButtonRight))
+	{
+		contextMenuUsed = true;
+
+		if (lastHovered) {
+			if (ImGui::MenuItem(ICON_FA_TRASH "          Delete")
+			{
+
+			}
+
+			if (ImGui::MenuItem(ICON_FA_COPY "          Duplicate"))
+			{
+
+			}
+
+			if (ImGui::MenuItem(ICON_FA_PENCIL "          Rename"))
+			{
+
+			}
+		}
+
+		if (ImGui::MenuItem(ICON_FA_LAYER_PLUS "          Empty Entity"))
+		{
+
+		}
+
+		if (ImGui::MenuItem(ICON_FA_CAMERA_MOVIE "          Camera"))
+		{
+
+		}
+
+		if (ImGui::BeginMenu(ICON_FA_CUBE "          3D Primitives"))
+		{
+			if (ImGui::MenuItem("Cube"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Sphere"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Capsule"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Cylinder"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Pyramid"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Plane"))
+			{
+
+			}
+
+			ImGui::EndMenu();
+
+		}
+
+		if (ImGui::BeginMenu(ICON_FA_LIGHTBULB "          Light"))
+		{
+
+			if (ImGui::MenuItem("Directional Light"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Point Light"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("Spotlight"))
+			{
+
+			}
+
+			ImGui::EndMenu();
+
+		}
+
+		if (ImGui::BeginMenu(ICON_FA_VOLUME_HIGH "          Audio"))
+		{
+
+			if (ImGui::MenuItem("Audio Source"))
+			{
+
+			}
+
+			ImGui::EndMenu();
+
+		}
+
+		ImGui::EndPopup();
+	}
+	else {
+		contextMenuUsed = false;
+		lastHovered = nullptr;
+	}
+
+	// ImGui::PopStyleColor(5);
 }
 
 void HierarchyWindow::updateCameraMovement()

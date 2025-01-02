@@ -89,7 +89,7 @@ Entity planeEntity;
 static bool jumped = false;
 static float zoom = -20.0f;
 
-void setup() {
+void _example() {
 
 	// Models
 	Model* cubeModel = Model::load("../resources/primitives/cube.fbx");
@@ -216,6 +216,10 @@ void setup() {
 	playerEC.get<VelocityComponent>();
 	playerEC.remove<TransformComponent>();
 
+}
+
+void setup() {
+	_example();
 }
 
 void awake() {

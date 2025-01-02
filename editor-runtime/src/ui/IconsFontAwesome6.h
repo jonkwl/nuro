@@ -1428,3 +1428,6 @@
 #define ICON_FA_ARROW_TURN_DOWN_LEFT "\xEE\x8B\xA1" // U+e2e1
 #define ICON_FA_LEFT_FROM_LINE "\xEF\x8D\x88" // U+f348
 #define ICON_FA_OCTAGON_PLUS "\xEF\x8C\x81" // U+f301
+#define ICON_FA_LAYER_PLUS "\xEF\x97\xBF" // U+f5ff
+#define ICON_FA_CRATE_EMPTY "\xEE\x85\x91" // U+e151
+#define ICON_FA_CAMERA_MOVIE "\xEF\xA2\xA9" // U+f8a9

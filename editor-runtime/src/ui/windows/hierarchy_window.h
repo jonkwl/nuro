@@ -44,6 +44,9 @@ private:
 	// Renders the indicator for the item currently dragged
 	void renderDraggedItem();
 
+	// Renders the context menu
+	void renderContextMenu();
+
 	// Updates camera movement
 	void updateCameraMovement();
 
@@ -58,9 +61,12 @@ private:
 
 	char searchBuffer[128];
 
+	bool contextMenuUsed;
+
 	std::vector<HierarchyItem> currentHierarchy;
 	std::unordered_map<uint32_t, HierarchyItem*> selectedItems;
 	HierarchyItem* lastSelected;
+	HierarchyItem* lastHovered;
 
 	UIContentRect dragRect;
 	bool draggingHierarchy;
