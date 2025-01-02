@@ -188,37 +188,53 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// CHECK FOR SELECTION
 	//
 
-	// Only update selection if this item is not being dragged
 	if (clicked) {
 
 		ImGuiIO& io = ImGui::GetIO();
 
-		auto select = [this, &item]() {
-			selectedItems[item.id] = &item;
-			Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
+		auto select = [this](HierarchyItem& _item) {
+			selectedItems[_item.id] = &_item;
+			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);   
 		};
 
 		// Just add current item to selected items
 		if (io.KeyCtrl) {
-			select();
+			select(item);
 		}
 		// Select all between latest selection and this item
 		else if (io.KeyShift) {
-			// Add actual select in all between functionality here
-			selectedItems.clear();
-			select();
+			// Make sure last selected is set
+			if (!lastSelected) lastSelected = &item;
+
+			// Find multiselect start and end elements
+			auto start = std::find(currentHierarchy.begin(), currentHierarchy.end(), *lastSelected);
+			auto end = std::find(currentHierarchy.begin(), currentHierarchy.end(), item);
+
+			// Select all items between start and end
+			if (start != currentHierarchy.end() && end != currentHierarchy.end()) {
+				if (start <= end) {
+					for (auto i = start; i != end; ++i) {
+						select(*i);
+					}
+					select(*end);
+				}
+				else {
+					for (auto i = start; i != end; --i) {
+						select(*i);
+					}
+					select(*end);
+				}
+			}
 		}
 		// Only select this item
 		else {
 			selectedItems.clear();
-			select();
+			select(item);
 		}
 
-	}
+		// Cache last selected item
+		lastSelected = &item;
 
-	if (clicked && !selected) {
-		selectedItems[item.id] = &item;
-		Runtime::getSceneViewPipeline().setSelectedEntity(&item.entity);
 	}
 
 	//
@@ -307,7 +323,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		size_t nSelectedItems = selectedItems.size();
 		std::string text = nSelectedItems > 1 ? "Selected " + std::to_string(selectedItems.size()) + " items" : "Selected " + item.entity.name;
 		std::string icon(ICON_FA_LEFT_LONG);
-		dragRect.modifyText(0).text = icon + text;
+		dragRect.modifyText(0).text = icon + "   " + text;
 
 		// Match drag rects geometry to items geometry for a smooth transition
 		dragRect.lastPosition = ImVec2(cursorPosition.x, cursorPosition.y);

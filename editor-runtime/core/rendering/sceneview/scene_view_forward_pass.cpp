@@ -271,7 +271,7 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 
 	// Get outline thickness according to camera distance
 	float distance = glm::distance(camera.transform.position, transform.position);
-	float baseThickness = 0.05f;
+	float baseThickness = 0.03f;
 	float baseDistance = 5.0f;
 	float thickness = (distance / baseDistance) * baseThickness;
 

@@ -18,6 +18,10 @@ struct HierarchyItem {
 	std::vector<HierarchyItem> children;
 	bool expanded;
 
+	bool operator==(const HierarchyItem& other) {
+		return id == other.id;
+	}
+
 };
 
 class HierarchyWindow : public EditorWindow
@@ -56,6 +60,7 @@ private:
 
 	std::vector<HierarchyItem> currentHierarchy;
 	std::unordered_map<uint32_t, HierarchyItem*> selectedItems;
+	HierarchyItem* lastSelected;
 
 	UIContentRect dragRect;
 	bool draggingHierarchy;
