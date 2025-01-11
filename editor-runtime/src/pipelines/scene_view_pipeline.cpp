@@ -68,10 +68,6 @@ void SceneViewPipeline::render()
 {
 	Profiler::start("render");
 
-	// Start new gizmo frame
-	IMGizmo& gizmos = Runtime::getSceneGizmos();
-	gizmos.newFrame();
-
 	// Pick variable items for rendering
 	Camera& targetCamera = flyCamera;
 
@@ -84,6 +80,10 @@ void SceneViewPipeline::render()
 	projection = Transformation::projection(targetCamera.root.fov, targetCamera.root.near, targetCamera.root.far, viewport);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
+
+	// Start new gizmo frame
+	IMGizmo& gizmos = Runtime::getSceneGizmos();
+	gizmos.newFrame();
 
 	// Render test light gizmo
 	gizmos.color = GizmoColor::BLUE;

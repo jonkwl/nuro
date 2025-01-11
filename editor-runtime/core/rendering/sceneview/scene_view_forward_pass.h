@@ -49,7 +49,7 @@ private:
 	// Default scene view clearing color rgb values
 	static constexpr float defaultClearColor[3] = { 1.0f, 1.0f, 1.0f };
 
-	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material); // Renders a given entities mesh
+	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer); // Renders a given entities mesh
 	void renderMeshes(const std::vector<EntityContainer*>& skippedEntities); // Renders all meshes
 	void renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera); // Renders the selected entity with an outline
 };

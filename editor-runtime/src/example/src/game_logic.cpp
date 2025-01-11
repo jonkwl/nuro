@@ -195,7 +195,7 @@ void _example() {
 	player.add<MeshRendererComponent>(sphereMesh, planeMaterial);
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
-	Rigidbody::setInterpolation(playerRb, RB_Interpolation::EXTRAPOLATE);
+	// Rigidbody::setInterpolation(playerRb, RB_Interpolation::EXTRAPOLATE);
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
 
 	// Player child

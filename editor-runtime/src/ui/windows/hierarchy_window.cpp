@@ -205,9 +205,16 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);   
 		};
 
-		// Just add current item to selected items
+		// Just handle current items selection
 		if (io.KeyCtrl) {
-			select(item);
+			// Item not selected yet, add to selected items
+			if (selectedItems.find(item.id) == selectedItems.end()) {
+				select(item);
+			}
+			// Item already selected, remove from selected items
+			else {
+				selectedItems.erase(item.id);
+			}
 		}
 		// Select all between latest selection and this item
 		else if (io.KeyShift) {
