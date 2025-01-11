@@ -5,6 +5,10 @@
 
 #include "../core/utils/log.h"
 #include "../core/time/time.h"
+#include "../core/input/input.h"
+#include "../core/input/cursor.h"
+#include "../core/diagnostics/diagnostics.h"
+#include "../core/rendering/primitives/global_quad.h"
 
 namespace ApplicationContext {
 
@@ -38,6 +42,10 @@ namespace ApplicationContext {
 
 	void create(Configuration configuration)
 	{
+		//
+		// CREATE GLFW CONTEXT
+		//
+
 		// Sync given configuration with application context instances configuration
 		gConfiguration = configuration;
 
@@ -95,6 +103,17 @@ namespace ApplicationContext {
 
 		// Set vsync
 		setVSync(configuration.vsync);
+
+		//
+		// SETUP OTHER SYSTEMS
+		//
+
+		// Setup input and cursor
+		Input::setup();
+		Cursor::setup();
+
+		// Create essential primitives
+		GlobalQuad::create();
 	}
 
 	void destroy()
@@ -114,6 +133,12 @@ namespace ApplicationContext {
 
 		// Step global time
 		Time::step(glfwGetTime());
+
+		// Update diagnostics
+		Diagnostics::step();
+
+		// Update input system
+		Input::update();
 	}
 
 	void endFrame()

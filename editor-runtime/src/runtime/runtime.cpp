@@ -14,19 +14,14 @@
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/core/transformation.h"
 #include "../core/rendering/shadows/shadow_disk.h"
-#include "../core/rendering/primitives/global_quad.h"
-#include "../core/rendering/material/unlit/unlit_material.h"
 
 #include "../core/utils/log.h"
 #include "../core/time/time.h"
-#include "../core/input/input.h"
-#include "../core/input/cursor.h"
 #include "../core/physics/physics.h"
 #include "../core/viewport/viewport.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/transform/transform.h"
 #include "../core/diagnostics/profiler.h"
-#include "../core/diagnostics/diagnostics.h"
 #include "../core/context/application_context.h"
 
 namespace Runtime {
@@ -105,29 +100,8 @@ namespace Runtime {
 		// Setup scene gizmos
 		gSceneGizmos.setup();
 
-		// Create primitives
-		GlobalQuad::create();
-
-		// Setup input and cursor
-		Input::setup();
-		Cursor::setup();
-
 		// Setup engine ui
 		EditorUI::setup();
-
-	}
-
-	void _prepareFrame() {
-
-		// Update diagnostics
-		Diagnostics::step();
-
-		// Update input system
-		Input::update();
-
-		// Clear frame color
-		glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
 
 	}
 
@@ -222,13 +196,14 @@ namespace Runtime {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Update inputs
-			Input::update();
+			// Input::update();
 
 			// Get delta
 			float delta = Time::deltaf();
 
 			// Cube rotation
-			glm::vec2 mouseDelta = Input::mouseDelta() * delta;
+			// glm::vec2 mouseDelta = Input::mouseDelta() * delta;
+			glm::vec2 mouseDelta = glm::vec2(0.0f, 0.0f);
 			glm::vec3 axisX = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // X-axis rotation
 			glm::vec3 axisY = glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // Y-axis rotation
 			glm::quat rotationX = glm::angleAxis(mouseDelta.y, axisX); // Rotation around X axis (pitch)
@@ -329,8 +304,9 @@ namespace Runtime {
 			// START NEW APPLICATION CONTEXT FRAME
 			ApplicationContext::startFrame();
 
-			// UPDATE ANY SCRIPTS NEEDING UPDATE FOR NEXT FRAME (Time, Inputs etc.)
-			_prepareFrame();
+			// CLEAR FRAME COLOR
+			glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			// UPDATE GAME IF GAME IS RUNNING
 			if (gGameRunning && !gGamePaused) _stepGame();
