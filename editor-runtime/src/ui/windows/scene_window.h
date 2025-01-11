@@ -34,7 +34,7 @@ private:
 	float mouseSensitivity; // Scene viewport mouse sensitivity
 	float scrollIncrementSpeed; // Speed for incrementing movement speed through mouse scrolling
 	float speedChangeTimer; // Timer resetting when the speed is changed
-	UIContentRect speedChangeIndicator; // Speed change indicator for speed change
+	DynamicContent speedChangeIndicator; // Speed change indicator for speed change
 
 	glm::vec2 moveAxis; // Current input axis for evaluating scene view movement
 	float moveAxisSmoothingFactor; // Smoothing for key axis

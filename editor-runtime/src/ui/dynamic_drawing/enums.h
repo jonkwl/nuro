@@ -1,7 +1,7 @@
 #pragma once
 
 //
-// COLLECTION OF ENUMS THE DRAWING API USES
+// COLLECTION OF ENUMS
 //
 
 enum class TextAlign {

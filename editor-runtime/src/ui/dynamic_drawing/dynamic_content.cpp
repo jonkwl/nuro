@@ -1,12 +1,12 @@
-#include "ui_content_rect.h"
+#include "dynamic_content.h"
 
-#include "draw_utils.h"
-#include "draw_collection.h"
-#include "draw_definitions.h"
+#include "utils.h"
+#include "enums.h"
+#include "delta.h"
 
 #include <algorithm>
 
-void UIContentRect::draw()
+void DynamicContent::draw()
 {
 	//
 	// EARLY OUT IF WINDOW IS INVISIBLE
@@ -118,46 +118,46 @@ void UIContentRect::draw()
 	}
 }
 
-bool UIContentRect::hovered()
+bool DynamicContent::hovered()
 {
 	return ImGui::IsMouseHoveringRect(rectMin, rectMax);
 }
 
-bool UIContentRect::clicked(ImGuiMouseButton mouseButton)
+bool DynamicContent::clicked(ImGuiMouseButton mouseButton)
 {
 	return ImGui::IsMouseClicked(mouseButton) && hovered();
 }
 
-bool UIContentRect::doubleClicked(ImGuiMouseButton mouseButton)
+bool DynamicContent::doubleClicked(ImGuiMouseButton mouseButton)
 {
 	return ImGui::IsMouseDoubleClicked(mouseButton) && hovered();
 }
 
-bool UIContentRect::dragged(ImGuiMouseButton mouseButton)
+bool DynamicContent::dragged(ImGuiMouseButton mouseButton)
 {
 	return ImGui::IsMouseDragging(mouseButton) && hovered();
 }
 
-void UIContentRect::addText(UIText text)
+void DynamicContent::addText(DynamicText text)
 {
 	contentDirty = true;
 	textContent.push_back(std::make_tuple(text, ImVec2(0.0f, 0.0f)));
 }
 
-UIText& UIContentRect::modifyText(uint32_t index)
+DynamicText& DynamicContent::modifyText(uint32_t index)
 {
 	contentDirty = true;
 	return std::get<0>(textContent[index]);
 }
 
-ImVec2 UIContentRect::getSize()
+ImVec2 DynamicContent::getSize()
 {
 	ImVec2 _position, _size;
 	getGeometry(_position, _size);
 	return _size;
 }
 
-void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
+void DynamicContent::getGeometry(ImVec2& _position, ImVec2& _size)
 {
 	_size = ImVec2(0.0f, 0.0);
 
@@ -248,7 +248,7 @@ void UIContentRect::getGeometry(ImVec2& _position, ImVec2& _size)
 	
 }
 
-void UIContentRect::getGeometrySmoothed(ImVec2& _position, ImVec2& _size)
+void DynamicContent::getGeometrySmoothed(ImVec2& _position, ImVec2& _size)
 {
 	// Get non smoothed geometry
 	getGeometry(_position, _size);
@@ -264,7 +264,7 @@ void UIContentRect::getGeometrySmoothed(ImVec2& _position, ImVec2& _size)
 	lastSize = smoothedSize;
 }
 
-ImU32 UIContentRect::getFinalColor()
+ImU32 DynamicContent::getFinalColor()
 {
 	ImU32 finalColor = color;
 

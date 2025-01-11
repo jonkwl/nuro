@@ -5,11 +5,9 @@
 #include <cstdint>
 #include <vector>
 
-#include "ui_text.h"
+#include "dynamic_text.h"
 
-
-
-struct UIContentRect
+struct DynamicContent
 {
 	//
 	// PROPERTIES
@@ -80,10 +78,10 @@ struct UIContentRect
 	bool dragged(ImGuiMouseButton mouseButton);
 
 	// Adds given text element to the rect content
-	void addText(UIText text);
+	void addText(DynamicText text);
 
 	// Returns content text element by index (never cache this, only modify directly)
-	UIText& modifyText(uint32_t index);
+	DynamicText& modifyText(uint32_t index);
 
 	// Computes and returns the rects total size
 	ImVec2 getSize();
@@ -124,7 +122,7 @@ private:
 	ImU32 getFinalColor();
 
 	// All text content elements (text reference and last cached text size) 
-	std::vector<std::tuple<UIText, ImVec2>> textContent = std::vector<std::tuple<UIText, ImVec2>>();
+	std::vector<std::tuple<DynamicText, ImVec2>> textContent = std::vector<std::tuple<DynamicText, ImVec2>>();
 
 	//
 	// CURRENT RECT GEOMETRY

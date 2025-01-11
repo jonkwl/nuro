@@ -1,7 +1,7 @@
 #pragma once
 
 //
-// CONTAINS ALL UTILITY FUNCTIONS THE DRAWING API USES
+// CONTAINS ALL UTILITY FUNCTIONS
 //
 
 #include <cstdint>

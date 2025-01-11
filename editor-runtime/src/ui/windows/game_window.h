@@ -27,5 +27,5 @@ private:
 
 	ImVec4 gameViewBounds; // Bounds of game view (min x, min y, max x, max y)
 
-	UIContentRect noCameraIndicator; // Indicator for when theres no camera to render game view
+	DynamicContent noCameraIndicator; // Indicator for when theres no camera to render game view
 };

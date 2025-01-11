@@ -68,7 +68,7 @@ private:
 	HierarchyItem* lastSelected;
 	HierarchyItem* lastHovered;
 
-	UIContentRect dragRect;
+	DynamicContent dragRect;
 	bool draggingHierarchy;
 
 	bool cameraMoving;

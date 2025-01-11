@@ -216,10 +216,10 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\drawing\ui_content_rect.cpp">
+    <ClCompile Include="src\ui\dynamic_drawing\dynamic_content.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\drawing\ui_text.cpp">
+    <ClCompile Include="src\ui\dynamic_drawing\dynamic_text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\context_menu.cpp">
@@ -476,22 +476,22 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\drawing\drawing.h">
+    <ClInclude Include="src\ui\dynamic_drawing\dynamic_drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\drawing\ui_content_rect.h">
+    <ClInclude Include="src\ui\dynamic_drawing\dynamic_content.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\drawing\ui_text.h">
+    <ClInclude Include="src\ui\dynamic_drawing\dynamic_text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\drawing\draw_definitions.h">
+    <ClInclude Include="src\ui\dynamic_drawing\delta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\drawing\draw_utils.h">
+    <ClInclude Include="src\ui\dynamic_drawing\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\drawing\draw_collection.h">
+    <ClInclude Include="src\ui\dynamic_drawing\enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\context_menu.h">

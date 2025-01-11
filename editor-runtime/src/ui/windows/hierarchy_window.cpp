@@ -27,7 +27,7 @@ cameraTarget(nullptr)
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
 	dragRect.lastColor = EditorColor::selection;
-	UIText dragRectText(EditorUI::getFonts().uiBold);
+	DynamicText dragRectText(EditorUI::getFonts().uiBold);
 	dragRectText.color = IM_COL32(255, 255, 255, 255);
 	dragRectText.alignment = TextAlign::CENTER;
 	dragRect.addText(dragRectText);

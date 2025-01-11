@@ -5,11 +5,11 @@
 #include <cstdint>
 #include <string>
 
-#include "draw_collection.h"
+#include "enums.h"
 
-struct UIText
+struct DynamicText
 {
-	UIText(ImFont* font);
+	DynamicText(ImFont* font);
 
 	//
 	// PROPERTIES

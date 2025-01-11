@@ -200,8 +200,8 @@
     <ClCompile Include="src\ui\windows\scene_window.cpp" />
     <ClCompile Include="core\misc\stb_image.cpp" />
     <ClCompile Include="src\ui\ui_utils.cpp" />
-    <ClCompile Include="src\ui\drawing\ui_content_rect.cpp" />
-    <ClCompile Include="src\ui\drawing\ui_text.cpp" />
+    <ClCompile Include="src\ui\dynamic_drawing\dynamic_content.cpp" />
+    <ClCompile Include="src\ui\dynamic_drawing\dynamic_text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ui\context_menu.h" />
@@ -233,10 +233,10 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\collection\editor_gizmo_color.h" />
-    <ClInclude Include="src\ui\drawing\drawing.h" />
-    <ClInclude Include="src\ui\drawing\draw_collection.h" />
-    <ClInclude Include="src\ui\drawing\draw_definitions.h" />
-    <ClInclude Include="src\ui\drawing\draw_utils.h" />
+    <ClInclude Include="src\ui\dynamic_drawing\dynamic_drawing.h" />
+    <ClInclude Include="src\ui\dynamic_drawing\enums.h" />
+    <ClInclude Include="src\ui\dynamic_drawing\delta.h" />
+    <ClInclude Include="src\ui\dynamic_drawing\utils.h" />
     <ClInclude Include="src\ui\windows\hierarchy_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />
@@ -292,8 +292,8 @@
     <ClInclude Include="src\ui\ui_utils.h" />
     <ClInclude Include="src\ui\windows\window_includes.h" />
     <ClInclude Include="core\ecs\registry_state.hpp" />
-    <ClInclude Include="src\ui\drawing\ui_content_rect.h" />
-    <ClInclude Include="src\ui\drawing\ui_text.h" />
+    <ClInclude Include="src\ui\dynamic_drawing\dynamic_content.h" />
+    <ClInclude Include="src\ui\dynamic_drawing\dynamic_text.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

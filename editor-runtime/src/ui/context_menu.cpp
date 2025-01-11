@@ -6,6 +6,11 @@
 
 namespace ContextMenu {
 
+	ImVec4 _backgroundColor = ImVec4(0.2f, 0.2f, 0.25f, 0.8f);
+	ImVec4 _textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ImVec4 _hoverColor = ImVec4(0.1f, 0.1f, 0.15f, 1.0f);
+	ImU32 _outlineColor = EditorColor::selection;
+
 	void _space() {
 		ImGui::Dummy(ImVec2(0.0f, 0.1f));
 	}
@@ -13,10 +18,10 @@ namespace ContextMenu {
 	bool begin()
 	{
 		// Custom context menu colors
-		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.2f, 0.2f, 0.25f, 0.8f));		// Popup background
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));			// Text
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.1f, 0.1f, 0.15f, 1.0f));	// Hover
-		ImGui::PushStyleColor(ImGuiCol_Border, EditorColor::selection);					// Outline
+		ImGui::PushStyleColor(ImGuiCol_PopupBg, _backgroundColor);
+		ImGui::PushStyleColor(ImGuiCol_Text, _textColor);
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, _hoverColor);
+		ImGui::PushStyleColor(ImGuiCol_Border, _outlineColor);
 
 		return ImGui::BeginPopupContextWindow(EditorUI::generateId().c_str(), ImGuiPopupFlags_MouseButtonRight);
 	}
