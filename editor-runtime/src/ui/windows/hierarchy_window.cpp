@@ -395,107 +395,75 @@ void HierarchyWindow::renderDraggedItem()
 
 void HierarchyWindow::renderContextMenu()
 {
-	// Custom context menu style
-	ImGuiStyle& style = ImGui::GetStyle();
-	float originalPopupRounding = style.PopupRounding;
-	style.PopupRounding = 8.0f;
-
-	// Custom context menu colors
-	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.2f, 0.2f, 0.25f, 0.8f));		// Popup background
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));			// Text
-	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.2f, 0.2f, 0.25f, 1.0f));	// Hover
-	ImGui::PushStyleColor(ImGuiCol_Border, EditorColor::selection);					// Outline
-
-	auto item = [](const char* icon, std::string title) -> bool {
-		ImGui::Dummy(ImVec2(0.0f, 0.1f));
-		std::string text = std::string(icon) + "     " + title;
-		return ImGui::MenuItem(text.c_str());
-	};
-
-	auto menu = [](const char* icon, std::string title) -> bool {
-		ImGui::Dummy(ImVec2(0.0f, 0.1f));
-		std::string text = std::string(icon) + "     " + title;
-		return ImGui::BeginMenu(text.c_str());
-	};
-
-	auto seperator = []() -> void {
-		ImGui::Dummy(ImVec2(0.0f, 0.1f));
-		ImGui::Separator();
-	};
-
-	if (ImGui::BeginPopupContextWindow("ContextMenu", ImGuiPopupFlags_MouseButtonRight))
+	if (ContextMenu::begin())
 	{
 		contextMenuUsed = true;
 
 		if (lastHovered) {
-			if (item(ICON_FA_TRASH, "Delete"))
+			if (ContextMenu::item(ICON_FA_TRASH, "Delete"))
 			{
 				// Handle delete
 			}
 
-			if (item(ICON_FA_COPY, "Duplicate"))
+			if (ContextMenu::item(ICON_FA_COPY, "Duplicate"))
 			{
 				// Handle duplicate
 			}
 
-			if (item(ICON_FA_PENCIL, "Rename"))
+			if (ContextMenu::item(ICON_FA_PENCIL, "Rename"))
 			{
 				// Handle rename
 			}
 
-			seperator();
+			ContextMenu::seperator();
 		}
 
-		if (item(ICON_FA_LAYER_PLUS, "Empty Entity"))
+		if (ContextMenu::item(ICON_FA_LAYER_PLUS, "Empty Entity"))
 		{
 			// Handle empty entity
 		}
 
-		if (item(ICON_FA_CAMERA_MOVIE, "Camera"))
+		if (ContextMenu::item(ICON_FA_CAMERA_MOVIE, "Camera"))
 		{
 			// Handle camera
 		}
 
-		if (menu(ICON_FA_CUBE, "3D Primitives"))
+		if (ContextMenu::menu(ICON_FA_CUBE, "3D Primitives"))
 		{
-			if (ImGui::MenuItem("Cube")) { /* Handle cube */ }
-			if (ImGui::MenuItem("Sphere")) { /* Handle sphere */ }
-			if (ImGui::MenuItem("Capsule")) { /* Handle capsule */ }
-			if (ImGui::MenuItem("Cylinder")) { /* Handle cylinder */ }
-			if (ImGui::MenuItem("Pyramid")) { /* Handle pyramid */ }
-			if (ImGui::MenuItem("Plane")) { /* Handle plane */ }
+			if (ContextMenu::itemLight("Cube")) { /* Handle cube */ }
+			if (ContextMenu::itemLight("Sphere")) { /* Handle sphere */ }
+			if (ContextMenu::itemLight("Capsule")) { /* Handle capsule */ }
+			if (ContextMenu::itemLight("Cylinder")) { /* Handle cylinder */ }
+			if (ContextMenu::itemLight("Pyramid")) { /* Handle pyramid */ }
+			if (ContextMenu::itemLight("Plane")) { /* Handle plane */ }
 
-			ImGui::EndMenu();
+			ContextMenu::endMenu();
 		}
 
-		if (menu(ICON_FA_LIGHTBULB, "Light"))
+		if (ContextMenu::menu(ICON_FA_LIGHTBULB, "Light"))
 		{
-			if (ImGui::MenuItem("Directional Light")) { /* Handle directional light */ }
-			if (ImGui::MenuItem("Point Light")) { /* Handle point light */ }
-			if (ImGui::MenuItem("Spotlight")) { /* Handle spotlight */ }
+			if (ContextMenu::itemLight("Directional Light")) { /* Handle directional light */ }
+			if (ContextMenu::itemLight("Point Light")) { /* Handle point light */ }
+			if (ContextMenu::itemLight("Spotlight")) { /* Handle spotlight */ }
 
-			ImGui::EndMenu();
+			ContextMenu::endMenu();
 		}
 
-		if (menu(ICON_FA_VOLUME_HIGH, "Audio"))
+		if (ContextMenu::menu(ICON_FA_VOLUME_HIGH, "Audio"))
 		{
-			if (ImGui::MenuItem("Audio Source")) { /* Handle audio source */ }
+			if (ContextMenu::itemLight("Audio Source")) { /* Handle audio source */ }
 
-			ImGui::EndMenu();
+			ContextMenu::endMenu();
 		}
 
-		ImGui::EndPopup();
+		ContextMenu::end();
 	}
 	else {
 		contextMenuUsed = false;
 		lastHovered = nullptr;
 	}
 
-	// Restore style
-	style.PopupRounding = originalPopupRounding;
-
-	// Restore colors
-	ImGui::PopStyleColor(4);
+	ContextMenu::pop();
 }
 
 void HierarchyWindow::updateCameraMovement()

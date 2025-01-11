@@ -129,6 +129,8 @@ namespace EditorUI {
 
 		style.ItemSpacing = ImVec2(4.0f, 8.0f);
 
+		style.PopupRounding = 10.0f;
+
 		ImVec4* imguiColors = style.Colors;
 
 		imguiColors[ImGuiCol_WindowBg] = ImColor(EditorColor::background);

@@ -25,7 +25,7 @@ namespace EditorUI
 	// Renders the ui frame
 	void render();
 
-	// Generates a imgui id
+	// Generates a unique imgui id
 	std::string generateId();
 
 	// Returns all loaded fonts

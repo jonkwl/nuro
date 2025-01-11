@@ -30,7 +30,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 {
 	// Create outline material
 	selectionMaterial = new UnlitMaterial();
-	selectionMaterial->baseColor = glm::vec4(1.0f, 0.25f, 0.0f, 0.7f);
+	selectionMaterial->baseColor = glm::vec4(1.0f, 0.25f, 0.0f, 1.0f);
 
 	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &outputFbo);

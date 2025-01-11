@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\context_menu.cpp" />
     <ClCompile Include="core\context\application_context.cpp" />
     <ClCompile Include="core\ecs\ecs.cpp" />
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="src\ui\drawing\ui_text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\context_menu.h" />
     <ClInclude Include="core\backend\api.h" />
     <ClInclude Include="core\context\application_context.h" />
     <ClInclude Include="core\ecs\components.h" />
