@@ -52,6 +52,9 @@ void SceneViewPipeline::create()
 	defaultProfile.vignette.enabled = false;
 	defaultProfile.ambientOcclusion.enabled = false;
 
+	// Setup fly camera
+	flyCamera.root.fov = 90.0f;
+
 	// Create passes
 	createPasses();
 

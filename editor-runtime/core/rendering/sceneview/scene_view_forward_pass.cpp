@@ -267,12 +267,12 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	glStencilMask(0xFF); // Enable stencil writes
 
 	// Forward render entities base mesh
-	Shader* forwardShader = renderer.material->getShader();
-	forwardShader->bind();
+	Shader* shader = renderer.material->getShader();
+	shader->bind();
+	shader->setMatrix4("mvpMatrix", transform.mvp);
+	shader->setMatrix4("modelMatrix", transform.model);
+	shader->setMatrix3("normalMatrix", transform.normal);
 	renderer.material->bind();
-	forwardShader->setMatrix4("mvpMatrix", transform.mvp);
-	forwardShader->setMatrix4("modelMatrix", transform.model);
-	forwardShader->setMatrix3("normalMatrix", transform.normal);
 	glBindVertexArray(renderer.mesh.getVAO());
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
@@ -299,12 +299,12 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	Transform::evaluate(outlineTransform, viewProjection);
 
 	// Render mesh as outline
-	Shader* selectionShader = selectionMaterial->getShader();
-	selectionShader->bind();
+	shader = selectionMaterial->getShader();
+	shader->bind();
+	shader->setMatrix4("mvpMatrix", outlineTransform.mvp);
+	shader->setMatrix4("modelMatrix", outlineTransform.model);
+	shader->setMatrix3("normalMatrix", outlineTransform.normal);
 	selectionMaterial->bind();
-	selectionShader->setMatrix4("mvpMatrix", transform.mvp);
-	selectionShader->setMatrix4("modelMatrix", transform.model);
-	selectionShader->setMatrix3("normalMatrix", transform.normal);
 	glBindVertexArray(renderer.mesh.getVAO());
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 

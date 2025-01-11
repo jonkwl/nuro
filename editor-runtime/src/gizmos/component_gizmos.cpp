@@ -33,7 +33,7 @@ namespace ComponentGizmos {
 
 	void renderBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider)
 	{
-		gizmos.foreground = false;
+		gizmos.foreground = true;
 		gizmos.color = EditorGizmoColor::COLLIDER;
 		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
 		gizmos.boxWire(transform.position, boxCollider.size, transform.rotation);
@@ -41,7 +41,7 @@ namespace ComponentGizmos {
 
 	void renderSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider)
 	{
-		gizmos.foreground = false;
+		gizmos.foreground = true;
 		gizmos.color = EditorGizmoColor::COLLIDER;
 		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
 		gizmos.sphereWire(transform.position, sphereCollider.radius, transform.rotation);

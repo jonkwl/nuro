@@ -62,15 +62,13 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
 	for (int32_t i = 0; i < shapeRenderStack.size(); i++)
 	{
 		// Get gizmo rendering target
 		ShapeRenderTarget gizmo = shapeRenderStack[i];
-
-		// Disable depth testing if gizmo should be in foreground
-		if (gizmo.state.foreground) {
-			glDisable(GL_DEPTH_TEST);
-		}
 
 		// Calculate mvp
 		glm::mat4 modelMatrix = getModelMatrix(gizmo.position, gizmo.rotation, gizmo.scale);
@@ -95,8 +93,11 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_LINES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
-		// Re-Enable depth testing if gizmo was in foreground
+		// Optional foreground pass without depth testing and reduced opacity
 		if (gizmo.state.foreground) {
+			staticData.fillShader->setVec4("color", glm::vec4(gizmo.state.color, 0.02f));
+			glDisable(GL_DEPTH_TEST);
+			glDrawElements(GL_LINES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
@@ -119,6 +120,9 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 
 	// Fill polygons
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
 
 	for (int32_t i = 0; i < iconRenderStack.size(); i++)
 	{
@@ -166,15 +170,14 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 
 		// Render with full opacity and depth test
 		staticData.iconShader->setFloat("alpha", get3DIconAlpha(1.0f, gizmoPosition, cameraPosition));
-		glEnable(GL_DEPTH_TEST);
 		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
 		staticData.iconShader->setFloat("alpha", get3DIconAlpha(0.15f, gizmoPosition, cameraPosition));
 		glDisable(GL_DEPTH_TEST);
-		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	// Disable blending
