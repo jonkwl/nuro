@@ -34,7 +34,7 @@ struct UIContentRect
 	bool outline = false;
 
 	// Thickness of outline rect
-	float outlineStrength = 0.0f;
+	float outlineStrength = 1.0f;
 
 	// Color of outline rect
 	ImU32 outlineColor;

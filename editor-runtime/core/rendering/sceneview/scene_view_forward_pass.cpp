@@ -6,7 +6,9 @@
 #include "../core/transform/transform.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/skybox/skybox.h"
+#include "../core/rendering/material/imaterial.h"
 #include "../core/rendering/core/transformation.h"
+#include "../core/rendering/material/unlit/unlit_material.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -113,12 +115,13 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	// Clear framebuffer
 	if (!wireframe)
 	{
-		// glClearColor(0.2f, 0.2f, 0.2f, 1.0f); // Default scene view clearing output
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // tmp
+		// Use default clear color
+		glClearColor(defaultClearColor[0], defaultClearColor[1], defaultClearColor[2], 1.0f);
 	}
 	else
 	{
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Wireframe clearing output
+		// Use white as clear color if wireframe
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -271,9 +274,8 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 
 	// Get outline thickness according to camera distance
 	float distance = glm::distance(camera.transform.position, transform.position);
-	float baseThickness = 0.03f;
-	float baseDistance = 5.0f;
-	float thickness = (distance / baseDistance) * baseThickness;
+	float baseThickness = 0.044f;
+	float thickness = baseThickness;
 
 	// Temporary transform component
 	TransformComponent outlineTransform;

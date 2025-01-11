@@ -48,7 +48,6 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeIndicator.rounding = 25.0f;
 	speedChangeIndicator.foreground = true;
 	speedChangeIndicator.outline = true;
-	speedChangeIndicator.outlineStrength = 1.0f;
 	speedChangeIndicator.outlineColor = IM_COL32(255, 255, 255, 125);
 	speedChangeIndicator.horizontalAlignment = Horizontal::CENTER;
 	speedChangeIndicator.verticalAlignment = Vertical::CENTER;
@@ -101,6 +100,8 @@ void SceneWindow::renderToolbar()
 {
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 
+	bool _none = true;
+
 	// Render toggle buttons for render options
 	UIFlex::beginFlex("toggles", FlexType::ROW, UIFlex::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
@@ -109,7 +110,7 @@ void SceneWindow::renderToolbar()
 		UIComponents::toggleButton(ICON_FA_SPARKLES, pipeline.useProfileEffects, "Enable Post Processing");
 		UIComponents::toggleButton(ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Show Gizmos");
 		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Render Skybox");
-		UIComponents::toggleButton(ICON_FA_ROTATE, pipeline.alwaysUpdate, "Always Update");
+		UIComponents::toggleButton(ICON_FA_ROTATE, _none, "Always Update");
 	}
 	UIFlex::endFlex();
 
@@ -157,9 +158,7 @@ void SceneWindow::renderSceneView()
 
 		// Update cursor bounds and inputs if theres an interaction with scene view
 		if (sceneViewRightclicked || sceneViewMiddleclicked) {
-			// Set scene pipeline to interacted
-			pipeline.setUpdated();
-
+			
 			// Make sure cursor is within scene view bounds
 			bool cursorMoved = false;
 			mouseCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, cursorMoved);
@@ -167,6 +166,7 @@ void SceneWindow::renderSceneView()
 
 			// Calculate cursor axis
 			mouseDelta = glm::vec2(mouseCurrent.x - mouseLast.x, -(mouseCurrent.y - mouseLast.y));
+
 		}
 
 		// Render transform gizmos
@@ -339,6 +339,5 @@ void SceneWindow::updateMovement()
 	bool moving = std::abs(movementDir.x) > movementThreshold ||
 		std::abs(movementDir.y) > movementThreshold ||
 		std::abs(movementDir.z) > movementThreshold;
-	if (moving) pipeline.setUpdated();
 
 }

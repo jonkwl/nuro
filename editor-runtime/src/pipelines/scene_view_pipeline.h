@@ -22,7 +22,8 @@ public:
 	void create(); // Create scene view pipeline
 	void destroy(); // Destroy scene view pipeline
 
-	void tryRender(); // Renders scene view if conditions are met
+	// Renders scene view
+	void render();
 
 	uint32_t getOutput(); // Returns color output from latest render
 
@@ -49,9 +50,6 @@ public:
 	// Enable or disable shadows
 	bool renderShadows;
 
-	// Rendering is never skipped if set
-	bool alwaysUpdate;
-
 	// Updates the msaa samples of the scene view
 	void updateMsaaSamples(uint32_t msaaSamples);
 
@@ -73,13 +71,7 @@ public:
 	// Latest projection matrix used
 	const glm::mat4& getProjection() const;
 
-	// Sets the scene views state to updated, so it will surely re-render the next frame
-	void setUpdated();
-
 private:
-	// Renders scene view
-	void render();
-
 	// Creates all passes
 	void createPasses();
 
@@ -123,5 +115,4 @@ private:
 
 	bool frameInitialized; // If scene view was rendered at least once
 	uint32_t initialRenderCount; // Render count for initial frames
-	bool updated; // If scene view was updated and therefore should be rerendered
 };

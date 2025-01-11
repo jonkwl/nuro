@@ -15,13 +15,12 @@
 
 // initialize with users editor settings later
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
-useProfileEffects(true),
+useProfileEffects(false),
 showSkybox(false),
 showGizmos(true),
 renderShadows(true),
-alwaysUpdate(true),
 viewport(),
-msaaSamples(8), // should lower this
+msaaSamples(4),
 defaultProfile(),
 flyCameraTransform(),
 flyCameraRoot(),
@@ -34,8 +33,7 @@ view(glm::mat4(1.0f)),
 projection(glm::mat4(1.0f)),
 selectedEntities(),
 frameInitialized(false),
-initialRenderCount(0),
-updated(false)
+initialRenderCount(0)
 {
 }
 
@@ -66,120 +64,11 @@ void SceneViewPipeline::destroy()
 	destroyPasses();
 }
 
-void SceneViewPipeline::tryRender()
-{
-	// This is a BOILERPLATE MESS
-	// Must improve in the future
-
-	// Make sure frame has been rendered at least 100 times
-	if (!frameInitialized) {
-		initialRenderCount++;
-		if (initialRenderCount < 100) {
-			updated = true;
-		}
-		else {
-			frameInitialized = true;
-		}
-	}
-
-	// Only render under specific conditions
-	if (!alwaysUpdate && !updated) {
-
-		return;
-
-	}
-
-	// Default render
-	render();
-
-	// Reset updated
-	updated = false;
-}
-
-uint32_t SceneViewPipeline::getOutput()
-{
-	return postProcessingPipeline.getOutput();
-}
-
-uint32_t SceneViewPipeline::getPrePassNormals()
-{
-	return prePass.getNormalOutput();
-}
-
-uint32_t SceneViewPipeline::getPrePassDepth()
-{
-	return prePass.getDepthOutput();
-}
-
-const Viewport& SceneViewPipeline::getViewport()
-{
-	return viewport;
-}
-
-void SceneViewPipeline::resizeViewport(float width, float height)
-{
-	// Set new viewport size
-	viewport.width = width;
-	viewport.height = height;
-
-	// Recreate all passes to match new viewport
-	destroyPasses();
-	createPasses();
-
-	// Re-render frame
-	render();
-
-	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
-}
-
-void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
-{
-	// Set new msaa samples and recreate scene view forward pass
-	msaaSamples = _msaaSamples;
-	sceneViewForwardPass.destroy();
-	sceneViewForwardPass.create(msaaSamples);
-}
-
-void SceneViewPipeline::setSelectedEntity(EntityContainer* _selected)
-{
-	selectedEntities = { _selected };
-}
-
-void SceneViewPipeline::unselectEntities()
-{
-	selectedEntities = {};
-}
-
-const std::vector<EntityContainer*>& SceneViewPipeline::getSelectedEntities() const
-{
-	return selectedEntities;
-}
-
-Camera& SceneViewPipeline::getFlyCamera()
-{
-	return flyCamera;
-}
-
-const glm::mat4& SceneViewPipeline::getView() const
-{
-	return view;
-}
-
-const glm::mat4& SceneViewPipeline::getProjection() const
-{
-	return projection;
-}
-
-void SceneViewPipeline::setUpdated()
-{
-	updated = true;
-}
-
 void SceneViewPipeline::render()
 {
 	Profiler::start("render");
 
-	// Start new frame for quick gizmos
+	// Start new gizmo frame
 	IMGizmo& gizmos = Runtime::getSceneGizmos();
 	gizmos.newFrame();
 
@@ -279,6 +168,80 @@ void SceneViewPipeline::render()
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
+}
+
+uint32_t SceneViewPipeline::getOutput()
+{
+	return postProcessingPipeline.getOutput();
+}
+
+uint32_t SceneViewPipeline::getPrePassNormals()
+{
+	return prePass.getNormalOutput();
+}
+
+uint32_t SceneViewPipeline::getPrePassDepth()
+{
+	return prePass.getDepthOutput();
+}
+
+const Viewport& SceneViewPipeline::getViewport()
+{
+	return viewport;
+}
+
+void SceneViewPipeline::resizeViewport(float width, float height)
+{
+	// Set new viewport size
+	viewport.width = width;
+	viewport.height = height;
+
+	// Recreate all passes to match new viewport
+	destroyPasses();
+	createPasses();
+
+	// Re-render frame
+	render();
+
+	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
+}
+
+void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
+{
+	// Set new msaa samples and recreate scene view forward pass
+	msaaSamples = _msaaSamples;
+	sceneViewForwardPass.destroy();
+	sceneViewForwardPass.create(msaaSamples);
+}
+
+void SceneViewPipeline::setSelectedEntity(EntityContainer* _selected)
+{
+	selectedEntities = { _selected };
+}
+
+void SceneViewPipeline::unselectEntities()
+{
+	selectedEntities = {};
+}
+
+const std::vector<EntityContainer*>& SceneViewPipeline::getSelectedEntities() const
+{
+	return selectedEntities;
+}
+
+Camera& SceneViewPipeline::getFlyCamera()
+{
+	return flyCamera;
+}
+
+const glm::mat4& SceneViewPipeline::getView() const
+{
+	return view;
+}
+
+const glm::mat4& SceneViewPipeline::getProjection() const
+{
+	return projection;
 }
 
 void SceneViewPipeline::createPasses()

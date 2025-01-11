@@ -153,6 +153,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// CHECK FOR MOVING ITEM DISPLAY
 	//
 
+	ImU32 moveLineColor = EditorColor::selection;
 	const float moveLineThickness = 1.0f;
 	const float moveLineOffet = 2.0f;
 	switch (dropType) {
@@ -160,14 +161,14 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		foregroundDrawList->AddLine(
 			ImVec2(rectMin.x, rectMin.y - moveLineOffet),
 			ImVec2(rectMax.x, rectMin.y - moveLineOffet),
-			IM_COL32(255, 255, 255, 255),
+			moveLineColor,
 			moveLineThickness);
 		break;
 	case MOVE_ITEM_DOWN:
 		foregroundDrawList->AddLine(ImVec2(
 			rectMin.x, rectMax.y + moveLineOffet),
 			ImVec2(rectMax.x, rectMax.y + moveLineOffet),
-			IM_COL32(255, 255, 255, 255),
+			moveLineColor,
 			moveLineThickness);
 		break;
 	}
@@ -277,7 +278,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	ImVec2 textPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + textPadding.y);
 
 	//
-	// DRAW ITEM CAR ET CIRCLE
+	// DRAW ITEM CARET CIRCLE
 	// 
 
 	if (hasChildren) {
@@ -311,14 +312,13 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// EVALUATE ICON
 	//
 
-	const char* icon1 = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
-	const char* icon2 = dropType == DROP_ITEM ? "   " ICON_FA_OCTAGON_PLUS : "";
+	const char* icon = hasChildren ? (item.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
 
 	//
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon1) + std::string(icon2) + "    " + item.entity.name;
+	std::string textValue = std::string(icon) + "    " + item.entity.name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -338,7 +338,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 		// Update drag rect text
 		size_t nSelectedItems = selectedItems.size();
-		std::string text = nSelectedItems > 1 ? "Selected " + std::to_string(selectedItems.size()) + " items" : "Selected " + item.entity.name;
+		std::string text = nSelectedItems > 1 ? std::to_string(selectedItems.size()) + " selected" : "Selected " + item.entity.name;
 		std::string icon(ICON_FA_LEFT_LONG);
 		dragRect.modifyText(0).text = icon + "   " + text;
 
@@ -395,111 +395,93 @@ void HierarchyWindow::renderDraggedItem()
 
 void HierarchyWindow::renderContextMenu()
 {
-	/*ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.5f, 0.8f, 1.0f));
-	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.3f, 0.5f, 0.8f, 1.0f));
-	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));*/
+	// Custom context menu style
+	ImGuiStyle& style = ImGui::GetStyle();
+	float originalPopupRounding = style.PopupRounding;
+	style.PopupRounding = 8.0f;
 
-	if (ImGui::BeginPopupContextWindow("WindowContextMenu", ImGuiPopupFlags_MouseButtonRight))
+	// Custom context menu colors
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.2f, 0.2f, 0.25f, 0.8f));		// Popup background
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));			// Text
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.2f, 0.2f, 0.25f, 1.0f));	// Hover
+	ImGui::PushStyleColor(ImGuiCol_Border, EditorColor::selection);					// Outline
+
+	auto item = [](const char* icon, std::string title) -> bool {
+		ImGui::Dummy(ImVec2(0.0f, 0.1f));
+		std::string text = std::string(icon) + "     " + title;
+		return ImGui::MenuItem(text.c_str());
+	};
+
+	auto menu = [](const char* icon, std::string title) -> bool {
+		ImGui::Dummy(ImVec2(0.0f, 0.1f));
+		std::string text = std::string(icon) + "     " + title;
+		return ImGui::BeginMenu(text.c_str());
+	};
+
+	auto seperator = []() -> void {
+		ImGui::Dummy(ImVec2(0.0f, 0.1f));
+		ImGui::Separator();
+	};
+
+	if (ImGui::BeginPopupContextWindow("ContextMenu", ImGuiPopupFlags_MouseButtonRight))
 	{
 		contextMenuUsed = true;
 
 		if (lastHovered) {
-			if (ImGui::MenuItem(ICON_FA_TRASH "          Delete")
+			if (item(ICON_FA_TRASH, "Delete"))
 			{
-
+				// Handle delete
 			}
 
-			if (ImGui::MenuItem(ICON_FA_COPY "          Duplicate"))
+			if (item(ICON_FA_COPY, "Duplicate"))
 			{
-
+				// Handle duplicate
 			}
 
-			if (ImGui::MenuItem(ICON_FA_PENCIL "          Rename"))
+			if (item(ICON_FA_PENCIL, "Rename"))
 			{
-
+				// Handle rename
 			}
+
+			seperator();
 		}
 
-		if (ImGui::MenuItem(ICON_FA_LAYER_PLUS "          Empty Entity"))
+		if (item(ICON_FA_LAYER_PLUS, "Empty Entity"))
 		{
-
+			// Handle empty entity
 		}
 
-		if (ImGui::MenuItem(ICON_FA_CAMERA_MOVIE "          Camera"))
+		if (item(ICON_FA_CAMERA_MOVIE, "Camera"))
 		{
-
+			// Handle camera
 		}
 
-		if (ImGui::BeginMenu(ICON_FA_CUBE "          3D Primitives"))
+		if (menu(ICON_FA_CUBE, "3D Primitives"))
 		{
-			if (ImGui::MenuItem("Cube"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Sphere"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Capsule"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Cylinder"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Pyramid"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Plane"))
-			{
-
-			}
+			if (ImGui::MenuItem("Cube")) { /* Handle cube */ }
+			if (ImGui::MenuItem("Sphere")) { /* Handle sphere */ }
+			if (ImGui::MenuItem("Capsule")) { /* Handle capsule */ }
+			if (ImGui::MenuItem("Cylinder")) { /* Handle cylinder */ }
+			if (ImGui::MenuItem("Pyramid")) { /* Handle pyramid */ }
+			if (ImGui::MenuItem("Plane")) { /* Handle plane */ }
 
 			ImGui::EndMenu();
-
 		}
 
-		if (ImGui::BeginMenu(ICON_FA_LIGHTBULB "          Light"))
+		if (menu(ICON_FA_LIGHTBULB, "Light"))
 		{
-
-			if (ImGui::MenuItem("Directional Light"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Point Light"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("Spotlight"))
-			{
-
-			}
+			if (ImGui::MenuItem("Directional Light")) { /* Handle directional light */ }
+			if (ImGui::MenuItem("Point Light")) { /* Handle point light */ }
+			if (ImGui::MenuItem("Spotlight")) { /* Handle spotlight */ }
 
 			ImGui::EndMenu();
-
 		}
 
-		if (ImGui::BeginMenu(ICON_FA_VOLUME_HIGH "          Audio"))
+		if (menu(ICON_FA_VOLUME_HIGH, "Audio"))
 		{
-
-			if (ImGui::MenuItem("Audio Source"))
-			{
-
-			}
+			if (ImGui::MenuItem("Audio Source")) { /* Handle audio source */ }
 
 			ImGui::EndMenu();
-
 		}
 
 		ImGui::EndPopup();
@@ -509,7 +491,11 @@ void HierarchyWindow::renderContextMenu()
 		lastHovered = nullptr;
 	}
 
-	// ImGui::PopStyleColor(5);
+	// Restore style
+	style.PopupRounding = originalPopupRounding;
+
+	// Restore colors
+	ImGui::PopStyleColor(4);
 }
 
 void HierarchyWindow::updateCameraMovement()
@@ -580,8 +566,8 @@ void HierarchyWindow::performAutoScroll()
 	if (!draggingHierarchy) return;
 
 	// Properties
-	const float maxScrollSpeed = 80.0f;
-	const float scrollThreshold = 0.35f;
+	const float maxScrollSpeed = 45.0f;
+	const float scrollArea = 0.3f;
 
 	// Get data
 	float mouseY = ImGui::GetMousePos().y;
@@ -593,7 +579,7 @@ void HierarchyWindow::performAutoScroll()
 	};
 
 	// Scroll up
-	float upRange[2] = { windowY, windowY + windowHeight * scrollThreshold };
+	float upRange[2] = { windowY, windowY + windowHeight * scrollArea };
 	if (mouseY < upRange[1]) {
 		float scrollSpeed = maxScrollSpeed * rangeFactor(mouseY, upRange);
 		ImGui::SetScrollY(ImGui::GetScrollY() - scrollSpeed);
@@ -601,7 +587,7 @@ void HierarchyWindow::performAutoScroll()
 	}
 
 	// Scroll down
-	float downRange[2] = { windowY + windowHeight, windowY + windowHeight * (1.0f - scrollThreshold) };
+	float downRange[2] = { windowY + windowHeight, windowY + windowHeight * (1.0f - scrollArea) };
 	if (mouseY > downRange[1]) {
 		float scrollSpeed = maxScrollSpeed * rangeFactor(mouseY, downRange);
 		ImGui::SetScrollY(ImGui::GetScrollY() + scrollSpeed);

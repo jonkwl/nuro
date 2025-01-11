@@ -21,7 +21,6 @@ gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 	noCameraIndicator.rounding = 25.0f;
 	noCameraIndicator.foreground = true;
 	noCameraIndicator.outline = true;
-	noCameraIndicator.outlineStrength = 1.0f;
 	noCameraIndicator.outlineColor = IM_COL32(255, 180, 0, 125);
 	noCameraIndicator.smoothing = false;
 	UIText noCameraText(EditorUI::getFonts().uiBig);

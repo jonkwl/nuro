@@ -44,81 +44,6 @@ void GameViewPipeline::destroy()
 	destroyPasses();
 }
 
-void GameViewPipeline::tryRender()
-{
-	render();
-}
-
-uint32_t GameViewPipeline::getOutput()
-{
-	return postProcessingPipeline.getOutput();
-}
-
-const Viewport& GameViewPipeline::getViewport()
-{
-	return viewport;
-}
-
-void GameViewPipeline::resizeViewport(float width, float height)
-{
-	// Set new viewport size
-	viewport.width = width;
-	viewport.height = height;
-
-	// Recreate all passes to match new viewport
-	destroyPasses();
-	createPasses();
-
-	// Re-render frame
-	render();
-
-	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
-}
-
-void GameViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
-{
-	// Set new msaa samples and recreate scene view forward pass
-	msaaSamples = _msaaSamples;
-	forwardPass.destroy();
-	forwardPass.create(msaaSamples);
-}
-
-PostProcessing::Profile& GameViewPipeline::getProfile()
-{
-	return profile;
-}
-
-void GameViewPipeline::linkSkybox(Skybox* _skybox)
-{
-	skybox = _skybox;
-	forwardPass.linkSkybox(skybox);
-}
-
-Skybox* GameViewPipeline::getLinkedSkybox()
-{
-	return skybox;
-}
-
-void GameViewPipeline::linkGizmos(IMGizmo* _gizmos)
-{
-	gizmos = _gizmos;
-}
-
-bool GameViewPipeline::getCameraAvailable()
-{
-	return cameraAvailable;
-}
-
-uint32_t GameViewPipeline::getSSAOOutput() const
-{
-	return ssaoOutput;
-}
-
-uint32_t GameViewPipeline::getVelocityOutput() const
-{
-	return velocityOutput;
-}
-
 void GameViewPipeline::render()
 {
 	Profiler::start("render");
@@ -193,7 +118,7 @@ void GameViewPipeline::render()
 	Profiler::start("forward_pass");
 	forwardPass.drawSkybox = drawSkybox;
 	forwardPass.drawGizmos = drawGizmos && gizmos;
-	if(forwardPass.drawGizmos) forwardPass.linkGizmos(gizmos);
+	if (forwardPass.drawGizmos) forwardPass.linkGizmos(gizmos);
 	uint32_t FORWARD_PASS_OUTPUT = forwardPass.render(view, projection, viewProjection);
 	Profiler::stop("forward_pass");
 
@@ -206,6 +131,76 @@ void GameViewPipeline::render()
 	Profiler::stop("post_processing");
 
 	Profiler::stop("render");
+}
+
+uint32_t GameViewPipeline::getOutput()
+{
+	return postProcessingPipeline.getOutput();
+}
+
+const Viewport& GameViewPipeline::getViewport()
+{
+	return viewport;
+}
+
+void GameViewPipeline::resizeViewport(float width, float height)
+{
+	// Set new viewport size
+	viewport.width = width;
+	viewport.height = height;
+
+	// Recreate all passes to match new viewport
+	destroyPasses();
+	createPasses();
+
+	// Re-render frame
+	render();
+
+	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
+}
+
+void GameViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)
+{
+	// Set new msaa samples and recreate scene view forward pass
+	msaaSamples = _msaaSamples;
+	forwardPass.destroy();
+	forwardPass.create(msaaSamples);
+}
+
+PostProcessing::Profile& GameViewPipeline::getProfile()
+{
+	return profile;
+}
+
+void GameViewPipeline::linkSkybox(Skybox* _skybox)
+{
+	skybox = _skybox;
+	forwardPass.linkSkybox(skybox);
+}
+
+Skybox* GameViewPipeline::getLinkedSkybox()
+{
+	return skybox;
+}
+
+void GameViewPipeline::linkGizmos(IMGizmo* _gizmos)
+{
+	gizmos = _gizmos;
+}
+
+bool GameViewPipeline::getCameraAvailable()
+{
+	return cameraAvailable;
+}
+
+uint32_t GameViewPipeline::getSSAOOutput() const
+{
+	return ssaoOutput;
+}
+
+uint32_t GameViewPipeline::getVelocityOutput() const
+{
+	return velocityOutput;
 }
 
 void GameViewPipeline::createPasses()

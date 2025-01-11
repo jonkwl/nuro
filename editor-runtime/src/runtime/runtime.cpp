@@ -171,9 +171,6 @@ namespace Runtime {
 		// STEP GAME PHYSICS
 		gGamePhysics.step(Time::deltaf());
 
-		// SET SCENE VIEW PIPELINE TO UPDATED
-		gSceneViewPipeline.setUpdated();
-
 	}
 
 	void _createLoadingScreen() {
@@ -338,10 +335,10 @@ namespace Runtime {
 			// UPDATE GAME IF GAME IS RUNNING
 			if (gGameRunning && !gGamePaused) _stepGame();
 
-			// RENDER NEXT FRAME (full render pipeline pass)
+			// RENDER NEXT FRAME
 			_renderShadows();
-			gSceneViewPipeline.tryRender();
-			gGameViewPipeline.tryRender();
+			gSceneViewPipeline.render();
+			gGameViewPipeline.render();
 
 			// RENDER EDITOR
 			_renderEditor();

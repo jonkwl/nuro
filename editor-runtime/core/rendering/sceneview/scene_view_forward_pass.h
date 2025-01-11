@@ -7,10 +7,10 @@
 #include "../core/viewport/viewport.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/gizmos/imgizmo.h"
-#include "../core/rendering/material/imaterial.h"
-#include "../core/rendering/material/unlit/unlit_material.h"
 
 class Skybox;
+class IMaterial;
+class UnlitMaterial;
 
 class SceneViewForwardPass
 {
@@ -45,6 +45,9 @@ private:
 	uint32_t multisampledColorBuffer; // Anti-aliasing colorbuffer
 
 	UnlitMaterial* selectionMaterial; // Material for selection outline
+
+	// Default scene view clearing color rgb values
+	static constexpr float defaultClearColor[3] = { 1.0f, 1.0f, 1.0f };
 
 	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer, IMaterial* material); // Renders a given entities mesh
 	void renderMeshes(const std::vector<EntityContainer*>& skippedEntities); // Renders all meshes
