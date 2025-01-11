@@ -2,6 +2,7 @@
 
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs_collection.h"
+#include "../core/diagnostics/profiler.h"
 #include "../core/physics/utils/px_translator.h"
 
 using namespace physx;
@@ -75,6 +76,9 @@ void PhysicsContext::destroy()
 
 void PhysicsContext::step(float delta)
 {
+	// Start profiler
+	Profiler::start("physics");
+
 	//
 	// PHYSICS SIMULATION TIME STEP UPDATE
 	//
@@ -94,6 +98,9 @@ void PhysicsContext::step(float delta)
 	for (auto [entity, transform, rigidbody] : view.each()) {
 		syncTransformComponent(delta, transform, rigidbody);
 	}
+
+	// Stop profiler
+	Profiler::stop("physics");
 }
 
 void PhysicsContext::simulate(float delta)

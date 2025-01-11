@@ -67,14 +67,15 @@ void DiagnosticsWindow::render()
 
 	UIComponents::space(0.0f, 5.0f);
 
-	UIComponents::indicatorLabel("Render:", Profiler::get("render"), "ms");
-	UIComponents::indicatorLabel("Shadow Pass:", Profiler::get("shadow_pass"), "ms");
-	UIComponents::indicatorLabel("Pre Pass:", Profiler::get("pre_pass"), "ms");
-	UIComponents::indicatorLabel("SSAO Pass:", Profiler::get("ssao"), "ms");
-	UIComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::get("velocity_buffer"), "ms");
-	UIComponents::indicatorLabel("Forward Pass:", Profiler::get("forward_pass"), "ms");
-	UIComponents::indicatorLabel("PP Pass:", Profiler::get("post_processing"), "ms");
-	UIComponents::indicatorLabel("UI Pass:", Profiler::get("ui_pass"), "ms");
+	UIComponents::indicatorLabel("Rendering:", Profiler::getMs("render"), "ms");
+	UIComponents::indicatorLabel("Physics:", Profiler::getMs("physics"), "ms");
+	UIComponents::indicatorLabel("Shadow Pass:", Profiler::getMs("shadow_pass"), "ms");
+	UIComponents::indicatorLabel("Pre Pass:", Profiler::getMs("pre_pass"), "ms");
+	UIComponents::indicatorLabel("SSAO Pass:", Profiler::getMs("ssao"), "ms");
+	UIComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::getMs("velocity_buffer"), "ms");
+	UIComponents::indicatorLabel("Forward Pass:", Profiler::getMs("forward_pass"), "ms");
+	UIComponents::indicatorLabel("PP Pass:", Profiler::getMs("post_processing"), "ms");
+	UIComponents::indicatorLabel("UI Pass:", Profiler::getMs("ui_pass"), "ms");
 
 	ImGui::End();
 }

@@ -238,7 +238,7 @@ namespace UIComponents {
 	void indicatorLabel(std::string label, double value, std::string additional)
 	{
 		char buffer[32];
-		snprintf(buffer, sizeof(buffer), "%.2f", value);
+		snprintf(buffer, sizeof(buffer), "%.0f", value);
 		if (buffer[strlen(buffer) - 1] == '0' && buffer[strlen(buffer) - 2] == '.')
 		{
 			buffer[strlen(buffer) - 2] = '\0';
