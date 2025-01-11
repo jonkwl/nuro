@@ -6,8 +6,8 @@
 
 namespace IconPool {
 	
-	void loadAll(std::string directoryPath);
+	void loadAll(const std::string& directoryPath);
 
-	Texture& get(std::string identifier);
+	Texture& get(const std::string& identifier);
 
 }

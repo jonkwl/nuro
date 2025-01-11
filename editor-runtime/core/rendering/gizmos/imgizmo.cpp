@@ -164,18 +164,14 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		staticData.iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 		staticData.iconShader->setVec3("tint", glm::vec3(1.0f));
 
-		auto alpha = [this, gizmoPosition, cameraPosition](float value) -> float {
-			return get3DIconAlpha(value, gizmoPosition, cameraPosition);
-			};
-
 		// Render with full opacity and depth test
-		staticData.iconShader->setFloat("alpha", alpha(1.0f));
+		staticData.iconShader->setFloat("alpha", get3DIconAlpha(1.0f, gizmoPosition, cameraPosition));
 		glEnable(GL_DEPTH_TEST);
 		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
-		staticData.iconShader->setFloat("alpha", alpha(0.15f));
+		staticData.iconShader->setFloat("alpha", get3DIconAlpha(0.15f, gizmoPosition, cameraPosition));
 		glDisable(GL_DEPTH_TEST);
 		glBindVertexArray(mesh.getVAO());
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);

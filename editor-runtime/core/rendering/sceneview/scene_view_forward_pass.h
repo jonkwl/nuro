@@ -47,7 +47,7 @@ private:
 	UnlitMaterial* selectionMaterial; // Material for selection outline
 
 	// Default scene view clearing color rgb values
-	static constexpr float defaultClearColor[3] = { 1.0f, 1.0f, 1.0f };
+	static constexpr float defaultClearColor[3] = { 0.015f, 0.015f, 0.015f };
 
 	void renderMesh(TransformComponent& transform, MeshRendererComponent& renderer); // Renders a given entities mesh
 	void renderMeshes(const std::vector<EntityContainer*>& skippedEntities); // Renders all meshes

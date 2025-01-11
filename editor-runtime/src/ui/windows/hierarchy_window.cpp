@@ -527,6 +527,7 @@ void HierarchyWindow::buildSceneHierarchy()
 		currentHierarchy.push_back(HierarchyItem(i, EntityContainer("Item " + std::to_string(i), entity), {}));
 		i++;
 	}
+	currentHierarchy.pop_back();
 }
 
 void HierarchyWindow::setCameraTarget(TransformComponent* target)

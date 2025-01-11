@@ -11,7 +11,8 @@
 
 #include "../src/runtime/runtime.h"
 #include "../src/ui/windows/scene_window.h"
-#include "../src/collection/editor_gizmo_color.h"
+#include "../src/gizmos/component_gizmos.h"
+#include "../src/gizmos/editor_gizmo_color.h"
 
 // initialize with users editor settings later
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
@@ -84,30 +85,7 @@ void SceneViewPipeline::render()
 	// Start new gizmo frame
 	IMGizmo& gizmos = Runtime::getSceneGizmos();
 	gizmos.newFrame();
-
-	// Render test light gizmo
-	gizmos.color = GizmoColor::BLUE;
-	gizmos.opacity = 0.08f;
-	gizmos.icon3d(IconPool::get("light_gizmo"), LitMaterial::tmpPointLightPosition, targetCamera.transform, glm::vec3(0.5f));
-
-	// Render box collider gizmos (tmp boilerplate)
-	gizmos.foreground = false;
-	gizmos.color = EditorGizmoColor::COLLIDER;
-	gizmos.opacity = EditorGizmoColor::COLLIDER.a;
-	auto boxColliders = ECS::gRegistry.view<TransformComponent, BoxColliderComponent>();
-	for (auto [entity, transform, collider] : boxColliders.each()) {
-		if (!collider.shape) continue;
-		const physx::PxBoxGeometry& boxGeometry = static_cast<const physx::PxBoxGeometry&>(collider.shape->getGeometry());
-		gizmos.boxWire(transform.position, PxTranslator::convert(boxGeometry.halfExtents), transform.rotation);
-	}
-
-	// Render sphere collider gizmos (tmp boilerplate)
-	auto sphereColliders = ECS::gRegistry.view<TransformComponent, SphereColliderComponent>();
-	for (auto [entity, transform, collider] : sphereColliders.each()) {
-		if (!collider.shape) continue;
-		const physx::PxSphereGeometry& sphereGeometry = static_cast<const physx::PxSphereGeometry&>(collider.shape->getGeometry());
-		gizmos.sphereWire(transform.position, sphereGeometry.radius, transform.rotation);
-	}
+	ComponentGizmos::renderSceneViewIcons(gizmos, targetCamera.transform);
 
 	//
 	// PRE PASS

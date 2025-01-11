@@ -14,7 +14,7 @@ namespace IconPool {
 	std::unordered_map<std::string, Texture> icons;
 	Texture invalidIcon = Texture::empty();
 
-	void loadAll(std::string directoryPath)
+	void loadAll(const std::string& directoryPath)
 	{
 		Log::printProcessStart("Gizmo Icon Pool", "Loading icons from " + directoryPath);
 
@@ -30,7 +30,7 @@ namespace IconPool {
 		Log::printProcessDone("Gizmo Icon Pool", "Done: " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon loaded" : " icons loaded"));
 	}
 
-	Texture& get(std::string identifier)
+	Texture& get(const std::string& identifier)
 	{
 		auto it = icons.find(identifier);
 		if (it != icons.end()) {
