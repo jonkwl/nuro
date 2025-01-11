@@ -476,7 +476,7 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\dynamic_drawing\dynamic_drawing.h">
+    <ClInclude Include="src\ui\dynamic_drawing\usage_collection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_content.h">
