@@ -21,6 +21,7 @@ msaaSamples(4),
 profile(),
 skybox(nullptr),
 gizmos(nullptr),
+preprocessorPass(),
 prePass(viewport),
 forwardPass(viewport),
 ssaoPass(viewport),
@@ -62,6 +63,14 @@ void GameViewPipeline::render()
 	glm::mat4 projection = Transformation::projection(camera.root.fov, camera.root.near, camera.root.far, viewport);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
+
+	//
+	// PREPROCESSOR PASS
+	// Evaluate and update transforms, perform culling etc.
+	// 
+	Profiler::start("preprocessor_pass");
+	preprocessorPass.perform(viewProjection);
+	Profiler::stop("preprocessor_pass");
 
 	//
 	// PRE PASS

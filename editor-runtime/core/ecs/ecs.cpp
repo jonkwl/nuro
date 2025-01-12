@@ -1,8 +1,11 @@
 #include "ecs.h"
 
 #include <random>
+#include <glm.hpp>
 #include <algorithm>
+
 #include "../core/utils/log.h"
+#include "../core/transform/transform.h"
 
 namespace ECS {
 
@@ -46,6 +49,9 @@ namespace ECS {
 
 		// Add parent if set
 		if (parent) transform.parent = parent;
+
+		// Perform initial transform evaluation with empty perspective matrix
+		Transform::evaluate(transform, glm::perspective(0.0f, 0.0f, 0.0f, 0.0f));
 
 		// Return entity and transform component
 		return std::tuple<entt::entity, TransformComponent&>(entity, transform);

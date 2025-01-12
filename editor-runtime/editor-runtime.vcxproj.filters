@@ -27,10 +27,10 @@
     <ClCompile Include="core\input\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\core\forward_pass.cpp">
+    <ClCompile Include="core\rendering\passes\forward_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\core\pre_pass.cpp">
+    <ClCompile Include="core\rendering\passes\pre_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\core\transformation.cpp">
@@ -231,6 +231,9 @@
     <ClCompile Include="core\viewport\viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -248,10 +251,10 @@
     <ClInclude Include="core\input\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\core\forward_pass.h">
+    <ClInclude Include="core\rendering\passes\forward_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\core\pre_pass.h">
+    <ClInclude Include="core\rendering\passes\pre_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\core\transformation.h">
@@ -507,6 +510,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\rendering\passes\preprocessor_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

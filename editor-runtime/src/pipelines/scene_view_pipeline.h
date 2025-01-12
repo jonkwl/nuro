@@ -5,10 +5,11 @@
 
 #include "../core/viewport/viewport.h"
 #include "../core/ecs/ecs_collection.h"
-#include "../core/rendering/core/pre_pass.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
 #include "../core/rendering/ssao/ssao_pass.h"
+#include "../core/rendering/passes/pre_pass.h"
+#include "../core/rendering/passes/preprocessor_pass.h"
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/sceneview/scene_view_forward_pass.h"
@@ -85,8 +86,6 @@ private:
 	// Render settings
 
 	uint32_t msaaSamples;
-
-	// Post processing profile
 	PostProcessing::Profile defaultProfile;
 
 	// Scene view cameras
@@ -97,6 +96,7 @@ private:
 
 	// Linked passes
 
+	PreprocessorPass preprocessorPass;
 	PrePass prePass;
 	SceneViewForwardPass sceneViewForwardPass;
 	SSAOPass ssaoPass;

@@ -26,6 +26,7 @@ defaultProfile(),
 flyCameraTransform(),
 flyCameraRoot(),
 flyCamera(flyCameraTransform, flyCameraRoot),
+preprocessorPass(),
 prePass(viewport),
 sceneViewForwardPass(viewport),
 ssaoPass(viewport),
@@ -70,7 +71,7 @@ void SceneViewPipeline::destroy()
 
 void SceneViewPipeline::render()
 {
-	Profiler::start("render");
+	Profiler::start("scene_view");
 
 	// Pick variable items for rendering
 	Camera& targetCamera = flyCamera;
@@ -91,12 +92,16 @@ void SceneViewPipeline::render()
 	ComponentGizmos::renderSceneViewIcons(gizmos, targetCamera.transform);
 
 	//
+	// PREPROCESSOR PASS
+	// Evaluate and update transforms, perform culling etc.
+	// 
+	preprocessorPass.perform(viewProjection);
+
+	//
 	// PRE PASS
 	// Create geometry pass with depth buffer before forward pass
 	//
-	Profiler::start("pre_pass");
 	prePass.render(viewProjection, viewNormal);
-	Profiler::stop("pre_pass");
 	const uint32_t PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
 	const uint32_t PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
 
@@ -104,14 +109,12 @@ void SceneViewPipeline::render()
 	// SCREEN SPACE AMBIENT OCCLUSION PASS
 	// Calculate screen space ambient occlusion if enabled
 	//
-	Profiler::start("ssao");
 	uint32_t _ssaoOutput = 0;
 	if (targetProfile.ambientOcclusion.enabled)
 	{
 		_ssaoOutput = ssaoPass.render(projection, targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const uint32_t SSAO_OUTPUT = _ssaoOutput;
-	Profiler::stop("ssao");
 
 	//
 	// VELOCITY BUFFER RENDER PASS (NONE)
@@ -132,23 +135,19 @@ void SceneViewPipeline::render()
 	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
 	LitMaterial::lightSpace = Runtime::getMainShadowMap()->getLightSpace();
 
-	Profiler::start("forward_pass");
 	sceneViewForwardPass.wireframe = wireframe;
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.linkSkybox(Runtime::getGameViewPipeline().getLinkedSkybox());
 	sceneViewForwardPass.drawGizmos = showGizmos;
 	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, targetCamera, selectedEntities);
-	Profiler::stop("forward_pass");
 
 	//
 	// POST PROCESSING PASS
 	// Render post processing pass to screen using forward pass output as input
 	//
-	Profiler::start("post_processing");
 	postProcessingPipeline.render(view, projection, viewProjection, targetProfile, FORWARD_PASS_OUTPUT, PRE_PASS_DEPTH_OUTPUT, VELOCITY_BUFFER_OUTPUT);
-	Profiler::stop("post_processing");
 
-	Profiler::stop("render");
+	Profiler::stop("scene_view");
 }
 
 uint32_t SceneViewPipeline::getOutput()

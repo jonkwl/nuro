@@ -8,8 +8,8 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/primitives/global_quad.h"
 #include "../core/rendering/ssao/ssao_pass.h"
-#include "../core/rendering/core/pre_pass.h"
-#include "../core/rendering/core/forward_pass.h"
+#include "../core/rendering/passes/pre_pass.h"
+#include "../core/rendering/passes/forward_pass.h"
 #include "../core/rendering/texture/texture.h"
 #include "../core/utils/log.h"
 

@@ -105,7 +105,7 @@ namespace Runtime {
 
 	}
 
-	void _renderShadows()
+	void _renderShadowsGlobal()
 	{
 		// WARNING
 		// 
@@ -310,7 +310,7 @@ namespace Runtime {
 			if (gGameRunning && !gGamePaused) _stepGame();
 
 			// RENDER NEXT FRAME
-			_renderShadows();
+			_renderShadowsGlobal();
 			gSceneViewPipeline.render();
 			gGameViewPipeline.render();
 

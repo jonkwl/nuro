@@ -117,7 +117,7 @@ void _example() {
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
-	int objectAmount = 140;
+	int objectAmount = 250;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube", ECS::createEntity());

@@ -107,9 +107,6 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	// Pre pass render each entity
 	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
-		// Compute transform matrices
-		Transform::evaluate(transform, viewProjection);
-
 		// Bind mesh
 		glBindVertexArray(renderer.mesh.getVAO());
 

@@ -3,13 +3,14 @@
 #include <vector>
 
 #include "../core/viewport/viewport.h"
+#include "../core/rendering/gizmos/gizmos.h"
+#include "../core/rendering/ssao/ssao_pass.h"
+#include "../core/rendering/passes/pre_pass.h"
+#include "../core/rendering/passes/forward_pass.h"
+#include "../core/rendering/passes/preprocessor_pass.h"
+#include "../core/rendering/velocitybuffer/velocity_buffer.h"
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/rendering/postprocessing/post_processing_pipeline.h"
-#include "../core/rendering/core/pre_pass.h"
-#include "../core/rendering/core/forward_pass.h"
-#include "../core/rendering/ssao/ssao_pass.h"
-#include "../core/rendering/velocitybuffer/velocity_buffer.h"
-#include "../core/rendering/gizmos/gizmos.h"
 
 class Skybox;
 
@@ -50,15 +51,19 @@ private:
 	void destroyPasses(); // Destroy all passes
 
 	// Members
+
 	Viewport viewport;
 	PostProcessing::Profile profile;
 	Skybox* skybox; // Optional skybox
 	IMGizmo* gizmos; // Optional gizmos
 
 	// Render settings
-	uint32_t msaaSamples; // MSAA Samples
+
+	uint32_t msaaSamples;
 
 	// Linked passes
+
+	PreprocessorPass preprocessorPass;
 	PrePass prePass;
 	ForwardPass forwardPass;
 	SSAOPass ssaoPass;
@@ -66,9 +71,11 @@ private:
 	PostProcessingPipeline postProcessingPipeline;
 
 	// Camera available cache
+
 	bool cameraAvailable;
 
 	// Cached outputs
+
 	uint32_t ssaoOutput;
 	uint32_t velocityOutput;
 };

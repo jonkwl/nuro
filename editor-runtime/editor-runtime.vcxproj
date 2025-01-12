@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\viewport\viewport.cpp" />
+    <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp" />
     <ClCompile Include="src\gizmos\component_gizmos.cpp" />
     <ClCompile Include="src\ui\context_menu.cpp" />
     <ClCompile Include="core\context\application_context.cpp" />
@@ -163,8 +164,8 @@
     <ClCompile Include="core\diagnostics\profiler.cpp" />
     <ClCompile Include="core\input\cursor.cpp" />
     <ClCompile Include="core\input\input.cpp" />
-    <ClCompile Include="core\rendering\core\forward_pass.cpp" />
-    <ClCompile Include="core\rendering\core\pre_pass.cpp" />
+    <ClCompile Include="core\rendering\passes\forward_pass.cpp" />
+    <ClCompile Include="core\rendering\passes\pre_pass.cpp" />
     <ClCompile Include="core\rendering\core\transformation.cpp" />
     <ClCompile Include="core\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="core\rendering\gizmos\imgizmo.cpp" />
@@ -207,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
+    <ClInclude Include="core\rendering\passes\preprocessor_pass.h" />
     <ClInclude Include="src\gizmos\component_gizmos.h" />
     <ClInclude Include="src\ui\context_menu.h" />
     <ClInclude Include="core\backend\api.h" />
@@ -251,8 +253,8 @@
     <ClInclude Include="core\engine.h" />
     <ClInclude Include="core\input\cursor.h" />
     <ClInclude Include="core\input\input.h" />
-    <ClInclude Include="core\rendering\core\forward_pass.h" />
-    <ClInclude Include="core\rendering\core\pre_pass.h" />
+    <ClInclude Include="core\rendering\passes\forward_pass.h" />
+    <ClInclude Include="core\rendering\passes\pre_pass.h" />
     <ClInclude Include="core\rendering\core\transformation.h" />
     <ClInclude Include="core\rendering\culling\bounding_volume.h" />
     <ClInclude Include="core\rendering\gizmos\gizmos.h" />

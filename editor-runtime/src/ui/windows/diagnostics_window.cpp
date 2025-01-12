@@ -71,12 +71,14 @@ void DiagnosticsWindow::render()
 	UIComponents::indicatorLabel("Rendering:", Profiler::getMs("render"), "ms");
 	UIComponents::indicatorLabel("Physics:", Profiler::getMs("physics"), "ms");
 	UIComponents::indicatorLabel("Shadow Pass:", Profiler::getMs("shadow_pass"), "ms");
+	UIComponents::indicatorLabel("Preprocessor Pass:", Profiler::getMs("preprocessor_pass"), "ms");
 	UIComponents::indicatorLabel("Pre Pass:", Profiler::getMs("pre_pass"), "ms");
 	UIComponents::indicatorLabel("SSAO Pass:", Profiler::getMs("ssao"), "ms");
 	UIComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::getMs("velocity_buffer"), "ms");
 	UIComponents::indicatorLabel("Forward Pass:", Profiler::getMs("forward_pass"), "ms");
 	UIComponents::indicatorLabel("PP Pass:", Profiler::getMs("post_processing"), "ms");
 	UIComponents::indicatorLabel("UI Pass:", Profiler::getMs("ui_pass"), "ms");
+	UIComponents::indicatorLabel("Scene View:", Profiler::getMs("scene_view"), "ms");
 
 	ImGui::End();
 }
