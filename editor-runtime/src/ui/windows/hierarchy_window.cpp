@@ -302,7 +302,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		// Circle geometry
 		float circleRadius = 9.0f;
 		ImVec2 circlePosition = ImVec2(
-			textPos.x + circleRadius + 0.7f, 
+			textPos.x + circleRadius + 1.0f, 
 			textPos.y + circleRadius * 0.5f + 1.0f);
 
 		// Fetch circle interactions
@@ -319,7 +319,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		if (circleClicked) item.expanded = !item.expanded;
 		
 		// Evaluate color
-		ImU32 circleColor = circleHovered && dropType == NO_DROP ? UIUtils::darken(color, 0.3f) : color;
+		ImU32 circleColor = circleHovered && dropType == NO_DROP ? (selected ? UIUtils::darken(color, 0.25f) : EditorColor::elementActive) : color;
 		
 		// Draw circle
 		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);

@@ -48,6 +48,7 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeIndicator.rounding = 25.0f;
 	speedChangeIndicator.foreground = true;
 	speedChangeIndicator.outline = true;
+	speedChangeIndicator.outlineStrength = 2.0f;
 	speedChangeIndicator.outlineColor = IM_COL32(255, 255, 255, 125);
 	speedChangeIndicator.horizontalAlignment = Horizontal::CENTER;
 	speedChangeIndicator.verticalAlignment = Vertical::CENTER;
