@@ -275,7 +275,7 @@ void SceneWindow::renderTransformGizmos()
 void SceneWindow::renderSpeedChangeIndicator()
 {
 	// Properties
-	const uint32_t visibleAlpha = 180.0f;
+	const uint32_t visibleAlpha = 180;
 	
 	// Determine visibility
 	bool visible = false;

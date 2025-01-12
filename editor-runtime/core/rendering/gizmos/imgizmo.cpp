@@ -246,6 +246,9 @@ Mesh& IMGizmo::getMesh(Shape shape)
 	case Shape::SPHERE:
 		return staticData.sphereMesh;
 		break;
+	default:
+		return staticData.boxMesh;
+		break;
 	}
 }
 

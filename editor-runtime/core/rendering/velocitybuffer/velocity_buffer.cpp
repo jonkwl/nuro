@@ -37,7 +37,7 @@ void VelocityBuffer::create()
 	// RED CHANNEL = x velocity | GREEN CHANNEL = y velocity | BLUE CHANNEL = view space depth
 	glGenTextures(1, &output);
 	glBindTexture(GL_TEXTURE_2D, output);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.width, viewport.height, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGB, GL_FLOAT, nullptr);
 
 	// Set output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -51,7 +51,7 @@ void VelocityBuffer::create()
 	// Generate postfiltered output texture
 	glGenTextures(1, &postfilteredOutput);
 	glBindTexture(GL_TEXTURE_2D, postfilteredOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.width, viewport.height, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGB, GL_FLOAT, nullptr);
 
 	// Set postfiltered output texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -62,7 +62,7 @@ void VelocityBuffer::create()
 	// Create depth buffer
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, viewport.width, viewport.height);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, viewport.getWidth_gl(), viewport.getHeight_gl());
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	// Check framebuffer status
@@ -166,7 +166,7 @@ uint32_t VelocityBuffer::postfilteringPass()
 
 	// Bind postfilter shader
 	postfilterShader->bind();
-	postfilterShader->setVec2("resolution", glm::vec2(viewport.width, viewport.height));
+	postfilterShader->setVec2("resolution", viewport.getResolution());
 
 	// Bind velocity buffer texture
 	glActiveTexture(GL_TEXTURE0);

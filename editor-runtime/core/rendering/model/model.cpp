@@ -62,7 +62,7 @@ void Model::resolveModel(std::string path)
 
 	// Add all models materials
 	modelMaterials.reserve(scene->mNumMaterials);
-	for (int32_t i = 0; i < scene->mNumMaterials; i++)
+	for (uint32_t i = 0; i < static_cast<uint32_t>(scene->mNumMaterials); i++)
 	{
 		modelMaterials.push_back(scene->mMaterials[i]);
 	}

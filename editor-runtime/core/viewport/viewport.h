@@ -1,13 +1,43 @@
 #pragma once
 
-// Functionality may be extended in the future, therefore own header
+#include <cstdint>
+#include <glad/glad.h>
+#include <glm.hpp>
+
 struct Viewport
 {
-	
-	// Default size of 250x250 to make sure any framebuffer
-	// initialized with default viewport doesnt have
-	// a width and height of 0x0 (invalid)
+public:
+	Viewport();
+	Viewport(float width, float height);
 
-	float width = 250.0f;
-	float height = 250.0f;
+	// Resizes the viewport to the specified width and height
+	void resize(float width, float height);
+
+	// Returns the width of the viewport
+	float getWidth() const;
+
+	// Returns the height of the viewport
+	float getHeight() const;
+
+	// Returns the width of the viewport as an unsigned integer
+	uint32_t getWidth_i() const;
+
+	// Returns the height of the viewport as an unsigned integer
+	uint32_t getHeight_i() const;
+
+	// Returns the width of the viewport as a gl size type
+	GLsizei getWidth_gl() const;
+
+	// Returns the height of the viewport as a gl size type
+	GLsizei getHeight_gl() const;
+
+	// Returns the resolution of the viewport as a vector
+	glm::vec2 getResolution() const;
+
+	// Returns the resolution of the viewport as an integer vector
+	glm::ivec2 getResolution_i() const;
+
+private:
+	float width;
+	float height;
 };

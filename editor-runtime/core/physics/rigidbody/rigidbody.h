@@ -3,13 +3,7 @@
 #include <glm.hpp>
 
 #include "../core/ecs/components.h"
-
-enum class RB_ForceMode {
-	LINEAR,
-	IMPULSE,
-	VELOCITY_CHANGE,
-	ACCELERATION
-};
+#include "../core/physics/rigidbody/rigidbody_enums.h"
 
 namespace Rigidbody
 {

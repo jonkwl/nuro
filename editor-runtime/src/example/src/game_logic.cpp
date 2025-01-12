@@ -1,6 +1,6 @@
 #include "game_logic.h"
 
-#include "../core/engine.h";
+#include "../core/engine.h"
 
 Mesh* getQuadMesh() {
 	// Positions for quad vertices

@@ -174,8 +174,7 @@ const Viewport& SceneViewPipeline::getViewport()
 void SceneViewPipeline::resizeViewport(float width, float height)
 {
 	// Set new viewport size
-	viewport.width = width;
-	viewport.height = height;
+	viewport.resize(width, height);
 
 	// Recreate all passes to match new viewport
 	destroyPasses();

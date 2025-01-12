@@ -72,7 +72,11 @@ namespace Transformation {
 
 	glm::mat4 projection(float fov, float near, float far, const Viewport& viewport)
 	{
-		glm::mat4 projection = glm::perspective(glm::radians(fov), viewport.width / viewport.height, near, far);
+		// Evaluate aspect ratio
+		float aspect = viewport.getWidth() / viewport.getHeight();
+
+		// Calculate projection matrix
+		glm::mat4 projection = glm::perspective(glm::radians(fov), aspect, near, far);
 		return projection;
 	}
 

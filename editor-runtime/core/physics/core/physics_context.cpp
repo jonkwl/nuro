@@ -49,7 +49,10 @@ void PhysicsContext::create()
 	// Setup ecs listener
 	ecsListener.setup();
 
-	// Register observer events
+	//
+	// Register all observer events
+	//
+
 	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsEcsListener::constructBoxCollider>(ecsListener);
 	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsEcsListener::destroyBoxCollider>(ecsListener);
 
@@ -93,7 +96,7 @@ void PhysicsContext::step(float delta)
 	// FRAME UPDATE
 	// 
 
-	// Update transform components
+	// Sync transform components
 	auto view = ECS::gRegistry.view<TransformComponent, RigidbodyComponent>();
 	for (auto [entity, transform, rigidbody] : view.each()) {
 		syncTransformComponent(delta, transform, rigidbody);
@@ -109,7 +112,7 @@ void PhysicsContext::simulate(float delta)
 	scene->simulate(timeStep);
 	scene->fetchResults(true);
 
-	// Update rigidbody components
+	// Sync rigidbody components
 	auto view = ECS::gRegistry.view<RigidbodyComponent>();
 	for (auto [entity, rigidbody] : view.each()) {
 		syncRigidbodyComponent(rigidbody);

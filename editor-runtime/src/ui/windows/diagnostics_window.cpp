@@ -24,10 +24,11 @@ void DiagnosticsWindow::render()
 	const int32_t values = 100;
 	const float updateRate = 0.025f;
 	int32_t maxValue = 1;
-	if (fpsCache.size() > 0.0f)
-		maxValue = *std::max_element(fpsCache.begin(), fpsCache.end());
+	if (fpsCache.size() > 0.0f) {
+		maxValue = static_cast<uint32_t>(*std::max_element(fpsCache.begin(), fpsCache.end()));
+	}
 
-	fpsUpdateTimer += Time::delta();
+	fpsUpdateTimer += Time::deltaf();
 	if (fpsUpdateTimer >= updateRate)
 	{
 		fpsCache.push_back(Diagnostics::getFps());

@@ -43,13 +43,13 @@ void BloomPass::create(const uint32_t mipDepth)
 	upsamplingShader->setInt("inputTexture", 0);
 
 	// Get initial viewport size
-	iViewportSize = glm::ivec2(viewport.width, viewport.height);
-	fViewportSize = glm::vec2((float)viewport.width, (float)viewport.height);
+	iViewportSize = viewport.getResolution_i();
+	fViewportSize = viewport.getResolution();
 	inversedViewportSize = 1.0f / fViewportSize;
 
 	// Get initial viewport size
-	glm::ivec2 iMipSize = glm::ivec2((int32_t)viewport.width, (int32_t)viewport.height);
-	glm::vec2 fMipSize = glm::vec2((float)viewport.width, (float)viewport.height);
+	glm::ivec2 iMipSize = viewport.getResolution_i();
+	glm::vec2 fMipSize = viewport.getResolution();
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &framebuffer);
@@ -58,7 +58,7 @@ void BloomPass::create(const uint32_t mipDepth)
 	// Generate prefilter texture
 	glGenTextures(1, &prefilterOutput);
 	glBindTexture(GL_TEXTURE_2D, prefilterOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, nullptr);
 
 	// Set prefilter texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -198,7 +198,7 @@ void BloomPass::downsamplingPass(const uint32_t hdrInput)
 		const BloomPass::Mip& mip = mipChain[i];
 
 		// Set viewport and framebuffer rendering target according to current mip
-		glViewport(0, 0, mip.fSize.x, mip.fSize.y);
+		glViewport(0, 0, static_cast<GLsizei>(mip.fSize.x), static_cast<GLsizei>(mip.fSize.y));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.texture, 0);
 
 		// Bind and render to quad
@@ -229,7 +229,7 @@ void BloomPass::upsamplingPass()
 	glBlendEquation(GL_FUNC_ADD);
 
 	// Upsample through mip chain
-	for (int32_t i = mipChain.size() - 1; i > 0; i--)
+	for (size_t i = mipChain.size() - 1; i > 0; i--)
 	{
 		// Get current mip and target mip for current downsampling iteration
 		const BloomPass::Mip& mip = mipChain[i];
@@ -240,7 +240,7 @@ void BloomPass::upsamplingPass()
 		glBindTexture(GL_TEXTURE_2D, mip.texture);
 
 		// Set viewport and set render target
-		glViewport(0, 0, targetMip.fSize.x, targetMip.fSize.y);
+		glViewport(0, 0, static_cast<GLsizei>(targetMip.fSize.x), static_cast<GLsizei>(targetMip.fSize.y));
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, targetMip.texture, 0);
 
 		// Bind and render to quad

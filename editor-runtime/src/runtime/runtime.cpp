@@ -150,9 +150,7 @@ namespace Runtime {
 	void _createLoadingScreen() {
 
 		// Create viewport
-		Viewport viewport;
-		viewport.width = static_cast<float>(gStartupWindowSize.x);
-		viewport.height = static_cast<float>(gStartupWindowSize.y);
+		Viewport viewport(static_cast<float>(gStartupWindowSize.x), static_cast<float>(gStartupWindowSize.y));
 
 		// Load model
 		Model* model = Model::load("../resources/primitives/cube.fbx");
@@ -176,7 +174,7 @@ namespace Runtime {
 		transform.position = glm::vec3(0.0f, 0.0f, 5.0f);
 
 		// Update viewport
-		glViewport(0, 0, viewport.width, viewport.height);
+		glViewport(0, 0, viewport.getWidth_gl(), viewport.getHeight_gl());
 
 		// Set culling to back face
 		glEnable(GL_CULL_FACE);

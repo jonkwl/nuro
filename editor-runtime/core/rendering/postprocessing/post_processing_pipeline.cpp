@@ -35,7 +35,7 @@ void PostProcessingPipeline::create()
 		// Generate output texture
 		glGenTextures(1, &output);
 		glBindTexture(GL_TEXTURE_2D, output);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, NULL);
 
 		// Set output texture parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -117,7 +117,7 @@ void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& proj
 
 	// Bind finalPassShader and set uniforms
 	finalPassShader->bind();
-	finalPassShader->setVec2("resolution", glm::vec2(viewport.width, viewport.height));
+	finalPassShader->setVec2("resolution", viewport.getResolution());
 
 	// Sync post processing configuration with shader
 	syncConfiguration(profile);

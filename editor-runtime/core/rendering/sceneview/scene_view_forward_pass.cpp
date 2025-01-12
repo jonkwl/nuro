@@ -41,7 +41,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	// Generate color output texture
 	glGenTextures(1, &outputColor);
 	glBindTexture(GL_TEXTURE_2D, outputColor);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.width, viewport.height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -62,7 +62,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	// Generate multisampled color buffer texture
 	glGenTextures(1, &multisampledColorBuffer);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, viewport.width, viewport.height, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, msaaSamples, GL_RGBA16F, viewport.getWidth_gl(), viewport.getHeight_gl(), GL_TRUE);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multisampledColorBuffer, 0);
@@ -70,7 +70,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	// Generate multisampled depth buffer
 	glGenRenderbuffers(1, &multisampledRbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, multisampledRbo);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, viewport.width, viewport.height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8, viewport.getWidth_gl(), viewport.getHeight_gl());
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, multisampledRbo);
 
 	// Check for multisampled framebuffer error
@@ -128,7 +128,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Set viewport
-	glViewport(0, 0, viewport.width, viewport.height);
+	glViewport(0, 0, viewport.getWidth_gl(), viewport.getHeight_gl());
 
 	// Set culling to back face
 	glEnable(GL_CULL_FACE);
@@ -178,7 +178,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	// Bilt multisampled framebuffer to post processing framebuffer
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFbo);
-	glBlitFramebuffer(0, 0, viewport.width, viewport.height, 0, 0, viewport.width, viewport.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, 0, viewport.getWidth_gl(), viewport.getHeight_gl(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	return outputColor;
 }

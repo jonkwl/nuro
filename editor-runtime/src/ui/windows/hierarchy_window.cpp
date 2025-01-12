@@ -270,8 +270,6 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		// Cache last selected item
 		lastSelected = &item;
 
-		Log::printProcessInfo("Last Selected: " + lastSelected->entity.name);
-
 	}
 
 	//
@@ -571,7 +569,7 @@ void HierarchyWindow::performAutoScroll()
 	float windowHeight = ImGui::GetWindowHeight();
 
 	auto rangeFactor = [](float x, const float range[2]) -> float {
-		return 1.0 - glm::clamp((x - range[0]) / (range[1] - range[0]), 0.0f, 1.0f);
+		return 1.0f - glm::clamp((x - range[0]) / (range[1] - range[0]), 0.0f, 1.0f);
 	};
 
 	// Scroll up

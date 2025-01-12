@@ -29,7 +29,7 @@ void PrePass::create()
 	// Generate depth output
 	glGenTextures(1, &depthOutput);
 	glBindTexture(GL_TEXTURE_2D, depthOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, viewport.width, viewport.height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 	// Set depth output parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -43,7 +43,7 @@ void PrePass::create()
 	// Generate normal output
 	glGenTextures(1, &normalOutput);
 	glBindTexture(GL_TEXTURE_2D, normalOutput);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.width, viewport.height, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGB, GL_FLOAT, nullptr);
 
 	// Set normal output parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -85,7 +85,7 @@ void PrePass::destroy() {
 void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 {
 	// Set viewport for upcoming pre pass
-	glViewport(0, 0, viewport.width, viewport.height);
+	glViewport(0, 0, viewport.getWidth_gl(), viewport.getHeight_gl());
 
 	// Bind pre pass framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);

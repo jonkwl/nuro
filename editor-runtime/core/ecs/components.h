@@ -7,6 +7,7 @@
 
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/material/imaterial.h"
+#include "../core/physics/rigidbody/rigidbody_enums.h"
 
 struct TransformComponent {
 
@@ -99,18 +100,6 @@ struct SphereColliderComponent {
 	// Physics backend shape handle
 	physx::PxShape* shape = nullptr;
 
-};
-
-enum class RB_Interpolation {
-	NONE,
-	INTERPOLATE,
-	EXTRAPOLATE
-};
-
-enum class RB_CollisionDetection {
-	DISCRETE,
-	CONTINUOUS,
-	CONTINUOUS_SPECULATIVE
 };
 
 struct RigidbodyComponent {

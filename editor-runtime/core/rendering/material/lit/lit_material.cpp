@@ -65,7 +65,7 @@ void LitMaterial::bind()
 
 	// General configuration
 	shader->setFloat("configuration.gamma", profile->color.gamma);
-	shader->setVec2("configuration.viewportResolution", glm::vec2(viewport->width, viewport->height));
+	shader->setVec2("configuration.viewportResolution", viewport->getResolution());
 
 	// Shadow parameters
 	shader->setBool("configuration.castShadows", castShadows);
