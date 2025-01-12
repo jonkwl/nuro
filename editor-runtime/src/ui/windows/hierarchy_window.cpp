@@ -1,5 +1,7 @@
 #include "hierarchy_window.h"
 
+#include <algorithm>
+
 #include "../core/transform/transform.h"
 
 enum DropType {
@@ -73,7 +75,11 @@ void HierarchyWindow::renderSearch(ImDrawList& drawList)
 void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
 {
 	// tmp
-	buildSceneHierarchy();
+	static bool builtHierarchy = false;
+	if (!builtHierarchy) {
+		buildSceneHierarchy();
+		builtHierarchy = true;
+	}
 
 	// Push font
 	ImGui::PushFont(EditorUI::getFonts().uiBold);
@@ -101,7 +107,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// PROPERTIES
 	//
 	const float indentationOffset = 30.0f;
-	const ImVec2 textPadding = ImVec2(10.0f, 6.5f);
+	const ImVec2 textPadding = ImVec2(10.0f, 4.5f);
 
 	//
 	// EVALUATE
@@ -200,7 +206,11 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 		ImGuiIO& io = ImGui::GetIO();
 
-		auto select = [this](HierarchyItem& _item) {
+		auto select = [this](HierarchyItem& _item) -> void {
+			// Item already selected
+			if (selectedItems.find(_item.id) != selectedItems.end()) return;
+
+			// Select item
 			selectedItems[_item.id] = &_item;
 			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);   
 		};
@@ -218,9 +228,9 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		}
 		// Select all between latest selection and this item
 		else if (io.KeyShift) {
-			// Make sure last selected is set
+			// Make sure last selected is set to prevent memory errors
 			if (!lastSelected) lastSelected = &item;
-
+			
 			// Find multiselect start and end elements
 			auto start = std::find(currentHierarchy.begin(), currentHierarchy.end(), *lastSelected);
 			auto end = std::find(currentHierarchy.begin(), currentHierarchy.end(), item);
@@ -260,6 +270,8 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		// Cache last selected item
 		lastSelected = &item;
 
+		Log::printProcessInfo("Last Selected: " + lastSelected->entity.name);
+
 	}
 
 	//
@@ -290,9 +302,9 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 
 	if (hasChildren) {
 		// Circle geometry
-		float circleRadius = 11.0f;
+		float circleRadius = 9.0f;
 		ImVec2 circlePosition = ImVec2(
-			textPos.x + circleRadius, 
+			textPos.x + circleRadius + 0.7f, 
 			textPos.y + circleRadius * 0.5f + 1.0f);
 
 		// Fetch circle interactions
@@ -309,7 +321,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 		if (circleClicked) item.expanded = !item.expanded;
 		
 		// Evaluate color
-		ImU32 circleColor = circleHovered && dropType == NO_DROP ? UIUtils::lighten(color, 1.0f) : color;
+		ImU32 circleColor = circleHovered && dropType == NO_DROP ? UIUtils::darken(color, 0.3f) : color;
 		
 		// Draw circle
 		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);
@@ -325,7 +337,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon) + "    " + item.entity.name;
+	std::string textValue = std::string(icon) + "   " + item.entity.name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -333,7 +345,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	//
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 6.0f));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 7.0f));
 	ImGui::PopStyleVar();
 
 	//
@@ -528,6 +540,14 @@ void HierarchyWindow::buildSceneHierarchy()
 		i++;
 	}
 	currentHierarchy.pop_back();
+
+	int _i = 0;
+	for (auto [entity, transform] : transforms.each()) {
+		if (_i > 0 && _i < 11) {
+			currentHierarchy[_i].children.push_back(HierarchyItem(i + _i + 1, EntityContainer("Child " + std::to_string(_i), entity), {}));
+		}
+		_i++;
+	}
 }
 
 void HierarchyWindow::setCameraTarget(TransformComponent* target)

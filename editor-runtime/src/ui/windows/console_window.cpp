@@ -121,7 +121,7 @@ void ConsoleWindow::drawLog(ImDrawList& drawList, ConsoleLog log)
 	if (ImGui::IsMouseHoveringRect(p0, p1)) {
 		backgroundColor = UIUtils::lighten(backgroundColor, 0.1f);
 	}
-	drawList.AddRectFilled(p0, p1, backgroundColor);
+	drawList.AddRectFilled(p0, p1, backgroundColor, 10.0f);
 
 	// Draw content text with icon
 	ImVec2 contentPosition = ImVec2(p0.x + elementPadding, p0.y + elementPadding);

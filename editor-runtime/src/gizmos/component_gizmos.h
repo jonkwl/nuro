@@ -6,13 +6,16 @@
 namespace ComponentGizmos
 {
 
-	// Renders the icons of various components such as lights and cameras
+	// Renders icon gizmos of all components in register
 	void renderSceneViewIcons(IMGizmo& gizmos, TransformComponent& cameraTransform);
 
-	// Render box collider component
+	// Renders gizmos of all components for specific entity
+	void renderEntityGizmos(IMGizmo& gizmos, EntityContainer& entity);
+
+	// Render box collider component gizmo
 	void renderBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider);
 
-	// Render sphere collider component
+	// Render sphere collider component gizmo
 	void renderSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider);
 
 };

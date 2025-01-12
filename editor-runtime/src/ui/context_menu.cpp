@@ -6,7 +6,7 @@
 
 namespace ContextMenu {
 
-	ImVec4 _backgroundColor = ImVec4(0.2f, 0.2f, 0.25f, 0.8f);
+	ImVec4 _backgroundColor = ImVec4(0.2f, 0.2f, 0.25f, 0.85f);
 	ImVec4 _textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ImVec4 _hoverColor = ImVec4(0.1f, 0.1f, 0.15f, 1.0f);
 	ImU32 _outlineColor = EditorColor::selection;

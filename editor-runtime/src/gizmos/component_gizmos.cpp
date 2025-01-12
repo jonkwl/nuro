@@ -31,6 +31,15 @@ namespace ComponentGizmos {
 		}*/
 	}
 
+	void renderEntityGizmos(IMGizmo& gizmos, EntityContainer& entity)
+	{
+		// Render box collider
+		if (entity.has<BoxColliderComponent>()) ComponentGizmos::renderBoxCollider(gizmos, entity.transform, entity.get<BoxColliderComponent>());
+
+		// Render sphere collider
+		if (entity.has<SphereColliderComponent>()) ComponentGizmos::renderSphereCollider(gizmos, entity.transform, entity.get<SphereColliderComponent>());
+	}
+
 	void renderBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider)
 	{
 		gizmos.foreground = true;

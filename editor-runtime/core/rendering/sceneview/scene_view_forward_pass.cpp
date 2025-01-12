@@ -32,7 +32,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 {
 	// Create outline material
 	selectionMaterial = new UnlitMaterial();
-	selectionMaterial->baseColor = glm::vec4(1.0f, 0.4f, 0.0f, 1.0f);
+	selectionMaterial->baseColor = glm::vec4(1.0f, 0.1f, 0.04f, 1.0f);
 
 	// Generate forward pass framebuffer
 	glGenFramebuffers(1, &outputFbo);
@@ -254,13 +254,7 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	MeshRendererComponent& renderer = entity->get<MeshRendererComponent>();
 
 	// Render selected entitites gizmos if needed
-	if (gizmos) {
-		// Render box collider
-		if (entity->has<BoxColliderComponent>()) ComponentGizmos::renderBoxCollider(*gizmos, transform, entity->get<BoxColliderComponent>());
-
-		// Render sphere collider
-		if (entity->has<SphereColliderComponent>()) ComponentGizmos::renderSphereCollider(*gizmos, transform, entity->get<SphereColliderComponent>());
-	}
+	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
