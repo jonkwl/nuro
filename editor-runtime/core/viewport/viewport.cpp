@@ -60,3 +60,8 @@ glm::ivec2 Viewport::getResolution_i() const
 {
 	return glm::ivec2(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
 }
+
+float Viewport::getAspect() const
+{
+	return width / height;
+}

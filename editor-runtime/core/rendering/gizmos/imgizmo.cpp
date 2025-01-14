@@ -14,6 +14,7 @@
 // Global gizmo resources
 IMGizmo::StaticData IMGizmo::staticData;
 
+
 IMGizmo::IMGizmo() : color(glm::vec3(1.0f)),
 opacity(0.4f),
 foreground(false),
@@ -174,7 +175,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
-		staticData.iconShader->setFloat("alpha", get3DIconAlpha(0.15f, gizmoPosition, cameraPosition));
+		staticData.iconShader->setFloat("alpha", get3DIconAlpha(0.06f, gizmoPosition, cameraPosition));
 		glDisable(GL_DEPTH_TEST);
 		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 		glEnable(GL_DEPTH_TEST);

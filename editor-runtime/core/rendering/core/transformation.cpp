@@ -5,48 +5,45 @@
 
 namespace Transformation {
 
-	glm::vec3 toBackendPosition(glm::vec3 position)
+	glm::vec3 toBackendPosition(const glm::vec3& position)
 	{
 		// Use to convert left handed coordinates to right handed coordinates backend uses
 		return glm::vec3(position.x, position.y, -position.z);
 	}
 
-	glm::quat toBackendRotation(glm::quat rotation)
+	glm::quat toBackendRotation(const glm::quat& rotation)
 	{
 		// Use to convert left handed rotation to right handed rotation backend uses
-		rotation.x = -rotation.x;
-		rotation.y = -rotation.y;
-		rotation.z = rotation.z;
-		return rotation;
+		return glm::quat(rotation.w, -rotation.x, -rotation.y, rotation.z);
 	}
 
-	glm::mat4 model(const TransformComponent& transform)
+	glm::mat4 model(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale)
 	{
 		glm::mat4 model(1.0f);
 
 		// Convert left handed transform position to right handed position
-		glm::vec3 worldPosition = toBackendPosition(transform.position);
+		glm::vec3 _position = toBackendPosition(position);
 
 		// Transpose model matrix
-		model = glm::translate(model, worldPosition);
+		model = glm::translate(model, _position);
 
 		// Convert left handed rotation to right handed rotation
-		glm::quat rotation = toBackendRotation(transform.rotation);
+		glm::quat _rotation = toBackendRotation(rotation);
 
 		// Normalize rotation
-		rotation = glm::normalize(rotation);
+		_rotation = glm::normalize(_rotation);
 
 		// Get rotation matrix and rotate model matrix
-		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
+		glm::mat4 rotationMatrix = glm::mat4_cast(_rotation);
 		model = model * rotationMatrix;
 
 		// Scale model matrix
-		model = glm::scale(model, transform.scale);
+		model = glm::scale(model, scale);
 
 		return model;
 	}
 
-	glm::mat4 view(glm::vec3 cameraPosition, glm::quat cameraRotation)
+	glm::mat4 view(const glm::vec3& cameraPosition, const glm::quat& cameraRotation)
 	{
 		glm::vec3 position = toBackendPosition(cameraPosition);
 		glm::quat rotation = toBackendRotation(cameraRotation);
@@ -70,23 +67,22 @@ namespace Transformation {
 		return viewMatrix;
 	}
 
-	glm::mat4 projection(float fov, float near, float far, const Viewport& viewport)
+	glm::mat4 projection(float fov, float aspect, float near, float far)
 	{
-		// Evaluate aspect ratio
-		float aspect = viewport.getWidth() / viewport.getHeight();
-
 		// Calculate projection matrix
 		glm::mat4 projection = glm::perspective(glm::radians(fov), aspect, near, far);
 		return projection;
 	}
 
-	glm::mat4 normal(glm::mat4 model)
+	glm::mat4 normal(const glm::mat4& model)
 	{
+		// Calculate normal matrix
 		return glm::transpose(glm::inverse(model));
 	}
 
-	glm::mat4 lightView(glm::vec3 lightPosition, glm::vec3 lightDirection)
+	glm::mat4 lightView(const glm::vec3& lightPosition, const glm::vec3& lightDirection)
 	{
+		// Calculate light view matrix
 		glm::vec3 position = toBackendPosition(lightPosition);
 		glm::vec3 target = position + glm::normalize(toBackendPosition(lightDirection));
 		glm::mat4 view = glm::lookAt(
@@ -96,9 +92,17 @@ namespace Transformation {
 		return view;
 	}
 
-	glm::mat4 lightProjection(float boundsWidth, float boundsHeight, float near, float far)
+	glm::mat4 lightProjectionOrthographic(float boundsWidth, float boundsHeight, float near, float far)
 	{
+		// Calculate light projection matrix using orthographic projection
 		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
+		return projection;
+	}
+
+	glm::mat4 lightProjectionPerspective(float fov, float aspect, float near, float far)
+	{
+		// Calculate light projection matrix using perspective projection
+		glm::mat4 projection = glm::perspective(glm::radians(fov), aspect, near, far);
 		return projection;
 	}
 

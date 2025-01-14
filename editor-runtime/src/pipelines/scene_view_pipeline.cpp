@@ -82,7 +82,7 @@ void SceneViewPipeline::render()
 
 	// Get transformation matrices
 	view = Transformation::view(targetCamera.transform.position, targetCamera.transform.rotation);
-	projection = Transformation::projection(targetCamera.root.fov, targetCamera.root.near, targetCamera.root.far, viewport);
+	projection = Transformation::projection(targetCamera.root.fov, viewport.getAspect(), targetCamera.root.near, targetCamera.root.far);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 

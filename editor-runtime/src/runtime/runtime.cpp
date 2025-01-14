@@ -73,9 +73,14 @@ namespace Runtime {
 		uint32_t diskRadius = 5;
 		gMainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
-		// Create default shadow map
-		bool shadow_map_saved = false;
-		gMainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
+		// Create default directional shadow map
+		/*gMainShadowMap = new ShadowMap(ShadowType::DIRECTIONAL, 4096, 4096);
+		gMainShadowMap->setBounds(100.0f, 100.0f);
+		gMainShadowMap->setClipping(0.3f, 1000.0f);
+		gMainShadowMap->create();*/
+
+		// Create default spotlight shadow map
+		gMainShadowMap = new ShadowMap(ShadowType::SPOT, 2048, 2048);
 		gMainShadowMap->create();
 
 		/*
@@ -214,9 +219,9 @@ namespace Runtime {
 			transform.rotation = glm::slerp(transform.rotation, cubeRotation, 5.0f * delta);
 
 			// Calculate transform matrices
-			glm::mat4 model = Transformation::model(transform);
+			glm::mat4 model = Transformation::model(transform.position, transform.rotation, transform.scale);
 			glm::mat4 view = Transformation::view(glm::vec3(0.0f), glm::identity<glm::quat>());
-			glm::mat4 projection = Transformation::projection(70.0f, 0.3f, 1000.0f, viewport);
+			glm::mat4 projection = Transformation::projection(70.0f, viewport.getAspect(), 0.3f, 1000.0f);
 			glm::mat4 mvp = projection * view * model;
 			glm::mat4 normal = Transformation::normal(model);
 

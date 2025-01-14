@@ -25,10 +25,23 @@ namespace ComponentGizmos {
 			addIcon("camera_gizmo", transform.position);
 		}
 
-		// Render light icons (tmp)
-		/*for (int i = 0; i < 1; i++) {
-			addIcon("light_gizmo", glm::vec3(0.0f, 0.0f, 0.0f));
-		}*/
+		// Render directional light icons
+		auto directionalLights = ECS::gRegistry.view<TransformComponent, DirectionalLightComponent>();
+		for (auto [entity, transform, directionalLight] : directionalLights.each()) {
+			addIcon("light_gizmo", transform.position);
+		}
+
+		// Render point light icons
+		auto pointLights = ECS::gRegistry.view<TransformComponent, PointLightComponent>();
+		for (auto [entity, transform, pointLight] : pointLights.each()) {
+			addIcon("light_gizmo", transform.position);
+		}
+
+		// Render spotlight icons
+		auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
+		for (auto [entity, transform, spotlight] : spotlights.each()) {
+			addIcon("light_gizmo", transform.position);
+		}
 	}
 
 	void renderEntityGizmos(IMGizmo& gizmos, EntityContainer& entity)

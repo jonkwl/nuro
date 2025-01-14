@@ -121,7 +121,7 @@ void _example() {
 	planeMaterial->setOcclusionMap(occlusion);
 	planeMaterial->setEmissiveMap(emissive);
 	planeMaterial->emission = true;
-	planeMaterial->emissionIntensity = 20.0f;
+	planeMaterial->emissionIntensity = 11.0f;
 	//planeMaterial->setHeightMap(height);
 	//planeMaterial->heightMapScale = 0.066f;
 
@@ -132,13 +132,13 @@ void _example() {
 	sunLight.color = glm::vec3(1.0, 1.0, 0.8f);*/
 
 	// Sample point light
-	/*EntityContainer pointLight("Point Light", ECS::createEntity());
+	EntityContainer pointLight("Point Light", ECS::createEntity());
 	pointLight.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
 	PointLightComponent& pointLightSource = pointLight.add<PointLightComponent>();
 	pointLightSource.intensity = 5.0f;
 	pointLightSource.color = glm::vec3(0.5f, 0.0f, 1.0f);
 	pointLightSource.range = 25.0f;
-	pointLightSource.falloff = 15.0f;*/
+	pointLightSource.falloff = 15.0f;
 
 	// Sample spotlight
 	EntityContainer flashlight("Flashlight", ECS::createEntity());

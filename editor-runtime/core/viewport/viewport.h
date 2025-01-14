@@ -37,6 +37,9 @@ public:
 	// Returns the resolution of the viewport as an integer vector
 	glm::ivec2 getResolution_i() const;
 
+	// Returns the aspect ratio of the viewport
+	float getAspect() const;
+
 private:
 	float width;
 	float height;

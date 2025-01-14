@@ -824,9 +824,9 @@ vec4 shadePBR() {
 
             float shadow = 0.0;
             // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
-            if (material.enableHeightMap && i == 0) {
+            /*if (material.enableHeightMap && i == 0) {
                 shadow += POM_getShadowHard(pointLight.position);
-            }
+            }*/
 
             Lo += evaluateLightSource(
                     V,
@@ -858,6 +858,7 @@ vec4 shadePBR() {
             float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
 
             float shadow = 0.0;
+            shadow += getDirectionalShadowHard(L);
             // PARALLAX OCCLUSION MAPPED SHADOW FOR SPOT LIGHT //
             /*if (material.enableHeightMap && i == 0) {
                 shadow += POM_getShadowHard(spotLight.position);

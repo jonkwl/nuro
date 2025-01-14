@@ -221,7 +221,7 @@ void SceneWindow::renderTransformGizmos()
 
 	// Get gizmo model matrix
 	TransformComponent& transform = selected->get<TransformComponent>();
-	glm::mat4 model = Transformation::model(transform);
+	glm::mat4 model = Transformation::model(transform.position, transform.rotation, transform.scale);
 	if (transform.parent) model = transform.parent->model * model;
 
 	// Check for snapping

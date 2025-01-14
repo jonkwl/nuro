@@ -3,33 +3,32 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "../core/viewport/viewport.h"
-#include "../core/ecs/components.h"
-
 namespace Transformation
 {
 	// Converts left handed coordinates to right handed coordinates backend uses
-	glm::vec3 toBackendPosition(glm::vec3 position);
+	glm::vec3 toBackendPosition(const glm::vec3& position);
 
 	// Converts left handed rotation to right handed rotation backend uses
-	glm::quat toBackendRotation(glm::quat rotation);
+	glm::quat toBackendRotation(const glm::quat& rotation);
 	
-	// Calculates model matrix by given transform component
-	glm::mat4 model(const TransformComponent& transform);
+	// Returns a model matrix by given transform component
+	glm::mat4 model(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
 
-	// Calculates view matrix by given spatial camera data
-	glm::mat4 view(glm::vec3 cameraPosition, glm::quat cameraRotation);
+	// Returns a view matrix by given spatial camera data
+	glm::mat4 view(const glm::vec3& cameraPosition, const glm::quat& cameraRotation);
 
-	// Calculates projection matrix by given parameters
-	glm::mat4 projection(float fov, float near, float far, const Viewport& viewport);
+	// Returns a projection matrix by given parameters
+	glm::mat4 projection(float fov, float aspect, float near, float far);
 
-	// Calculates normal matrix (transposed inversed model matrix) by given model matrix
-	glm::mat4 normal(glm::mat4 model);
+	// Returns a normal matrix (transposed inversed model matrix) by given model matrix
+	glm::mat4 normal(const glm::mat4& model);
 	
-	//
-	// Tmp
-	//
+	// Returns a view matrix for a light
+	glm::mat4 lightView(const glm::vec3& lightPosition, const glm::vec3& lightDirection);
 
-	glm::mat4 lightView(glm::vec3 lightPosition, glm::vec3 lightDirection);
-	glm::mat4 lightProjection(float boundsWidth, float boundsHeight, float near, float far);
+	// Returns an orthograpghic projection matrix for a light
+	glm::mat4 lightProjectionOrthographic(float boundsWidth, float boundsHeight, float near, float far);
+
+	// Returns a perspective projection matrix for a light
+	glm::mat4 lightProjectionPerspective(float fov, float aspect, float near, float far);
 };

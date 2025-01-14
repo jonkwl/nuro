@@ -11,17 +11,30 @@
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs_collection.h"
 
-ShadowMap::ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight, float boundsWidth, float boundsHeight, float near, float far) : near(near),
-far(far),
+ShadowMap::ShadowMap(ShadowType type, uint32_t resolutionWidth, uint32_t resolutionHeight) : type(type),
 resolutionWidth(resolutionWidth),
 resolutionHeight(resolutionHeight),
-boundsWidth(boundsWidth),
-boundsHeight(boundsHeight),
-framebuffer(0),
+near(0.3f),
+far(1000.0f),
+boundsWidth(25.0f),
+boundsHeight(25.0f),
 texture(0),
+framebuffer(0),
 lightSpace(glm::mat4(1.0f)),
 shadowPassShader(nullptr)
 {
+}
+
+void ShadowMap::setBounds(float _boundsWidth, float _boundsHeight)
+{
+	boundsWidth = _boundsWidth;
+	boundsHeight = _boundsHeight;
+}
+
+void ShadowMap::setClipping(float _near, float _far)
+{
+	near = _near;
+	far = _far;
 }
 
 void ShadowMap::create()
@@ -81,17 +94,39 @@ void ShadowMap::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	// tmp
-	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
-	glm::vec3 directionalPosition = glm::vec3(80.0f, 80.0f, -80.0f);
-	boundsWidth = 100.0f;
-	boundsHeight = 100.0f;
+	// Declare position, direction, view, and projection outside the switch statement
+	glm::vec3 position;
+	glm::vec3 direction;
+	glm::mat4 view;
+	glm::mat4 projection;
 
-	// Get shadow map view and projection
-	glm::mat4 projection = Transformation::lightProjection(boundsWidth, boundsHeight, near, far);
-	glm::mat4 view = Transformation::lightView(directionalPosition, directionalDirection);
+	switch (type) {
+	case ShadowType::DIRECTIONAL:
+		// Directional light properties
+		position = glm::vec3(80.0f, 80.0f, -80.0f);
+		direction = glm::vec3(-0.7f, -0.8f, 1.0f);
 
-	// Calculate final light space
+		view = Transformation::lightView(position, direction);
+		projection = Transformation::lightProjectionOrthographic(boundsWidth, boundsHeight, near, far);
+		break;
+
+	case ShadowType::POINT:
+		// Point light properties
+		break;
+
+	case ShadowType::SPOT:
+		// Spot light properties
+		position = glm::vec3(0.0f, 6.0f, 5.0f);
+		direction = glm::vec3(0.0f, 0.0f, 1.0f);
+
+		view = Transformation::lightView(position, direction);
+		projection = Transformation::lightProjectionPerspective(1.0f, 36.0f, 0.3f, 50.0f);
+		break;
+
+	default:
+		return;
+	}
+
 	lightSpace = projection * view;
 
 	// Bind shadow pass shader and render each objects depth on shadow map
