@@ -791,6 +791,7 @@ vec4 shadePBR() {
 
             float shadow = 0.0;
             shadow += getDirectionalShadowSoft(L);
+           
             // PARALLAX OCCLUSION MAPPED SHADOW FOR DIRECTIONAL LIGHT //
             /*if (material.enableHeightMap && i == 0) {
                 vec3 tangentLightDirection = normalize(v_tbnTransposed * v_fragmentWorldPosition - v_tbnTransposed * directionalLight.position);
@@ -823,6 +824,7 @@ vec4 shadePBR() {
             vec3 L = normalize(pointLight.position - v_fragmentWorldPosition);
 
             float shadow = 0.0;
+            
             // PARALLAX OCCLUSION MAPPED SHADOW FOR POINT LIGHT //
             /*if (material.enableHeightMap && i == 0) {
                 shadow += POM_getShadowHard(pointLight.position);
@@ -858,7 +860,8 @@ vec4 shadePBR() {
             float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
 
             float shadow = 0.0;
-            shadow += getDirectionalShadowHard(L);
+            shadow += getDirectionalShadowSoft(L);
+           
             // PARALLAX OCCLUSION MAPPED SHADOW FOR SPOT LIGHT //
             /*if (material.enableHeightMap && i == 0) {
                 shadow += POM_getShadowHard(spotLight.position);

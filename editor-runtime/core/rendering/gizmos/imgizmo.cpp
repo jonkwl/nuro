@@ -112,6 +112,9 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 
 void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 {
+	// Setup
+	const float renderRadius = 50.0f;
+
 	// Bind quick gizmo shader for upcoming renders
 	staticData.iconShader->bind();
 
@@ -129,6 +132,9 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 	{
 		// Get gizmo rendering target
 		IconRenderTarget gizmo = iconRenderStack[i];
+
+		// Dont render gizmo if exceeding render radius
+		if (glm::distance(gizmo.position, gizmo.cameraTransform.position) > renderRadius) continue;
 
 		// Bind gizmo icon texture
 		gizmo.icon.bind(0);

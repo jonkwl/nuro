@@ -15,7 +15,6 @@ namespace ComponentGizmos {
 		const float radius = 50.0f;
 
 		auto addIcon = [&gizmos, &cameraTransform, radius](std::string icon, glm::vec3 position) -> void {
-			if (glm::distance(position, cameraTransform.position) > radius) return;
 			gizmos.icon3d(IconPool::get(icon), position, cameraTransform, glm::vec3(0.8f));
 		};
 

@@ -126,10 +126,10 @@ void _example() {
 	//planeMaterial->heightMapScale = 0.066f;
 
 	// Directional light (sun)
-	/*EntityContainer sun("Sun", ECS::createEntity());
+	EntityContainer sun("Sun", ECS::createEntity());
 	DirectionalLightComponent& sunLight = sun.add<DirectionalLightComponent>();
-	sunLight.intensity = 0.1f;
-	sunLight.color = glm::vec3(1.0, 1.0, 0.8f);*/
+	sunLight.intensity = 0.3f;
+	sunLight.color = glm::vec3(1.0, 1.0, 1.0f);
 
 	// Sample point light
 	EntityContainer pointLight("Point Light", ECS::createEntity());
@@ -148,12 +148,13 @@ void _example() {
 	flashlightSource.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	flashlightSource.range = 50.0f;
 	flashlightSource.falloff = 10.0f;
-	flashlightSource.innerCutoff = 9.0f;
-	flashlightSource.outerCutoff = 36.0f;
+	flashlightSource.innerCutoff = 20.0f;
+	flashlightSource.outerCutoff = 45.0f;
 
 	// Camera
 	EntityContainer camera("Camera", ECS::createEntity());
 	cameraEntity = camera.root;
+	camera.transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
 	camera.add<CameraComponent>();
 
 	// Ground

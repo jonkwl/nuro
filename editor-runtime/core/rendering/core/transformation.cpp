@@ -22,19 +22,19 @@ namespace Transformation {
 		glm::mat4 model(1.0f);
 
 		// Convert left handed transform position to right handed position
-		glm::vec3 _position = toBackendPosition(position);
+		glm::vec3 backendPosition = toBackendPosition(position);
 
 		// Transpose model matrix
-		model = glm::translate(model, _position);
+		model = glm::translate(model, backendPosition);
 
 		// Convert left handed rotation to right handed rotation
-		glm::quat _rotation = toBackendRotation(rotation);
+		glm::quat backendRotation = toBackendRotation(rotation);
 
 		// Normalize rotation
-		_rotation = glm::normalize(_rotation);
+		backendRotation = glm::normalize(backendRotation);
 
 		// Get rotation matrix and rotate model matrix
-		glm::mat4 rotationMatrix = glm::mat4_cast(_rotation);
+		glm::mat4 rotationMatrix = glm::mat4_cast(backendRotation);
 		model = model * rotationMatrix;
 
 		// Scale model matrix
@@ -61,17 +61,14 @@ namespace Transformation {
 		// Calculate the target position
 		glm::vec3 target = position + forward;
 
-		// Create the view matrix
-		glm::mat4 viewMatrix = glm::lookAt(position, target, up);
-
-		return viewMatrix;
+		// Create and return view matrix
+		return glm::lookAt(position, target, up);
 	}
 
 	glm::mat4 projection(float fov, float aspect, float near, float far)
 	{
-		// Calculate projection matrix
-		glm::mat4 projection = glm::perspective(glm::radians(fov), aspect, near, far);
-		return projection;
+		// Create and return projection matrix
+		return glm::perspective(glm::radians(fov), aspect, near, far);
 	}
 
 	glm::mat4 normal(const glm::mat4& model)
@@ -82,28 +79,24 @@ namespace Transformation {
 
 	glm::mat4 lightView(const glm::vec3& lightPosition, const glm::vec3& lightDirection)
 	{
-		// Calculate light view matrix
+		// Calculate light view matrix parameters
 		glm::vec3 position = toBackendPosition(lightPosition);
 		glm::vec3 target = position + glm::normalize(toBackendPosition(lightDirection));
-		glm::mat4 view = glm::lookAt(
-			position,
-			target,
-			glm::vec3(0.0f, 1.0f, 0.0f));
-		return view;
+
+		// Create and return light view matrix
+		return glm::lookAt(position, target, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	glm::mat4 lightProjectionOrthographic(float boundsWidth, float boundsHeight, float near, float far)
 	{
-		// Calculate light projection matrix using orthographic projection
-		glm::mat4 projection = glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
-		return projection;
+		// Create and return light projection matrix using orthographic projection
+		return glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
 	}
 
 	glm::mat4 lightProjectionPerspective(float fov, float aspect, float near, float far)
 	{
-		// Calculate light projection matrix using perspective projection
-		glm::mat4 projection = glm::perspective(glm::radians(fov), aspect, near, far);
-		return projection;
+		// Create and return light projection matrix using perspective projection
+		return glm::perspective(glm::radians(fov), aspect, near, far);
 	}
 
 }

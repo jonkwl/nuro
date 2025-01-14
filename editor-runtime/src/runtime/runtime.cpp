@@ -132,6 +132,12 @@ namespace Runtime {
 		Profiler::start("shadow_pass");
 		gMainShadowMap->render();
 		Profiler::stop("shadow_pass");
+
+		static uint32_t shadowIterations = false;
+		if (shadowIterations == 380) {
+			gMainShadowMap->saveAsImage(500, 500, "shadow_map.png");
+		}
+		shadowIterations++;
 	}
 
 	void _renderEditor() {

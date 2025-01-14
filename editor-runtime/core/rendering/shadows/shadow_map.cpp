@@ -120,7 +120,7 @@ void ShadowMap::render()
 		direction = glm::vec3(0.0f, 0.0f, 1.0f);
 
 		view = Transformation::lightView(position, direction);
-		projection = Transformation::lightProjectionPerspective(1.0f, 36.0f, 0.3f, 50.0f);
+		projection = Transformation::lightProjectionPerspective(90.0f, 1.0f, 0.3f, 1000.0f);
 		break;
 
 	default:
