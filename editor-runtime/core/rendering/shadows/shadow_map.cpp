@@ -20,8 +20,15 @@ boundsHeight(boundsHeight),
 framebuffer(0),
 texture(0),
 lightSpace(glm::mat4(1.0f)),
-shadowPassShader(ShaderPool::get("shadow_pass"))
+shadowPassShader(nullptr)
 {
+}
+
+void ShadowMap::create()
+{
+	// Get shader
+	shadowPassShader = ShaderPool::get("shadow_pass");
+
 	// Generate framebuffer
 	glGenFramebuffers(1, &framebuffer);
 
@@ -50,6 +57,23 @@ shadowPassShader(ShaderPool::get("shadow_pass"))
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ShadowMap::destroy()
+{
+	// Delete texture
+	glDeleteTextures(1, &texture);
+	texture = 0;
+
+	// Delete framebuffer
+	glDeleteFramebuffers(1, &framebuffer);
+	framebuffer = 0;
+
+	// Reset light space matrix
+	lightSpace = glm::mat4(1.0f);
+
+	// Reset shader
+	shadowPassShader = nullptr;
+}
+
 void ShadowMap::render()
 {
 	// Set viewport and bind shadow map framebuffer
@@ -57,11 +81,8 @@ void ShadowMap::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	// Example directional light
-	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
-	// glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
-	
 	// tmp
+	glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 	glm::vec3 directionalPosition = glm::vec3(80.0f, 80.0f, -80.0f);
 	boundsWidth = 100.0f;
 	boundsHeight = 100.0f;

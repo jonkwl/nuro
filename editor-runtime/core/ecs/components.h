@@ -60,6 +60,51 @@ struct CameraComponent {
 
 };
 
+struct DirectionalLightComponent {
+
+	// Intensity of the directional light
+	float intensity;
+
+	// Color directional light is emitting
+	glm::vec3 color;
+};
+
+struct PointLightComponent {
+
+	// Intensity of the point light
+	float intensity;
+
+	// Color point light is emitting
+	glm::vec3 color;
+
+	// Range of the point light
+	float range;
+
+	// Falloff of the point light
+	float falloff;
+};
+
+struct SpotlightComponent {
+
+	// Intensity of the spotlight
+	float intensity;
+
+	// Color spotlight is emitting
+	glm::vec3 color;
+
+	// Range of the spotlight
+	float range;
+
+	// Falloff of the spotlight
+	float falloff;
+
+	// Inner cutoff angle in degrees of the spotlight
+	float innerCutoff;
+
+	// Outer cutoff angle in degrees of the spotlight
+	float outerCutoff;
+};
+
 struct VelocityComponent {
 
 	// Intensity of the velocity impact

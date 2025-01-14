@@ -72,7 +72,7 @@ struct PointLight {
 };
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
-struct SpotLight {
+struct Spotlight {
     vec3 position;
     vec3 direction;
     vec3 color;
@@ -82,7 +82,7 @@ struct SpotLight {
     float innerCutoff;
     float outerCutoff;
 };
-uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
+uniform Spotlight spotlights[MAX_SPOT_LIGHTS];
 
 struct Fog {
     int type;
@@ -151,7 +151,7 @@ vec3 getShadowCoords() {
 float getDirectionalShadowBias(vec3 lightDirection) {
     // float diffuseFactor = dot(normal, -lightDirection);
     // float bias = mix(0.0001, 0.0, diffuseFactor);
-    float bias = 0.0;
+    float bias = 0.00005;
     return bias;
 }
 
@@ -159,9 +159,7 @@ float getDirectionalShadowBias(vec3 lightDirection) {
 float getDirectionalShadowHard(vec3 lightDirection)
 {
     // make sure shadows are enabled
-    if (!configuration.castShadows) {
-        return 0.0;
-    }
+    if (!configuration.castShadows) return 0.0;
 
     // get shadow coordinates
     vec3 shadowCoords = getShadowCoords();
@@ -182,9 +180,7 @@ float getDirectionalShadowHard(vec3 lightDirection)
 float getDirectionalShadowSoft(vec3 lightDirection)
 {
     // make sure shadows are enabled
-    if (!configuration.castShadows) {
-        return 0.0;
-    }
+    if (!configuration.castShadows) return 0.0;
 
     // get shadow coordinates
     vec3 shadowCoords = getShadowCoords();
@@ -851,7 +847,7 @@ vec4 shadePBR() {
         //
 
         for (int i = 0; i < configuration.numSpotLights; i++) {
-            SpotLight spotLight = spotLights[i];
+            Spotlight spotLight = spotlights[i];
 
             float distance = length(spotLight.position - v_fragmentWorldPosition);
             float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);

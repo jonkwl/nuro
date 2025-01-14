@@ -95,7 +95,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 
 		// Optional foreground pass without depth testing and reduced opacity
 		if (gizmo.state.foreground) {
-			staticData.fillShader->setVec4("color", glm::vec4(gizmo.state.color, 0.02f));
+			staticData.fillShader->setVec4("color", glm::vec4(gizmo.state.color, 0.035f));
 			glDisable(GL_DEPTH_TEST);
 			glDrawElements(GL_LINES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 			glEnable(GL_DEPTH_TEST);

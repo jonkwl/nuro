@@ -86,6 +86,13 @@ void Shader::setMatrix4(const std::string& name, glm::mat4 value)
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
+std::string Shader::uniformArray(const std::string& identifier, uint32_t arrayIndex)
+{
+	size_t pos = identifier.find("[]");
+	if (pos == std::string::npos) return identifier;
+	return identifier.substr(0, pos) + "[" + std::to_string(arrayIndex) + "]" + identifier.substr(pos + 2);
+}
+
 int32_t Shader::getUniformLocation(const std::string& name)
 {
 	if (uniformCache.find(name) != uniformCache.end())

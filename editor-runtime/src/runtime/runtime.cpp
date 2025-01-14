@@ -76,6 +76,8 @@ namespace Runtime {
 		// Create default shadow map
 		bool shadow_map_saved = false;
 		gMainShadowMap = new ShadowMap(4096, 4096, 40.0f, 40.0f, 0.3f, 1000.0f);
+		gMainShadowMap->create();
+
 		/*
 		// Create default skybox
 		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
@@ -84,6 +86,7 @@ namespace Runtime {
 		// Set default skybox as current skybox
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 		*/
+
 		// Load gizmo icons
 		IconPool::loadAll("../resources/icons");
 	}

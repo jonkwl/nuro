@@ -6,10 +6,19 @@
 
 #include "../core/rendering/shader/shader.h"
 
+enum class ShadowType {
+	DIRECTIONAL,
+	POINT,
+	SPOT
+};
+
 class ShadowMap
 {
 public:
 	explicit ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight, float boundsWidth, float boundsHeight, float near, float far);
+
+	void create();
+	void destroy();
 
 	void render();
 	void bind(uint32_t unit);

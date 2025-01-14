@@ -105,6 +105,52 @@ void _example() {
 	standardMaterial->baseColor = glm::vec4(glm::vec3(0.25f), 1.0f);
 	standardMaterial->roughness = 0.4f;
 
+	// Sci-Fi Plane Material
+	Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
+	Texture roughness = Texture::load("./src/example/assets/textures/sci-fi/roughness.jpg", TextureType::ROUGHNESS);
+	Texture metallic = Texture::load("./src/example/assets/textures/sci-fi/metallic.jpg", TextureType::METALLIC);
+	Texture normal = Texture::load("./src/example/assets/textures/sci-fi/normal.jpg", TextureType::NORMAL);
+	Texture occlusion = Texture::load("./src/example/assets/textures/sci-fi/occlusion.jpg", TextureType::OCCLUSION);
+	Texture emissive = Texture::load("./src/example/assets/textures/sci-fi/emissive.jpg", TextureType::EMISSIVE);
+	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);
+	LitMaterial* planeMaterial = new LitMaterial();
+	planeMaterial->setAlbedoMap(albedo);
+	planeMaterial->setRoughnessMap(roughness);
+	planeMaterial->setMetallicMap(metallic);
+	planeMaterial->setNormalMap(normal);
+	planeMaterial->setOcclusionMap(occlusion);
+	planeMaterial->setEmissiveMap(emissive);
+	planeMaterial->emission = true;
+	planeMaterial->emissionIntensity = 20.0f;
+	//planeMaterial->setHeightMap(height);
+	//planeMaterial->heightMapScale = 0.066f;
+
+	// Directional light (sun)
+	/*EntityContainer sun("Sun", ECS::createEntity());
+	DirectionalLightComponent& sunLight = sun.add<DirectionalLightComponent>();
+	sunLight.intensity = 0.1f;
+	sunLight.color = glm::vec3(1.0, 1.0, 0.8f);*/
+
+	// Sample point light
+	/*EntityContainer pointLight("Point Light", ECS::createEntity());
+	pointLight.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
+	PointLightComponent& pointLightSource = pointLight.add<PointLightComponent>();
+	pointLightSource.intensity = 5.0f;
+	pointLightSource.color = glm::vec3(0.5f, 0.0f, 1.0f);
+	pointLightSource.range = 25.0f;
+	pointLightSource.falloff = 15.0f;*/
+
+	// Sample spotlight
+	EntityContainer flashlight("Flashlight", ECS::createEntity());
+	flashlight.transform.position = glm::vec3(0.0f, 6.0f, 5.0f);
+	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
+	flashlightSource.intensity = 50.0f;
+	flashlightSource.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	flashlightSource.range = 50.0f;
+	flashlightSource.falloff = 10.0f;
+	flashlightSource.innerCutoff = 9.0f;
+	flashlightSource.outerCutoff = 36.0f;
+
 	// Camera
 	EntityContainer camera("Camera", ECS::createEntity());
 	cameraEntity = camera.root;
@@ -123,6 +169,7 @@ void _example() {
 			EntityContainer e("Cube", ECS::createEntity());
 			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
 			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+			r.material = planeMaterial;
 			e.add<BoxColliderComponent>();
 			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
 		}
@@ -139,60 +186,21 @@ void _example() {
 	Rigidbody::setCollisionDetection(kinematicRb, RB_CollisionDetection::CONTINUOUS);
 	Rigidbody::setKinematic(kinematicRb, true);
 
-	// Sci-Fi Plane Material
-	/*Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
-	Texture roughness = Texture::load("./src/example/assets/textures/sci-fi/roughness.jpg", TextureType::ROUGHNESS);
-	Texture metallic = Texture::load("./src/example/assets/textures/sci-fi/metallic.jpg", TextureType::METALLIC);
-	Texture normal = Texture::load("./src/example/assets/textures/sci-fi/normal.jpg", TextureType::NORMAL);
-	Texture occlusion = Texture::load("./src/example/assets/textures/sci-fi/occlusion.jpg", TextureType::OCCLUSION);
-	Texture emissive = Texture::load("./src/example/assets/textures/sci-fi/emissive.jpg", TextureType::EMISSIVE);
-	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);*/
-	LitMaterial* planeMaterial = new LitMaterial();
-	/*planeMaterial->setAlbedoMap(albedo);
-	planeMaterial->setRoughnessMap(roughness);
-	planeMaterial->setMetallicMap(metallic);
-	planeMaterial->setNormalMap(normal);
-	planeMaterial->setOcclusionMap(occlusion);
-	planeMaterial->setEmissiveMap(emissive);
-	planeMaterial->emission = true;
-	planeMaterial->emissionIntensity = 14.0f;
-	planeMaterial->setHeightMap(height);
-	planeMaterial->heightMapScale = 0.066f;*/
-
-	// Test Material
-	/*Texture albedoTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/albedo.jpg", TextureType::ALBEDO);
-	Texture roughnessTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/roughness.jpg", TextureType::ROUGHNESS);
-	Texture normalTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/normal.jpg", TextureType::NORMAL);
-	Texture occlusionTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/occlusion.jpg", TextureType::OCCLUSION);
-	Texture heightTest = Texture::load("./src/example/assets/textures/old-linoleum-floor/height.jpg", TextureType::HEIGHT);
-	LitMaterial* testMaterial = new LitMaterial();
-	testMaterial->setAlbedoMap(albedoTest);
-	testMaterial->setRoughnessMap(roughnessTest);
-	testMaterial->setNormalMap(normalTest);
-	testMaterial->setOcclusionMap(occlusionTest);
-	testMaterial->setHeightMap(heightTest);*/
-
 	// Material Test Plane
-	EntityContainer plane("Plane", ECS::createEntity());
+	/*EntityContainer plane("Plane", ECS::createEntity());
 	planeEntity = plane.root;
 	plane.transform.position = glm::vec3(-24.0f, 0.0f, 18.0f);
 	plane.transform.scale = glm::vec3(5.0f);
-	plane.add<MeshRendererComponent>(*planeMesh, planeMaterial);
+	plane.add<MeshRendererComponent>(*planeMesh, planeMaterial);*/
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
-	/*playerMaterial->setAlbedoMap(albedo);
-	playerMaterial->setRoughnessMap(roughness);
-	playerMaterial->setMetallicMap(metallic);
-	playerMaterial->setNormalMap(normal);
-	playerMaterial->setOcclusionMap(occlusion);
-	playerMaterial->setEmissiveMap(emissive);*/
 
 	// Player sphere
 	EntityContainer player("Player", ECS::createEntity());
 	playerEntity = player.root;
 	player.transform.position = glm::vec3(8.0f, 0.0f, -4.0f);
-	player.add<MeshRendererComponent>(sphereMesh, planeMaterial);
+	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
 	// Rigidbody::setInterpolation(playerRb, RB_Interpolation::EXTRAPOLATE);
@@ -203,9 +211,6 @@ void _example() {
 	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
-
-	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
-	// LitMaterial::tmpPointLightPosition = glm::vec3(-22.5f, 8.0f, 16.0f);
 
 	entt::entity invaliddd = entt::entity();
 	EntityContainer x("Some", invaliddd);
@@ -260,8 +265,6 @@ void update() {
 	if (!Input::mouseDown(MouseButton::LEFT)) {
 		jumped = false;
 	}
-
-	LitMaterial::tmpPointLightPosition = player.transform.position + glm::vec3(0.0f, 2.0f, 0.0f);
 
 	EntityContainer camera("Camera", cameraEntity);
 	float zoomStrength = 150.0f;

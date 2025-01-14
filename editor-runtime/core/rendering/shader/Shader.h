@@ -24,6 +24,9 @@ public:
 	void setMatrix3(const std::string& name, glm::mat3 value);
 	void setMatrix4(const std::string& name, glm::mat4 value);
 
+	// Inserts the given array index in some uniform identifier, will insert array index between the [] in the given identifier
+	static std::string uniformArray(const std::string& identifier, uint32_t arrayIndex);
+
 private:
 	uint32_t id;
 	std::string shaderName;

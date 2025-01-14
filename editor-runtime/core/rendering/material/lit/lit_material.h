@@ -5,10 +5,10 @@
 
 #include "../imaterial.h"
 
-#include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/viewport/viewport.h"
+#include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/texture/texture.h"
-#include "../core/ecs/components.h"
+#include "../core/rendering/postprocessing/post_processing.h"
 
 class ShadowDisk;
 class ShadowMap;
@@ -46,9 +46,6 @@ public:
 public:
 	// Instance counter
 	static uint32_t instances;
-
-	// Tmp
-	static glm::vec3 tmpPointLightPosition;
 
 	// Needed to be set before binding lit material
 	// Replace this through some state object and add a function to push a state
