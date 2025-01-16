@@ -99,10 +99,10 @@ struct SpotlightComponent {
 	float falloff;
 
 	// Inner cutoff angle in degrees of the spotlight
-	float innerCutoff;
+	float innerAngle;
 
 	// Outer cutoff angle in degrees of the spotlight
-	float outerCutoff;
+	float outerAngle;
 };
 
 struct VelocityComponent {

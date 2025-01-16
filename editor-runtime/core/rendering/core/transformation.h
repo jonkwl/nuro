@@ -22,13 +22,4 @@ namespace Transformation
 
 	// Returns a normal matrix (transposed inversed model matrix) by given model matrix
 	glm::mat4 normal(const glm::mat4& model);
-	
-	// Returns a view matrix for a light
-	glm::mat4 lightView(const glm::vec3& lightPosition, const glm::vec3& lightDirection);
-
-	// Returns an orthograpghic projection matrix for a light
-	glm::mat4 lightProjectionOrthographic(float boundsWidth, float boundsHeight, float near, float far);
-
-	// Returns a perspective projection matrix for a light
-	glm::mat4 lightProjectionPerspective(float fov, float aspect, float near, float far);
 };

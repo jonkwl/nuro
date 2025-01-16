@@ -79,8 +79,8 @@ struct Spotlight {
     float intensity;
     float range;
     float falloff;
-    float innerCutoff;
-    float outerCutoff;
+    float innerCos;
+    float outerCos;
 };
 uniform Spotlight spotlights[MAX_SPOT_LIGHTS];
 
@@ -148,7 +148,7 @@ vec3 getShadowCoords() {
 }
 
 // get bias for directional light
-float getDirectionalShadowBias(vec3 lightDirection) {
+float getShadowBias(vec3 lightDirection) {
     // float diffuseFactor = dot(normal, -lightDirection);
     // float bias = mix(0.0001, 0.0, diffuseFactor);
     float bias = 0.00005;
@@ -156,7 +156,7 @@ float getDirectionalShadowBias(vec3 lightDirection) {
 }
 
 // get hard shadow casted by directional light
-float getDirectionalShadowHard(vec3 lightDirection)
+float getShadowHard(vec3 lightDirection)
 {
     // make sure shadows are enabled
     if (!configuration.castShadows) return 0.0;
@@ -169,7 +169,7 @@ float getDirectionalShadowHard(vec3 lightDirection)
 
     // check if fragment is in shadow
     float depth = texture(configuration.shadowMap, shadowCoords.xy).r;
-    float bias = getDirectionalShadowBias(lightDirection);
+    float bias = getShadowBias(lightDirection);
     float shadow = shadowCoords.z - bias > depth ? 1.0 : 0.0;
 
     // return shadow value
@@ -177,7 +177,7 @@ float getDirectionalShadowHard(vec3 lightDirection)
 }
 
 // get soft shadow casted by directional light
-float getDirectionalShadowSoft(vec3 lightDirection)
+float getShadowSoft(vec3 lightDirection)
 {
     // make sure shadows are enabled
     if (!configuration.castShadows) return 0.0;
@@ -214,7 +214,7 @@ float getDirectionalShadowSoft(vec3 lightDirection)
     vec2 texelSize = vec2(texelWidth, texelHeight);
 
     // calculate a small bias to prevent self-shadowing artifacts
-    float bias = getDirectionalShadowBias(lightDirection);
+    float bias = getShadowBias(lightDirection);
     float depth = 0.0;
 
     // loop through a small number of samples in 2x2 pattern (8 total)
@@ -790,7 +790,7 @@ vec4 shadePBR() {
             vec3 L = normalize(-directionalLight.direction);
 
             float shadow = 0.0;
-            shadow += getDirectionalShadowSoft(L);
+            //shadow += getShadowSoft(L);
            
             // PARALLAX OCCLUSION MAPPED SHADOW FOR DIRECTIONAL LIGHT //
             /*if (material.enableHeightMap && i == 0) {
@@ -849,22 +849,22 @@ vec4 shadePBR() {
         //
 
         for (int i = 0; i < configuration.numSpotLights; i++) {
-            Spotlight spotLight = spotlights[i];
+            Spotlight spotlight = spotlights[i];
 
-            float distance = length(spotLight.position - v_fragmentWorldPosition);
-            float attenuation = getAttenuation_range_falloff_cusp(distance, spotLight.range, spotLight.falloff);
-            vec3 L = normalize(spotLight.position - v_fragmentWorldPosition);
+            float distance = length(spotlight.position - v_fragmentWorldPosition);
+            float attenuation = getAttenuation_range_falloff_cusp(distance, spotlight.range, spotlight.falloff);
+            vec3 L = normalize(spotlight.position - v_fragmentWorldPosition);
 
-            float theta = dot(L, normalize(-spotLight.direction));
-            float epsilon = spotLight.innerCutoff - spotLight.outerCutoff;
-            float intensityScaling = clamp((theta - spotLight.outerCutoff) / epsilon, 0.0, 1.0);
+            float theta = dot(L, normalize(-spotlight.direction));
+            float epsilon = spotlight.innerCos - spotlight.outerCos;
+            float intensityScaling = clamp((theta - spotlight.outerCos) / epsilon, 0.0, 1.0);
 
             float shadow = 0.0;
-            shadow += getDirectionalShadowSoft(L);
+            shadow += getShadowSoft(L);
            
             // PARALLAX OCCLUSION MAPPED SHADOW FOR SPOT LIGHT //
             /*if (material.enableHeightMap && i == 0) {
-                shadow += POM_getShadowHard(spotLight.position);
+                shadow += POM_getShadowHard(spotlight.position);
             }*/
 
             Lo += evaluateLightSource(
@@ -876,8 +876,8 @@ vec4 shadePBR() {
                     albedo,
                     attenuation,
                     L,
-                    spotLight.color,
-                    spotLight.intensity * intensityScaling,
+                    spotlight.color,
+                    spotlight.intensity * intensityScaling,
                     shadow);
         }
     }
@@ -928,7 +928,7 @@ vec4 shadeSolid()
         vec3 L = normalize(-directionalLight.direction);
 
         vec3 shadowDirection = normalize(directionalLight.position - v_fragmentWorldPosition);
-        float shadow = getDirectionalShadowHard(shadowDirection);
+        float shadow = getShadowHard(L);
 
         diffuse += max(dot(N, L), 0.0) * directionalLight.color * directionalLight.intensity * attenuation * (1.0 - shadow);
     }
@@ -957,13 +957,14 @@ vec4 shadeNormal() {
     float shadowIntensity = 0.5;
 
     // static directional light
-    vec3 direction = vec3(-0.5, -0.5, 1.0);
-    vec3 L = normalize(direction);
+    DirectionalLight directionalLight;
+    directionalLight.direction = vec3(-0.5, -0.5, 1.0);
+    vec3 L = normalize(directionalLight.direction);
 
     diffuse = vec3(max(dot(normal, L), 0.0));
     diffuse = mix(diffuse, vec3(0.0), diffuseFactor);
 
-    shadow = getDirectionalShadowHard(L) * shadowIntensity;
+    shadow = getShadowSoft(L) * shadowIntensity;
 
     // get color from normal and shadow
     vec3 color = colorNormal * diffuse * (1.0 - shadow);

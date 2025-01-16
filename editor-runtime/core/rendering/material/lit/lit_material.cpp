@@ -55,6 +55,9 @@ shaderId(0)
 
 void LitMaterial::bind()
 {
+	// Tmp light update
+	syncStaticUniforms();
+
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", lightSpace);
 	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
@@ -286,8 +289,8 @@ void LitMaterial::syncStaticUniforms()
 		shader->setFloat(Shader::uniformArray("spotlights[].intensity", nSpotlights), spotlight.intensity);
 		shader->setFloat(Shader::uniformArray("spotlights[].range", nSpotlights), spotlight.range);
 		shader->setFloat(Shader::uniformArray("spotlights[].falloff", nSpotlights), spotlight.falloff);
-		shader->setFloat(Shader::uniformArray("spotlights[].innerCutoff", nSpotlights), glm::cos(glm::radians(spotlight.innerCutoff)));
-		shader->setFloat(Shader::uniformArray("spotlights[].outerCutoff", nSpotlights), glm::cos(glm::radians(spotlight.outerCutoff)));
+		shader->setFloat(Shader::uniformArray("spotlights[].innerCos", nSpotlights), glm::cos(glm::radians(spotlight.innerAngle * 0.5f)));
+		shader->setFloat(Shader::uniformArray("spotlights[].outerCos", nSpotlights), glm::cos(glm::radians(spotlight.outerAngle * 0.5f)));
 
 		nSpotlights++;
 		if (nSpotlights >= maxSpotlights) break;

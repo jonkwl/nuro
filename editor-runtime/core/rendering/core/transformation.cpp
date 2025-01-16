@@ -77,26 +77,4 @@ namespace Transformation {
 		return glm::transpose(glm::inverse(model));
 	}
 
-	glm::mat4 lightView(const glm::vec3& lightPosition, const glm::vec3& lightDirection)
-	{
-		// Calculate light view matrix parameters
-		glm::vec3 position = toBackendPosition(lightPosition);
-		glm::vec3 target = position + glm::normalize(toBackendPosition(lightDirection));
-
-		// Create and return light view matrix
-		return glm::lookAt(position, target, glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
-	glm::mat4 lightProjectionOrthographic(float boundsWidth, float boundsHeight, float near, float far)
-	{
-		// Create and return light projection matrix using orthographic projection
-		return glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
-	}
-
-	glm::mat4 lightProjectionPerspective(float fov, float aspect, float near, float far)
-	{
-		// Create and return light projection matrix using perspective projection
-		return glm::perspective(glm::radians(fov), aspect, near, far);
-	}
-
 }

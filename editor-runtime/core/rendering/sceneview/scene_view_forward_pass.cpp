@@ -250,6 +250,10 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)
 {
+	// Make sure selected entity is renderable
+	if (!entity->has<MeshRendererComponent>()) return;
+
+	// Fetch components
 	TransformComponent& transform = entity->transform;
 	MeshRendererComponent& renderer = entity->get<MeshRendererComponent>();
 

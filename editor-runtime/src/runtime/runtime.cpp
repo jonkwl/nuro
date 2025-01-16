@@ -80,7 +80,7 @@ namespace Runtime {
 		gMainShadowMap->create();*/
 
 		// Create default spotlight shadow map
-		gMainShadowMap = new ShadowMap(ShadowType::SPOT, 2048, 2048);
+		gMainShadowMap = new ShadowMap(2048, 2048);
 		gMainShadowMap->create();
 
 		/*
@@ -129,15 +129,20 @@ namespace Runtime {
 		// SHADOW PASS
 		// Render shadow map
 		//
+
+		// tmp
+		auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
+		for (auto [entity, transform, spotlight] : spotlights.each()) {
+			Profiler::start("shadow_pass");
+			gMainShadowMap->castShadows(spotlight, transform);
+			Profiler::stop("shadow_pass");
+		}
+
+		/*
 		Profiler::start("shadow_pass");
 		gMainShadowMap->render();
 		Profiler::stop("shadow_pass");
-
-		static uint32_t shadowIterations = false;
-		if (shadowIterations == 380) {
-			gMainShadowMap->saveAsImage(500, 500, "shadow_map.png");
-		}
-		shadowIterations++;
+		*/
 	}
 
 	void _renderEditor() {

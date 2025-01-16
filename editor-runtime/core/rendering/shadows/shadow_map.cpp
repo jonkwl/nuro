@@ -5,36 +5,18 @@
 #include <vector>
 #include <stb_image_write.h>
 
-#include "../core/rendering/core/transformation.h"
-#include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/model/mesh.h"
 #include "../core/utils/log.h"
-#include "../core/ecs/ecs_collection.h"
+#include "../core/rendering/model/mesh.h"
+#include "../core/rendering/shader/shader_pool.h"
+#include "../core/rendering/core/transformation.h"
 
-ShadowMap::ShadowMap(ShadowType type, uint32_t resolutionWidth, uint32_t resolutionHeight) : type(type),
-resolutionWidth(resolutionWidth),
+ShadowMap::ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight) : resolutionWidth(resolutionWidth),
 resolutionHeight(resolutionHeight),
-near(0.3f),
-far(1000.0f),
-boundsWidth(25.0f),
-boundsHeight(25.0f),
 texture(0),
 framebuffer(0),
 lightSpace(glm::mat4(1.0f)),
 shadowPassShader(nullptr)
 {
-}
-
-void ShadowMap::setBounds(float _boundsWidth, float _boundsHeight)
-{
-	boundsWidth = _boundsWidth;
-	boundsHeight = _boundsHeight;
-}
-
-void ShadowMap::setClipping(float _near, float _far)
-{
-	near = _near;
-	far = _far;
 }
 
 void ShadowMap::create()
@@ -68,6 +50,13 @@ void ShadowMap::create()
 
 	// Unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Check for forward pass framebuffer error
+	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		Log::printError("Framebuffer", "Error generating shadow map framebuffer: " + std::to_string(fboStatus));
+	}
 }
 
 void ShadowMap::destroy()
@@ -87,72 +76,25 @@ void ShadowMap::destroy()
 	shadowPassShader = nullptr;
 }
 
-void ShadowMap::render()
+void ShadowMap::castShadows(DirectionalLightComponent& directionalLight, TransformComponent& transform, float boundsWidth, float boundsHeight, float near, float far)
 {
-	// Set viewport and bind shadow map framebuffer
-	glViewport(0, 0, resolutionWidth, resolutionHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glm::vec3 position = glm::vec3(80.0f, 80.0f, -80.0f); // tmp
+	glm::vec3 direction = glm::vec3(-0.7f, -0.8f, 1.0f); // tmp
 
-	// Declare position, direction, view, and projection outside the switch statement
-	glm::vec3 position;
-	glm::vec3 direction;
-	glm::mat4 view;
-	glm::mat4 projection;
+	glm::mat4 view = getView(position, direction);
+	glm::mat4 projection = getProjectionOrthographic(boundsWidth, boundsHeight, near, far);
 
-	switch (type) {
-	case ShadowType::DIRECTIONAL:
-		// Directional light properties
-		position = glm::vec3(80.0f, 80.0f, -80.0f);
-		direction = glm::vec3(-0.7f, -0.8f, 1.0f);
+	renderSingular(view, projection);
+}
 
-		view = Transformation::lightView(position, direction);
-		projection = Transformation::lightProjectionOrthographic(boundsWidth, boundsHeight, near, far);
-		break;
+void ShadowMap::castShadows(SpotlightComponent& spotlight, TransformComponent& transform)
+{
+	glm::vec3 direction = glm::vec3(0.0f, 0.0f, 1.0f); // tmp
 
-	case ShadowType::POINT:
-		// Point light properties
-		break;
-
-	case ShadowType::SPOT:
-		// Spot light properties
-		position = glm::vec3(0.0f, 6.0f, 5.0f);
-		direction = glm::vec3(0.0f, 0.0f, 1.0f);
-
-		view = Transformation::lightView(position, direction);
-		projection = Transformation::lightProjectionPerspective(90.0f, 1.0f, 0.3f, 1000.0f);
-		break;
-
-	default:
-		return;
-	}
-
-	lightSpace = projection * view;
-
-	// Bind shadow pass shader and render each objects depth on shadow map
-	glEnable(GL_DEPTH_TEST);
-
-	// Set culling to front face
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-
-	shadowPassShader->bind();
-
-	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
-	for (auto [entity, transform, renderer] : targets.each()) {
-		// Bind mesh
-		glBindVertexArray(renderer.mesh.getVAO());
-
-		// Set shadow pass shader uniforms
-		shadowPassShader->setMatrix4("modelMatrix", transform.model);
-		shadowPassShader->setMatrix4("lightSpaceMatrix", lightSpace);
-
-		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
-	}
-
-	// Unbind shadow map framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glm::mat4 view = getView(transform.position, direction);
+	glm::mat4 projection = getProjectionPerspective(spotlight.outerAngle, 1.0f, 0.3f, spotlight.range);
+	
+	renderSingular(view, projection);
 }
 
 void ShadowMap::bind(uint32_t unit)
@@ -174,16 +116,6 @@ uint32_t ShadowMap::getResolutionWidth() const
 uint32_t ShadowMap::getResolutionHeight() const
 {
 	return resolutionHeight;
-}
-
-float ShadowMap::getBoundsWidth() const
-{
-	return boundsWidth;
-}
-
-float ShadowMap::getBoundsHeight() const
-{
-	return boundsHeight;
 }
 
 uint32_t ShadowMap::getFramebuffer() const
@@ -220,4 +152,62 @@ bool ShadowMap::saveAsImage(int32_t width, int32_t height, const std::string& fi
 		Log::printError("Shadow Map", "Failed to save shadow map at " + filename);
 		return false;
 	}
+}
+
+void ShadowMap::renderSingular(glm::mat4 view, glm::mat4 projection)
+{
+	// Calculate light space
+	lightSpace = projection * view;
+
+	// Set viewport and bind shadow map framebuffer
+	glViewport(0, 0, resolutionWidth, resolutionHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	// Bind shadow pass shader and render each objects depth on shadow map
+	glEnable(GL_DEPTH_TEST);
+
+	// Set culling to front face
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+
+	shadowPassShader->bind();
+
+	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
+	for (auto [entity, transform, renderer] : targets.each()) {
+		// Bind mesh
+		glBindVertexArray(renderer.mesh.getVAO());
+
+		// Set shadow pass shader uniforms
+		shadowPassShader->setMatrix4("modelMatrix", transform.model);
+		shadowPassShader->setMatrix4("lightSpaceMatrix", lightSpace);
+
+		// Render mesh
+		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+	}
+
+	// Unbind shadow map framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+glm::mat4 ShadowMap::getView(const glm::vec3& lightPosition, const glm::vec3& lightDirection) const
+{
+	// Calculate light view matrix parameters
+	glm::vec3 position = Transformation::toBackendPosition(lightPosition);
+	glm::vec3 target = position + glm::normalize(Transformation::toBackendPosition(lightDirection));
+
+	// Create and return light view matrix
+	return glm::lookAt(position, target, glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+glm::mat4 ShadowMap::getProjectionOrthographic(float boundsWidth, float boundsHeight, float near, float far) const
+{
+	// Create and return light projection matrix using orthographic projection
+	return glm::ortho(-boundsWidth * 0.5f, boundsWidth * 0.5f, -boundsHeight * 0.5f, boundsHeight * 0.5f, near, far);
+}
+
+glm::mat4 ShadowMap::getProjectionPerspective(float fov, float aspect, float near, float far) const
+{
+	// Create and return light projection matrix using perspective projection
+	return glm::perspective(glm::radians(fov), aspect, near, far);
 }
