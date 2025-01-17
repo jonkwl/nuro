@@ -6,7 +6,7 @@
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shadows/shadow_disk.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 
 uint32_t LitMaterial::instances = 0;
 Viewport* LitMaterial::viewport = nullptr;

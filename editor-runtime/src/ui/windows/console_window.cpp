@@ -12,7 +12,7 @@ showErrors(true)
 void ConsoleWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("Console", nullptr, EditorFlag::standard);
+	ImGui::Begin(UIUtils::windowTitle("Console"), nullptr, EditorFlag::standard);
 	{
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
@@ -23,10 +23,10 @@ void ConsoleWindow::render()
 		// Draw console toolbar
 		float toolbarHeight = 40.0f;
 		float toolbarPaddingTop = 3.0f;
-		UIComponents::space(0.0f, toolbarPaddingTop);
-		UIFlex::beginFlex("Toolbar", FlexType::ROW, UIFlex::FULL_WIDTH, toolbarHeight, Justification::START, Alignment::CENTER, 1.0f);
+		ImGui::Dummy(ImVec2(0.0f, toolbarPaddingTop));
+		UIFlex::beginFlex("Toolbar", FlexType::ROW, FLEX_FULL_WIDTH, toolbarHeight, Justification::START, Alignment::CENTER, 1.0f);
 		{
-			UIComponents::space(10.0f, 0.0f);
+			ImGui::Dummy(ImVec2(10.0f, 0.0f));
 			UIComponents::toggleButton(messageIcon, showMessages, "Show Messages");
 			UIComponents::toggleButton(warningIcon, showWarnings, "Show Warnings");
 			UIComponents::toggleButton(errorIcon, showErrors, "Show Errors");

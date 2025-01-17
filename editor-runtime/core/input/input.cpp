@@ -7,72 +7,72 @@
 
 namespace Input {
 
-	GLFWwindow* _window = nullptr;
+	GLFWwindow* gWindow = nullptr;
 
-	glm::vec2 _moveAxis = glm::vec2(0.0f);
+	glm::vec2 gMoveAxis = glm::vec2(0.0f);
 
-	glm::vec2 _mouseDelta = glm::vec2(0.0f);
-	glm::vec2 _mouseLast = glm::vec2(0.0f);
+	glm::vec2 gMouseDelta = glm::vec2(0.0f);
+	glm::vec2 gMouseLast = glm::vec2(0.0f);
 
-	glm::vec2 _scrollOffset = glm::vec2(0.0f);
+	glm::vec2 gScrollOffset = glm::vec2(0.0f);
 
 	// Context callbacks
 
 	void _scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		_scrollOffset = glm::vec2(xoffset, yoffset);
+		gScrollOffset = glm::vec2(xoffset, yoffset);
 	}
 
 	// Input functions
 
 	void setup()
 	{
-		_window = ApplicationContext::getWindow();
+		gWindow = ApplicationContext::getWindow();
 
 		double mouseX, mouseY;
-		glfwGetCursorPos(_window, &mouseX, &mouseY);
-		_mouseLast = glm::vec2(mouseX, mouseY);
+		glfwGetCursorPos(gWindow, &mouseX, &mouseY);
+		gMouseLast = glm::vec2(mouseX, mouseY);
 
-		glfwSetScrollCallback(_window, _scrollCallback);
+		glfwSetScrollCallback(gWindow, _scrollCallback);
 	}
 
 	void update()
 	{
 		// set mouse
 		double mouseX, mouseY;
-		glfwGetCursorPos(_window, &mouseX, &mouseY);
-		_mouseDelta = glm::vec2(mouseX - _mouseLast.x, -(mouseY - _mouseLast.y));
-		_mouseLast = glm::vec2(mouseX, mouseY);
+		glfwGetCursorPos(gWindow, &mouseX, &mouseY);
+		gMouseDelta = glm::vec2(mouseX - gMouseLast.x, -(mouseY - gMouseLast.y));
+		gMouseLast = glm::vec2(mouseX, mouseY);
 
-		if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		if (glfwGetKey(gWindow, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			glfwSetWindowShouldClose(_window, true);
+			glfwSetWindowShouldClose(gWindow, true);
 		}
 
-		if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
+		if (glfwGetKey(gWindow, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			_moveAxis.x = 1.0f;
+			gMoveAxis.x = 1.0f;
 		}
-		else if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
+		else if (glfwGetKey(gWindow, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			_moveAxis.x = -1.0f;
+			gMoveAxis.x = -1.0f;
 		}
 		else
 		{
-			_moveAxis.x = 0.0f;
+			gMoveAxis.x = 0.0f;
 		}
 
-		if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
+		if (glfwGetKey(gWindow, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			_moveAxis.y = 1.0f;
+			gMoveAxis.y = 1.0f;
 		}
-		else if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
+		else if (glfwGetKey(gWindow, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			_moveAxis.y = -1.0f;
+			gMoveAxis.y = -1.0f;
 		}
 		else
 		{
-			_moveAxis.y = 0.0f;
+			gMoveAxis.y = 0.0f;
 		}
 	}
 
@@ -80,36 +80,36 @@ namespace Input {
 
 	glm::vec2 moveAxis()
 	{
-		return _moveAxis;
+		return gMoveAxis;
 	}
 
 	glm::vec2 mouseDelta()
 	{
-		return _mouseDelta;
+		return gMouseDelta;
 	}
 
 	glm::vec2 scrollDelta()
 	{
-		glm::vec2 scrollDelta = _scrollOffset;
-		_scrollOffset = glm::vec2(0.0f);
+		glm::vec2 scrollDelta = gScrollOffset;
+		gScrollOffset = glm::vec2(0.0f);
 		return scrollDelta;
 	}
 
 	glm::vec2 mousePosition()
 	{
 		double mouseX = 0.0, mouseY = 0.0;
-		glfwGetCursorPos(_window, &mouseX, &mouseY);
+		glfwGetCursorPos(gWindow, &mouseX, &mouseY);
 		return glm::vec2(mouseX, mouseY);
 	}
 
 	bool keyDown(int32_t key)
 	{
-		return glfwGetKey(_window, key) == GLFW_PRESS;
+		return glfwGetKey(gWindow, key) == GLFW_PRESS;
 	}
 
 	bool mouseDown(int32_t mouseButton)
 	{
-		return glfwGetMouseButton(_window, mouseButton) == GLFW_PRESS;
+		return glfwGetMouseButton(gWindow, mouseButton) == GLFW_PRESS;
 	}
 
 	bool command(int32_t key)

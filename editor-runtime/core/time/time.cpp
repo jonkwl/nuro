@@ -2,46 +2,46 @@
 
 namespace Time {
 
-	double _time = 0.0;
-	double _lastTime = 0.0;
-	double _deltaTime = 0.0;
+	double gTime = 0.0;
+	double gLastTime = 0.0;
+	double gDeltaTime = 0.0;
 
 	void step(double time)
 	{
 		// Update times
-		_time = static_cast<float>(time);
-		_deltaTime = _time - _lastTime;
-		_lastTime = _time;
+		gTime = static_cast<float>(time);
+		gDeltaTime = gTime - gLastTime;
+		gLastTime = gTime;
 	}
 
 	const double now()
 	{
-		return _time;
+		return gTime;
 	}
 
 	const double last()
 	{
-		return _lastTime;
+		return gLastTime;
 	}
 
 	const double delta()
 	{
-		return _deltaTime;
+		return gDeltaTime;
 	}
 
 	const float nowf()
 	{
-		return static_cast<float>(_time);
+		return static_cast<float>(gTime);
 	}
 
 	const float lastf()
 	{
-		return static_cast<float>(_lastTime);
+		return static_cast<float>(gLastTime);
 	}
 
 	const float deltaf()
 	{
-		return static_cast<float>(_deltaTime);
+		return static_cast<float>(gDeltaTime);
 	}
 
 }

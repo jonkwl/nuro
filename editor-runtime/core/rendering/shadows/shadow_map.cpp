@@ -8,7 +8,7 @@
 #include "../core/utils/log.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 
 ShadowMap::ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight) : resolutionWidth(resolutionWidth),
 resolutionHeight(resolutionHeight),

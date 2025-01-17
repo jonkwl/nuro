@@ -7,7 +7,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 #include "../core/utils/log.h"
 #include "../core/utils/iohandler.h"
 #include "../core/utils/string_helper.h"

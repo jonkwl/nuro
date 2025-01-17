@@ -5,7 +5,7 @@
 #include "../core/physics/physics.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/rendering/shadows/shadow_map.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/culling/bounding_volume.h"
 #include "../core/rendering/material/lit/lit_material.h"
 

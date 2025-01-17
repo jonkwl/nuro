@@ -5,7 +5,7 @@
 #include "../core/input/cursor.h"
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/shadows/shadow_map.h"
 
 GameWindow::GameWindow() : currentContentAvail(ImVec2(0.0f, 0.0f)),
@@ -35,14 +35,13 @@ gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 void GameWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	bool windowVisible = ImGui::Begin("  Game  ", nullptr, EditorFlag::standard);
+	bool windowVisible = ImGui::Begin(UIUtils::windowTitle("Game View"), nullptr, EditorFlag::standard);
 	{
 
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
-		UIComponents::space(0.0f, 14.0f);
-		UIComponents::headline("Game", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER);
+		UIComponents::headline("Game View", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER, false);
 
 		// Get game window size
 		currentContentAvail = ImGui::GetContentRegionAvail();
@@ -72,7 +71,7 @@ void GameWindow::renderToolbar()
 	bool gamePaused = Runtime::gamePaused();
 
 	// Render toggle buttons for render options
-	UIFlex::beginFlex("toggles", FlexType::ROW, UIFlex::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
+	UIFlex::beginFlex("toggles", FlexType::ROW, FLEX_FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
 		if (gameRunning) {
 			if (gamePaused) {
@@ -99,12 +98,12 @@ void GameWindow::renderToolbar()
 	UIFlex::endFlex();
 
 	// Spacing
-	UIComponents::space(0.0f, 5.0f);
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 	// Render indicators for game view setup
 	/*UIFlex::beginFlex("setup", FlexType::ROW, UIFlex::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
 	{
-		UIComponents::space(1.0f, 0.0f);
+		ImGui::Dummy(1.0f, 0.0f);
 		UIComponents::tryIcon(ICON_FA_GAUGE);
 		UIComponents::label("FPS: " + 0);
 	}

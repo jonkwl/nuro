@@ -7,7 +7,7 @@
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/material/imaterial.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/material/unlit/unlit_material.h"
 
 #include "../src/gizmos/component_gizmos.h"
@@ -259,6 +259,9 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 
 	// Render selected entitites gizmos if needed
 	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
+
+	// Don't render outline if wireframe is enabled
+	if (wireframe) return;
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer

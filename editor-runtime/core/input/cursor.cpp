@@ -7,43 +7,43 @@
 
 namespace Cursor {
 
-	GLFWwindow* _window;
+	GLFWwindow* gWindow;
 
 	void setup()
 	{
-		_window = ApplicationContext::getWindow();
+		gWindow = ApplicationContext::getWindow();
 	}
 
 	glm::vec2 getPosition()
 	{
 		double mouseX = 0.0, mouseY = 0.0;
-		glfwGetCursorPos(_window, &mouseX, &mouseY);
+		glfwGetCursorPos(gWindow, &mouseX, &mouseY);
 		return glm::vec2(mouseX, mouseY);
 	}
 
 	void setPosition(glm::vec2 position)
 	{
-		glfwSetCursorPos(_window, position.x, position.y);
+		glfwSetCursorPos(gWindow, position.x, position.y);
 	}
 
 	void setType(int32_t cursorType)
 	{
 		GLFWcursor* cursor = glfwCreateStandardCursor(cursorType);
-		glfwSetCursor(_window, cursor);
+		glfwSetCursor(gWindow, cursor);
 		glfwDestroyCursor(cursor);
 	}
 
 	void setMode(int32_t cursorMode)
 	{
-		glfwSetInputMode(_window, GLFW_CURSOR, cursorMode);
+		glfwSetInputMode(gWindow, GLFW_CURSOR, cursorMode);
 	}
 
 	void center()
 	{
 		int32_t windowWidth, windowHeight;
-		glfwGetWindowSize(_window, &windowWidth, &windowHeight);
+		glfwGetWindowSize(gWindow, &windowWidth, &windowHeight);
 		glm::vec2 cursorPosition = glm::vec2(windowWidth / 2.0f, windowHeight / 2.0f);
-		glfwSetCursorPos(_window, cursorPosition.x, cursorPosition.y);
+		glfwSetCursorPos(gWindow, cursorPosition.x, cursorPosition.y);
 	}
 
 }

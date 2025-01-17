@@ -21,20 +21,34 @@
 #include "../src/ui/windows/game_window.h"
 #include "../src/ui/windows/scene_window.h"
 #include "../src/ui/windows/console_window.h"
-#include "../src/ui/windows/hierarchy_window.h"
+#include "../src/ui/windows/registry_window.h"
 #include "../src/ui/windows/diagnostics_window.h"
+#include "../src/ui/windows/insight_panel_window.h"
 #include "../src/ui/windows/post_processing_window.h"
 
 namespace EditorUI {
 
-	uint32_t _idCounter = 0;
-	std::vector<EditorWindow*> _windows;
+	static const ImWchar gIconRange[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 
-	Fonts _fonts;
+	uint32_t gIdCounter = 0;
+	std::vector<EditorWindow*> gWindows;
 
-	bool _overwriteCursor = false; // Overwrites the default imgui cursor
-	int32_t _overwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
-	int32_t _overwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
+	Fonts gFonts;
+
+	bool gOverwriteCursor = false; // Overwrites the default imgui cursor
+	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
+	int32_t gOverwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
+
+	void _mergeIcons(ImGuiIO& io, float fontSize) {
+		float iconsFontSize = fontSize * 2.0f / 3.0f;
+
+		ImFontConfig iconsConfig;
+		iconsConfig.MergeMode = true;
+		iconsConfig.PixelSnapH = true;
+		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
+
+		gFonts.uiIcons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
+	}
 
 	void setup()
 	{
@@ -61,44 +75,22 @@ namespace EditorUI {
 		//
 
 		// Load default font
-		_fonts.uiRegular = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::regularFontSize);
-
-		// Merge icons into regular font
-		float iconsFontSize = EditorSizing::iconsRegularFontSize * 2.0f / 3.0f;
-		static const ImWchar iconsRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		ImFontConfig iconsConfig;
-		iconsConfig.MergeMode = true;
-		iconsConfig.PixelSnapH = true;
-		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
-		_fonts.uiIcons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, iconsRanges);
+		gFonts.uiRegular = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::regularFontSize);
+		_mergeIcons(io, EditorSizing::iconsRegularFontSize);
 
 		// Load bold font
-		_fonts.uiBold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::regularFontSize);
-
-		// Merge icons into bold font
-		float iconsBoldFontSize = EditorSizing::iconsBoldFontSize * 2.0f / 3.0f;
-		ImFontConfig iconsConfigBold;
-		iconsConfigBold.MergeMode = true;
-		iconsConfigBold.PixelSnapH = true;
-		iconsConfigBold.GlyphMinAdvanceX = iconsBoldFontSize;
-		io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsBoldFontSize, &iconsConfigBold, iconsRanges);
+		gFonts.uiBold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::regularFontSize);
+		_mergeIcons(io, EditorSizing::iconsBoldFontSize);
 
 		// Load headline font
-		_fonts.uiHeadline = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::headlineFontSize);
+		gFonts.uiHeadline = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::headlineFontSize);
 		
 		// Load big font
-		_fonts.uiBig = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::bigFontSize);
-		
-		// Merge icons into big font
-		float iconsBigFontSize = EditorSizing::iconsBigFontSize * 2.0f / 3.0f;
-		ImFontConfig iconsConfigBig;
-		iconsConfigBig.MergeMode = true;
-		iconsConfigBig.PixelSnapH = true;
-		iconsConfigBig.GlyphMinAdvanceX = iconsBigFontSize;
-		io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsBigFontSize, &iconsConfigBig, iconsRanges);
+		gFonts.uiBig = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::bigFontSize);
+		_mergeIcons(io, EditorSizing::iconsBigFontSize);
 
 		// Load small font
-		_fonts.uiSmall = io.Fonts->AddFontFromFileTTF(EditorFontPath::normal, EditorSizing::smallFontSize);
+		gFonts.uiSmall = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::smallFontSize);
 
 		//
 		// STYLE COLORS
@@ -193,28 +185,31 @@ namespace EditorUI {
 		//
 
 		SceneWindow* sceneWindow = new SceneWindow();
-		_windows.push_back(sceneWindow);
+		gWindows.push_back(sceneWindow);
 
 		GameWindow* gameWindow = new GameWindow();
-		_windows.push_back(gameWindow);
+		gWindows.push_back(gameWindow);
 
 		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::getGameViewPipeline().getProfile());
-		_windows.push_back(postProcessingWindow);
+		gWindows.push_back(postProcessingWindow);
 
 		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
-		_windows.push_back(diagnosticsWindow);
+		gWindows.push_back(diagnosticsWindow);
 
 		ConsoleWindow* consoleWindow = new ConsoleWindow();
-		_windows.push_back(consoleWindow);
+		gWindows.push_back(consoleWindow);
 
-		HierarchyWindow* hierarchyWindow = new HierarchyWindow();
-		_windows.push_back(hierarchyWindow);
+		RegistryWindow* hierarchyWindow = new RegistryWindow();
+		gWindows.push_back(hierarchyWindow);
+
+		InsightPanelWindow* insightPanelWindow = new InsightPanelWindow();
+		gWindows.push_back(insightPanelWindow);
 	}
 
 	void newFrame()
 	{
 		// Reset id counter for new frame
-		_idCounter = 0;
+		gIdCounter = 0;
 
 		// Create new imgui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -226,16 +221,16 @@ namespace EditorUI {
 	void render()
 	{
 		/* SET VARIABLES NEEDING FRAME PREPARATION */
-		_overwriteCursor = false;
-		_overwriteCursorType = CursorType::DEFAULT;
-		_overwriteCursorMode = CursorMode::NORMAL;
+		gOverwriteCursor = false;
+		gOverwriteCursorType = CursorType::DEFAULT;
+		gOverwriteCursorMode = CursorMode::NORMAL;
 
 		ImGuiIO& io = ImGui::GetIO();
 
 		/* CREATE MAIN VIEWPORT DOCKSPACE */
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-		ImGui::PushFont(_fonts.uiHeadline);
+		ImGui::PushFont(gFonts.uiHeadline);
 
 		ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);
@@ -254,19 +249,19 @@ namespace EditorUI {
 		ImGui::PopStyleVar(3);
 
 		/* RENDER ALL WINDOWS */
-		for (int32_t i = 0; i < _windows.size(); i++)
+		for (int32_t i = 0; i < gWindows.size(); i++)
 		{
-			_windows[i]->render();
+			gWindows[i]->render();
 		}
 
 		/* OVERWRITE IMGUI CURSOR IF NEEDED */
-		if (_overwriteCursor) {
+		if (gOverwriteCursor) {
 			// Disable imgui cursor management
 			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
 			// Set cursor to overwrite type and mode
-			Cursor::setType(_overwriteCursorType);
-			Cursor::setMode(_overwriteCursorMode);
+			Cursor::setType(gOverwriteCursorType);
+			Cursor::setMode(gOverwriteCursorMode);
 		}
 		else {
 			// Enable ui frameword cursor management
@@ -280,25 +275,25 @@ namespace EditorUI {
 
 	std::string generateId()
 	{
-		return ("##" + std::to_string(++_idCounter));
+		return ("##" + std::to_string(++gIdCounter));
 	}
 
 	const Fonts& getFonts() {
-		return _fonts;
+		return gFonts;
 	}
 
 	void EditorUI::setCursorType(int32_t cursorType)
 	{
 		// Overwrite cursor type for current frame
-		_overwriteCursor = true;
-		_overwriteCursorType = cursorType;
+		gOverwriteCursor = true;
+		gOverwriteCursorType = cursorType;
 	}
 
 	void setCursorMode(int32_t cursorMode)
 	{
 		// Overwrite cursor mode for current frame
-		_overwriteCursor = true;
-		_overwriteCursorMode = cursorMode;
+		gOverwriteCursor = true;
+		gOverwriteCursorMode = cursorMode;
 	}
 
 }

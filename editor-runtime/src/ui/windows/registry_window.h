@@ -24,10 +24,10 @@ struct HierarchyItem {
 
 };
 
-class HierarchyWindow : public EditorWindow
+class RegistryWindow : public EditorWindow
 {
 public:
-	HierarchyWindow();
+	RegistryWindow();
 
 	void render();
 

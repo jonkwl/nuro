@@ -10,7 +10,7 @@
 #include "../core/time/time.h"
 #include "../core/utils/log.h"
 #include "../core/ecs/ecs_collection.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 #include "../core/transform/transform.h"
 #include "../core/ecs/components.h"
 #include "../core/rendering/material/lit/lit_material.h"
@@ -63,13 +63,12 @@ void SceneWindow::render()
 	mouseCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(UIUtils::windowTitle("Scene"), nullptr, EditorFlag::standard);
+	ImGui::Begin(UIUtils::windowTitle("Scene View"), nullptr, EditorFlag::standard);
 	{
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
-		UIComponents::space(0.0f, 14.0f);
-		UIComponents::headline("Scene", ICON_FA_MAP, HeadlineJustification::CENTER);
+		UIComponents::headline("Scene View", ICON_FA_MAP, HeadlineJustification::CENTER, false);
 
 		// Get scene window size
 		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
@@ -104,7 +103,7 @@ void SceneWindow::renderToolbar()
 	bool _none = true;
 
 	// Render toggle buttons for render options
-	UIFlex::beginFlex("toggles", FlexType::ROW, UIFlex::FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
+	UIFlex::beginFlex("toggles", FlexType::ROW, FLEX_FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
 	{
 		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe");
 		UIComponents::toggleButton(ICON_FA_ECLIPSE, pipeline.renderShadows, "Render Shadows");
@@ -116,9 +115,9 @@ void SceneWindow::renderToolbar()
 	UIFlex::endFlex();
 
 	// Render indicators for scene view setup
-	UIFlex::beginFlex("setup", FlexType::ROW, UIFlex::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
+	UIFlex::beginFlex("setup", FlexType::ROW, FLEX_FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
 	{
-		UIComponents::space(1.0f, 0.0f);
+		ImGui::Dummy(ImVec2(1.0f, 0.0f));
 		UIComponents::tryIcon(ICON_FA_GAUGE);
 		UIComponents::label("Speed: " + std::to_string(static_cast<int32_t>(movementSpeed)));
 	}

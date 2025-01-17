@@ -15,7 +15,7 @@ fpsUpdateTimer(0.0f)
 
 void DiagnosticsWindow::render()
 {
-	ImGui::Begin("Diagnostics", nullptr, EditorFlag::fixed);
+	ImGui::Begin(UIUtils::windowTitle("Diagnostics"), nullptr, EditorFlag::fixed);
 
 	UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
@@ -55,18 +55,18 @@ void DiagnosticsWindow::render()
 
 	delete[] data;
 
-	UIComponents::space(0.0f, 5.0f);
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 	UIComponents::indicatorLabel("Current Draw Calls:", Diagnostics::getCurrentDrawCalls());
 	UIComponents::indicatorLabel("Current Vertices:", Diagnostics::getCurrentVertices());
 	UIComponents::indicatorLabel("Current Polygons:", Diagnostics::getCurrentPolygons());
 
-	UIComponents::space(0.0f, 5.0f);
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 	UIComponents::indicatorLabel("CPU Entities:", Diagnostics::getNEntitiesCPU());
 	UIComponents::indicatorLabel("GPU Entities:", Diagnostics::getNEntitiesGPU());
 
-	UIComponents::space(0.0f, 5.0f);
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 	UIComponents::indicatorLabel("Rendering:", Profiler::getMs("render"), "ms");
 	UIComponents::indicatorLabel("Physics:", Profiler::getMs("physics"), "ms");

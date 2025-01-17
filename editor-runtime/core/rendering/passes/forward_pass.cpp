@@ -8,7 +8,7 @@
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/rendering/material/imaterial.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 
 ForwardPass::ForwardPass(const Viewport& viewport) : drawSkybox(false),
 drawGizmos(false),

@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+#define FLEX_FULL_WIDTH ImGui::GetContentRegionAvail().x
+#define FLEX_FULL_HEIGHT ImGui::GetContentRegionAvail().y
+
 struct ImVec2;
 
 enum class FlexType
@@ -51,17 +54,7 @@ class UIFlex
 public:
 	static bool debugMode;
 
-	static constexpr float FULL_WIDTH = -1.0f;
-	static constexpr float FULL_HEIGHT = -1.0f;
-
-	static float defaultWidth;
-	static float defaultHeight;
-	static Justification defaultJustification;
-	static Alignment defaultAlignment;
-	static float defaultSpacing;
-	static Margin defaultMargin;
-
-	static void beginFlex(const char* name, FlexType type, float width = defaultWidth, float height = defaultHeight, Justification justification = defaultJustification, Alignment alignment = defaultAlignment, float spacing = defaultSpacing, Margin margin = defaultMargin);
+	static void beginFlex(const char* name, FlexType type, float width, float height, Justification justification = Justification::CENTER, Alignment alignment = Alignment::CENTER, float spacing = 0.0f, Margin margin = Margin());
 	static void endFlex();
 
 private:

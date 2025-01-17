@@ -12,7 +12,7 @@
 #include "../core/rendering/texture/texture.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shadows/shadow_map.h"
-#include "../core/rendering/core/transformation.h"
+#include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/shadows/shadow_disk.h"
 
 #include "../core/utils/log.h"

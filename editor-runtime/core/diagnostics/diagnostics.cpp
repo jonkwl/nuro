@@ -4,18 +4,18 @@
 
 namespace Diagnostics {
 
-	float _fps = 0.0f;
-	float _averageFps = 0.0f;
-	float _averageFpsUpdateTime = 1.0f; // Duration of each fps period
-	float _averageFpsFrameCount = 0.0f; // Frame counter for average fps calculation
-	float _averageFpsElapsedTime = 0.0f; // Elapsed time since beginning of last fps period
+	float gFps = 0.0f;
+	float gAverageFps = 0.0f;
+	float gAverageFpsUpdateTime = 1.0f; // Duration of each fps period
+	float gAverageFpsFrameCount = 0.0f; // Frame counter for average fps calculation
+	float gAverageFpsElapsedTime = 0.0f; // Elapsed time since beginning of last fps period
 
-	uint32_t _currentDrawCalls = 0;
-	uint32_t _currentVertices = 0;
-	uint32_t _currentPolygons = 0;
+	uint32_t gCurrentDrawCalls = 0;
+	uint32_t gCurrentVertices = 0;
+	uint32_t gCurrentPolygons = 0;
 
-	uint32_t _nCPUEntities = 0;
-	uint32_t _nGPUEntities = 0;
+	uint32_t gNCPUEntities = 0;
+	uint32_t gNGPUEntities = 0;
 
 	void step()
 	{
@@ -23,85 +23,85 @@ namespace Diagnostics {
 		float deltaTime = Time::deltaf();
 
 		// Reset frame based diagnostics
-		_currentDrawCalls = 0;
-		_currentVertices = 0;
-		_currentPolygons = 0;
+		gCurrentDrawCalls = 0;
+		gCurrentVertices = 0;
+		gCurrentPolygons = 0;
 
-		_nCPUEntities = 0;
-		_nGPUEntities = 0;
+		gNCPUEntities = 0;
+		gNGPUEntities = 0;
 
 		// Calculate current fps
-		_fps = 1.0 / deltaTime;
+		gFps = 1.0 / deltaTime;
 
 		// Calculate current average fps
-		_averageFpsElapsedTime += deltaTime;
-		_averageFpsFrameCount += 1.0f;
-		if (_averageFpsElapsedTime >= _averageFpsUpdateTime)
+		gAverageFpsElapsedTime += deltaTime;
+		gAverageFpsFrameCount += 1.0f;
+		if (gAverageFpsElapsedTime >= gAverageFpsUpdateTime)
 		{
-			_averageFps = _averageFpsFrameCount / _averageFpsElapsedTime;
-			_averageFpsElapsedTime = 0.0f;
-			_averageFpsFrameCount = 0;
+			gAverageFps = gAverageFpsFrameCount / gAverageFpsElapsedTime;
+			gAverageFpsElapsedTime = 0.0f;
+			gAverageFpsFrameCount = 0;
 		}
 	}
 
 	const float getFps()
 	{
-		return _fps;
+		return gFps;
 	}
 
 	const float getAverageFps()
 	{
-		return _averageFps;
+		return gAverageFps;
 	}
 
 	const uint32_t getCurrentDrawCalls()
 	{
-		return _currentDrawCalls;
+		return gCurrentDrawCalls;
 	}
 
 	const uint32_t getCurrentVertices()
 	{
-		return _currentVertices;
+		return gCurrentVertices;
 	}
 
 	const uint32_t getCurrentPolygons()
 	{
-		return _currentPolygons;
+		return gCurrentPolygons;
 	}
 
 	const uint32_t getNEntitiesCPU()
 	{
-		return _nCPUEntities;
+		return gNCPUEntities;
 	}
 
 	const uint32_t getNEntitiesGPU()
 	{
-		return _nGPUEntities;
+		return gNGPUEntities;
 	}
 
 	const void addCurrentDrawCalls(const uint32_t increment)
 	{
-		_currentDrawCalls += increment;
+		gCurrentDrawCalls += increment;
 	}
 
 	const void addCurrentVertices(const uint32_t increment)
 	{
-		_currentVertices += increment;
+		gCurrentVertices += increment;
 	}
 
 	const void addCurrentPolygons(const uint32_t increment)
 	{
-		_currentPolygons += increment;
+		gCurrentPolygons += increment;
 	}
 
 	const void addNEntitiesCPU(const uint32_t increment)
 	{
-		_nCPUEntities += increment;
+		gNCPUEntities += increment;
 	}
 
 	const void addNEntitiesGPU(const uint32_t increment)
 	{
-		_nGPUEntities += increment;
+		gNGPUEntities += increment;
 	}
 
 }

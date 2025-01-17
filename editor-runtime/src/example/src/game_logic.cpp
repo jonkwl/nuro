@@ -146,10 +146,10 @@ void _example() {
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
 	flashlightSource.intensity = 50.0f;
 	flashlightSource.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	flashlightSource.range = 50.0f;
+	flashlightSource.range = 150.0f;
 	flashlightSource.falloff = 10.0f;
-	flashlightSource.innerAngle = 0.0f;
-	flashlightSource.outerAngle = 45.0f;
+	flashlightSource.innerAngle = 45.0f;
+	flashlightSource.outerAngle = 90.0f;
 
 	// Camera
 	EntityContainer camera("Camera", ECS::createEntity());

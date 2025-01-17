@@ -77,7 +77,7 @@ struct EditorFlag
 
 struct EditorFontPath
 {
-	static constexpr const char* normal = "../resources/fonts/Inter_18pt-Light.ttf";
+	static constexpr const char* regular = "../resources/fonts/Inter_18pt-Light.ttf";
 	static constexpr const char* bold = "../resources/fonts/Inter_18pt-SemiBold.ttf";
 	static constexpr const char* icons = "../resources/fonts/fa-solid-900.ttf";
 };

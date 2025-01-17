@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClCompile Include="core\viewport\viewport.cpp" />
     <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp" />
+    <ClCompile Include="src\ui\windows\insight_panel_window.cpp" />
     <ClCompile Include="src\gizmos\component_gizmos.cpp" />
     <ClCompile Include="src\ui\context_menu.cpp" />
     <ClCompile Include="core\context\application_context.cpp" />
@@ -155,7 +156,7 @@
     <ClCompile Include="imgui\implot.cpp" />
     <ClCompile Include="imgui\implot_demo.cpp" />
     <ClCompile Include="imgui\implot_items.cpp" />
-    <ClCompile Include="src\ui\windows\hierarchy_window.cpp" />
+    <ClCompile Include="src\ui\windows\registry_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
     <ClCompile Include="src\ui\windows\game_window.cpp" />
@@ -166,7 +167,7 @@
     <ClCompile Include="core\input\input.cpp" />
     <ClCompile Include="core\rendering\passes\forward_pass.cpp" />
     <ClCompile Include="core\rendering\passes\pre_pass.cpp" />
-    <ClCompile Include="core\rendering\core\transformation.cpp" />
+    <ClCompile Include="core\rendering\transformation\transformation.cpp" />
     <ClCompile Include="core\rendering\culling\bounding_volume.cpp" />
     <ClCompile Include="core\rendering\gizmos\imgizmo.cpp" />
     <ClCompile Include="core\rendering\material\lit\lit_material.cpp" />
@@ -209,6 +210,7 @@
   <ItemGroup>
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
     <ClInclude Include="core\rendering\passes\preprocessor_pass.h" />
+    <ClInclude Include="src\ui\windows\insight_panel_window.h" />
     <ClInclude Include="src\gizmos\component_gizmos.h" />
     <ClInclude Include="src\ui\context_menu.h" />
     <ClInclude Include="core\backend\api.h" />
@@ -243,7 +245,7 @@
     <ClInclude Include="src\ui\dynamic_drawing\enums.h" />
     <ClInclude Include="src\ui\dynamic_drawing\delta.h" />
     <ClInclude Include="src\ui\dynamic_drawing\utils.h" />
-    <ClInclude Include="src\ui\windows\hierarchy_window.h" />
+    <ClInclude Include="src\ui\windows\registry_window.h" />
     <ClInclude Include="src\pipelines\game_view_pipeline.h" />
     <ClInclude Include="src\pipelines\scene_view_pipeline.h" />
     <ClInclude Include="src\ui\windows\game_window.h" />
@@ -255,7 +257,7 @@
     <ClInclude Include="core\input\input.h" />
     <ClInclude Include="core\rendering\passes\forward_pass.h" />
     <ClInclude Include="core\rendering\passes\pre_pass.h" />
-    <ClInclude Include="core\rendering\core\transformation.h" />
+    <ClInclude Include="core\rendering\transformation\transformation.h" />
     <ClInclude Include="core\rendering\culling\bounding_volume.h" />
     <ClInclude Include="core\rendering\gizmos\gizmos.h" />
     <ClInclude Include="core\rendering\gizmos\gizmo_color.h" />

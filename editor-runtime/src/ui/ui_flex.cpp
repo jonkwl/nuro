@@ -5,13 +5,6 @@
 
 bool UIFlex::debugMode = false;
 
-float UIFlex::defaultWidth = UIFlex::FULL_WIDTH;
-float UIFlex::defaultHeight = UIFlex::FULL_HEIGHT;
-Justification UIFlex::defaultJustification = Justification::CENTER;
-Alignment UIFlex::defaultAlignment = Alignment::CENTER;
-float UIFlex::defaultSpacing = 0.0f;
-Margin UIFlex::defaultMargin = Margin();
-
 FlexBuffer UIFlex::lastFlex;
 
 float UIFlex::mapAlignment(Alignment alignment)
@@ -32,7 +25,7 @@ ImVec2 UIFlex::getFlexRowSize(float width, float height)
 	float contentWidth = ImGui::GetContentRegionAvail().x;
 	float rightPadding = windowWidth - contentWidth;
 	float fullWidth = windowWidth - rightPadding;
-	ImVec2 layoutSize = ImVec2((int32_t)width == FULL_WIDTH ? fullWidth : width, height);
+	ImVec2 layoutSize = ImVec2(width, height);
 	return layoutSize;
 }
 

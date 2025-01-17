@@ -1,4 +1,4 @@
-#include "hierarchy_window.h"
+#include "registry_window.h"
 
 #include <algorithm>
 
@@ -11,7 +11,7 @@ enum DropType {
 	MOVE_ITEM_DOWN
 };
 
-HierarchyWindow::HierarchyWindow() : searchBuffer(""),
+RegistryWindow::RegistryWindow() : searchBuffer(""),
 contextMenuUsed(false),
 currentHierarchy(),
 selectedItems(),
@@ -35,17 +35,17 @@ cameraTarget(nullptr)
 	dragRect.addText(dragRectText);
 }
 
-void HierarchyWindow::render()
+void RegistryWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20.0f, 20.0f));
-	ImGui::Begin(UIUtils::windowTitle("Hierarchy"), nullptr, EditorFlag::fixed);
+	ImGui::Begin(UIUtils::windowTitle("Registry"), nullptr, EditorFlag::fixed);
 	{
 		renderContextMenu();
 
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
-		UIComponents::headline("Hierarchy", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
+		UIComponents::headline("Registry", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
 
 		renderSearch(drawList);
 		renderHierarchy(drawList);
@@ -57,7 +57,7 @@ void HierarchyWindow::render()
 	ImGui::PopStyleVar();
 }
 
-void HierarchyWindow::renderSearch(ImDrawList& drawList)
+void RegistryWindow::renderSearch(ImDrawList& drawList)
 {
 	const float padding = 8.0f;
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(padding, padding));
@@ -69,10 +69,10 @@ void HierarchyWindow::renderSearch(ImDrawList& drawList)
 
 	ImGui::PopItemWidth();
 	ImGui::PopStyleVar();
-	UIComponents::space(0.0f, 5.0f);
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 }
 
-void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
+void RegistryWindow::renderHierarchy(ImDrawList& drawList)
 {
 	// tmp
 	static bool builtHierarchy = false;
@@ -96,7 +96,7 @@ void HierarchyWindow::renderHierarchy(ImDrawList& drawList)
 	ImGui::PopFont();
 }
 
-void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation)
+void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint32_t indentation)
 {
 	//
 	// ADDITIONALLY GET FOREGROUND DRAW LIST
@@ -393,7 +393,7 @@ void HierarchyWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint
 	}
 }
 
-void HierarchyWindow::renderDraggedItem()
+void RegistryWindow::renderDraggedItem()
 {
 	// Dont proceed if theres no item being dragged
 	if (!draggingHierarchy) {
@@ -410,7 +410,7 @@ void HierarchyWindow::renderDraggedItem()
 	dragRect.draw();
 }
 
-void HierarchyWindow::renderContextMenu()
+void RegistryWindow::renderContextMenu()
 {
 	if (ContextMenu::begin())
 	{
@@ -483,7 +483,7 @@ void HierarchyWindow::renderContextMenu()
 	ContextMenu::pop();
 }
 
-void HierarchyWindow::updateCameraMovement()
+void RegistryWindow::updateCameraMovement()
 {
 	if (!cameraMoving) return;
 
@@ -527,7 +527,7 @@ void HierarchyWindow::updateCameraMovement()
 	}
 }
 
-void HierarchyWindow::buildSceneHierarchy()
+void RegistryWindow::buildSceneHierarchy()
 {
 	currentHierarchy.clear();
 
@@ -548,13 +548,13 @@ void HierarchyWindow::buildSceneHierarchy()
 	}
 }
 
-void HierarchyWindow::setCameraTarget(TransformComponent* target)
+void RegistryWindow::setCameraTarget(TransformComponent* target)
 {
 	cameraTarget = target;
 	cameraMoving = true;
 }
 
-void HierarchyWindow::performAutoScroll()
+void RegistryWindow::performAutoScroll()
 {
 	// No item dragged -> no auto scroll
 	if (!draggingHierarchy) return;

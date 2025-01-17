@@ -33,7 +33,7 @@
     <ClCompile Include="core\rendering\passes\pre_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\core\transformation.cpp">
+    <ClCompile Include="core\rendering\transformation\transformation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\culling\bounding_volume.cpp">
@@ -165,7 +165,7 @@
     <ClCompile Include="core\ecs\ecs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\windows\hierarchy_window.cpp">
+    <ClCompile Include="src\ui\windows\registry_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\physics\core\physics_context.cpp">
@@ -234,6 +234,9 @@
     <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\windows\insight_panel_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -257,7 +260,7 @@
     <ClInclude Include="core\rendering\passes\pre_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\core\transformation.h">
+    <ClInclude Include="core\rendering\transformation\transformation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\culling\bounding_volume.h">
@@ -410,7 +413,7 @@
     <ClInclude Include="core\ecs\ecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\windows\hierarchy_window.h">
+    <ClInclude Include="src\ui\windows\registry_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\window_includes.h">
@@ -513,6 +516,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\passes\preprocessor_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\windows\insight_panel_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
