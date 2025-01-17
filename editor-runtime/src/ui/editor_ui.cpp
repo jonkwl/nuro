@@ -47,7 +47,7 @@ namespace EditorUI {
 		iconsConfig.PixelSnapH = true;
 		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
 
-		gFonts.uiIcons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
+		gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
 	}
 
 	void setup()
@@ -74,23 +74,33 @@ namespace EditorUI {
 		// LOAD FONTS
 		//
 
-		// Load default font
-		gFonts.uiRegular = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::regularFontSize);
-		_mergeIcons(io, EditorSizing::iconsRegularFontSize);
+		// p
+		gFonts.p = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::p_FontSize);
+		_mergeIcons(io, EditorSizing::p_IconSize);
+		gFonts.p_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::p_FontSize);
+		_mergeIcons(io, EditorSizing::p_bold_IconSize);
 
-		// Load bold font
-		gFonts.uiBold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::regularFontSize);
-		_mergeIcons(io, EditorSizing::iconsBoldFontSize);
+		// h1
+		gFonts.h1 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h1_FontSize);
+		gFonts.h1_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h1_FontSize);
 
-		// Load headline font
-		gFonts.uiHeadline = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::headlineFontSize);
-		
-		// Load big font
-		gFonts.uiBig = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::bigFontSize);
-		_mergeIcons(io, EditorSizing::iconsBigFontSize);
+		// h2
+		gFonts.h2 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h2_FontSize);
+		_mergeIcons(io, EditorSizing::h2_IconSize);
+		gFonts.h2_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h2_FontSize);
+		_mergeIcons(io, EditorSizing::h2_IconSize);
 
-		// Load small font
-		gFonts.uiSmall = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::smallFontSize);
+		// h3
+		gFonts.h3 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h3_FontSize);
+		gFonts.h3_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h3_FontSize);
+
+		// h4
+		gFonts.h4 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h4_FontSize);
+		gFonts.h4_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h4_FontSize);
+
+		// s
+		gFonts.s = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::s_FontSize);
+		gFonts.s_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::s_FontSize);
 
 		//
 		// STYLE COLORS
@@ -230,7 +240,7 @@ namespace EditorUI {
 		/* CREATE MAIN VIEWPORT DOCKSPACE */
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-		ImGui::PushFont(gFonts.uiHeadline);
+		ImGui::PushFont(gFonts.h4);
 
 		ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);

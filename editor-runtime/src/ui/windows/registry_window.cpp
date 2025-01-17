@@ -29,7 +29,7 @@ cameraTarget(nullptr)
 	dragRect.rounding = 5.0f;
 	dragRect.color = EditorColor::selection;
 	dragRect.lastColor = EditorColor::selection;
-	DynamicText dragRectText(EditorUI::getFonts().uiBold);
+	DynamicText dragRectText(EditorUI::getFonts().p_bold);
 	dragRectText.color = IM_COL32(255, 255, 255, 255);
 	dragRectText.alignment = TextAlign::CENTER;
 	dragRect.addText(dragRectText);
@@ -82,7 +82,7 @@ void RegistryWindow::renderHierarchy(ImDrawList& drawList)
 	}
 
 	// Push font
-	ImGui::PushFont(EditorUI::getFonts().uiBold);
+	ImGui::PushFont(EditorUI::getFonts().p_bold);
 
 	// Render hierarchy
 	for (auto& item : currentHierarchy) {

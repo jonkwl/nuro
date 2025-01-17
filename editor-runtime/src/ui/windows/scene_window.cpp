@@ -52,7 +52,7 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeIndicator.outlineColor = IM_COL32(255, 255, 255, 125);
 	speedChangeIndicator.horizontalAlignment = Horizontal::CENTER;
 	speedChangeIndicator.verticalAlignment = Vertical::CENTER;
-	DynamicText speedChangeText(EditorUI::getFonts().uiBig);
+	DynamicText speedChangeText(EditorUI::getFonts().h3);
 	speedChangeText.color = IM_COL32(255, 255, 255, 255);
 	speedChangeText.alignment = TextAlign::CENTER;
 	speedChangeIndicator.addText(speedChangeText);

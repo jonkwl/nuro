@@ -56,7 +56,7 @@ shaderId(0)
 void LitMaterial::bind()
 {
 	// Tmp light update
-	syncStaticUniforms();
+	// syncStaticUniforms();
 
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", lightSpace);

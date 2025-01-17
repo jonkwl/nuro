@@ -27,13 +27,13 @@ namespace UIComponents {
 	{
 		const float marginTop = 20.0f - ImGui::GetStyle().WindowPadding.y;
 		const float marginBottom = 3.0f;
-		const float marginSubSeperator = 6.0f;
+		const float marginSubSeperator = 7.0f;
 
 		ImGui::Dummy(ImVec2(0.0f, marginTop));
 		UIFlex::beginFlex(title.c_str(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, Margin());
 		{
 			tryIcon(icon);
-			ImGui::PushFont(EditorUI::getFonts().uiHeadline);
+			ImGui::PushFont(EditorUI::getFonts().h4_bold);
 			ImGui::Text(title.c_str());
 			ImGui::PopFont();
 		}
@@ -156,7 +156,7 @@ namespace UIComponents {
 
 	void labelBold(std::string text)
 	{
-		ImGui::PushFont(EditorUI::getFonts().uiBold);
+		ImGui::PushFont(EditorUI::getFonts().p_bold);
 		ImGui::Text(text.c_str());
 		ImGui::PopFont();
 	}
@@ -170,7 +170,7 @@ namespace UIComponents {
 
 	void labelHeadlineSized(std::string text)
 	{
-		ImGui::PushFont(EditorUI::getFonts().uiHeadline);
+		ImGui::PushFont(EditorUI::getFonts().h4);
 		ImGui::Text(text.c_str());
 		ImGui::PopFont();
 	}
@@ -184,7 +184,7 @@ namespace UIComponents {
 
 	void labelSmall(std::string text)
 	{
-		ImGui::PushFont(EditorUI::getFonts().uiSmall);
+		ImGui::PushFont(EditorUI::getFonts().s);
 		ImGui::Text(text.c_str());
 		ImGui::PopFont();
 	}
@@ -198,7 +198,7 @@ namespace UIComponents {
 
 	void labelBig(std::string text)
 	{
-		ImGui::PushFont(EditorUI::getFonts().uiBig);
+		ImGui::PushFont(EditorUI::getFonts().h2);
 		ImGui::Text(text.c_str());
 		ImGui::PopFont();
 	}
@@ -262,7 +262,7 @@ namespace UIComponents {
 	{
 		ImGui::Text(label.c_str());
 		ImGui::SameLine();
-		ImGui::PushFont(EditorUI::getFonts().uiBold);
+		ImGui::PushFont(EditorUI::getFonts().p_bold);
 		ImGui::Text(value.c_str());
 		ImGui::PopFont();
 		if (!additional.empty())

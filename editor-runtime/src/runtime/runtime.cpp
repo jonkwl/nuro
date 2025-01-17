@@ -73,14 +73,8 @@ namespace Runtime {
 		uint32_t diskRadius = 5;
 		gMainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 
-		// Create default directional shadow map
-		/*gMainShadowMap = new ShadowMap(ShadowType::DIRECTIONAL, 4096, 4096);
-		gMainShadowMap->setBounds(100.0f, 100.0f);
-		gMainShadowMap->setClipping(0.3f, 1000.0f);
-		gMainShadowMap->create();*/
-
 		// Create default spotlight shadow map
-		gMainShadowMap = new ShadowMap(2048, 2048);
+		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
 
 		/*

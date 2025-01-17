@@ -116,8 +116,11 @@ void ConsoleWindow::drawLog(ImDrawList& drawList, ConsoleLog log)
 	float totalHeight = height + elementPadding * 2;
 
 	// Draw background
+	float xRectPadding = 8.0f;
+	float scrollbarWidth = ImGui::GetStyle().ScrollbarSize;
 	ImVec2 p0 = ImGui::GetCursorScreenPos();
-	ImVec2 p1 = ImVec2(p0.x + ImGui::GetContentRegionAvail().x, p0.y + totalHeight);
+	p0.x += xRectPadding;
+	ImVec2 p1 = ImVec2(p0.x + ImGui::GetContentRegionAvail().x - xRectPadding - scrollbarWidth, p0.y + totalHeight);
 	if (ImGui::IsMouseHoveringRect(p0, p1)) {
 		backgroundColor = UIUtils::lighten(backgroundColor, 0.1f);
 	}
@@ -168,6 +171,6 @@ void ConsoleWindow::drawLatestLog(ImDrawList& drawList, float height, float padd
 	float contentTextPaddingLeft = originText.empty() ? 0.0f : 4.0f;
 	ImVec2 originPosition = ImVec2(p0.x + padding, p0.y + padding);
 	ImVec2 contentPosition = ImVec2(originPosition.x + ImGui::CalcTextSize(originText.c_str()).x + contentTextPaddingLeft, originPosition.y);
-	drawList.AddText(EditorUI::getFonts().uiBold, ImGui::GetFontSize(), originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
+	drawList.AddText(EditorUI::getFonts().p_bold, ImGui::GetFontSize(), originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
 	drawList.AddText(contentPosition, IM_COL32(255, 255, 255, 255), contentText.c_str());
 }

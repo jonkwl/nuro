@@ -6,7 +6,6 @@
 
 enum class SelectionType {
 	NONE,
-	EMPTY,
 	ENTITY,
 	MARKDOWN_ASSET,
 	MATERIAL_ASSET,
@@ -31,8 +30,16 @@ public:
 private:
 	static SelectionBuffer selected;
 
+	// Renders the insight panels headline
 	void renderHeadline();
-	void renderNone();
-	void renderEmpty();
+
+	// Renders the current selected as a none selection type
+	void renderSelectionNone();
+
+	// Renders the given component component
+	void renderComponent();
+
+	// Renders the given image image
+	void renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin = { 0.0f, 15.0f }, bool stickToBottom = false);
 
 };

@@ -24,7 +24,7 @@ gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 	noCameraIndicator.outlineStrength = 2.0f;
 	noCameraIndicator.outlineColor = IM_COL32(255, 180, 0, 125);
 	noCameraIndicator.smoothing = false;
-	DynamicText noCameraText(EditorUI::getFonts().uiBig);
+	DynamicText noCameraText(EditorUI::getFonts().h3);
 	std::string noCameraIcon = ICON_FA_EYE_SLASH;
 	noCameraText.text = noCameraIcon + "     No camera found, can't render";
 	noCameraText.color = IM_COL32(255, 255, 255, 255);

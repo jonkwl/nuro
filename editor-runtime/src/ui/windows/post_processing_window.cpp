@@ -15,7 +15,7 @@ void PostProcessingWindow::render()
 	if (UIComponents::extendableSettings("Color Grading", post_processing_window_tmp, ICON_FA_PROJECTOR))
 	{
 
-		UIComponents::label("Contrast, Exposure & Gamma", EditorUI::getFonts().uiBold);
+		UIComponents::label("Contrast, Exposure & Gamma", EditorUI::getFonts().p_bold);
 		UIComponents::input("Contrast:", targetProfile.color.contrast, 0.0001f);
 		UIComponents::input("Exposure:", targetProfile.color.exposure, 0.001f);
 		UIComponents::input("Gamma:", targetProfile.color.gamma, 0.001f);
@@ -26,13 +26,13 @@ void PostProcessingWindow::render()
 	if (UIComponents::extendableSettings("Motion Blur", targetProfile.motionBlur.enabled, ICON_FA_PROJECTOR))
 	{
 
-		UIComponents::label("Camera Motion Blur Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("Camera Motion Blur Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Enable Camera Motion Blur", targetProfile.motionBlur.cameraEnabled);
 		UIComponents::input("Intensity:", targetProfile.motionBlur.cameraIntensity, 0.001f);
 		UIComponents::input("Samples:", targetProfile.motionBlur.cameraSamples, 0.1f);
 
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
-		UIComponents::label("Object Motion Blur Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("Object Motion Blur Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Enable Object Motion Blur", targetProfile.motionBlur.objectEnabled);
 		UIComponents::input("Samples:", targetProfile.motionBlur.objectSamples, 0.1f);
 
@@ -59,7 +59,7 @@ void PostProcessingWindow::render()
 	if (UIComponents::extendableSettings("Bloom", targetProfile.bloom.enabled, ICON_FA_PROJECTOR))
 	{
 
-		UIComponents::label("Bloom Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("Bloom Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Intensity:", targetProfile.bloom.intensity, 0.001f);
 		UIComponents::input("Threshold:", targetProfile.bloom.threshold, 0.001f);
 		UIComponents::input("Soft Threshold:", targetProfile.bloom.softThreshold, 0.001f);
@@ -67,7 +67,7 @@ void PostProcessingWindow::render()
 		UIComponents::colorPicker("Bloom Color", targetProfile.bloom.color);
 
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
-		UIComponents::label("Lens Dirt Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("Lens Dirt Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Enable Lens Dirt", targetProfile.bloom.lensDirtEnabled);
 		UIComponents::input("Intensity:", targetProfile.bloom.lensDirtIntensity, 0.01f);
 
@@ -77,7 +77,7 @@ void PostProcessingWindow::render()
 	if (UIComponents::extendableSettings("Vignette", targetProfile.vignette.enabled, ICON_FA_BAG_SHOPPING))
 	{
 
-		UIComponents::label("Vignette Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("Vignette Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Intensity:", targetProfile.vignette.intensity, 0.01f);
 		UIComponents::input("Radius:", targetProfile.vignette.radius, 0.01f);
 		UIComponents::input("Softness:", targetProfile.vignette.softness, 0.01f);
@@ -90,7 +90,7 @@ void PostProcessingWindow::render()
 	if (UIComponents::extendableSettings("Chromatic Aberration", targetProfile.chromaticAberration.enabled, ICON_FA_BAG_SHOPPING))
 	{
 
-		UIComponents::label("Chromatic Aberration Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("Chromatic Aberration Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Intensity:", targetProfile.chromaticAberration.intensity, 0.01f);
 		UIComponents::input("Iterations:", targetProfile.chromaticAberration.iterations, 0.1f);
 
@@ -99,7 +99,7 @@ void PostProcessingWindow::render()
 
 	if (UIComponents::extendableSettings("Ambient Occlusion", targetProfile.ambientOcclusion.enabled, ICON_FA_PROJECTOR))
 	{
-		UIComponents::label("SSAO Settings", EditorUI::getFonts().uiBold);
+		UIComponents::label("SSAO Settings", EditorUI::getFonts().p_bold);
 		UIComponents::input("Radius:", targetProfile.ambientOcclusion.radius, 0.001f);
 		UIComponents::input("Samples:", targetProfile.ambientOcclusion.samples, 0.1f);
 		UIComponents::input("Power:", targetProfile.ambientOcclusion.power, 0.001f);
