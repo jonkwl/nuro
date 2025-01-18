@@ -8,7 +8,7 @@ class SceneWindow : public EditorWindow
 {
 public:
 	SceneWindow();
-	void render();
+	void render() override;
 
 private:
 	void renderToolbar();

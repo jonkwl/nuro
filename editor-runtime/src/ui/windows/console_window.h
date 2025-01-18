@@ -25,7 +25,7 @@ class ConsoleWindow : public EditorWindow
 public:
 	ConsoleWindow();
 
-	void render();
+	void render() override;
 
 	static void addLog(ConsoleLog log);
 private:

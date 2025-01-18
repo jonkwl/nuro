@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <string>
 
 enum class HeadlineJustification
 {
@@ -45,4 +46,11 @@ namespace UIComponents
 	void colorPicker(std::string label, float value[3]);
 
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size);
+
+	void beginChild(ImVec2 size, ImVec2 position = ImGui::GetCursorScreenPos());
+
+	void endChild();
+
+	// Draws a clickable caret background cirlce at the current cursor screen position and returns true if it was clicked
+	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor);
 };

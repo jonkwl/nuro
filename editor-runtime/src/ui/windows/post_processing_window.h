@@ -9,7 +9,7 @@ class PostProcessingWindow : public EditorWindow
 public:
 	PostProcessingWindow(PostProcessing::Profile& targetProfile);
 
-	void render();
+	void render() override;
 
 	PostProcessing::Profile& getTargetProfile();
 	void updateTargetProfile(PostProcessing::Profile& profile);

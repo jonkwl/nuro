@@ -40,7 +40,8 @@ void ConsoleWindow::render()
 		float latestLogTotalHeight = latestLogHeight + latestLogPadding * 2;
 
 		// Draw all log elements
-		ImGui::BeginChild("Logs", ImVec2(windowSize.x, windowSize.y - toolbarHeight - latestLogTotalHeight * 2));
+		ImVec2 logsSize = ImVec2(windowSize.x, windowSize.y - toolbarHeight - latestLogTotalHeight * 2);
+		UIComponents::beginChild(logsSize);
 		{
 			// Evaluate logs to add
 			for (int32_t i = 0; i < logsToAdd.size(); i++) {
@@ -68,7 +69,7 @@ void ConsoleWindow::render()
 			// Clear logs to add
 			logsToAdd.clear();
 		}
-		ImGui::EndChild();
+		UIComponents::endChild();
 
 		// Draw latest log element
 		ImGui::SetCursorPosY(windowSize.y - latestLogTotalHeight - toolbarPaddingTop * 3 + latestLogPadding * 2);

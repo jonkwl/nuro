@@ -85,8 +85,10 @@ struct EditorColor
 	static constexpr ImU32 elementActive = IM_COL32(77, 77, 77, 255);
 	static constexpr ImU32 elementComponent = IM_COL32(178, 178, 178, 255);
 
-	static constexpr ImU32 borderColor = IM_COL32(0, 0, 0, 255);
 	static constexpr ImU32 selection = IM_COL32(85, 125, 255, 255);
+	static constexpr ImU32 selectionInactive = IM_COL32(100, 100, 100, 255);
+
+	static constexpr ImU32 borderColor = IM_COL32(0, 0, 0, 255);
 	static constexpr ImU32 tabColor = IM_COL32(38, 38, 38, 255);
 };
 

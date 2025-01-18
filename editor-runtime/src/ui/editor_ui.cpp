@@ -196,6 +196,7 @@ namespace EditorUI {
 
 		//
 		// CREATE EDITOR WINDOWS
+		// Note: Permanently allocated, as they will be needed throughout the whole runtime
 		//
 
 		SceneWindow* sceneWindow = new SceneWindow();

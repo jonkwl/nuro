@@ -8,7 +8,7 @@ class GameWindow : public EditorWindow
 {
 public:
 	GameWindow();
-	void render();
+	void render() override;
 
 private:
 	void renderToolbar();

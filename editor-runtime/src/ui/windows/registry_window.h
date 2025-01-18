@@ -29,7 +29,7 @@ class RegistryWindow : public EditorWindow
 public:
 	RegistryWindow();
 
-	void render();
+	void render() override;
 
 private:
 	// Renders the search bar

@@ -4,42 +4,41 @@
 
 #include "window_includes.h"
 
-enum class SelectionType {
-	NONE,
-	ENTITY,
-	MARKDOWN_ASSET,
-	MATERIAL_ASSET,
-	MODEL_ASSET,
-	LEVEL_ASSET
-};
-
-struct SelectionBuffer {
-	SelectionType type = SelectionType::NONE;
-	std::string name = "None";
-};
-
 class InsightPanelWindow : public EditorWindow
 {
 public:
 	InsightPanelWindow();
 
-	void render();
+	void render() override;
 
-	static void setSelected(SelectionBuffer selected);
+	// Deletes previously inspected inspectable and sets given inspectable as inspected
+	static void inspect(const std::string& headline, Inspectable* inspectable);
+
+public:
+	// Renders the given component component
+	static void renderComponent(ImDrawList& drawList);
+
+	// Renders an image by the given backend texture id
+	static void renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin = { 0.0f, 15.0f });
 
 private:
-	static SelectionBuffer selected;
+	// Current headline
+	static std::string headline;
 
+	// Currently inspected object
+	static Inspectable* inspected;
+
+private:
 	// Renders the insight panels headline
 	void renderHeadline();
 
-	// Renders the current selected as a none selection type
-	void renderSelectionNone();
+	// Renders the nothing inspected text
+	void renderNoneInspected();
 
-	// Renders the given component component
-	void renderComponent(ImDrawList& drawList);
+	// Renders preview viewer by given preview renderer
+	void renderPreviewViewer(ImVec2 size);
 
-	// Renders the given image image
-	void renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin = { 0.0f, 15.0f }, bool stickToBottom = false);
+	// Returns the size of the preview viewer size
+	ImVec2 getPreviewViewerSize();
 
 };

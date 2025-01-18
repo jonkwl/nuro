@@ -260,9 +260,6 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	// Render selected entitites gizmos if needed
 	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
 
-	// Don't render outline if wireframe is enabled
-	if (wireframe) return;
-
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
 	glStencilMask(0xFF); // Enable stencil writes
@@ -276,6 +273,9 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	renderer.material->bind();
 	glBindVertexArray(renderer.mesh.getVAO());
 	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+
+	// Don't render outline if wireframe is enabled
+	if (wireframe) return;
 
 	// Render outline of selected entity
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // Pass if stencil value is NOT 1

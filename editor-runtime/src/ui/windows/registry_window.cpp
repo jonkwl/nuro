@@ -4,6 +4,9 @@
 
 #include "../core/transform/transform.h"
 
+#include "../src/ui/windows/insight_panel_window.h"
+#include "../src/ui/inspectables/entity_inspectable.h"
+
 enum DropType {
 	NO_DROP,
 	DROP_ITEM,
@@ -183,13 +186,13 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	// EVALUATE COLOR
 	//
 
-	// Base:
+	// Base: Standard background color
 	ImU32 color = EditorColor::background;
-	// Priority #3:
+	// Priority #3:  Color when item is hovered
 	if (hovered) color = UIUtils::lighten(EditorColor::background, 0.38f);
-	// Priority #2:
-	if (selected) color = EditorColor::selection;
-	// Priority #1:
+	// Priority #2: Color when item is selected
+	if (selected) color = ImGui::IsWindowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
+	// Priority #1: Color when item is being dropped
 	if (dropType == DROP_ITEM) color = UIUtils::darken(EditorColor::selection, 0.5f);
 
 	//
@@ -212,7 +215,10 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 
 			// Select item
 			selectedItems[_item.id] = &_item;
-			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);   
+			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);
+
+			// Update insight panel
+			InsightPanelWindow::inspect(_item.entity.name, new EntityInspectable(_item));
 		};
 
 		// Just handle current items selection

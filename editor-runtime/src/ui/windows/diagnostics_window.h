@@ -9,7 +9,7 @@ class DiagnosticsWindow : public EditorWindow
 public:
 	DiagnosticsWindow();
 
-	void render();
+	void render() override;
 
 private:
 	std::deque<float> fpsCache;
