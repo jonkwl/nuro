@@ -240,6 +240,9 @@
     <ClCompile Include="src\ui\inspectables\entity_inspectable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\rendering\utils\preview_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -528,6 +531,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\inspectables\entity_inspectable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\rendering\utils\preview_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

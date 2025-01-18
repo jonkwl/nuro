@@ -1,8 +1,6 @@
 #include "cursor.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
+#include "../core/utils/log.h"
 #include "../core/context/application_context.h"
 
 namespace Cursor {
@@ -26,14 +24,12 @@ namespace Cursor {
 		glfwSetCursorPos(gWindow, position.x, position.y);
 	}
 
-	void setType(int32_t cursorType)
+	void setType(uint32_t cursorType)
 	{
-		GLFWcursor* cursor = glfwCreateStandardCursor(cursorType);
-		glfwSetCursor(gWindow, cursor);
-		glfwDestroyCursor(cursor);
+		glfwSetCursor(gWindow, glfwCreateStandardCursor(cursorType));
 	}
 
-	void setMode(int32_t cursorMode)
+	void setMode(uint32_t cursorMode)
 	{
 		glfwSetInputMode(gWindow, GLFW_CURSOR, cursorMode);
 	}

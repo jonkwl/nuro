@@ -1,9 +1,11 @@
 #include "insight_panel_window.h"
 
+#include "../core/input/cursor.h"
+
 std::string InsightPanelWindow::headline;
 Inspectable* InsightPanelWindow::inspected;
 
-InsightPanelWindow::InsightPanelWindow()
+InsightPanelWindow::InsightPanelWindow() : previewViewerHeight(300.0f)
 {
 }
 
@@ -15,43 +17,47 @@ void InsightPanelWindow::render()
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
+		// Render headline
 		renderHeadline();
 
-		bool renderingPreview = false;
+		// Rendering preview
+		bool renderingPreview = true;
 
+		// Get sizes of content (rendered by inspected) and preview viewer
 		ImVec2 contentSize = ImGui::GetContentRegionAvail();
-		ImVec2 previewSize = contentSize;
+		ImVec2 previewSize = ImVec2(0.0f, 0.0f);
+
+		// Adjust sizing if preview viewer is being rendered
 		if (renderingPreview) {
+			// Get preview viewer size
 			previewSize = getPreviewViewerSize();
+
+			// Subtract preview viewer size from content size
 			contentSize.y -= previewSize.y;
+
+			// Remove window padding from preview size
+			previewSize -= -ImVec2(0.0f, EditorSizing::windowPadding);
 		}
 
+		// Render inspected if available
 		if (inspected) {
 
-			ImGui::Dummy(ImVec2(0.0f, 10.0f));
+			// Add margin before rendering inspected
+			ImVec2 margin = ImVec2(0.0f, 10.0f);
+			ImGui::Dummy(margin);
 
-			UIComponents::beginChild(contentSize);
+			// Inspected content child
+			UIComponents::beginChild(contentSize - margin);
 			{
 				inspected->render(drawList);
 			}
 			UIComponents::endChild();
 
-			if (renderingPreview) {
-
-				ImVec2 cursorPos = ImGui::GetCursorPos();
-				ImVec2 windowPos = ImGui::GetWindowPos();
-				ImVec2 windowSize = ImGui::GetWindowSize();
-				ImVec2 previewPos = ImVec2(cursorPos.x, windowPos.y + windowSize.y - previewSize.y);
-
-				UIComponents::beginChild(previewSize, previewPos);
-				{
-					renderPreviewViewer(previewSize);
-				}
-				UIComponents::endChild();
-
-			}
+			// Render preview viewer if available
+			if (renderingPreview) renderPreviewViewer(drawList, previewSize);
 
 		}
+		// Otherwise render none inspected
 		else {
 			renderNoneInspected();
 		}
@@ -171,10 +177,10 @@ void InsightPanelWindow::renderNoneInspected()
 	UIComponents::label("Select an entity or asset to inspect and edit it.", EditorUI::getFonts().h4, IM_COL32(210, 210, 255, 255));
 }
 
-void InsightPanelWindow::renderPreviewViewer(ImVec2 size)
+void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 {
 	// tmp
-	uint32_t source = IconPool::get("example").getBackendId();
+	uint32_t source = 0;
 
 	// 
 	// RE-RENDER PREVIEW IF NEEDED
@@ -183,15 +189,57 @@ void InsightPanelWindow::renderPreviewViewer(ImVec2 size)
 	//
 
 	//
+	// CREATE TOP BAR
+	//
+
+	// Evaluate top bar sizing
+	const ImVec2 xWindowPadding = ImVec2(20.0f, 0.0f);
+	ImVec2 topBarPos = ImGui::GetCursorScreenPos() - xWindowPadding;
+	ImVec2 topBarSize = ImVec2(ImGui::GetContentRegionAvail().x, 1.0f) + xWindowPadding * 2;
+	
+	// Evalute top bar interactions
+	float hoverArea = 8.0f;
+	bool topBarHovered = ImGui::IsMouseHoveringRect(topBarPos - ImVec2(0.0f, hoverArea), topBarPos + ImVec2(topBarSize.x, hoverArea));
+	bool topBarInteracted = topBarHovered && ImGui::IsMouseClicked(0);
+
+	// Set vertical resize cursor if needed
+	if (topBarHovered) {
+		EditorUI::setCursorType(CursorType::RESIZE_VERTICAL);
+	}
+	
+	// Start top bar drag if interacted with top bar and not actively dragged yet
+	static bool topBarActiveDrag = false;
+	if (topBarInteracted && !topBarActiveDrag) {
+		topBarActiveDrag = true;
+	}
+
+	// If top bar is currently being dragged
+	if (topBarActiveDrag) {
+		// Add vertical cursor offset to preview viewer height
+		previewViewerHeight = (ImGui::GetWindowPos().y + ImGui::GetWindowSize().y) - ImGui::GetMousePos().y;
+
+		// If mouse button isnt hold down anymore, stop drag
+		if (!ImGui::IsMouseDown(0)) {
+			topBarActiveDrag = false;
+		}
+	}
+
+	// Draw top bar
+	drawList.AddRectFilled(topBarPos, topBarPos + topBarSize, topBarHovered ? EditorColor::selection : EditorColor::selectionInactive, 6.0f);
+
+	//
 	// DRAW RENDERED PREVIEW
 	//
 
-	// ImGui::Image(source, size, ImVec2(0, 1), ImVec2(1, 0));
+	ImVec2 imagePos = topBarPos + ImVec2(0.0f, topBarSize.y);
+	ImVec2 imageSize = size - ImVec2(0.0f, topBarSize.y) + xWindowPadding * 2;
+	drawList.AddImage(source, imagePos, imagePos + imageSize, ImVec2(0, 1), ImVec2(1, 0));
 }
 
 ImVec2 InsightPanelWindow::getPreviewViewerSize()
 {
-	float xAvail = ImGui::GetContentRegionAvail().x;
-	ImVec2 size = ImVec2(xAvail, 250.0f);
+	float xSize = ImGui::GetContentRegionAvail().x;
+	float ySize = std::clamp(previewViewerHeight, 50.0f, std::max(50.0f, ImGui::GetWindowSize().y * 0.5f));
+	ImVec2 size = ImVec2(xSize, ySize);
 	return size;
-}
+}  

@@ -28,6 +28,9 @@ private:
 	// Currently inspected object
 	static Inspectable* inspected;
 
+	// Current height of preview viewer
+	float previewViewerHeight;
+
 private:
 	// Renders the insight panels headline
 	void renderHeadline();
@@ -36,7 +39,7 @@ private:
 	void renderNoneInspected();
 
 	// Renders preview viewer by given preview renderer
-	void renderPreviewViewer(ImVec2 size);
+	void renderPreviewViewer(ImDrawList& drawList, ImVec2 size);
 
 	// Returns the size of the preview viewer size
 	ImVec2 getPreviewViewerSize();

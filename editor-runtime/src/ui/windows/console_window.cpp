@@ -172,6 +172,6 @@ void ConsoleWindow::drawLatestLog(ImDrawList& drawList, float height, float padd
 	float contentTextPaddingLeft = originText.empty() ? 0.0f : 4.0f;
 	ImVec2 originPosition = ImVec2(p0.x + padding, p0.y + padding);
 	ImVec2 contentPosition = ImVec2(originPosition.x + ImGui::CalcTextSize(originText.c_str()).x + contentTextPaddingLeft, originPosition.y);
-	drawList.AddText(EditorUI::getFonts().p_bold, ImGui::GetFontSize(), originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
-	drawList.AddText(contentPosition, IM_COL32(255, 255, 255, 255), contentText.c_str());
+	drawList.AddText(EditorUI::getFonts().p_bold, EditorSizing::p_FontSize, originPosition, IM_COL32(255, 255, 255, 255), originText.c_str());
+	drawList.AddText(EditorUI::getFonts().p_bold, EditorSizing::p_FontSize, contentPosition, IM_COL32(255, 255, 255, 255), contentText.c_str());
 }

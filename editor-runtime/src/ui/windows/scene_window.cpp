@@ -89,8 +89,14 @@ void SceneWindow::render()
 
 	mouseLast = mouseCurrent;
 
-	// Hide cursor if theres an interaction with scene view
-	if (sceneViewRightclicked || sceneViewMiddleclicked) EditorUI::setCursorMode(CursorMode::HIDDEN);
+	// Interaction with scene view
+	if (sceneViewRightclicked || sceneViewMiddleclicked) {
+		// Hide cursor
+		EditorUI::setCursorMode(CursorMode::HIDDEN);
+
+		// Set scene window to focused
+		ImGui::SetWindowFocus();
+	}
 
 	// Update movement according to inputs calculated prior
 	updateMovement();
