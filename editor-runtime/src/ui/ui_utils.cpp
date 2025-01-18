@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "../core/input/cursor.h"
+#include "../src/ui/editor_ui.h"
 
 namespace UIUtils {
 
@@ -116,6 +117,34 @@ namespace UIUtils {
 
 		// Set offset of game view render target to make sure its centered
 		offset = ImVec2((contentRegionAvail.x - size.x) * 0.5f, (contentRegionAvail.y - size.y) * 0.5f);
+	}
+
+	bool caretBackend(ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor)
+	{
+		// Circle geometry
+		float circleRadius = 9.0f;
+		ImVec2 circlePosition = ImVec2(
+			position.x + circleRadius + offset.x,
+			position.y + circleRadius * 0.5f + offset.y);
+		const ImVec2 mousePosition = ImGui::GetMousePos();
+
+		// Fetch circle interactions
+		float circleDistance =
+			(mousePosition.x - circlePosition.x) *
+			(mousePosition.x - circlePosition.x) +
+			(mousePosition.y - circlePosition.y) *
+			(mousePosition.y - circlePosition.y);
+
+		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
+		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
+
+		// Evaluate color
+		ImU32 circleColor = circleHovered ? hoveredColor : color;
+
+		// Draw circle
+		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);
+
+		return circleClicked;
 	}
 
 	const char* windowTitle(const char* title)

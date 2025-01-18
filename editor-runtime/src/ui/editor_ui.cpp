@@ -92,11 +92,15 @@ namespace EditorUI {
 
 		// h3
 		gFonts.h3 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h3_FontSize);
+		_mergeIcons(io, EditorSizing::h2_IconSize);
 		gFonts.h3_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h3_FontSize);
+		_mergeIcons(io, EditorSizing::h2_IconSize);
 
 		// h4
 		gFonts.h4 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h4_FontSize);
+		_mergeIcons(io, EditorSizing::p_bold_IconSize);
 		gFonts.h4_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h4_FontSize);
+		_mergeIcons(io, EditorSizing::p_bold_IconSize);
 
 		// s
 		gFonts.s = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::s_FontSize);

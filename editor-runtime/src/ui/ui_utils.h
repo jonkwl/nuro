@@ -21,8 +21,11 @@ namespace UIUtils
 	// Keeps the cursor in the given boundaries, returns the new cursor position and sets if the cursor was positioned by method
 	glm::vec2 keepCursorInBounds(glm::vec4 bounds, bool& cursorMoved, float offset = 40.0f);
 
-	// Calculate the size and offset an image can have to be displayed at the biggest size possible centered with the given aspect ratio
+	// Calculates the size and offset an image can have to be displayed at the biggest size possible centered with the given aspect ratio
 	void calculateAspectFitting(float aspectRatio, ImVec2& size, ImVec2& offset);
+
+	// Draws a clickable caret background cirlce at the current cursor screen position and returns true if it was clicked
+	bool caretBackend(ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor);
 
 	// Returns title for window with adjusted spacing
 	const char* windowTitle(const char* title);
