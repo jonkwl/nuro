@@ -272,9 +272,6 @@ namespace Runtime {
 		// Delete model
 		delete model;
 
-		// Set to fullscreen
-		ApplicationContext::setFullscreen();
-
 	}
 
 	void _createApplicationContext() {
@@ -319,7 +316,7 @@ namespace Runtime {
 		// _createLoadingScreen();
 
 		// TMP Set to fullscreen
-		ApplicationContext::setFullscreen();
+		ApplicationContext::maximizeWindow();
 
 		while (ApplicationContext::running())
 		{

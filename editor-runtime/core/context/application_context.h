@@ -35,6 +35,12 @@ namespace ApplicationContext
 	// Returns if application is still running
 	bool running();
 
+	// Resizes window
+	void resizeWindow(glm::ivec2 size);
+
+	// Maximizes window
+	void maximizeWindow();
+
 	// Sets window to fullscreen
 	void setFullscreen();
 

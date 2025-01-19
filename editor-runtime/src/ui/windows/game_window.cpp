@@ -131,8 +131,11 @@ void GameWindow::renderGameView()
 		bool currentlyResizing = currentContentAvail != lastContentAvail;
 		if (currentlyResizing) output = 0;
 
-		// float aspectRatio = 16.0f / 9.0f;
-		float aspectRatio = 0.0f;
+		// Draw black background
+		ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetCursorScreenPos(), ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(), IM_COL32(0, 0, 0, 255));
+
+		float aspectRatio = 16.0f / 9.0f;
+		// float aspectRatio = 0.0f;
 		ImVec2 size, offset;
 		if (aspectRatio) {
 			UIUtils::calculateAspectFitting(aspectRatio, size, offset);

@@ -249,8 +249,14 @@ namespace EditorUI {
 
 		ImGui::PushFont(gFonts.h4);
 
-		ImGui::SetNextWindowPos(viewport->Pos);
+		float menuBarHeight = 45.0f;
+
+		/*ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);*/
+
+		ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + menuBarHeight));
+		ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - menuBarHeight));
 		ImGui::SetNextWindowViewport(viewport->ID);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);

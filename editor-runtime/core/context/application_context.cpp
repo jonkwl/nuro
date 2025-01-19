@@ -153,6 +153,42 @@ namespace ApplicationContext {
 		return !glfwWindowShouldClose(gWindow);
 	}
 
+	void resizeWindow(glm::ivec2 size)
+	{
+		// Resize GLFW window
+		glfwSetWindowSize(gWindow, size.x, size.y);
+
+		// Get monitor workarea
+		int monitorX, monitorY, monitorWidth, monitorHeight;
+		glfwGetMonitorWorkarea(gMonitor, &monitorX, &monitorY, &monitorWidth, &monitorHeight);
+
+		// Calculate centered position
+		int posX = monitorX + (monitorWidth - size.x) / 2;
+		int posY = monitorY + (monitorHeight - size.y) / 2;
+
+		// Center window position
+		glfwSetWindowPos(gWindow, posX, posY);
+
+		// Sync config
+		gConfiguration.windowSize = size;
+	}
+
+	void maximizeWindow()
+	{
+		// Get work area of monitor
+		int monitorX, monitorY, monitorWidth, monitorHeight;
+		glfwGetMonitorWorkarea(gMonitor, &monitorX, &monitorY, &monitorWidth, &monitorHeight);
+
+		// Set the window size to maximum possible
+		glfwSetWindowSize(gWindow, monitorWidth, monitorHeight);
+
+		// Set window position to top-left corner of work area
+		glfwSetWindowPos(gWindow, monitorX, monitorY);
+
+		// Sync config
+		gConfiguration.windowSize = glm::ivec2(monitorWidth, monitorHeight);
+	}
+
 	void setFullscreen() {
 		// Get video mode
 		const GLFWvidmode* mode = glfwGetVideoMode(gMonitor);

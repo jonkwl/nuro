@@ -326,7 +326,7 @@ void SceneWindow::updateMovement()
 		// Rotate in scene view
 		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
 		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
-		newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
+		// newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
 		camera.transform.rotation = glm::quat(glm::radians(newRotation));
 		cameraEulerAngles = newRotation;
 	}
