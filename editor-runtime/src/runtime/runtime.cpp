@@ -13,6 +13,7 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shadows/shadow_map.h"
 #include "../core/rendering/shadows/shadow_disk.h"
+#include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/transformation/transformation.h"
 
 #include "../core/utils/log.h"
@@ -29,6 +30,7 @@ namespace Runtime {
 	// Pipelines
 	SceneViewPipeline gSceneViewPipeline;
 	GameViewPipeline gGameViewPipeline;
+	PreviewPipeline gPreviewPipeline;
 
 	// Physics
 	PhysicsContext gGamePhysics;
@@ -51,11 +53,9 @@ namespace Runtime {
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
 
-	// Preview renderers
-	PreviewPipeline gInsightPanelPreview;
-
-	// Models
+	// tmp
 	Model* gSphereModel;
+	LitMaterial* gDefaultLit;
 
 	//
 	//
@@ -83,12 +83,9 @@ namespace Runtime {
 		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
 
-		// Create preview renderers
-		gInsightPanelPreview.create(250.0f, 250.0f);
-		gInsightPanelPreview.createOutput();
-
-		// Create models
+		// tmp
 		gSphereModel = Model::load("../resources/primitives/sphere.fbx");
+		gDefaultLit = new LitMaterial();
 
 		/*
 		// Create default skybox
@@ -108,6 +105,7 @@ namespace Runtime {
 		// Create pipelines
 		gSceneViewPipeline.create();
 		gGameViewPipeline.create();
+		gPreviewPipeline.create();
 
 		// Create game physics instance
 		gGamePhysics.create();
@@ -339,6 +337,7 @@ namespace Runtime {
 			_renderShadowsGlobal();
 			gSceneViewPipeline.render();
 			gGameViewPipeline.render();
+			gPreviewPipeline.render();
 
 			// RENDER EDITOR
 			_renderEditor();
@@ -354,9 +353,12 @@ namespace Runtime {
 
 	int TERMINATE()
 	{
-		// Destroy all instances
+		// Destroy all pipelines
 		gSceneViewPipeline.destroy();
 		gGameViewPipeline.destroy();
+		gPreviewPipeline.destroy();
+
+		// Destroy physics
 		gGamePhysics.destroy();
 
 		// Destroy context
@@ -426,6 +428,11 @@ namespace Runtime {
 		return gGameViewPipeline;
 	}
 
+	PreviewPipeline& getPreviewPipeline()
+	{
+		return gPreviewPipeline;
+	}
+
 	PhysicsContext& getGamePhysics()
 	{
 		return gGamePhysics;
@@ -451,9 +458,14 @@ namespace Runtime {
 		return gMainShadowMap;
 	}
 
-	PreviewPipeline& getInsightPreview()
+	Model* getSphereModel()
 	{
-		return gInsightPanelPreview;
+		return gSphereModel;
+	}
+
+	LitMaterial* getDefaultLit()
+	{
+		return gDefaultLit;
 	}
 
 }

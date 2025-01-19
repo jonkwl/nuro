@@ -28,6 +28,9 @@ private:
 	// Currently inspected object
 	static Inspectable* inspected;
 
+	// Output texture of preview viewer
+	size_t previewViewerOutput;
+
 	// Current height of preview viewer
 	float previewViewerHeight;
 
@@ -40,8 +43,4 @@ private:
 
 	// Renders preview viewer by given preview renderer
 	void renderPreviewViewer(ImDrawList& drawList, ImVec2 size);
-
-	// Returns the size of the preview viewer size
-	ImVec2 getPreviewViewerSize();
-
 };

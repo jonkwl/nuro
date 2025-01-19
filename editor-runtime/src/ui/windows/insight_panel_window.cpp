@@ -5,8 +5,10 @@
 std::string InsightPanelWindow::headline;
 Inspectable* InsightPanelWindow::inspected;
 
-InsightPanelWindow::InsightPanelWindow() : previewViewerHeight(300.0f)
+InsightPanelWindow::InsightPanelWindow() : previewViewerOutput(0),
+previewViewerHeight(300.0f)
 {
+	previewViewerOutput = Runtime::getPreviewPipeline().createOutput();
 }
 
 void InsightPanelWindow::render()
@@ -29,8 +31,8 @@ void InsightPanelWindow::render()
 
 		// Adjust sizing if preview viewer is being rendered
 		if (renderingPreview) {
-			// Get preview viewer size
-			previewSize = getPreviewViewerSize();
+			// Set preview viewer size
+			previewSize = ImVec2(ImGui::GetContentRegionAvail().x, previewViewerHeight);
 
 			// Subtract preview viewer size from content size
 			contentSize.y -= previewSize.y;
@@ -179,12 +181,6 @@ void InsightPanelWindow::renderNoneInspected()
 
 void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 {
-	// 
-	// RE-RENDER PREVIEW IF NEEDED
-	//
-
-	uint32_t source = Runtime::getInsightPreview().getOutput(0);
-
 	//
 	// CREATE TOP BAR
 	//
@@ -192,7 +188,7 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 	// Evaluate top bar sizing
 	const ImVec2 xWindowPadding = ImVec2(20.0f, 0.0f);
 	ImVec2 topBarPos = ImGui::GetCursorScreenPos() - xWindowPadding;
-	ImVec2 topBarSize = ImVec2(ImGui::GetContentRegionAvail().x, 1.0f) + xWindowPadding * 2;
+	ImVec2 topBarSize = ImVec2(ImGui::GetContentRegionAvail().x, 2.0f) + xWindowPadding * 2;
 	
 	// Evalute top bar interactions
 	float hoverArea = 8.0f;
@@ -212,37 +208,67 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 
 	// If top bar is currently being dragged
 	if (topBarActiveDrag) {
-		// Add vertical cursor offset to preview viewer height
+		// Set preview viewer height according to vertical mouse position
 		previewViewerHeight = (ImGui::GetWindowPos().y + ImGui::GetWindowSize().y) - ImGui::GetMousePos().y;
 
-		// Don't render anything
-		source = 0;
+		// Clamp preview viewer height to not exceed limits
+		previewViewerHeight = std::clamp(previewViewerHeight, 50.0f, std::max(50.0f, ImGui::GetWindowSize().y * 0.5f));
 
-		// If mouse button isnt hold down anymore, resize and stop dragging
+		// If mouse button isnt hold down anymore, stop dragging
 		if (!ImGui::IsMouseDown(0)) {
 			topBarActiveDrag = false;
 		}
 	}
 
 	// Evaluate top bar color
-	ImU32 topBarColor = topBarActiveDrag ? EditorColor::selection : EditorColor::selectionInactive;
+	ImU32 topBarColor = IM_COL32(120, 120, 120, 255);
+	if (topBarHovered) topBarColor = IM_COL32(255, 255, 255, 255);
+	if (topBarActiveDrag) topBarColor = EditorColor::selection;
 
 	// Draw top bar
 	drawList.AddRectFilled(topBarPos, topBarPos + topBarSize, topBarColor, 6.0f);
+
+	// 
+	// HANDLE PREVIEW OUTPUT
+	//
+
+	// If preview should render this frame
+	bool render = true;
+
+	// Get output
+	PreviewPipeline& pipeline = Runtime::getPreviewPipeline();
+	const PreviewOutput& output = pipeline.getOutput(previewViewerOutput);
+
+	// Get current output size
+	glm::vec2 outputSize = glm::vec2(ImGui::GetContentRegionAvail().x, previewViewerHeight);
+
+	// Resize output if current output size doesnt match output viewport size
+	if (outputSize != output.viewport.getResolution()) {
+		pipeline.resizeOutput(previewViewerOutput, outputSize.x, outputSize.y);
+		render = true;
+		Log::printProcessInfo("Resized insight panel preview viewer");
+	}
+
+	// Render if needed
+	if (render) {
+		PreviewRenderInstruction instruction;
+		instruction.backgroundColor = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+		instruction.model = Runtime::getSphereModel();
+		instruction.material = Runtime::getDefaultLit();
+		TransformComponent transform;
+		transform.position.z = 2.0f;
+		instruction.transform = transform;
+		pipeline.addRenderInstruction(instruction);
+	}
+
+	// Fetch output texture source
+	uint32_t source = output.texture;
 
 	//
 	// DRAW RENDERED PREVIEW
 	//
 
-	ImVec2 imagePos = topBarPos + ImVec2(0.0f, topBarSize.y);
+	ImVec2 imagePos = topBarPos + ImVec2(0.0f, topBarSize.y + 3.0f);
 	ImVec2 imageSize = size - ImVec2(0.0f, topBarSize.y) + xWindowPadding * 2;
 	drawList.AddImage(source, imagePos, imagePos + imageSize, ImVec2(0, 1), ImVec2(1, 0));
 }
-
-ImVec2 InsightPanelWindow::getPreviewViewerSize()
-{
-	float xSize = ImGui::GetContentRegionAvail().x;
-	float ySize = std::clamp(previewViewerHeight, 50.0f, std::max(50.0f, ImGui::GetWindowSize().y * 0.5f));
-	ImVec2 size = ImVec2(xSize, ySize);
-	return size;
-}  

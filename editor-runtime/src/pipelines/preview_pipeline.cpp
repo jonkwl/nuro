@@ -2,22 +2,22 @@
 
 #include <glad/glad.h>
 
+#include "../core/utils/log.h"
 #include "../core/rendering/model/model.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/primitives/global_quad.h"
+#include "../core/rendering/material/lit/lit_material.h"
+#include "../core/rendering/transformation/transformation.h"
 
-PreviewPipeline::PreviewPipeline() : viewport(),
-fbo(0),
-outputs()
+PreviewPipeline::PreviewPipeline() : fbo(0),
+outputs(),
+renderInstructions()
 {
 }
 
-void PreviewPipeline::create(float width, float height)
+void PreviewPipeline::create()
 {
-	// Adjust viewport size
-	viewport.resize(width, height);
-
 	// Generate preview renderer framebuffer
 	glCreateFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -30,72 +30,114 @@ void PreviewPipeline::destroy()
 	fbo = 0;
 
 	// Delete all outputs
-	for (uint32_t output : outputs) {
-		glDeleteTextures(1, &output);
+	for (PreviewOutput output : outputs) {
+		glDeleteTextures(1, &output.texture);
 	}
 	outputs.clear();
 }
 
 size_t PreviewPipeline::createOutput()
 {
-	// Generate new output texture
-	uint32_t renderTarget = 0;
-	glGenTextures(1, &renderTarget);
-	glBindTexture(GL_TEXTURE_2D, renderTarget);
+	// Generate new output
+	PreviewOutput output;
+	output.viewport.resize(250.0f, 250.0f);
 
-	// Setup output texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, NULL);
+	// Generate outputs texture
+	glGenTextures(1, &output.texture);
+	glBindTexture(GL_TEXTURE_2D, output.texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, output.viewport.getWidth_gl(), output.viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Add output to outputs and return index
-	outputs.push_back(renderTarget);
+	outputs.push_back(output);
 	return outputs.size() - 1;
 }
 
-uint32_t PreviewPipeline::getOutput(size_t index) const
+const PreviewOutput& PreviewPipeline::getOutput(size_t index) const
 {
-	if (index >= outputs.size()) return 0;
+	// Securely fetch output by index
+	if (index >= outputs.size()) return PreviewOutput();
 	return outputs[index];
 }
 
-void PreviewPipeline::resize(float width, float height)
+void PreviewPipeline::resizeOutput(size_t index, float width, float height)
 {
-	// Resize viewport
-	viewport.resize(width, height);
+	// Securely fetch output by index
+	if (index >= outputs.size()) return;
+	PreviewOutput& output = outputs[index];
 
-	// Resize all output textures
-	for (uint32_t output : outputs) {
-		// Bind the texture
-		glBindTexture(GL_TEXTURE_2D, output);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, viewport.getWidth_gl(), viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, NULL);
-	}
+	// Resize viewport and set to resized
+	output.viewport.resize(width, height);
+	output.resizePending = true;
 }
 
-void PreviewPipeline::render(uint32_t targetIndex, Model* model)
+void PreviewPipeline::addRenderInstruction(PreviewRenderInstruction instruction)
+{
+	renderInstructions.push_back(instruction);
+}
+
+void PreviewPipeline::render()
 {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	// Attach output texture to framebuffer
-	uint32_t output = outputs[targetIndex];
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output, 0);
+	// Perform all render instructions
+	for (PreviewRenderInstruction instruction : renderInstructions) {
+		
+		// Return if nullpointers given
+		if (!instruction.model || !instruction.material) return;
 
-	// Clear framebuffer
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+		// Securely fetch output by index
+		if (instruction.outputIndex >= outputs.size()) return;
+		PreviewOutput& output = outputs[instruction.outputIndex];
 
-	// Set viewport
-	glViewport(0, 0, viewport.getWidth_gl(), viewport.getHeight_gl());
+		// Resize output texture if needed
+		if (output.resizePending) {
+			// Only resize if issued new size is big enough
+			glBindTexture(GL_TEXTURE_2D, output.texture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, output.viewport.getWidth_gl(), output.viewport.getHeight_gl(), 0, GL_RGBA, GL_FLOAT, NULL);
+			output.resizePending = false;
+		}
 
-	Shader* testShader = ShaderPool::get("debug_pass");
-	testShader->bind();
+		// Attach output texture to framebuffer
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output.texture, 0);
 
-	for (const Mesh& mesh : model->getMeshes()) {
-		// Bind and render mesh
-		glBindVertexArray(mesh.getVAO());
-		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		// Clear framebuffer
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Set viewport
+		glViewport(0, 0, output.viewport.getWidth_gl(), output.viewport.getHeight_gl());
+
+		// Bind shader and material
+		Shader* shader = instruction.material->getShader();
+		shader->bind();
+		instruction.material->bind();
+
+		// Calculate and sync transform matrices
+		glm::mat4 _model = Transformation::model(instruction.transform.position, instruction.transform.rotation, instruction.transform.scale);
+		glm::mat4 _view = Transformation::view(glm::vec3(0.0f), glm::identity<glm::quat>());
+		glm::mat4 _projection = Transformation::projection(70.0f, output.viewport.getAspect(), 0.3f, 1000.0f);
+		glm::mat4 _mvp = _projection * _view * _model;
+		glm::mat4 _normal = Transformation::normal(_model);
+		shader->setMatrix4("mvpMatrix", _mvp);
+		shader->setMatrix4("modelMatrix", _model);
+		shader->setMatrix3("normalMatrix", _normal);
+
+		// Bind and render all meshes of model
+		for (const Mesh& mesh : instruction.model->getMeshes()) {
+			glBindVertexArray(mesh.getVAO());
+			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		}
+
 	}
+
+	// Clear render instructions
+	renderInstructions.clear();
+
+	// Bind screen framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

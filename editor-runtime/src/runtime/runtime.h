@@ -10,6 +10,9 @@
 class ShadowDisk;
 class ShadowMap;
 
+class Model;
+class LitMaterial;
+
 namespace Runtime
 {
 	// Base functions
@@ -27,6 +30,7 @@ namespace Runtime
 	// Pipelines getters
 	SceneViewPipeline& getSceneViewPipeline();
 	GameViewPipeline& getGameViewPipeline();
+	PreviewPipeline& getPreviewPipeline();
 
 	// Physics getters
 	PhysicsContext& getGamePhysics();
@@ -38,6 +42,7 @@ namespace Runtime
 	ShadowDisk* getMainShadowDisk();
 	ShadowMap* getMainShadowMap();
 
-	// tmp
-	PreviewPipeline& getInsightPreview();
+	// Other
+	Model* getSphereModel();
+	LitMaterial* getDefaultLit();
 };

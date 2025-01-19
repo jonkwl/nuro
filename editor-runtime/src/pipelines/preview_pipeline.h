@@ -3,9 +3,25 @@
 #include <glm.hpp>
 #include <vector>
 
+#include "../core/ecs/components.h"
 #include "../core/viewport/viewport.h"
 
 class Model;
+class LitMaterial;
+
+struct PreviewOutput {
+	uint32_t texture = 0;
+	Viewport viewport;
+	bool resizePending = false;
+};
+
+struct PreviewRenderInstruction {
+	size_t outputIndex = 0;
+	glm::vec4 backgroundColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	Model* model = nullptr;
+	LitMaterial* material = nullptr;
+	TransformComponent transform;
+};
 
 class PreviewPipeline
 {
@@ -13,23 +29,28 @@ public:
 	PreviewPipeline();
 
 	// Creates the preview renderer frame
-	void create(float width, float height);
+	void create();
 
 	// Destroys the preview renderer and all of the output textures connected with it
 	void destroy();
 
-	// Creates a new output render texture and returns its index
+	// Renders all render instructions queued
+	void render();
+
+	// Creates a new preview output and returns its index
 	size_t createOutput();
 
-	// Returns output render texture by given index 
-	uint32_t getOutput(size_t index) const;
+	// Returns preview output by given index 
+	const PreviewOutput& getOutput(size_t index) const;
+
+	// Resizes an output by given index
+	void resizeOutput(size_t index, float width, float height);
+
+	// Adds the given render instruction to the rendering queue
+	void addRenderInstruction(PreviewRenderInstruction instruction);
 
 private:
-	Viewport viewport;
 	uint32_t fbo;
-	std::vector<uint32_t> outputs;
-
-private:
-	void resize(float width, float height);
-	void render(uint32_t outputTargetIndex, Model* model);
+	std::vector<PreviewOutput> outputs;
+	std::vector<PreviewRenderInstruction> renderInstructions;
 };
