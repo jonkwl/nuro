@@ -90,15 +90,15 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		}
 
 		// Render mesh
-		Mesh& mesh = getMesh(gizmo.shape);
-		glBindVertexArray(mesh.getVAO());
-		glDrawElements(GL_LINES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		const Mesh* mesh = getMesh(gizmo.shape);
+		glBindVertexArray(mesh->getVAO());
+		glDrawElements(GL_LINES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Optional foreground pass without depth testing and reduced opacity
 		if (gizmo.state.foreground) {
 			staticData.fillShader->setVec4("color", glm::vec4(gizmo.state.color, 0.035f));
 			glDisable(GL_DEPTH_TEST);
-			glDrawElements(GL_LINES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_LINES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
@@ -168,7 +168,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Get mesh
-		Mesh& mesh = getMesh(Shape::PLANE);
+		const Mesh* mesh = getMesh(Shape::PLANE);
 
 		// Set static material uniforms
 		staticData.iconShader->setMatrix4("mvpMatrix", mvpMatrix);
@@ -177,13 +177,13 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 
 		// Render with full opacity and depth test
 		staticData.iconShader->setFloat("alpha", get3DIconAlpha(1.0f, gizmoPosition, cameraPosition));
-		glBindVertexArray(mesh.getVAO());
-		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(mesh->getVAO());
+		glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
 		staticData.iconShader->setFloat("alpha", get3DIconAlpha(0.06f, gizmoPosition, cameraPosition));
 		glDisable(GL_DEPTH_TEST);
-		glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 		glEnable(GL_DEPTH_TEST);
 	}
 
@@ -241,7 +241,7 @@ IMGizmo::RenderState IMGizmo::getCurrentState() {
 	return state;
 }
 
-Mesh& IMGizmo::getMesh(Shape shape)
+const Mesh* IMGizmo::getMesh(Shape shape)
 {
 	switch (shape)
 	{
@@ -310,7 +310,7 @@ float IMGizmo::get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3
 	return alpha;
 }
 
-Mesh IMGizmo::createWireframeBox() // tmp
+const Mesh* IMGizmo::createWireframeBox() // tmp
 {
 
 #define zeroVec2 glm::vec2(0.0f)
@@ -336,5 +336,5 @@ Mesh IMGizmo::createWireframeBox() // tmp
 	};
 
 	// Create and return the Mesh with materialIndex = 0
-	return Mesh(vertices, indices, 0);
+	return new Mesh(vertices, indices, 0);
 }

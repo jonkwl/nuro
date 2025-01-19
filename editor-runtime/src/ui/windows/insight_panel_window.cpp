@@ -179,14 +179,11 @@ void InsightPanelWindow::renderNoneInspected()
 
 void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 {
-	// tmp
-	uint32_t source = 0;
-
 	// 
 	// RE-RENDER PREVIEW IF NEEDED
 	//
 
-	//
+	uint32_t source = Runtime::getInsightPreview().getOutput(0);
 
 	//
 	// CREATE TOP BAR
@@ -218,14 +215,20 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 		// Add vertical cursor offset to preview viewer height
 		previewViewerHeight = (ImGui::GetWindowPos().y + ImGui::GetWindowSize().y) - ImGui::GetMousePos().y;
 
-		// If mouse button isnt hold down anymore, stop drag
+		// Don't render anything
+		source = 0;
+
+		// If mouse button isnt hold down anymore, resize and stop dragging
 		if (!ImGui::IsMouseDown(0)) {
 			topBarActiveDrag = false;
 		}
 	}
 
+	// Evaluate top bar color
+	ImU32 topBarColor = topBarActiveDrag ? EditorColor::selection : EditorColor::selectionInactive;
+
 	// Draw top bar
-	drawList.AddRectFilled(topBarPos, topBarPos + topBarSize, topBarHovered ? EditorColor::selection : EditorColor::selectionInactive, 6.0f);
+	drawList.AddRectFilled(topBarPos, topBarPos + topBarSize, topBarColor, 6.0f);
 
 	//
 	// DRAW RENDERED PREVIEW

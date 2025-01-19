@@ -134,7 +134,7 @@
   <ItemGroup>
     <ClCompile Include="core\viewport\viewport.cpp" />
     <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp" />
-    <ClCompile Include="core\rendering\utils\preview_renderer.cpp" />
+    <ClCompile Include="src\pipelines\preview_pipeline.cpp" />
     <ClCompile Include="src\ui\inspectables\entity_inspectable.cpp" />
     <ClCompile Include="src\ui\windows\insight_panel_window.cpp" />
     <ClCompile Include="src\gizmos\component_gizmos.cpp" />
@@ -212,7 +212,7 @@
   <ItemGroup>
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
     <ClInclude Include="core\rendering\passes\preprocessor_pass.h" />
-    <ClInclude Include="core\rendering\utils\preview_renderer.h" />
+    <ClInclude Include="src\pipelines\preview_pipeline.h" />
     <ClInclude Include="src\ui\inspectables\entity_inspectable.h" />
     <ClInclude Include="src\ui\inspectables\inspectable.h" />
     <ClInclude Include="src\ui\windows\insight_panel_window.h" />

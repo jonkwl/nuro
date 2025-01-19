@@ -5,6 +5,7 @@
 
 #include "../src/pipelines/game_view_pipeline.h"
 #include "../src/pipelines/scene_view_pipeline.h"
+#include "../src/pipelines/preview_pipeline.h"
 
 class ShadowDisk;
 class ShadowMap;
@@ -36,4 +37,7 @@ namespace Runtime
 	// Shadow getters
 	ShadowDisk* getMainShadowDisk();
 	ShadowMap* getMainShadowMap();
+
+	// tmp
+	PreviewPipeline& getInsightPreview();
 };

@@ -34,14 +34,13 @@ struct TransformComponent {
 
 };
 
-static inline Mesh emptyMesh;
 struct MeshRendererComponent {
 
-	MeshRendererComponent() : mesh(emptyMesh), material(nullptr) {};
-	MeshRendererComponent(Mesh& mesh, IMaterial* material) : mesh(mesh), material(material) {};
+	MeshRendererComponent() : mesh(nullptr), material(nullptr) {};
+	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : mesh(mesh), material(material) {};
 
 	// Mesh render target
-	Mesh& mesh;
+	const Mesh* mesh;
 
 	// Mesh material | Unsafe!
 	IMaterial* material;

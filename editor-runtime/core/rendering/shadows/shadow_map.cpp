@@ -175,15 +175,17 @@ void ShadowMap::renderSingular(glm::mat4 view, glm::mat4 projection)
 
 	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
-		// Bind mesh
-		glBindVertexArray(renderer.mesh.getVAO());
+		if (!renderer.mesh) return; 
 
 		// Set shadow pass shader uniforms
 		shadowPassShader->setMatrix4("modelMatrix", transform.model);
 		shadowPassShader->setMatrix4("lightSpaceMatrix", lightSpace);
 
+		// Bind mesh
+		glBindVertexArray(renderer.mesh->getVAO());
+
 		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 
 	// Unbind shadow map framebuffer

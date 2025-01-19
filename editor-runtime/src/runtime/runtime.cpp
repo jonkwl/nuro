@@ -12,8 +12,8 @@
 #include "../core/rendering/texture/texture.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shadows/shadow_map.h"
-#include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/shadows/shadow_disk.h"
+#include "../core/rendering/transformation/transformation.h"
 
 #include "../core/utils/log.h"
 #include "../core/time/time.h"
@@ -51,6 +51,12 @@ namespace Runtime {
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
 
+	// Preview renderers
+	PreviewPipeline gInsightPanelPreview;
+
+	// Models
+	Model* gSphereModel;
+
 	//
 	//
 	// PRIVATE RUNTIME CORE METHODS
@@ -76,6 +82,13 @@ namespace Runtime {
 		// Create default spotlight shadow map
 		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
+
+		// Create preview renderers
+		gInsightPanelPreview.create(250.0f, 250.0f);
+		gInsightPanelPreview.createOutput();
+
+		// Create models
+		gSphereModel = Model::load("../resources/primitives/sphere.fbx");
 
 		/*
 		// Create default skybox
@@ -167,7 +180,7 @@ namespace Runtime {
 
 		// Load model
 		Model* model = Model::load("../resources/primitives/cube.fbx");
-		Mesh& mesh = model->getMesh(0);
+		const Mesh* mesh = model->getMesh(0);
 		
 		// Get texture
 		Texture texture = Texture::load("../resources/other/startup.jpg", TextureType::ALBEDO);
@@ -239,10 +252,10 @@ namespace Runtime {
 			texture.bind(1);
 
 			// Bind mesh
-			glBindVertexArray(mesh.getVAO());
+			glBindVertexArray(mesh->getVAO());
 
 			// Render mesh
-			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 			// End frame
 			ApplicationContext::endFrame();
@@ -436,6 +449,11 @@ namespace Runtime {
 	ShadowMap* getMainShadowMap()
 	{
 		return gMainShadowMap;
+	}
+
+	PreviewPipeline& getInsightPreview()
+	{
+		return gInsightPanelPreview;
 	}
 
 }

@@ -107,15 +107,17 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	// Pre pass render each entity
 	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
+		if (!renderer.mesh) return;
+
 		// Bind mesh
-		glBindVertexArray(renderer.mesh.getVAO());
+		glBindVertexArray(renderer.mesh->getVAO());
 
 		// Set depth pre pass shader uniforms
 		prePassShader->setMatrix4("mvpMatrix", transform.mvp);
 		prePassShader->setMatrix3("viewNormalMatrix", viewNormal);
 
 		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 	}
 }
 

@@ -30,9 +30,14 @@ Model::Metrics Model::getMetrics() const
 	return metrics;
 }
 
-Mesh& Model::getMesh(uint32_t index)
+const Mesh* Model::getMesh(uint32_t index)
 {
-	return meshes[index];
+	return &meshes[index];
+}
+
+const std::vector<Mesh>& Model::getMeshes()
+{
+	return meshes;
 }
 
 Model::Model(std::string path) : meshes(),

@@ -137,16 +137,18 @@ uint32_t VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4& pr
 	// Render velocity buffer by performing velocity pass on each object
 	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent, VelocityComponent>();
 	for (auto [entity, transform, renderer, velocity] : targets.each()) {
-		// Bind mesh
-		glBindVertexArray(renderer.mesh.getVAO());
+		if (!renderer.mesh) return 0;
 
 		// Set velocity pass shader uniforms
 		velocityPassShader->setMatrix4("modelMatrix", transform.model);
 		velocityPassShader->setMatrix4("previousModelMatrix", velocity.lastModel);
 		velocityPassShader->setFloat("intensity", velocity.intensity);
+
+		// Bind mesh
+		glBindVertexArray(renderer.mesh->getVAO());
 		  
 		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh.getVerticeCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, renderer.mesh->getVerticeCount(), GL_UNSIGNED_INT, 0);
 
 		// Update last model matrix cache
 		velocity.lastModel = transform.model;

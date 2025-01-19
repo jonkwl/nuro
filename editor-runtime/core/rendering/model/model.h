@@ -50,7 +50,10 @@ public:
 	Metrics getMetrics() const;
 
 	// Returns models mesh at given index
-	Mesh& getMesh(uint32_t index);
+	const Mesh* getMesh(uint32_t index);
+
+	// Returns all meshes from model
+	const std::vector<Mesh>& getMeshes();
 
 private:
 	explicit Model(std::string path);

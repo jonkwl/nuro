@@ -185,6 +185,8 @@ void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponen
 {
 	// Transform components model and mvp must have been calculated beforehand
 
+	if (!renderer.mesh) return;
+
 	// Set shader uniforms
 	Shader* shader = renderer.material->getShader();
 	shader->setMatrix4("mvpMatrix", transform.mvp);
@@ -192,10 +194,10 @@ void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponen
 	shader->setMatrix3("normalMatrix", transform.normal);
 
 	// Bind mesh
-	glBindVertexArray(renderer.mesh.getVAO());
+	glBindVertexArray(renderer.mesh->getVAO());
 
 	// Render mesh
-	glDrawElements(GL_TRIANGLES, renderer.mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 }
 
 void ForwardPass::renderMeshes()

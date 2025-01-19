@@ -96,9 +96,9 @@ void _example() {
 	Model* sphereModel = Model::load("../resources/primitives/sphere.fbx");
 
 	// Meshes
-	Mesh* planeMesh = getQuadMesh();
-	Mesh& cubeMesh = cubeModel->getMesh(0);
-	Mesh& sphereMesh = sphereModel->getMesh(0);
+	const Mesh* planeMesh = getQuadMesh();
+	const Mesh* cubeMesh = cubeModel->getMesh(0);
+	const Mesh* sphereMesh = sphereModel->getMesh(0);
 
 	// Standard Material
 	LitMaterial* standardMaterial = new LitMaterial();
@@ -192,7 +192,7 @@ void _example() {
 	planeEntity = plane.root;
 	plane.transform.position = glm::vec3(-24.0f, 0.0f, 18.0f);
 	plane.transform.scale = glm::vec3(5.0f);
-	plane.add<MeshRendererComponent>(*planeMesh, planeMaterial);*/
+	plane.add<MeshRendererComponent>(planeMesh, planeMaterial);*/
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
