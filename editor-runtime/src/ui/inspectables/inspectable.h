@@ -10,5 +10,6 @@ public:
 		return "Default";
 	}
 
-	virtual void render(ImDrawList& drawList) { }
+	virtual void renderStaticContent(ImDrawList& drawList) { }
+	virtual void renderDynamicContent(ImDrawList& drawList) { }
 };

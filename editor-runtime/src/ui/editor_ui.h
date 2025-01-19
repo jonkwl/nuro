@@ -69,7 +69,12 @@ struct EditorSizing
 
 	static constexpr float p_IconSize = 22.0f;
 	static constexpr float p_bold_IconSize = 25.0f;
+
 	static constexpr float h2_IconSize = 30.0f;
+	static constexpr float h2_bold_IconSize = 30.0f;
+
+	static constexpr float s_IconSize = 16.0f;
+	static constexpr float s_bold_IconSize = 16.0f;
 
 	static constexpr float windowPadding = 30.0f;
 	static constexpr float framePadding = 3.0f;
@@ -84,6 +89,9 @@ struct EditorColor
 	static constexpr ImU32 elementHovered = IM_COL32(64, 64, 64, 255);
 	static constexpr ImU32 elementActive = IM_COL32(77, 77, 77, 255);
 	static constexpr ImU32 elementComponent = IM_COL32(178, 178, 178, 255);
+
+	static constexpr ImU32 elementUntoggled = IM_COL32(80, 80, 80, 150);
+	static constexpr ImU32 elementToggled = IM_COL32(140, 140, 140, 150);
 
 	static constexpr ImU32 selection = IM_COL32(85, 125, 255, 255);
 	static constexpr ImU32 selectionInactive = IM_COL32(100, 100, 100, 255);

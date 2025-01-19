@@ -63,34 +63,35 @@ namespace UIComponents {
 		}
 	}
 
-	void toggleButton(std::string label, bool& value, std::string _tooltip)
+	void toggleButton(ImDrawList& drawList, std::string text, bool& value, std::string tooltip, ImVec2 position)
 	{
-		ImU32 inactiveButtonColor = UIUtils::darken(EditorColor::elementActive, 0.6f);
-		ImU32 activeButtonColor = EditorColor::elementActive;
-		ImU32 currentButtonColor = value ? activeButtonColor : inactiveButtonColor;
+		// Setup style
+		static const ImVec2 padding = ImVec2(8.0f, 8.0f);
+		static const float rounding = 5.0f;
+		static const ImU32 colorToggled = EditorColor::elementToggled;
+		static const ImU32 colorUntoggled = EditorColor::elementUntoggled;
+		static const ImU32 textColor = EditorColor::text;
+		static ImFont* const font = EditorUI::getFonts().s;
+		static const float fontSize = EditorSizing::s_FontSize;
 
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
-		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
+		// Evaluate
+		ImVec2 textSize = font->CalcTextSizeA(font->FontSize, FLT_MAX, -1.0f, text.c_str());
+		ImVec2 buttonSize = textSize + padding * 2;
+		ImVec2 p0 = position;
+		ImVec2 p1 = position + buttonSize;
+		bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
+		bool clicked = hovered && ImGui::IsMouseClicked(0);
+		if (clicked) value = !value;
+		ImU32 color = value ? colorToggled : colorUntoggled;
 
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 1.0f, 0.1f));
-		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		// Draw background
+		drawList.AddRectFilled(p0, p1, color, rounding);
 
-		ImGui::PushStyleColor(ImGuiCol_Button, currentButtonColor);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, currentButtonColor);
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, currentButtonColor);
+		// Draw outline
+		// drawList.AddRect(p0, p1, outlineColor, rounding, ImDrawFlags_RoundCornersAll, outlineThickness);
 
-		ImGui::PushID(label.c_str());
-
-		if (ImGui::Button(label.c_str()))
-		{
-			value = !value;
-		}
-
-		tooltip(_tooltip);
-
-		ImGui::PopID();
-		ImGui::PopStyleVar(3);
-		ImGui::PopStyleColor(4);
+		// Draw text
+		drawList.AddText(font, fontSize, p0 + padding, textColor, text.c_str());
 	}
 
 	bool buttonBig(std::string label, std::string _tooltip)

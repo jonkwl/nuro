@@ -12,7 +12,9 @@ public:
 	EntityInspectable(HierarchyItem& item);
 	
 	std::string getName() override;
-	void render(ImDrawList& drawList) override;
+
+	void renderStaticContent(ImDrawList& drawList) override;
+	void renderDynamicContent(ImDrawList& drawList) override;
 private:
 	HierarchyItem& item;
 };

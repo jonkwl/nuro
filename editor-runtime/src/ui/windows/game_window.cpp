@@ -87,7 +87,9 @@ void GameWindow::renderToolbar()
 			if (UIComponents::buttonBig(ICON_FA_STOP, EditorColor::selection, "Stop")) {
 				Runtime::stopGame();
 			}
-			UIComponents::toggleButton(ICON_FA_FORWARD_STEP, tmp, "Step");
+			if (UIComponents::buttonBig(ICON_FA_FORWARD_STEP, IM_COL32(255, 165, 50, 255), "Step")) {
+				Runtime::continueGame();
+			}
 		}
 		else {
 			if (UIComponents::buttonBig(ICON_FA_PLAY, "Play")) {

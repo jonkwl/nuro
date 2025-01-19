@@ -88,7 +88,7 @@ namespace EditorUI {
 		gFonts.h2 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h2_FontSize);
 		_mergeIcons(io, EditorSizing::h2_IconSize);
 		gFonts.h2_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::h2_FontSize);
-		_mergeIcons(io, EditorSizing::h2_IconSize);
+		_mergeIcons(io, EditorSizing::h2_bold_IconSize);
 
 		// h3
 		gFonts.h3 = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::h3_FontSize);
@@ -104,7 +104,9 @@ namespace EditorUI {
 
 		// s
 		gFonts.s = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::s_FontSize);
+		_mergeIcons(io, EditorSizing::s_IconSize);
 		gFonts.s_bold = io.Fonts->AddFontFromFileTTF(EditorFontPath::bold, EditorSizing::s_FontSize);
+		_mergeIcons(io, EditorSizing::s_bold_IconSize);
 
 		//
 		// STYLE COLORS

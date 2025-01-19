@@ -65,16 +65,12 @@ void SceneWindow::render()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(UIUtils::windowTitle("Scene View"), nullptr, EditorFlag::standard);
 	{
+
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
-		UIComponents::headline("Scene View", ICON_FA_MAP, HeadlineJustification::CENTER, false);
-
 		// Get scene window size
 		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
-
-		// Render scene windows toolbar
-		renderToolbar();
 
 		// Render scene view
 		renderSceneView();
@@ -102,89 +98,91 @@ void SceneWindow::render()
 	updateMovement();
 }
 
-void SceneWindow::renderToolbar()
-{
-	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
-
-	bool _none = true;
-
-	// Render toggle buttons for render options
-	UIFlex::beginFlex("toggles", FlexType::ROW, FLEX_FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
-	{
-		UIComponents::toggleButton(ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe");
-		UIComponents::toggleButton(ICON_FA_ECLIPSE, pipeline.renderShadows, "Render Shadows");
-		UIComponents::toggleButton(ICON_FA_SPARKLES, pipeline.useProfileEffects, "Enable Post Processing");
-		UIComponents::toggleButton(ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Show Gizmos");
-		UIComponents::toggleButton(ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Render Skybox");
-		UIComponents::toggleButton(ICON_FA_ROTATE, _none, "Always Update");
-	}
-	UIFlex::endFlex();
-
-	// Render indicators for scene view setup
-	UIFlex::beginFlex("setup", FlexType::ROW, FLEX_FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
-	{
-		ImGui::Dummy(ImVec2(1.0f, 0.0f));
-		UIComponents::tryIcon(ICON_FA_GAUGE);
-		UIComponents::label("Speed: " + std::to_string(static_cast<int32_t>(movementSpeed)));
-	}
-	UIFlex::endFlex();
-}
-
 void SceneWindow::renderSceneView()
 {
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 	uint32_t output = pipeline.getOutput();
 
-	ImGui::BeginChild("SceneView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-	{
-		// Check if window is currently being resized
-		bool currentlyResizing = currentWindowSize != lastWindowSize;
-		if (currentlyResizing) output = 0;
+	// Get position of scene view
+	ImVec2 sceneViewPosition = ImGui::GetCursorScreenPos();
 
-		// Render target
-		ImGui::Image(output, ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+	// Check if window is currently being resized
+	bool currentlyResizing = currentWindowSize != lastWindowSize;
+	if (currentlyResizing) output = 0;
 
-		// Get scene view bounds
-		ImVec2 boundsMin = ImGui::GetItemRectMin();
-		ImVec2 boundsMax = ImGui::GetItemRectMax();
-		sceneViewBounds = glm::vec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
+	// Render target
+	ImGui::Image(output, ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 
-		// Get scene view width and height
-		float width = boundsMax.x - boundsMin.x;
-		float height = boundsMax.y - boundsMin.y;
+	// Get scene view bounds
+	ImVec2 boundsMin = ImGui::GetItemRectMin();
+	ImVec2 boundsMax = ImGui::GetItemRectMax();
+	sceneViewBounds = glm::vec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
 
-		// Check for new rightclick interaction to sync current cameras rotation euler angles
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right) && !sceneViewRightclicked) {
-			cameraEulerAngles = glm::degrees(glm::eulerAngles(pipeline.getFlyCamera().transform.rotation));
-		}
+	// Get scene view width and height
+	float width = boundsMax.x - boundsMin.x;
+	float height = boundsMax.y - boundsMin.y;
+	ImVec2 sceneViewSize = ImVec2(width, height);
 
-		// Check if scene view is interacted with
-		sceneViewRightclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right);
-		sceneViewMiddleclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Middle);
-
-		// Update cursor bounds and inputs if theres an interaction with scene view
-		if (sceneViewRightclicked || sceneViewMiddleclicked) {
-			
-			// Make sure cursor is within scene view bounds
-			bool cursorMoved = false;
-			mouseCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, cursorMoved);
-			if (cursorMoved) mouseLast = mouseCurrent;
-
-			// Calculate cursor axis
-			mouseDelta = glm::vec2(mouseCurrent.x - mouseLast.x, -(mouseCurrent.y - mouseLast.y));
-
-		}
-
-		// Render transform gizmos
-		renderTransformGizmos();
-
-		// Check if scene window has been resized
-		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			pipeline.resizeViewport(width, height);
-			lastWindowSize = currentWindowSize;
-		}
+	// Check for new rightclick interaction to sync current cameras rotation euler angles
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right) && !sceneViewRightclicked) {
+		cameraEulerAngles = glm::degrees(glm::eulerAngles(pipeline.getFlyCamera().transform.rotation));
 	}
-	ImGui::EndChild();
+
+	// Check if scene view is interacted with
+	sceneViewRightclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right);
+	sceneViewMiddleclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Middle);
+
+	// Update cursor bounds and inputs if theres an interaction with scene view
+	if (sceneViewRightclicked || sceneViewMiddleclicked) {
+
+		// Make sure cursor is within scene view bounds
+		bool cursorMoved = false;
+		mouseCurrent = UIUtils::keepCursorInBounds(sceneViewBounds, cursorMoved);
+		if (cursorMoved) mouseLast = mouseCurrent;
+
+		// Calculate cursor axis
+		mouseDelta = glm::vec2(mouseCurrent.x - mouseLast.x, -(mouseCurrent.y - mouseLast.y));
+
+	}
+
+	// Render transform gizmos
+	renderTransformGizmos();
+
+	// Check if scene window has been resized
+	if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
+		pipeline.resizeViewport(width, height);
+		lastWindowSize = currentWindowSize;
+	}
+
+	// Render scene view settings
+	renderSceneToolbar(sceneViewPosition, sceneViewSize);
+}
+
+void SceneWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
+{
+	// Get foreground draw list and pipeline
+	ImDrawList& drawList = *ImGui::GetWindowDrawList();
+	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+
+	float padding = 22.0f;
+
+	// Render buttons
+	ImVec2 p0 = position + ImVec2(padding, padding);
+	UIComponents::toggleButton(drawList, ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe", p0);
+
+	p0 += ImVec2(34.0f, 0.0f);
+	UIComponents::toggleButton(drawList, ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Skybox", p0);
+
+	p0 += ImVec2(34.0f, 0.0f);
+	UIComponents::toggleButton(drawList, ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Gizmos", p0);
+
+	p0 = position + ImVec2(size.x - 50.0f, padding);
+	UIComponents::toggleButton(drawList, ICON_FA_GEAR, pipeline.useProfileEffects, "Settings", p0);
+
+	// Render labels
+	p0 = position + ImVec2(padding, 62.0f);
+	std::string speedText = std::string(ICON_FA_GAUGE) + " Speed: " + std::to_string(static_cast<int32_t>(movementSpeed));
+	drawList.AddText(EditorUI::getFonts().s, EditorSizing::s_FontSize, p0, IM_COL32(255, 255, 255, 190), speedText.c_str());
 }
 
 void SceneWindow::renderTransformGizmos()

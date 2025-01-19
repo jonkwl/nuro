@@ -14,7 +14,13 @@ std::string EntityInspectable::getName()
 	return item.entity.name;
 }
 
-void EntityInspectable::render(ImDrawList& drawList)
+void EntityInspectable::renderStaticContent(ImDrawList& drawList)
+{
+	UIComponents::label(item.entity.name, EditorUI::getFonts().h3_bold);
+	UIComponents::buttonBig("Add Component");
+}
+
+void EntityInspectable::renderDynamicContent(ImDrawList& drawList)
 {
 	InsightPanelWindow::renderComponent(drawList);
 	InsightPanelWindow::renderComponent(drawList);

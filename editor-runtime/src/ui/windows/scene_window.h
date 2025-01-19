@@ -11,8 +11,8 @@ public:
 	void render() override;
 
 private:
-	void renderToolbar();
 	void renderSceneView();
+	void renderSceneToolbar(ImVec2 position, ImVec2 size);
 	void renderTransformGizmos();
 	void renderSpeedChangeIndicator();
 

@@ -2,7 +2,6 @@
 
 #include "../core/input/cursor.h"
 
-std::string InsightPanelWindow::headline;
 Inspectable* InsightPanelWindow::inspected;
 
 InsightPanelWindow::InsightPanelWindow() : previewViewerOutput(0),
@@ -21,7 +20,12 @@ void InsightPanelWindow::render()
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
 		// Render headline
-		renderHeadline();
+		UIComponents::headline("Insight Panel", ICON_FA_LAYER_GROUP);
+
+		// Render inspected static content if available
+		if (inspected) {
+			inspected->renderStaticContent(drawList);
+		}
 
 		// Rendering preview
 		bool renderingPreview = true;
@@ -42,17 +46,17 @@ void InsightPanelWindow::render()
 			previewSize -= -ImVec2(0.0f, EditorSizing::windowPadding);
 		}
 
-		// Render inspected if available
+		// Render inspected dynamic content if available
 		if (inspected) {
 
 			// Add margin before rendering inspected
-			ImVec2 margin = ImVec2(0.0f, 10.0f);
+			ImVec2 margin = ImVec2(0.0f, 2.0f);
 			ImGui::Dummy(margin);
 
-			// Inspected content child
+			// Dynamic inspected content child
 			UIComponents::beginChild(contentSize - margin);
 			{
-				inspected->render(drawList);
+				inspected->renderDynamicContent(drawList);
 			}
 			UIComponents::endChild();
 
@@ -69,22 +73,13 @@ void InsightPanelWindow::render()
 	ImGui::PopStyleVar();
 }
 
-void InsightPanelWindow::inspect(const std::string& _headline, Inspectable* inspectable)
+void InsightPanelWindow::inspect(Inspectable* inspectable)
 {
 	// Delete old inspected object
 	if (inspected) delete inspected;
 
-	// Set new headline
-	headline = _headline;
-
 	// Set new inspected object
 	inspected = inspectable;
-}
-
-void InsightPanelWindow::renderHeadline()
-{
-	UIComponents::headline("Insight Panel", ICON_FA_LAYER_GROUP);
-	UIComponents::label(headline, EditorUI::getFonts().h3_bold);
 }
 
 void InsightPanelWindow::renderComponent(ImDrawList& drawList)
@@ -176,7 +171,7 @@ void InsightPanelWindow::renderImage(uint32_t textureId, float aspectRatio, std:
 
 void InsightPanelWindow::renderNoneInspected()
 {
-	headline = "Nothing selected";
+	UIComponents::label("Nothing selected", EditorUI::getFonts().h3_bold);
 	UIComponents::label("Select an entity or asset to inspect and edit it.", EditorUI::getFonts().h4, IM_COL32(210, 210, 255, 255));
 }
 

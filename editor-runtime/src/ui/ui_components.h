@@ -16,7 +16,13 @@ namespace UIComponents
 	void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool seperator = true);
 	
 	void tooltip(std::string tooltip);
-	void toggleButton(std::string label, bool& value, std::string tooltip = "");
+
+	void toggleButton(
+		ImDrawList& drawList,
+		std::string text,
+		bool& value,
+		std::string tooltip = "",
+		ImVec2 position = ImGui::GetCursorScreenPos());
 
 	bool buttonBig(std::string label, std::string tooltip = "");
 	bool buttonBig(std::string label, ImU32 color, std::string tooltip = "");

@@ -218,7 +218,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);
 
 			// Update insight panel
-			InsightPanelWindow::inspect(_item.entity.name, new EntityInspectable(_item));
+			InsightPanelWindow::inspect(new EntityInspectable(_item));
 		};
 
 		// Just handle current items selection

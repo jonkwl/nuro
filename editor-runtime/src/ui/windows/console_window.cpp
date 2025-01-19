@@ -23,14 +23,13 @@ void ConsoleWindow::render()
 		// Draw console toolbar
 		float toolbarHeight = 40.0f;
 		float toolbarPaddingTop = 3.0f;
-		ImGui::Dummy(ImVec2(0.0f, toolbarPaddingTop));
 		UIFlex::beginFlex("Toolbar", FlexType::ROW, FLEX_FULL_WIDTH, toolbarHeight, Justification::START, Alignment::CENTER, 1.0f);
 		{
-			ImGui::Dummy(ImVec2(10.0f, 0.0f));
-			UIComponents::toggleButton(messageIcon, showMessages, "Show Messages");
-			UIComponents::toggleButton(warningIcon, showWarnings, "Show Warnings");
-			UIComponents::toggleButton(errorIcon, showErrors, "Show Errors");
-			if (UIComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
+			ImVec2 p0 = ImGui::GetCursorScreenPos() + ImVec2(10.0f, 10.0f);
+			UIComponents::toggleButton(drawList, messageIcon, showMessages, "Show Messages", p0); p0 += ImVec2(34.0f, 0.0f);
+			UIComponents::toggleButton(drawList, warningIcon, showWarnings, "Show Warnings", p0); p0 += ImVec2(34.0f, 0.0f);
+			UIComponents::toggleButton(drawList, errorIcon, showErrors, "Show Errors", p0); p0 += ImVec2(34.0f, 0.0f);
+			//if (UIComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
 		}
 		UIFlex::endFlex();
 
