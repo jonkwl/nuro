@@ -6,7 +6,8 @@ std::string InsightPanelWindow::headline;
 Inspectable* InsightPanelWindow::inspected;
 
 InsightPanelWindow::InsightPanelWindow() : previewViewerOutput(0),
-previewViewerHeight(300.0f)
+previewViewerHeight(300.0f),
+previewCameraTransform()
 {
 	previewViewerOutput = Runtime::getPreviewPipeline().createOutput();
 }
@@ -251,13 +252,16 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 
 	// Render if needed
 	if (render) {
+		// tmp
+		previewCameraTransform.position = glm::vec3(0.0f, 0.0f, -3.5f);
+
+		// Create and add render instruction
 		PreviewRenderInstruction instruction;
-		instruction.backgroundColor = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+		instruction.backgroundColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
 		instruction.model = Runtime::getSphereModel();
-		instruction.material = Runtime::getDefaultLit();
-		TransformComponent transform;
-		transform.position.z = 2.0f;
-		instruction.transform = transform;
+		instruction.modelMaterial = Runtime::getDefaultLit();
+		instruction.modelTransform = TransformComponent();
+		instruction.cameraTransform = previewCameraTransform;
 		pipeline.addRenderInstruction(instruction);
 	}
 
@@ -268,7 +272,7 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 	// DRAW RENDERED PREVIEW
 	//
 
-	ImVec2 imagePos = topBarPos + ImVec2(0.0f, topBarSize.y + 3.0f);
+	ImVec2 imagePos = topBarPos + ImVec2(0.0f, topBarSize.y);
 	ImVec2 imageSize = size - ImVec2(0.0f, topBarSize.y) + xWindowPadding * 2;
 	drawList.AddImage(source, imagePos, imagePos + imageSize, ImVec2(0, 1), ImVec2(1, 0));
 }

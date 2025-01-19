@@ -34,6 +34,9 @@ private:
 	// Current height of preview viewer
 	float previewViewerHeight;
 
+	// Transform of preview viewer camera
+	TransformComponent previewCameraTransform;
+
 private:
 	// Renders the insight panels headline
 	void renderHeadline();

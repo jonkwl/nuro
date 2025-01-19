@@ -19,8 +19,9 @@ struct PreviewRenderInstruction {
 	size_t outputIndex = 0;
 	glm::vec4 backgroundColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	Model* model = nullptr;
-	LitMaterial* material = nullptr;
-	TransformComponent transform;
+	LitMaterial* modelMaterial = nullptr;
+	TransformComponent modelTransform;
+	TransformComponent cameraTransform;
 };
 
 class PreviewPipeline
@@ -51,6 +52,7 @@ public:
 
 private:
 	uint32_t fbo;
+	uint32_t rbo;
 	std::vector<PreviewOutput> outputs;
 	std::vector<PreviewRenderInstruction> renderInstructions;
 };

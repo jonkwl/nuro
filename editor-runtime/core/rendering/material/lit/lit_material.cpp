@@ -51,13 +51,11 @@ shaderId(0)
 
 	shader->bind();
 	syncStaticUniforms();
+	syncLightUniforms();
 }
 
 void LitMaterial::bind()
 {
-	// Tmp light update
-	// syncStaticUniforms();
-
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", lightSpace);
 	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
@@ -233,7 +231,10 @@ void LitMaterial::syncStaticUniforms()
 	// shader->setInt("fog.type", 3);
 	// shader->setVec3("fog.color", glm::vec3(1.0f, 1.0f, 1.0f));
 	// shader->setFloat("fog.data[0]", 0.01);
+}
 
+void LitMaterial::syncLightUniforms()
+{
 	//
 	// Sync lights
 	//
@@ -282,7 +283,7 @@ void LitMaterial::syncStaticUniforms()
 	// Setup all spotlights
 	for (auto [entity, transform, spotlight] : spotlights.each()) {
 		glm::vec3 spotlightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
-		
+
 		shader->setVec3(Shader::uniformArray("spotlights[].position", nSpotlights), Transformation::toBackendPosition(transform.position));
 		shader->setVec3(Shader::uniformArray("spotlights[].direction", nSpotlights), Transformation::toBackendPosition(spotlightDirection));
 		shader->setVec3(Shader::uniformArray("spotlights[].color", nSpotlights), spotlight.color);
@@ -300,4 +301,17 @@ void LitMaterial::syncStaticUniforms()
 	shader->setInt("configuration.numDirectionalLights", nDirectionalLights);
 	shader->setInt("configuration.numPointLights", nPointLights);
 	shader->setInt("configuration.numSpotLights", nSpotlights);
+}
+
+void LitMaterial::setSampleDirectionalLight()
+{
+	shader->setInt("configuration.numDirectionalLights", 1);
+	shader->setInt("configuration.numPointLights", 0);
+	shader->setInt("configuration.numSpotLights", 0);
+
+	size_t index = 0;
+	shader->setFloat(Shader::uniformArray("directionalLights[].intensity", index), 1.0f);
+	shader->setVec3(Shader::uniformArray("directionalLights[].direction", index), Transformation::toBackendPosition(glm::vec3(-0.5f, -0.5f, 0.5f)));
+	shader->setVec3(Shader::uniformArray("directionalLights[].color", index), glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setVec3(Shader::uniformArray("directionalLights[].position", index), Transformation::toBackendPosition(glm::vec3(0.0f, 0.0f, 0.0f)));
 }

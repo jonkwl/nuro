@@ -43,6 +43,11 @@ public:
 	void setEmissiveMap(Texture texture);
 	void setHeightMap(Texture texture);
 
+	void syncStaticUniforms();
+	void syncLightUniforms();
+
+	void setSampleDirectionalLight();
+
 public:
 	// Instance counter
 	static uint32_t instances;
@@ -99,6 +104,4 @@ private:
 
 	bool enableHeightMap;
 	Texture heightMap;
-
-	void syncStaticUniforms();
 };

@@ -18,7 +18,7 @@ renderInstructions()
 
 void PreviewPipeline::create()
 {
-	// Generate preview renderer framebuffer
+	// Generate framebuffer
 	glCreateFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
@@ -88,7 +88,7 @@ void PreviewPipeline::render()
 	for (PreviewRenderInstruction instruction : renderInstructions) {
 		
 		// Return if nullpointers given
-		if (!instruction.model || !instruction.material) return;
+		if (!instruction.model || !instruction.modelMaterial) return;
 
 		// Securely fetch output by index
 		if (instruction.outputIndex >= outputs.size()) return;
@@ -106,21 +106,22 @@ void PreviewPipeline::render()
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output.texture, 0);
 
 		// Clear framebuffer
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(instruction.backgroundColor.r, instruction.backgroundColor.g, instruction.backgroundColor.b, instruction.backgroundColor.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Set viewport
 		glViewport(0, 0, output.viewport.getWidth_gl(), output.viewport.getHeight_gl());
 
 		// Bind shader and material
-		Shader* shader = instruction.material->getShader();
+		Shader* shader = instruction.modelMaterial->getShader();
 		shader->bind();
-		instruction.material->bind();
+		instruction.modelMaterial->bind();
+		instruction.modelMaterial->setSampleDirectionalLight();
 
 		// Calculate and sync transform matrices
-		glm::mat4 _model = Transformation::model(instruction.transform.position, instruction.transform.rotation, instruction.transform.scale);
-		glm::mat4 _view = Transformation::view(glm::vec3(0.0f), glm::identity<glm::quat>());
-		glm::mat4 _projection = Transformation::projection(70.0f, output.viewport.getAspect(), 0.3f, 1000.0f);
+		glm::mat4 _model = Transformation::model(instruction.modelTransform.position, instruction.modelTransform.rotation, instruction.modelTransform.scale);
+		glm::mat4 _view = Transformation::view(instruction.cameraTransform.position, instruction.cameraTransform.rotation);
+		glm::mat4 _projection = Transformation::projection(45.0f, output.viewport.getAspect(), 0.3f, 1000.0f);
 		glm::mat4 _mvp = _projection * _view * _model;
 		glm::mat4 _normal = Transformation::normal(_model);
 		shader->setMatrix4("mvpMatrix", _mvp);
@@ -132,6 +133,8 @@ void PreviewPipeline::render()
 			glBindVertexArray(mesh.getVAO());
 			glDrawElements(GL_TRIANGLES, mesh.getIndiceCount(), GL_UNSIGNED_INT, 0);
 		}
+
+		instruction.modelMaterial->syncLightUniforms();
 
 	}
 
