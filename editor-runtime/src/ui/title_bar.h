@@ -4,6 +4,8 @@
 #include <glm.hpp>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <tuple>
+#include <array>
 
 struct TitleBarStyle {
 
@@ -17,6 +19,11 @@ struct TitleBarStyle {
 	ImU32 secondaryTextColor = IM_COL32(200, 200, 200, 255);
 
 	ImU32 backgroundColor = IM_COL32(14, 14, 18, 255);
+	
+	float menuItemRounding = 5.0f;
+	ImVec2 menuItemPadding = ImVec2(6.0f, 5.0f);
+	ImU32 menuItemColor = IM_COL32(0, 0, 0, 0);
+	ImU32 menuItemColorHovered = IM_COL32(38, 38, 38, 160);
 
 	uint32_t iconTexture = 0;
 	ImVec2 iconSize = ImVec2(70.0f, 70.0f);
@@ -44,11 +51,14 @@ private:
 	// Performs moving the window if title bar is dragged
 	void performDrag();
 
-	// Draws a primary label
-	inline void labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text);
+	// Draws a primary label and returns its size
+	inline ImVec2 labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text);
 
-	// Draws a secondary label
-	inline void labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text);
+	// Draws a secondary label and returns its size
+	inline ImVec2 labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text);
+
+	// Draws a menu item and returns its size and if it was pressed
+	std::tuple<ImVec2, bool> menuItem(ImDrawList& drawList, ImVec2 position, const char* text);
 
 	// Returns the mouse delta relative to the screen
 	ImVec2 getScreenMouseDelta();

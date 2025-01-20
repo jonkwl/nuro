@@ -58,8 +58,15 @@ void TitleBar::renderContent(ImDrawList& drawList)
     // Move cursor
     cursor = ImVec2(titleBarPosition.x + style.iconSize.x + style.padding.x, titleBarPosition.y + style.padding.y);
 
+    // Menu items
+    std::array<const char*, 5> items = { "File", "Edit", "View", "Project", "Build" };
+
     // Draw title
-    labelPrimary(drawList, cursor, "File     Edit    View      Build      Project");
+    for (int i = 0; i < items.size(); i++) {
+        auto [size, clicked] = menuItem(drawList, cursor, items[i]);
+        cursor.x += size.x;
+        cursor.x += 4.0f;
+    }
 
     // Draw top border
     ImVec2 borderStart = titleBarPosition;
@@ -116,12 +123,53 @@ void TitleBar::performDrag()
     lastMousePosition = mousePosition;
 }
 
-inline void TitleBar::labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text)
+inline ImVec2 TitleBar::labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text)
 {
-    drawList.AddText(style.primaryFont, style.primaryFont->FontSize, position, style.primaryTextColor, text);
+    // Draw label
+    float fontSize = style.primaryFont->FontSize;
+    drawList.AddText(style.primaryFont, fontSize, position, style.primaryTextColor, text);
+
+    // Calculate and return size
+    ImVec2 size = style.primaryFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, text) + style.padding;
+    return size;
 }
 
-inline void TitleBar::labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text)
+inline ImVec2 TitleBar::labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text)
 {
-    drawList.AddText(style.secondaryFont, style.secondaryFont->FontSize, position, style.primaryTextColor, text);
+    // Draw label
+    float fontSize = style.secondaryFont->FontSize;
+    drawList.AddText(style.secondaryFont, fontSize, position, style.secondaryTextColor, text);
+
+    // Calculate and return size
+    ImVec2 size = style.secondaryFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, text) + style.padding;
+    return size;
+}
+
+std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 position, const char* text)
+{
+    // Calculate text size
+    float fontSize = style.primaryFont->FontSize;
+    ImVec2 textSize = style.primaryFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, text);
+
+    // Calculate menu item geometry
+    ImVec2 size = textSize + style.menuItemPadding * 2;
+    ImVec2 p0 = position;
+    ImVec2 p1 = p0 + size;
+
+    // Evaluate interactions
+    bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
+    bool clicked = hovered && ImGui::IsMouseClicked(0);
+
+    // Evaluate color
+    ImU32 color = style.menuItemColor;
+    if (hovered) color = style.menuItemColorHovered;
+
+    // Draw background
+    drawList.AddRectFilled(p0, p1, color, style.menuItemRounding);
+
+    // Draw text
+    drawList.AddText(style.primaryFont, fontSize, p0 + style.menuItemPadding, style.primaryTextColor, text);
+
+    // Return size and if menu item is clicked
+    return std::make_tuple(size, clicked);
 }
