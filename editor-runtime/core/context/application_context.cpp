@@ -195,6 +195,12 @@ namespace ApplicationContext {
 		gConfiguration.windowPosition = glm::ivec2(monitorX, monitorY);
 	}
 
+	void minimizeWindow()
+	{
+		// Iconify window
+		glfwIconifyWindow(gWindow);
+	}
+
 	void setFullscreen() {
 		// Get video mode
 		const GLFWvidmode* mode = glfwGetVideoMode(gMonitor);

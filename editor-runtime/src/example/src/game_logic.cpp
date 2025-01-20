@@ -179,7 +179,7 @@ void _example() {
 	// Kinematic sphere
 	EntityContainer kinematic("Kinematic", ECS::createEntity());
 	kinematicEntity = kinematic.root;
-	kinematic.transform.position = glm::vec3(12.0f, 6.0f, 70.0f);
+	kinematic.transform.position = glm::vec3(12.0f, 6.0f, -5.0f);
 	kinematic.transform.scale = glm::vec3(6.0f);
 	kinematic.add<MeshRendererComponent>(sphereMesh, standardMaterial);
 	kinematic.add<SphereColliderComponent>();
@@ -241,7 +241,7 @@ void update() {
 	float delta = Time::deltaf();
 
 	EntityContainer kinematic("Kinematic", kinematicEntity);
-	kinematic.transform.position += glm::vec3(0.0f, 0.0f, -32.0f * delta);
+	kinematic.transform.position += glm::vec3(0.0f, 0.0f, 32.0f * delta);
 
 	float force = 20.0f;
 	glm::vec3 forceDirection = glm::vec3(0.0f);

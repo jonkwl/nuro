@@ -1431,3 +1431,4 @@
 #define ICON_FA_LAYER_PLUS "\xEF\x97\xBF" // U+f5ff
 #define ICON_FA_CRATE_EMPTY "\xEE\x85\x91" // U+e151
 #define ICON_FA_CAMERA_MOVIE "\xEF\xA2\xA9" // U+f8a9
+#define ICON_FA_CIRLCE_XMARK "\xEF\x81\x97" // U+f057

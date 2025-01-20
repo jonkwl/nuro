@@ -31,6 +31,13 @@ struct TitleBarStyle {
 	float borderThickness = 2.0f;
 	ImU32 borderColor = IM_COL32(85, 125, 255, 120);
 
+	float controlButtonSize = 11.0f;
+	float controlButtonRounding = 8.0f;
+	ImVec2 controlButtonPadding = ImVec2(9.0f, 9.0f);
+	ImU32 controlButtonTextColor = IM_COL32(255, 255, 255, 180);
+	ImU32 controlButtonColor = IM_COL32(38, 38, 38, 160);
+	ImU32 controlButtonColorHovered = IM_COL32(60, 60, 60, 160);
+
 };
 
 class TitleBar
@@ -51,17 +58,32 @@ private:
 	// Performs moving the window if title bar is dragged
 	void performDrag();
 
+	// Draws a window control button and returns if it is clicked
+	bool controlButton(ImDrawList& drawList, ImVec2 position, const char* icon);
+
 	// Draws a primary label and returns its size
-	inline ImVec2 labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text);
+	ImVec2 labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text);
 
 	// Draws a secondary label and returns its size
-	inline ImVec2 labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text);
+	ImVec2 labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text);
 
 	// Draws a menu item and returns its size and if it was pressed
 	std::tuple<ImVec2, bool> menuItem(ImDrawList& drawList, ImVec2 position, const char* text);
 
-	// Returns the mouse delta relative to the screen
-	ImVec2 getScreenMouseDelta();
+	// Minimizes the window
+	void minimize();
+
+	// Maximizes window
+	void maximize();
+
+	// Returns if window is currently maximized
+	bool maximized();
+
+	// Flips maximized state of window
+	void flipMaximize();
+
+	// Closes the window
+	void close();
 
 	// Current style configuration
 	TitleBarStyle style;

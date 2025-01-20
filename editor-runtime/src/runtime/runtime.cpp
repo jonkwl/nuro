@@ -317,7 +317,7 @@ namespace Runtime {
 		// _createLoadingScreen();
 
 		// Ready application
-		// ApplicationContext::maximizeWindow();
+		ApplicationContext::maximizeWindow();
 		ApplicationContext::setResizeable(true);
 
 		while (ApplicationContext::running())

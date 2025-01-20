@@ -4,6 +4,9 @@
 #include "../core/input/cursor.h"
 #include "../core/context/application_context.h"
 
+#include "../src/runtime/runtime.h"
+#include "../src/ui/IconsFontAwesome6.h"
+
 TitleBar::TitleBar() : style(),
 titleBarPosition(ImVec2(0.0f, 0.0f)),
 titleBarSize(ImVec2(0.0f, 0.0f)),
@@ -40,35 +43,64 @@ TitleBarStyle& TitleBar::getStyle()
 
 void TitleBar::renderContent(ImDrawList& drawList)
 {
-    // Invalid fonts
+    //
+    // INVALID FONTS; RETURN
+    // 
+
     if (!style.primaryFont || !style.secondaryFont) return;
 
-    // Draw background
+    //
+    // DRAW BACKGROUND
+    //
+
     drawList.AddRectFilled(titleBarPosition, titleBarPosition + titleBarSize, style.backgroundColor);
+
+    //
+    // DRAW CONTROL BUTTONS
+    //
+
+    float controlButtonOffset = 36.0f;
+    ImVec2 controlButtonPos = ImVec2(titleBarPosition.x + titleBarSize.x - 46.0f, titleBarPosition.y + style.padding.y);
+    if (controlButton(drawList, controlButtonPos, ICON_FA_XMARK)) close();
+    controlButtonPos.x -= controlButtonOffset;
+    if (controlButton(drawList, controlButtonPos, ICON_FA_WINDOW_RESTORE)) flipMaximize();
+    controlButtonPos.x -= controlButtonOffset;
+    if (controlButton(drawList, controlButtonPos, ICON_FA_WINDOW_MINIMIZE)) minimize();
 
     ImVec2 cursor = titleBarPosition;
 
-    // Draw icon
+    //
+    // DRAW ICON
+    //
+
     if (style.iconTexture) {
         float iconVerticalPadding = (titleBarSize.y - style.iconSize.y) * 0.5f;
         cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + iconVerticalPadding);
         drawList.AddImage(style.iconTexture, cursor, cursor + style.iconSize, ImVec2(0, 1), ImVec2(1, 0));
     }
 
-    // Move cursor
+    //
+    // CREATE DRAWING CURSOR
+    // 
+
     cursor = ImVec2(titleBarPosition.x + style.iconSize.x + style.padding.x, titleBarPosition.y + style.padding.y);
 
-    // Menu items
+    //
+    // DRAW MENU
+    //
+
     std::array<const char*, 5> items = { "File", "Edit", "View", "Project", "Build" };
 
-    // Draw title
     for (int i = 0; i < items.size(); i++) {
         auto [size, clicked] = menuItem(drawList, cursor, items[i]);
         cursor.x += size.x;
         cursor.x += 4.0f;
     }
 
-    // Draw top border
+    //
+    // DRAW TOP BORDER
+    //
+
     ImVec2 borderStart = titleBarPosition;
     ImVec2 borderEnd = borderStart + ImVec2(titleBarSize.x, 0.0f);
     drawList.AddLine(borderStart, borderEnd, style.borderColor, style.borderThickness);
@@ -79,22 +111,21 @@ void TitleBar::performDrag()
     // Evaluate interaction
     ImVec2 zoneP0 = ImVec2(titleBarPosition.x, titleBarPosition.y);
     ImVec2 zoneP1 = titleBarPosition + titleBarSize;
+
     bool hovered = ImGui::IsMouseHoveringRect(zoneP0, zoneP1, false);
     bool mouseDown = ImGui::IsMouseDown(0);
     bool dragging = hovered && mouseDown;
-
-    // Get mouse position on screen
+    bool doubleClicked = hovered && ImGui::IsMouseDoubleClicked(0);
     glm::ivec2 mousePosition = Cursor::getScreenPosition();
 
     // Check for starting to move window
     if (!movingWindow && dragging) {
         movingWindow = true;
 
-        // Window is maximized, make it smaller
-        if (ApplicationContext::readConfiguration().windowPosition.x == 0) {
-            glm::ivec2 windowSize = glm::ivec2(1080, 600);
-            ApplicationContext::resizeWindow(windowSize);
-            ApplicationContext::setPosition(mousePosition - glm::ivec2(windowSize.x * 0.5f, 0.0f));
+        // If window is maximized, make it smaller
+        if (maximized()) {
+            flipMaximize();
+            ApplicationContext::setPosition(mousePosition - glm::ivec2(ApplicationContext::readConfiguration().windowSize.x * 0.5f, 0.0f));
         }
     }
 
@@ -113,17 +144,50 @@ void TitleBar::performDrag()
 
             // Maximize window if moving stopped when mouse was at the top of screen
             if (mousePosition.y <= 10) {
-                ApplicationContext::maximizeWindow();
+                maximize();
             }
         }
 
+    }
+
+    // Maximize window if double clicked
+    if (doubleClicked) {
+        maximize();
     }
 
     // Cache last mouse position
     lastMousePosition = mousePosition;
 }
 
-inline ImVec2 TitleBar::labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text)
+bool TitleBar::controlButton(ImDrawList& drawList, ImVec2 position, const char* icon)
+{
+    // Calculate text size
+    float fontSize = style.controlButtonSize;
+    ImVec2 textSize = style.primaryFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, icon);
+
+    // Calculate menu item geometry
+    ImVec2 size = textSize + style.controlButtonPadding * 2;
+    ImVec2 p0 = position;
+    ImVec2 p1 = p0 + size;
+
+    // Evaluate interactions
+    bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
+    bool clicked = hovered && ImGui::IsMouseClicked(0);
+
+    // Evaluate color
+    ImU32 color = style.controlButtonColor;
+    if (hovered) color = style.controlButtonColorHovered;
+
+    // Draw background
+    drawList.AddRectFilled(p0, p1, color, style.controlButtonRounding);
+
+    // Draw text
+    drawList.AddText(style.primaryFont, fontSize, p0 + style.controlButtonPadding, style.controlButtonTextColor, icon);
+
+    return clicked;
+}
+
+ImVec2 TitleBar::labelPrimary(ImDrawList& drawList, ImVec2 position, const char* text)
 {
     // Draw label
     float fontSize = style.primaryFont->FontSize;
@@ -134,7 +198,7 @@ inline ImVec2 TitleBar::labelPrimary(ImDrawList& drawList, ImVec2 position, cons
     return size;
 }
 
-inline ImVec2 TitleBar::labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text)
+ImVec2 TitleBar::labelSecondary(ImDrawList& drawList, ImVec2 position, const char* text)
 {
     // Draw label
     float fontSize = style.secondaryFont->FontSize;
@@ -172,4 +236,38 @@ std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 positio
 
     // Return size and if menu item is clicked
     return std::make_tuple(size, clicked);
+}
+
+void TitleBar::minimize()
+{
+    ApplicationContext::minimizeWindow();
+}
+
+void TitleBar::maximize()
+{
+    ApplicationContext::maximizeWindow();
+}
+
+bool TitleBar::maximized()
+{
+    return (ApplicationContext::readConfiguration().windowPosition.x == 0);
+}
+
+void TitleBar::flipMaximize()
+{
+    // Window is maximized, make it smaller
+    if (maximized()) {
+        glm::ivec2 windowSize = glm::ivec2(1080, 600);
+        ApplicationContext::resizeWindow(windowSize);
+    }
+    // Window is not maximized, maximize it
+    else {
+        maximize();
+    }
+}
+
+void TitleBar::close()
+{
+    // Stop application
+    Runtime::TERMINATE();
 }

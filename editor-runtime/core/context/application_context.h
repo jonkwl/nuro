@@ -43,6 +43,9 @@ namespace ApplicationContext
 	// Maximizes window
 	void maximizeWindow();
 
+	// Minimizes (iconifies) window
+	void minimizeWindow();
+
 	// Sets window to fullscreen
 	void setFullscreen();
 
