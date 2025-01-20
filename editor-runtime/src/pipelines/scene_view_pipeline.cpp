@@ -10,7 +10,7 @@
 #include "../core/rendering/material/lit/lit_material.h"
 
 #include "../src/runtime/runtime.h"
-#include "../src/ui/windows/scene_window.h"
+#include "../src/ui/windows/viewport_window.h"
 #include "../src/gizmos/component_gizmos.h"
 #include "../src/gizmos/editor_gizmo_color.h"
 

@@ -88,6 +88,7 @@ namespace ApplicationContext {
 		int windowX = monitorX + (mode->width - configuration.windowSize.x) / 2;
 		int windowY = monitorY + (mode->height - configuration.windowSize.y) / 2;
 		glfwSetWindowPos(gWindow, windowX, windowY);
+		gConfiguration.windowPosition = glm::ivec2(windowX, windowY);
 
 		// Check for window creation success
 		if (gWindow == nullptr)
@@ -103,6 +104,9 @@ namespace ApplicationContext {
 
 		// Set vsync
 		setVSync(configuration.vsync);
+
+		// Set resizeable
+		setResizeable(configuration.resizeable);
 
 		//
 		// SETUP OTHER SYSTEMS
@@ -171,6 +175,7 @@ namespace ApplicationContext {
 
 		// Sync config
 		gConfiguration.windowSize = size;
+		gConfiguration.windowPosition = glm::ivec2(posX, posY);
 	}
 
 	void maximizeWindow()
@@ -187,6 +192,7 @@ namespace ApplicationContext {
 
 		// Sync config
 		gConfiguration.windowSize = glm::ivec2(monitorWidth, monitorHeight);
+		gConfiguration.windowPosition = glm::ivec2(monitorX, monitorY);
 	}
 
 	void setFullscreen() {
@@ -223,6 +229,17 @@ namespace ApplicationContext {
 		gConfiguration.fullscreen = false;
 	}
 
+	void setResizeable(bool value)
+	{
+		// Only change if window is not fullscreened
+		if (!gConfiguration.fullscreen) {
+			glfwWindowHint(GLFW_RESIZABLE, value ? GLFW_TRUE : GL_FALSE);
+		}
+
+		// Sync config
+		gConfiguration.resizeable = value;
+	}
+
 	void setMenubarVisibility(bool value)
 	{
 		// Only apply menu bar visibility if window is not fullscreened
@@ -241,6 +258,29 @@ namespace ApplicationContext {
 
 		// Sync config
 		gConfiguration.vsync = value;
+	}
+
+	void setPosition(glm::ivec2 position)
+	{
+		// Set window position
+		glfwSetWindowPos(gWindow, position.x, position.y);
+
+		// Sync configuration
+		gConfiguration.windowPosition = position;
+	}
+
+	glm::ivec2 getPosition()
+	{
+		// Receive and return window position
+		int x, y;
+		glfwGetWindowPos(gWindow, &x, &y);
+		return glm::ivec2(x, y);
+	}
+
+	glm::ivec2 getScreenSize()
+	{
+		const GLFWvidmode* mode = glfwGetVideoMode(gMonitor);
+		return glm::ivec2(mode->width, mode->height);
 	}
 
 	GLFWwindow* getWindow()

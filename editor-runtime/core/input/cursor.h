@@ -15,6 +15,9 @@ namespace Cursor
     // Returns the current cursor position relative to window
 	glm::vec2 getPosition();
 
+    // Returns the current cursor position relative to screen
+    glm::vec2 getScreenPosition();
+
     // Sets the cursor position relative to window
 	void setPosition(glm::vec2 position);
 

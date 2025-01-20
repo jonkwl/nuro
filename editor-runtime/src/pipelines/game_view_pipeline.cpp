@@ -10,7 +10,7 @@
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/shadows/shadow_map.h"
 
-#include "../src/ui/windows/scene_window.h"
+#include "../src/ui/windows/viewport_window.h"
 #include "../src/runtime/runtime.h"
 
 // initialize with users editor settings later

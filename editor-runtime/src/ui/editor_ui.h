@@ -82,7 +82,7 @@ struct EditorSizing
 
 struct EditorColor
 {
-	static constexpr ImU32 background = IM_COL32(20, 20, 20, 242);
+	static constexpr ImU32 background = IM_COL32(16, 16, 16, 255);
 	static constexpr ImU32 text = IM_COL32(255, 255, 255, 255);
 
 	static constexpr ImU32 element = IM_COL32(51, 51, 51, 255);

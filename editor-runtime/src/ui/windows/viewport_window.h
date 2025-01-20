@@ -4,10 +4,10 @@
 
 #include "window_includes.h"
 
-class SceneWindow : public EditorWindow
+class ViewportWindow : public EditorWindow
 {
 public:
-	SceneWindow();
+	ViewportWindow();
 	void render() override;
 
 private:

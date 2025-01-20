@@ -1,4 +1,4 @@
-#include "scene_window.h"
+#include "viewport_window.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtc/type_ptr.hpp>
@@ -18,7 +18,7 @@
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
 
-SceneWindow::SceneWindow() : currentWindowSize(glm::vec2(0.0f)),
+ViewportWindow::ViewportWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
 windowFocused(false),
 windowHovered(false),
@@ -58,12 +58,12 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeIndicator.addText(speedChangeText);
 }
 
-void SceneWindow::render()
+void ViewportWindow::render()
 {
 	mouseCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(UIUtils::windowTitle("Scene View"), nullptr, EditorFlag::standard);
+	ImGui::Begin(UIUtils::windowTitle("Viewport"), nullptr, EditorFlag::standard);
 	{
 
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
@@ -98,7 +98,7 @@ void SceneWindow::render()
 	updateMovement();
 }
 
-void SceneWindow::renderSceneView()
+void ViewportWindow::renderSceneView()
 {
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 	uint32_t output = pipeline.getOutput();
@@ -158,7 +158,7 @@ void SceneWindow::renderSceneView()
 	renderSceneToolbar(sceneViewPosition, sceneViewSize);
 }
 
-void SceneWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
+void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 {
 	// Get foreground draw list and pipeline
 	ImDrawList& drawList = *ImGui::GetWindowDrawList();
@@ -185,7 +185,7 @@ void SceneWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 	drawList.AddText(EditorUI::getFonts().s, EditorSizing::s_FontSize, p0, IM_COL32(255, 255, 255, 190), speedText.c_str());
 }
 
-void SceneWindow::renderTransformGizmos()
+void ViewportWindow::renderTransformGizmos()
 {
 	const std::vector<EntityContainer*>& selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
 
@@ -276,7 +276,7 @@ void SceneWindow::renderTransformGizmos()
 	}
 }
 
-void SceneWindow::renderSpeedChangeIndicator()
+void ViewportWindow::renderSpeedChangeIndicator()
 {
 	// Properties
 	const uint32_t visibleAlpha = 200;
@@ -297,7 +297,7 @@ void SceneWindow::renderSpeedChangeIndicator()
 	speedChangeIndicator.draw();
 }
 
-void SceneWindow::updateMovement()
+void ViewportWindow::updateMovement()
 {
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 	Camera& camera = pipeline.getFlyCamera();

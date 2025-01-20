@@ -203,11 +203,12 @@
     <ClCompile Include="src\ui\ui_flex.cpp" />
     <ClCompile Include="src\ui\windows\diagnostics_window.cpp" />
     <ClCompile Include="src\ui\windows\post_processing_window.cpp" />
-    <ClCompile Include="src\ui\windows\scene_window.cpp" />
+    <ClCompile Include="src\ui\windows\viewport_window.cpp" />
     <ClCompile Include="core\misc\stb_image.cpp" />
     <ClCompile Include="src\ui\ui_utils.cpp" />
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_content.cpp" />
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_text.cpp" />
+    <ClCompile Include="src\ui\title_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
@@ -301,12 +302,13 @@
     <ClInclude Include="src\ui\ui_flex.h" />
     <ClInclude Include="src\ui\windows\diagnostics_window.h" />
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
-    <ClInclude Include="src\ui\windows\scene_window.h" />
+    <ClInclude Include="src\ui\windows\viewport_window.h" />
     <ClInclude Include="src\ui\ui_utils.h" />
     <ClInclude Include="src\ui\windows\window_includes.h" />
     <ClInclude Include="core\ecs\registry_state.hpp" />
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_content.h" />
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_text.h" />
+    <ClInclude Include="src\ui\title_bar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

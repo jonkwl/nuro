@@ -15,11 +15,12 @@
 #include "../core/context/application_context.h"
 
 #include "../src/ui/ui_flex.h"
+#include "../src/ui/title_bar.h"
 #include "../src/runtime/runtime.h"
 #include "../src/ui/ui_components.h"
 #include "../src/ui/editor_window.h"
 #include "../src/ui/windows/game_window.h"
-#include "../src/ui/windows/scene_window.h"
+#include "../src/ui/windows/viewport_window.h"
 #include "../src/ui/windows/console_window.h"
 #include "../src/ui/windows/registry_window.h"
 #include "../src/ui/windows/diagnostics_window.h"
@@ -35,9 +36,13 @@ namespace EditorUI {
 
 	Fonts gFonts;
 
+	TitleBar gTitleBar;
+
 	bool gOverwriteCursor = false; // Overwrites the default imgui cursor
 	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t gOverwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
+
+	uint32_t gLogoTexture = 0;
 
 	void _mergeIcons(ImGuiIO& io, float fontSize) {
 		float iconsFontSize = fontSize * 2.0f / 3.0f;
@@ -201,7 +206,7 @@ namespace EditorUI {
 		// Note: Permanently allocated, as they will be needed throughout the whole runtime
 		//
 
-		SceneWindow* sceneWindow = new SceneWindow();
+		ViewportWindow* sceneWindow = new ViewportWindow();
 		gWindows.push_back(sceneWindow);
 
 		GameWindow* gameWindow = new GameWindow();
@@ -221,6 +226,18 @@ namespace EditorUI {
 
 		InsightPanelWindow* insightPanelWindow = new InsightPanelWindow();
 		gWindows.push_back(insightPanelWindow);
+
+		//
+		// SETUP TITLE BAR
+		//
+
+		TitleBarStyle& titleBarStyle = gTitleBar.getStyle();
+
+		titleBarStyle.primaryFont = gFonts.h4_bold;
+		titleBarStyle.secondaryFont = gFonts.p;
+
+		gLogoTexture = IconPool::get("logo").getBackendId();
+		titleBarStyle.iconTexture = gLogoTexture;
 	}
 
 	void newFrame()
@@ -237,27 +254,38 @@ namespace EditorUI {
 
 	void render()
 	{
-		/* SET VARIABLES NEEDING FRAME PREPARATION */
+		//
+		// SET VARIABLES NEEDING FRAME PREPARATION
+		//
+		
 		gOverwriteCursor = false;
 		gOverwriteCursorType = CursorType::DEFAULT;
 		gOverwriteCursorMode = CursorMode::NORMAL;
 
 		ImGuiIO& io = ImGui::GetIO();
 
-		/* CREATE MAIN VIEWPORT DOCKSPACE */
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		//
+		// CREATE MAIN VIEWPORT DOCKSPACE
+		//
+
+		ImGuiViewport& viewport = *ImGui::GetMainViewport();
 
 		ImGui::PushFont(gFonts.h4);
 
-		float menuBarHeight = 45.0f;
+		//
+		// RENDER TITLE BAR
+		//
 
-		/*ImGui::SetNextWindowPos(viewport->Pos);
-		ImGui::SetNextWindowSize(viewport->Size);
-		ImGui::SetNextWindowViewport(viewport->ID);*/
+		gTitleBar.render(viewport);
+		float titleBarHeight = gTitleBar.getStyle().height;
 
-		ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + menuBarHeight));
-		ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - menuBarHeight));
-		ImGui::SetNextWindowViewport(viewport->ID);
+		//
+		// CREATE APPLICATION MAIN DOCKSPACE
+		//
+
+		ImGui::SetNextWindowPos(ImVec2(viewport.Pos.x, viewport.Pos.y + titleBarHeight));
+		ImGui::SetNextWindowSize(ImVec2(viewport.Size.x, viewport.Size.y - titleBarHeight));
+		ImGui::SetNextWindowViewport(viewport.ID);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -271,13 +299,19 @@ namespace EditorUI {
 		ImGui::PopFont();
 		ImGui::PopStyleVar(3);
 
-		/* RENDER ALL WINDOWS */
+		//
+		// RENDER ALL WINDOWS
+		//
+
 		for (int32_t i = 0; i < gWindows.size(); i++)
 		{
 			gWindows[i]->render();
 		}
 
-		/* OVERWRITE IMGUI CURSOR IF NEEDED */
+		//
+		// HANDLE CUSTOM CURSOR
+		//
+
 		if (gOverwriteCursor) {
 			// Disable imgui cursor management
 			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
@@ -291,7 +325,10 @@ namespace EditorUI {
 			io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
 		}
 
-		/* RENDERING AND DRAW CALLS */
+		//
+		// DRAW CALLS
+		//
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}

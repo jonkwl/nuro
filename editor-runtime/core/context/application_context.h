@@ -15,9 +15,11 @@ namespace ApplicationContext
 		API api = API::NONE;
 		std::string windowTitle = "Runtime";
 		glm::ivec2 windowSize = glm::vec2(1280, 720);
+		glm::ivec2 windowPosition = glm::vec2(0, 0);
 		bool fullscreen = false;
 		bool menubarVisible = true;
 		bool vsync = true;
+		bool resizeable = true;
 	};
 
 	// Creates application context with given configuration
@@ -47,11 +49,23 @@ namespace ApplicationContext
 	// Sets window to windowed with last saved window size
 	void setWindowed();
 
+	// Sets if window is resizeable
+	void setResizeable(bool value);
+
 	// Updates the windows menu bar visibility
 	void setMenubarVisibility(bool value);
 
 	// Updates the vsync configuration option
 	void setVSync(bool value);
+
+	// Sets position of window on the screen
+	void setPosition(glm::ivec2 position);
+
+	// Returns position of window on the screen
+	glm::ivec2 getPosition();
+
+	// Returns size of screen
+	glm::ivec2 getScreenSize();
 
 	// Returns a pointer to the applications window
 	GLFWwindow* getWindow();

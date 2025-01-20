@@ -283,6 +283,7 @@ namespace Runtime {
 		config.fullscreen = false;
 		config.menubarVisible = false;
 		config.vsync = false;
+		config.resizeable = false;
 
 		// Create application context instance
 		ApplicationContext::create(config);
@@ -315,8 +316,9 @@ namespace Runtime {
 		// CREATE LOADING SCREEN
 		// _createLoadingScreen();
 
-		// TMP Set to fullscreen
-		ApplicationContext::maximizeWindow();
+		// Ready application
+		// ApplicationContext::maximizeWindow();
+		ApplicationContext::setResizeable(true);
 
 		while (ApplicationContext::running())
 		{

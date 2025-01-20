@@ -19,6 +19,23 @@ namespace Cursor {
 		return glm::vec2(mouseX, mouseY);
 	}
 
+	glm::vec2 getScreenPosition()
+	{
+		// Get cursor position on window
+		double mouseX, mouseY;
+		glfwGetCursorPos(gWindow, &mouseX, &mouseY);
+
+		// Get windows position on screen
+		int windowPosX, windowPosY;
+		glfwGetWindowPos(gWindow, &windowPosX, &windowPosY);
+
+		// Calculate cursor position relative to the screen
+		double screenX = windowPosX + mouseX;
+		double screenY = windowPosY + mouseY;
+
+		return glm::vec2(screenX, screenY);
+	}
+
 	void setPosition(glm::vec2 position)
 	{
 		glfwSetCursorPos(gWindow, position.x, position.y);
