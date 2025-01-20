@@ -41,6 +41,9 @@ private:
 	static std::deque<ConsoleLog> logs;
 	static std::vector<ConsoleLog> logsToAdd;
 
+	// Draws a log
 	void drawLog(ImDrawList& drawList, ConsoleLog log);
-	void drawLatestLog(ImDrawList& drawList, float height, float padding);
+
+	// Draws the latest log element and returns its size
+	ImVec2 drawLatestLog(ImDrawList& drawList);
 };
