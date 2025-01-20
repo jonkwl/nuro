@@ -31,9 +31,9 @@ namespace PostProcessing
 	struct Bloom {
 
 		bool enabled = true;
-		float intensity = 0.38f;
+		float intensity = 0.4f;
 		float color[3] = { 1.0f, 1.0f, 1.0f };
-		float threshold = 0.2f;
+		float threshold = 0.465f;
 		float softThreshold = 0.0f;
 		float filterRadius = 0.0f;
 
@@ -46,8 +46,8 @@ namespace PostProcessing
 	struct ChromaticAberration {
 
 		bool enabled = true;
-		float intensity = 0.055f;
-		int32_t iterations = 6;
+		float intensity = -0.155;
+		int32_t iterations = 12;
 
 	};
 
@@ -57,7 +57,7 @@ namespace PostProcessing
 		float intensity = 1.0f;
 		float color[3] = { 0.0f, 0.0f, 0.0f };
 		float radius = 0.74f;
-		float softness = 0.35f;
+		float softness = 0.42f;
 		float roundness = 1.8f;
 
 	};
