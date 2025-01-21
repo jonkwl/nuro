@@ -14,6 +14,7 @@ struct TitleBarStyle {
 
 	ImFont* primaryFont = nullptr;
 	ImFont* secondaryFont = nullptr;
+	ImFont* workspaceBarFont = nullptr;
 
 	ImU32 primaryTextColor = IM_COL32(255, 255, 255, 255);
 	ImU32 secondaryTextColor = IM_COL32(200, 200, 200, 255);
@@ -37,6 +38,14 @@ struct TitleBarStyle {
 	ImU32 controlButtonTextColor = IM_COL32(255, 255, 255, 180);
 	ImU32 controlButtonColor = IM_COL32(38, 38, 38, 160);
 	ImU32 controlButtonColorHovered = IM_COL32(60, 60, 60, 160);
+
+	ImU32 workspaceRounding = 3.0f;
+	ImU32 workspaceBackgroundColor = IM_COL32(30, 30, 34, 160);
+
+	float workspaceItemRounding = 3.0f;
+	ImVec2 workspaceItemPadding = ImVec2(26.0f, 9.0f);
+	ImU32 workspaceItemColorHovered = IM_COL32(34, 34, 38, 160);
+	ImU32 workspaceItemColorActive = IM_COL32(50, 50, 56, 160);
 
 };
 
@@ -69,6 +78,9 @@ private:
 
 	// Draws a menu item and returns its size and if it was pressed
 	std::tuple<ImVec2, bool> menuItem(ImDrawList& drawList, ImVec2 position, const char* text);
+
+	// Draws the workspace bar
+	void workspaceBar(ImDrawList& drawList);
 
 	// Minimizes the window
 	void minimize();

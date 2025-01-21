@@ -243,10 +243,13 @@
     <ClCompile Include="src\pipelines\preview_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\titlebar\title_bar.cpp">
+    <ClCompile Include="src\ui\footer\footer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\footer\footer.cpp">
+    <ClCompile Include="src\ui\workspace_bar\workspace_bar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\title_bar\title_bar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -542,10 +545,13 @@
     <ClInclude Include="src\pipelines\preview_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\titlebar\title_bar.h">
+    <ClInclude Include="src\ui\footer\footer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\footer\footer.h">
+    <ClInclude Include="src\ui\workspace_bar\workspace_bar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\title_bar\title_bar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

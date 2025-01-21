@@ -19,7 +19,7 @@
 #include "../src/ui/footer/footer.h"
 #include "../src/ui/ui_components.h"
 #include "../src/ui/editor_window.h"
-#include "../src/ui/titlebar/title_bar.h"
+#include "../src/ui/title_bar/title_bar.h"
 #include "../src/ui/windows/game_window.h"
 #include "../src/ui/windows/viewport_window.h"
 #include "../src/ui/windows/console_window.h"
@@ -230,19 +230,17 @@ namespace EditorUI {
 		gWindows.push_back(insightPanelWindow);
 
 		//
-		// SETUP TITLE BAR & FOOTER
+		// SETUP WINDOW ELEMENTS
 		//
 
 		TitleBarStyle& titleBarStyle = gTitleBar.getStyle();
-
 		titleBarStyle.primaryFont = gFonts.h4_bold;
 		titleBarStyle.secondaryFont = gFonts.p;
-
+		titleBarStyle.workspaceBarFont = gFonts.h4;
 		gLogoTexture = IconPool::get("logo").getBackendId();
 		titleBarStyle.iconTexture = gLogoTexture;
 
 		FooterStyle& footerStyle = gFooter.getStyle();
-
 		footerStyle.primaryFont = gFonts.h4_bold;
 		footerStyle.secondaryFont = gFonts.p;
 	}
@@ -281,15 +279,11 @@ namespace EditorUI {
 		ImGui::PushFont(gFonts.h4);
 
 		//
-		// GET WINDOW ELEMENT HEIGHTS
+		// RENDER WINDOW ELEMENTS
 		//
 
 		float titleBarHeight = gTitleBar.getStyle().height;
 		float footerHeight = gFooter.getStyle().height;
-
-		//
-		// RENDER TITLE BAR AND FOOTER
-		//
 
 		gTitleBar.render(viewport);
 		gFooter.render(viewport);
