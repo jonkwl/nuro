@@ -26,7 +26,7 @@ void TitleBar::render(const ImGuiViewport& viewport)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     if (ImGui::Begin("TitleBar", nullptr, flags)) {
 
-        ImDrawList& drawList = *ImGui::GetWindowDrawList();
+        ImDrawList& drawList = *ImGui::GetForegroundDrawList();
         renderContent(drawList);
 
     }

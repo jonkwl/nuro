@@ -15,10 +15,11 @@
 #include "../core/context/application_context.h"
 
 #include "../src/ui/ui_flex.h"
-#include "../src/ui/title_bar.h"
 #include "../src/runtime/runtime.h"
+#include "../src/ui/footer/footer.h"
 #include "../src/ui/ui_components.h"
 #include "../src/ui/editor_window.h"
+#include "../src/ui/titlebar/title_bar.h"
 #include "../src/ui/windows/game_window.h"
 #include "../src/ui/windows/viewport_window.h"
 #include "../src/ui/windows/console_window.h"
@@ -37,6 +38,7 @@ namespace EditorUI {
 	Fonts gFonts;
 
 	TitleBar gTitleBar;
+	Footer gFooter;
 
 	bool gOverwriteCursor = false; // Overwrites the default imgui cursor
 	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
@@ -228,7 +230,7 @@ namespace EditorUI {
 		gWindows.push_back(insightPanelWindow);
 
 		//
-		// SETUP TITLE BAR
+		// SETUP TITLE BAR & FOOTER
 		//
 
 		TitleBarStyle& titleBarStyle = gTitleBar.getStyle();
@@ -238,6 +240,11 @@ namespace EditorUI {
 
 		gLogoTexture = IconPool::get("logo").getBackendId();
 		titleBarStyle.iconTexture = gLogoTexture;
+
+		FooterStyle& footerStyle = gFooter.getStyle();
+
+		footerStyle.primaryFont = gFonts.h4_bold;
+		footerStyle.secondaryFont = gFonts.p;
 	}
 
 	void newFrame()
@@ -270,21 +277,29 @@ namespace EditorUI {
 
 		ImGuiViewport& viewport = *ImGui::GetMainViewport();
 
+		// Push font for tabs
 		ImGui::PushFont(gFonts.h4);
 
 		//
-		// RENDER TITLE BAR
+		// GET WINDOW ELEMENT HEIGHTS
+		//
+
+		float titleBarHeight = gTitleBar.getStyle().height;
+		float footerHeight = gFooter.getStyle().height;
+
+		//
+		// RENDER TITLE BAR AND FOOTER
 		//
 
 		gTitleBar.render(viewport);
-		float titleBarHeight = gTitleBar.getStyle().height;
+		gFooter.render(viewport);
 
 		//
 		// CREATE APPLICATION MAIN DOCKSPACE
 		//
 
 		ImGui::SetNextWindowPos(ImVec2(viewport.Pos.x, viewport.Pos.y + titleBarHeight));
-		ImGui::SetNextWindowSize(ImVec2(viewport.Size.x, viewport.Size.y - titleBarHeight));
+		ImGui::SetNextWindowSize(ImVec2(viewport.Size.x, viewport.Size.y - titleBarHeight - footerHeight));
 		ImGui::SetNextWindowViewport(viewport.ID);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
