@@ -123,7 +123,7 @@
     <ClCompile Include="src\ui\editor_ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\ui_components.cpp">
+    <ClCompile Include="src\ui\components\im_components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\ui_flex.cpp">
@@ -252,6 +252,9 @@
     <ClCompile Include="src\ui\title_bar\title_bar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\components\toggle_bar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -374,13 +377,13 @@
     <ClInclude Include="src\ui\editor_ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\editor_window.h">
+    <ClInclude Include="src\ui\windows\editor_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\IconsFontAwesome6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\ui_components.h">
+    <ClInclude Include="src\ui\components\im_components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\ui_flex.h">
@@ -429,9 +432,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\registry_window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ui\windows\window_includes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\registry_state.hpp">
@@ -552,6 +552,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\title_bar\title_bar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\components\toggle_bar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "window_includes.h"
+#include "editor_window.h"
 
 class InsightPanelWindow : public EditorWindow
 {

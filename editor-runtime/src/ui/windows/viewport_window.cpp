@@ -30,6 +30,7 @@ mouseSensitivity(0.08f),
 scrollIncrementSpeed(2.0f),
 speedChangeTimer(100.0f),
 speedChangeIndicator(),
+mainToggles({ ICON_FA_BOLT_LIGHTNING, ICON_FA_DRAW_POLYGON, ICON_FA_DATABASE }),
 moveAxis(glm::vec2(0.0f)),
 moveAxisSmoothingFactor(5.0f),
 mouseCurrent(glm::vec2(0.0f)),
@@ -166,23 +167,16 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 
 	float padding = 22.0f;
 
-	// Render buttons
+	// Render left toggle bar
 	ImVec2 p0 = position + ImVec2(padding, padding);
-	UIComponents::toggleBar(drawList, p0);
+	mainToggles.render(drawList, p0);
 
-	/*UIComponents::toggleButton(drawList, ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe", p0);
-
-	p0 += ImVec2(34.0f, 0.0f);
-	UIComponents::toggleButton(drawList, ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Skybox", p0);
-
-	p0 += ImVec2(34.0f, 0.0f);
-	UIComponents::toggleButton(drawList, ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Gizmos", p0);
-
+	// Render right settings button
 	p0 = position + ImVec2(size.x - 50.0f, padding);
-	UIComponents::toggleButton(drawList, ICON_FA_GEAR, pipeline.useProfileEffects, "Settings", p0);*/
+	IMComponents::toggleButton(drawList, ICON_FA_GEAR, pipeline.useProfileEffects, "Settings", p0);
 
 	// Render labels
-	p0 = position + ImVec2(padding, 62.0f);
+	p0 = position + ImVec2(padding, 55.0f);
 	std::string speedText = std::string(ICON_FA_GAUGE) + " Speed: " + std::to_string(static_cast<int32_t>(movementSpeed));
 	drawList.AddText(EditorUI::getFonts().s, EditorSizing::s_FontSize, p0, IM_COL32(255, 255, 255, 190), speedText.c_str());
 }

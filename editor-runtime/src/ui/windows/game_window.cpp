@@ -41,7 +41,7 @@ void GameWindow::render()
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
-		UIComponents::headline("Game View", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER, false);
+		IMComponents::headline("Game View", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER, false);
 
 		// Get game window size
 		currentContentAvail = ImGui::GetContentRegionAvail();
@@ -75,24 +75,24 @@ void GameWindow::renderToolbar()
 	{
 		if (gameRunning) {
 			if (gamePaused) {
-				if (UIComponents::buttonBig(ICON_FA_PLAY, IM_COL32(255, 165, 50, 255), "Continue")) {
+				if (IMComponents::buttonBig(ICON_FA_PLAY, IM_COL32(255, 165, 50, 255), "Continue")) {
 					Runtime::continueGame();
 				}
 			}
 			else {
-				if (UIComponents::buttonBig(ICON_FA_PAUSE, "Pause")) {
+				if (IMComponents::buttonBig(ICON_FA_PAUSE, "Pause")) {
 					Runtime::pauseGame();
 				}
 			}
-			if (UIComponents::buttonBig(ICON_FA_STOP, EditorColor::selection, "Stop")) {
+			if (IMComponents::buttonBig(ICON_FA_STOP, EditorColor::selection, "Stop")) {
 				Runtime::stopGame();
 			}
-			if (UIComponents::buttonBig(ICON_FA_FORWARD_STEP, IM_COL32(255, 165, 50, 255), "Step")) {
+			if (IMComponents::buttonBig(ICON_FA_FORWARD_STEP, IM_COL32(255, 165, 50, 255), "Step")) {
 				Runtime::continueGame();
 			}
 		}
 		else {
-			if (UIComponents::buttonBig(ICON_FA_PLAY, "Play")) {
+			if (IMComponents::buttonBig(ICON_FA_PLAY, "Play")) {
 				Runtime::startGame();
 			}
 		}
@@ -106,8 +106,8 @@ void GameWindow::renderToolbar()
 	/*UIFlex::beginFlex("setup", FlexType::ROW, UIFlex::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
 	{
 		ImGui::Dummy(1.0f, 0.0f);
-		UIComponents::tryIcon(ICON_FA_GAUGE);
-		UIComponents::label("FPS: " + 0);
+		IMComponents::tryIcon(ICON_FA_GAUGE);
+		IMComponents::label("FPS: " + 0);
 	}
 	UIFlex::endFlex();*/
 }

@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "window_includes.h"
+#include "editor_window.h"
 
 #include "../core/ecs/ecs_collection.h"
 

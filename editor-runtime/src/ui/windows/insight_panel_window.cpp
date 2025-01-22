@@ -20,7 +20,7 @@ void InsightPanelWindow::render()
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
 		// Render headline
-		UIComponents::headline("Insight Panel", ICON_FA_LAYER_GROUP);
+		IMComponents::headline("Insight Panel", ICON_FA_LAYER_GROUP);
 
 		// Render inspected static content if available
 		if (inspected) {
@@ -54,11 +54,11 @@ void InsightPanelWindow::render()
 			ImGui::Dummy(margin);
 
 			// Dynamic inspected content child
-			UIComponents::beginChild(contentSize - margin);
+			IMComponents::beginChild(contentSize - margin);
 			{
 				inspected->renderDynamicContent(drawList);
 			}
-			UIComponents::endChild();
+			IMComponents::endChild();
 
 			// Render preview viewer if available
 			if (renderingPreview) renderPreviewViewer(drawList, previewSize);
@@ -125,7 +125,7 @@ void InsightPanelWindow::renderComponent(ImDrawList& drawList)
 	//
 
 	ImVec2 caretPos = p0 + titlePadding;
-	if (UIComponents::caret(drawList, caretPos, ImVec2(-1.0f, 2.0f), collapsed ? ICON_FA_CARET_RIGHT : ICON_FA_CARET_DOWN, EditorColor::element, EditorColor::elementActive)) {
+	if (IMComponents::caret(drawList, caretPos, ImVec2(-1.0f, 2.0f), collapsed ? ICON_FA_CARET_RIGHT : ICON_FA_CARET_DOWN, EditorColor::element, EditorColor::elementActive)) {
 		collapsed = !collapsed;
 	}
 
@@ -171,8 +171,8 @@ void InsightPanelWindow::renderImage(uint32_t textureId, float aspectRatio, std:
 
 void InsightPanelWindow::renderNoneInspected()
 {
-	UIComponents::label("Nothing selected", EditorUI::getFonts().h3_bold);
-	UIComponents::label("Select an entity or asset to inspect and edit it.", EditorUI::getFonts().h4, IM_COL32(210, 210, 255, 255));
+	IMComponents::label("Nothing selected", EditorUI::getFonts().h3_bold);
+	IMComponents::label("Select an entity or asset to inspect and edit it.", EditorUI::getFonts().h4, IM_COL32(210, 210, 255, 255));
 }
 
 void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)

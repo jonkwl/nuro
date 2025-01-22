@@ -1,4 +1,4 @@
-#include "ui_components.h"
+#include "im_components.h"
 
 #include <implot.h>
 #include <algorithm>
@@ -11,7 +11,7 @@
 #include "../core/utils/log.h"
 #include "../src/ui/IconsFontAwesome6.h"
 
-namespace UIComponents {
+namespace IMComponents {
 
 	std::string _formatInteger(int32_t number)
 	{

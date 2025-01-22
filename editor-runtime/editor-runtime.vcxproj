@@ -201,7 +201,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\ui\editor_ui.cpp" />
-    <ClCompile Include="src\ui\ui_components.cpp" />
+    <ClCompile Include="src\ui\components\im_components.cpp" />
     <ClCompile Include="src\ui\ui_flex.cpp" />
     <ClCompile Include="src\ui\windows\diagnostics_window.cpp" />
     <ClCompile Include="src\ui\windows\post_processing_window.cpp" />
@@ -211,6 +211,7 @@
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_content.cpp" />
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_text.cpp" />
     <ClCompile Include="src\ui\workspace_bar\workspace_bar.cpp" />
+    <ClCompile Include="src\ui\components\toggle_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
@@ -300,19 +301,19 @@
     <ClInclude Include="src\example\src\game_logic.h" />
     <ClInclude Include="src\runtime\runtime.h" />
     <ClInclude Include="src\ui\editor_ui.h" />
-    <ClInclude Include="src\ui\editor_window.h" />
+    <ClInclude Include="src\ui\windows\editor_window.h" />
     <ClInclude Include="src\ui\IconsFontAwesome6.h" />
-    <ClInclude Include="src\ui\ui_components.h" />
+    <ClInclude Include="src\ui\components\im_components.h" />
     <ClInclude Include="src\ui\ui_flex.h" />
     <ClInclude Include="src\ui\windows\diagnostics_window.h" />
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\viewport_window.h" />
     <ClInclude Include="src\ui\ui_utils.h" />
-    <ClInclude Include="src\ui\windows\window_includes.h" />
     <ClInclude Include="core\ecs\registry_state.hpp" />
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_content.h" />
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_text.h" />
     <ClInclude Include="src\ui\workspace_bar\workspace_bar.h" />
+    <ClInclude Include="src\ui\components\toggle_bar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

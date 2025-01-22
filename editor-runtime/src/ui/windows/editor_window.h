@@ -12,8 +12,13 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/context_menu.h"
 #include "../src/runtime/runtime.h"
-#include "../src/ui/ui_components.h"
-#include "../src/ui/editor_window.h"
 #include "../src/ui/IconsFontAwesome6.h"
 #include "../src/ui/inspectables/inspectable.h"
+#include "../src/ui/components/im_components.h"
 #include "../src/ui/dynamic_drawing/dynamic_drawing.h"
+
+class EditorWindow
+{
+public:
+	virtual void render() {};
+};

@@ -11,7 +11,7 @@ enum class HeadlineJustification
 	RIGHT
 };
 
-namespace UIComponents
+namespace IMComponents
 {
 	void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool seperator = true);
 	

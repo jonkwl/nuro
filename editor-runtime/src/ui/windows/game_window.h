@@ -1,8 +1,6 @@
 #pragma once
 
-#include <glm.hpp>
-
-#include "window_includes.h"
+#include "editor_window.h"
 
 class GameWindow : public EditorWindow
 {

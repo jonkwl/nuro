@@ -1,6 +1,6 @@
 #pragma once
 
-#include "window_includes.h"
+#include "editor_window.h"
 
 #include "../core/rendering/postprocessing/post_processing.h"
 

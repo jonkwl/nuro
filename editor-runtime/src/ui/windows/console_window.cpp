@@ -24,15 +24,15 @@ void ConsoleWindow::render()
 		// Draw toggles
 		float toolbarOffset = 34.0f;
 		ImVec2 toolbarPos = ImGui::GetCursorScreenPos() + ImVec2(10.0f, 10.0f);
-		UIComponents::toggleButton(drawList, messageIcon, showMessages, "Show Messages", toolbarPos);
+		IMComponents::toggleButton(drawList, messageIcon, showMessages, "Show Messages", toolbarPos);
 		toolbarPos += ImVec2(toolbarOffset, 0.0f);
-		UIComponents::toggleButton(drawList, warningIcon, showWarnings, "Show Warnings", toolbarPos);
+		IMComponents::toggleButton(drawList, warningIcon, showWarnings, "Show Warnings", toolbarPos);
 		toolbarPos += ImVec2(toolbarOffset, 0.0f);
-		UIComponents::toggleButton(drawList, errorIcon, showErrors, "Show Errors", toolbarPos);
+		IMComponents::toggleButton(drawList, errorIcon, showErrors, "Show Errors", toolbarPos);
 		toolbarPos += ImVec2(toolbarOffset, 0.0f);
 		
 		// Draw clear button
-		//if (UIComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
+		//if (IMComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
 		
 		// Advance cursor
 		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0.0f, 50.0f));
@@ -49,7 +49,7 @@ void ConsoleWindow::render()
 
 		ImVec2 contentAvail = ImGui::GetContentRegionAvail();
 		ImVec2 logsSize = ImVec2(contentAvail.x, contentAvail.y - latestLogSize.y);
-		UIComponents::beginChild(logsSize);
+		IMComponents::beginChild(logsSize);
 		{
 			// Evaluate logs to add
 			for (int32_t i = 0; i < logsToAdd.size(); i++) {
@@ -80,7 +80,7 @@ void ConsoleWindow::render()
 			// Clear logs to add
 			logsToAdd.clear();
 		}
-		UIComponents::endChild();
+		IMComponents::endChild();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();

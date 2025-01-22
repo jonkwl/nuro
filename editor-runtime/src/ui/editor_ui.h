@@ -93,7 +93,7 @@ struct EditorColor
 	static constexpr ImU32 elementComponent = IM_COL32(178, 178, 178, 255);
 
 	static constexpr ImU32 element_transparent = IM_COL32(80, 80, 80, 150);
-	static constexpr ImU32 elementHovered_transparent = IM_COL32(90, 90, 90, 150);
+	static constexpr ImU32 elementHovered_transparent = IM_COL32(85, 85, 85, 150);
 	static constexpr ImU32 elementActive_transparent = IM_COL32(100, 100, 100, 150);
 
 	static constexpr ImU32 selection = IM_COL32(85, 125, 255, 255);

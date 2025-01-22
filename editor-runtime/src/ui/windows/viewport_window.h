@@ -1,8 +1,8 @@
 #pragma once
 
-#include <glm.hpp>
+#include "editor_window.h"
 
-#include "window_includes.h"
+#include "../src/ui/components/toggle_bar.h"
 
 class ViewportWindow : public EditorWindow
 {
@@ -35,6 +35,8 @@ private:
 	float scrollIncrementSpeed; // Speed for incrementing movement speed through mouse scrolling
 	float speedChangeTimer; // Timer resetting when the speed is changed
 	DynamicContent speedChangeIndicator; // Speed change indicator for speed change
+
+	ToggleBar mainToggles; // Main viewport settings
 
 	glm::vec2 moveAxis; // Current input axis for evaluating scene view movement
 	float moveAxisSmoothingFactor; // Smoothing for key axis

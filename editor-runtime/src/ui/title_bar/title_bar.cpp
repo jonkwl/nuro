@@ -247,7 +247,7 @@ std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 positio
 void TitleBar::placeWorkspaceBar(ImDrawList& drawList)
 {
     // Prepare workspace bar if needed
-    if (!workspaceBar.prepared) {
+    if (!workspaceBar.evaluated) {
         // Calculate total size
         workspaceBar.size = ImVec2(0.0f, 0.0f);
         float fontSize = style.workspaceBarFont->FontSize;
@@ -258,7 +258,7 @@ void TitleBar::placeWorkspaceBar(ImDrawList& drawList)
         }
 
         // Set workspace bar to prepared
-        workspaceBar.prepared = true;
+        workspaceBar.evaluated = true;
     }
 
     // Calculate position (centered)

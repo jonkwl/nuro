@@ -1,11 +1,10 @@
 #include "diagnostics_window.h"
-#include "window_includes.h"
 
 #include <glm.hpp>
 #include <implot.h>
 
-#include "../core/diagnostics/profiler.h"
 #include "../core/time/time.h"
+#include "../core/diagnostics/profiler.h"
 #include "../core/diagnostics/diagnostics.h"
 
 DiagnosticsWindow::DiagnosticsWindow() : fpsCache(std::deque<float>(100)),
@@ -17,9 +16,9 @@ void DiagnosticsWindow::render()
 {
 	ImGui::Begin(UIUtils::windowTitle("Diagnostics"), nullptr, EditorFlag::fixed);
 
-	UIComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
+	IMComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
-	UIComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
+	IMComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
 
 	const int32_t values = 100;
 	const float updateRate = 0.025f;
@@ -51,34 +50,34 @@ void DiagnosticsWindow::render()
 	ImVec4 high = ImVec4(0.0f, 1.0f, 0.5f, 1.0f);
 	ImVec4 color = UIUtils::lerpColors(low, high, glm::clamp((Diagnostics::getFps() - 0.0f) / (maxValue - 0.0f), 0.0f, 1.0f));
 	ImVec2 size = ImVec2(120.0f, 40.0f);
-	UIComponents::sparklineGraph("##spark", data, values, 0.0f, maxValue, 0.0f, color, size);
+	IMComponents::sparklineGraph("##spark", data, values, 0.0f, maxValue, 0.0f, color, size);
 
 	delete[] data;
 
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-	UIComponents::indicatorLabel("Current Draw Calls:", Diagnostics::getCurrentDrawCalls());
-	UIComponents::indicatorLabel("Current Vertices:", Diagnostics::getCurrentVertices());
-	UIComponents::indicatorLabel("Current Polygons:", Diagnostics::getCurrentPolygons());
+	IMComponents::indicatorLabel("Current Draw Calls:", Diagnostics::getCurrentDrawCalls());
+	IMComponents::indicatorLabel("Current Vertices:", Diagnostics::getCurrentVertices());
+	IMComponents::indicatorLabel("Current Polygons:", Diagnostics::getCurrentPolygons());
 
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-	UIComponents::indicatorLabel("CPU Entities:", Diagnostics::getNEntitiesCPU());
-	UIComponents::indicatorLabel("GPU Entities:", Diagnostics::getNEntitiesGPU());
+	IMComponents::indicatorLabel("CPU Entities:", Diagnostics::getNEntitiesCPU());
+	IMComponents::indicatorLabel("GPU Entities:", Diagnostics::getNEntitiesGPU());
 
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-	UIComponents::indicatorLabel("Rendering:", Profiler::getMs("render"), "ms");
-	UIComponents::indicatorLabel("Physics:", Profiler::getMs("physics"), "ms");
-	UIComponents::indicatorLabel("Shadow Pass:", Profiler::getMs("shadow_pass"), "ms");
-	UIComponents::indicatorLabel("Preprocessor Pass:", Profiler::getMs("preprocessor_pass"), "ms");
-	UIComponents::indicatorLabel("Pre Pass:", Profiler::getMs("pre_pass"), "ms");
-	UIComponents::indicatorLabel("SSAO Pass:", Profiler::getMs("ssao"), "ms");
-	UIComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::getMs("velocity_buffer"), "ms");
-	UIComponents::indicatorLabel("Forward Pass:", Profiler::getMs("forward_pass"), "ms");
-	UIComponents::indicatorLabel("PP Pass:", Profiler::getMs("post_processing"), "ms");
-	UIComponents::indicatorLabel("UI Pass:", Profiler::getMs("ui_pass"), "ms");
-	UIComponents::indicatorLabel("Scene View:", Profiler::getMs("scene_view"), "ms");
+	IMComponents::indicatorLabel("Rendering:", Profiler::getMs("render"), "ms");
+	IMComponents::indicatorLabel("Physics:", Profiler::getMs("physics"), "ms");
+	IMComponents::indicatorLabel("Shadow Pass:", Profiler::getMs("shadow_pass"), "ms");
+	IMComponents::indicatorLabel("Preprocessor Pass:", Profiler::getMs("preprocessor_pass"), "ms");
+	IMComponents::indicatorLabel("Pre Pass:", Profiler::getMs("pre_pass"), "ms");
+	IMComponents::indicatorLabel("SSAO Pass:", Profiler::getMs("ssao"), "ms");
+	IMComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::getMs("velocity_buffer"), "ms");
+	IMComponents::indicatorLabel("Forward Pass:", Profiler::getMs("forward_pass"), "ms");
+	IMComponents::indicatorLabel("PP Pass:", Profiler::getMs("post_processing"), "ms");
+	IMComponents::indicatorLabel("UI Pass:", Profiler::getMs("ui_pass"), "ms");
+	IMComponents::indicatorLabel("Scene View:", Profiler::getMs("scene_view"), "ms");
 
 	ImGui::End();
 }

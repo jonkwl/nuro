@@ -52,15 +52,15 @@ struct TitleBarStyle {
 struct WorkspaceBarElement {
 
 	// Configuration
-	std::array<const char*, 8> items = { "General", "Level Building", "Scripting", "Lighting", "Audio", "UI Editor", "Post Processing", "Project" };
-	uint32_t selection = 0;
+	std::array<const char*, 8> items = { "Project", "General", "Level Building", "Scripting", "Lighting", "Audio", "UI Editor", "Post Processing" };
+	uint32_t selection = 1;
 
 	// Geometry cache
 	ImVec2 size = ImVec2(0.0f, 0.0f);
 	std::array<ImVec2, 8> itemSizes = {};
 
-	// Set if geometry is calculated
-	bool prepared = false;
+	// Set if geometry is evaluated
+	bool evaluated = false;
 
 };
 

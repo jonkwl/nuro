@@ -4,7 +4,7 @@
 #include <deque>
 #include <vector>
 
-#include "window_includes.h"
+#include "editor_window.h"
 
 struct ImVec2;
 

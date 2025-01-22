@@ -48,7 +48,7 @@ void RegistryWindow::render()
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
-		UIComponents::headline("Registry", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
+		IMComponents::headline("Registry", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
 
 		renderSearch(drawList);
 		renderHierarchy(drawList);
