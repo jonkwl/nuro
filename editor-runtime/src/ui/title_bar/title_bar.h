@@ -17,7 +17,7 @@ struct TitleBarStyle {
 	ImFont* workspaceBarFont = nullptr;
 
 	ImU32 primaryTextColor = IM_COL32(255, 255, 255, 255);
-	ImU32 secondaryTextColor = IM_COL32(200, 200, 200, 255);
+	ImU32 secondaryTextColor = IM_COL32(180, 180, 180, 255);
 
 	ImU32 backgroundColor = IM_COL32(14, 14, 18, 255);
 	
@@ -46,6 +46,21 @@ struct TitleBarStyle {
 	ImVec2 workspaceItemPadding = ImVec2(26.0f, 9.0f);
 	ImU32 workspaceItemColorHovered = IM_COL32(34, 34, 38, 160);
 	ImU32 workspaceItemColorActive = IM_COL32(50, 50, 56, 160);
+
+};
+
+struct WorkspaceBarElement {
+
+	// Configuration
+	std::array<const char*, 8> items = { "General", "Level Building", "Scripting", "Lighting", "Audio", "UI Editor", "Post Processing", "Project" };
+	uint32_t selection = 0;
+
+	// Geometry cache
+	ImVec2 size = ImVec2(0.0f, 0.0f);
+	std::array<ImVec2, 8> itemSizes = {};
+
+	// Set if geometry is calculated
+	bool prepared = false;
 
 };
 
@@ -80,7 +95,7 @@ private:
 	std::tuple<ImVec2, bool> menuItem(ImDrawList& drawList, ImVec2 position, const char* text);
 
 	// Draws the workspace bar
-	void workspaceBar(ImDrawList& drawList);
+	void placeWorkspaceBar(ImDrawList& drawList);
 
 	// Minimizes the window
 	void minimize();
@@ -100,9 +115,10 @@ private:
 	// Current style configuration
 	TitleBarStyle style;
 
-private:
-	// States
+	// Workspace bar
+	WorkspaceBarElement workspaceBar;
 
+private:
 	ImVec2 titleBarPosition;
 	ImVec2 titleBarSize;
 

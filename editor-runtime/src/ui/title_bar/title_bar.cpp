@@ -101,7 +101,7 @@ void TitleBar::renderContent(ImDrawList& drawList)
     // DRAW WORKSPACE BAR
     //
 
-    workspaceBar(drawList);
+    placeWorkspaceBar(drawList);
 
     //
     // DRAW TOP BORDER
@@ -244,39 +244,46 @@ std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 positio
     return std::make_tuple(size, clicked);
 }
 
-void TitleBar::workspaceBar(ImDrawList& drawList)
+void TitleBar::placeWorkspaceBar(ImDrawList& drawList)
 {
-    std::array<const char*, 7> items = { "General", "Level Editing", "Scripting", "Lighting", "Audio", "Animation", "Post Processing" };
-    int selection = 0;
+    // Prepare workspace bar if needed
+    if (!workspaceBar.prepared) {
+        // Calculate total size
+        workspaceBar.size = ImVec2(0.0f, 0.0f);
+        float fontSize = style.workspaceBarFont->FontSize;
+        for (int i = 0; i < workspaceBar.items.size(); i++) {
+            ImVec2 itemSize = style.workspaceBarFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, workspaceBar.items[i]) + style.workspaceItemPadding * 2.0f;
+            workspaceBar.itemSizes[i] = itemSize;
+            workspaceBar.size = itemSize + ImVec2(workspaceBar.size.x, 0.0f);
+        }
 
-    // Calculate total size
-    ImVec2 size = ImVec2(0.0f, 0.0f);
-    float fontSize = style.workspaceBarFont->FontSize;
-    for (const char* item : items) {
-        ImVec2 textSize = style.workspaceBarFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, item);
-        size = textSize + style.workspaceItemPadding * 2.0f + ImVec2(size.x, 0.0f);
+        // Set workspace bar to prepared
+        workspaceBar.prepared = true;
     }
 
     // Calculate position (centered)
-    ImVec2 position = titleBarPosition + (titleBarSize - size) * 0.5f;
+    ImVec2 position = titleBarPosition + (titleBarSize - workspaceBar.size) * 0.5f;
+
+    // Get font size
+    float fontSize = style.workspaceBarFont->FontSize;
 
     // Draw background
-    drawList.AddRectFilled(position, position + size, style.workspaceBackgroundColor, style.workspaceRounding);
+    drawList.AddRectFilled(position, position + workspaceBar.size, style.workspaceBackgroundColor, style.workspaceRounding);
 
     // Draw items
     ImVec2 cursor = position + style.workspaceItemPadding;
-    for (int i = 0; i < items.size(); i++) {
+    for (int i = 0; i < workspaceBar.items.size(); i++) {
         // Evaluate selection
-        bool selected = i == selection;
+        bool selected = i == workspaceBar.selection;
 
         // Draw text
-        ImVec2 textSize = style.workspaceBarFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, items[i]);
-        drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : style.secondaryTextColor, items[i]);
+        ImVec2 textSize = style.workspaceBarFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, workspaceBar.items[i]);
+        drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : style.secondaryTextColor, workspaceBar.items[i]);
 
         // Evaluate item interactions
-        ImVec2 itemSize = textSize + style.workspaceItemPadding;
+        ImVec2 itemSize = workspaceBar.itemSizes[i];
         ImVec2 p0 = cursor - style.workspaceItemPadding;
-        ImVec2 p1 = p0 + itemSize + style.workspaceItemPadding;
+        ImVec2 p1 = p0 + itemSize;
         bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
 
         // If hovered or selected, draw item background and redraw item text
@@ -284,11 +291,11 @@ void TitleBar::workspaceBar(ImDrawList& drawList)
             ImU32 color = style.workspaceItemColorHovered;
             if (selected) color = style.workspaceItemColorActive;
             drawList.AddRectFilled(p0, p1, color, style.workspaceItemRounding);
-            drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : style.secondaryTextColor, items[i]);
+            drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : style.secondaryTextColor, workspaceBar.items[i]);
         }
 
         // Advance cursor
-        cursor.x += textSize.x + style.workspaceItemPadding.x * 2.0f;
+        cursor.x += itemSize.x;
     }
 }
 

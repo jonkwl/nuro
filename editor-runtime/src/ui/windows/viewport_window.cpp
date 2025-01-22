@@ -48,7 +48,7 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeIndicator.rounding = 25.0f;
 	speedChangeIndicator.foreground = true;
 	speedChangeIndicator.outline = true;
-	speedChangeIndicator.outlineStrength = 2.0f;
+	speedChangeIndicator.outlineStrength = 1.0f;
 	speedChangeIndicator.outlineColor = IM_COL32(255, 255, 255, 125);
 	speedChangeIndicator.horizontalAlignment = Horizontal::CENTER;
 	speedChangeIndicator.verticalAlignment = Vertical::CENTER;
@@ -168,7 +168,9 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 
 	// Render buttons
 	ImVec2 p0 = position + ImVec2(padding, padding);
-	UIComponents::toggleButton(drawList, ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe", p0);
+	UIComponents::toggleBar(drawList, p0);
+
+	/*UIComponents::toggleButton(drawList, ICON_FA_VECTOR_SQUARE, pipeline.wireframe, "Wireframe", p0);
 
 	p0 += ImVec2(34.0f, 0.0f);
 	UIComponents::toggleButton(drawList, ICON_FA_CLOUDS_SUN, pipeline.showSkybox, "Skybox", p0);
@@ -177,7 +179,7 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 	UIComponents::toggleButton(drawList, ICON_FA_DRAW_SQUARE, pipeline.showGizmos, "Gizmos", p0);
 
 	p0 = position + ImVec2(size.x - 50.0f, padding);
-	UIComponents::toggleButton(drawList, ICON_FA_GEAR, pipeline.useProfileEffects, "Settings", p0);
+	UIComponents::toggleButton(drawList, ICON_FA_GEAR, pipeline.useProfileEffects, "Settings", p0);*/
 
 	// Render labels
 	p0 = position + ImVec2(padding, 62.0f);

@@ -83,15 +83,18 @@ struct EditorSizing
 struct EditorColor
 {
 	static constexpr ImU32 background = IM_COL32(16, 16, 16, 255);
+
 	static constexpr ImU32 text = IM_COL32(255, 255, 255, 255);
+	static constexpr ImU32 textFrosted = IM_COL32(180, 180, 180, 255);
 
 	static constexpr ImU32 element = IM_COL32(51, 51, 51, 255);
 	static constexpr ImU32 elementHovered = IM_COL32(64, 64, 64, 255);
 	static constexpr ImU32 elementActive = IM_COL32(77, 77, 77, 255);
 	static constexpr ImU32 elementComponent = IM_COL32(178, 178, 178, 255);
 
-	static constexpr ImU32 elementUntoggled = IM_COL32(80, 80, 80, 150);
-	static constexpr ImU32 elementToggled = IM_COL32(140, 140, 140, 150);
+	static constexpr ImU32 element_transparent = IM_COL32(80, 80, 80, 150);
+	static constexpr ImU32 elementHovered_transparent = IM_COL32(90, 90, 90, 150);
+	static constexpr ImU32 elementActive_transparent = IM_COL32(100, 100, 100, 150);
 
 	static constexpr ImU32 selection = IM_COL32(85, 125, 255, 255);
 	static constexpr ImU32 selectionInactive = IM_COL32(100, 100, 100, 255);

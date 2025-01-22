@@ -17,12 +17,8 @@ namespace UIComponents
 	
 	void tooltip(std::string tooltip);
 
-	void toggleButton(
-		ImDrawList& drawList,
-		std::string text,
-		bool& value,
-		std::string tooltip = "",
-		ImVec2 position = ImGui::GetCursorScreenPos());
+	void toggleButton(ImDrawList& drawList, std::string text, bool& value, std::string tooltip, ImVec2 position);
+	void toggleBar(ImDrawList& drawList, ImVec2 position);
 
 	bool buttonBig(std::string label, std::string tooltip = "");
 	bool buttonBig(std::string label, ImU32 color, std::string tooltip = "");
