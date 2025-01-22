@@ -94,57 +94,6 @@ namespace IMComponents {
 		drawList.AddText(font, fontSize, p0 + padding, EditorColor::text, text.c_str());
 	}
 
-	void toggleBar(ImDrawList& drawList, ImVec2 position)
-	{
-		static const ImVec2 padding = ImVec2(8.0f, 5.0f);
-		static ImFont* const font = EditorUI::getFonts().s;
-		static const float fontSize = font->FontSize;
-		static const float barRounding = 3.0f;
-		static const float itemRounding = 5.0f;
-
-		std::array<const char*, 3> items = { ICON_FA_EYE, ICON_FA_DRAW_POLYGON, ICON_FA_CUBE };
-		int selection = 0;
-
-		// Calculate total size
-		ImVec2 size = ImVec2(0.0f, 0.0f);
-		for (const char* item : items) {
-			ImVec2 textSize = font->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, item);
-			size = textSize + padding * 2.0f + ImVec2(size.x, 0.0f);
-		}
-
-		// Draw background
-		drawList.AddRectFilled(position, position + size, EditorColor::element_transparent, barRounding);
-
-		// Draw items
-		ImVec2 cursor = position + padding;
-		for (int i = 0; i < items.size(); i++) {
-			// Evaluate selection
-			bool selected = i == selection;
-
-			// Draw text
-			ImU32 textColor = selected ? EditorColor::text : EditorColor::textFrosted;
-			ImVec2 textSize = font->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, items[i]);
-			drawList.AddText(font, fontSize, cursor, textColor, items[i]);
-
-			// Evaluate item interactions
-			ImVec2 itemSize = textSize + padding;
-			ImVec2 p0 = cursor - padding;
-			ImVec2 p1 = p0 + itemSize + padding;
-			bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
-
-			// If hovered or selected, draw item background and redraw item text
-			if (selected || hovered) {
-				ImU32 color = EditorColor::elementHovered_transparent;
-				if (selected) color = EditorColor::elementActive_transparent;
-				drawList.AddRectFilled(p0, p1, color, itemRounding);
-				drawList.AddText(font, fontSize, cursor, textColor, items[i]);
-			}
-
-			// Advance cursor
-			cursor.x += textSize.x + padding.x * 2.0f;
-		}
-	}
-
 	bool buttonBig(std::string label, std::string _tooltip)
 	{
 		bool pressed = false;

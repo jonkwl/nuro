@@ -13,7 +13,7 @@ struct ToggleBarStyle {
 	static constexpr float barRounding = 3.0f;
 	static constexpr float itemRounding = 3.0f;
 
-	static constexpr ImU32 text = EditorColor::textFrosted;
+	static constexpr ImU32 text = EditorColor::text;
 	static constexpr ImU32 textSelected = EditorColor::text;
 
 	static constexpr ImU32 backgroundColor = EditorColor::element_transparent;
@@ -24,18 +24,24 @@ struct ToggleBarStyle {
 class ToggleBar
 {
 public:
-	ToggleBar(const std::vector<const char*>& items);
+	ToggleBar();
+
+	// Sets up the toggle bar with the provided presets
+	void setItems(const std::vector<std::tuple<const char*, bool*>>& itemPresets);
 
 	// Renders the toolbar
 	void render(ImDrawList& drawList, ImVec2 position);
 
+	// Returns the toggle bar's size
+	ImVec2 getSize() const;
+
 private:
 	struct Item {
 		const char* text;
-		bool selected = false;
-		ImVec2 size = ImVec2(0.0f, 0.0f);
+		bool& value;
+		ImVec2 size;
 
-		Item(const char* text) : text(text) {};
+		Item(const char* text, bool& value) : text(text), value(value), size(ImVec2(0.0f, 0.0f)) {};
 	};
 
 	// Calculates the geometry of the toggle bar

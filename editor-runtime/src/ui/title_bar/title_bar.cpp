@@ -241,7 +241,7 @@ std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 positio
     drawList.AddText(style.primaryFont, fontSize, p0 + style.menuItemPadding, style.primaryTextColor, text);
 
     // Return size and if menu item is clicked
-    return std::make_tuple(size, clicked);
+    return { size, clicked };
 }
 
 void TitleBar::placeWorkspaceBar(ImDrawList& drawList)

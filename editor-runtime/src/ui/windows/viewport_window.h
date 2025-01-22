@@ -37,6 +37,7 @@ private:
 	DynamicContent speedChangeIndicator; // Speed change indicator for speed change
 
 	ToggleBar mainToggles; // Main viewport settings
+	ToggleBar playToggles; // Play settings
 
 	glm::vec2 moveAxis; // Current input axis for evaluating scene view movement
 	float moveAxisSmoothingFactor; // Smoothing for key axis

@@ -5,6 +5,7 @@
 #include <gtx/matrix_decompose.hpp>
 
 #include <ImGuizmo.h>
+#include <tuple>
 
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/time/time.h"
@@ -30,7 +31,8 @@ mouseSensitivity(0.08f),
 scrollIncrementSpeed(2.0f),
 speedChangeTimer(100.0f),
 speedChangeIndicator(),
-mainToggles({ ICON_FA_BOLT_LIGHTNING, ICON_FA_DRAW_POLYGON, ICON_FA_DATABASE }),
+mainToggles(),
+playToggles(),
 moveAxis(glm::vec2(0.0f)),
 moveAxisSmoothingFactor(5.0f),
 mouseCurrent(glm::vec2(0.0f)),
@@ -57,6 +59,21 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeText.color = IM_COL32(255, 255, 255, 255);
 	speedChangeText.alignment = TextAlign::CENTER;
 	speedChangeIndicator.addText(speedChangeText);
+
+	// Setup toggles
+	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+	mainToggles.setItems({
+		{ ICON_FA_CUBE, &pipeline.wireframe },
+		{ ICON_FA_ECLIPSE, &pipeline.renderShadows },
+		{ ICON_FA_SUN, &pipeline.showSkybox },
+		{ ICON_FA_SPARKLES, &pipeline.useProfileEffects },
+		{ ICON_FA_DRAW_SQUARE, &pipeline.showGizmos }
+	});
+	playToggles.setItems({
+		{ ICON_FA_SQUARE, &pipeline.useProfileEffects },
+		{ ICON_FA_PLAY, &pipeline.useProfileEffects },
+		{ ICON_FA_PAUSE, &pipeline.useProfileEffects }
+	});
 }
 
 void ViewportWindow::render()
@@ -167,9 +184,13 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 
 	float padding = 22.0f;
 
-	// Render left toggle bar
+	// Render main toggle bar
 	ImVec2 p0 = position + ImVec2(padding, padding);
 	mainToggles.render(drawList, p0);
+
+	// Render play toggle bar
+	p0 = position + ImVec2(size.x * 0.5f - playToggles.getSize().x * 0.5f, padding);
+	playToggles.render(drawList, p0);
 
 	// Render right settings button
 	p0 = position + ImVec2(size.x - 50.0f, padding);

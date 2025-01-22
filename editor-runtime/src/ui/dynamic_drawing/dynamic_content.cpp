@@ -141,7 +141,7 @@ bool DynamicContent::dragged(ImGuiMouseButton mouseButton)
 void DynamicContent::addText(DynamicText text)
 {
 	contentDirty = true;
-	textContent.push_back(std::make_tuple(text, ImVec2(0.0f, 0.0f)));
+	textContent.push_back({ text, ImVec2(0.0f, 0.0f) });
 }
 
 DynamicText& DynamicContent::modifyText(uint32_t index)
