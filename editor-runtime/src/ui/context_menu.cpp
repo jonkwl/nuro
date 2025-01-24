@@ -23,7 +23,7 @@ namespace ContextMenu {
 		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, _hoverColor);
 		ImGui::PushStyleColor(ImGuiCol_Border, _outlineColor);
 
-		return ImGui::BeginPopupContextWindow(EditorUI::generateId().c_str(), ImGuiPopupFlags_MouseButtonRight);
+		return ImGui::BeginPopupContextWindow(EditorUI::generateIdString().c_str(), ImGuiPopupFlags_MouseButtonRight);
 	}
 
 	void end()

@@ -46,9 +46,12 @@ namespace EditorUI
 	void render();
 
 	// Generates a unique imgui id
-	std::string generateId();
+	ImGuiID generateId();
 
-	// Returns all loaded fonts
+	// Generates a unique imgui id as a string
+	std::string generateIdString();
+
+	// Returns all loded fonts
 	const Fonts& getFonts();
 
 	// Sets the current editor ui cursor type

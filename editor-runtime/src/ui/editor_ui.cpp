@@ -341,9 +341,14 @@ namespace EditorUI {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	std::string generateId()
+	ImGuiID generateId()
 	{
-		return ("##" + std::to_string(++gIdCounter));
+		return ++gIdCounter;
+	}
+
+	std::string generateIdString()
+	{
+		return "##" + std::to_string(++gIdCounter);
 	}
 
 	const Fonts& getFonts() {

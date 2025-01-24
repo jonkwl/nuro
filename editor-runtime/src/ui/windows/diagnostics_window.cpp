@@ -14,11 +14,14 @@ fpsUpdateTimer(0.0f)
 
 void DiagnosticsWindow::render()
 {
+	// Get fps
+	float fps = 1000000.0f / Profiler::getUs("render");
+
 	ImGui::Begin(UIUtils::windowTitle("Diagnostics"), nullptr, EditorFlag::fixed);
 
 	IMComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 
-	IMComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
+	IMComponents::indicatorLabel("Rendering FPS:", fps);
 
 	const int32_t values = 100;
 	const float updateRate = 0.025f;
@@ -30,7 +33,9 @@ void DiagnosticsWindow::render()
 	fpsUpdateTimer += Time::deltaf();
 	if (fpsUpdateTimer >= updateRate)
 	{
-		fpsCache.push_back(Diagnostics::getFps());
+
+		// Reconstruct fps of game view (tmp, only showing reconstructed fps of game view rendering atm)
+		fpsCache.push_back(fps);
 
 		if (fpsCache.size() > values)
 		{
@@ -48,7 +53,8 @@ void DiagnosticsWindow::render()
 
 	ImVec4 low = ImVec4(1.0f, 0.0f, 0.5f, 1.0f);
 	ImVec4 high = ImVec4(0.0f, 1.0f, 0.5f, 1.0f);
-	ImVec4 color = UIUtils::lerpColors(low, high, glm::clamp((Diagnostics::getFps() - 0.0f) / (maxValue - 0.0f), 0.0f, 1.0f));
+	// ImVec4 color = UIUtils::lerpColors(low, high, glm::clamp((Diagnostics::getFps() - 0.0f) / (maxValue - 0.0f), 0.0f, 1.0f));
+	ImVec4 color = high;
 	ImVec2 size = ImVec2(120.0f, 40.0f);
 	IMComponents::sparklineGraph("##spark", data, values, 0.0f, maxValue, 0.0f, color, size);
 

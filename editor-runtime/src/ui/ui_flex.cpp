@@ -29,7 +29,7 @@ ImVec2 UIFlex::getFlexRowSize(float width, float height)
 	return layoutSize;
 }
 
-void UIFlex::beginFlex(const char* name, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
+void UIFlex::beginFlex(ImGuiID id, FlexType type, float width, float height, Justification justification, Alignment alignment, float spacing, Margin margin)
 {
 	if (type == FlexType::ROW)
 	{
@@ -39,7 +39,7 @@ void UIFlex::beginFlex(const char* name, FlexType type, float width, float heigh
 		ImGui::Dummy(ImVec2(0.0f, margin.top));
 
 		ImVec2 rowSize = getFlexRowSize(width, height);
-		ImGui::BeginHorizontal(name, rowSize, mapAlignment(alignment));
+		ImGui::BeginHorizontal(id, rowSize, mapAlignment(alignment));
 
 		if (margin.left != 0)
 			ImGui::Dummy(ImVec2(margin.left, 0.0f));

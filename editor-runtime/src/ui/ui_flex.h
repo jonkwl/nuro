@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <imgui.h>
 
 #define FLEX_FULL_WIDTH ImGui::GetContentRegionAvail().x
 #define FLEX_FULL_HEIGHT ImGui::GetContentRegionAvail().y
@@ -54,7 +55,7 @@ class UIFlex
 public:
 	static bool debugMode;
 
-	static void beginFlex(const char* name, FlexType type, float width, float height, Justification justification = Justification::CENTER, Alignment alignment = Alignment::CENTER, float spacing = 0.0f, Margin margin = Margin());
+	static void beginFlex(ImGuiID id, FlexType type, float width, float height, Justification justification = Justification::CENTER, Alignment alignment = Alignment::CENTER, float spacing = 0.0f, Margin margin = Margin());
 	static void endFlex();
 
 private:

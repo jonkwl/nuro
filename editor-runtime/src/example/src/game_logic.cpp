@@ -106,14 +106,14 @@ void _example() {
 	standardMaterial->roughness = 0.4f;
 
 	// Sci-Fi Plane Material
-	Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
+	LitMaterial* planeMaterial = new LitMaterial();
+	/*Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
 	Texture roughness = Texture::load("./src/example/assets/textures/sci-fi/roughness.jpg", TextureType::ROUGHNESS);
 	Texture metallic = Texture::load("./src/example/assets/textures/sci-fi/metallic.jpg", TextureType::METALLIC);
 	Texture normal = Texture::load("./src/example/assets/textures/sci-fi/normal.jpg", TextureType::NORMAL);
 	Texture occlusion = Texture::load("./src/example/assets/textures/sci-fi/occlusion.jpg", TextureType::OCCLUSION);
 	Texture emissive = Texture::load("./src/example/assets/textures/sci-fi/emissive.jpg", TextureType::EMISSIVE);
 	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);
-	LitMaterial* planeMaterial = new LitMaterial();
 	planeMaterial->setAlbedoMap(albedo);
 	planeMaterial->setRoughnessMap(roughness);
 	planeMaterial->setMetallicMap(metallic);
@@ -121,9 +121,7 @@ void _example() {
 	planeMaterial->setOcclusionMap(occlusion);
 	planeMaterial->setEmissiveMap(emissive);
 	planeMaterial->emission = true;
-	planeMaterial->emissionIntensity = 11.0f;
-	//planeMaterial->setHeightMap(height);
-	//planeMaterial->heightMapScale = 0.066f;
+	planeMaterial->emissionIntensity = 11.0f;*/
 
 	// Directional light (sun)
 	EntityContainer sun("Sun", ECS::createEntity());
@@ -164,7 +162,7 @@ void _example() {
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
-	int objectAmount = 250;
+	int objectAmount = 16;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube", ECS::createEntity());

@@ -34,7 +34,7 @@ namespace IMComponents {
 		const float marginSubSeperator = 7.0f;
 
 		ImGui::Dummy(ImVec2(0.0f, marginTop));
-		UIFlex::beginFlex(title.c_str(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, Margin());
+		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, Margin());
 		{
 			tryIcon(icon);
 			ImGui::PushFont(EditorUI::getFonts().h4_bold);
@@ -231,32 +231,68 @@ namespace IMComponents {
 
 	void input(std::string label, bool& value)
 	{
-		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, FLEX_FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-		ImGui::Text(label.c_str());
-		ImGui::Spring(1.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		ImGui::Checkbox(EditorUI::generateId().c_str(), &value);
-		ImGui::PopStyleVar();
-		UIFlex::endFlex();
+		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		{
+			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableNextRow();
+
+			// Label
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text(label.c_str());
+
+			// Input
+			ImGui::TableSetColumnIndex(1);
+			ImGui::PushItemWidth(-1);
+			ImGui::Checkbox(EditorUI::generateIdString().c_str(), &value);
+			ImGui::PopItemWidth();
+
+			ImGui::EndTable();
+		}
 	}
 
 	void input(std::string label, int32_t& value, float speed)
 	{
-		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, FLEX_FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-		ImGui::Text(label.c_str());
-		ImGui::Spring(1.0f);
-		ImGui::DragInt(EditorUI::generateId().c_str(), &value, speed);
-		UIFlex::endFlex();
+		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		{
+			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableNextRow();
+
+			// Label
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text(label.c_str());
+
+			// Input
+			ImGui::TableSetColumnIndex(1);
+			ImGui::PushItemWidth(-1);
+			ImGui::DragInt(EditorUI::generateIdString().c_str(), &value, speed);
+			ImGui::PopItemWidth();
+
+			ImGui::EndTable();
+		}
 	}
 
 	void input(std::string label, float& value, float speed)
 	{
-		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, FLEX_FULL_WIDTH, 18.0f, Justification::EVEN, Alignment::CENTER, 4.0f);
-		ImGui::Text(label.c_str());
-		ImGui::Spring(1.0f);
-		ImGui::DragFloat(EditorUI::generateId().c_str(), &value, speed);
-		UIFlex::endFlex();
-		// ImGui::DragFloat(std::string(label + EditorUI::generateId()).c_str(), &value, speed);
+		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		{
+			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableNextRow();
+
+			// Label
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text(label.c_str());
+
+			// Input
+			ImGui::TableSetColumnIndex(1);
+			ImGui::PushItemWidth(-1);
+			ImGui::DragFloat(EditorUI::generateIdString().c_str(), &value, speed);
+			ImGui::PopItemWidth();
+
+			ImGui::EndTable();
+		}
 	}
 
 	void indicatorLabel(std::string label, std::string value, std::string additional)
@@ -303,9 +339,9 @@ namespace IMComponents {
 
 	bool extendableSettings(std::string label, bool& value, const char* icon)
 	{
-		UIFlex::beginFlex(EditorUI::generateId().c_str(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
+		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
 
-		ImGui::Checkbox(EditorUI::generateId().c_str(), &value);
+		ImGui::Checkbox(EditorUI::generateIdString().c_str(), &value);
 		ImGui::Dummy(ImVec2(1.0f, 1.5f));
 		tryIcon(icon);
 
@@ -339,16 +375,58 @@ namespace IMComponents {
 
 	bool header(std::string label)
 	{
-		return ImGui::CollapsingHeader(std::string(label + EditorUI::generateId()).c_str());
+		return ImGui::CollapsingHeader(label.c_str());
 	}
 
 	void colorPicker(std::string label, float value[3])
 	{
-		if (ImGui::CollapsingHeader(std::string(label + EditorUI::generateId()).c_str()))
+		ImU32 color = IM_COL32(
+			static_cast<unsigned char>(value[0] * 255.0f),
+			static_cast<unsigned char>(value[1] * 255.0f),
+			static_cast<unsigned char>(value[2] * 255.0f),
+			255);
+
+		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
 		{
-			ImGui::PushItemWidth(140);
-			ImGui::ColorPicker3(EditorUI::generateId().c_str(), value, ImGuiColorEditFlags_NoSidePreview);
-			ImGui::PopItemWidth();
+			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableNextRow();
+
+			// Label
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text(label.c_str());
+
+			// Pick button
+			ImGui::TableSetColumnIndex(1);
+			if (ImGui::Button("Pick Color"))
+			{
+				ImGui::OpenPopup("Color_Picker_Popup", ImGuiPopupFlags_AnyPopupLevel);
+			}
+
+			// Color indicator
+			ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 5.0f);
+			ImGui::PushStyleColor(ImGuiCol_Button, color);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, color);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
+			ImGui::Button(EditorUI::generateIdString().c_str(), ImVec2(-1.0f, 0.0f));
+			ImGui::PopStyleColor(3);
+
+			ImGui::EndTable();
+		}
+
+		// Color picker popup
+		if (ImGui::BeginPopup("Color_Picker_Popup"))
+		{
+			/*ImGui::PushItemWidth(140);
+			ImGui::ColorPicker3(EditorUI::generateIdString().c_str(), value, ImGuiColorEditFlags_NoSidePreview);
+			ImGui::PopItemWidth();*/
+
+			ImGui::Text("Color Picker Popup");
+
+			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
 		}
 	}
 
@@ -371,7 +449,7 @@ namespace IMComponents {
 	{
 		ImGui::SetCursorScreenPos(position);
 		ImGui::PushClipRect(ImVec2(position), ImVec2(position + size), true);
-		ImGui::BeginChild(EditorUI::generateId().c_str(), size);
+		ImGui::BeginChild(EditorUI::generateId(), size);
 	}
 
 	void endChild()
