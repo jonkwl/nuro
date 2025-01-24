@@ -60,7 +60,7 @@ cameraEulerAngles(glm::vec3(0.0f))
 	speedChangeText.alignment = TextAlign::CENTER;
 	speedChangeIndicator.addText(speedChangeText);
 
-	// Setup toggles
+	// Setup main toggles
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 	mainToggles.setItems({
 		{ ICON_FA_CUBE, &pipeline.wireframe },
@@ -69,11 +69,17 @@ cameraEulerAngles(glm::vec3(0.0f))
 		{ ICON_FA_SPARKLES, &pipeline.useProfileEffects },
 		{ ICON_FA_DRAW_SQUARE, &pipeline.showGizmos }
 	});
+
+	// Setup play toggles
+	ToggleBarStyle& toggleStyle = playToggles.getStyle();
+	toggleStyle.padding = ImVec2(16.0f, 10.0f);
+	toggleStyle.font = EditorUI::getFonts().s;
 	playToggles.setItems({
 		{ ICON_FA_SQUARE, &pipeline.useProfileEffects },
 		{ ICON_FA_PLAY, &pipeline.useProfileEffects },
 		{ ICON_FA_PAUSE, &pipeline.useProfileEffects }
 	});
+
 }
 
 void ViewportWindow::render()

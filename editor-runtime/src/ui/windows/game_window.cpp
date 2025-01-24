@@ -13,7 +13,8 @@ lastContentAvail(ImVec2(0.0f, 0.0f)),
 lastWindowSize(ImVec2(0.0f, 0.0f)),
 windowFocused(false),
 windowHovered(false),
-gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
+gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f)),
+playToggles()
 {
 	// Setup no camera indicator
 	noCameraIndicator.color = IM_COL32(50, 35, 0, 255);
@@ -30,6 +31,17 @@ gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 	noCameraText.color = IM_COL32(255, 255, 255, 255);
 	noCameraText.alignment = TextAlign::CENTER;
 	noCameraIndicator.addText(noCameraText);
+
+	// Setup play toggles
+	bool tmp = false;
+	ToggleBarStyle& toggleStyle = playToggles.getStyle();
+	toggleStyle.padding = ImVec2(16.0f, 10.0f);
+	toggleStyle.font = EditorUI::getFonts().s;
+	playToggles.setItems({
+		{ ICON_FA_SQUARE, &tmp },
+		{ ICON_FA_PLAY, &tmp },
+		{ ICON_FA_PAUSE, &tmp }
+		});
 }
 
 void GameWindow::render()
@@ -38,19 +50,25 @@ void GameWindow::render()
 	bool windowVisible = ImGui::Begin(UIUtils::windowTitle("Game View"), nullptr, EditorFlag::standard);
 	{
 
+		// Get draw list
+		ImDrawList& drawList = *ImGui::GetWindowDrawList();
+
+		// Get initial cursor position 
+		ImVec2 position = ImGui::GetCursorScreenPos();
+
 		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 
-		IMComponents::headline("Game View", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER, false);
+		// IMComponents::headline("Game View", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER, false);
 
 		// Get game window size
 		currentContentAvail = ImGui::GetContentRegionAvail();
 
-		// Render game windows toolbar
-		renderToolbar();
-
 		// Render game view
 		renderGameView();
+
+		// Render game windows toolbar
+		renderToolbar(drawList, position);
 
 		// Cache window position and size
 		lastWindowPosition = ImGui::GetWindowPos();
@@ -63,53 +81,17 @@ void GameWindow::render()
 	if (windowVisible) renderForegroundIndicators();
 }
 
-void GameWindow::renderToolbar()
+void GameWindow::renderToolbar(ImDrawList& drawList, ImVec2 position)
 {
-	bool tmp = false;
-
 	bool gameRunning = Runtime::gameRunning();
 	bool gamePaused = Runtime::gamePaused();
 
+	// Evaluate toggle position
+	float padding = 22.0f;
+	ImVec2 playTogglePosition = position + ImVec2(ImGui::GetWindowWidth() * 0.5f - playToggles.getSize().x * 0.5f, padding);
+
 	// Render toggle buttons for render options
-	UIFlex::beginFlex("toggles", FlexType::ROW, FLEX_FULL_WIDTH, 40.0f, Justification::CENTER, Alignment::CENTER, 1.0f);
-	{
-		if (gameRunning) {
-			if (gamePaused) {
-				if (IMComponents::buttonBig(ICON_FA_PLAY, IM_COL32(255, 165, 50, 255), "Continue")) {
-					Runtime::continueGame();
-				}
-			}
-			else {
-				if (IMComponents::buttonBig(ICON_FA_PAUSE, "Pause")) {
-					Runtime::pauseGame();
-				}
-			}
-			if (IMComponents::buttonBig(ICON_FA_STOP, EditorColor::selection, "Stop")) {
-				Runtime::stopGame();
-			}
-			if (IMComponents::buttonBig(ICON_FA_FORWARD_STEP, IM_COL32(255, 165, 50, 255), "Step")) {
-				Runtime::continueGame();
-			}
-		}
-		else {
-			if (IMComponents::buttonBig(ICON_FA_PLAY, "Play")) {
-				Runtime::startGame();
-			}
-		}
-	}
-	UIFlex::endFlex();
-
-	// Spacing
-	ImGui::Dummy(ImVec2(0.0f, 5.0f));
-
-	// Render indicators for game view setup
-	/*UIFlex::beginFlex("setup", FlexType::ROW, UIFlex::FULL_WIDTH, 12.0f, Justification::START, Alignment::CENTER, 1.0f);
-	{
-		ImGui::Dummy(1.0f, 0.0f);
-		IMComponents::tryIcon(ICON_FA_GAUGE);
-		IMComponents::label("FPS: " + 0);
-	}
-	UIFlex::endFlex();*/
+	playToggles.render(drawList, playTogglePosition);
 }
 
 void GameWindow::renderGameView()
@@ -124,43 +106,38 @@ void GameWindow::renderGameView()
 		output = 0;
 	}
 
-	// Render game view
-	ImGui::BeginChild("GameView", ImGui::GetContentRegionAvail(), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-	{
-		// Check if window is currently being resized
-		bool currentlyResizing = currentContentAvail != lastContentAvail;
-		if (currentlyResizing) output = 0;
+	// Check if window is currently being resized
+	bool currentlyResizing = currentContentAvail != lastContentAvail;
+	if (currentlyResizing) output = 0;
 
-		// Draw black background
-		ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetCursorScreenPos(), ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(), IM_COL32(0, 0, 0, 255));
+	// Draw black background
+	ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetCursorScreenPos(), ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(), IM_COL32(0, 0, 0, 255));
 
-		// float aspectRatio = 16.0f / 9.0f;
-		float aspectRatio = 0.0f;
-		ImVec2 size, offset;
-		if (aspectRatio) {
-			UIUtils::calculateAspectFitting(aspectRatio, size, offset);
-			ImGui::SetCursorPos(offset);
-		}
-		else {
-			size = ImGui::GetContentRegionAvail();
-		}
-
-		// Render target
-		ImGui::Image(output, size, ImVec2(0, 1), ImVec2(1, 0));
-
-		ImVec2 boundsMin = ImGui::GetItemRectMin();
-		ImVec2 boundsMax = ImGui::GetItemRectMax();
-		gameViewBounds = ImVec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
-
-		// UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
-
-		// Check if game window has been resized
-		if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
-			pipeline.resizeViewport(size.x, size.y);
-			lastContentAvail = currentContentAvail;
-		}
+	// float aspectRatio = 16.0f / 9.0f;
+	float aspectRatio = 0.0f;
+	ImVec2 size, offset;
+	if (aspectRatio) {
+		UIUtils::calculateAspectFitting(aspectRatio, size, offset);
+		ImGui::SetCursorPos(offset);
 	}
-	ImGui::EndChild();
+	else {
+		size = ImGui::GetContentRegionAvail();
+	}
+
+	// Render target
+	ImGui::Image(output, size, ImVec2(0, 1), ImVec2(1, 0));
+
+	ImVec2 boundsMin = ImGui::GetItemRectMin();
+	ImVec2 boundsMax = ImGui::GetItemRectMax();
+	gameViewBounds = ImVec4(boundsMin.x, boundsMin.y, boundsMax.x, boundsMax.y);
+
+	// UIUtils::keepCursorInBounds(sceneViewBounds, positionedCursor);
+
+	// Check if game window has been resized
+	if (currentlyResizing && !Input::mouseDown(MouseButton::LEFT)) {
+		pipeline.resizeViewport(size.x, size.y);
+		lastContentAvail = currentContentAvail;
+	}
 }
 
 void GameWindow::renderForegroundIndicators()
