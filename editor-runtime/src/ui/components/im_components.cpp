@@ -425,7 +425,7 @@ namespace IMComponents {
 			ImGui::TableSetColumnIndex(1);
 			if (ImGui::Button("Pick Color"))
 			{
-				ImGui::OpenPopup("Color_Picker_Popup", ImGuiPopupFlags_AnyPopupLevel);
+				ImGui::OpenPopup("##Color_Picker_Popup", ImGuiPopupFlags_AnyPopupLevel);
 			}
 
 			// Color indicator
@@ -441,7 +441,7 @@ namespace IMComponents {
 		}
 
 		// Color picker popup
-		if (ImGui::BeginPopup("Color_Picker_Popup"))
+		if (ImGui::BeginPopupModal("##Color_Picker_Popup"))
 		{
 			/*ImGui::PushItemWidth(140);
 			ImGui::ColorPicker3(EditorUI::generateIdString().c_str(), value, ImGuiColorEditFlags_NoSidePreview);

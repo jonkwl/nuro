@@ -9,7 +9,7 @@
 
 struct TitleBarStyle {
 
-	float height = 70.0f;
+	float height = 90.0f;
 	ImVec2 padding = ImVec2(15.0f, 15.0f);
 
 	ImFont* primaryFont = nullptr;

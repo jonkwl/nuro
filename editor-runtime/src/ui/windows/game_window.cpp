@@ -33,7 +33,7 @@ playToggles()
 	noCameraIndicator.addText(noCameraText);
 
 	// Setup play toggles
-	bool tmp = false;
+	static bool tmp = false;
 	ToggleBarStyle& toggleStyle = playToggles.getStyle();
 	toggleStyle.padding = ImVec2(16.0f, 10.0f);
 	toggleStyle.font = EditorUI::getFonts().s;

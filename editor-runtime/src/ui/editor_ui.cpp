@@ -25,6 +25,7 @@
 #include "../src/ui/components/im_components.h"
 #include "../src/ui/windows/diagnostics_window.h"
 #include "../src/ui/windows/insight_panel_window.h"
+#include "../src/ui/windows/asset_browser_window.h"
 #include "../src/ui/windows/post_processing_window.h"
 
 namespace EditorUI {
@@ -228,6 +229,9 @@ namespace EditorUI {
 		InsightPanelWindow* insightPanelWindow = new InsightPanelWindow();
 		gWindows.push_back(insightPanelWindow);
 
+		AssetBrowserWindow* assetBrowserWindow = new AssetBrowserWindow();
+		gWindows.push_back(assetBrowserWindow);
+
 		//
 		// SETUP WINDOW ELEMENTS
 		//
@@ -240,7 +244,7 @@ namespace EditorUI {
 		titleBarStyle.iconTexture = gLogoTexture;
 
 		FooterStyle& footerStyle = gFooter.getStyle();
-		footerStyle.primaryFont = gFonts.h4_bold;
+		footerStyle.primaryFont = gFonts.p_bold;
 		footerStyle.secondaryFont = gFonts.p;
 	}
 

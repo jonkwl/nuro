@@ -88,7 +88,7 @@ struct EditorColor
 	static constexpr ImU32 background = IM_COL32(16, 16, 16, 255);
 
 	static constexpr ImU32 text = IM_COL32(255, 255, 255, 255);
-	static constexpr ImU32 textFrosted = IM_COL32(180, 180, 180, 255);
+	static constexpr ImU32 text_transparent = IM_COL32(255, 255, 255, 210);
 
 	static constexpr ImU32 element = IM_COL32(51, 51, 51, 255);
 	static constexpr ImU32 elementHovered = IM_COL32(64, 64, 64, 255);

@@ -13,6 +13,10 @@
 #include "../core/utils/log.h"
 #include "../core/ecs/components.h"
 
+///																///
+///			SECURE CONTAINER FOR HANDLING ECS ENTITIES			///
+///																///
+
 struct EntityContainer {
 
 	// Construct entity by root

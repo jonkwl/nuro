@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\windows\asset_browser_window.cpp" />
     <ClCompile Include="core\viewport\viewport.cpp" />
     <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp" />
     <ClCompile Include="src\pipelines\preview_pipeline.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="src\ui\components\toggle_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\windows\asset_browser_window.h" />
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
     <ClInclude Include="core\rendering\passes\preprocessor_pass.h" />
     <ClInclude Include="src\pipelines\preview_pipeline.h" />
