@@ -9,7 +9,7 @@
 
 struct TitleBarStyle {
 
-	float height = 90.0f;
+	float height = 94.0f;
 	ImVec2 padding = ImVec2(15.0f, 15.0f);
 
 	ImFont* primaryFont = nullptr;
@@ -95,7 +95,7 @@ private:
 	std::tuple<ImVec2, bool> menuItem(ImDrawList& drawList, ImVec2 position, const char* text);
 
 	// Draws the workspace bar
-	void placeWorkspaceBar(ImDrawList& drawList);
+	void placeWorkspaceBar(ImDrawList& drawList, ImVec2 position);
 
 	// Minimizes the window
 	void minimize();

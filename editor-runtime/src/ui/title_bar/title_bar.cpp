@@ -74,8 +74,10 @@ void TitleBar::renderContent(ImDrawList& drawList)
     //
 
     if (style.iconTexture) {
-        float iconVerticalPadding = (titleBarSize.y - style.iconSize.y) * 0.5f;
-        cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + iconVerticalPadding);
+        //float iconVerticalPadding = (titleBarSize.y - style.iconSize.y) * 0.5f;
+        //cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + iconVerticalPadding);
+
+        cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + 2.0f);
         drawList.AddImage(style.iconTexture, cursor, cursor + style.iconSize, ImVec2(0, 1), ImVec2(1, 0));
     }
 
@@ -98,10 +100,20 @@ void TitleBar::renderContent(ImDrawList& drawList)
     }
 
     //
+    // DRAW APPLICATION HEADER
+    //
+
+    std::string headerText = "Application 0.0.1";
+    ImVec2 headerSize = style.secondaryFont->CalcTextSizeA(style.secondaryFont->FontSize, FLT_MAX, 0.0f, headerText.c_str());
+    ImVec2 headerPosition = ImVec2(titleBarPosition.x + (titleBarSize.x - headerSize.x) * 0.5f, titleBarPosition.y + style.padding.y * 1.2f);
+    drawList.AddText(style.secondaryFont, style.secondaryFont->FontSize, headerPosition, style.secondaryTextColor, headerText.c_str());
+
+    //
     // DRAW WORKSPACE BAR
     //
 
-    placeWorkspaceBar(drawList);
+    ImVec2 workspaceBarPosition = ImVec2(titleBarPosition.x + (titleBarSize.x - workspaceBar.size.x) * 0.5f, headerPosition.y + headerSize.y + style.padding.y * 0.9f);
+    placeWorkspaceBar(drawList, workspaceBarPosition);
 
     //
     // DRAW TOP BORDER
@@ -244,7 +256,7 @@ std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 positio
     return { size, clicked };
 }
 
-void TitleBar::placeWorkspaceBar(ImDrawList& drawList)
+void TitleBar::placeWorkspaceBar(ImDrawList& drawList, ImVec2 position)
 {
     // Prepare workspace bar if needed
     if (!workspaceBar.evaluated) {
@@ -260,9 +272,6 @@ void TitleBar::placeWorkspaceBar(ImDrawList& drawList)
         // Set workspace bar to prepared
         workspaceBar.evaluated = true;
     }
-
-    // Calculate position (centered)
-    ImVec2 position = titleBarPosition + (titleBarSize - workspaceBar.size) * 0.5f;
 
     // Get font size
     float fontSize = style.workspaceBarFont->FontSize;
