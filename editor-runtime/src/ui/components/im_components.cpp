@@ -231,10 +231,10 @@ namespace IMComponents {
 
 	void input(std::string label, bool& value)
 	{
-		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
-			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.7f);
 			ImGui::TableNextRow();
 
 			// Label
@@ -253,10 +253,10 @@ namespace IMComponents {
 
 	void input(std::string label, int32_t& value, float speed)
 	{
-		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
-			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.7f);
 			ImGui::TableNextRow();
 
 			// Label
@@ -275,10 +275,10 @@ namespace IMComponents {
 
 	void input(std::string label, float& value, float speed)
 	{
-		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
-			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.7f);
 			ImGui::TableNextRow();
 
 			// Label
@@ -293,6 +293,31 @@ namespace IMComponents {
 
 			ImGui::EndTable();
 		}
+
+		/*// Begin a table with 2 columns
+		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
+		{
+			// Set both columns to take up 50% of the available space
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.7f);
+
+			// Create a new row for the input
+			ImGui::TableNextRow();
+
+			// Left column (Label)
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text(label.c_str());
+
+			// Right column (Input)
+			ImGui::TableSetColumnIndex(1);
+
+			ImGui::PushItemWidth(-1);
+			ImGui::DragFloat(EditorUI::generateIdString().c_str(), &value, speed);
+			ImGui::PopItemWidth();
+
+			// End the table (Only 1 row for this input)
+			ImGui::EndTable();
+		}*/
 	}
 
 	void indicatorLabel(std::string label, std::string value, std::string additional)
@@ -386,10 +411,10 @@ namespace IMComponents {
 			static_cast<unsigned char>(value[2] * 255.0f),
 			255);
 
-		if (ImGui::BeginTable(EditorUI::generateIdString().c_str(), 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody))
+		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
-			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.7f);
 			ImGui::TableNextRow();
 
 			// Label
