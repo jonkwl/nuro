@@ -11,7 +11,7 @@
 
 #include "../core/ecs/ecs.h"
 #include "../core/utils/log.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 
 ///																///
 ///			SECURE CONTAINER FOR HANDLING ECS ENTITIES			///
@@ -20,19 +20,19 @@
 struct EntityContainer {
 
 	// Construct entity by root
-	explicit EntityContainer(std::string name, entt::entity root) : name(name), root(root), registry(G_REGISTRY), transform(get<TransformComponent>()) {};
+	explicit EntityContainer(std::string name, Entity root) : name(name), root(root), registry(G_REGISTRY), transform(get<TransformComponent>()) {};
 
 	// Construct entity container with data tuple
-	explicit EntityContainer(std::string name, std::tuple<entt::entity, TransformComponent&> data) : name(name), root(std::get<0>(data)), registry(G_REGISTRY), transform(std::get<1>(data)) {};
+	explicit EntityContainer(std::string name, std::tuple<Entity, TransformComponent&> data) : name(name), root(std::get<0>(data)), registry(G_REGISTRY), transform(std::get<1>(data)) {};
 
 	// Entity containers name
 	std::string name;
 
 	// Entity containers backend entity handle
-	entt::entity root;
+	Entity root;
 
 	// Registry entity container is bound to
-	entt::registry& registry;
+	Registry& registry;
 
 	// Transform component of entity
 	TransformComponent& transform;
@@ -120,7 +120,7 @@ struct EntityContainer {
 	}
 
 	// Compares entity class with ecs root
-	bool operator == (const entt::entity& other) const {
+	bool operator == (const Entity& other) const {
 		return root == other;
 	}
 

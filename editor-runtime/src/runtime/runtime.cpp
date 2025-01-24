@@ -3,6 +3,9 @@
 #include <glad/glad.h>
 #include <glm.hpp>
 
+#include <thread>
+#include <chrono>
+
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
 
@@ -315,6 +318,10 @@ namespace Runtime {
 
 		// CREATE LOADING SCREEN
 		// _createLoadingScreen();
+
+		// WELCOME TEXT
+		Log::printWelcome();
+		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
 		// Ready application
 		ApplicationContext::maximizeWindow();

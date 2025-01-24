@@ -137,4 +137,39 @@ namespace Log
 			"GL_DEPTH_WRITEMASK: " + std::string(depthMask ? "Enabled" : "Disabled"));
 	}
 
+	void printWelcome()
+	{
+
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "#######################################################################################" << std::endl;
+		std::cout << "#                                                                                     #" << std::endl;
+		std::cout << "#         ________                                                                    #" << std::endl;
+		std::cout << "#        / / / / /                                                                    #" << std::endl;
+		std::cout << "#       / / / / /                                                                     #" << std::endl;
+		std::cout << "#      / / / / /                                                                      #" << std::endl;
+		std::cout << "#     /_/_/_/_/     __        _______ _     ____ ___  __  __ _____ _                  #" << std::endl;
+		std::cout << "#        / / /      \\ \\      / / ____| |   / ___/ _ \\|  \\/  | ____| |                 #" << std::endl;
+		std::cout << "#       / / /___     \\ \\ /\\ / /|  _| | |  | |  | | | | |\\/| |  _| | |                 #" << std::endl;
+		std::cout << "#      / / / / /      \\ V  V / | |___| |__| |__| |_| | |  | | |___|_|                 #" << std::endl;
+		std::cout << "#     /_/_/ / /        \\_/\\_/  |_____|_____\\____\\___/|_|  |_|_____(_)                 #" << std::endl;
+		std::cout << "#        / / /                                                                        #" << std::endl;
+		std::cout << "#       /_/_/_____                                                                    #" << std::endl;
+		std::cout << "#        / / / / /                                                                    #" << std::endl;
+		std::cout << "#       / / / / /                                                                     #" << std::endl;
+		std::cout << "#      / / / / /                                                                      #" << std::endl;
+		std::cout << "#     /_/_/_/_/                                                                       #" << std::endl;
+		std::cout << "#                                                                                     #" << std::endl;
+		std::cout << "#######################################################################################" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl;
+
+	}
+
 }

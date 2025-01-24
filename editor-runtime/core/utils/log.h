@@ -38,4 +38,6 @@ namespace Log
 	void printProcessDone(std::string origin, std::string process);
 
 	void printDepthState();
+
+	void printWelcome();
 };

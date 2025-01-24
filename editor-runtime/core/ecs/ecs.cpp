@@ -14,7 +14,7 @@ namespace ECS {
 	void generateRenderQueue()
 	{
 		// Fill target queue
-		std::vector<entt::entity> targetQueue;
+		std::vector<Entity> targetQueue;
 
 		gRegistry.view<MeshRendererComponent>().each([&](auto entity, const auto&) { 
 			targetQueue.push_back(entity); 
@@ -41,10 +41,10 @@ namespace ECS {
 		}
 	}
 
-	std::tuple<entt::entity, TransformComponent&> createEntity(TransformComponent* parent)
+	std::tuple<Entity, TransformComponent&> createEntity(TransformComponent* parent)
 	{
 		// Create new entity and emplace transform component
-		entt::entity entity = gRegistry.create();
+		Entity entity = gRegistry.create();
 		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
 
 		// Add parent if set
@@ -54,7 +54,7 @@ namespace ECS {
 		Transform::evaluate(transform, glm::perspective(0.0f, 0.0f, 0.0f, 0.0f));
 
 		// Return entity and transform component
-		return std::tuple<entt::entity, TransformComponent&>(entity, transform);
+		return std::tuple<Entity, TransformComponent&>(entity, transform);
 	}
 
 	RenderQueue& getRenderQueue()
@@ -66,7 +66,7 @@ namespace ECS {
 	{
 		RegistryState state;
 		entt::snapshot{ gRegistry }
-			.get<entt::entity>(state)
+			.get<Entity>(state)
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
 			.get<CameraComponent>(state);
@@ -79,7 +79,7 @@ namespace ECS {
 		gRegistry.clear();
 
 		entt::snapshot_loader{ gRegistry }
-			.get<entt::entity>(state)
+			.get<Entity>(state)
 			.get<TransformComponent>(state)
 			.get<MeshRendererComponent>(state)
 			.get<CameraComponent>(state);

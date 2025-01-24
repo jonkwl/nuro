@@ -7,7 +7,7 @@
 #include <gtx/component_wise.hpp>
 
 #include "../core/utils/log.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/ecs_collection.h"
 #include "../core/physics/rigidbody/rigidbody.h"
 #include "../core/physics/utils/px_translator.h"
 #include "../core/physics/core/physics_factory.h"
@@ -34,13 +34,13 @@ public:
 
 	// Returns if given entity in given registry has specific component
 	template <typename T>
-	inline bool has(entt::registry& registry, entt::entity entity) {
+	inline bool has(Registry& registry, Entity entity) {
 		return registry.any_of<T>(entity);
 	}
 	
 	// Returns reference to specific component from given entity in given registry
 	template <typename T>
-	inline T& get(entt::registry& registry, entt::entity entity) {
+	inline T& get(Registry& registry, Entity entity) {
 		return registry.get<T>(entity);
 	}
 
@@ -51,21 +51,21 @@ public:
 	//
 
 	// Attach given shape to entities rigidbody if it already has one
-	void try_rbAttachShape(entt::registry& reg, entt::entity ent, physx::PxShape* shape) {
+	void try_rbAttachShape(Registry& reg, Entity ent, physx::PxShape* shape) {
 		if (has<RigidbodyComponent>(reg, ent)) {
 			get<RigidbodyComponent>(reg, ent).actor->attachShape(*shape);
 		}
 	}
 
 	// Detach given shape from entities rigidbody if it already has one
-	void try_rbDetachShape(entt::registry& reg, entt::entity ent, physx::PxShape* shape) {
+	void try_rbDetachShape(Registry& reg, Entity ent, physx::PxShape* shape) {
 		if (has<RigidbodyComponent>(reg, ent)) {
 			get<RigidbodyComponent>(reg, ent).actor->detachShape(*shape);
 		}
 	}
 
 	// Attach any colliders already added to entity to given rigidbody actor
-	void try_rbAttachExistingColliders(entt::registry& reg, entt::entity ent, physx::PxRigidDynamic* rb) {
+	void try_rbAttachExistingColliders(Registry& reg, Entity ent, physx::PxRigidDynamic* rb) {
 
 		// Attach box collider if existing
 		if (has<BoxColliderComponent>(reg, ent)) {
@@ -85,7 +85,7 @@ public:
 	// EVENTS
 	//
 
-	void constructBoxCollider(entt::registry& reg, entt::entity ent)
+	void constructBoxCollider(Registry& reg, Entity ent)
 	{
 		// Get components
 		BoxColliderComponent& boxCollider = get<BoxColliderComponent>(reg, ent);
@@ -100,7 +100,7 @@ public:
 		try_rbAttachShape(reg, ent, boxCollider.shape);
 	}
 
-	void destroyBoxCollider(entt::registry& reg, entt::entity ent)
+	void destroyBoxCollider(Registry& reg, Entity ent)
 	{
 		// Get components
 		BoxColliderComponent& boxCollider = get<BoxColliderComponent>(reg, ent);
@@ -112,7 +112,7 @@ public:
 		boxCollider.shape->release();
 	}
 
-	void constructSphereCollider(entt::registry& reg, entt::entity ent)
+	void constructSphereCollider(Registry& reg, Entity ent)
 	{
 		// Get components
 		SphereColliderComponent& sphereCollider = get<SphereColliderComponent>(reg, ent);
@@ -127,7 +127,7 @@ public:
 		try_rbAttachShape(reg, ent, sphereCollider.shape);
 	}
 
-	void destroySphereCollider(entt::registry& reg, entt::entity ent)
+	void destroySphereCollider(Registry& reg, Entity ent)
 	{
 		// Get components
 		SphereColliderComponent& sphereCollider = get<SphereColliderComponent>(reg, ent);
@@ -139,7 +139,7 @@ public:
 		sphereCollider.shape->release();
 	}
 
-	void constructRigidbody(entt::registry& reg, entt::entity ent)
+	void constructRigidbody(Registry& reg, Entity ent)
 	{
 		// Get components
 		RigidbodyComponent& rigidbody = get<RigidbodyComponent>(reg, ent);
@@ -166,7 +166,7 @@ public:
 		rigidbody.rotation = transform.rotation;
 	}
 
-	void destroyRigidbody(entt::registry& reg, entt::entity ent)
+	void destroyRigidbody(Registry& reg, Entity ent)
 	{
 		// Get components
 		RigidbodyComponent& rigidbody = get<RigidbodyComponent>(reg, ent);

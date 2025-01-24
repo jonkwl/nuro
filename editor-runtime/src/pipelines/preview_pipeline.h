@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include <vector>
 
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 #include "../core/viewport/viewport.h"
 
 class Model;

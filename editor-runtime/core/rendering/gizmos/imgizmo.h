@@ -5,7 +5,7 @@
 #include <glm.hpp>
 
 #include "../core/rendering/texture/texture.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 
 class Shader;
 class Model;

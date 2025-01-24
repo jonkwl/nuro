@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\include;$(ProjectDir)dependencies\include_seperate\physx;$(ProjectDir)dependencies\include_seperate\stb;$(ProjectDir)dependencies\include_seperate\glm;$(ProjectDir)dependencies\include_seperate\entt;$(ProjectDir)dependencies\include_seperate\json;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\include\collection;$(ProjectDir)dependencies\include\physx;$(ProjectDir)dependencies\include\stb;$(ProjectDir)dependencies\include\glm;$(ProjectDir)dependencies\include\entt;$(ProjectDir)dependencies\include\json;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -228,7 +228,7 @@
     <ClInclude Include="src\ui\context_menu.h" />
     <ClInclude Include="core\backend\api.h" />
     <ClInclude Include="core\context\application_context.h" />
-    <ClInclude Include="core\ecs\components.h" />
+    <ClInclude Include="core\ecs\components.hpp" />
     <ClInclude Include="core\ecs\composed.h" />
     <ClInclude Include="core\ecs\ecs.h" />
     <ClInclude Include="core\ecs\ecs_collection.h" />

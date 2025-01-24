@@ -4,15 +4,17 @@
 #include <cstdint>
 #include <vector>
 
+using Entity = entt::entity;
+
 struct RegistryState {
 	std::vector<std::byte> buffer;
 	size_t offset = 0;
 
-	void operator()(std::underlying_type_t<entt::entity> value) {
+	void operator()(std::underlying_type_t<Entity> value) {
 		store(value);
 	}
 
-	void operator()(entt::entity value) {
+	void operator()(Entity value) {
 		store(value);
 	}
 

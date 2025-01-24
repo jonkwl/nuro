@@ -211,7 +211,7 @@ void _example() {
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
-	entt::entity invaliddd = entt::entity();
+	Entity invaliddd = Entity();
 	EntityContainer x("Some", invaliddd);
 	x.add<TransformComponent>();
 	x.remove<TransformComponent>();

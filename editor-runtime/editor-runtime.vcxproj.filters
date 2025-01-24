@@ -419,7 +419,7 @@
     <ClInclude Include="core\rendering\icons\icon_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\components.h">
+    <ClInclude Include="core\ecs\components.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pipelines\game_view_pipeline.h">

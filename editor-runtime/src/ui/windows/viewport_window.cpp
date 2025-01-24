@@ -13,7 +13,7 @@
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/transformation/transformation.h"
 #include "../core/transform/transform.h"
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 #include "../core/rendering/material/lit/lit_material.h"
 
 #include "../core/input/input.h"

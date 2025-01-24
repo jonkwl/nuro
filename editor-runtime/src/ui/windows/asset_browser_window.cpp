@@ -94,7 +94,7 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 
 	IMComponents::beginChild(size, position);
 	{
-		ImGui::Dummy(ImVec2(0.0f, 10.0f));
+		ImGui::Dummy(ImVec2(0.0f, 6.0f));
 
 		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
 		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
@@ -126,7 +126,7 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
 		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
 
-		ImGui::Dummy(ImVec2(0.0f, 10.0f));
+		ImGui::Dummy(ImVec2(0.0f, 6.0f));
 	}
 	IMComponents::endChild();
 

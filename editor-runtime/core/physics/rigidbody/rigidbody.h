@@ -2,7 +2,7 @@
 
 #include <glm.hpp>
 
-#include "../core/ecs/components.h"
+#include "../core/ecs/components.hpp"
 #include "../core/physics/rigidbody/rigidbody_enums.h"
 
 namespace Rigidbody
