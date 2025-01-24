@@ -14,7 +14,7 @@ void ConsoleWindow::render()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(UIUtils::windowTitle("Console"), nullptr, EditorFlag::standard);
 	{
-		// Get draw list
+		// Get 1 list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
 		//
@@ -23,7 +23,7 @@ void ConsoleWindow::render()
 
 		// Draw toggles
 		float toolbarOffset = 34.0f;
-		ImVec2 toolbarPos = ImGui::GetCursorScreenPos() + ImVec2(10.0f, 10.0f);
+		ImVec2 toolbarPos = ImGui::GetCursorScreenPos() + ImVec2(10.0f, 11.0f);
 		IMComponents::toggleButton(drawList, messageIcon, showMessages, "Show Messages", toolbarPos);
 		toolbarPos += ImVec2(toolbarOffset, 0.0f);
 		IMComponents::toggleButton(drawList, warningIcon, showWarnings, "Show Warnings", toolbarPos);
@@ -134,13 +134,18 @@ void ConsoleWindow::drawLog(ImDrawList& drawList, ConsoleLog log)
 	ImVec2 contentPosition = ImVec2(p0.x + elementPadding, p0.y + elementPadding);
 	switch (log.type) {
 	case ConsoleLogType::MESSAGE:
-		drawList.AddText(contentPosition, textColor, messageIcon); break;
+		// drawList.AddText(contentPosition, textColor, messageIcon); 
+		break;
 	case ConsoleLogType::WARNING:
-		drawList.AddText(contentPosition, textColor, warningIcon); break;
+		drawList.AddText(contentPosition, textColor, warningIcon);
+		contentPosition.x += 21.0f;
+		break;
 	case ConsoleLogType::ERROR:
-		drawList.AddText(contentPosition, textColor, errorIcon); break;
+		drawList.AddText(contentPosition, textColor, errorIcon);
+		contentPosition.x += 21.0f;
+		break;
 	}
-	drawList.AddText(ImVec2(contentPosition.x + ImGui::GetFontSize() + originPaddingY, contentPosition.y), textColor, log.content.c_str());
+	drawList.AddText(contentPosition, textColor, log.content.c_str());
 
 	// Draw origin text
 	ImVec2 originPosition = ImVec2(contentPosition.x, contentPosition.y + 20.0f);

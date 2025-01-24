@@ -104,9 +104,9 @@ void TitleBar::renderContent(ImDrawList& drawList)
     //
 
     std::string headerText = "Application 0.0.1";
-    ImVec2 headerSize = style.secondaryFont->CalcTextSizeA(style.secondaryFont->FontSize, FLT_MAX, 0.0f, headerText.c_str());
+    ImVec2 headerSize = style.primaryFont->CalcTextSizeA(style.primaryFont->FontSize, FLT_MAX, 0.0f, headerText.c_str());
     ImVec2 headerPosition = ImVec2(titleBarPosition.x + (titleBarSize.x - headerSize.x) * 0.5f, titleBarPosition.y + style.padding.y * 1.2f);
-    drawList.AddText(style.secondaryFont, style.secondaryFont->FontSize, headerPosition, style.secondaryTextColor, headerText.c_str());
+    drawList.AddText(style.primaryFont, style.primaryFont->FontSize, headerPosition, style.secondaryTextColor, headerText.c_str());
 
     //
     // DRAW WORKSPACE BAR
@@ -285,9 +285,12 @@ void TitleBar::placeWorkspaceBar(ImDrawList& drawList, ImVec2 position)
         // Evaluate selection
         bool selected = i == workspaceBar.selection;
 
+        // Slight color
+        ImU32 unselectedColor = IM_COL32(255, 255, 255, 100);
+
         // Draw text
         ImVec2 textSize = style.workspaceBarFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, workspaceBar.items[i]);
-        drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : style.secondaryTextColor, workspaceBar.items[i]);
+        drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : unselectedColor, workspaceBar.items[i]);
 
         // Evaluate item interactions
         ImVec2 itemSize = workspaceBar.itemSizes[i];
@@ -300,7 +303,7 @@ void TitleBar::placeWorkspaceBar(ImDrawList& drawList, ImVec2 position)
             ImU32 color = style.workspaceItemColorHovered;
             if (selected) color = style.workspaceItemColorActive;
             drawList.AddRectFilled(p0, p1, color, style.workspaceItemRounding);
-            drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : style.secondaryTextColor, workspaceBar.items[i]);
+            drawList.AddText(style.workspaceBarFont, fontSize, cursor, selected ? style.primaryTextColor : unselectedColor, workspaceBar.items[i]);
         }
 
         // Advance cursor

@@ -1,5 +1,13 @@
 #include "asset_browser_window.h"
 
+#include <algorithm>
+
+AssetBrowserWindow::AssetBrowserWindow()
+{
+	// Fetch icon ids
+	icons.folder = IconPool::get("folder").getBackendId();
+}
+
 void AssetBrowserWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -9,6 +17,11 @@ void AssetBrowserWindow::render()
 
 		ImVec2 size = ImGui::GetContentRegionAvail();
 		ImVec2 position = ImGui::GetCursorScreenPos();
+		ImVec2 initPosition = ImGui::GetCursorScreenPos();
+
+		//
+		// RENDER ELEMENTS
+		//
 		
 		ImVec2 folderStructureSize = renderFolderStructure(drawList, position);
 		position.x += folderStructureSize.x;
@@ -26,7 +39,7 @@ void AssetBrowserWindow::render()
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
 {
 	//
-	// EVALUATE GEOMETRY
+	// EVALUATE
 	//
 
 	const float height = 40.0f;
@@ -36,7 +49,7 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 	ImVec2 p0 = position;
 	ImVec2 p1 = p0 + size;
 
-	ImU32 color = IM_COL32(50, 50, 90, 50);
+	ImU32 color = IM_COL32(11, 11, 11, 255);
 
 	//
 	// DRAW BACKGROUND
@@ -49,7 +62,7 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 	//
 
 	// Example strings
-	std::string pathRoot = "Project Folder / Asset Folder / Sub Folder / ";
+	std::string pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + "Project Folder / Asset Folder / Sub Folder / ";
 	std::string pathEnd = "Current Folder";
 
 	// Evaluate position
@@ -70,17 +83,17 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 position)
 {
 	//
-	// EVALUATE GEOMETRY
+	// EVALUATE
 	//
 
-	const float width = 180.0f;
+	const float width = 240.0f;
 	const float xPadding = 20.0f;
 
 	ImVec2 size = ImVec2(width, ImGui::GetContentRegionAvail().y);
 	ImVec2 p0 = position;
 	ImVec2 p1 = p0 + size;
 
-	ImU32 color = IM_COL32(0, 0, 0, 50);
+	ImU32 color = IM_COL32(0, 0, 0, 0);
 
 	//
 	// DRAW BACKGROUND
@@ -92,41 +105,81 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 	// DRAW FOLDERS
 	//
 
+	Folder a;
+	a.children.push_back(Folder());
+	a.children.push_back(Folder());
+	a.children.push_back(Folder());
+	a.children.push_back(Folder());
+	a.children.push_back(Folder());
+	a.expanded = true;
+
+	Folder x;
+	x.children.push_back(Folder());
+	x.children.push_back(Folder());
+	x.expanded = true;
+	a.children.push_back(x);
+
+	Folder y;
+	y.children.push_back(Folder());
+	y.children.push_back(Folder());
+	y.expanded = true;
+	x.children.push_back(y);
+
+	Folder z;
+	z.children.push_back(Folder());
+	z.expanded = true;
+	y.children.push_back(z);
+
+	Folder w;
+	w.children.push_back(Folder());
+	w.expanded = true;
+	z.children.push_back(w);
+
+	Folder b;
+	b.children.push_back(Folder());
+	b.expanded = true;
+
+	Folder c;
+	c.children.push_back(Folder());
+	c.children.push_back(Folder());
+	c.children.push_back(Folder());
+	c.expanded = true;
+
 	IMComponents::beginChild(size, position);
 	{
-		ImGui::Dummy(ImVec2(0.0f, 6.0f));
+		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
-		renderFolderItem(drawList, AssetBrowserFolder(), 0.0f);
+		renderFolderItem(drawList, a, 0.0f);
+		renderFolderItem(drawList, b, 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, c, 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
+		renderFolderItem(drawList, Folder(), 0.0f);
 
-		ImGui::Dummy(ImVec2(0.0f, 6.0f));
+		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 	}
 	IMComponents::endChild();
 
@@ -136,13 +189,13 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 position, ImVec2 size)
 {
 	//
-	// EVALUATE GEOMETRY
+	// EVALUATE
 	//
 
 	ImVec2 p0 = position;
 	ImVec2 p1 = p0 + size;
 
-	ImU32 color = IM_COL32(255, 90, 90, 10);
+	ImU32 color = EditorColor::background;
 
 	//
 	// DRAW BACKGROUND
@@ -156,25 +209,15 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 
 	IMComponents::beginChild(size, position);
 	{
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
-		ImGui::Dummy(ImVec2(size.x, 100.0f));
+		position += ImVec2(16.0f, 10.0f);
+		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
+		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
+		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
 	}
 	IMComponents::endChild();
 }
 
-void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFolder folder, uint32_t indentation)
+void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder folder, uint32_t indentation)
 {
 	//
 	// ADDITIONALLY GET FOREGROUND DRAW LIST
@@ -184,8 +227,8 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 	//
 	// PROPERTIES
 	//
-	const float indentationOffset = 30.0f;
-	const ImVec2 textPadding = ImVec2(10.0f, 4.5f);
+	const float indentationOffset = 26.0f;
+	const ImVec2 textPadding = ImVec2(20.0f, 4.5f);
 
 	//
 	// EVALUATE
@@ -216,9 +259,9 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 	//
 
 	// Base: Standard background color
-	ImU32 color = IM_COL32(0, 0, 0, 0);
+	ImU32 color = EditorColor::background;
 	// Priority #3:  Color when item is hovered
-	if (hovered) color = UIUtils::lighten(EditorColor::background, 0.38f);
+	if (hovered) color = UIUtils::lighten(color, 0.75f);
 	// Priority #2: Color when item is selected
 	if (selected) color = ImGui::IsWindowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
 
@@ -309,10 +352,18 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 	}
 
 	//
+	// DRAW FOLDER ICON
+	//
+
+	ImVec2 iconSize = ImVec2(15.0f, 15.0f);
+	ImVec2 iconPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + (finalSize.y - iconSize.y) * 0.5f);
+	drawList.AddImage(icons.folder, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
+
+	//
 	// EVALUATE ITEM TEXT POSITION
 	//
 
-	ImVec2 textPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + textPadding.y);
+	ImVec2 textPos = ImVec2(iconPos.x + iconSize.x + 10.0f, rectMin.y + textPadding.y);
 
 	//
 	// DRAW ITEM CARET CIRCLE
@@ -322,7 +373,7 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 		// Circle geometry
 		float circleRadius = 9.0f;
 		ImVec2 circlePosition = ImVec2(
-			textPos.x + circleRadius + 1.0f,
+			textPos.x + circleRadius - 2.0f,
 			textPos.y + circleRadius * 0.5f + 1.0f);
 
 		// Fetch circle interactions
@@ -349,13 +400,13 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 	// EVALUATE ICON
 	//
 
-	const char* icon = hasChildren ? (folder.expanded ? " " ICON_FA_CARET_DOWN : " " ICON_FA_CARET_RIGHT) : "";
+	const char* icon = hasChildren ? (folder.expanded ? ICON_FA_CARET_DOWN " " : ICON_FA_CARET_RIGHT " ") : "";
 
 	//
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon) + "   " + folder.name;
+	std::string textValue = std::string(icon) + folder.name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -363,7 +414,7 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 	//
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 7.0f));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 6.0f));
 	ImGui::PopStyleVar();
 
 	//
@@ -375,4 +426,54 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, AssetBrowserFold
 			renderFolderItem(drawList, child, indentation + 1);
 		}
 	}
+}
+
+ImVec2 AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset asset, ImVec2 position)
+{
+	//
+	// EVALUATE
+	//
+
+	ImVec2 padding = ImVec2(10.0f, 7.0f);
+
+	ImVec2 iconSize = ImVec2(50.0f, 50.0f);
+	
+	ImFont* font = EditorUI::getFonts().p;
+	ImVec2 textSize = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
+	ImU32 textColor = EditorColor::text;
+
+	ImVec2 size = iconSize + padding * 2.0f + ImVec2(0.0f, textSize.y + padding.y);
+	size.x = std::max(size.x, textSize.x + padding.x * 2.0f);
+
+	ImVec2 p0 = position;
+	ImVec2 p1 = position + size;
+
+	bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
+	bool selected = true;
+
+	//
+	// DRAW BACKGROUND
+	//
+
+	ImU32 color = IM_COL32(0, 0, 0, 0);
+	if (hovered) color = IM_COL32(255, 255, 255, 10);
+	if (selected) color = EditorColor::selection;
+
+	drawList.AddRectFilled(p0, p1, color, 10.0f);
+
+	//
+	// DRAW ICON
+	//
+
+	ImVec2 iconPos = ImVec2(position.x + (size.x - iconSize.x) * 0.5f, position.y + padding.y);
+	drawList.AddImage(icons.folder, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
+
+	//
+	// DRAW TEXT
+	//
+
+	ImVec2 textPos = ImVec2(position.x + (size.x - textSize.x) * 0.5f, iconPos.y + iconSize.y + padding.y);
+	drawList.AddText(font, font->FontSize, textPos, textColor, asset.name.c_str());
+
+	return size;
 }
