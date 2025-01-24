@@ -13,6 +13,7 @@ public:
 
 public:
 	enum class AssetType {
+		FOLDER,
 		SCENE,
 		MODEL,
 		MATERIAL,
@@ -60,4 +61,6 @@ private:
 
 private:
 	Icons icons;
+
+	float assetScale;
 };

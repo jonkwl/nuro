@@ -2,7 +2,10 @@
 
 #include <algorithm>
 
-AssetBrowserWindow::AssetBrowserWindow()
+#include "../src/ui/windows/insight_panel_window.h"
+
+AssetBrowserWindow::AssetBrowserWindow() : icons(),
+assetScale(1.0f)
 {
 	// Fetch icon ids
 	icons.folder = IconPool::get("folder").getBackendId();
@@ -213,6 +216,11 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
 		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
 		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
+
+		Asset a;
+		a.name = "Default Material";
+		a.thumbnail = InsightPanelWindow::previewOutput;
+		position.x += renderAssetItem(drawList, a, position).x + 1.0f;
 	}
 	IMComponents::endChild();
 }
@@ -434,9 +442,8 @@ ImVec2 AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset asset, Im
 	// EVALUATE
 	//
 
-	ImVec2 padding = ImVec2(10.0f, 7.0f);
-
-	ImVec2 iconSize = ImVec2(50.0f, 50.0f);
+	ImVec2 padding = ImVec2(10.0f, 7.0f) * assetScale;
+	ImVec2 iconSize = ImVec2(50.0f, 50.0f) * assetScale;
 	
 	ImFont* font = EditorUI::getFonts().p;
 	ImVec2 textSize = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
@@ -449,15 +456,15 @@ ImVec2 AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset asset, Im
 	ImVec2 p1 = position + size;
 
 	bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
-	bool selected = true;
+	bool selected = false;
 
 	//
 	// DRAW BACKGROUND
 	//
 
 	ImU32 color = IM_COL32(0, 0, 0, 0);
-	if (hovered) color = IM_COL32(255, 255, 255, 10);
-	if (selected) color = EditorColor::selection;
+	if (hovered) color = IM_COL32(255, 255, 255, 12);
+	if (selected) color = IM_COL32(85, 110, 255, 80);
 
 	drawList.AddRectFilled(p0, p1, color, 10.0f);
 
@@ -465,8 +472,19 @@ ImVec2 AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset asset, Im
 	// DRAW ICON
 	//
 
+	uint32_t icon = 0;
+	if (asset.thumbnail) icon = asset.thumbnail;
+	else {
+		switch (asset.type) {
+		// ...
+		default:
+			icon = icons.folder;
+			break;
+		}
+	}
+
 	ImVec2 iconPos = ImVec2(position.x + (size.x - iconSize.x) * 0.5f, position.y + padding.y);
-	drawList.AddImage(icons.folder, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
+	drawList.AddImageRounded(icon, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0), IM_COL32_WHITE, 10.0f);
 
 	//
 	// DRAW TEXT

@@ -4,6 +4,8 @@
 
 Inspectable* InsightPanelWindow::inspected;
 
+uint32_t InsightPanelWindow::previewOutput = 0;
+
 InsightPanelWindow::InsightPanelWindow() : previewViewerOutput(0),
 previewViewerHeight(300.0f),
 previewCameraTransform()
@@ -262,6 +264,9 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 
 	// Fetch output texture source
 	uint32_t source = output.texture;
+
+	// tmp
+	previewOutput = output.texture;
 
 	//
 	// DRAW RENDERED PREVIEW

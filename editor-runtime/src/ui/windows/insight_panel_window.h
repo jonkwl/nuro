@@ -21,6 +21,9 @@ public:
 	// Renders an image by the given backend texture id
 	static void renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin = { 0.0f, 15.0f });
 
+	// tmp
+	static uint32_t previewOutput;
+
 private:
 	// Currently inspected object
 	static Inspectable* inspected;
