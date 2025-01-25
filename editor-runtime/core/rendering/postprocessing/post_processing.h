@@ -31,7 +31,8 @@ namespace PostProcessing
 	struct Bloom {
 
 		bool enabled = true;
-		float intensity = 0.4f;
+		// float intensity = 0.4f;
+		float intensity = 0.075f;
 		float color[3] = { 1.0f, 1.0f, 1.0f };
 		float threshold = 0.465f;
 		float softThreshold = 0.0f;

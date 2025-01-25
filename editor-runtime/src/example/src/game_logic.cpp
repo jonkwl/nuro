@@ -133,7 +133,7 @@ void _example() {
 	EntityContainer pointLight("Point Light", ECS::createEntity());
 	pointLight.transform.position = glm::vec3(0.0f, 2.0f, 45.0f);
 	PointLightComponent& pointLightSource = pointLight.add<PointLightComponent>();
-	pointLightSource.intensity = 8.0f;
+	pointLightSource.intensity = 3.0f;
 	pointLightSource.color = glm::vec3(0.5f, 0.0f, 1.0f);
 	pointLightSource.range = 25.0f;
 	pointLightSource.falloff = 15.0f;

@@ -285,7 +285,7 @@ namespace Runtime {
 		config.windowSize = gStartupWindowSize;
 		config.fullscreen = false;
 		config.menubarVisible = false;
-		config.vsync = false;
+		config.vsync = true;
 		config.resizeable = false;
 
 		// Create application context instance

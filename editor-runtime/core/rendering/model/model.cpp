@@ -49,7 +49,7 @@ metrics()
 
 void Model::resolveModel(std::string path)
 {
-	Log::printProcessStart("Model", "Building model " + IOHandler::getFilename(path) + "...");
+	Log::printProcessStart("Model", "Loading model " + IOHandler::getFilename(path) + "...");
 
 	// Set model import flags
 	uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;

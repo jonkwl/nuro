@@ -9,6 +9,13 @@ assetScale(1.0f)
 {
 	// Fetch icon ids
 	icons.folder = IconPool::get("folder").getBackendId();
+
+	// tmp
+	for (int i = 0; i < 100; i++) {
+		Asset a;
+		a.name = "Asset " + std::to_string(i);
+		currentAssets.push_back(a);
+	}
 }
 
 void AssetBrowserWindow::render()
@@ -154,33 +161,7 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 
 		renderFolderItem(drawList, a, 0.0f);
 		renderFolderItem(drawList, b, 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
 		renderFolderItem(drawList, c, 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
-		renderFolderItem(drawList, Folder(), 0.0f);
 
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 	}
@@ -210,22 +191,52 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 	// DRAW ASSETS
 	//
 
+	ImVec2 padding = ImVec2(16.0f, 10.0f);
+	ImVec2 gap = ImVec2(1.0f, 3.5f);
+
 	IMComponents::beginChild(size, position);
 	{
-		position += ImVec2(16.0f, 10.0f);
-		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
-		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
-		position.x += renderAssetItem(drawList, Asset(), position).x + 1.0f;
+		//
+		// CREATE ASSET UI DATA (GEOMETRY ETC)
+		//
 
-		Asset a;
-		a.name = "Default Material";
-		a.thumbnail = InsightPanelWindow::previewOutput;
-		position.x += renderAssetItem(drawList, a, position).x + 1.0f;
+		// Optimization: Doesnt have to be done every frame, only when assets change and only for those who changed
+		for (Asset& asset : currentAssets) {
+			createAssetUIData(asset);
+		}
+
+		//
+		// DRAW ASSETS
+		//
+
+		// Initialize cursor with padding (local cursor relative to window)
+		ImVec2 cursor = padding;
+
+		for (Asset asset : currentAssets) {
+			// Check for new line
+			if (cursor.x + asset.uiData.size.x > size.x - padding.x) {
+				// Start new line using current assets height
+				cursor.x = padding.x;
+				cursor.y += asset.uiData.size.y + gap.y;
+			}
+
+			// Advance internal cursor
+			ImGui::SetCursorPos(cursor);
+
+			// Draw asset
+			renderAssetItem(drawList, asset, ImGui::GetCursorScreenPos());
+
+			// Add vertical gap for next asset
+			cursor.x += asset.uiData.size.x + gap.x;
+		}
+
+		// Add bottom padding
+		ImGui::SetCursorPos(cursor + ImVec2(0.0f, padding.y));
 	}
 	IMComponents::endChild();
 }
 
-void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder folder, uint32_t indentation)
+void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, uint32_t indentation)
 {
 	//
 	// ADDITIONALLY GET FOREGROUND DRAW LIST
@@ -436,24 +447,31 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder folder, u
 	}
 }
 
-ImVec2 AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset asset, ImVec2 position)
+void AssetBrowserWindow::createAssetUIData(Asset& asset)
 {
 	//
 	// EVALUATE
 	//
 
-	ImVec2 padding = ImVec2(10.0f, 7.0f) * assetScale;
-	ImVec2 iconSize = ImVec2(50.0f, 50.0f) * assetScale;
-	
-	ImFont* font = EditorUI::getFonts().p;
-	ImVec2 textSize = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
+	asset.uiData.font = EditorUI::getFonts().p;
+	asset.uiData.padding = ImVec2(10.0f, 7.0f) * assetScale;
+	asset.uiData.iconSize = ImVec2(50.0f, 50.0f) * assetScale;
+
+	asset.uiData.textSize = asset.uiData.font->CalcTextSizeA(asset.uiData.font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
+	asset.uiData.size = asset.uiData.iconSize + asset.uiData.padding * 2.0f + ImVec2(0.0f, asset.uiData.textSize.y + asset.uiData.padding.y);
+	asset.uiData.size.x = std::max(asset.uiData.size.x, asset.uiData.textSize.x + asset.uiData.padding.x * 2.0f);
+}
+
+void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImVec2 position)
+{
+	//
+	// EVALUATE
+	//
+
 	ImU32 textColor = EditorColor::text;
 
-	ImVec2 size = iconSize + padding * 2.0f + ImVec2(0.0f, textSize.y + padding.y);
-	size.x = std::max(size.x, textSize.x + padding.x * 2.0f);
-
 	ImVec2 p0 = position;
-	ImVec2 p1 = position + size;
+	ImVec2 p1 = position + asset.uiData.size;
 
 	bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
 	bool selected = false;
@@ -483,15 +501,13 @@ ImVec2 AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset asset, Im
 		}
 	}
 
-	ImVec2 iconPos = ImVec2(position.x + (size.x - iconSize.x) * 0.5f, position.y + padding.y);
-	drawList.AddImageRounded(icon, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0), IM_COL32_WHITE, 10.0f);
+	ImVec2 iconPos = ImVec2(position.x + (asset.uiData.size.x - asset.uiData.iconSize.x) * 0.5f, position.y + asset.uiData.padding.y);
+	drawList.AddImageRounded(icon, iconPos, iconPos + asset.uiData.iconSize, ImVec2(0, 1), ImVec2(1, 0), IM_COL32_WHITE, 10.0f);
 
 	//
 	// DRAW TEXT
 	//
 
-	ImVec2 textPos = ImVec2(position.x + (size.x - textSize.x) * 0.5f, iconPos.y + iconSize.y + padding.y);
-	drawList.AddText(font, font->FontSize, textPos, textColor, asset.name.c_str());
-
-	return size;
+	ImVec2 textPos = ImVec2(position.x + (asset.uiData.size.x - asset.uiData.textSize.x) * 0.5f, iconPos.y + asset.uiData.iconSize.y + asset.uiData.padding.y);
+	drawList.AddText(asset.uiData.font, asset.uiData.font->FontSize, textPos, textColor, asset.name.c_str());
 }
