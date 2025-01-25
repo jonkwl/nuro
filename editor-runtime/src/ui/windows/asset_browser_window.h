@@ -13,13 +13,14 @@ public:
 
 public:
 	enum class AssetType {
+		FILE,
 		FOLDER,
 		SCENE,
 		MODEL,
 		MATERIAL,
 		SHADER,
 		SCRIPT,
-		MARKDOWN
+		MARKDOWN,
 	};
 
 	struct Folder {
@@ -48,7 +49,7 @@ public:
 		std::string name = "Asset";
 		std::string path = "";
 
-		AssetType type;
+		AssetType type = AssetType::FILE;
 
 		uint32_t thumbnail = 0;
 
@@ -56,7 +57,9 @@ public:
 	};
 
 	struct Icons {
+		uint32_t file = 0;
 		uint32_t folder = 0;
+		uint32_t material = 0;
 	};
 
 private:

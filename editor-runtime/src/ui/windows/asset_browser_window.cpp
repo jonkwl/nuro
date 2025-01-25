@@ -8,12 +8,23 @@ AssetBrowserWindow::AssetBrowserWindow() : icons(),
 assetScale(1.0f)
 {
 	// Fetch icon ids
+	icons.file = IconPool::get("file").getBackendId();
 	icons.folder = IconPool::get("folder").getBackendId();
+	icons.material = IconPool::get("material").getBackendId();
 
 	// tmp
 	for (int i = 0; i < 100; i++) {
 		Asset a;
-		a.name = "Asset " + std::to_string(i);
+
+		if (i < 20) {
+			a.type = AssetType::FOLDER;
+			a.name = "Folder " + std::to_string(i);
+		}
+		else {
+			a.type = AssetType::MATERIAL;
+			a.name = "Material " + std::to_string(i);
+		}
+
 		currentAssets.push_back(a);
 	}
 }
@@ -459,7 +470,11 @@ void AssetBrowserWindow::createAssetUIData(Asset& asset)
 
 	asset.uiData.textSize = asset.uiData.font->CalcTextSizeA(asset.uiData.font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
 	asset.uiData.size = asset.uiData.iconSize + asset.uiData.padding * 2.0f + ImVec2(0.0f, asset.uiData.textSize.y + asset.uiData.padding.y);
-	asset.uiData.size.x = std::max(asset.uiData.size.x, asset.uiData.textSize.x + asset.uiData.padding.x * 2.0f);
+	//asset.uiData.size.x = std::max(asset.uiData.size.x, asset.uiData.textSize.x + asset.uiData.padding.x * 2.0f);
+	
+	// Fixed width for all
+	float xFixedPadding = 6.0f;
+	asset.uiData.size.x = asset.uiData.iconSize.x + asset.uiData.padding.x * 2.0f + xFixedPadding;
 }
 
 void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImVec2 position)
@@ -494,9 +509,17 @@ void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImV
 	if (asset.thumbnail) icon = asset.thumbnail;
 	else {
 		switch (asset.type) {
-		// ...
-		default:
+		case AssetType::FILE:
+			icon = icons.file;
+			break;
+		case AssetType::FOLDER:
 			icon = icons.folder;
+			break;
+		case AssetType::MATERIAL:
+			icon = icons.material;
+			break;
+		default:
+			icon = icons.file;
 			break;
 		}
 	}
