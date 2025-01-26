@@ -32,7 +32,7 @@ void PostProcessingWindow::render()
 			IMComponents::label("Camera Motion Blur Settings", EditorUI::getFonts().p_bold);
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-			IMComponents::input("Enable Camera Motion Blur", targetProfile.motionBlur.cameraEnabled);
+			IMComponents::input("Camera Blur", targetProfile.motionBlur.cameraEnabled);
 			IMComponents::input("Intensity:", targetProfile.motionBlur.cameraIntensity, 0.001f);
 			IMComponents::input("Samples:", targetProfile.motionBlur.cameraSamples, 0.1f);
 
@@ -40,7 +40,7 @@ void PostProcessingWindow::render()
 			IMComponents::label("Object Motion Blur Settings", EditorUI::getFonts().p_bold);
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-			IMComponents::input("Enable Object Motion Blur", targetProfile.motionBlur.objectEnabled);
+			IMComponents::input("Object Blur", targetProfile.motionBlur.objectEnabled);
 			IMComponents::input("Samples:", targetProfile.motionBlur.objectSamples, 0.1f);
 
 			ImGui::Dummy(ImVec2(0.0f, 10.0f));

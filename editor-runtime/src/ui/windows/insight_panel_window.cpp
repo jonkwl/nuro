@@ -101,7 +101,7 @@ void InsightPanelWindow::renderComponent(ImDrawList& drawList)
 	float collapsedHeight = titleHeight + titlePadding.y * 2;
 	float expandedHeight = 250.0f;
 	
-	float yMargin = 0.5f;
+	float yMargin = 2.0f;
 	ImVec2 size = ImVec2(contentAvail.x, collapsed ? collapsedHeight : expandedHeight);
 	ImVec2 p0 = ImVec2(cursorPos.x, cursorPos.y + yMargin);
 	ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
