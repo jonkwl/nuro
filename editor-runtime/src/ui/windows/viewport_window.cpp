@@ -33,6 +33,8 @@ speedChangeTimer(100.0f),
 speedChangeIndicator(),
 mainToggles(),
 playToggles(),
+gamePaused(false),
+gameExecuting(false),
 moveAxis(glm::vec2(0.0f)),
 moveAxisSmoothingFactor(5.0f),
 mouseCurrent(glm::vec2(0.0f)),
@@ -73,9 +75,9 @@ cameraEulerAngles(glm::vec3(0.0f))
 	ToggleBarStyle& playTogglesStyle = playToggles.getStyle();
 	playTogglesStyle.padding = ImVec2(16.0f, 10.0f);
 	playTogglesStyle.font = EditorUI::getFonts().s;
-	playToggles.addItem(ICON_FA_SQUARE, tmp);
-	playToggles.addItem(ICON_FA_PLAY, tmp);
-	playToggles.addItem(ICON_FA_PAUSE, tmp);
+	playToggles.addItem(ICON_FA_PAUSE, gamePaused, true);
+	playToggles.addItem(ICON_FA_PLAY, gameExecuting, true);
+	playToggles.addItem(ICON_FA_SQUARE, tmp, true);
 
 }
 
@@ -185,21 +187,49 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 	ImDrawList& drawList = *ImGui::GetWindowDrawList();
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 
+	// Evaluate game state values
+	GameState gameState = Runtime::getGameState();
+	gamePaused = gameState == GameState::GAME_PAUSED;
+	gameExecuting = gameState == GameState::GAME_RUNNING || gamePaused;
+
 	float padding = 22.0f;
 
-	// Render main toggle bar
+	//
+	// MAIN TOGGLE BAR
+	//
+
 	ImVec2 p0 = position + ImVec2(padding, padding);
 	mainToggles.render(drawList, p0);
 
-	// Render play toggle bar
+	// 
+	// PLAY TOGGLE BAR
+	//
+
 	p0 = position + ImVec2(size.x * 0.5f - playToggles.getSize().x * 0.5f, padding);
 	playToggles.render(drawList, p0);
 
-	// Render right settings button
+	// Evaluate pause clicked
+	if (playToggles.itemClicked(0)) {
+		if (!gamePaused) Runtime::pauseGame();
+		else Runtime::continueGame();
+	}
+	
+	// Evaluate play clicked
+	if (playToggles.itemClicked(1)) {
+		if (!gameExecuting) Runtime::startGame();
+		else Runtime::stopGame();
+	}
+
+	//
+	// SETTINGS BUTTON
+	//
+
 	p0 = position + ImVec2(size.x - 50.0f, padding);
 	IMComponents::toggleButton(drawList, ICON_FA_GEAR, pipeline.useProfileEffects, "Settings", p0);
 
-	// Render labels
+	//
+	// LABELS
+	//
 	p0 = position + ImVec2(padding, 55.0f);
 	std::string speedText = std::string(ICON_FA_GAUGE) + " Speed: " + std::to_string(static_cast<int32_t>(movementSpeed));
 	drawList.AddText(EditorUI::getFonts().s, EditorSizing::s_FontSize, p0, IM_COL32(255, 255, 255, 190), speedText.c_str());
@@ -280,7 +310,7 @@ void ViewportWindow::renderTransformGizmos()
 		// Get transforms new scale
 		glm::vec3 newScale = transform.scale * scaleDelta;
 
-		// Dont change scale axis, if its being decreased and is smaller than minimum
+		// Dont change scale axis, if it's being decreased and is smaller than minimum
 		if (newScale.x < transform.scale.x && newScale.x < gizmoScaleMin) {
 			newScale.x = transform.scale.x;
 		}

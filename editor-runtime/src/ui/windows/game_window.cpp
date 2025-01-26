@@ -13,8 +13,7 @@ lastContentAvail(ImVec2(0.0f, 0.0f)),
 lastWindowSize(ImVec2(0.0f, 0.0f)),
 windowFocused(false),
 windowHovered(false),
-gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f)),
-playToggles()
+gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 {
 	// Setup no camera indicator
 	noCameraIndicator.color = IM_COL32(50, 35, 0, 255);
@@ -27,19 +26,10 @@ playToggles()
 	noCameraIndicator.smoothing = false;
 	DynamicText noCameraText(EditorUI::getFonts().h3);
 	std::string noCameraIcon = ICON_FA_EYE_SLASH;
-	noCameraText.text = noCameraIcon + "     No camera found, can't render";
+	noCameraText.text = noCameraIcon + "     No camera available, can't render";
 	noCameraText.color = IM_COL32(255, 255, 255, 255);
 	noCameraText.alignment = TextAlign::CENTER;
 	noCameraIndicator.addText(noCameraText);
-
-	// Setup play toggles
-	static bool tmp = false;
-	ToggleBarStyle& playTogglesStyle = playToggles.getStyle();
-	playTogglesStyle.padding = ImVec2(16.0f, 10.0f);
-	playTogglesStyle.font = EditorUI::getFonts().s;
-	playToggles.addItem(ICON_FA_SQUARE, tmp);
-	playToggles.addItem(ICON_FA_PLAY, tmp);
-	playToggles.addItem(ICON_FA_PAUSE, tmp);
 }
 
 void GameWindow::render()
@@ -81,12 +71,7 @@ void GameWindow::render()
 
 void GameWindow::renderToolbar(ImDrawList& drawList, ImVec2 position)
 {
-	// Evaluate toggle position
-	float padding = 22.0f;
-	ImVec2 playTogglePosition = position + ImVec2(ImGui::GetWindowWidth() * 0.5f - playToggles.getSize().x * 0.5f, padding);
-
-	// Render toggle buttons for render options
-	playToggles.render(drawList, playTogglePosition);
+	//
 }
 
 void GameWindow::renderGameView()

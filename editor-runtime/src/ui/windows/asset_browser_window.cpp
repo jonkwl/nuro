@@ -364,7 +364,7 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 		}
 		// Only select this item
 		else {
-			// If theres multiple selected items, only select this item if its not among the multiple selected ones
+			// If theres multiple selected items, only select this item if it's not among the multiple selected ones
 			if (selectedItems.size() > 1) {
 				if (selectedItems.find(item.id) == selectedItems.end()) {
 					selectedItems.clear();

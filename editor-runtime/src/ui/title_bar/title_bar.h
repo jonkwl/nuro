@@ -122,8 +122,23 @@ private:
 	ImVec2 titleBarPosition;
 	ImVec2 titleBarSize;
 
+	// Cache for the last mouse position relative to user screen
 	glm::ivec2 lastMousePosition;
+
+	// Set if mouse was down last frame
+	bool lastMouseDown;
+
+	// Set if mouse was on an area of the title bar allowing window movement when mouse last pressed
+	bool lastMousePressedMoveSuitable;
+
+	// Cache for mouse position relative to user screen when mouse last pressed
+	glm::ivec2 lastMousePressedPosition;
+
+	// Set if window is being moved
 	bool movingWindow;
+
+	// Set if mouse was over any interactive element this frame to prevent moving the window
+	bool mouseOverElement;
 
 private:
 	// Title bar virtual window flags

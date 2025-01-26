@@ -11,7 +11,11 @@ TitleBar::TitleBar() : style(),
 titleBarPosition(ImVec2(0.0f, 0.0f)),
 titleBarSize(ImVec2(0.0f, 0.0f)),
 lastMousePosition(glm::ivec2(0, 0)),
-movingWindow(false)
+lastMouseDown(false),
+lastMousePressedMoveSuitable(false),
+lastMousePressedPosition(glm::ivec2(0.0f, 0.0f)),
+movingWindow(false),
+mouseOverElement(false)
 {
 }
 
@@ -19,6 +23,8 @@ void TitleBar::render(const ImGuiViewport& viewport)
 {
     titleBarPosition = viewport.Pos;
     titleBarSize = ImVec2(viewport.Size.x, style.height);
+
+    mouseOverElement = false;
 
     ImGui::SetNextWindowPos(titleBarPosition);
     ImGui::SetNextWindowSize(titleBarSize);
@@ -126,18 +132,41 @@ void TitleBar::renderContent(ImDrawList& drawList)
 
 void TitleBar::performDrag()
 {
-    // Evaluate interaction
+    //
+    // Evaluate geometry
+    //
+
     ImVec2 zoneP0 = ImVec2(titleBarPosition.x, titleBarPosition.y);
     ImVec2 zoneP1 = titleBarPosition + titleBarSize;
+    glm::ivec2 mousePosition = Cursor::getScreenPosition();
+
+    //
+    // Evaluate interactions
+    //
 
     bool hovered = ImGui::IsMouseHoveringRect(zoneP0, zoneP1, false);
     bool mouseDown = ImGui::IsMouseDown(0);
-    bool dragging = hovered && mouseDown;
+    
+    bool clicked = hovered && mouseDown;
     bool doubleClicked = hovered && ImGui::IsMouseDoubleClicked(0);
-    glm::ivec2 mousePosition = Cursor::getScreenPosition();
 
-    // Check for starting to move window
-    if (!movingWindow && dragging) {
+    bool newlyDown = mouseDown && !lastMouseDown;
+    if (newlyDown) {
+        // Mouse position is move suitable if its over title bar and not over any element within title bar
+        lastMousePressedMoveSuitable = hovered && !mouseOverElement;
+
+        // Cache mouse position
+        lastMousePressedPosition = mousePosition;
+    }
+
+    bool moved = lastMousePressedPosition != mousePosition;
+
+    //
+    // Starting to move window
+    //
+
+    bool startMoving = !movingWindow && moved && clicked && lastMousePressedMoveSuitable;
+    if (startMoving) {
         movingWindow = true;
 
         // If window is maximized, make it smaller
@@ -147,7 +176,10 @@ void TitleBar::performDrag()
         }
     }
 
-    // Move window if still moving
+    //
+    // Currently moving window
+    //
+
     if (movingWindow) {
 
         // Move window
@@ -161,20 +193,23 @@ void TitleBar::performDrag()
             movingWindow = false;
 
             // Maximize window if moving stopped when mouse was at the top of screen
-            if (mousePosition.y <= 10) {
-                maximize();
-            }
+            if (mousePosition.y <= 10) maximize();
         }
 
     }
 
-    // Maximize window if double clicked
-    if (doubleClicked) {
-        maximize();
-    }
+    //
+    // Flip maximize window if double clicked
+    //
 
-    // Cache last mouse position
+    if (doubleClicked) flipMaximize();
+
+    //
+    // Cache state
+    //
+
     lastMousePosition = mousePosition;
+    lastMouseDown = mouseDown;
 }
 
 bool TitleBar::controlButton(ImDrawList& drawList, ImVec2 position, const char* icon)
@@ -194,7 +229,10 @@ bool TitleBar::controlButton(ImDrawList& drawList, ImVec2 position, const char* 
 
     // Evaluate color
     ImU32 color = style.controlButtonColor;
-    if (hovered) color = style.controlButtonColorHovered;
+    if (hovered) {
+        color = style.controlButtonColorHovered;
+        mouseOverElement = true;
+    }
 
     // Draw background
     drawList.AddRectFilled(p0, p1, color, style.controlButtonRounding);
@@ -244,7 +282,10 @@ std::tuple<ImVec2, bool> TitleBar::menuItem(ImDrawList& drawList, ImVec2 positio
 
     // Evaluate color
     ImU32 color = style.menuItemColor;
-    if (hovered) color = style.menuItemColorHovered;
+    if (hovered) {
+        color = style.menuItemColorHovered;
+        mouseOverElement = true;
+    }
 
     // Draw background
     drawList.AddRectFilled(p0, p1, color, style.menuItemRounding);
@@ -297,6 +338,9 @@ void TitleBar::placeWorkspaceBar(ImDrawList& drawList, ImVec2 position)
         ImVec2 p0 = cursor - style.workspaceItemPadding;
         ImVec2 p1 = p0 + itemSize;
         bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
+
+        // Set mouse over element
+        if(hovered) mouseOverElement = true;
 
         // If hovered or selected, draw item background and redraw item text
         if (selected || hovered) {

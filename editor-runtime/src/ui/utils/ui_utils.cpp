@@ -115,7 +115,7 @@ namespace UIUtils {
 			size.x = contentRegionAvail.y * aspectRatio;
 		}
 
-		// Set offset of game view render target to make sure its centered
+		// Set offset of game view render target to make sure it's centered
 		offset = ImVec2((contentRegionAvail.x - size.x) * 0.5f, (contentRegionAvail.y - size.y) * 0.5f);
 	}
 

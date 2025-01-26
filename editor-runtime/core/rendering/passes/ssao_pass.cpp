@@ -1,6 +1,7 @@
 #include "ssao_pass.h"
 
 #include <glad/glad.h>
+#include <algorithm>
 #include <random>
 
 #include "../core/rendering/shader/shader_pool.h"
@@ -163,12 +164,8 @@ void SSAOPass::ambientOcclusionPass(const glm::mat4& projection, const PostProce
 	// Set viewport size
 	glViewport(0, 0, viewport.getWidth_gl() * static_cast<GLsizei>(aoScale), viewport.getHeight_gl() * static_cast<GLsizei>(aoScale));
 
-	// Get current sample amount, make sure its not higher than the maximum sample amount
-	int32_t nSamples = profile.ambientOcclusion.samples;
-	if (nSamples > maxKernelSamples)
-	{
-		nSamples = maxKernelSamples;
-	}
+	// Get current sample amount
+	int32_t nSamples = std::min(profile.ambientOcclusion.samples, maxKernelSamples);
 
 	// Bind ambient occlusion pass shader
 	aoPassShader->bind();

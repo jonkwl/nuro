@@ -38,13 +38,13 @@ struct EntityContainer {
 	TransformComponent& transform;
 
 	// Returns if entity is valid in registry
-	bool verify() {
+	inline bool verify() {
 		return registry.valid(root);
 	}
 
 	// Returns true if entity has a component of given component type
 	template<typename T>
-	bool has() {
+	inline bool has() {
 		return registry.any_of<T>(root);
 	}
 
@@ -148,10 +148,10 @@ private:
 
 	template<typename T>
 	void operationFailed(std::string operation, std::string reason) {
-		Log::printWarning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity " + name + " " + reason + ".");
+		Log::printWarning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity '" + name + "' " + reason + ".");
 	}
 
 	void verifyFailed() {
-		Log::printWarning("Entity Container", "Couldn't perform operation on entity " + name + " because it doesn't exist anymore.");
+		Log::printWarning("Entity Container", "Couldn't perform operation on entity '" + name + "' because it doesn't exist anymore.");
 	}
 };

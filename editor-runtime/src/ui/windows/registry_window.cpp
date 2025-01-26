@@ -110,7 +110,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	// PROPERTIES
 	//
 	const float indentationOffset = 30.0f;
-	const ImVec2 textPadding = ImVec2(10.0f, 4.5f);
+	const ImVec2 textPadding = ImVec2(10.0f, 4.0f);
 
 	//
 	// EVALUATE
@@ -259,7 +259,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		}
 		// Only select this item
 		else {
-			// If theres multiple selected items, only select this item if its not among the multiple selected ones
+			// If theres multiple selected items, only select this item if it's not among the multiple selected ones
 			if (selectedItems.size() > 1) {
 				if (selectedItems.find(item.id) == selectedItems.end()) {
 					selectedItems.clear();
@@ -349,7 +349,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	//
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 7.0f));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 3.0f));
 	ImGui::PopStyleVar();
 
 	//
@@ -543,7 +543,6 @@ void RegistryWindow::buildSceneHierarchy()
 		currentHierarchy.push_back(HierarchyItem(i, EntityContainer("Item " + std::to_string(i), entity), {}));
 		i++;
 	}
-	currentHierarchy.pop_back();
 
 	int _i = 0;
 	for (auto [entity, transform] : transforms.each()) {

@@ -4,7 +4,7 @@
 
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/rendering/ssao/ssao_pass.h"
+#include "../core/rendering/passes/ssao_pass.h"
 #include "../core/rendering/passes/pre_pass.h"
 #include "../core/rendering/passes/forward_pass.h"
 #include "../core/rendering/passes/preprocessor_pass.h"

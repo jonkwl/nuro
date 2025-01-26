@@ -212,7 +212,7 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 		// Clamp preview viewer height to not exceed limits
 		previewViewerHeight = std::clamp(previewViewerHeight, 50.0f, std::max(50.0f, ImGui::GetWindowSize().y * 0.5f));
 
-		// If mouse button isnt hold down anymore, stop dragging
+		// If mouse button isn't hold down anymore, stop dragging
 		if (!ImGui::IsMouseDown(0)) {
 			topBarActiveDrag = false;
 		}

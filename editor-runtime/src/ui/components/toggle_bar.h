@@ -9,6 +9,7 @@
 #include "../src/ui/editor_ui.h"
 
 struct ToggleBarStyle {
+
 	ImVec2 padding = ImVec2(8.0f, 5.0f);
 	float barRounding = 3.0f;
 	float itemRounding = 3.0f;
@@ -17,10 +18,11 @@ struct ToggleBarStyle {
 	ImU32 textSelected = EditorColor::text;
 
 	ImU32 backgroundColor = EditorColor::element_transparent;
-	ImU32 colorHovered = EditorColor::elementHovered_transparent;
-	ImU32 colorSelected = EditorColor::elementActive_transparent;
+	ImU32 colorHovered = EditorColor::elementHovered_transparentOverlay;
+	ImU32 colorSelected = EditorColor::elementActive_transparentOverlay;
 
 	ImFont* font = EditorUI::getFonts().s;
+
 };
 
 class ToggleBar
@@ -29,13 +31,16 @@ public:
 	ToggleBar();
 
 	// Adds an item to the toggle bar
-	void addItem(const char* text, bool& value);
+	void addItem(const char* text, bool& value, bool readonly = false);
 
 	// Removes all items from the toggle bar
 	void removeItems(std::tuple<const char*, bool*> item);
 
 	// Updates the label text of the given item by index
 	void updateItemText(const std::string& text, uint32_t itemIndex, bool updateSize = true);
+
+	// Returns if an item defined by its index was clicked
+	bool itemClicked(uint32_t index);
 
 	// Renders the toolbar
 	void render(ImDrawList& drawList, ImVec2 position);
@@ -54,13 +59,16 @@ private:
 		// Boolean value linked to item
 		bool& value;
 
-		// Current item size
-		ImVec2 size;
+		// If set, clicking on the item will not flip its linked value
+		bool readonly;
 
 		// Clicked last frame
 		bool clicked;
 
-		Item(const char* text, bool& value) : text(text), value(value), size(ImVec2(0.0f, 0.0f)), clicked(false) {};
+		// Current item size
+		ImVec2 size;
+
+		Item(const char* text, bool& value, bool readonly) : text(text), value(value), readonly(readonly), clicked(false), size(ImVec2(0.0f, 0.0f)) {};
 	};
 
 	// Calculates and updates the current geometry of the toggle bar

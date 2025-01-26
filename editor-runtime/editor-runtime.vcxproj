@@ -189,7 +189,7 @@
     <ClCompile Include="core\rendering\shadows\shadow_map.cpp" />
     <ClCompile Include="core\rendering\skybox\cubemap.cpp" />
     <ClCompile Include="core\rendering\skybox\skybox.cpp" />
-    <ClCompile Include="core\rendering\ssao\ssao_pass.cpp" />
+    <ClCompile Include="core\rendering\passes\ssao_pass.cpp" />
     <ClCompile Include="core\rendering\texture\texture.cpp" />
     <ClCompile Include="core\rendering\velocitybuffer\velocity_buffer.cpp" />
     <ClCompile Include="core\time\time.cpp" />
@@ -291,7 +291,7 @@
     <ClInclude Include="core\rendering\shadows\shadow_map.h" />
     <ClInclude Include="core\rendering\skybox\cubemap.h" />
     <ClInclude Include="core\rendering\skybox\skybox.h" />
-    <ClInclude Include="core\rendering\ssao\ssao_pass.h" />
+    <ClInclude Include="core\rendering\passes\ssao_pass.h" />
     <ClInclude Include="core\rendering\texture\texture.h" />
     <ClInclude Include="core\rendering\velocitybuffer\velocity_buffer.h" />
     <ClInclude Include="core\time\time.h" />

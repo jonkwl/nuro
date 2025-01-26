@@ -107,21 +107,6 @@ void _example() {
 
 	// Sci-Fi Plane Material
 	LitMaterial* planeMaterial = new LitMaterial();
-	/*Texture albedo = Texture::load("./src/example/assets/textures/sci-fi/albedo.jpg", TextureType::ALBEDO);
-	Texture roughness = Texture::load("./src/example/assets/textures/sci-fi/roughness.jpg", TextureType::ROUGHNESS);
-	Texture metallic = Texture::load("./src/example/assets/textures/sci-fi/metallic.jpg", TextureType::METALLIC);
-	Texture normal = Texture::load("./src/example/assets/textures/sci-fi/normal.jpg", TextureType::NORMAL);
-	Texture occlusion = Texture::load("./src/example/assets/textures/sci-fi/occlusion.jpg", TextureType::OCCLUSION);
-	Texture emissive = Texture::load("./src/example/assets/textures/sci-fi/emissive.jpg", TextureType::EMISSIVE);
-	Texture height = Texture::load("./src/example/assets/textures/sci-fi/height.jpg", TextureType::HEIGHT);
-	planeMaterial->setAlbedoMap(albedo);
-	planeMaterial->setRoughnessMap(roughness);
-	planeMaterial->setMetallicMap(metallic);
-	planeMaterial->setNormalMap(normal);
-	planeMaterial->setOcclusionMap(occlusion);
-	planeMaterial->setEmissiveMap(emissive);
-	planeMaterial->emission = true;
-	planeMaterial->emissionIntensity = 11.0f;*/
 
 	// Directional light (sun)
 	EntityContainer sun("Sun", ECS::createEntity());
@@ -139,7 +124,7 @@ void _example() {
 	pointLightSource.falloff = 15.0f;
 
 	// Sample spotlight
-	EntityContainer flashlight("Flashlight", ECS::createEntity());
+		EntityContainer flashlight("Flashlight", ECS::createEntity());
 	flashlight.transform.position = glm::vec3(0.0f, 6.0f, 5.0f);
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
 	flashlightSource.intensity = 10.0f;
@@ -185,13 +170,6 @@ void _example() {
 	Rigidbody::setCollisionDetection(kinematicRb, RB_CollisionDetection::CONTINUOUS);
 	Rigidbody::setKinematic(kinematicRb, true);
 
-	// Material Test Plane
-	/*EntityContainer plane("Plane", ECS::createEntity());
-	planeEntity = plane.root;
-	plane.transform.position = glm::vec3(-24.0f, 0.0f, 18.0f);
-	plane.transform.scale = glm::vec3(5.0f);
-	plane.add<MeshRendererComponent>(planeMesh, planeMaterial);*/
-
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
 
@@ -202,7 +180,6 @@ void _example() {
 	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
-	// Rigidbody::setInterpolation(playerRb, RB_Interpolation::EXTRAPOLATE);
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
 
 	// Player child

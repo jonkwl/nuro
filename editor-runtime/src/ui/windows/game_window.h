@@ -2,8 +2,6 @@
 
 #include "editor_window.h"
 
-#include "../src/ui/components/toggle_bar.h"
-
 class GameWindow : public EditorWindow
 {
 public:
@@ -28,6 +26,4 @@ private:
 	ImVec4 gameViewBounds; // Bounds of game view (min x, min y, max x, max y)
 
 	DynamicContent noCameraIndicator; // Indicator for when theres no camera to render game view
-
-	ToggleBar playToggles; // Play settings
 };

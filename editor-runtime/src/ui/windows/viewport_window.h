@@ -39,6 +39,9 @@ private:
 	ToggleBar mainToggles; // Main viewport settings
 	ToggleBar playToggles; // Play settings
 
+	bool gamePaused; // Set if game is paused
+	bool gameExecuting; // Set if game is executing (running or paused)
+
 	glm::vec2 moveAxis; // Current input axis for evaluating scene view movement
 	float moveAxisSmoothingFactor; // Smoothing for key axis
 	glm::vec2 mouseCurrent; // Current mouse position

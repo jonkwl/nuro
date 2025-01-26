@@ -7,7 +7,7 @@
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/skybox/skybox.h"
 #include "../core/rendering/gizmos/gizmos.h"
-#include "../core/rendering/ssao/ssao_pass.h"
+#include "../core/rendering/passes/ssao_pass.h"
 #include "../core/rendering/passes/pre_pass.h"
 #include "../core/rendering/passes/preprocessor_pass.h"
 #include "../core/rendering/velocitybuffer/velocity_buffer.h"

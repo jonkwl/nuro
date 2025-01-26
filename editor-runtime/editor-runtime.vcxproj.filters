@@ -84,7 +84,7 @@
     <ClCompile Include="core\rendering\skybox\skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\ssao\ssao_pass.cpp">
+    <ClCompile Include="core\rendering\passes\ssao_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\texture\texture.cpp">
@@ -344,7 +344,7 @@
     <ClInclude Include="core\rendering\skybox\skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\ssao\ssao_pass.h">
+    <ClInclude Include="core\rendering\passes\ssao_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\texture\texture.h">

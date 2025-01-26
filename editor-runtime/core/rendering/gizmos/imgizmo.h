@@ -15,19 +15,39 @@ class IMGizmo
 public:
 	IMGizmo();
 
-	void setup();    // Load gizmo shaders and models if not loaded already
-	void newFrame(); // Clear the render stack
+	void setup();
+	void newFrame();
 
-	void renderAll(const glm::mat4& viewProjection); // Renders all gizmos from render stack
-	void renderShapes(const glm::mat4& viewProjection); // Renders shapes only from render stack
-	void renderIcons(const glm::mat4& viewProjection); // Render icons only from render stack
+	//
+	// Render funcions
+	//
 
+	// Renders all gizmos from render stack
+	void renderAll(const glm::mat4& viewProjection);
+
+	// Renders shapes only from render stack
+	void renderShapes(const glm::mat4& viewProjection);
+
+	// Render icons only from render stack
+	void renderIcons(const glm::mat4& viewProjection);
+
+	//
 	// Global render state settings
-	glm::vec3 color; // Color of gizmo
-	float opacity; // Opacity of gizmo
-	bool foreground; // If gizmo should always be in foreground
+	//
 
+	// Color of gizmo
+	glm::vec3 color;
+
+	// Opacity of gizmo
+	float opacity;
+
+	// If gizmo should always be in foreground
+	bool foreground;
+
+	//
 	// Shapes
+	//
+
 	void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void sphere(glm::vec3 position, float radius = 0.5f, glm::quat rotation = glm::identity<glm::quat>());
@@ -35,7 +55,10 @@ public:
 	void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
 	void sphereWire(glm::vec3 position, float radius = 0.5f, glm::quat rotation = glm::identity<glm::quat>());
 
+	//
 	// Icons
+	//
+
 	void icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
 
 private:
@@ -112,7 +135,8 @@ private:
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
-	float get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition); // Gets the alpha of a 3D icon based on its distance to the camera
+	// Returns the alpha of a 3D icon depending on its distance to the camera
+	float get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition);
 
 	const Mesh* createWireframeBox();
 };

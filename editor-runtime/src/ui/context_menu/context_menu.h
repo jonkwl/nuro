@@ -17,7 +17,7 @@ namespace ContextMenu
 	// Creates a new item within the current context menu
 	bool item(const char* icon, std::string title);
 	
-	// Creates a new light item within the current context menu (omits icon and margin)
+	// Creates a new item without icon and margin within the current context menu
 	bool itemLight(std::string title);
 
 	// Creates a new menu within the current context menu

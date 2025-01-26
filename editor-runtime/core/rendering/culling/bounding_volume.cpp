@@ -22,8 +22,7 @@ void BoundingSphere::update(Model* model, glm::vec3 position, glm::quat rotation
 	// Position of models origin offset by the world position
 	center = metrics.origin + position;
 
-	// Calculate radius:
-	// Maximum distance of a models vertice to models origin divided by 2 (because its a radius, not diameter) times biggest world scale factor
+	// Calculate radius
 	radius = (metrics.furthest * 0.5f) * std::max({ scale.x, scale.y, scale.z });
 }
 

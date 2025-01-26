@@ -10,10 +10,10 @@ geometryUpdatePending(false)
 {
 }
 
-void ToggleBar::addItem(const char* text, bool& value)
+void ToggleBar::addItem(const char* text, bool& value, bool readonly)
 {
 	// Add item to items
-	items.push_back(Item{ text, value });
+	items.push_back(Item(text, value, readonly));
 
 	// Make sure geometry will be (re-)evaluated
 	geometryUpdatePending = true;
@@ -21,19 +21,29 @@ void ToggleBar::addItem(const char* text, bool& value)
 
 void ToggleBar::removeItems(std::tuple<const char*, bool*> item)
 {
+	// Clear all items
 	items.clear();
 }
 
 void ToggleBar::updateItemText(const std::string& text, uint32_t itemIndex, bool updateSize)
 {
 	// Make sure index is valid
-	if (itemIndex > items.size() - 1) return;
+	if (itemIndex >= items.size()) return;
 
 	// Change text of item
 	items[itemIndex].text = text.c_str();
 
 	// Update size if set
 	if (updateSize) geometryUpdatePending = true;
+}
+
+bool ToggleBar::itemClicked(uint32_t itemIndex)
+{
+	// Make sure index is valid
+	if (itemIndex >= items.size()) return false;
+
+	// Return clicked state of item
+	return items[itemIndex].clicked;
 }
 
 void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
@@ -50,7 +60,7 @@ void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 	// Draw items
 	ImVec2 cursor = position + style.padding;
 	for (Item& item : items) {
-		// Make sure item isnt clicked by default
+		// Make sure item isn't clicked by default
 		item.clicked = false;
 
 		// Draw text
@@ -67,9 +77,11 @@ void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 
 		// If item was clicked
 		if (clicked) {
-			// Set item to be clicked and flip value linked to item
+			// Set item to be clicked
 			item.clicked = true;
-			item.value = !item.value;
+
+			// Flip value if item isn't readonly
+			if(!item.readonly) item.value = !item.value;
 		}
 
 		// If hovered or item value set, draw item background and redraw item text
