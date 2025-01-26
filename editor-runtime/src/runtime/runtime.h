@@ -13,36 +13,64 @@ class ShadowMap;
 class Model;
 class LitMaterial;
 
+enum class GameState {
+	GAME_SLEEPING,
+	GAME_LOADING,
+	GAME_RUNNING,
+	GAME_PAUSED,
+};
+
 namespace Runtime
 {
+	//
 	// Base functions
-	int START_LOOP(); // Main loop 
-	int TERMINATE(); // Terminate and exit
+	//
 
+	int START_LOOP();
+	int TERMINATE();
+
+	//
 	// Game functions
+	//
+
 	void startGame();
 	void stopGame();
 	void pauseGame();
 	void continueGame();
-	bool gameRunning();
-	bool gamePaused();
 
+	GameState getGameState();
+
+	//
 	// Pipelines getters
+	//
+
 	SceneViewPipeline& getSceneViewPipeline();
 	GameViewPipeline& getGameViewPipeline();
 	PreviewPipeline& getPreviewPipeline();
 
+	//
 	// Physics getters
+	//
+
 	PhysicsContext& getGamePhysics();
 
+	//
 	// Gizmo getters
+	//
+
 	IMGizmo& getSceneGizmos();
 
+	//
 	// Shadow getters
+	//
+
 	ShadowDisk* getMainShadowDisk();
 	ShadowMap* getMainShadowMap();
 
+	//
 	// Other
+	//
+
 	Model* getSphereModel();
 	LitMaterial* getDefaultLit();
 };

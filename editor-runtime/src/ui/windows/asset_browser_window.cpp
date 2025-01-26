@@ -223,12 +223,16 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 		// Initialize cursor with padding (local cursor relative to window)
 		ImVec2 cursor = padding;
 
+		ImVec2 lastAssetSize = ImVec2(0.0f, 0.0f);
+
 		for (Asset asset : currentAssets) {
 			// Check for new line
 			if (cursor.x + asset.uiData.size.x > size.x - padding.x) {
 				// Start new line using current assets height
 				cursor.x = padding.x;
 				cursor.y += asset.uiData.size.y + gap.y;
+
+				lastAssetSize = asset.uiData.size;
 			}
 
 			// Advance internal cursor
@@ -242,7 +246,7 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 		}
 
 		// Add bottom padding
-		ImGui::SetCursorPos(cursor + ImVec2(0.0f, padding.y));
+		ImGui::SetCursorPos(cursor + ImVec2(0.0f, padding.y + lastAssetSize.y));
 	}
 	IMComponents::endChild();
 }

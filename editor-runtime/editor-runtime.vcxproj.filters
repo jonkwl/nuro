@@ -126,7 +126,7 @@
     <ClCompile Include="src\ui\components\im_components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\ui_flex.cpp">
+    <ClCompile Include="src\ui\misc\ui_flex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\windows\diagnostics_window.cpp">
@@ -144,7 +144,7 @@
     <ClCompile Include="src\ui\windows\console_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\ui_utils.cpp">
+    <ClCompile Include="src\ui\utils\ui_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp">
@@ -222,7 +222,7 @@
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\context_menu.cpp">
+    <ClCompile Include="src\ui\context_menu\context_menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gizmos\component_gizmos.cpp">
@@ -383,13 +383,13 @@
     <ClInclude Include="src\ui\windows\editor_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\IconsFontAwesome6.h">
+    <ClInclude Include="src\ui\collection\IconsFontAwesome6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\components\im_components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\ui_flex.h">
+    <ClInclude Include="src\ui\misc\ui_flex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\diagnostics_window.h">
@@ -404,7 +404,7 @@
     <ClInclude Include="src\ui\windows\console_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\ui_utils.h">
+    <ClInclude Include="src\ui\utils\ui_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h">
@@ -524,7 +524,7 @@
     <ClInclude Include="src\ui\dynamic_drawing\enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\context_menu.h">
+    <ClInclude Include="src\ui\context_menu\context_menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gizmos\component_gizmos.h">

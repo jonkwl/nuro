@@ -48,10 +48,11 @@ namespace Runtime {
 	// Default assets
 	Skybox gDefaultSkybox;
 
-	// Game state management
+	// Global game state
+	GameState gGameState = GameState::GAME_SLEEPING;
+
+	// Global registry state
 	RegistryState gSceneState;
-	bool gGameRunning = false;
-	bool gGamePaused = false;
 
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
@@ -337,7 +338,9 @@ namespace Runtime {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			// UPDATE GAME IF GAME IS RUNNING
-			if (gGameRunning && !gGamePaused) _stepGame();
+			if (gGameState == GameState::GAME_RUNNING) {
+				_stepGame();
+			}
 
 			// RENDER NEXT FRAME
 			_renderShadowsGlobal();
@@ -387,8 +390,7 @@ namespace Runtime {
 		awake();
 
 		// Set game running state
-		gGameRunning = true;
-		gGamePaused = false;
+		gGameState = GameState::GAME_RUNNING;
 	}
 
 	void stopGame()
@@ -397,31 +399,24 @@ namespace Runtime {
 		quit();
 
 		// Set game running state
-		gGameRunning = false;
-		gGamePaused = false;
+		gGameState = GameState::GAME_SLEEPING;
 
 		// Restore scene state
 		// ECS::loadState(gSceneState);
 	}
 
 	void pauseGame() {
-		// Set game to paused
-		gGamePaused = true;
+		if (gGameState == GameState::GAME_RUNNING) {
+			gGameState = GameState::GAME_PAUSED;
+		}
 	}
 
 	void continueGame() {
-		// Set game to not paused anymore
-		gGamePaused = false;
+		gGameState = GameState::GAME_RUNNING;
 	}
 
-	bool gameRunning()
-	{
-		return gGameRunning;
-	}
-
-	bool gamePaused()
-	{
-		return gGamePaused;
+	GameState getGameState() {
+		return gGameState;
 	}
 
 	SceneViewPipeline& getSceneViewPipeline()

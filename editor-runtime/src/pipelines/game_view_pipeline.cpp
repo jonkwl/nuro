@@ -147,7 +147,7 @@ uint32_t GameViewPipeline::getOutput()
 	return postProcessingPipeline.getOutput();
 }
 
-const Viewport& GameViewPipeline::getViewport()
+const Viewport& GameViewPipeline::getViewport() const
 {
 	return viewport;
 }

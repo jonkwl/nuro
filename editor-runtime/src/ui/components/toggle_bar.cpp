@@ -6,26 +6,40 @@
 
 ToggleBar::ToggleBar() : items(),
 size(ImVec2(0.0f, 0.0f)),
-evaluated(false)
+geometryUpdatePending(false)
 {
 }
 
-void ToggleBar::setItems(const std::vector<std::tuple<const char*, bool*>>& itemPresets)
+void ToggleBar::addItem(const char* text, bool& value)
 {
-	// Create items by provided item presets
-	items.clear();
-	for (auto& [name, value] : itemPresets) {
-		items.push_back(Item{ name, *value });
-	}
+	// Add item to items
+	items.push_back(Item{ text, value });
 
 	// Make sure geometry will be (re-)evaluated
-	evaluated = false;
+	geometryUpdatePending = true;
+}
+
+void ToggleBar::removeItems(std::tuple<const char*, bool*> item)
+{
+	items.clear();
+}
+
+void ToggleBar::updateItemText(const std::string& text, uint32_t itemIndex, bool updateSize)
+{
+	// Make sure index is valid
+	if (itemIndex > items.size() - 1) return;
+
+	// Change text of item
+	items[itemIndex].text = text.c_str();
+
+	// Update size if set
+	if (updateSize) geometryUpdatePending = true;
 }
 
 void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 {
 	// Evaluate geometry if needed
-	if (!evaluated) evaluateGeometry();
+	if (geometryUpdatePending) evaluateGeometry();
 
 	// Get style.font size
 	float fontSize = style.font->FontSize;
@@ -36,6 +50,9 @@ void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 	// Draw items
 	ImVec2 cursor = position + style.padding;
 	for (Item& item : items) {
+		// Make sure item isnt clicked by default
+		item.clicked = false;
+
 		// Draw text
 		ImU32 textColor = item.value ? style.textSelected : style.text;
 		ImVec2 textSize = style.font->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, item.text);
@@ -48,8 +65,12 @@ void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 		bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
 		bool clicked = hovered && ImGui::IsMouseClicked(0);
 
-		// Flip item value if clicked
-		if (clicked) item.value = !item.value;
+		// If item was clicked
+		if (clicked) {
+			// Set item to be clicked and flip value linked to item
+			item.clicked = true;
+			item.value = !item.value;
+		}
 
 		// If hovered or item value set, draw item background and redraw item text
 		if (item.value || hovered) {
@@ -89,5 +110,6 @@ void ToggleBar::evaluateGeometry()
         size = item.size + ImVec2(size.x, 0.0f);
     }
 
-	evaluated = true;
+	// No geometry update pending anymore
+	geometryUpdatePending = false;
 }

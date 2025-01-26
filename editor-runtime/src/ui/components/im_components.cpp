@@ -5,11 +5,11 @@
 #include <array>
 
 #include "../src/ui/editor_ui.h"
-#include "../src/ui/ui_flex.h"
-#include "../src/ui/ui_utils.h"
+#include "../src/ui/misc/ui_flex.h"
+#include "../src/ui/utils/ui_utils.h"
 
 #include "../core/utils/log.h"
-#include "../src/ui/IconsFontAwesome6.h"
+#include "../src/ui/collection/IconsFontAwesome6.h"
 
 namespace IMComponents {
 
@@ -364,38 +364,24 @@ namespace IMComponents {
 
 	bool extendableSettings(std::string label, bool& value, const char* icon)
 	{
-		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 0.0f, Margin(2.5f, 0.0f, 0.0f, 0.0f));
-
+		// Draw checkbox
+		ImVec2 cursor = ImGui::GetCursorPos();
 		ImGui::Checkbox(EditorUI::generateIdString().c_str(), &value);
-		ImGui::Dummy(ImVec2(1.0f, 1.5f));
-		tryIcon(icon);
+		
+		// Draw icon
+		cursor.x += 35.0f;
+		ImGui::SetCursorPos(cursor);
+		ImGui::Text(icon);
 
-		if (value)
-		{
+		// Draw header
+		cursor.x += 45.0f;
+		ImGui::SetCursorPos(cursor);
+		bool extended = ImGui::CollapsingHeader(label.c_str());
 
-			ImGui::Dummy(ImVec2(4.0f, 2.5f));
-			bool extended = ImGui::CollapsingHeader(label.c_str());
-			UIFlex::endFlex();
+		// Add vertical padding
+		if (extended) ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0.0f, 16.0f));
 
-			if (extended)
-			{
-				ImGui::Dummy(ImVec2(0.0f, 8.0f));
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-
-			ImGui::Text(label.c_str());
-		}
-
-		UIFlex::endFlex();
-
-		return false;
+		return extended;
 	}
 
 	bool header(std::string label)

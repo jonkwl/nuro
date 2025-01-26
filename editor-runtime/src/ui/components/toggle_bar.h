@@ -28,8 +28,14 @@ class ToggleBar
 public:
 	ToggleBar();
 
-	// Sets up the toggle bar with the provided presets
-	void setItems(const std::vector<std::tuple<const char*, bool*>>& itemPresets);
+	// Adds an item to the toggle bar
+	void addItem(const char* text, bool& value);
+
+	// Removes all items from the toggle bar
+	void removeItems(std::tuple<const char*, bool*> item);
+
+	// Updates the label text of the given item by index
+	void updateItemText(const std::string& text, uint32_t itemIndex, bool updateSize = true);
 
 	// Renders the toolbar
 	void render(ImDrawList& drawList, ImVec2 position);
@@ -42,14 +48,22 @@ public:
 
 private:
 	struct Item {
+		// Item labels text
 		const char* text;
+
+		// Boolean value linked to item
 		bool& value;
+
+		// Current item size
 		ImVec2 size;
 
-		Item(const char* text, bool& value) : text(text), value(value), size(ImVec2(0.0f, 0.0f)) {};
+		// Clicked last frame
+		bool clicked;
+
+		Item(const char* text, bool& value) : text(text), value(value), size(ImVec2(0.0f, 0.0f)), clicked(false) {};
 	};
 
-	// Calculates the geometry of the toggle bar
+	// Calculates and updates the current geometry of the toggle bar
 	void evaluateGeometry();
 
 private:
@@ -57,6 +71,6 @@ private:
 	ImVec2 size;
 	ToggleBarStyle style;
 
-	// Set if geometry is evaluated
-	bool evaluated;
+	// Set if geometry needs to be updated
+	bool geometryUpdatePending;
 };

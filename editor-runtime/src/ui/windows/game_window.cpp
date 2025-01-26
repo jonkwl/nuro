@@ -34,14 +34,12 @@ playToggles()
 
 	// Setup play toggles
 	static bool tmp = false;
-	ToggleBarStyle& toggleStyle = playToggles.getStyle();
-	toggleStyle.padding = ImVec2(16.0f, 10.0f);
-	toggleStyle.font = EditorUI::getFonts().s;
-	playToggles.setItems({
-		{ ICON_FA_SQUARE, &tmp },
-		{ ICON_FA_PLAY, &tmp },
-		{ ICON_FA_PAUSE, &tmp }
-		});
+	ToggleBarStyle& playTogglesStyle = playToggles.getStyle();
+	playTogglesStyle.padding = ImVec2(16.0f, 10.0f);
+	playTogglesStyle.font = EditorUI::getFonts().s;
+	playToggles.addItem(ICON_FA_SQUARE, tmp);
+	playToggles.addItem(ICON_FA_PLAY, tmp);
+	playToggles.addItem(ICON_FA_PAUSE, tmp);
 }
 
 void GameWindow::render()
@@ -83,9 +81,6 @@ void GameWindow::render()
 
 void GameWindow::renderToolbar(ImDrawList& drawList, ImVec2 position)
 {
-	bool gameRunning = Runtime::gameRunning();
-	bool gamePaused = Runtime::gamePaused();
-
 	// Evaluate toggle position
 	float padding = 22.0f;
 	ImVec2 playTogglePosition = position + ImVec2(ImGui::GetWindowWidth() * 0.5f - playToggles.getSize().x * 0.5f, padding);

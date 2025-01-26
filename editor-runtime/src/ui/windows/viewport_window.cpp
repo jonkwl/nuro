@@ -62,23 +62,20 @@ cameraEulerAngles(glm::vec3(0.0f))
 
 	// Setup main toggles
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
-	mainToggles.setItems({
-		{ ICON_FA_CUBE, &pipeline.wireframe },
-		{ ICON_FA_ECLIPSE, &pipeline.renderShadows },
-		{ ICON_FA_SUN, &pipeline.showSkybox },
-		{ ICON_FA_SPARKLES, &pipeline.useProfileEffects },
-		{ ICON_FA_DRAW_SQUARE, &pipeline.showGizmos }
-	});
+	mainToggles.addItem(ICON_FA_CUBE, pipeline.wireframe);
+	mainToggles.addItem(ICON_FA_ECLIPSE, pipeline.renderShadows);
+	mainToggles.addItem(ICON_FA_SUN, pipeline.showSkybox);
+	mainToggles.addItem(ICON_FA_SPARKLES, pipeline.useProfileEffects);
+	mainToggles.addItem(ICON_FA_DRAW_SQUARE, pipeline.showGizmos);
 
 	// Setup play toggles
-	ToggleBarStyle& toggleStyle = playToggles.getStyle();
-	toggleStyle.padding = ImVec2(16.0f, 10.0f);
-	toggleStyle.font = EditorUI::getFonts().s;
-	playToggles.setItems({
-		{ ICON_FA_SQUARE, &pipeline.useProfileEffects },
-		{ ICON_FA_PLAY, &pipeline.useProfileEffects },
-		{ ICON_FA_PAUSE, &pipeline.useProfileEffects }
-	});
+	static bool tmp = false;
+	ToggleBarStyle& playTogglesStyle = playToggles.getStyle();
+	playTogglesStyle.padding = ImVec2(16.0f, 10.0f);
+	playTogglesStyle.font = EditorUI::getFonts().s;
+	playToggles.addItem(ICON_FA_SQUARE, tmp);
+	playToggles.addItem(ICON_FA_PLAY, tmp);
+	playToggles.addItem(ICON_FA_PAUSE, tmp);
 
 }
 

@@ -5,7 +5,7 @@
 #include "../core/context/application_context.h"
 
 #include "../src/runtime/runtime.h"
-#include "../src/ui/IconsFontAwesome6.h"
+#include "../src/ui/collection/IconsFontAwesome6.h"
 
 TitleBar::TitleBar() : style(),
 titleBarPosition(ImVec2(0.0f, 0.0f)),

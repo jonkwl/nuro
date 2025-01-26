@@ -19,49 +19,79 @@ class GameViewPipeline
 public:
 	GameViewPipeline();
 
-	void create(); // Create game view pipeline
-	void destroy(); // Destroy game view pipeline
+	// Create game view pipeline
+	void create();
+
+	// Destroy game view pipeline
+	void destroy();
 
 	// Renders game view
 	void render();
 
-	uint32_t getOutput(); // Returns color output from latest render
+	// Returns color output from latest render
+	uint32_t getOutput();
 
-	const Viewport& getViewport();
+	// Returns the viewport used
+	const Viewport& getViewport() const;
+
+	// Resizes the viewport used
 	void resizeViewport(float width, float height);
 
+	// Updates the msaa samples
 	void updateMsaaSamples(uint32_t msaaSamples);
 
+	// Returns the mutable post processing profile used
 	PostProcessing::Profile& getProfile();
 
+	// Sets given skybox to be linked
 	void linkSkybox(Skybox* skybox);
+
+	// Returns the currently linked skybox, may be nullptr if none is set
 	Skybox* getLinkedSkybox();
+
+	// The linked skybox will be drawn if this is set
 	bool drawSkybox;
 
+	// Sets given gizmo instance to be linked
 	void linkGizmos(IMGizmo* gizmos);
+
+	// Gizmos will be drawn if this is set
 	bool drawGizmos;
 
+	// Returns true if there was a camera render target available during the last render
 	bool getCameraAvailable();
 
-	uint32_t getSSAOOutput() const; // Returns the last ssao output
-	uint32_t getVelocityOutput() const; // Returns the velocity buffers last output
+	// Returns the last ssao output
+	uint32_t getSSAOOutput() const;
+
+	// Returns the velocity buffers last output
+	uint32_t getVelocityOutput() const;
 
 private:
-	void createPasses(); // Create all passes
-	void destroyPasses(); // Destroy all passes
+	// Create all passes
+	void createPasses();
 
-	// Members
+	// Destroy all passes
+	void destroyPasses();
+
+	//
+	// General members
+	//
 
 	Viewport viewport;
 	PostProcessing::Profile profile;
 	Skybox* skybox; // Optional skybox
 	IMGizmo* gizmos; // Optional gizmos
 
+	//
 	// Render settings
+	//
 
 	uint32_t msaaSamples;
 
-	// Linked passes
+	//
+	// Passes
+	//
 
 	PreprocessorPass preprocessorPass;
 	PrePass prePass;
@@ -70,13 +100,12 @@ private:
 	VelocityBuffer velocityBuffer;
 	PostProcessingPipeline postProcessingPipeline;
 
-	// Camera available cache
+	//
+	// States and outputs
+	//
 
 	bool cameraAvailable;
-
-	// Cached outputs
 
 	uint32_t ssaoOutput;
 	uint32_t velocityOutput;
 };
-

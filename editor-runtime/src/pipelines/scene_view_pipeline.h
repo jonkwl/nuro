@@ -26,15 +26,20 @@ public:
 	// Renders scene view
 	void render();
 
-	uint32_t getOutput(); // Returns color output from latest render
+	// Returns color output from latest render
+	uint32_t getOutput();
 
-	uint32_t getPrePassNormals(); // Returns normal output from latest pre pass render
-	uint32_t getPrePassDepth(); // Returns depth output from latest pre pass render
+	// Returns normal output from latest pre pass render
+	uint32_t getPrePassNormals();
 
+	// Returns depth output from latest pre pass render
+	uint32_t getPrePassDepth();
+
+	// Returns the viewport used
 	const Viewport& getViewport();
-	void resizeViewport(float width, float height);
 
-	// Public, always accessible render settings
+	// Resizes the viewport used
+	void resizeViewport(float width, float height);
 	
 	// Wireframe option
 	bool wireframe;
@@ -80,21 +85,26 @@ private:
 	void destroyPasses();
 
 	// Scene views viewport
-
 	Viewport viewport;
 
+	//
 	// Render settings
+	//
 
 	uint32_t msaaSamples;
 	PostProcessing::Profile defaultProfile;
 
+	//
 	// Scene view cameras
+	//
 
 	TransformComponent flyCameraTransform;
 	CameraComponent flyCameraRoot;
 	Camera flyCamera;
 
+	//
 	// Linked passes
+	//
 
 	PreprocessorPass preprocessorPass;
 	PrePass prePass;
@@ -102,17 +112,26 @@ private:
 	SSAOPass ssaoPass;
 	PostProcessingPipeline postProcessingPipeline;
 
+	//
 	// Matrix cache
+	//
 
 	glm::mat4 view;
 	glm::mat4 projection;
 
+	//
 	// Entity selection
-	
+	//
+
 	std::vector<EntityContainer*> selectedEntities;
 
+	//
 	// States
+	//
 
-	bool frameInitialized; // If scene view was rendered at least once
-	uint32_t initialRenderCount; // Render count for initial frames
+	// If scene view was rendered at least once
+	bool frameInitialized;
+
+	// Render count for initial frames
+	uint32_t initialRenderCount;
 };

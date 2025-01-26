@@ -1,20 +1,17 @@
 #include "editor_ui.h"
 
+#include <implot.h>
+#include <ImGuizmo.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <implot.h>
-#include <ImGuizmo.h>
-
-#include "IconsFontAwesome6.h"
-
 #include "../core/utils/log.h"
 #include "../core/input/cursor.h"
 #include "../core/context/application_context.h"
 
-#include "../src/ui/ui_flex.h"
+#include "../src/ui/misc/ui_flex.h"
 #include "../src/runtime/runtime.h"
 #include "../src/ui/footer/footer.h"
 #include "../src/ui/title_bar/title_bar.h"
@@ -26,6 +23,7 @@
 #include "../src/ui/windows/diagnostics_window.h"
 #include "../src/ui/windows/insight_panel_window.h"
 #include "../src/ui/windows/asset_browser_window.h"
+#include "../src/ui/collection/IconsFontAwesome6.h"
 #include "../src/ui/windows/post_processing_window.h"
 
 namespace EditorUI {
@@ -142,7 +140,7 @@ namespace EditorUI {
 		style.TabRounding = 1.0f;
 		// style.TabBarOverlineSize = 0.0f;
 
-		style.ItemSpacing = ImVec2(4.0f, 8.0f);
+		style.ItemSpacing = ImVec2(4.0f, 4.0f);
 
 		style.PopupRounding = 10.0f;
 
