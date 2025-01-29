@@ -44,8 +44,8 @@ void GameWindow::render()
 		// Get initial cursor position 
 		ImVec2 position = ImGui::GetCursorScreenPos();
 
-		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
-		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+		windowFocused = UIUtils::windowFocused();
+		windowHovered = UIUtils::windowHovered();
 
 		// IMComponents::headline("Game View", ICON_FA_BOLT_LIGHTNING, HeadlineJustification::CENTER, false);
 

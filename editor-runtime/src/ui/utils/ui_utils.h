@@ -28,4 +28,10 @@ namespace UIUtils
 	// Returns title for window with adjusted spacing
 	const char* windowTitle(const char* title);
 
+	// Returns if the current window is focused
+	bool windowFocused();
+
+	// Returns if the current window is hovered
+	bool windowHovered();
+
 };

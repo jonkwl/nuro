@@ -136,4 +136,14 @@ namespace UIUtils {
 		return newTitle;
 	}
 
+	bool windowFocused()
+	{
+		return ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
+	}
+
+	bool windowHovered()
+	{
+		return ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+	}
+
 }

@@ -63,6 +63,9 @@ public:
 	};
 
 private:
+	// Checks for asset broser related inputs
+	void evaluateInputs();
+
 	// Renders navigation element at given position and returns its size
 	ImVec2 renderNavigation(ImDrawList& drawList, ImVec2 position);
 

@@ -191,7 +191,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	// Priority #3:  Color when item is hovered
 	if (hovered) color = UIUtils::lighten(EditorColor::background, 0.38f);
 	// Priority #2: Color when item is selected
-	if (selected) color = ImGui::IsWindowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
+	if (selected) color = UIUtils::windowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
 	// Priority #1: Color when item is being dropped
 	if (dropType == DROP_ITEM) color = UIUtils::darken(EditorColor::selection, 0.5f);
 

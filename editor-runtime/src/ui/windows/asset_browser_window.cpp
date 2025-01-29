@@ -34,11 +34,19 @@ void AssetBrowserWindow::render()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(UIUtils::windowTitle("Asset Browser"), nullptr, EditorFlag::standard);
 	{
+		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
+		// Get window data
 		ImVec2 size = ImGui::GetContentRegionAvail();
 		ImVec2 position = ImGui::GetCursorScreenPos();
 		ImVec2 initPosition = ImGui::GetCursorScreenPos();
+
+		// Evaluate inputs
+		evaluateInputs();
+
+		// Verify asset scale
+		assetScale = std::clamp(assetScale, 1.0f, 3.5f);
 
 		//
 		// RENDER ELEMENTS
@@ -55,6 +63,27 @@ void AssetBrowserWindow::render()
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+void AssetBrowserWindow::evaluateInputs()
+{
+	// Get io
+	ImGuiIO& io = ImGui::GetIO();
+
+	// Inputs only to be evaluated if asset browser is focused or hovered
+	if (UIUtils::windowFocused() || UIUtils::windowHovered()) {
+
+
+		// Inputs only to be evaluated if ctrl is pressed
+		if (io.KeyCtrl) {
+
+			// Handle mouse wheel input (asset scale change)
+			if (io.MouseWheel > 0) assetScale += 0.1f;
+			else if (io.MouseWheel < 0) assetScale -= 0.1f;
+
+		}
+
+	}
 }
 
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
@@ -297,7 +326,7 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 	// Priority #3:  Color when item is hovered
 	if (hovered) color = UIUtils::lighten(color, 0.75f);
 	// Priority #2: Color when item is selected
-	if (selected) color = ImGui::IsWindowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
+	if (selected) color = UIUtils::windowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
 
 	//
 	// DRAW ITEM BACKGROUND

@@ -89,8 +89,8 @@ void ViewportWindow::render()
 	ImGui::Begin(UIUtils::windowTitle("Viewport"), nullptr, EditorFlag::standard);
 	{
 
-		windowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
-		windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+		windowFocused = UIUtils::windowFocused();
+		windowHovered = UIUtils::windowHovered();
 
 		// Get scene window size
 		currentWindowSize = glm::vec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
