@@ -308,7 +308,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		// Circle geometry
 		float circleRadius = 9.0f;
 		ImVec2 circlePosition = ImVec2(
-			textPos.x + circleRadius + 1.0f, 
+			textPos.x + circleRadius + 1.5f, 
 			textPos.y + circleRadius * 0.5f + 1.5f);
 
 		// Fetch circle interactions

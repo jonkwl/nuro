@@ -21,10 +21,10 @@ class Texture
 public:
 	Texture(); // Default constructor returning empty texture
 
-	void bind(uint32_t unit); // Bind texture for backend
+	void bind(uint32_t unit) const; // Bind texture for backend
 	void destroy(); // Delete texture in backend
 
-	uint32_t getBackendId(); // Returns the textures backend id
+	uint32_t getBackendId() const; // Returns the textures backend id
 
 public:
 	static Texture empty(); // Get empty texture

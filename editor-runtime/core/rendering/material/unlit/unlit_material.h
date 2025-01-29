@@ -10,8 +10,8 @@ class UnlitMaterial : public IMaterial
 public:
 	UnlitMaterial();
 
-	void bind();
-	Shader* getShader();
+	void bind() const override;
+	Shader* getShader() const override;
 
 	glm::vec4 baseColor;
 	glm::vec2 tiling;

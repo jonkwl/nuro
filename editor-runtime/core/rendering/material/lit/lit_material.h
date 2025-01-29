@@ -18,11 +18,11 @@ class LitMaterial : public IMaterial
 public:
 	LitMaterial();
 
-	void bind();
+	void bind() const override;
 
-	uint32_t getId();
-	Shader* getShader();
-	uint32_t getShaderId();
+	uint32_t getId() const override;
+	Shader* getShader() const override;
+	uint32_t getShaderId() const override;
 
 	glm::vec4 baseColor = glm::vec4(1.0f);
 	glm::vec2 tiling = glm::vec2(1.0f);

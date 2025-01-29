@@ -9,7 +9,7 @@ Texture::Texture() : backendId(0)
 {
 }
 
-void Texture::bind(uint32_t unit)
+void Texture::bind(uint32_t unit) const
 {
 	// Bind texture to backend
 	glActiveTexture(GL_TEXTURE0 + unit);
@@ -23,7 +23,7 @@ void Texture::destroy()
 	backendId = 0;
 }
 
-uint32_t Texture::getBackendId()
+uint32_t Texture::getBackendId() const
 {
 	return backendId;
 }

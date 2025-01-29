@@ -13,8 +13,10 @@ texture(Texture::empty())
 {
 }
 
-void UnlitMaterial::bind()
+void UnlitMaterial::bind() const
 {
+	if (!shader) return;
+
 	shader->bind();
 
 	shader->setVec4("baseColor", baseColor);
@@ -30,7 +32,7 @@ void UnlitMaterial::bind()
 	}
 }
 
-Shader* UnlitMaterial::getShader()
+Shader* UnlitMaterial::getShader() const
 {
 	return shader;
 }

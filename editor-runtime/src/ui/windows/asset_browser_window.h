@@ -88,8 +88,11 @@ private:
 	// Initialized icon ids
 	Icons icons;
 
-	// Scale of ui assets
+	// Current displayed scale of ui assets
 	float assetScale;
+
+	// Target asset scale for smoothly interpolated asset scaling
+	float targetAssetScale;
 
 	// Currently shown assets from selected folder
 	std::vector<Asset> currentAssets;

@@ -54,8 +54,10 @@ shaderId(0)
 	syncLightUniforms();
 }
 
-void LitMaterial::bind()
+void LitMaterial::bind() const
 {
+	if (!shader) return;
+
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", lightSpace);
 	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
@@ -147,17 +149,17 @@ void LitMaterial::bind()
 	shader->setFloat("material.heightMapScale", heightMapScale);
 }
 
-uint32_t LitMaterial::getId()
+uint32_t LitMaterial::getId() const
 {
 	return id;
 }
 
-Shader* LitMaterial::getShader()
+Shader* LitMaterial::getShader() const
 {
 	return shader;
 }
 
-uint32_t LitMaterial::getShaderId()
+uint32_t LitMaterial::getShaderId() const
 {
 	return shaderId;
 }

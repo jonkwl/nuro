@@ -10,9 +10,9 @@ class IMaterial
 public:
 	virtual ~IMaterial() {}
 
-	virtual void bind() {}
+	virtual void bind() const {}
 
-	virtual uint32_t getId() { return 0; }
-	virtual Shader* getShader() { return nullptr; }
-	virtual uint32_t getShaderId() { return 0; }
+	virtual uint32_t getId() const { return 0; }
+	virtual Shader* getShader() const { return nullptr; }
+	virtual uint32_t getShaderId() const { return 0; }
 };

@@ -5,7 +5,8 @@
 #include "../src/ui/windows/insight_panel_window.h"
 
 AssetBrowserWindow::AssetBrowserWindow() : icons(),
-assetScale(1.0f)
+assetScale(1.0f),
+targetAssetScale(1.0f)
 {
 	// Fetch icon ids
 	icons.file = IconPool::get("file").getBackendId();
@@ -45,9 +46,6 @@ void AssetBrowserWindow::render()
 		// Evaluate inputs
 		evaluateInputs();
 
-		// Verify asset scale
-		assetScale = std::clamp(assetScale, 1.0f, 3.5f);
-
 		//
 		// RENDER ELEMENTS
 		//
@@ -70,21 +68,49 @@ void AssetBrowserWindow::evaluateInputs()
 	// Get io
 	ImGuiIO& io = ImGui::GetIO();
 
+	const float assetScaleSpeed = 0.1f;
+	const float assetScaleSmoothing = 6.5f;
+	const float assetScaleMin = 1.0f;
+	const float assetScaleMax = 3.5f;
+
 	// Inputs only to be evaluated if asset browser is focused or hovered
 	if (UIUtils::windowFocused() || UIUtils::windowHovered()) {
-
 
 		// Inputs only to be evaluated if ctrl is pressed
 		if (io.KeyCtrl) {
 
 			// Handle mouse wheel input (asset scale change)
-			if (io.MouseWheel > 0) assetScale += 0.1f;
-			else if (io.MouseWheel < 0) assetScale -= 0.1f;
+			float relativeScaleStep = assetScale * assetScaleSpeed;
+			if (io.MouseWheel > 0) targetAssetScale += relativeScaleStep;
+			else if (io.MouseWheel < 0) targetAssetScale -= relativeScaleStep;
 
 		}
-
 	}
+
+	// Apply elastic clamping effect using spring force
+	const float elasticity = 12.0f;
+	const float damping = 8.0f;
+
+	float overshoot = 0.0f;
+	if (targetAssetScale < assetScaleMin) {
+		overshoot = assetScaleMin - targetAssetScale;
+	}
+	else if (targetAssetScale > assetScaleMax) {
+		overshoot = assetScaleMax - targetAssetScale;
+	}
+
+	if (overshoot != 0.0f) {
+		float normalizedElasticity = elasticity / assetScale;
+		float normalizedDamping = damping / assetScale;
+		float springForce = overshoot * normalizedElasticity; // (Hooke’s Law: F = -kx)
+		float dampingForce = (targetAssetScale - assetScale) * normalizedDamping;
+		targetAssetScale += (springForce - dampingForce) * Time::deltaf();
+	}
+
+	// Update displayed asset scale using interpolation
+	assetScale = glm::mix(assetScale, targetAssetScale, assetScaleSmoothing * Time::deltaf());
 }
+
 
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
 {

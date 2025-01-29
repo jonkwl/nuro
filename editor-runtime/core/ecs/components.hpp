@@ -43,7 +43,7 @@ struct MeshRendererComponent {
 	const Mesh* mesh;
 
 	// Mesh material | Unsafe!
-	IMaterial* material;
+	const IMaterial* material;
 };
 
 struct CameraComponent {
