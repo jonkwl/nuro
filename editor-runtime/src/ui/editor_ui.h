@@ -4,6 +4,15 @@
 #include <vector>
 #include <string>
 
+#include <iostream>
+#include <cstdlib>
+
+#define EDITOR_ASSERT(condition, message) \
+  if (!(condition)) { \
+    std::cerr << "Assertion failed: " << message << " at " << __FILE__ << ":" << __LINE__ << std::endl; \
+    std::abort(); \
+  }
+
 namespace EditorUI
 {
 	struct Fonts

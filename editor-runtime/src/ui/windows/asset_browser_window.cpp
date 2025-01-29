@@ -91,13 +91,7 @@ void AssetBrowserWindow::evaluateInputs()
 	const float elasticity = 12.0f;
 	const float damping = 8.0f;
 
-	float overshoot = 0.0f;
-	if (targetAssetScale < assetScaleMin) {
-		overshoot = assetScaleMin - targetAssetScale;
-	}
-	else if (targetAssetScale > assetScaleMax) {
-		overshoot = assetScaleMax - targetAssetScale;
-	}
+	float overshoot = std::clamp(targetAssetScale, assetScaleMin, assetScaleMax) - targetAssetScale;
 
 	if (overshoot != 0.0f) {
 		float normalizedElasticity = elasticity / assetScale;

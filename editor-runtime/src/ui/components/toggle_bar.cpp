@@ -13,7 +13,7 @@ geometryUpdatePending(false)
 void ToggleBar::addItem(const char* text, bool& value, bool readonly)
 {
 	// Add item to items
-	items.push_back(Item(text, value, readonly));
+	items.push_back(Item(text, value, readonly, style));
 
 	// Make sure geometry will be (re-)evaluated
 	geometryUpdatePending = true;
@@ -27,8 +27,7 @@ void ToggleBar::removeItems(std::tuple<const char*, bool*> item)
 
 void ToggleBar::updateItemText(const std::string& text, uint32_t itemIndex, bool updateSize)
 {
-	// Make sure index is valid
-	if (itemIndex >= items.size()) return;
+	EDITOR_ASSERT(itemIndex < items.size(), "Invalid item index provided");
 
 	// Change text of item
 	items[itemIndex].text = text.c_str();
@@ -39,11 +38,18 @@ void ToggleBar::updateItemText(const std::string& text, uint32_t itemIndex, bool
 
 bool ToggleBar::itemClicked(uint32_t itemIndex)
 {
-	// Make sure index is valid
-	if (itemIndex >= items.size()) return false;
+	EDITOR_ASSERT(itemIndex < items.size(), "Invalid item index provided");
 
 	// Return clicked state of item
 	return items[itemIndex].clicked;
+}
+
+ToggleBar::ItemStyle& ToggleBar::getItemStyle(uint32_t itemIndex)
+{
+	EDITOR_ASSERT(itemIndex < items.size(), "Invalid item index provided");
+
+	// Return mutable reference to style of item
+	return items[itemIndex].style;
 }
 
 void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
@@ -64,7 +70,7 @@ void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 		item.clicked = false;
 
 		// Draw text
-		ImU32 textColor = item.value ? style.textSelected : style.text;
+		ImU32 textColor = item.value ? style.textSelectedColor : style.textColor;
 		ImVec2 textSize = style.font->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, item.text);
 		drawList.AddText(style.font, fontSize, cursor, textColor, item.text);
 
@@ -86,9 +92,9 @@ void ToggleBar::render(ImDrawList& drawList, ImVec2 position)
 
 		// If hovered or item value set, draw item background and redraw item text
 		if (item.value || hovered) {
-			ImU32 color = style.colorHovered;
-			if (item.value) color = style.colorSelected;
-			drawList.AddRectFilled(p0, p1, color, style.itemRounding);
+			ImU32 color = item.style.hoveredColor;
+			if (item.value) color = item.style.selectedColor;
+			drawList.AddRectFilled(p0, p1, color, item.style.rounding);
 			drawList.AddText(style.font, fontSize, cursor, textColor, item.text);
 		}
 
