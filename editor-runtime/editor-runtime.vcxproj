@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\include\collection;$(ProjectDir)dependencies\include\physx;$(ProjectDir)dependencies\include\stb;$(ProjectDir)dependencies\include\glm;$(ProjectDir)dependencies\include\entt;$(ProjectDir)dependencies\include\json;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>

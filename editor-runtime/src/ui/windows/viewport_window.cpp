@@ -78,7 +78,7 @@ cameraEulerAngles(glm::vec3(0.0f))
 	playToggles.addItem(ICON_FA_PAUSE, gamePaused, true);
 	playToggles.addItem(ICON_FA_PLAY, gameExecuting, true);
 	playToggles.addItem(ICON_FA_SQUARE, tmp, true);
-	playToggles.getItemStyle(0).selectedColor = IM_COL32(255, 130, 80, 200);
+	playToggles.getItemStyle(0).selectedColor = IM_COL32(255, 130, 65, 200);
 	playToggles.getItemStyle(1).selectedColor = IM_COL32(85, 125, 255, 200);
 
 }
