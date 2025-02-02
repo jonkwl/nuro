@@ -82,6 +82,9 @@ namespace Runtime {
 		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
 
+		// Load gizmo icons
+		IconPool::load("../resources/icons");
+
 		// Create default skybox
 		/*
 		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
@@ -90,9 +93,6 @@ namespace Runtime {
 		// Set default skybox as current skybox
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 		*/
-
-		// Load gizmo icons
-		IconPool::load("../resources/icons");
 	}
 
 	void _createResources() {
@@ -127,19 +127,17 @@ namespace Runtime {
 		// Render shadow map
 		//
 
-		// tmp
+		// Make sure shadow map is created
+		if (!gMainShadowMap) return;
+
+		// Temporary: Render first spotlight to be found in registry
 		auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
 		for (auto [entity, transform, spotlight] : spotlights.each()) {
 			Profiler::start("shadow_pass");
 			gMainShadowMap->castShadows(spotlight, transform);
 			Profiler::stop("shadow_pass");
+			break;
 		}
-
-		/*
-		Profiler::start("shadow_pass");
-		gMainShadowMap->render();
-		Profiler::stop("shadow_pass");
-		*/
 	}
 
 	void _renderEditor() {
@@ -296,25 +294,20 @@ namespace Runtime {
 		// LOAD DEPENDENCIES (SHADERS ETC)
 		_loadDependencies();
 
-		// CREATE RESOURCES SUCH AS RENDER PASSES, PHYSICS ETC
+		// CREATE RESOURCES (RENDER PASSES, PHYSICS CONTEXT ETC)
 		_createResources();
 
-		// SETUP ENGINE UI
-		EditorUI::setup();
-
-		// WELCOME TEXT
+		// LAUNCH EDITOR
 		Console::out::welcome();
-
-		// Ready application
+		EditorUI::setup();
 		ApplicationContext::maximizeWindow();
 		ApplicationContext::setResizeable(true);
 
-		// PERFORM GAMES SETUP LOGIC AND RE-GENERATE RENDER QUEUE
-		auto setup = []() {
+		// PERFORM ASYNC GAME SETUP (TMP / TESTING)
+		std::jthread setup([]() {
 			gameSetup();
 			ECS::generateRenderQueue();
-			};
-		std::jthread setupThread(setup);
+		});
 
 		while (ApplicationContext::running())
 		{

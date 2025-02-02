@@ -122,7 +122,6 @@ void GameViewPipeline::render()
 	LitMaterial::castShadows = true;
 	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
 	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
-	LitMaterial::lightSpace = Runtime::getMainShadowMap()->getLightSpace();
 
 	Profiler::start("forward_pass");
 	forwardPass.drawSkybox = drawSkybox;

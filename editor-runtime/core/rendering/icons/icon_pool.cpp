@@ -10,14 +10,12 @@
 namespace IconPool {
 
 	std::vector<std::string> gValidExtensions = { ".png", ".jpg", ".jpeg" };
-
 	std::unordered_map<std::string, Texture> gIcons;
-
 	Texture gInvalidIcon = Texture::empty();
 
 	void load(const std::string& directoryPath)
 	{
-		Console::out::processStart("Gizmo Icon Pool", "Loading gIcons from " + directoryPath);
+		Console::out::processStart("Gizmo Icon Pool", "Loading icons from " + directoryPath);
 
 		uint32_t nLoaded = 0;
 		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directoryPath, gValidExtensions);
@@ -28,7 +26,7 @@ namespace IconPool {
 			nLoaded++;
 		}
 
-		Console::out::processDone("Gizmo Icon Pool", "Done: " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon loaded" : " gIcons loaded"));
+		Console::out::processDone("Gizmo Icon Pool", "Done: " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon loaded" : " icons loaded"));
 	}
 
 	Texture& get(const std::string& identifier)

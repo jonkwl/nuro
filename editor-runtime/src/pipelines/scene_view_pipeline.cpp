@@ -133,7 +133,6 @@ void SceneViewPipeline::render()
 	LitMaterial::castShadows = renderShadows;
 	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
 	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
-	LitMaterial::lightSpace = Runtime::getMainShadowMap()->getLightSpace();
 
 	sceneViewForwardPass.wireframe = wireframe;
 	sceneViewForwardPass.drawSkybox = showSkybox;

@@ -16,7 +16,6 @@ PostProcessing::Profile* LitMaterial::profile = nullptr;
 bool LitMaterial::castShadows = true;
 ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
 ShadowMap* LitMaterial::mainShadowMap = nullptr;
-glm::mat4 LitMaterial::lightSpace = glm::mat4(1.0f);
 
 std::string uniformArray(const std::string& identifier, size_t arrayIndex)
 {
@@ -67,7 +66,7 @@ void LitMaterial::bind() const
 	if (!shader || !viewport || !cameraTransform || !profile || !mainShadowDisk || !mainShadowMap) return;
 
 	// World parameters
-	shader->setMatrix4("lightSpaceMatrix", lightSpace);
+	shader->setMatrix4("lightSpaceMatrix", mainShadowMap->getLightSpace());
 	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
 
 	// General configuration

@@ -63,7 +63,6 @@ public:
 	static bool castShadows;
 	static ShadowDisk* mainShadowDisk; // tmp until global shadow system
 	static ShadowMap* mainShadowMap; // tmp until global shadow system
-	static glm::mat4 lightSpace; // tmp until global shadow system
 
 private:
 	enum TextureUnits
