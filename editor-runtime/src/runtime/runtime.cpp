@@ -297,17 +297,15 @@ namespace Runtime {
 		// CREATE RESOURCES (RENDER PASSES, PHYSICS CONTEXT ETC)
 		_createResources();
 
+		// GAME SETUP
+		gameSetup();
+		ECS::generateRenderQueue();
+
 		// LAUNCH EDITOR
 		Console::out::welcome();
 		EditorUI::setup();
 		ApplicationContext::maximizeWindow();
 		ApplicationContext::setResizeable(true);
-
-		// PERFORM ASYNC GAME SETUP (TMP / TESTING)
-		std::jthread setup([]() {
-			gameSetup();
-			ECS::generateRenderQueue();
-		});
 
 		while (ApplicationContext::running())
 		{
@@ -319,9 +317,7 @@ namespace Runtime {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			// UPDATE GAME IF GAME IS RUNNING
-			if (gGameState == GameState::GAME_RUNNING) {
-				_stepGame();
-			}
+			if (gGameState == GameState::GAME_RUNNING) _stepGame();
 
 			// RENDER NEXT FRAME
 			_renderShadowsGlobal();

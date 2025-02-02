@@ -17,7 +17,7 @@ Model* Model::load(std::string path)
 	return new Model(path);
 }
 
-Model::~Model()
+void Model::destroy()
 {
 	// Destroy all meshes
 	for (auto mesh : meshes) {

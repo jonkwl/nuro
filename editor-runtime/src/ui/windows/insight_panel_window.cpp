@@ -244,7 +244,6 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 	if (outputSize != output.viewport.getResolution()) {
 		pipeline.resizeOutput(previewViewerOutput, outputSize.x, outputSize.y);
 		render = true;
-		Console::out::processInfo("Resized insight panel preview viewer");
 	}
 
 	// Render if needed

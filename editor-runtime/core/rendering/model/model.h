@@ -14,7 +14,7 @@ public:
 	static Model* load(std::string path);
 
 	// Destroys the model and all of its meshes
-	~Model();
+	void destroy();
 
 	struct Metrics
 	{
