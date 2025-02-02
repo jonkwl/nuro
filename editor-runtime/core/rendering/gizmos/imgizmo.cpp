@@ -23,7 +23,7 @@ iconRenderStack()
 {
 }
 
-void IMGizmo::setup()
+void IMGizmo::create()
 {
 	// Load all static data if not loaded already
 	if (!staticData.loaded) {

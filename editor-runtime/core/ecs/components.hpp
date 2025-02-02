@@ -21,7 +21,7 @@ struct TransformComponent {
 	glm::vec3 scale = glm::vec3(1.0f);
 
 	// Optional parent
-	TransformComponent* parent;
+	const TransformComponent* parent;
 
 	// Latest computed model-view-projection matrix
 	glm::mat4 mvp = glm::mat4(1.0f);

@@ -15,7 +15,7 @@ class IMGizmo
 public:
 	IMGizmo();
 
-	void setup();
+	void create();
 	void newFrame();
 
 	//

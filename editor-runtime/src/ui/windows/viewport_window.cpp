@@ -41,8 +41,7 @@ mouseCurrent(glm::vec2(0.0f)),
 mouseLast(glm::vec2(0.0f)),
 mouseDelta(glm::vec2(0.0f)),
 gizmoOperation(ImGuizmo::OPERATION::TRANSLATE),
-gizmoScaleMin(0.1f),
-cameraEulerAngles(glm::vec3(0.0f))
+gizmoScaleMin(0.1f)
 {
 	// Initialize last mouse position
 	mouseLast = Cursor::getPosition();
@@ -147,11 +146,6 @@ void ViewportWindow::renderSceneView()
 	float width = boundsMax.x - boundsMin.x;
 	float height = boundsMax.y - boundsMin.y;
 	ImVec2 sceneViewSize = ImVec2(width, height);
-
-	// Check for new rightclick interaction to sync current cameras rotation euler angles
-	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right) && !sceneViewRightclicked) {
-		cameraEulerAngles = glm::degrees(glm::eulerAngles(pipeline.getFlyCamera().transform.rotation));
-	}
 
 	// Check if scene view is interacted with
 	sceneViewRightclicked = ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right);
@@ -375,12 +369,11 @@ void ViewportWindow::updateMovement()
 			speedChangeTimer = 0.0f;
 		}
 
-		// Rotate in scene view
+		// Look around movement
+		glm::vec3 cameraEulerAngles = glm::degrees(glm::eulerAngles(camera.transform.rotation));
 		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
 		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
-		// newRotation = glm::vec3(glm::clamp(newRotation.x, -90.0f, 90.0f), newRotation.y, newRotation.z);
 		camera.transform.rotation = glm::quat(glm::radians(newRotation));
-		cameraEulerAngles = newRotation;
 	}
 
 	// If theres a middle click interaction with scene view

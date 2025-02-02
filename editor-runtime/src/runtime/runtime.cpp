@@ -67,8 +67,7 @@ namespace Runtime {
 	//
 	//
 
-	void _loadAssets() {
-
+	void _loadShaders() {
 		// Loading all shaders
 		std::vector<std::string> shader_paths = {
 			"../resources/shaders/materials",
@@ -76,6 +75,9 @@ namespace Runtime {
 			"../resources/shaders/gizmo",
 			"../resources/shaders/passes" };
 		ShaderPool::loadAndCompile(shader_paths);
+	}
+
+	void _loadAssets() {
 
 		// Create shadow disk
 		uint32_t diskWindowSize = 4;
@@ -104,7 +106,7 @@ namespace Runtime {
 		IconPool::loadAll("../resources/icons");
 	}
 
-	void _setupScripts() {
+	void _createResources() {
 
 		// Create pipelines
 		gSceneViewPipeline.create();
@@ -115,10 +117,7 @@ namespace Runtime {
 		gGamePhysics.create();
 
 		// Setup scene gizmos
-		gSceneGizmos.setup();
-
-		// Setup engine ui
-		EditorUI::setup();
+		gSceneGizmos.create();
 
 	}
 
@@ -168,7 +167,7 @@ namespace Runtime {
 	void _stepGame() {
 
 		// UPDATE GAME LOGIC
-		update();
+		gameUpdate();
 
 		// STEP GAME PHYSICS
 		gGamePhysics.step(Time::deltaf());
@@ -304,21 +303,24 @@ namespace Runtime {
 	{
 		// CREATE CONTEXT
 		_createApplicationContext();
+
+		// LOAD SHADERS
+		_loadShaders();
 		
-		// LOAD ASSETS, COMPILE SHADERS
+		// LOAD ASSETS
 		_loadAssets();
 
-		// CALL ANY OTHER SCRIPTS NEEDING SETUP
-		_setupScripts();
+		// CREATE RESOURCES SUCH AS RENDER PASSES, PHYSICS ETC
+		_createResources();
+
+		// SETUP ENGINE UI
+		EditorUI::setup();
 
 		// PERFORM GAMES SETUP LOGIC
-		setup();
+		gameSetup();
 
-		// GENERATE ALL INITIAL QUEUES
+		// GENERATE ALL INITIAL RENDER QUEUES
 		ECS::generateRenderQueue();
-
-		// CREATE LOADING SCREEN
-		// _createLoadingScreen();
 
 		// WELCOME TEXT
 		Log::printWelcome();
@@ -387,7 +389,7 @@ namespace Runtime {
 		// gSceneState = ECS::captureState();
 
 		// Perform awake logic
-		awake();
+		gameAwake();
 
 		// Set game running state
 		gGameState = GameState::GAME_RUNNING;
@@ -396,7 +398,7 @@ namespace Runtime {
 	void stopGame()
 	{
 		// Perform quit logic
-		quit();
+		gameQuit();
 
 		// Set game running state
 		gGameState = GameState::GAME_SLEEPING;
