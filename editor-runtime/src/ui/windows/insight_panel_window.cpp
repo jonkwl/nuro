@@ -253,13 +253,15 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 		previewCameraTransform.position = glm::vec3(0.0f, 0.0f, -3.5f);
 
 		// Create and add render instruction
+		/*
 		PreviewRenderInstruction instruction;
 		instruction.backgroundColor = glm::vec4(0.15f, 0.15f, 0.15f, 1.0f);
-		instruction.model = Runtime::getSphereModel();
-		instruction.modelMaterial = Runtime::getDefaultLit();
+		instruction.model = MODEL HERE
+		instruction.modelMaterial = MATERIAL HERE
 		instruction.modelTransform = TransformComponent();
 		instruction.cameraTransform = previewCameraTransform;
 		pipeline.addRenderInstruction(instruction);
+		*/
 	}
 
 	// Fetch output texture source

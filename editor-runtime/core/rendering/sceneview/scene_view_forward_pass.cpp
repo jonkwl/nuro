@@ -52,7 +52,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating scene view pass output framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Scene View Forward Pass", "Issue while generating output framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Generate multisampled framebuffer
@@ -77,7 +77,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating scene view pass multisampled framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Scene View Forward Pass", "Issue while generating multisampled framebuffer: " + std::to_string(fboStatus));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -197,6 +197,7 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 {
 	// Transform components model and mvp must have been calculated beforehand
 
+	// Make sure mesh is available
 	if (!renderer.mesh) return;
 
 	// Set shader uniforms
@@ -246,8 +247,6 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 		renderMesh(transform, renderer);
 
 	}
-
-	// Console::out::processInfo("New bound - Shaders / Materials : " + std::to_string(newBoundShaders) + " / " + std::to_string(newBoundMaterials));
 }
 
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)

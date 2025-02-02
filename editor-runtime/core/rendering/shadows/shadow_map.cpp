@@ -55,7 +55,7 @@ void ShadowMap::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating shadow map framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Shadow Map", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 	}
 }
 
@@ -149,7 +149,7 @@ bool ShadowMap::saveAsImage(int32_t width, int32_t height, const std::string& fi
 	}
 	else
 	{
-		Console::out::error("Shadow Map", "Failed to save shadow map at " + filename);
+		Console::out::warning("Shadow Map", "Failed to save shadow map at " + filename);
 		return false;
 	}
 }

@@ -45,7 +45,7 @@ void ForwardPass::create(const uint32_t msaaSamples)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating forward pass output framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Forward Pass", "Issue while generating output framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Generate multisampled framebuffer
@@ -70,7 +70,7 @@ void ForwardPass::create(const uint32_t msaaSamples)
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating forward pass multisampled framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Forward Pass", "Issue while generating multisampled framebuffer: " + std::to_string(fboStatus));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

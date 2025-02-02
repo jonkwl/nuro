@@ -181,8 +181,6 @@ void SceneViewPipeline::resizeViewport(float width, float height)
 
 	// Re-render frame
 	render();
-
-	Console::out::processDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }
 
 void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)

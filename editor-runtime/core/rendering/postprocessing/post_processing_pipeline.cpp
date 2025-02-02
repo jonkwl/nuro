@@ -17,7 +17,7 @@ PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, const b
 renderToScreen(renderToScreen),
 fbo(0),
 output(0),
-finalPassShader(nullptr),
+finalPassShader(ShaderPool::empty()),
 motionBlurPass(viewport),
 bloomPass(viewport)
 {
@@ -49,7 +49,7 @@ void PostProcessingPipeline::create()
 		GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 		{
-			Console::out::error("Post Processing Pipeline", "Error generating framebuffer: " + std::to_string(fboStatus));
+			Console::out::warning("Post Processing Pipeline", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 		}
 
 	}

@@ -13,7 +13,7 @@ PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 depthOutput(0),
 normalOutput(0),
-prePassShader(nullptr)
+prePassShader(ShaderPool::empty())
 {
 }
 
@@ -58,7 +58,7 @@ void PrePass::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating bloom fbo: " + std::to_string(fboStatus));
+		Console::out::warning("Pre Pass", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind fbo

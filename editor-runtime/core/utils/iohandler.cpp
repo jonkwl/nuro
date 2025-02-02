@@ -108,13 +108,13 @@ namespace IOHandler
 		// Check if the path exists and is a directory
 		if (!std::filesystem::exists(path))
 		{
-			Console::out::error("IO", "Error: Path does not exist: " + path);
+			Console::out::warning("IO", "Path does not exist: '" + path + "'");
 			return files;
 		}
 
 		if (!std::filesystem::is_directory(path))
 		{
-			Console::out::error("IO", "Error: Path is not a directory: " + path);
+			Console::out::warning("IO", "Error: Path is not a directory: '" + path + "'");
 			return files;
 		}
 

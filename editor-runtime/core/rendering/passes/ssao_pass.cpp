@@ -16,8 +16,8 @@ noiseResolution(0.0f),
 fbo(0),
 aoOutput(0),
 blurredOutput(0),
-aoPassShader(nullptr),
-aoBlurShader(nullptr),
+aoPassShader(ShaderPool::empty()),
+aoBlurShader(ShaderPool::empty()),
 kernel(),
 noiseTexture(0)
 {
@@ -84,7 +84,7 @@ void SSAOPass::create(float aoScale, int32_t maxKernelSamples, float noiseResolu
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Framebuffer", "Error generating fbo: " + std::to_string(fboStatus));
+		Console::out::warning("SSAO Pass", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

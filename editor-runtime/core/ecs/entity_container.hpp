@@ -13,9 +13,11 @@
 #include "../core/utils/console.h"
 #include "../core/ecs/components.hpp"
 
+///////////////////////////////////////////////////////////////////
 ///																///
 ///			SECURE CONTAINER FOR HANDLING ECS ENTITIES			///
 ///																///
+///////////////////////////////////////////////////////////////////
 
 struct EntityContainer {
 

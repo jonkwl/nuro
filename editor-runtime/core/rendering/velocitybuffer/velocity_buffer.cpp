@@ -69,7 +69,7 @@ void VelocityBuffer::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Velocity Buffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Velocity Buffer", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

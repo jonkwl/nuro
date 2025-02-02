@@ -42,7 +42,7 @@ struct MeshRendererComponent {
 	// Mesh render target
 	const Mesh* mesh;
 
-	// Mesh material | Unsafe!
+	// Mesh material - TMP - UNSAFE!
 	const IMaterial* material;
 };
 
@@ -122,9 +122,11 @@ struct BoxColliderComponent {
 	// Scale relative to transforms scale
 	glm::vec3 size = glm::vec3(1.0f);
 
+	// UNSAFE - MUST BE FIXED
 	// Physics material
 	physx::PxMaterial* material = nullptr;
 
+	// UNSAFE - MUST BE FIXED
 	// Shape handle
 	physx::PxShape* shape = nullptr;
 
@@ -138,9 +140,11 @@ struct SphereColliderComponent {
 	// Radius relative to transforms scale
 	float radius = 1.0f;
 
+	// UNSAFE - MUST BE FIXED
 	// Physics material
 	physx::PxMaterial* material = nullptr;
 
+	// UNSAFE - MUST BE FIXED
 	// Physics backend shape handle
 	physx::PxShape* shape = nullptr;
 
@@ -181,6 +185,7 @@ struct RigidbodyComponent {
 	// Current rigidbody physics-internal rotation
 	glm::quat rotation = glm::identity<glm::quat>();
 
+	// UNSAFE - MUST BE FIXED
 	// Physics backend actor handle
 	physx::PxRigidDynamic* actor = nullptr;
 

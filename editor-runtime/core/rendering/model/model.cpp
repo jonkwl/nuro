@@ -49,19 +49,21 @@ metrics()
 
 void Model::resolveModel(std::string path)
 {
-	Console::out::processStart("Model", "Loading model " + IOHandler::getFilename(path) + "...");
+	std::string filename = IOHandler::getFilename(path);
+
+	Console::out::processStart("Model", "Loading model '" + filename + "'...");
 
 	// Set model import flags
 	uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
 	// Read file
 	Assimp::Importer import;
-	const aiScene * scene = import.ReadFile(path, importSettings);
+	const aiScene* scene = import.ReadFile(path, importSettings);
 
 	// Make sure model is valid
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		Console::out::error("Mesh", import.GetErrorString());
+		Console::out::warning("Model", "Couldn't load model '" + filename + "'!", import.GetErrorString());
 		return;
 	}
 
@@ -78,7 +80,7 @@ void Model::resolveModel(std::string path)
 	// Finalize the metrics
 	finalizeMetrics();
 
-	Console::out::processDone("Model", "Built model " + IOHandler::getFilename(path));
+	Console::out::processDone("Model", "Built model '" + filename + "'");
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)

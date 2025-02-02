@@ -2,6 +2,9 @@
 
 #include "../core/engine.h"
 
+#include <thread>
+#include <chrono>
+
 Entity cameraEntity;
 Entity kinematicEntity;
 Entity playerEntity;
@@ -44,7 +47,7 @@ void _example() {
 	pointLightSource.falloff = 15.0f;
 
 	// Sample spotlight
-		EntityContainer flashlight("Flashlight", ECS::createEntity());
+	EntityContainer flashlight("Flashlight", ECS::createEntity());
 	flashlight.transform.position = glm::vec3(0.0f, 6.0f, 5.0f);
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
 	flashlightSource.intensity = 10.0f;
@@ -67,7 +70,7 @@ void _example() {
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
-	int objectAmount = 16;
+	int objectAmount = 32;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube", ECS::createEntity());
@@ -108,18 +111,12 @@ void _example() {
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
-	Entity invaliddd = Entity();
-	EntityContainer x("Some", invaliddd);
-	x.add<TransformComponent>();
-	x.remove<TransformComponent>();
-
-	EntityContainer playerEC("Player", player.root);
-	playerEC.get<VelocityComponent>();
-	playerEC.remove<TransformComponent>();
-
 }
 
 void gameSetup() {
+	Console::out::processStart("GAME LOGIC ", "----------------- GAME SETUP IN 5 SECONDS... -----------------");
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	Console::out::processStart("GAME LOGIC ", "----------------- EXECUTING GAME SETUP -----------------");
 	_example();
 }
 

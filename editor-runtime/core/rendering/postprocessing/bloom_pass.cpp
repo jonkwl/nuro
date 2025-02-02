@@ -17,9 +17,9 @@ fViewportSize(0.0f, 0.0f),
 inversedViewportSize(0, 0),
 framebuffer(0),
 prefilterOutput(0),
-prefilterShader(nullptr),
-downsamplingShader(nullptr),
-upsamplingShader(nullptr)
+prefilterShader(ShaderPool::empty()),
+downsamplingShader(ShaderPool::empty()),
+upsamplingShader(ShaderPool::empty())
 {
 }
 
@@ -105,7 +105,7 @@ void BloomPass::create(const uint32_t mipDepth)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Bloom Pass", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Bloom Pass", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

@@ -28,7 +28,7 @@ public:
 
 public:
 	static Texture empty(); // Get empty texture
-	static Texture load(std::string path, TextureType type); // Create texture of type from image data
+	static Texture load(const std::string& path, TextureType type); // Create texture of type from image data
 	static Texture fromBackendId(uint32_t backendId); // Create texture with existing backend texture attached
 
 private:

@@ -11,7 +11,7 @@
 MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),
 fbo(0),
 output(0),
-shader(nullptr),
+shader(ShaderPool::empty()),
 previousViewProjectionMatrix(glm::mat4(1.0f))
 {
 }
@@ -53,7 +53,7 @@ void MotionBlurPass::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Console::out::error("Motion Blur Pass", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Console::out::warning("Motion Blur Pass", "Issue while generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

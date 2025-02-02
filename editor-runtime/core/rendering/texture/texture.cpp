@@ -4,6 +4,7 @@
 #include <stb_image.h>
 
 #include "../core/utils/console.h"
+#include "../core/utils/iohandler.h"
 
 Texture::Texture() : backendId(0)
 {
@@ -33,13 +34,16 @@ Texture Texture::empty()
 	return Texture();
 }
 
-Texture Texture::load(std::string path, TextureType type)
+Texture Texture::load(const std::string& path, TextureType type)
 {
 	// Buffer for new texture id
 	uint32_t newId;
 
+	// Get filename
+	std::string filename = IOHandler::getFilename(path);
+
 	// Start creating texture
-	Console::out::processInfo("Loading texture " + path + "...");
+	Console::out::processInfo("Loading texture '" + filename + "'...");
 
 	// Generate texture
 	glGenTextures(1, &newId);
@@ -62,7 +66,7 @@ Texture Texture::load(std::string path, TextureType type)
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
-		Console::out::error("Texture", "Couldn't load texture data");
+		Console::out::warning("Texture", "Couldn't load data for texture '" + filename + "'");
 		return Texture(); // Return empty texture
 	}
 

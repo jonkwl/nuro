@@ -8,35 +8,35 @@
 class Shader
 {
 public:
-	explicit Shader(const char* vertex_src, const char* fragment_src, bool& compiled, const std::string name);
+	explicit Shader(const std::string& name);
+
+	bool compile(const char* vertexSource, const char* fragmentSource);
 
 	void bind();
 
-	uint32_t getId() { return id; }
-	std::string getName() { return shaderName; }
+	inline uint32_t getId() const { 
+		return id; 
+	}
 
-	void setBool(const std::string& name, bool value);
-	void setInt(const std::string& name, int32_t value);
-	void setFloat(const std::string& name, float value);
-	void setVec2(const std::string& name, glm::vec2 value);
-	void setVec3(const std::string& name, glm::vec3 value);
-	void setVec4(const std::string& name, glm::vec4 value);
-	void setMatrix3(const std::string& name, glm::mat3 value);
-	void setMatrix4(const std::string& name, glm::mat4 value);
+	inline const std::string& getName() const { 
+		return name; 
+	}
 
-public:
-	// Inserts the given array index in some uniform identifier, will insert array index between the [] in the given identifier
-	static std::string uniformArray(const std::string& identifier, uint32_t arrayIndex);
-
-	// Inserts the given array index in some uniform identifier, will insert array index between the [] in the given identifier
-	static std::string uniformArray(const std::string& identifier, size_t arrayIndex);
+	void setBool(const std::string& identifier, bool value);
+	void setInt(const std::string& identifier, int32_t value);
+	void setFloat(const std::string& identifier, float value);
+	void setVec2(const std::string& identifier, glm::vec2 value);
+	void setVec3(const std::string& identifier, glm::vec3 value);
+	void setVec4(const std::string& identifier, glm::vec4 value);
+	void setMatrix3(const std::string& identifier, glm::mat3 value);
+	void setMatrix4(const std::string& identifier, glm::mat4 value);
 
 private:
 	uint32_t id;
-	std::string shaderName;
-	std::unordered_map<std::string, int32_t> uniformCache;
+	std::string name;
+	std::unordered_map<std::string, int32_t> uniforms;
 
-	int32_t getUniformLocation(const std::string& name);
-	bool shader_compiled(std::string type, int32_t shader);
-	bool program_linked(int32_t program);
+	int32_t getUniformLocation(const std::string& identifier);
+	bool shaderCompiled(const char* type, int32_t shader);
+	bool programLinked(int32_t program);
 };

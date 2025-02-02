@@ -46,7 +46,7 @@ Image Cubemap::loadImage(std::string path)
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
-		Console::out::error("Cubemap", "Failed to load cubemap at " + path);
+		Console::out::warning("Cubemap", "Failed to load cubemap at " + path);
 		return Image();
 	}
 

@@ -18,6 +18,13 @@ ShadowDisk* LitMaterial::mainShadowDisk = nullptr;
 ShadowMap* LitMaterial::mainShadowMap = nullptr;
 glm::mat4 LitMaterial::lightSpace = glm::mat4(1.0f);
 
+std::string uniformArray(const std::string& identifier, size_t arrayIndex)
+{
+	size_t pos = identifier.find("[]");
+	if (pos == std::string::npos) return identifier;
+	return identifier.substr(0, pos) + "[" + std::to_string(arrayIndex) + "]" + identifier.substr(pos + 2);
+}
+
 LitMaterial::LitMaterial() : baseColor(glm::vec4(1.0f)),
 tiling(glm::vec2(1.0f, 1.0f)),
 offset(glm::vec2(0.0f, 0.0f)),
@@ -56,7 +63,8 @@ shaderId(0)
 
 void LitMaterial::bind() const
 {
-	if (!shader) return;
+	// Bad temporary code
+	if (!shader || !viewport || !cameraTransform || !profile || !mainShadowDisk || !mainShadowMap) return;
 
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", lightSpace);
@@ -261,10 +269,10 @@ void LitMaterial::syncLightUniforms()
 		glm::vec3 directionalDirection = glm::vec3(-0.7f, -0.8f, 1.0f);
 		glm::vec3 directionalPosition = glm::vec3(4.0f, 5.0f, -7.0f);
 
-		shader->setFloat(Shader::uniformArray("directionalLights[].intensity", nDirectionalLights), directionalLight.intensity);
-		shader->setVec3(Shader::uniformArray("directionalLights[].direction", nDirectionalLights), Transformation::toBackendPosition(directionalDirection));
-		shader->setVec3(Shader::uniformArray("directionalLights[].color", nDirectionalLights), directionalLight.color);
-		shader->setVec3(Shader::uniformArray("directionalLights[].position", nDirectionalLights), Transformation::toBackendPosition(directionalPosition));
+		shader->setFloat(uniformArray("directionalLights[].intensity", nDirectionalLights), directionalLight.intensity);
+		shader->setVec3(uniformArray("directionalLights[].direction", nDirectionalLights), Transformation::toBackendPosition(directionalDirection));
+		shader->setVec3(uniformArray("directionalLights[].color", nDirectionalLights), directionalLight.color);
+		shader->setVec3(uniformArray("directionalLights[].position", nDirectionalLights), Transformation::toBackendPosition(directionalPosition));
 
 		nDirectionalLights++;
 		if (nDirectionalLights >= maxDirectionalLights) break;
@@ -272,11 +280,11 @@ void LitMaterial::syncLightUniforms()
 
 	// Setup all point lights
 	for (auto [entity, transform, pointLight] : pointLights.each()) {
-		shader->setVec3(Shader::uniformArray("pointLights[].position", nPointLights), Transformation::toBackendPosition(transform.position));
-		shader->setVec3(Shader::uniformArray("pointLights[].color", nPointLights), pointLight.color);
-		shader->setFloat(Shader::uniformArray("pointLights[].intensity", nPointLights), pointLight.intensity);
-		shader->setFloat(Shader::uniformArray("pointLights[].range", nPointLights), pointLight.range);
-		shader->setFloat(Shader::uniformArray("pointLights[].falloff", nPointLights), pointLight.falloff);
+		shader->setVec3(uniformArray("pointLights[].position", nPointLights), Transformation::toBackendPosition(transform.position));
+		shader->setVec3(uniformArray("pointLights[].color", nPointLights), pointLight.color);
+		shader->setFloat(uniformArray("pointLights[].intensity", nPointLights), pointLight.intensity);
+		shader->setFloat(uniformArray("pointLights[].range", nPointLights), pointLight.range);
+		shader->setFloat(uniformArray("pointLights[].falloff", nPointLights), pointLight.falloff);
 
 		nPointLights++;
 		if (nPointLights >= maxPointLights) break;
@@ -286,14 +294,14 @@ void LitMaterial::syncLightUniforms()
 	for (auto [entity, transform, spotlight] : spotlights.each()) {
 		glm::vec3 spotlightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 
-		shader->setVec3(Shader::uniformArray("spotlights[].position", nSpotlights), Transformation::toBackendPosition(transform.position));
-		shader->setVec3(Shader::uniformArray("spotlights[].direction", nSpotlights), Transformation::toBackendPosition(spotlightDirection));
-		shader->setVec3(Shader::uniformArray("spotlights[].color", nSpotlights), spotlight.color);
-		shader->setFloat(Shader::uniformArray("spotlights[].intensity", nSpotlights), spotlight.intensity);
-		shader->setFloat(Shader::uniformArray("spotlights[].range", nSpotlights), spotlight.range);
-		shader->setFloat(Shader::uniformArray("spotlights[].falloff", nSpotlights), spotlight.falloff);
-		shader->setFloat(Shader::uniformArray("spotlights[].innerCos", nSpotlights), glm::cos(glm::radians(spotlight.innerAngle * 0.5f)));
-		shader->setFloat(Shader::uniformArray("spotlights[].outerCos", nSpotlights), glm::cos(glm::radians(spotlight.outerAngle * 0.5f)));
+		shader->setVec3(uniformArray("spotlights[].position", nSpotlights), Transformation::toBackendPosition(transform.position));
+		shader->setVec3(uniformArray("spotlights[].direction", nSpotlights), Transformation::toBackendPosition(spotlightDirection));
+		shader->setVec3(uniformArray("spotlights[].color", nSpotlights), spotlight.color);
+		shader->setFloat(uniformArray("spotlights[].intensity", nSpotlights), spotlight.intensity);
+		shader->setFloat(uniformArray("spotlights[].range", nSpotlights), spotlight.range);
+		shader->setFloat(uniformArray("spotlights[].falloff", nSpotlights), spotlight.falloff);
+		shader->setFloat(uniformArray("spotlights[].innerCos", nSpotlights), glm::cos(glm::radians(spotlight.innerAngle * 0.5f)));
+		shader->setFloat(uniformArray("spotlights[].outerCos", nSpotlights), glm::cos(glm::radians(spotlight.outerAngle * 0.5f)));
 
 		nSpotlights++;
 		if (nSpotlights >= maxSpotlights) break;
@@ -312,8 +320,8 @@ void LitMaterial::setSampleDirectionalLight()
 	shader->setInt("configuration.numSpotLights", 0);
 
 	size_t index = 0;
-	shader->setFloat(Shader::uniformArray("directionalLights[].intensity", index), 1.0f);
-	shader->setVec3(Shader::uniformArray("directionalLights[].direction", index), Transformation::toBackendPosition(glm::vec3(-0.5f, -0.5f, 0.5f)));
-	shader->setVec3(Shader::uniformArray("directionalLights[].color", index), glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setVec3(Shader::uniformArray("directionalLights[].position", index), Transformation::toBackendPosition(glm::vec3(0.0f, 0.0f, 0.0f)));
+	shader->setFloat(uniformArray("directionalLights[].intensity", index), 1.0f);
+	shader->setVec3(uniformArray("directionalLights[].direction", index), Transformation::toBackendPosition(glm::vec3(-0.5f, -0.5f, 0.5f)));
+	shader->setVec3(uniformArray("directionalLights[].color", index), glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setVec3(uniformArray("directionalLights[].position", index), Transformation::toBackendPosition(glm::vec3(0.0f, 0.0f, 0.0f)));
 }

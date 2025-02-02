@@ -6,7 +6,8 @@
 #define EDITOR_CONNECTED 1
 
 #if EDITOR_CONNECTED
-	#include "../src/ui/windows/console_window.h"
+#include "../src/runtime/runtime.h"
+#include "../src/ui/windows/console_window.h"
 #endif
 
 namespace Console
@@ -37,7 +38,7 @@ namespace Console
 			}
 
 #if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog{ error, "Core - " + origin, ConsoleLogType::ERROR });
+			Runtime::TERMINATE();
 #endif
 		}
 
@@ -50,7 +51,7 @@ namespace Console
 			}
 
 #if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog{ warning, "Core - " + origin, ConsoleLogType::WARNING });
+			ConsoleWindow::addLog(ConsoleLog{ "[Internal] " + warning, "Engine Core - " + origin, ConsoleLogType::WARNING });
 #endif
 		}
 
@@ -59,28 +60,16 @@ namespace Console
 			std::cout << std::endl;
 			_print(TextColor::White, BackgroundColor::Blue, _getSpacing() + origin + " >>> " + process + _getSpacing());
 			std::cout << std::endl;
-
-#if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog{ process, "Core - " + origin, ConsoleLogType::MESSAGE });
-#endif
 		}
 
 		void processState(std::string origin, std::string process)
 		{
 			_print(TextColor::White, BackgroundColor::Cyan, _getSpacing() + origin + " >>> " + process + _getSpacing());
-
-#if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog{ process, "Core - " + origin, ConsoleLogType::MESSAGE });
-#endif
 		}
 
 		void processInfo(std::string info)
 		{
 			_print(TextColor::White, BackgroundColor::Black, _getSpacing() + info + _getSpacing());
-
-#if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog{ info, "Core - Direct Console API", ConsoleLogType::MESSAGE });
-#endif
 		}
 
 		void processDone(std::string origin, std::string process)
@@ -88,46 +77,41 @@ namespace Console
 			std::cout << std::endl;
 			_print(TextColor::White, BackgroundColor::Magenta, _getSpacing() + origin + " >>> " + process + _getSpacing());
 			std::cout << std::endl;
-
-#if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog{ process, "Core - " + origin, ConsoleLogType::MESSAGE });
-#endif
 		}
 
-		void welcome()
-		{
+		void welcome() {
+			const char* art = R"(
+    
+    
+#######################################################################################
+#                                                                                     #
+#         ________                                                                    #
+#        / / / / /                                                                    #
+#       / / / / /                                                                     #
+#      / / / / /                                                                      #
+#     /_/_/_/_/     __        _______ _     ____ ___  __  __ _____ _                  #
+#        / / /      \ \      / / ____| |   / ___/ _ \|  \/  | ____| |                 #
+#       / / /___     \ \ /\ / /|  _| | |  | |  | | | | |\/| |  _| | |                 #
+#      / / / / /      \ V  V / | |___| |__| |__| |_| | |  | | |___|_|                 #
+#     /_/_/ / /        \_/\_/  |_____|_____\____\___/|_|  |_|_____(_)                 #
+#        / / /                                                                        #
+#       /_/_/_____                                                                    #
+#        / / / / /                                                                    #
+#       / / / / /                                                                     #
+#      / / / / /                                                                      #
+#     /_/_/_/_/                                                                       #
+#                                                                                     #
+#######################################################################################
 
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "#######################################################################################" << std::endl;
-			std::cout << "#                                                                                     #" << std::endl;
-			std::cout << "#         ________                                                                    #" << std::endl;
-			std::cout << "#        / / / / /                                                                    #" << std::endl;
-			std::cout << "#       / / / / /                                                                     #" << std::endl;
-			std::cout << "#      / / / / /                                                                      #" << std::endl;
-			std::cout << "#     /_/_/_/_/     __        _______ _     ____ ___  __  __ _____ _                  #" << std::endl;
-			std::cout << "#        / / /      \\ \\      / / ____| |   / ___/ _ \\|  \\/  | ____| |                 #" << std::endl;
-			std::cout << "#       / / /___     \\ \\ /\\ / /|  _| | |  | |  | | | | |\\/| |  _| | |                 #" << std::endl;
-			std::cout << "#      / / / / /      \\ V  V / | |___| |__| |__| |_| | |  | | |___|_|                 #" << std::endl;
-			std::cout << "#     /_/_/ / /        \\_/\\_/  |_____|_____\\____\\___/|_|  |_|_____(_)                 #" << std::endl;
-			std::cout << "#        / / /                                                                        #" << std::endl;
-			std::cout << "#       /_/_/_____                                                                    #" << std::endl;
-			std::cout << "#        / / / / /                                                                    #" << std::endl;
-			std::cout << "#       / / / / /                                                                     #" << std::endl;
-			std::cout << "#      / / / / /                                                                      #" << std::endl;
-			std::cout << "#     /_/_/_/_/                                                                       #" << std::endl;
-			std::cout << "#                                                                                     #" << std::endl;
-			std::cout << "#######################################################################################" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-			std::cout << "" << std::endl;
-
+)";
+			std::cout << art << std::endl;
 		}
+
+		int main() {
+			welcome();
+			return 0;
+		}
+
 
 	}
 

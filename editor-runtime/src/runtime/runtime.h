@@ -66,11 +66,4 @@ namespace Runtime
 
 	ShadowDisk* getMainShadowDisk();
 	ShadowMap* getMainShadowMap();
-
-	//
-	// Other
-	//
-
-	Model* getSphereModel();
-	LitMaterial* getDefaultLit();
 };

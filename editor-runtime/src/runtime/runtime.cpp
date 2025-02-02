@@ -57,27 +57,20 @@ namespace Runtime {
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
 
-	// tmp
-	Model* gSphereModel;
-	LitMaterial* gDefaultLit;
-
 	//
 	//
 	// PRIVATE RUNTIME CORE METHODS
 	//
 	//
 
-	void _loadShaders() {
+	void _loadDependencies() {
 		// Loading all shaders
 		std::vector<std::string> shader_paths = {
 			"../resources/shaders/materials",
 			"../resources/shaders/postprocessing",
 			"../resources/shaders/gizmo",
 			"../resources/shaders/passes" };
-		ShaderPool::loadAndCompile(shader_paths);
-	}
-
-	void _loadAssets() {
+		ShaderPool::load(shader_paths);
 
 		// Create shadow disk
 		uint32_t diskWindowSize = 4;
@@ -89,12 +82,8 @@ namespace Runtime {
 		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
 
-		// tmp
-		gSphereModel = Model::load("../resources/primitives/sphere.fbx");
-		gDefaultLit = new LitMaterial();
-
-		/*
 		// Create default skybox
+		/*
 		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
 		gDefaultSkybox = Skybox(defaultCubemap);
 
@@ -103,7 +92,7 @@ namespace Runtime {
 		*/
 
 		// Load gizmo icons
-		IconPool::loadAll("../resources/icons");
+		IconPool::load("../resources/icons");
 	}
 
 	void _createResources() {
@@ -187,7 +176,7 @@ namespace Runtime {
 		Texture texture = Texture::load("../resources/other/startup.jpg", TextureType::ALBEDO);
 
 		// Load and compile internal shaders
-		ShaderPool::loadAndCompile({ "../resources/shaders/startup" });
+		ShaderPool::load({ "../resources/shaders/startup" });
 		Shader* shader = ShaderPool::get("startup_model");
 		shader->bind();
 		shader->setInt("colorTexture", 1);
@@ -304,11 +293,8 @@ namespace Runtime {
 		// CREATE CONTEXT
 		_createApplicationContext();
 
-		// LOAD SHADERS
-		_loadShaders();
-		
-		// LOAD ASSETS
-		_loadAssets();
+		// LOAD DEPENDENCIES (SHADERS ETC)
+		_loadDependencies();
 
 		// CREATE RESOURCES SUCH AS RENDER PASSES, PHYSICS ETC
 		_createResources();
@@ -316,19 +302,19 @@ namespace Runtime {
 		// SETUP ENGINE UI
 		EditorUI::setup();
 
-		// PERFORM GAMES SETUP LOGIC
-		gameSetup();
-
-		// GENERATE ALL INITIAL RENDER QUEUES
-		ECS::generateRenderQueue();
-
 		// WELCOME TEXT
 		Console::out::welcome();
-		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
 		// Ready application
 		ApplicationContext::maximizeWindow();
 		ApplicationContext::setResizeable(true);
+
+		// PERFORM GAMES SETUP LOGIC AND RE-GENERATE RENDER QUEUE
+		auto setup = []() {
+			gameSetup();
+			ECS::generateRenderQueue();
+			};
+		std::jthread setupThread(setup);
 
 		while (ApplicationContext::running())
 		{
@@ -459,16 +445,6 @@ namespace Runtime {
 	ShadowMap* getMainShadowMap()
 	{
 		return gMainShadowMap;
-	}
-
-	Model* getSphereModel()
-	{
-		return gSphereModel;
-	}
-
-	LitMaterial* getDefaultLit()
-	{
-		return gDefaultLit;
 	}
 
 }
