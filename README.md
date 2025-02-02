@@ -2,7 +2,7 @@
   <h1>Nuro Engine</h1>
   <img src="https://i.ibb.co/Psm7MDTW/nuro-banner.jpg" alt="Nuro Banner">
   <p></p>
-  <p><b>A lightweight, bloat-free 3D engine for fast development and rapid iteration</b></p>
+  <p><b>A lightweight, bloat-free 3D game engine for fast development and rapid iteration</b></p>
   <p><a href="#contributing">💁‍♂️ Contributing to Nuro</a> | <a href="#showcase">📷 Showcase</a> | <a href="#features">📃 Features</a> | <a href="#roadmap">✈ Roadmap</a> </p>
   <p></p>
 </div>
