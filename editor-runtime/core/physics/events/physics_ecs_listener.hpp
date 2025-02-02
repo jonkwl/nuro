@@ -6,7 +6,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtx/component_wise.hpp>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/physics/rigidbody/rigidbody.h"
 #include "../core/physics/utils/px_translator.h"

@@ -67,7 +67,7 @@ void RegistryWindow::renderSearch(ImDrawList& drawList)
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
 	if (ImGui::InputTextWithHint("##Search", "Search...", searchBuffer, IM_ARRAYSIZE(searchBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-		Log::printWarning("Hierarchy Window", "Search not implemented yet");
+		Console::out::warning("Hierarchy Window", "Search not implemented yet");
 	}
 
 	ImGui::PopItemWidth();

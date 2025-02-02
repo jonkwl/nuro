@@ -1,6 +1,6 @@
 #include "title_bar.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/input/cursor.h"
 #include "../core/context/application_context.h"
 

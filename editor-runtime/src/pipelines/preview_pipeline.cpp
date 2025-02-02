@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/model/model.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/shader/shader_pool.h"

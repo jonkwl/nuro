@@ -2,7 +2,7 @@
 
 #include "../src/ui/editor_ui.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 ToggleBar::ToggleBar() : items(),
 size(ImVec2(0.0f, 0.0f)),

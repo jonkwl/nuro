@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/skybox/skybox.h"
@@ -45,7 +45,7 @@ void ForwardPass::create(const uint32_t msaaSamples)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating forward pass output framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating forward pass output framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Generate multisampled framebuffer
@@ -70,7 +70,7 @@ void ForwardPass::create(const uint32_t msaaSamples)
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating forward pass multisampled framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating forward pass multisampled framebuffer: " + std::to_string(fboStatus));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

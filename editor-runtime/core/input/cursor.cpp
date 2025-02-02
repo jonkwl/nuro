@@ -1,6 +1,6 @@
 #include "cursor.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/context/application_context.h"
 
 namespace Cursor {

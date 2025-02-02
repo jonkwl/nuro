@@ -4,7 +4,7 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 #include "../core/time/time.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
 #include "../core/physics/physics.h"

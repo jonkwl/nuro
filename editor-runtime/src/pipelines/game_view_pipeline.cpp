@@ -2,7 +2,7 @@
 
 #include "../core/input/input.h"
 #include "../core/rendering/transformation/transformation.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/culling/bounding_volume.h"
@@ -164,7 +164,7 @@ void GameViewPipeline::resizeViewport(float width, float height)
 	// Re-render frame
 	render();
 
-	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
+	Console::out::processDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }
 
 void GameViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)

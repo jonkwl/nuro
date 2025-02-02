@@ -5,7 +5,7 @@
 #include <vector>
 #include <stb_image_write.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/transformation/transformation.h"
@@ -55,7 +55,7 @@ void ShadowMap::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating shadow map framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating shadow map framebuffer: " + std::to_string(fboStatus));
 	}
 }
 
@@ -144,12 +144,12 @@ bool ShadowMap::saveAsImage(int32_t width, int32_t height, const std::string& fi
 	}
 	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0)
 	{
-		Log::printProcessDone("Shadow Map", "Shadow map saved as " + filename);
+		Console::out::processDone("Shadow Map", "Shadow map saved as " + filename);
 		return true;
 	}
 	else
 	{
-		Log::printError("Shadow Map", "Failed to save shadow map at " + filename);
+		Console::out::error("Shadow Map", "Failed to save shadow map at " + filename);
 		return false;
 	}
 }

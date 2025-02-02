@@ -19,7 +19,7 @@
 #include "../core/rendering/material/lit/lit_material.h"
 #include "../core/rendering/transformation/transformation.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/time/time.h"
 #include "../core/physics/physics.h"
 #include "../core/viewport/viewport.h"
@@ -323,7 +323,7 @@ namespace Runtime {
 		ECS::generateRenderQueue();
 
 		// WELCOME TEXT
-		Log::printWelcome();
+		Console::out::welcome();
 		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
 		// Ready application

@@ -1,6 +1,6 @@
 #include "shader_pool.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 #include "../core/rendering/shader/shader.h"
 
@@ -11,8 +11,8 @@ namespace ShaderPool {
 
 	void loadAndCompile(std::vector<std::string> paths)
 	{
-		Log::printProcessStart("ShaderPool", "Building shaders...");
-		Log::printProcessState("ShaderPool", "Fetching shaders...");
+		Console::out::processStart("ShaderPool", "Building shaders...");
+		Console::out::processState("ShaderPool", "Fetching shaders...");
 
 		std::vector<std::string> shader_paths;
 		std::vector<std::string> shader_names;
@@ -20,7 +20,7 @@ namespace ShaderPool {
 		for (int32_t i = 0; i < paths.size(); i++)
 		{
 
-			Log::printProcessInfo(paths[i] + ":");
+			Console::out::processInfo(paths[i] + ":");
 
 			std::vector<std::string> shaders_in_folder = IOHandler::getFolders(paths[i]);
 			for (int32_t x = 0; x < shaders_in_folder.size(); x++)
@@ -28,11 +28,11 @@ namespace ShaderPool {
 
 				shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
 				shader_names.push_back(shaders_in_folder[x]);
-				Log::printProcessInfo("- " + shader_names[shader_names.size() - 1]);
+				Console::out::processInfo("- " + shader_names[shader_names.size() - 1]);
 			}
 		}
 
-		Log::printProcessState("ShaderPool", "Compiling shaders...");
+		Console::out::processState("ShaderPool", "Compiling shaders...");
 		for (int32_t i = 0; i < shader_paths.size(); i++)
 		{
 			std::string vertex_code = IOHandler::readFile(shader_paths[i] + "/.vert");
@@ -47,11 +47,11 @@ namespace ShaderPool {
 			{
 				_shaders.push_back(shader);
 				_identifiers.push_back(name);
-				Log::printProcessInfo("Compiled " + name);
+				Console::out::processInfo("Compiled " + name);
 			}
 		}
 
-		Log::printProcessDone("ShaderPool", "Finished building the shaders");
+		Console::out::processDone("ShaderPool", "Finished building the shaders");
 	}
 
 	Shader* get(std::string name)
@@ -64,7 +64,7 @@ namespace ShaderPool {
 		}
 		else
 		{
-			Log::printError("ShaderPool", "Couldn't find shader " + name);
+			Console::out::error("ShaderPool", "Couldn't find shader " + name);
 			return nullptr;
 		}
 	}

@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <stb_image.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 Texture::Texture() : backendId(0)
 {
@@ -39,7 +39,7 @@ Texture Texture::load(std::string path, TextureType type)
 	uint32_t newId;
 
 	// Start creating texture
-	Log::printProcessInfo("Loading texture " + path + "...");
+	Console::out::processInfo("Loading texture " + path + "...");
 
 	// Generate texture
 	glGenTextures(1, &newId);
@@ -62,7 +62,7 @@ Texture Texture::load(std::string path, TextureType type)
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
-		Log::printError("Texture", "Couldn't load texture data");
+		Console::out::error("Texture", "Couldn't load texture data");
 		return Texture(); // Return empty texture
 	}
 

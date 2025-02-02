@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <gtc/type_ptr.hpp>
 
-#include "../../utils/log.h"
+#include "../../utils/console.h"
 #include "../../utils/iohandler.h"
 
 Shader::Shader(const char* vertex_src, const char* fragment_src, bool& compiled, const std::string name) : id(0),
@@ -121,7 +121,7 @@ bool Shader::shader_compiled(std::string type, int32_t shader)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, shader_log);
-		Log::printError("Shader", "Compilation of " + type + " shader failed!", shader_log);
+		Console::out::error("Shader", "Compilation of " + type + " shader failed!", shader_log);
 		return false;
 	}
 	return true;
@@ -135,7 +135,7 @@ bool Shader::program_linked(int32_t program)
 	if (!success)
 	{
 		glGetProgramInfoLog(program, 512, NULL, shader_log);
-		Log::printError("Shader", "Linking of program failed!", shader_log);
+		Console::out::error("Shader", "Linking of program failed!", shader_log);
 		return false;
 	}
 	return true;

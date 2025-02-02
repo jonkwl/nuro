@@ -2,7 +2,7 @@
 
 #include <stb_image.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 
 Cubemap Cubemap::loadByCubemap(std::string cubemapPath)
@@ -10,11 +10,11 @@ Cubemap Cubemap::loadByCubemap(std::string cubemapPath)
 	Cubemap cubemap;
 	cubemap.name = IOHandler::getFilenameRaw(cubemapPath);
 
-	Log::printProcessStart("Cubemap", "Generating cubemap " + cubemap.name + "...");
+	Console::out::processStart("Cubemap", "Generating cubemap " + cubemap.name + "...");
 
 	cubemap.loadCubemapFaces(cubemapPath);
 
-	Log::printProcessDone("Cubemap", "Cubemap generated");
+	Console::out::processDone("Cubemap", "Cubemap generated");
 
 	return cubemap;
 }
@@ -24,7 +24,7 @@ Cubemap Cubemap::loadByFaces(std::string rightFacePath, std::string leftFacePath
 	Cubemap cubemap;
 	cubemap.name = IOHandler::getLastFolder(rightFacePath);
 
-	Log::printProcessStart("Cubemap", "Generating cubemap " + cubemap.name + "...");
+	Console::out::processStart("Cubemap", "Generating cubemap " + cubemap.name + "...");
 
 	cubemap.loadFace(rightFacePath);
 	cubemap.loadFace(leftFacePath);
@@ -33,7 +33,7 @@ Cubemap Cubemap::loadByFaces(std::string rightFacePath, std::string leftFacePath
 	cubemap.loadFace(frontFacePath);
 	cubemap.loadFace(backFacePath);
 
-	Log::printProcessDone("Cubemap", "Cubemap generated");
+	Console::out::processDone("Cubemap", "Cubemap generated");
 
 	return cubemap;
 }
@@ -46,7 +46,7 @@ Image Cubemap::loadImage(std::string path)
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
-		Log::printError("Cubemap", "Failed to load cubemap at " + path);
+		Console::out::error("Cubemap", "Failed to load cubemap at " + path);
 		return Image();
 	}
 

@@ -4,7 +4,7 @@
 #include <glm.hpp>
 #include <algorithm>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/transform/transform.h"
 
 namespace ECS {

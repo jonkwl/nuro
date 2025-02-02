@@ -9,7 +9,7 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/model/mesh.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 // Global gizmo resources
 IMGizmo::StaticData IMGizmo::staticData;

@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include <glm.hpp>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/time/time.h"
 #include "../src/ui/misc/ui_flex.h"
 #include "../src/ui/editor_ui.h"

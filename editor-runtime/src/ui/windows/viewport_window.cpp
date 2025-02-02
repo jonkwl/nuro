@@ -9,7 +9,7 @@
 
 #include "../core/rendering/postprocessing/post_processing.h"
 #include "../core/time/time.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/transformation/transformation.h"
 #include "../core/transform/transform.h"
@@ -368,12 +368,6 @@ void ViewportWindow::updateMovement()
 			movementSpeed = glm::clamp(movementSpeed + currentScroll * scrollIncrementSpeed, 1.0f, 100.0f);
 			speedChangeTimer = 0.0f;
 		}
-
-		// Look around movement
-		glm::vec3 cameraEulerAngles = glm::degrees(glm::eulerAngles(camera.transform.rotation));
-		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
-		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
-		camera.transform.rotation = glm::quat(glm::radians(newRotation));
 	}
 
 	// If theres a middle click interaction with scene view
@@ -385,8 +379,6 @@ void ViewportWindow::updateMovement()
 
 	// Evaluate if fly camera moved this frame
 	const float movementThreshold = 0.001f;
-	bool moving = std::abs(movementDir.x) > movementThreshold ||
-		std::abs(movementDir.y) > movementThreshold ||
-		std::abs(movementDir.z) > movementThreshold;
+	bool moving = std::abs(movementDir.x) > movementThreshold || std::abs(movementDir.y) > movementThreshold || std::abs(movementDir.z) > movementThreshold;
 
 }

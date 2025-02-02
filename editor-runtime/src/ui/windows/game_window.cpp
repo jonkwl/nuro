@@ -4,7 +4,7 @@
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
 #include "../core/time/time.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/shadows/shadow_map.h"
 

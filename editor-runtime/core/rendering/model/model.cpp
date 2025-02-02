@@ -8,7 +8,7 @@
 #include <assimp/postprocess.h>
 
 #include "../core/rendering/transformation/transformation.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 #include "../core/utils/string_helper.h"
 
@@ -49,7 +49,7 @@ metrics()
 
 void Model::resolveModel(std::string path)
 {
-	Log::printProcessStart("Model", "Loading model " + IOHandler::getFilename(path) + "...");
+	Console::out::processStart("Model", "Loading model " + IOHandler::getFilename(path) + "...");
 
 	// Set model import flags
 	uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
@@ -61,7 +61,7 @@ void Model::resolveModel(std::string path)
 	// Make sure model is valid
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		Log::printError("Mesh", import.GetErrorString());
+		Console::out::error("Mesh", import.GetErrorString());
 		return;
 	}
 
@@ -78,7 +78,7 @@ void Model::resolveModel(std::string path)
 	// Finalize the metrics
 	finalizeMetrics();
 
-	Log::printProcessDone("Model", "Built model " + IOHandler::getFilename(path));
+	Console::out::processDone("Model", "Built model " + IOHandler::getFilename(path));
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)
@@ -96,7 +96,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-	Log::printProcessInfo("- Building mesh " + std::to_string(meshes.size() + 1));
+	Console::out::processInfo("- Building mesh " + std::to_string(meshes.size() + 1));
 
 	// Initialize mesh buffers
 	std::vector<Mesh::VertexData> vertices;

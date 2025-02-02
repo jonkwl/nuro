@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/global_quad.h"
@@ -53,7 +53,7 @@ void MotionBlurPass::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Motion Blur Pass", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Motion Blur Pass", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

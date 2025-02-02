@@ -1,6 +1,6 @@
 #include "scene_view_pipeline.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/input/input.h"
 #include "../core/physics/physics.h"
 #include "../core/diagnostics/profiler.h"
@@ -182,7 +182,7 @@ void SceneViewPipeline::resizeViewport(float width, float height)
 	// Re-render frame
 	render();
 
-	Log::printProcessDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
+	Console::out::processDone("Scene View", "Resize operation performed, various viewport dependant passes recreated");
 }
 
 void SceneViewPipeline::updateMsaaSamples(uint32_t _msaaSamples)

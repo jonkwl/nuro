@@ -7,7 +7,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/input/cursor.h"
 #include "../core/context/application_context.h"
 
@@ -197,7 +197,7 @@ namespace EditorUI {
 			ImGui_ImplOpenGL3_Init("#version 460");
 			break;
 		default:
-			Log::printError("Editor UI", "Couldn't setup editor ui, backend api is invalid");
+			Console::out::error("Editor UI", "Couldn't setup editor ui, backend api is invalid");
 			break;
 		}
 

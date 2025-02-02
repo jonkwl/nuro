@@ -5,7 +5,7 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/global_quad.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 BloomPass::BloomPass(const Viewport& viewport) : viewport(viewport),
 threshold(0.0f),
@@ -105,7 +105,7 @@ void BloomPass::create(const uint32_t mipDepth)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Bloom Pass", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Bloom Pass", "Error generating bloom framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

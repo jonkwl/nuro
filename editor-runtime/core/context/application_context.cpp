@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/time/time.h"
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
@@ -20,7 +20,7 @@ namespace ApplicationContext {
 	// Default glfw error callback
 	static void _glfwErrorCallback(int32_t error, const char* description)
 	{
-		Log::printError("Application Context", "GLFW Error: " + std::to_string(error), description);
+		Console::out::error("Application Context", "GLFW Error: " + std::to_string(error), description);
 	}
 
 	// Loads graphics backend
@@ -30,14 +30,14 @@ namespace ApplicationContext {
 		glfwMakeContextCurrent(gWindow);
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
-			Log::printError("Application Context", "Initialization of GLAD failed");
+			Console::out::error("Application Context", "Initialization of GLAD failed");
 		}
 
 		// Debug graphics api version
 		const char* version = (const char*)glGetString(GL_VERSION);
-		Log::printProcessDone("Application Context", "Initialized, OpenGL version: " + std::string(version));
+		Console::out::processDone("Application Context", "Initialized, OpenGL version: " + std::string(version));
 
-		Log::printProcessDone("Application Context", "Created application context");
+		Console::out::processDone("Application Context", "Created application context");
 	}
 
 	void create(Configuration configuration)
@@ -50,7 +50,7 @@ namespace ApplicationContext {
 		gConfiguration = configuration;
 
 		// Start creating application context
-		Log::printProcessStart("Application Context", "Creating application context...");
+		Console::out::processStart("Application Context", "Creating application context...");
 
 		// Set error callback and initialize context
 		glfwSetErrorCallback(_glfwErrorCallback);
@@ -93,7 +93,7 @@ namespace ApplicationContext {
 		// Check for window creation success
 		if (gWindow == nullptr)
 		{
-			Log::printError("Application Context", "Creation of window failed");
+			Console::out::error("Application Context", "Creation of window failed");
 		}
 
 		// Load graphics backend

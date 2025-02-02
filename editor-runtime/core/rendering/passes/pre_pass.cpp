@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/transform/transform.h"
@@ -58,7 +58,7 @@ void PrePass::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating bloom fbo: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating bloom fbo: " + std::to_string(fboStatus));
 	}
 
 	// Unbind fbo

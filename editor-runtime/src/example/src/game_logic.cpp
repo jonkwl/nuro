@@ -124,12 +124,12 @@ void gameSetup() {
 }
 
 void gameAwake() {
-	Log::printProcessInfo("Game Start");
+	Console::out::processInfo("Game Start");
 }
 
 void gameQuit()
 {
-	Log::printProcessInfo("Game End");
+	Console::out::processInfo("Game End");
 }
 
 void gameUpdate() {

@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 namespace IOHandler
 {
@@ -108,13 +108,13 @@ namespace IOHandler
 		// Check if the path exists and is a directory
 		if (!std::filesystem::exists(path))
 		{
-			Log::printError("IO", "Error: Path does not exist: " + path);
+			Console::out::error("IO", "Error: Path does not exist: " + path);
 			return files;
 		}
 
 		if (!std::filesystem::is_directory(path))
 		{
-			Log::printError("IO", "Error: Path is not a directory: " + path);
+			Console::out::error("IO", "Error: Path is not a directory: " + path);
 			return files;
 		}
 

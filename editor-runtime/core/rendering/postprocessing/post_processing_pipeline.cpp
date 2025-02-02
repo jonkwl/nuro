@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <glm.hpp>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/primitives/global_quad.h"
@@ -11,7 +11,7 @@
 #include "../core/rendering/passes/pre_pass.h"
 #include "../core/rendering/passes/forward_pass.h"
 #include "../core/rendering/texture/texture.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen) : viewport(viewport),
 renderToScreen(renderToScreen),
@@ -49,7 +49,7 @@ void PostProcessingPipeline::create()
 		GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 		{
-			Log::printError("Post Processing Pipeline", "Error generating framebuffer: " + std::to_string(fboStatus));
+			Console::out::error("Post Processing Pipeline", "Error generating framebuffer: " + std::to_string(fboStatus));
 		}
 
 	}

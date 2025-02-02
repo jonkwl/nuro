@@ -5,7 +5,7 @@
 #include "../core/rendering/transformation/transformation.h"
 #include "../core/rendering/model/model.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 BoundingSphere::BoundingSphere()
 {

@@ -10,7 +10,7 @@
 #include <type_traits>
 
 #include "../core/ecs/ecs.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/ecs/components.hpp"
 
 ///																///
@@ -148,10 +148,10 @@ private:
 
 	template<typename T>
 	void operationFailed(std::string operation, std::string reason) {
-		Log::printWarning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity '" + name + "' " + reason + ".");
+		Console::out::warning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity '" + name + "' " + reason + ".");
 	}
 
 	void verifyFailed() {
-		Log::printWarning("Entity Container", "Couldn't perform operation on entity '" + name + "' because it doesn't exist anymore.");
+		Console::out::warning("Entity Container", "Couldn't perform operation on entity '" + name + "' because it doesn't exist anymore.");
 	}
 };

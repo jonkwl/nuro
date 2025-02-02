@@ -1,6 +1,6 @@
 #include "physics_context.h"
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/ecs/ecs_collection.h"
 #include "../core/diagnostics/profiler.h"
 #include "../core/physics/utils/px_translator.h"

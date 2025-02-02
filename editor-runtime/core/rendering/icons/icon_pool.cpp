@@ -5,7 +5,7 @@
 #include <stb_image.h>
 
 #include "../core/utils/iohandler.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 namespace IconPool {
 
@@ -16,7 +16,7 @@ namespace IconPool {
 
 	void loadAll(const std::string& directoryPath)
 	{
-		Log::printProcessStart("Gizmo Icon Pool", "Loading icons from " + directoryPath);
+		Console::out::processStart("Gizmo Icon Pool", "Loading icons from " + directoryPath);
 
 		uint32_t nLoaded = 0;
 		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directoryPath, _validExtensions);
@@ -27,7 +27,7 @@ namespace IconPool {
 			nLoaded++;
 		}
 
-		Log::printProcessDone("Gizmo Icon Pool", "Done: " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon loaded" : " icons loaded"));
+		Console::out::processDone("Gizmo Icon Pool", "Done: " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon loaded" : " icons loaded"));
 	}
 
 	Texture& get(const std::string& identifier)

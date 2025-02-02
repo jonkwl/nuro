@@ -132,6 +132,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="glad.c" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\ImGuizmo.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\implot.cpp" />
+    <ClCompile Include="imgui\implot_demo.cpp" />
+    <ClCompile Include="imgui\implot_items.cpp" />
     <ClCompile Include="src\ui\windows\asset_browser_window.cpp" />
     <ClCompile Include="core\viewport\viewport.cpp" />
     <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp" />
@@ -150,17 +162,6 @@
     <ClCompile Include="core\physics\rigidbody\rigidbody.cpp" />
     <ClCompile Include="core\physics\utils\px_translator.cpp" />
     <ClCompile Include="core\physics\core\physics_factory.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\ImGuizmo.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="imgui\imgui_tables.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="imgui\implot.cpp" />
-    <ClCompile Include="imgui\implot_demo.cpp" />
-    <ClCompile Include="imgui\implot_items.cpp" />
     <ClCompile Include="src\ui\windows\registry_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
@@ -195,9 +196,8 @@
     <ClCompile Include="core\time\time.cpp" />
     <ClCompile Include="core\transform\transform.cpp" />
     <ClCompile Include="core\utils\iohandler.cpp" />
-    <ClCompile Include="core\utils\log.cpp" />
+    <ClCompile Include="core\utils\console.cpp" />
     <ClCompile Include="core\utils\string_helper.cpp" />
-    <ClCompile Include="glad.c" />
     <ClCompile Include="src\example\src\game_logic.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\runtime\runtime.cpp" />
@@ -215,6 +215,18 @@
     <ClCompile Include="src\ui\components\toggle_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\ImGuizmo.h" />
+    <ClInclude Include="imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\implot.h" />
+    <ClInclude Include="imgui\implot_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\ui\windows\asset_browser_window.h" />
     <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h" />
     <ClInclude Include="core\rendering\passes\preprocessor_pass.h" />
@@ -241,18 +253,6 @@
     <ClInclude Include="core\physics\events\physics_ecs_listener.hpp" />
     <ClInclude Include="core\physics\utils\px_translator.h" />
     <ClInclude Include="core\physics\core\physics_factory.h" />
-    <ClInclude Include="imgui\imconfig.h" />
-    <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\ImGuizmo.h" />
-    <ClInclude Include="imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="imgui\imgui_internal.h" />
-    <ClInclude Include="imgui\implot.h" />
-    <ClInclude Include="imgui\implot_internal.h" />
-    <ClInclude Include="imgui\imstb_rectpack.h" />
-    <ClInclude Include="imgui\imstb_textedit.h" />
-    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\gizmos\editor_gizmo_color.h" />
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_drawing.h" />
     <ClInclude Include="src\ui\dynamic_drawing\enums.h" />
@@ -297,7 +297,7 @@
     <ClInclude Include="core\time\time.h" />
     <ClInclude Include="core\transform\transform.h" />
     <ClInclude Include="core\utils\iohandler.h" />
-    <ClInclude Include="core\utils\log.h" />
+    <ClInclude Include="core\utils\console.h" />
     <ClInclude Include="core\utils\string_helper.h" />
     <ClInclude Include="core\viewport\viewport.h" />
     <ClInclude Include="src\example\src\game_logic.h" />

@@ -2,7 +2,7 @@
 
 #include "../core/rendering/texture/texture.h"
 #include "../core/rendering/shader/shader_pool.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 UnlitMaterial::UnlitMaterial() : shader(ShaderPool::get("unlit")),
 baseColor(1.0f, 1.0f, 1.0f, 1.0f),

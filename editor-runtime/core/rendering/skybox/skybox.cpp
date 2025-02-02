@@ -5,7 +5,7 @@
 #include "../core/rendering/skybox/cubemap.h"
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 Skybox::Skybox() :
 	emission(0.0f),
@@ -60,13 +60,13 @@ void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatr
 
 void Skybox::generate(Cubemap& cubemap)
 {
-	Log::printProcessStart("Skybox", "Generating skybox from cubemap " + cubemap.name + "...");
+	Console::out::processStart("Skybox", "Generating skybox from cubemap " + cubemap.name + "...");
 
 	// Create 
 	createTextures(cubemap);
 	createBuffers();
 
-	Log::printProcessDone("Skybox", "Skybox generated");
+	Console::out::processDone("Skybox", "Skybox generated");
 }
 
 void Skybox::createTextures(Cubemap& cubemap)
@@ -74,7 +74,7 @@ void Skybox::createTextures(Cubemap& cubemap)
 	glGenTextures(1, &cubemapTexture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
-	Log::printProcessInfo("Loading textures...");
+	Console::out::processInfo("Loading textures...");
 	for (int32_t i = 0; i < cubemap.faces.size(); i++)
 	{
 		CubemapFace face = cubemap.faces[i];
@@ -99,7 +99,7 @@ void Skybox::createTextures(Cubemap& cubemap)
 
 void Skybox::createBuffers()
 {
-	Log::printProcessInfo("Generating sky...");
+	Console::out::processInfo("Generating sky...");
 
 	float vertices[] = {
 		-1.0f, 1.0f, -1.0f,

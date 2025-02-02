@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/transform/transform.h"
 #include "../core/rendering/model/mesh.h"
 #include "../core/rendering/skybox/skybox.h"
@@ -52,7 +52,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating scene view pass output framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating scene view pass output framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Generate multisampled framebuffer
@@ -77,7 +77,7 @@ void SceneViewForwardPass::create(uint32_t msaaSamples)
 	fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating scene view pass multisampled framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating scene view pass multisampled framebuffer: " + std::to_string(fboStatus));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -247,7 +247,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 
 	}
 
-	// Log::printProcessInfo("New bound - Shaders / Materials : " + std::to_string(newBoundShaders) + " / " + std::to_string(newBoundMaterials));
+	// Console::out::processInfo("New bound - Shaders / Materials : " + std::to_string(newBoundShaders) + " / " + std::to_string(newBoundMaterials));
 }
 
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)

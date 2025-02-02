@@ -7,7 +7,7 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/global_quad.h"
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 
 SSAOPass::SSAOPass(Viewport& viewport) : viewport(viewport),
 aoScale(0.0f),
@@ -84,7 +84,7 @@ void SSAOPass::create(float aoScale, int32_t maxKernelSamples, float noiseResolu
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Framebuffer", "Error generating fbo: " + std::to_string(fboStatus));
+		Console::out::error("Framebuffer", "Error generating fbo: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer

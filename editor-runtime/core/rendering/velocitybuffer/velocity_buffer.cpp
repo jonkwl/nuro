@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <vector>
 
-#include "../core/utils/log.h"
+#include "../core/utils/console.h"
 #include "../core/rendering/shader/shader.h"
 #include "../core/rendering/primitives/global_quad.h"
 #include "../core/rendering/shader/shader_pool.h"
@@ -69,7 +69,7 @@ void VelocityBuffer::create()
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Log::printError("Velocity Buffer", "Error generating framebuffer: " + std::to_string(fboStatus));
+		Console::out::error("Velocity Buffer", "Error generating framebuffer: " + std::to_string(fboStatus));
 	}
 
 	// Unbind framebuffer
