@@ -9,7 +9,7 @@
 
 ---
 
-## Disclaimer: Work In Progress! ⚠
+## Disclaimer: Work In Progress! 🚧
 
 Hey! This project is currently **under active development.**  
 Please take a look at the vision below, and feel free to [contribute](#contributing) to help bring it to life! 💜
@@ -48,7 +48,7 @@ This project is still in an early state and **not ready to use yet**, however pl
       - All-purpose development, entity and world inspectation etc.
     - 🏗 *Level Building Workspace*
       - Support for fast level prototyping
-    - *Scripting Workspace*
+    - 🖱️ *Scripting Workspace*
       - Comprehensive overview for the games logic.
     - 🔦 *Lighting Workspace*
       - Fine tuning of the scenes lighting settings.
@@ -59,13 +59,15 @@ This project is still in an early state and **not ready to use yet**, however pl
     - ✨ *Post Processing Workspace*
       - Finetune post processing volumes and color correction.
 - 💡 **Physically-Based 3D Renderer**
+  - Supports various PBR material effects: Normal-, Height-, Emissive Mapping, and more.
+  - Supports both hard shadows and soft shadows.
   - Includes a variety of built-in **post-processing** effects:
     - Screen-Space-Ambient-Occlusion
     - Chromatic Aberration
     - Motion Blur
     - Bloom
     - etc.
-  - Utilizing a modern OpenGL 4.x backend to ensure **cross-platform** capabilities
+  - Utilizing a modern OpenGL 4.x backend to ensure **cross-platform** capabilities.
 - 🔄 **Entity-Component-System**
   - The engine's base components use a data-driven entity-component-system to ensure efficiency.
 - ⚙️ **Physics using NVIDIA's PhysX**

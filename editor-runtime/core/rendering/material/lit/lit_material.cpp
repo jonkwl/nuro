@@ -8,6 +8,12 @@
 #include "../core/rendering/shadows/shadow_disk.h"
 #include "../core/rendering/transformation/transformation.h"
 
+/*
+
+BAD TEMPORARY CODE!
+
+*/
+
 uint32_t LitMaterial::instances = 0;
 Viewport* LitMaterial::viewport = nullptr;
 TransformComponent* LitMaterial::cameraTransform = nullptr;

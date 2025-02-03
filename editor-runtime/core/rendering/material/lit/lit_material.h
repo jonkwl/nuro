@@ -13,6 +13,12 @@
 class ShadowDisk;
 class ShadowMap;
 
+/*
+
+BAD TEMPORARY CODE!
+
+*/
+
 class LitMaterial : public IMaterial
 {
 public:

@@ -368,6 +368,12 @@ void ViewportWindow::updateMovement()
 			movementSpeed = glm::clamp(movementSpeed + currentScroll * scrollIncrementSpeed, 1.0f, 100.0f);
 			speedChangeTimer = 0.0f;
 		}
+
+		// Look around movement
+		glm::vec3 cameraEulerAngles = glm::degrees(glm::eulerAngles(camera.transform.rotation));
+		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
+		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
+		camera.transform.rotation = glm::quat(glm::radians(newRotation));
 	}
 
 	// If theres a middle click interaction with scene view

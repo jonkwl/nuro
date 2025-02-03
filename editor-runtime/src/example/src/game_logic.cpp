@@ -2,9 +2,6 @@
 
 #include "../core/engine.h"
 
-#include <thread>
-#include <chrono>
-
 Entity cameraEntity;
 Entity kinematicEntity;
 Entity playerEntity;
@@ -70,7 +67,7 @@ void _example() {
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
-	int objectAmount = 32;
+	int objectAmount = 256;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube", ECS::createEntity());
@@ -114,9 +111,6 @@ void _example() {
 }
 
 void gameSetup() {
-	Console::out::processStart("GAME LOGIC ", "----------------- GAME SETUP IN 5 SECONDS... -----------------");
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-	Console::out::processStart("GAME LOGIC ", "----------------- EXECUTING GAME SETUP -----------------");
 	_example();
 }
 
