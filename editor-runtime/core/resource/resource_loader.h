@@ -13,22 +13,19 @@ class ResourceLoader
 {
 public:
 	struct WorkerState {
-		// Set if the worker is currently loading resources, false if worker is sleeping
-		bool workerActive = false;
+		bool active;
+		Resource* target;
+		size_t tasksPending;
 
-		// Points to the resource the worker is loading (nullptr if worker isn't working)
-		Resource* currentResource = nullptr;
-
-		// Amount of resources waiting in queue to be loaded
-		uint32_t resourcesPending = 0;
+		WorkerState(bool active, Resource* target, size_t tasksPending) : active(active), target(target), tasksPending(tasksPending) {};
 	};
 
 public:
 	ResourceLoader();
 	~ResourceLoader();
 
-	// Returns the read-only state of the worker
-	const WorkerState& readWorkerState() const;
+	// Returns the current state of the worker
+	WorkerState readWorkerState() const;
 
 	// Creates resources synchronously, blocking until complete  
 	void createSync(Resource* resource);
@@ -51,14 +48,13 @@ private:
 
 private:
 	//
-	// STATE
-	//
-
-	std::atomic<bool> running;
-
 	//
 	// MAIN THREAD
 	//
+	//
+
+	// Set if the application is running
+	std::atomic<bool> running;
 
 	// Resource upload tasks on the main thread
 	std::queue<Resource*> mainTasks;
@@ -67,17 +63,32 @@ private:
 	std::atomic<bool> mainDispatchNext;
 	
 	//
+	//
 	// WORKER THREAD
 	//
+	//
 
+	// Worker thread handle
 	std::jthread worker;
+
+	// Worker thread mutex
 	std::mutex workerMtx;
+
+	// Condition variable to ensure worker doesnt run when no tasks are available
 	std::condition_variable workerTasksAvailable;
+
+	// Condition variable to ensure worker doesnt run when a resource dispatch from the main thread is pending
 	std::condition_variable workerAwaitingDispatch;
 
 	// Resource load tasks on the worker thread
 	std::queue<Resource*> workerTasks;
 
-	// State of the worker, only to be changed by worker thread
-	WorkerState workerState;
+	// Amount of tasks waiting in workers queue
+	std::atomic<size_t> workerTasksPending;
+
+	// Set if the worker is currently running, false if worker is sleeping
+	std::atomic<bool> workerActive;
+
+	// Points to the resource the worker is currently loading (nullptr if worker isn't loading any resource)
+	std::atomic<Resource*> workerTarget;
 };

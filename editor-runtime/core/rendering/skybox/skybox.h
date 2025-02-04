@@ -13,22 +13,29 @@ class Skybox
 {
 public:
 	Skybox();
-	explicit Skybox(Cubemap& cubemap);
-	explicit Skybox(Cubemap& cubemap, Shader* customShader);
 
+	// Sets the cubemap of the skybox
+	void setCubemap(Cubemap* cubemap);
+
+	// Returns the cubemap of the skybox
+	Cubemap* getCubemap() const;
+
+	// Sets the emission of the skybox
+	void setEmission(float emission);
+
+	// Returns the current emission of the skybox
+	float getEmission() const;
+
+	// Generates the skybox synchronously
+	void createSync();
+
+	// Renders the skybox with the given transformation matrices
 	void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
 
-	float emission;
-
 private:
-	uint32_t cubemapTexture;
+	Cubemap* cubemap;
+	Shader* shader;
 	uint32_t vao;
 	uint32_t vbo;
-
-	void generate(Cubemap& cubemap);
-
-	void createTextures(Cubemap& cubemap);
-	void createBuffers();
-
-	Shader* shader;
+	float emission;
 };

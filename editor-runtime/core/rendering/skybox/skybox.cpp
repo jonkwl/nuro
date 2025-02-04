@@ -7,107 +7,42 @@
 #include "../core/rendering/shader/shader.h"
 #include "../core/utils/console.h"
 
-Skybox::Skybox() : emission(0.0f),
-cubemapTexture(0),
+Skybox::Skybox() : cubemap(nullptr),
+shader(nullptr),
 vao(0),
 vbo(0),
-shader(ShaderPool::empty())
+emission(1.0f)
 {
 }
 
-Skybox::Skybox(Cubemap& cubemap) : emission(1.0f),
-cubemapTexture(0),
-vao(0),
-vbo(0),
-shader(ShaderPool::get("skybox"))
+void Skybox::setCubemap(Cubemap* _cubemap)
 {
-	generate(cubemap);
+	cubemap = _cubemap;
 }
 
-Skybox::Skybox(Cubemap& cubemap, Shader* customShader) : emission(1.0f),
-cubemapTexture(0),
-vao(0),
-vbo(0),
-shader(customShader)
+Cubemap* Skybox::getCubemap() const
 {
-	generate(cubemap);
+	return cubemap;
 }
 
-void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
+void Skybox::setEmission(float _emission)
 {
-	// Skybox has not been created, skip rendering
-	if (!vao) return;
-
-	// Set depth function
-	glDepthFunc(GL_LEQUAL);
-
-	// Calculate skybox transformation matrices
-	glm::mat4 adjustedViewMatrix = glm::mat4(glm::mat3(viewMatrix));
-	glm::mat4 viewProjectionMatrix = projectionMatrix * adjustedViewMatrix;
-
-	// Set skyvbox shader transformation matrices
-	shader->bind();
-	shader->setMatrix4("viewProjectionMatrix", viewProjectionMatrix);
-	shader->setInt("skybox", 0);
-	shader->setFloat("emission", emission);
-
-	// Bind skybox vao
-	glBindVertexArray(vao);
-
-	// Bind cubemap texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-
-	// Draw skybox
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	// Reset depth function
-	glDepthFunc(GL_LESS);
+	emission = _emission;
 }
 
-void Skybox::generate(Cubemap& cubemap)
+float Skybox::getEmission() const
 {
-	Console::out::processStart("Skybox", "Generating skybox from cubemap " + cubemap.name + "...");
-
-	// Create 
-	createTextures(cubemap);
-	createBuffers();
-
-	Console::out::processDone("Skybox", "Skybox generated");
+	return emission;
 }
 
-void Skybox::createTextures(Cubemap& cubemap)
+void Skybox::createSync()
 {
-	glGenTextures(1, &cubemapTexture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	Console::out::processStart("Skybox", "Generating skybox...");
 
-	Console::out::processInfo("Loading textures...");
-	for (int32_t i = 0; i < cubemap.faces.size(); i++)
-	{
-		CubemapFace face = cubemap.faces[i];
+	// Set shader
+	shader = ShaderPool::get("skybox");
 
-		GLenum format = GL_RGB;
-		if (face.channels == 4)
-		{
-			format = GL_RGBA;
-		}
-
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, face.width, face.height, 0, format, GL_UNSIGNED_BYTE, face.data.data());
-	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-}
-
-void Skybox::createBuffers()
-{
-	Console::out::processInfo("Generating sky...");
-
+	// Create vertices
 	float vertices[] = {
 		-1.0f, 1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,
@@ -149,8 +84,10 @@ void Skybox::createBuffers()
 		1.0f, -1.0f, -1.0f,
 		1.0f, -1.0f, -1.0f,
 		-1.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f };
+		1.0f, -1.0f, 1.0f 
+	};
 
+	// Create buffers
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
 
@@ -164,4 +101,38 @@ void Skybox::createBuffers()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	Console::out::processDone("Skybox", "Skybox generated");
+}
+
+void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
+{
+	// Only render skybox if both cubemap and shader are available
+	if (!cubemap || !shader) return;
+
+	// Set depth function
+	glDepthFunc(GL_LEQUAL);
+
+	// Calculate skybox transformation matrices
+	glm::mat4 adjustedViewMatrix = glm::mat4(glm::mat3(viewMatrix));
+	glm::mat4 viewProjectionMatrix = projectionMatrix * adjustedViewMatrix;
+
+	// Set skyvbox shader transformation matrices
+	shader->bind();
+	shader->setMatrix4("viewProjectionMatrix", viewProjectionMatrix);
+	shader->setInt("skybox", 0);
+	shader->setFloat("emission", emission);
+
+	// Bind skybox vao
+	glBindVertexArray(vao);
+
+	// Bind cubemap texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->getId());
+
+	// Draw skybox
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	// Reset depth function
+	glDepthFunc(GL_LESS);
 }

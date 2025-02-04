@@ -58,13 +58,13 @@ void Footer::renderContent(ImDrawList& drawList)
     //
 
     // Fetch worker state
-    auto workerState = ApplicationContext::getResourceLoader().readWorkerState();
+    auto worker = ApplicationContext::getResourceLoader().readWorkerState();
 
     // Create information text
     std::string informationText = "";
     bool loading = false;
-    if (workerState.workerActive && workerState.currentResource) {
-        informationText = "Loading '" + IOHandler::getFilename(workerState.currentResource->sourcePath()) + "'... (" + std::to_string(workerState.resourcesPending) + " remaining)";
+    if (worker.active && worker.target) {
+        informationText = "Loading '" + IOHandler::getFilename(worker.target->sourcePath()) + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
         loading = true;
     }
     else {

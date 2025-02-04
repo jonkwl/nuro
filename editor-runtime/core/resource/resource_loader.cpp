@@ -4,7 +4,7 @@
 
 #include "../core/utils/console.h"
 
-ResourceLoader::ResourceLoader() : workerState()
+ResourceLoader::ResourceLoader()
 {
 	// Launch worker
 	running = true;
@@ -18,9 +18,9 @@ ResourceLoader::~ResourceLoader()
 	worker.request_stop();
 }
 
-const ResourceLoader::WorkerState& ResourceLoader::readWorkerState() const
+ResourceLoader::WorkerState ResourceLoader::readWorkerState() const
 {
-	return workerState;
+	return WorkerState(workerActive, workerTarget, workerTasksPending);
 }
 
 void ResourceLoader::createSync(Resource* resource)
@@ -35,6 +35,9 @@ void ResourceLoader::createAsync(Resource* resource)
 	// Add task to load tasks queue
 	// Check: Possible race condition on the worker tasks queue
 	workerTasks.push(resource);
+
+	// Update worker state
+	workerTasksPending++;
 
 	// Notify worker
 	workerTasksAvailable.notify_one();
@@ -82,16 +85,13 @@ void ResourceLoader::asyncWorker()
 			// Fetch resource to be loaded
 			Resource* resource = workerTasks.front();
 
-			// Update worker state
-			workerState.workerActive = true;
-			workerState.currentResource = resource;
-			workerState.resourcesPending = workerTasks.size();
+			// Sync worker state
+			workerTasksPending = workerTasks.size();
+			workerActive = true;
+			workerTarget = resource;
 
 			// Load resource data
 			resource->loadData();
-
-			// Tmp for simulating larger resources
-			std::this_thread::sleep_for(std::chrono::seconds(1));
 
 			// Update queues
 			popSafe(workerTasks);
@@ -101,9 +101,9 @@ void ResourceLoader::asyncWorker()
 			workerAwaitingDispatch.wait(lock, [&]() { return !mainDispatchNext; });
 		}
 
-		// Clear worker state
-		workerState.workerActive = false;
-		workerState.currentResource = nullptr;
-		workerState.resourcesPending = 0;
+		// Sync worker state
+		workerTasksPending = 0;
+		workerActive = false;
+		workerTarget = nullptr;
 	}
 }

@@ -46,6 +46,8 @@ namespace Runtime {
 	ShadowMap* gMainShadowMap = nullptr;
 
 	// Default assets
+	Texture* gDefaultTexture = new Texture();
+	Cubemap* gDefaultCubemap = new Cubemap();
 	Skybox gDefaultSkybox;
 
 	// Global game state
@@ -56,9 +58,6 @@ namespace Runtime {
 
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
-
-	// Default texture
-	Texture* gDefaultTexture = new Texture();
 
 	//
 	//
@@ -86,7 +85,13 @@ namespace Runtime {
 		IconPool::createFallbackIconSync("../resources/icons/invalid.png");
 		IconPool::loadSync("../resources/icons");
 
-		// Link default skybox
+		// Create default cubemap
+		gDefaultCubemap->setSource_Cross("../resources/skybox/default/default_night.png");
+		loader.createAsync(gDefaultCubemap);
+
+		// Create default skybox
+		gDefaultSkybox.setCubemap(gDefaultCubemap);
+		gDefaultSkybox.createSync();
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 	}
 

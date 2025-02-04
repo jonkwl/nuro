@@ -1,39 +1,98 @@
 #include "cubemap.h"
 
 #include <stb_image.h>
+#include <glad/glad.h>
 
 #include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 
-Cubemap::Cubemap(std::string name) : name(name),
-faces()
+Cubemap::Cubemap() : source(),
+faces(),
+id(0)
 {
 }
 
-void Cubemap::load(std::string cubemapPath)
+void Cubemap::setSource_Cross(std::string path)
 {
-	Console::out::processStart("Cubemap", "Generating cubemap " + name + "...");
-
-	loadCubemapFaces(cubemapPath);
-
-	Console::out::processDone("Cubemap", "Cubemap generated");
+	source.type = Source::Type::CROSS;
+	source.paths = { path };
 }
 
-void Cubemap::load(std::string rightFacePath, std::string leftFacePath, std::string topFacePath, std::string bottomFacePath, std::string frontFacePath, std::string backFacePath)
+void Cubemap::setSource_Individual(std::string rightPath, std::string leftPath, std::string topPath, std::string bottomPath, std::string frontPath, std::string backPath)
 {
-	Console::out::processStart("Cubemap", "Generating cubemap " + name + "...");
-
-	loadSingularFace(rightFacePath);
-	loadSingularFace(leftFacePath);
-	loadSingularFace(topFacePath);
-	loadSingularFace(bottomFacePath);
-	loadSingularFace(frontFacePath);
-	loadSingularFace(backFacePath);
-
-	Console::out::processDone("Cubemap", "Cubemap generated");
+	source.type = Source::Type::INDIVIDUAL;
+	source.paths = { rightPath, leftPath, topPath, bottomPath, frontPath, backPath };
 }
 
-Image Cubemap::loadImage(std::string path)
+uint32_t Cubemap::getId() const
+{
+	return id;
+}
+
+void Cubemap::loadData()
+{
+	switch (source.type) {
+	case Source::Type::CROSS:
+		if (source.paths.size() < 1) return;
+		loadCrossCubemap(source.paths[0]);
+		break;
+	case Source::Type::INDIVIDUAL:
+		if (source.paths.size() < 6) return;
+		loadIndividualFace(source.paths[0]);
+		loadIndividualFace(source.paths[1]);
+		loadIndividualFace(source.paths[2]);
+		loadIndividualFace(source.paths[3]);
+		loadIndividualFace(source.paths[4]);
+		loadIndividualFace(source.paths[5]);
+		break;
+	default:
+		break;
+	}
+}
+
+void Cubemap::releaseData()
+{
+	faces.clear();
+}
+
+void Cubemap::dispatchGPU()
+{
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	for (int32_t i = 0; i < faces.size(); i++)
+	{
+		Face face = faces[i];
+
+		GLenum format = GL_RGB;
+		if (face.channels == 4)
+		{
+			format = GL_RGBA;
+		}
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, face.width, face.height, 0, format, GL_UNSIGNED_BYTE, face.data.data());
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+std::string Cubemap::sourcePath()
+{
+	if (source.paths.size() > 0) {
+		return IOHandler::getFilename(source.paths[0]);
+	}
+	else {
+		return "";
+	}
+}
+
+Cubemap::Image Cubemap::loadImageData(std::string path)
 {
 	stbi_set_flip_vertically_on_load(false);
 
@@ -45,26 +104,17 @@ Image Cubemap::loadImage(std::string path)
 		return Image();
 	}
 
-	return Image{ width, height, channels, data };
+	return Image{ data, width, height, channels };
 }
 
-void Cubemap::loadSingularFace(std::string facePath)
+void Cubemap::loadCrossCubemap(std::string path)
 {
-	Image image = loadImage(facePath);
-
-	std::vector<unsigned char> faceData(image.data, image.data + (image.width * image.height * image.channels));
-
-	CubemapFace face;
-	face.data = faceData;
-	face.width = image.width;
-	face.height = image.height;
-	face.channels = image.channels;
-	faces.push_back(face);
-}
-
-void Cubemap::loadCubemapFaces(std::string cubemapPath)
-{
-	Image image = loadImage(cubemapPath);
+	//
+	// WORK ON MEMORY EFFICIENCY HERE!
+	//
+	
+	// Load temporary image data
+	Image image = loadImageData(path);
 
 	// Calculate dimensions of each face (assuming default 4x3 layout)
 	int32_t faceWidth = image.width / 4;
@@ -107,6 +157,30 @@ void Cubemap::loadCubemapFaces(std::string cubemapPath)
 		}
 	}
 
-	// Free loaded image data
+	// Free temporary image data
+	stbi_image_free(image.data);
+}
+
+void Cubemap::loadIndividualFace(std::string path)
+{
+	//
+	// WORK ON MEMORY EFFICIENCY HERE!
+	//
+
+	// Load temporary image data
+	Image image = loadImageData(path);
+
+	// Initialize face data
+	std::vector<unsigned char> faceData(image.data, image.data + (image.width * image.height * image.channels));
+
+	// Create face
+	Face face;
+	face.data = faceData;
+	face.width = image.width;
+	face.height = image.height;
+	face.channels = image.channels;
+	faces.push_back(face);
+
+	// Free temporary image data
 	stbi_image_free(image.data);
 }
