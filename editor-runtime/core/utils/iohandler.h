@@ -21,9 +21,6 @@ namespace IOHandler
 	// Returns the filename of a given file path without file extension
 	std::string getFilenameRaw(const std::string& path);
 
-	// Returns the name of the last folder of a given file path
-	std::string getLastFolder(const std::string& path);
-
 	// Returns the extension of a given filename 
 	std::string getFileExtension(const std::string& filename);
 	

@@ -5,37 +5,32 @@
 #include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 
-Cubemap Cubemap::loadByCubemap(std::string cubemapPath)
+Cubemap::Cubemap(std::string name) : name(name),
+faces()
 {
-	Cubemap cubemap;
-	cubemap.name = IOHandler::getFilenameRaw(cubemapPath);
-
-	Console::out::processStart("Cubemap", "Generating cubemap " + cubemap.name + "...");
-
-	cubemap.loadCubemapFaces(cubemapPath);
-
-	Console::out::processDone("Cubemap", "Cubemap generated");
-
-	return cubemap;
 }
 
-Cubemap Cubemap::loadByFaces(std::string rightFacePath, std::string leftFacePath, std::string topFacePath, std::string bottomFacePath, std::string frontFacePath, std::string backFacePath)
+void Cubemap::load(std::string cubemapPath)
 {
-	Cubemap cubemap;
-	cubemap.name = IOHandler::getLastFolder(rightFacePath);
+	Console::out::processStart("Cubemap", "Generating cubemap " + name + "...");
 
-	Console::out::processStart("Cubemap", "Generating cubemap " + cubemap.name + "...");
-
-	cubemap.loadFace(rightFacePath);
-	cubemap.loadFace(leftFacePath);
-	cubemap.loadFace(topFacePath);
-	cubemap.loadFace(bottomFacePath);
-	cubemap.loadFace(frontFacePath);
-	cubemap.loadFace(backFacePath);
+	loadCubemapFaces(cubemapPath);
 
 	Console::out::processDone("Cubemap", "Cubemap generated");
+}
 
-	return cubemap;
+void Cubemap::load(std::string rightFacePath, std::string leftFacePath, std::string topFacePath, std::string bottomFacePath, std::string frontFacePath, std::string backFacePath)
+{
+	Console::out::processStart("Cubemap", "Generating cubemap " + name + "...");
+
+	loadSingularFace(rightFacePath);
+	loadSingularFace(leftFacePath);
+	loadSingularFace(topFacePath);
+	loadSingularFace(bottomFacePath);
+	loadSingularFace(frontFacePath);
+	loadSingularFace(backFacePath);
+
+	Console::out::processDone("Cubemap", "Cubemap generated");
 }
 
 Image Cubemap::loadImage(std::string path)
@@ -53,7 +48,7 @@ Image Cubemap::loadImage(std::string path)
 	return Image{ width, height, channels, data };
 }
 
-void Cubemap::loadFace(std::string facePath)
+void Cubemap::loadSingularFace(std::string facePath)
 {
 	Image image = loadImage(facePath);
 

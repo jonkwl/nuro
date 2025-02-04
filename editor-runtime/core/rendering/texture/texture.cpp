@@ -6,48 +6,46 @@
 #include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 
-Texture::Texture() : backendId(0)
+Texture::Texture() : type(TextureType::EMPTY),
+path("NONE"),
+width(0),
+height(0),
+channels(0),
+data(nullptr),
+id(0)
 {
 }
 
-void Texture::bind(uint32_t unit) const
+void Texture::load()
 {
-	// Bind texture to backend
-	glActiveTexture(GL_TEXTURE0 + unit);
-	glBindTexture(GL_TEXTURE_2D, backendId);
+	// Start loading texture
+	Console::out::processInfo("Loading texture '" + IOHandler::getFilename(path) + "'...");
+
+	// Load image data
+	int _width, _height, _channels;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* _data = stbi_load(path.c_str(), &_width, &_height, &_channels, 0);
+	if (!_data)
+	{
+		Console::out::warning("Texture", "Couldn't load data for texture '" + IOHandler::getFilename(path) + "'");
+		return;
+	}
+
+	// Sync loaded data
+	width = _width;
+	height = _height;
+	channels = _channels;
+	data = _data;
 }
 
-void Texture::destroy()
+void Texture::upload()
 {
-	// Delete texture in backend
-	glDeleteTextures(1, &backendId);
-	backendId = 0;
-}
-
-uint32_t Texture::getBackendId() const
-{
-	return backendId;
-}
-
-Texture Texture::empty()
-{
-	return Texture();
-}
-
-Texture Texture::load(const std::string& path, TextureType type)
-{
-	// Buffer for new texture id
-	uint32_t newId;
-
-	// Get filename
-	std::string filename = IOHandler::getFilename(path);
-
-	// Start creating texture
-	Console::out::processInfo("Loading texture '" + filename + "'...");
+	// Start uploading texture
+	Console::out::processInfo("Uploading texture '" + IOHandler::getFilename(path) + "'...");
 
 	// Generate texture
-	glGenTextures(1, &newId);
-	glBindTexture(GL_TEXTURE_2D, newId);
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
 
 	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -59,16 +57,6 @@ Texture Texture::load(const std::string& path, TextureType type)
 	GLfloat maxAniso = 0.0f;
 	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAniso);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, maxAniso);
-
-	// Load image data
-	int32_t width, height, channels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-	if (!data)
-	{
-		Console::out::warning("Texture", "Couldn't load data for texture '" + filename + "'");
-		return Texture(); // Return empty texture
-	}
 
 	// Get texture backend format from texture type
 	GLenum internalFormat = GL_SRGB;
@@ -104,11 +92,11 @@ Texture Texture::load(const std::string& path, TextureType type)
 		format = GL_RED;
 		break;
 	case TextureType::IMAGE_RGB:
-		internalFormat = GL_SRGB;
+		internalFormat = GL_RGB;
 		format = GL_RGB;
 		break;
 	case TextureType::IMAGE_RGBA:
-		internalFormat = GL_SRGB_ALPHA;
+		internalFormat = GL_RGBA;
 		format = GL_RGBA;
 		break;
 	}
@@ -124,16 +112,26 @@ Texture Texture::load(const std::string& path, TextureType type)
 
 	// Free memory allocated for image data
 	stbi_image_free(data);
-
-	// Return Texture instance with backendId of newly created texture
-	return Texture(newId);
 }
 
-Texture Texture::fromBackendId(uint32_t backendId)
+void Texture::setSource(TextureType _type, const std::string& _path)
 {
-	return Texture(backendId);
+	type = _type;
+	path = _path;
 }
 
-Texture::Texture(uint32_t backendId) : backendId(backendId)
+void Texture::createSync()
 {
-}  
+	load();
+	upload();
+}
+
+void Texture::createAsync()
+{
+	// ...
+}
+
+uint32_t Texture::getId() const
+{
+	return id;
+}

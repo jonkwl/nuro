@@ -15,31 +15,32 @@ namespace ComponentGizmos {
 		const float radius = 50.0f;
 
 		auto addIcon = [&gizmos, &cameraTransform, radius](std::string icon, glm::vec3 position) -> void {
+			// Optimization: Refetching icons from icon pool each render iteration isn't needed, can be cached
 			gizmos.icon3d(IconPool::get(icon), position, cameraTransform, glm::vec3(0.8f));
 		};
 
 		// Render camera icons
 		auto cameras = ECS::gRegistry.view<TransformComponent, CameraComponent>();
 		for (auto [entity, transform, camera] : cameras.each()) {
-			addIcon("camera_gizmo", transform.position);
+			addIcon("camera", transform.position);
 		}
 
 		// Render directional light icons
 		auto directionalLights = ECS::gRegistry.view<TransformComponent, DirectionalLightComponent>();
 		for (auto [entity, transform, directionalLight] : directionalLights.each()) {
-			addIcon("light_gizmo", transform.position);
+			addIcon("light", transform.position);
 		}
 
 		// Render point light icons
 		auto pointLights = ECS::gRegistry.view<TransformComponent, PointLightComponent>();
 		for (auto [entity, transform, pointLight] : pointLights.each()) {
-			addIcon("light_gizmo", transform.position);
+			addIcon("light", transform.position);
 		}
 
 		// Render spotlight icons
 		auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
 		for (auto [entity, transform, spotlight] : spotlights.each()) {
-			addIcon("light_gizmo", transform.position);
+			addIcon("light", transform.position);
 		}
 	}
 

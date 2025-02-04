@@ -132,8 +132,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core\assets\asset_manager.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="core\resource\resource_queue.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuizmo.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -216,7 +216,8 @@
     <ClCompile Include="src\ui\components\toggle_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\assets\asset_manager.h" />
+    <ClInclude Include="core\resource\resource_task.h" />
+    <ClInclude Include="core\resource\resource_queue.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\ImGuizmo.h" />

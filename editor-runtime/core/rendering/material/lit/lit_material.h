@@ -13,11 +13,11 @@
 class ShadowDisk;
 class ShadowMap;
 
-/*
-
-BAD TEMPORARY CODE!
-
-*/
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!					   !!
+   !! BAD TEMPORARY CODE!  !!
+   !!					   !!
+   !!!!!!!!!!!!!!!!!!!!!!!!!! */
 
 class LitMaterial : public IMaterial
 {
@@ -25,12 +25,11 @@ public:
 	LitMaterial();
 
 	void bind() const override;
-
 	uint32_t getId() const override;
 	Shader* getShader() const override;
 	uint32_t getShaderId() const override;
 
-	glm::vec4 baseColor = glm::vec4(1.0f);
+	glm::vec4 baseColor = glm::vec4(1.0f);  
 	glm::vec2 tiling = glm::vec2(1.0f);
 	glm::vec2 offset = glm::vec2(0.0f);
 	float roughness = 0.0f;
@@ -41,13 +40,13 @@ public:
 	glm::vec3 emissionColor;
 	float heightMapScale;
 
-	void setAlbedoMap(Texture texture);
-	void setRoughnessMap(Texture texture);
-	void setMetallicMap(Texture texture);
-	void setNormalMap(Texture texture);
-	void setOcclusionMap(Texture texture);
-	void setEmissiveMap(Texture texture);
-	void setHeightMap(Texture texture);
+	uint32_t albedoMap;
+	uint32_t roughnessMap;
+	uint32_t metallicMap;
+	uint32_t normalMap;
+	uint32_t occlusionMap;
+	uint32_t emissiveMap;
+	uint32_t heightMap;
 
 	void syncStaticUniforms();
 	void syncLightUniforms();
@@ -88,25 +87,4 @@ private:
 	uint32_t id;
 	Shader* shader;
 	uint32_t shaderId;
-
-	bool enableAlbedoMap;
-	Texture albedoMap;
-
-	bool enableRoughnessMap;
-	Texture roughnessMap;
-
-	bool enableMetallicMap;
-	Texture metallicMap;
-
-	bool enableNormalMap;
-	Texture normalMap;
-
-	bool enableOcclusionMap;
-	Texture occlusionMap;
-
-	bool enableEmissiveMap;
-	Texture emissiveMap;
-
-	bool enableHeightMap;
-	Texture heightMap;
 };

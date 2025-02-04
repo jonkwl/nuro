@@ -5,14 +5,19 @@
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/shader/shader.h"
 
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!					   !!
+   !! BAD TEMPORARY CODE!  !!
+   !!					   !!
+   !!!!!!!!!!!!!!!!!!!!!!!!!! */
+
 class IMaterial
 {
 public:
 	virtual ~IMaterial() {}
 
-	virtual void bind() const {}
-
-	virtual uint32_t getId() const { return 0; }
-	virtual Shader* getShader() const { return nullptr; }
-	virtual uint32_t getShaderId() const { return 0; }
+	virtual void bind() const = 0;
+	virtual uint32_t getId() const = 0;
+	virtual Shader* getShader() const = 0;
+	virtual uint32_t getShaderId() const = 0;
 };

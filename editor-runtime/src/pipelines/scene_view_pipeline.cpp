@@ -17,7 +17,7 @@
 // initialize with users editor settings later
 SceneViewPipeline::SceneViewPipeline() : wireframe(false),
 useProfileEffects(false),
-showSkybox(false),
+showSkybox(true),
 showGizmos(true),
 renderShadows(true),
 viewport(),

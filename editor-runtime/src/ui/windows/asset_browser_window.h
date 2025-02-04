@@ -56,6 +56,7 @@ public:
 		AssetUIData uiData;
 	};
 
+	// Icon textures
 	struct Icons {
 		uint32_t file = 0;
 		uint32_t folder = 0;

@@ -4,13 +4,20 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/utils/console.h"
 
-UnlitMaterial::UnlitMaterial() : shader(ShaderPool::get("unlit")),
-baseColor(1.0f, 1.0f, 1.0f, 1.0f),
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!					   !!
+   !! BAD TEMPORARY CODE!  !!
+   !!					   !!
+   !!!!!!!!!!!!!!!!!!!!!!!!!! */
+
+UnlitMaterial::UnlitMaterial() : baseColor(1.0f, 1.0f, 1.0f, 1.0f),
 tiling(1.0f, 1.0f),
 offset(0.0f, 0.0f),
-useTexture(false),
-texture(Texture::empty())
+id(0),
+shader(ShaderPool::get("unlit")),
+shaderId(0)
 {
+	shaderId = shader->getId();
 }
 
 void UnlitMaterial::bind() const
@@ -23,16 +30,19 @@ void UnlitMaterial::bind() const
 
 	shader->setVec2("tiling", tiling);
 	shader->setVec2("offset", offset);
+}
 
-	shader->setBool("enableTexture", useTexture);
-	if (useTexture)
-	{
-		texture.bind(0);
-		shader->setInt("baseTexture", 0);
-	}
+uint32_t UnlitMaterial::getId() const
+{
+	return id;
 }
 
 Shader* UnlitMaterial::getShader() const
 {
 	return shader;
+}
+
+uint32_t UnlitMaterial::getShaderId() const
+{
+	return shaderId;
 }

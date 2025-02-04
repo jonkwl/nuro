@@ -7,35 +7,39 @@
 #include "../core/rendering/shader/shader.h"
 #include "../core/utils/console.h"
 
-Skybox::Skybox() :
-	emission(0.0f),
-	cubemapTexture(0),
-	vao(0),
-	vbo(0),
-	shader(nullptr)
+Skybox::Skybox() : emission(0.0f),
+cubemapTexture(0),
+vao(0),
+vbo(0),
+shader(ShaderPool::empty())
 {
 }
 
-Skybox::Skybox(Cubemap& cubemap, Shader* customShader) :
-	emission(1.0f),
-	cubemapTexture(0),
-	vao(0),
-	vbo(0),
-	shader(ShaderPool::get("skybox"))
+Skybox::Skybox(Cubemap& cubemap) : emission(1.0f),
+cubemapTexture(0),
+vao(0),
+vbo(0),
+shader(ShaderPool::get("skybox"))
 {
-	if (customShader) {
-		shader = customShader;
-	}
+	generate(cubemap);
+}
 
+Skybox::Skybox(Cubemap& cubemap, Shader* customShader) : emission(1.0f),
+cubemapTexture(0),
+vao(0),
+vbo(0),
+shader(customShader)
+{
 	generate(cubemap);
 }
 
 void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
 {
-	// Only render if skybox was created
+	// Skybox has not been created, skip rendering
 	if (!vao) return;
 
-	// DEPTH FUNCTION NEEDS TO BE GL_LEQUAL!
+	// Set depth function
+	glDepthFunc(GL_LEQUAL);
 
 	// Calculate skybox transformation matrices
 	glm::mat4 adjustedViewMatrix = glm::mat4(glm::mat3(viewMatrix));
@@ -56,6 +60,9 @@ void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatr
 
 	// Draw skybox
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	// Reset depth function
+	glDepthFunc(GL_LESS);
 }
 
 void Skybox::generate(Cubemap& cubemap)

@@ -13,7 +13,8 @@ class Skybox
 {
 public:
 	Skybox();
-	explicit Skybox(Cubemap& cubemap, Shader* customShader = nullptr);
+	explicit Skybox(Cubemap& cubemap);
+	explicit Skybox(Cubemap& cubemap, Shader* customShader);
 
 	void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
 

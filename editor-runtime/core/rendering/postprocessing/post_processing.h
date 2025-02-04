@@ -39,7 +39,7 @@ namespace PostProcessing
 		float filterRadius = 0.0f;
 
 		bool lensDirtEnabled = false;
-		Texture lensDirtTexture = Texture::empty();
+		uint32_t lensDirtTexture = 0;
 		float lensDirtIntensity = 0.0f;
 
 	};

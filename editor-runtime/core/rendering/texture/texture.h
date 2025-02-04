@@ -3,8 +3,12 @@
 #include <cstdint>
 #include <string>
 
+#include "../core/resource/resource_task.h"
+
 enum class TextureType
 {
+	EMPTY,
+
 	ALBEDO,
 	ROUGHNESS,
 	METALLIC,
@@ -12,27 +16,50 @@ enum class TextureType
 	OCCLUSION,
 	EMISSIVE,
 	HEIGHT,
+
 	IMAGE_RGB,
-	IMAGE_RGBA
+	IMAGE_RGBA,
 };
 
-class Texture
+class Texture : ResourceTask
 {
 public:
-	Texture(); // Default constructor returning empty texture
+	Texture();
 
-	void bind(uint32_t unit) const; // Bind texture for backend
-	void destroy(); // Delete texture in backend
+	void load() override;
+	void upload() override;
 
-	uint32_t getBackendId() const; // Returns the textures backend id
+	// Sets the texture type and source used when loading and uploading
+	void setSource(TextureType type, const std::string& path);
 
-public:
-	static Texture empty(); // Get empty texture
-	static Texture load(const std::string& path, TextureType type); // Create texture of type from image data
-	static Texture fromBackendId(uint32_t backendId); // Create texture with existing backend texture attached
+	// Creates the texture synchronously, blocking until complete  
+	void createSync();
+
+	// Queues texture creation for asynchronous creation, not blocking
+	void createAsync();
+
+	// Returns the textures backend id
+	uint32_t getId() const;
 
 private:
-	explicit Texture(uint32_t backendId); // Construct texture class by backend texture id (0 for none)
+	// Texture type
+	TextureType type;
 
-	uint32_t backendId; // Backend texture id
+	// Texture source path
+	std::string path;
+
+	// Texture width
+	uint32_t width;
+
+	// Texture height
+	uint32_t height;
+
+	// Texture channels
+	uint32_t channels;
+
+	// Dynamic temporary texture data
+	unsigned char* data;
+
+	// Backend texture id
+	uint32_t id;
 };

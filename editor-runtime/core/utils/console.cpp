@@ -1,6 +1,5 @@
 #include "console.h"
 
-#include <glad/glad.h>
 #include <iostream>
 
 #define EDITOR_CONNECTED 1

@@ -59,7 +59,7 @@ public:
 	// Icons
 	//
 
-	void icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
+	void icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
 
 private:
 	struct StaticData {
@@ -107,14 +107,14 @@ private:
 
 	struct IconRenderTarget
 	{
-		Texture& icon;
+		uint32_t iconTexture;
 		glm::vec3 position;
 		glm::vec3 scale;
 		TransformComponent& cameraTransform;
 		RenderState state;
 
-		IconRenderTarget(Texture& icon, glm::vec3 position, glm::vec3 scale, TransformComponent& cameraTransform, RenderState state) :
-			icon(icon),
+		IconRenderTarget(uint32_t iconTexture, glm::vec3 position, glm::vec3 scale, TransformComponent& cameraTransform, RenderState state) :
+			iconTexture(iconTexture),
 			position(position),
 			scale(scale),
 			cameraTransform(cameraTransform),

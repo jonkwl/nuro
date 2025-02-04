@@ -165,9 +165,7 @@ uint32_t SceneViewForwardPass::render(const glm::mat4& view, const glm::mat4& pr
 	glDisable(GL_CULL_FACE);
 
 	// Render skybox to bound forward pass frame
-	glDepthFunc(GL_LEQUAL);
 	if (drawSkybox && skybox) skybox->render(view, projection);
-	glDepthFunc(GL_LESS);
 
 	// Render gizmos
 	if (drawGizmos && gizmos) gizmos->renderAll(viewProjection);

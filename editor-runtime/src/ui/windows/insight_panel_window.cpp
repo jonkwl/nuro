@@ -137,7 +137,7 @@ void InsightPanelWindow::renderComponent(ImDrawList& drawList)
 
 	ImVec2 iconSize = ImVec2(18.0f, 18.0f);
 	ImVec2 iconPos = caretPos + ImVec2(24.0f, -1.0f);
-	drawList.AddImage(IconPool::get("example").getBackendId(), iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
+	drawList.AddImage(IconPool::get("component"), iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
 
 	//
 	// DRAW COMPONENT TEXT

@@ -9,9 +9,9 @@ assetScale(1.0f),
 targetAssetScale(1.0f)
 {
 	// Fetch icon ids
-	icons.file = IconPool::get("file").getBackendId();
-	icons.folder = IconPool::get("folder").getBackendId();
-	icons.material = IconPool::get("material").getBackendId();
+	icons.file = IconPool::get("file");
+	icons.folder = IconPool::get("folder");
+	icons.material = IconPool::get("material");
 
 	// tmp
 	for (int i = 0; i < 100; i++) {

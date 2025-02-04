@@ -57,7 +57,7 @@ namespace ShaderPool {
 
 	Shader* empty()
 	{
-		return nullptr;
+		return gEmpty;
 	}
 
 	Shader* get(const std::string& name)

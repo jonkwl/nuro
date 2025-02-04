@@ -77,16 +77,6 @@ namespace IOHandler
 		return (dotPos != std::string::npos) ? filename.substr(0, dotPos) : filename;
 	}
 
-	std::string getLastFolder(const std::string& path)
-	{
-		std::filesystem::path fsPath(path);
-		if (fsPath.has_parent_path())
-		{
-			return fsPath.parent_path().filename().string();
-		}
-		return "";
-	}
-
 	std::string getFileExtension(const std::string& filename) {
 		// Find last period in filename
 		size_t pos = filename.find_last_of(".");

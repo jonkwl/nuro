@@ -137,7 +137,8 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		if (glm::distance(gizmo.position, gizmo.cameraTransform.position) > renderRadius) continue;
 
 		// Bind gizmo icon texture
-		gizmo.icon.bind(0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gizmo.iconTexture);
 
 		// Get cameras position and direction
 		glm::vec3 gizmoPosition = Transformation::toBackendPosition(gizmo.position);
@@ -227,9 +228,9 @@ void IMGizmo::sphereWire(glm::vec3 position, float radius, glm::quat rotation)
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::icon3d(Texture& icon, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale)
+void IMGizmo::icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale)
 {
-	IconRenderTarget gizmo(icon, position, scale, cameraTransform, getCurrentState());
+	IconRenderTarget gizmo(iconTexture, position, scale, cameraTransform, getCurrentState());
 	iconRenderStack.push_back(gizmo);
 }
 

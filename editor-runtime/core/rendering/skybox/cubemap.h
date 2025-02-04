@@ -23,14 +23,16 @@ struct Image
 class Cubemap
 {
 public:
-	static Cubemap loadByCubemap(std::string cubemapPath);
-	static Cubemap loadByFaces(std::string rightFacePath, std::string leftFacePath, std::string topFacePath, std::string bottomFacePath, std::string frontFacePath, std::string backFacePath);
+	Cubemap(std::string name);
+
+	void load(std::string cubemapPath);
+	void load(std::string rightFacePath, std::string leftFacePath, std::string topFacePath, std::string bottomFacePath, std::string frontFacePath, std::string backFacePath);
 
 	std::string name;
 	std::vector<CubemapFace> faces;
 
 private:
 	Image loadImage(std::string path);
-	void loadFace(std::string facePath);
+	void loadSingularFace(std::string facePath);
 	void loadCubemapFaces(std::string cubemapPath);
 };

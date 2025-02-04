@@ -72,27 +72,12 @@ namespace Runtime {
 			"../resources/shaders/passes" };
 		ShaderPool::load(shader_paths);
 
-		// Create shadow disk
-		uint32_t diskWindowSize = 4;
-		uint32_t diskFilterSize = 8;
-		uint32_t diskRadius = 5;
-		gMainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
-
-		// Create default spotlight shadow map
-		gMainShadowMap = new ShadowMap(4096, 4096);
-		gMainShadowMap->create();
-
-		// Load gizmo icons
+		// Load various editor icons
+		IconPool::createFallback("../resources/icons/invalid.png");
 		IconPool::load("../resources/icons");
 
-		// Create default skybox
-		/*
-		Cubemap defaultCubemap = Cubemap::loadByCubemap("../resources/skybox/default/default_night.png");
-		gDefaultSkybox = Skybox(defaultCubemap);
-
-		// Set default skybox as current skybox
+		// Link default skybox (can be nullptr)
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
-		*/
 	}
 
 	void _createResources() {
@@ -107,6 +92,15 @@ namespace Runtime {
 
 		// Setup scene gizmos
 		gSceneGizmos.create();
+
+		// TMP:
+		// Create main shadow disk and main shadow map
+		uint32_t diskWindowSize = 4;
+		uint32_t diskFilterSize = 8;
+		uint32_t diskRadius = 5;
+		gMainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
+		gMainShadowMap = new ShadowMap(4096, 4096);
+		gMainShadowMap->create();
 
 	}
 
@@ -161,109 +155,6 @@ namespace Runtime {
 
 	}
 
-	void _createLoadingScreen() {
-
-		// Create viewport
-		Viewport viewport(static_cast<float>(gStartupWindowSize.x), static_cast<float>(gStartupWindowSize.y));
-
-		// Load model
-		Model* model = Model::load("../resources/primitives/cube.fbx");
-		const Mesh* mesh = model->getMesh(0);
-		
-		// Get texture
-		Texture texture = Texture::load("../resources/other/startup.jpg", TextureType::ALBEDO);
-
-		// Load and compile internal shaders
-		ShaderPool::load({ "../resources/shaders/startup" });
-		Shader* shader = ShaderPool::get("startup_model");
-		shader->bind();
-		shader->setInt("colorTexture", 1);
-
-		// Initialize times
-		float duration = 20.0f;
-		float passed = 0.0f;
-
-		// Create transform
-		TransformComponent transform;
-		transform.position = glm::vec3(0.0f, 0.0f, 5.0f);
-
-		// Update viewport
-		glViewport(0, 0, viewport.getWidth_gl(), viewport.getHeight_gl());
-
-		// Set culling to back face
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-
-		// Enable depth testing
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-
-		while(passed < duration){
-
-			// Start new frame
-			ApplicationContext::startFrame();
-
-			// Clear color buffer
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			// Update inputs
-			// Input::update();
-
-			// Get delta
-			float delta = Time::deltaf();
-
-			// Cube rotation
-			// glm::vec2 mouseDelta = Input::mouseDelta() * delta;
-			glm::vec2 mouseDelta = glm::vec2(0.0f, 0.0f);
-			glm::vec3 axisX = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // X-axis rotation
-			glm::vec3 axisY = glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // Y-axis rotation
-			glm::quat rotationX = glm::angleAxis(mouseDelta.y, axisX); // Rotation around X axis (pitch)
-			glm::quat rotationY = glm::angleAxis(mouseDelta.x, axisY); // Rotation around Y axis (yaw)
-			glm::quat cubeRotation = rotationY * rotationX * cubeRotation;
-			cubeRotation = glm::normalize(cubeRotation);
-			transform.rotation = glm::slerp(transform.rotation, cubeRotation, 5.0f * delta);
-
-			// Calculate transform matrices
-			glm::mat4 model = Transformation::model(transform.position, transform.rotation, transform.scale);
-			glm::mat4 view = Transformation::view(glm::vec3(0.0f), glm::identity<glm::quat>());
-			glm::mat4 projection = Transformation::projection(70.0f, viewport.getAspect(), 0.3f, 1000.0f);
-			glm::mat4 mvp = projection * view * model;
-			glm::mat4 normal = Transformation::normal(model);
-
-			// Set shader uniforms
-			shader->setMatrix4("mvpMatrix", mvp);
-			shader->setMatrix3("normalMatrix", normal);
-			shader->setVec4("baseColor", glm::vec4(1.0f));
-
-			// Bind texture
-			texture.bind(1);
-
-			// Bind mesh
-			glBindVertexArray(mesh->getVAO());
-
-			// Render mesh
-			glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
-
-			// End frame
-			ApplicationContext::endFrame();
-
-			// Update passed time
-			passed += delta;
-
-		}
-
-		// Clear frame
-		ApplicationContext::startFrame();
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		ApplicationContext::endFrame();
-
-		// Delete model
-		delete model;
-
-	}
-
 	void _createApplicationContext() {
 
 		// Create application context configuration
@@ -307,8 +198,25 @@ namespace Runtime {
 		ApplicationContext::maximizeWindow();
 		ApplicationContext::setResizeable(true);
 
+		// TMP MULTI-THREADED SOURCE LOAD TESTING (1)
+		bool cubemapCreated = false;
+		bool skyboxCreated = false;
+		Cubemap defaultCubemap("Default Cubemap");
+		std::jthread createCubemap([&]() {
+			Console::out::processStart("SEPERATE THREAD", "CREATING CUBEMAP ON SEPERATE THREAD!");
+			defaultCubemap.load("../resources/skybox/default/default_night.png");
+			cubemapCreated = true;
+		});
+
 		while (ApplicationContext::running())
 		{
+			// TMP MULTI-THREADED SOURCE LOAD TESTING (2)
+			if (cubemapCreated && !skyboxCreated) {
+				gDefaultSkybox = Skybox(defaultCubemap);
+				Console::out::processStart("MAIN THREAD", "CUBEMAP LOADED, CREATING SKYBOX!");
+				skyboxCreated = true;
+			}
+			
 			// START NEW APPLICATION CONTEXT FRAME
 			ApplicationContext::startFrame();
 

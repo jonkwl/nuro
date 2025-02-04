@@ -8,11 +8,11 @@
 #include "../core/rendering/shadows/shadow_disk.h"
 #include "../core/rendering/transformation/transformation.h"
 
-/*
-
-BAD TEMPORARY CODE!
-
-*/
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!					   !!
+   !! BAD TEMPORARY CODE!  !!
+   !!					   !!
+   !!!!!!!!!!!!!!!!!!!!!!!!!! */
 
 uint32_t LitMaterial::instances = 0;
 Viewport* LitMaterial::viewport = nullptr;
@@ -40,18 +40,12 @@ emission(false),
 emissionIntensity(0.0f),
 emissionColor(glm::vec3(1.0f)),
 heightMapScale(0.1f),
-enableAlbedoMap(false),
-albedoMap(Texture::empty()),
-enableNormalMap(false),
-normalMap(Texture::empty()),
-enableRoughnessMap(false),
-roughnessMap(Texture::empty()),
-enableMetallicMap(false),
-metallicMap(Texture::empty()),
-enableEmissiveMap(false),
-emissiveMap(Texture::empty()),
-enableHeightMap(false),
-heightMap(Texture::empty()),
+albedoMap(0),
+normalMap(0),
+roughnessMap(0),
+metallicMap(0),
+emissiveMap(0),
+heightMap(0),
 id(0),
 shader(ShaderPool::get("lit")),
 shaderId(0)
@@ -109,55 +103,69 @@ void LitMaterial::bind() const
 	shader->setVec3("material.emissionColor", emissionColor);
 
 	// Set textures
+	bool enableAlbedoMap = albedoMap;
 	shader->setBool("material.enableAlbedoMap", enableAlbedoMap);
 	if (enableAlbedoMap)
 	{
-		albedoMap.bind(ALBEDO_UNIT);
+		glActiveTexture(GL_TEXTURE0 + ALBEDO_UNIT);
+		glBindTexture(GL_TEXTURE_2D, albedoMap);
 	}
 
+	bool enableRoughnessMap = roughnessMap;
 	shader->setBool("material.enableRoughnessMap", enableRoughnessMap);
 	if (enableRoughnessMap)
 	{
-		roughnessMap.bind(ROUGHNESS_UNIT);
+		glActiveTexture(GL_TEXTURE0 + ROUGHNESS_UNIT);
+		glBindTexture(GL_TEXTURE_2D, roughnessMap);
 	}
 	else
 	{
 		shader->setFloat("material.roughness", roughness);
 	}
 
+	bool enableMetallicMap = metallicMap;
 	shader->setBool("material.enableMetallicMap", enableMetallicMap);
 	if (enableMetallicMap)
 	{
-		metallicMap.bind(METALLIC_UNIT);
+		glActiveTexture(GL_TEXTURE0 + METALLIC_UNIT);
+		glBindTexture(GL_TEXTURE_2D, metallicMap);
 	}
 	else
 	{
 		shader->setFloat("material.metallic", metallic);
 	}
 
+	bool enableNormalMap = normalMap;
 	shader->setBool("material.enableNormalMap", enableNormalMap);
 	if (enableNormalMap)
 	{
-		normalMap.bind(NORMAL_UNIT);
+		glActiveTexture(GL_TEXTURE0 + NORMAL_UNIT);
+		glBindTexture(GL_TEXTURE_2D, normalMap);
 	}
 	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
 
+	bool enableOcclusionMap = occlusionMap;
 	shader->setBool("material.enableOcclusionMap", enableOcclusionMap);
 	if (enableOcclusionMap)
 	{
-		occlusionMap.bind(OCCLUSION_UNIT);
+		glActiveTexture(GL_TEXTURE0 + OCCLUSION_UNIT);
+		glBindTexture(GL_TEXTURE_2D, occlusionMap);
 	}
 
+	bool enableEmissiveMap = emissiveMap;
 	shader->setBool("material.enableEmissiveMap", enableEmissiveMap);
 	if (enableEmissiveMap)
 	{
-		emissiveMap.bind(EMISSIVE_UNIT);
+		glActiveTexture(GL_TEXTURE0 + EMISSIVE_UNIT);
+		glBindTexture(GL_TEXTURE_2D, emissiveMap);
 	}
 
+	bool enableHeightMap = heightMap;
 	shader->setBool("material.enableHeightMap", enableHeightMap);
 	if (enableHeightMap)
 	{
-		heightMap.bind(HEIGHT_UNIT);
+		glActiveTexture(GL_TEXTURE0 + HEIGHT_UNIT);
+		glBindTexture(GL_TEXTURE_2D, heightMap);
 	}
 	shader->setFloat("material.heightMapScale", heightMapScale);
 }
@@ -175,48 +183,6 @@ Shader* LitMaterial::getShader() const
 uint32_t LitMaterial::getShaderId() const
 {
 	return shaderId;
-}
-
-void LitMaterial::setAlbedoMap(Texture texture)
-{
-	enableAlbedoMap = true;
-	albedoMap = texture;
-}
-
-void LitMaterial::setRoughnessMap(Texture texture)
-{
-	enableRoughnessMap = true;
-	roughnessMap = texture;
-}
-
-void LitMaterial::setMetallicMap(Texture texture)
-{
-	enableMetallicMap = true;
-	metallicMap = texture;
-}
-
-void LitMaterial::setNormalMap(Texture texture)
-{
-	enableNormalMap = true;
-	normalMap = texture;
-}
-
-void LitMaterial::setOcclusionMap(Texture texture)
-{
-	enableOcclusionMap = true;
-	occlusionMap = texture;
-}
-
-void LitMaterial::setEmissiveMap(Texture texture)
-{
-	enableEmissiveMap = true;
-	emissiveMap = texture;
-}
-
-void LitMaterial::setHeightMap(Texture texture)
-{
-	enableHeightMap = true;
-	heightMap = texture;
 }
 
 void LitMaterial::syncStaticUniforms()

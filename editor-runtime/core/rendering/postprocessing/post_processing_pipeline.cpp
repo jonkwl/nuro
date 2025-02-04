@@ -137,8 +137,8 @@ void PostProcessingPipeline::render(const glm::mat4& view, const glm::mat4& proj
 	// Bind lens dirt texture
 	if (profile.bloom.lensDirtEnabled)
 	{
-		Texture lensDirtTexture = profile.bloom.lensDirtTexture;
-		lensDirtTexture.bind(LENS_DIRT_UNIT);
+		glActiveTexture(GL_TEXTURE0 + LENS_DIRT_UNIT);
+		glBindTexture(GL_TEXTURE_2D, profile.bloom.lensDirtTexture);
 	}
 
 	// Bind quad and render to screen

@@ -238,7 +238,7 @@ namespace EditorUI {
 		titleBarStyle.primaryFont = gFonts.h4_bold;
 		titleBarStyle.secondaryFont = gFonts.p;
 		titleBarStyle.workspaceBarFont = gFonts.h4;
-		gLogoTexture = IconPool::get("logo").getBackendId();
+		gLogoTexture = IconPool::get("logo");
 		titleBarStyle.iconTexture = gLogoTexture;
 
 		FooterStyle& footerStyle = gFooter.getStyle();
