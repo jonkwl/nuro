@@ -36,29 +36,47 @@ public:
 	// Queues resource creation for asynchronous creation, not blocking
 	void createAsync(Resource* resource);
 
-	// Perform pending actions on main thread [performs resource uploads viable for this frame synchronously]
-	void update();
+	// Dispatch next pending resource to gpu (on main thread)
+	void dispatchNext();
 
 private:
-	// Adds a resource task to the async queue
-	void addAsyncTask(Resource* task);
-
 	// Async worker thread
 	void asyncWorker();
 
+	// Helper to pop from queue safely
+	template <typename T>
+	void popSafe(std::queue<T>& queue) {
+		if (!queue.empty()) queue.pop();
+	}
+
 private:
+	//
+	// STATE
+	//
+
 	std::atomic<bool> running;
+
+	//
+	// MAIN THREAD
+	//
 
 	// Resource upload tasks on the main thread
 	std::queue<Resource*> mainTasks;
 
-	// Resource load tasks on the worker thread
-	std::queue<Resource*> workerTasks;
+	// Atomic set if main thread can dispatch next resource
+	std::atomic<bool> mainDispatchNext;
 	
-	// Worker thread
+	//
+	// WORKER THREAD
+	//
+
 	std::jthread worker;
 	std::mutex workerMtx;
-	std::condition_variable workerCv;
+	std::condition_variable workerTasksAvailable;
+	std::condition_variable workerAwaitingDispatch;
+
+	// Resource load tasks on the worker thread
+	std::queue<Resource*> workerTasks;
 
 	// State of the worker, only to be changed by worker thread
 	WorkerState workerState;

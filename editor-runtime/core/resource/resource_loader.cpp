@@ -7,14 +7,14 @@
 ResourceLoader::ResourceLoader() : workerState()
 {
 	// Launch worker
-	running.store(true);
+	running = true;
 	worker = std::jthread(&ResourceLoader::asyncWorker, this);
 }
 
 ResourceLoader::~ResourceLoader()
 {
 	// Stop worker
-	running.store(false);
+	running = false;
 	worker.request_stop();
 }
 
@@ -32,44 +32,50 @@ void ResourceLoader::createSync(Resource* resource)
 
 void ResourceLoader::createAsync(Resource* resource)
 {
-	addAsyncTask(resource);
+	// Add task to load tasks queue
+	// Check: Possible race condition on the worker tasks queue
+	workerTasks.push(resource);
+
+	// Notify worker
+	workerTasksAvailable.notify_one();
 }
 
-void ResourceLoader::update()
+void ResourceLoader::dispatchNext()
 {
 	// [MAIN THREAD]
+
+	// Only dispatch next resource if allowed by worker before
+	if (!mainDispatchNext) return;
+
+	// Make sure worker thread is locked during dispatch (since main tasks is a shared resource)
+	std::lock_guard<std::mutex> lock(workerMtx);
 	
-	// Dispatch next resource in queue (max one resource upload per update to prevent extreme frame stalling)
+	// Dispatch next resource in queue (only one per frame to prevent heavy main thread blocking)
 	if (!mainTasks.empty()) {
 		Resource* task = mainTasks.front();
 		task->dispatchGPU();
 		task->releaseData();
-		mainTasks.pop();
+		popSafe(mainTasks);
 	}
-}
 
-void ResourceLoader::addAsyncTask(Resource* task)
-{
-	// Add task to load tasks queue
-	workerTasks.push(task);
+	// Resource dispatched, prevent another dispatch
+	mainDispatchNext = false;
 
-	// Notify worker
-	workerCv.notify_all();
+	// Unlock worker mutex and continue worker thread
+	workerAwaitingDispatch.notify_one();
 }
 
 void ResourceLoader::asyncWorker()
 {
 	// [WORKER THREAD]
 
-	// TODO: ADD MORE LOCKS TO PREVENT DATA RACES!
-
-	while (running.load()) {
+	while (running) {
 
 		std::unique_lock<std::mutex> lock(workerMtx);
 
 		// Condition: Queue with tasks to load must not be empty
 		if (workerTasks.empty()) {
-			workerCv.wait(lock);
+			workerTasksAvailable.wait(lock);
 		}
 
 		while (!workerTasks.empty()) {
@@ -88,8 +94,11 @@ void ResourceLoader::asyncWorker()
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 
 			// Update queues
-			workerTasks.pop();
+			popSafe(workerTasks);
 			mainTasks.push(resource);
+
+			mainDispatchNext = true;
+			workerAwaitingDispatch.wait(lock);
 		}
 
 		// Clear worker state

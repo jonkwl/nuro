@@ -141,8 +141,8 @@ namespace ApplicationContext {
 		// Update glfw events
 		glfwPollEvents();
 
-		// Update global resource loader
-		gResourceLoader.update();
+		// Make global resource loader dispatch next pending resource to gpu
+		gResourceLoader.dispatchNext();
 
 		// Step global time
 		Time::step(glfwGetTime());
