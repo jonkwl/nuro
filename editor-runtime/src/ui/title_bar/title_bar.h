@@ -26,7 +26,6 @@ struct TitleBarStyle {
 	ImU32 menuItemColor = IM_COL32(0, 0, 0, 0);
 	ImU32 menuItemColorHovered = IM_COL32(38, 38, 38, 160);
 
-	uint32_t iconTexture = 0;
 	ImVec2 iconSize = ImVec2(70.0f, 70.0f);
 
 	float borderThickness = 2.0f;

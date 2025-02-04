@@ -56,13 +56,6 @@ public:
 		AssetUIData uiData;
 	};
 
-	// Icon textures
-	struct Icons {
-		uint32_t file = 0;
-		uint32_t folder = 0;
-		uint32_t material = 0;
-	};
-
 private:
 	// Checks for asset broser related inputs
 	void evaluateInputs();
@@ -86,9 +79,6 @@ private:
 	void renderAssetItem(ImDrawList& drawList, Asset& asset, ImVec2 position);
 
 private:
-	// Initialized icon ids
-	Icons icons;
-
 	// Current displayed scale of ui assets
 	float assetScale;
 

@@ -40,13 +40,13 @@ public:
 	glm::vec3 emissionColor;
 	float heightMapScale;
 
-	uint32_t albedoMap;
-	uint32_t roughnessMap;
-	uint32_t metallicMap;
-	uint32_t normalMap;
-	uint32_t occlusionMap;
-	uint32_t emissiveMap;
-	uint32_t heightMap;
+	Texture* albedoMap;
+	Texture* roughnessMap;
+	Texture* metallicMap;
+	Texture* normalMap;
+	Texture* occlusionMap;
+	Texture* emissiveMap;
+	Texture* heightMap;
 
 	void syncStaticUniforms();
 	void syncLightUniforms();

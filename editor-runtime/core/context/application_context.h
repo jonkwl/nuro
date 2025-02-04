@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../core/backend/api.h"
+#include "../core/asset/asset_loader.h"
 
 struct GLFWwindow;
 struct GLFWmonitor;
@@ -29,7 +30,7 @@ namespace ApplicationContext
 	void destroy();
 
 	// Begins a new frame
-	void startFrame();
+	void nextFrame();
 
 	// Ends a frame
 	void endFrame();
@@ -75,5 +76,8 @@ namespace ApplicationContext
 
 	// Returns a read-only reference to the currently active configuration
 	const Configuration& readConfiguration();
+
+	// Returns the global asset loader
+	AssetLoader& getAssetLoader();
 
 };

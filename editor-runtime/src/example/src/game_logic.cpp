@@ -2,6 +2,9 @@
 
 #include "../core/engine.h"
 
+#include <thread>
+#include <chrono>
+
 Entity cameraEntity;
 Entity kinematicEntity;
 Entity playerEntity;

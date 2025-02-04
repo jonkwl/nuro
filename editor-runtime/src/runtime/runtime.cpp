@@ -64,6 +64,8 @@ namespace Runtime {
 	//
 
 	void _loadDependencies() {
+		AssetLoader& loader = ApplicationContext::getAssetLoader();
+
 		// Loading all shaders
 		std::vector<std::string> shader_paths = {
 			"../resources/shaders/materials",
@@ -71,6 +73,13 @@ namespace Runtime {
 			"../resources/shaders/gizmo",
 			"../resources/shaders/passes" };
 		ShaderPool::load(shader_paths);
+
+		// Create default texture
+		// Default texture should exist for the whole application lifetime, so just forget about the pointer (for now)
+		Texture* defaultTexture = new Texture();
+		defaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");
+		loader.createSync(defaultTexture);
+		Texture::setDefaultTexture(defaultTexture);
 
 		// Load various editor icons
 		IconPool::createFallback("../resources/icons/invalid.png");
@@ -195,30 +204,13 @@ namespace Runtime {
 		// LAUNCH EDITOR
 		Console::out::welcome();
 		EditorUI::setup();
-		ApplicationContext::maximizeWindow();
 		ApplicationContext::setResizeable(true);
-
-		// TMP MULTI-THREADED SOURCE LOAD TESTING (1)
-		bool cubemapCreated = false;
-		bool skyboxCreated = false;
-		Cubemap defaultCubemap("Default Cubemap");
-		std::jthread createCubemap([&]() {
-			Console::out::processStart("SEPERATE THREAD", "CREATING CUBEMAP ON SEPERATE THREAD!");
-			defaultCubemap.load("../resources/skybox/default/default_night.png");
-			cubemapCreated = true;
-		});
+		ApplicationContext::maximizeWindow();
 
 		while (ApplicationContext::running())
 		{
-			// TMP MULTI-THREADED SOURCE LOAD TESTING (2)
-			if (cubemapCreated && !skyboxCreated) {
-				gDefaultSkybox = Skybox(defaultCubemap);
-				Console::out::processStart("MAIN THREAD", "CUBEMAP LOADED, CREATING SKYBOX!");
-				skyboxCreated = true;
-			}
-			
 			// START NEW APPLICATION CONTEXT FRAME
-			ApplicationContext::startFrame();
+			ApplicationContext::nextFrame();
 
 			// CLEAR FRAME COLOR
 			glClearColor(0.03f, 0.03f, 0.03f, 1.0f);

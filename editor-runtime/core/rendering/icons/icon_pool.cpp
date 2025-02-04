@@ -7,6 +7,7 @@
 #include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 #include "../core/rendering/texture/texture.h"
+#include "../core/context/application_context.h"
 
 namespace IconPool {
 
@@ -17,7 +18,7 @@ namespace IconPool {
 	void createFallback(const std::string& invalidIconPath)
 	{
 		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, invalidIconPath);
-		gInvalidIcon->createSync();
+		ApplicationContext::getAssetLoader().createSync(gInvalidIcon);
 	}
 
 	void load(const std::string& directoryPath)
@@ -34,7 +35,7 @@ namespace IconPool {
 			auto [it, inserted] = gIcons.insert({ filename, new Texture() });
 			auto& icon = it->second;
 			icon->setSource(type, file);
-			icon->createSync();
+			ApplicationContext::getAssetLoader().createAsync(icon);
 
 			nLoaded++;
 

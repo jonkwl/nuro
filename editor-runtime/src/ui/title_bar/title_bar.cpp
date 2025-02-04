@@ -79,12 +79,15 @@ void TitleBar::renderContent(ImDrawList& drawList)
     // DRAW ICON
     //
 
-    if (style.iconTexture) {
-        //float iconVerticalPadding = (titleBarSize.y - style.iconSize.y) * 0.5f;
-        //cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + iconVerticalPadding);
+    uint32_t icon = IconPool::get("logo");
+    if (icon) {
+        // Vertically centered
+        // float iconVerticalPadding = (titleBarSize.y - style.iconSize.y) * 0.5f;
+        // cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + iconVerticalPadding);
 
+        // Placed with vertical padding
         cursor = ImVec2(titleBarPosition.x + style.padding.x * 0.5f, titleBarPosition.y + 2.0f);
-        drawList.AddImage(style.iconTexture, cursor, cursor + style.iconSize, ImVec2(0, 1), ImVec2(1, 0));
+        drawList.AddImage(icon, cursor, cursor + style.iconSize, ImVec2(0, 1), ImVec2(1, 0));
     }
 
     //

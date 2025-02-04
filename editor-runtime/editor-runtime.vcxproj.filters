@@ -225,7 +225,7 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\resource\resource_queue.cpp">
+    <ClCompile Include="core\asset\asset_loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -530,10 +530,10 @@
     <ClInclude Include="src\ui\windows\asset_browser_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\resource\resource_queue.h">
+    <ClInclude Include="core\asset\asset_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\resource\resource_task.h">
+    <ClInclude Include="core\asset\asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">

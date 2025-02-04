@@ -4,15 +4,9 @@
 
 #include "../src/ui/windows/insight_panel_window.h"
 
-AssetBrowserWindow::AssetBrowserWindow() : icons(),
-assetScale(1.0f),
+AssetBrowserWindow::AssetBrowserWindow() : assetScale(1.0f),
 targetAssetScale(1.0f)
 {
-	// Fetch icon ids
-	icons.file = IconPool::get("file");
-	icons.folder = IconPool::get("folder");
-	icons.material = IconPool::get("material");
-
 	// tmp
 	for (int i = 0; i < 100; i++) {
 		Asset a;
@@ -440,7 +434,7 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 
 	ImVec2 iconSize = ImVec2(15.0f, 15.0f);
 	ImVec2 iconPos = ImVec2(rectMin.x + textPadding.x + textOffset, rectMin.y + (finalSize.y - iconSize.y) * 0.5f);
-	drawList.AddImage(icons.folder, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
+	drawList.AddImage(IconPool::get("folder"), iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
 
 	//
 	// EVALUATE ITEM TEXT POSITION
@@ -563,16 +557,16 @@ void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImV
 	else {
 		switch (asset.type) {
 		case AssetType::FILE:
-			icon = icons.file;
+			icon = IconPool::get("file");
 			break;
 		case AssetType::FOLDER:
-			icon = icons.folder;
+			icon = IconPool::get("folder");
 			break;
 		case AssetType::MATERIAL:
-			icon = icons.material;
+			icon = IconPool::get("material");
 			break;
 		default:
-			icon = icons.file;
+			icon = IconPool::get("invalid");
 			break;
 		}
 	}

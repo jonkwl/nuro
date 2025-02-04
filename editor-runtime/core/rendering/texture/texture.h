@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include "../core/resource/resource_task.h"
+#include "../core/asset/asset.h"
 
 enum class TextureType
 {
@@ -21,45 +21,41 @@ enum class TextureType
 	IMAGE_RGBA,
 };
 
-class Texture : ResourceTask
+class Texture : public Asset
 {
 public:
 	Texture();
 
 	void load() override;
 	void upload() override;
+	std::string sourcePath() override;
 
 	// Sets the texture type and source used when loading and uploading
 	void setSource(TextureType type, const std::string& path);
 
-	// Creates the texture synchronously, blocking until complete  
-	void createSync();
-
-	// Queues texture creation for asynchronous creation, not blocking
-	void createAsync();
-
 	// Returns the textures backend id
 	uint32_t getId() const;
 
+	// Sets the given textures backend id to be the default backend id for new textures
+	static void setDefaultTexture(Texture* texture);
+
 private:
+	// Default texture fallback
+	static uint32_t defaultTextureId;
+
 	// Texture type
 	TextureType type;
 
-	// Texture source path
+	// Path of texture source
 	std::string path;
-
-	// Texture width
-	uint32_t width;
-
-	// Texture height
-	uint32_t height;
-
-	// Texture channels
-	uint32_t channels;
 
 	// Dynamic temporary texture data
 	unsigned char* data;
 
-	// Backend texture id
+	uint32_t width;
+	uint32_t height;
+	uint32_t channels;
+
+	// Backend id of texture
 	uint32_t id;
 };

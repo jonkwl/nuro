@@ -5,6 +5,9 @@
 
 #include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
+#include "../core/context/application_context.h"
+
+uint32_t Texture::defaultTextureId = 0;
 
 Texture::Texture() : type(TextureType::EMPTY),
 path("NONE"),
@@ -12,7 +15,7 @@ width(0),
 height(0),
 channels(0),
 data(nullptr),
-id(0)
+id(defaultTextureId)
 {
 }
 
@@ -112,6 +115,8 @@ void Texture::upload()
 
 	// Free memory allocated for image data
 	stbi_image_free(data);
+
+	Console::out::processInfo("Texture '" + IOHandler::getFilename(path) + "'is ready");
 }
 
 void Texture::setSource(TextureType _type, const std::string& _path)
@@ -120,18 +125,17 @@ void Texture::setSource(TextureType _type, const std::string& _path)
 	path = _path;
 }
 
-void Texture::createSync()
+std::string Texture::sourcePath()
 {
-	load();
-	upload();
-}
-
-void Texture::createAsync()
-{
-	// ...
+	return path;
 }
 
 uint32_t Texture::getId() const
 {
 	return id;
+}
+
+void Texture::setDefaultTexture(Texture* texture)
+{
+	defaultTextureId = texture->getId();
 }

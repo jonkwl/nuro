@@ -12,10 +12,16 @@
 
 namespace ApplicationContext {
 
+	// Global configuration
+	Configuration gConfiguration;
+
+	// Global window context variables
 	GLFWwindow* gWindow = nullptr;
 	GLFWmonitor* gMonitor = nullptr;
-	Configuration gConfiguration;
 	glm::ivec2 gLastWindowSize = glm::ivec2(0.0f, 0.0f);
+
+	// Global asset loader
+	AssetLoader gAssetLoader;
 
 	// Default glfw error callback
 	static void _glfwErrorCallback(int32_t error, const char* description)
@@ -130,10 +136,13 @@ namespace ApplicationContext {
 		}
 	}
 
-	void startFrame()
+	void nextFrame()
 	{
 		// Update glfw events
 		glfwPollEvents();
+
+		// Update global asset loader
+		gAssetLoader.update();
 
 		// Step global time
 		Time::step(glfwGetTime());
@@ -297,6 +306,11 @@ namespace ApplicationContext {
 	const Configuration& readConfiguration()
 	{
 		return gConfiguration;
+	}
+
+	AssetLoader& getAssetLoader()
+	{
+		return gAssetLoader;
 	}
 
 }
