@@ -4,7 +4,7 @@
 #include <string>
 
 #include "../core/backend/api.h"
-#include "../core/asset/asset_loader.h"
+#include "../core/resource/resource_loader.h"
 
 struct GLFWwindow;
 struct GLFWmonitor;
@@ -77,7 +77,7 @@ namespace ApplicationContext
 	// Returns a read-only reference to the currently active configuration
 	const Configuration& readConfiguration();
 
-	// Returns the global asset loader
-	AssetLoader& getAssetLoader();
+	// Returns the global resource loader
+	ResourceLoader& getResourceLoader();
 
 };

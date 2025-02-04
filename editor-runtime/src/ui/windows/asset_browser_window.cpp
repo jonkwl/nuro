@@ -20,7 +20,7 @@ targetAssetScale(1.0f)
 			a.name = "Material " + std::to_string(i);
 		}
 
-		currentAssets.push_back(a);
+		currentAsset.push_back(a);
 	}
 }
 
@@ -255,7 +255,7 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 		//
 
 		// Optimization: Doesnt have to be done every frame, only when assets change and only for those who changed
-		for (Asset& asset : currentAssets) {
+		for (Asset& asset : currentAsset) {
 			createAssetUIData(asset);
 		}
 
@@ -268,7 +268,7 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 
 		ImVec2 lastAssetSize = ImVec2(0.0f, 0.0f);
 
-		for (Asset asset : currentAssets) {
+		for (Asset asset : currentAsset) {
 			// Check for new line
 			if (cursor.x + asset.uiData.size.x > size.x - padding.x) {
 				// Start new line using current assets height

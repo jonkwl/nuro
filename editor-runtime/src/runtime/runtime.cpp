@@ -57,6 +57,9 @@ namespace Runtime {
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
 
+	// Default texture
+	Texture* gDefaultTexture = new Texture();
+
 	//
 	//
 	// PRIVATE RUNTIME CORE METHODS
@@ -64,7 +67,7 @@ namespace Runtime {
 	//
 
 	void _loadDependencies() {
-		AssetLoader& loader = ApplicationContext::getAssetLoader();
+		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 		// Loading all shaders
 		std::vector<std::string> shader_paths = {
@@ -75,17 +78,15 @@ namespace Runtime {
 		ShaderPool::load(shader_paths);
 
 		// Create default texture
-		// Default texture should exist for the whole application lifetime, so just forget about the pointer (for now)
-		Texture* defaultTexture = new Texture();
-		defaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");
-		loader.createSync(defaultTexture);
-		Texture::setDefaultTexture(defaultTexture);
+		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");
+		loader.createSync(gDefaultTexture);
+		Texture::setDefaultTexture(gDefaultTexture->getId());
 
 		// Load various editor icons
-		IconPool::createFallback("../resources/icons/invalid.png");
-		IconPool::load("../resources/icons");
+		IconPool::createFallbackIconSync("../resources/icons/invalid.png");
+		IconPool::loadSync("../resources/icons");
 
-		// Link default skybox (can be nullptr)
+		// Link default skybox
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 	}
 
@@ -197,15 +198,15 @@ namespace Runtime {
 		// CREATE RESOURCES (RENDER PASSES, PHYSICS CONTEXT ETC)
 		_createResources();
 
-		// GAME SETUP
-		gameSetup();
-		ECS::generateRenderQueue();
-
 		// LAUNCH EDITOR
 		Console::out::welcome();
 		EditorUI::setup();
 		ApplicationContext::setResizeable(true);
 		ApplicationContext::maximizeWindow();
+
+		// GAME SETUP
+		gameSetup();
+		ECS::generateRenderQueue();
 
 		while (ApplicationContext::running())
 		{

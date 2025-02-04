@@ -10,7 +10,7 @@
 uint32_t Texture::defaultTextureId = 0;
 
 Texture::Texture() : type(TextureType::EMPTY),
-path("NONE"),
+path(),
 width(0),
 height(0),
 channels(0),
@@ -19,7 +19,23 @@ id(defaultTextureId)
 {
 }
 
-void Texture::load()
+void Texture::setSource(TextureType _type, const std::string& _path)
+{
+	type = _type;
+	path = _path;
+}
+
+uint32_t Texture::getId() const
+{
+	return id;
+}
+
+void Texture::setDefaultTexture(uint32_t textureId)
+{
+	defaultTextureId = textureId;
+}
+
+void Texture::loadData()
 {
 	// Start loading texture
 	Console::out::processInfo("Loading texture '" + IOHandler::getFilename(path) + "'...");
@@ -41,7 +57,15 @@ void Texture::load()
 	data = _data;
 }
 
-void Texture::upload()
+void Texture::releaseData()
+{
+	// Free memory allocated for image data
+	stbi_image_free(data);
+
+	Console::out::processInfo("Texture data for '" + IOHandler::getFilename(path) + "' was released");
+}
+
+void Texture::dispatchGPU()
 {
 	// Start uploading texture
 	Console::out::processInfo("Uploading texture '" + IOHandler::getFilename(path) + "'...");
@@ -113,29 +137,10 @@ void Texture::upload()
 	// Undbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	// Free memory allocated for image data
-	stbi_image_free(data);
-
 	Console::out::processInfo("Texture '" + IOHandler::getFilename(path) + "'is ready");
-}
-
-void Texture::setSource(TextureType _type, const std::string& _path)
-{
-	type = _type;
-	path = _path;
 }
 
 std::string Texture::sourcePath()
 {
 	return path;
-}
-
-uint32_t Texture::getId() const
-{
-	return id;
-}
-
-void Texture::setDefaultTexture(Texture* texture)
-{
-	defaultTextureId = texture->getId();
 }

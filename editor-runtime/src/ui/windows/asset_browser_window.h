@@ -86,5 +86,5 @@ private:
 	float targetAssetScale;
 
 	// Currently shown assets from selected folder
-	std::vector<Asset> currentAssets;
+	std::vector<Asset> currentAsset;
 };

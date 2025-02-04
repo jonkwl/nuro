@@ -10,9 +10,6 @@ Entity kinematicEntity;
 Entity playerEntity;
 Entity planeEntity;
 
-static bool jumped = false;
-static float zoom = -20.0f;
-
 void _example() {
 
 	// Models
@@ -111,6 +108,46 @@ void _example() {
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
+	// Async asset loading test
+	ResourceLoader& loader = ApplicationContext::getResourceLoader();
+
+	Texture* albedo = new Texture();
+	albedo->setSource(TextureType::ALBEDO, "./src/example/assets/textures/sci-fi/albedo.jpg");
+	loader.createAsync(albedo);
+
+	Texture* normal = new Texture();
+	normal->setSource(TextureType::NORMAL, "./src/example/assets/textures/sci-fi/normal.jpg");
+	loader.createAsync(normal);
+
+	Texture* metallic = new Texture();
+	metallic->setSource(TextureType::METALLIC, "./src/example/assets/textures/sci-fi/metallic.jpg");
+	loader.createAsync(metallic);
+
+	Texture* roughness = new Texture();
+	roughness->setSource(TextureType::ROUGHNESS, "./src/example/assets/textures/sci-fi/roughness.jpg");
+	loader.createAsync(roughness);
+
+	Texture* emissive = new Texture();
+	emissive->setSource(TextureType::EMISSIVE, "./src/example/assets/textures/sci-fi/emissive.jpg");
+	loader.createAsync(emissive);
+
+	Texture* occlusion = new Texture();
+	occlusion->setSource(TextureType::OCCLUSION, "./src/example/assets/textures/sci-fi/occlusion.jpg");
+	loader.createAsync(occlusion);
+
+	LitMaterial* cubeMaterial = new LitMaterial();
+	cubeMaterial->albedoMap = albedo;
+	cubeMaterial->normalMap = normal;
+	cubeMaterial->metallicMap = metallic;
+	cubeMaterial->roughnessMap = roughness;
+	cubeMaterial->emissiveMap = emissive;
+	cubeMaterial->occlusionMap = occlusion;
+
+	EntityContainer cube("Example Showcase", ECS::createEntity());
+	cube.transform.position = glm::vec3(0.0f, 7.0f, 21.0f);
+	cube.transform.scale = glm::vec3(5.0f);
+	cube.add<MeshRendererComponent>(cubeMesh, cubeMaterial);
+
 }
 
 void gameSetup() {
@@ -127,6 +164,9 @@ void gameQuit()
 }
 
 void gameUpdate() {
+	static bool jumped = false;
+	static float zoom = -20.0f;
+
 	float delta = Time::deltaf();
 
 	EntityContainer kinematic("Kinematic", kinematicEntity);

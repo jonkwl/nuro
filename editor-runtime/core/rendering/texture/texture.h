@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include "../core/asset/asset.h"
+#include "../core/resource/resource.h"
 
 enum class TextureType
 {
@@ -21,23 +21,24 @@ enum class TextureType
 	IMAGE_RGBA,
 };
 
-class Texture : public Asset
+class Texture : public Resource
 {
 public:
 	Texture();
 
-	void load() override;
-	void upload() override;
-	std::string sourcePath() override;
-
-	// Sets the texture type and source used when loading and uploading
+	// Sets the textures type and source path
 	void setSource(TextureType type, const std::string& path);
 
 	// Returns the textures backend id
 	uint32_t getId() const;
 
-	// Sets the given textures backend id to be the default backend id for new textures
-	static void setDefaultTexture(Texture* texture);
+	// Sets the given texture backend id to be the default backend id for new textures
+	static void setDefaultTexture(uint32_t textureId);
+
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+	std::string sourcePath() override;
 
 private:
 	// Default texture fallback

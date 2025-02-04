@@ -15,33 +15,54 @@ namespace IconPool {
 	std::unordered_map<std::string, Texture*> gIcons;
 	Texture* gInvalidIcon = new Texture();
 
-	void createFallback(const std::string& invalidIconPath)
+	void _load(const std::string& directoryPath, bool async)
 	{
-		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, invalidIconPath);
-		ApplicationContext::getAssetLoader().createSync(gInvalidIcon);
-	}
-
-	void load(const std::string& directoryPath)
-	{
-		Console::out::processStart("Icon Pool", "Loading icons from " + directoryPath);
-
+		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 		uint32_t nLoaded = 0;
+
 		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directoryPath, gValidExtensions);
 		for (const auto& file : files) {
 
-			std::string filename = IOHandler::getFilenameRaw(file);
+			// Get icon identifier and texture type
+			std::string identifier = IOHandler::getFilenameRaw(file);
 			TextureType type = IOHandler::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
-			auto [it, inserted] = gIcons.insert({ filename, new Texture() });
+			// Insert new icon
+			auto [it, inserted] = gIcons.insert({ identifier, new Texture()});
 			auto& icon = it->second;
+
+			// Create icon texture
 			icon->setSource(type, file);
-			ApplicationContext::getAssetLoader().createAsync(icon);
+			if (async) {
+				loader.createAsync(icon);
+			}
+			else {
+				loader.createSync(icon);
+			}
 
 			nLoaded++;
 
 		}
 
-		Console::out::processDone("Icon Pool", "Done: " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon loaded" : " icons loaded"));
+		Console::out::processDone("Icon Pool", "Loaded " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon" : " icons"));
+	}
+
+	void createFallbackIconSync(const std::string& invalidIconPath)
+	{
+		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, invalidIconPath);
+		ApplicationContext::getResourceLoader().createSync(gInvalidIcon);
+	}
+
+	void loadSync(const std::string& directoryPath)
+	{
+		Console::out::processStart("Icon Pool", "Loading icons from " + directoryPath);
+		_load(directoryPath, false);
+	}
+
+	void loadAsync(const std::string& directoryPath)
+	{
+		Console::out::processStart("Icon Pool", "Queued loading of icons in " + directoryPath);
+		_load(directoryPath, true);
 	}
 
 	uint32_t get(const std::string& identifier)

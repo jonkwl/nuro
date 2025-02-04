@@ -133,7 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
-    <ClCompile Include="core\asset\asset_loader.cpp" />
+    <ClCompile Include="core\resource\resource_loader.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuizmo.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -216,8 +216,8 @@
     <ClCompile Include="src\ui\components\toggle_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\asset\asset.h" />
-    <ClInclude Include="core\asset\asset_loader.h" />
+    <ClInclude Include="core\resource\resource.h" />
+    <ClInclude Include="core\resource\resource_loader.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\ImGuizmo.h" />
