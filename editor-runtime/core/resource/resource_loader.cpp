@@ -75,7 +75,7 @@ void ResourceLoader::asyncWorker()
 
 		// Condition: Queue with tasks to load must not be empty
 		if (workerTasks.empty()) {
-			workerTasksAvailable.wait(lock);
+			workerTasksAvailable.wait(lock, [&]() { return !workerTasks.empty(); });
 		}
 
 		while (!workerTasks.empty()) {
@@ -98,7 +98,7 @@ void ResourceLoader::asyncWorker()
 			mainTasks.push(resource);
 
 			mainDispatchNext = true;
-			workerAwaitingDispatch.wait(lock);
+			workerAwaitingDispatch.wait(lock, [&]() { return !mainDispatchNext; });
 		}
 
 		// Clear worker state

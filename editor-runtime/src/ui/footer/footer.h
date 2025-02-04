@@ -9,9 +9,9 @@
 
 struct FooterStyle {
 
-	float height = 30.0f;
+	float height = 36.0f;
 	ImU32 backgroundColor = IM_COL32(30, 30, 30, 255);
-	ImVec2 padding = ImVec2(14.0f, 0.0f);
+	ImVec2 padding = ImVec2(22.0f, 0.0f);
 
 	ImFont* primaryFont = nullptr;
 	ImFont* secondaryFont = nullptr;

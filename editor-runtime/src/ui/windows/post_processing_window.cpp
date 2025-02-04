@@ -28,7 +28,6 @@ void PostProcessingWindow::render()
 
 		if (IMComponents::extendableSettings("Motion Blur", targetProfile.motionBlur.enabled, ICON_FA_PROJECTOR))
 		{
-
 			IMComponents::label("Camera Motion Blur Settings", EditorUI::getFonts().p_bold);
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 

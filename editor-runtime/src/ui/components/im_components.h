@@ -48,10 +48,15 @@ namespace IMComponents
 
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size);
 
+	// Begins a child and pushes fitting clip rect
 	void beginChild(ImVec2 size, ImVec2 position = ImGui::GetCursorScreenPos());
 
+	// Ends child and pops clip rect
 	void endChild();
 
-	// Draws a clickable caret background cirlce at the current cursor screen position and returns true if it was clicked
+	// Draws a clickable caret background cirlce at the given cursor screen position and returns true if it was clicked
 	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor);
+
+	// Draws a loading buffer at the current cursor position
+	void loadingBuffer(float radius, int thickness, const ImU32& color);
 };

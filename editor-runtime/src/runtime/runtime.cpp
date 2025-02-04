@@ -84,7 +84,7 @@ namespace Runtime {
 
 		// Load various editor icons
 		IconPool::createFallbackIconSync("../resources/icons/invalid.png");
-		IconPool::loadAsync("../resources/icons");
+		IconPool::loadSync("../resources/icons");
 
 		// Link default skybox
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);

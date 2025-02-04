@@ -1,5 +1,6 @@
 #include "im_components.h"
 
+#include <imgui_internal.h>
 #include <implot.h>
 #include <algorithm>
 #include <array>
@@ -498,6 +499,42 @@ namespace IMComponents {
 		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, position, EditorColor::text, icon);
 
 		return circleClicked;
+	}
+
+	void loadingBuffer(float radius, int thickness, const ImU32& color) {
+		// Fetch needed objects
+		ImDrawList& drawList = *ImGui::GetForegroundDrawList();
+		ImGuiContext& context = *ImGui::GetCurrentContext();
+
+		// Evaluate position and size
+		ImVec2 position = ImGui::GetCursorScreenPos();
+		ImVec2 size(radius * 2, radius * 2);
+
+		// Add rect item
+		const ImRect bb(position, ImVec2(position.x + size.x, position.y + size.y));
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, EditorUI::generateId());
+
+		// Clear draw list path
+		drawList.PathClear();
+
+		// Set amount of segments
+		int nSegments = 30;
+
+		// Evaluate constants
+		const int start = abs(ImSin(context.Time * 1.8f) * (nSegments - 5));
+		const float a_min = IM_PI * 2.0f * ((float) start) / (float)nSegments;
+		const float a_max = IM_PI * 2.0f * ((float)nSegments - 3) / (float)nSegments;
+		const ImVec2 center = ImVec2(position.x + radius, position.y + radius);
+
+		// Add each segments path
+		for (int i = 0; i < nSegments; i++) {
+			const float a = a_min + ((float) i / (float)nSegments) * (a_max - a_min);
+			drawList.PathLineTo(ImVec2(center.x + ImCos(a + context.Time * 8) * radius, center.y + ImSin(a + context.Time * 8) * radius));
+		}
+
+		// Draw paths
+		drawList.PathStroke(color, false, thickness);
 	}
 
 }
