@@ -13,6 +13,8 @@
 #include "../core/utils/iohandler.h"
 #include "../core/utils/string_helper.h"
 
+#include <iostream>
+
 Model::Model() : path(),
 meshData(),
 meshes(),
@@ -27,19 +29,18 @@ void Model::setSource(std::string _path)
 
 const Mesh* Model::queryMesh(uint32_t index)
 {
-	// Requested mesh is not existing in meshes (may be loaded later)
-	if (index >= meshes.size()) {
-		// Resize meshes to contain default mesh at given index
-		meshes.resize(index + 1);
+	// Requested mesh is not existing yet, create empty mesh
+	if (meshes.find(index) == meshes.end()) {
+		meshes[index] = Mesh();
 	}
 
 	// Return queried mesh
 	return &meshes[index];
 }
 
-const std::vector<Mesh>& Model::getMeshes()
+uint32_t Model::nLoadedMeshes() const
 {
-	return meshes;
+	return meshes.size();
 }
 
 Model::Metrics Model::getMetrics() const
@@ -49,7 +50,7 @@ Model::Metrics Model::getMetrics() const
 
 std::string Model::sourcePath()
 {
-	return std::string();
+	return path;
 }
 
 void Model::loadData()
@@ -90,13 +91,8 @@ void Model::dispatchGPU()
 	// Don't dispatch model if there is no data
 	if (meshData.empty()) return;
 
-	// Resize meshes if it doesn't have enough elements (e.g., from previous queryMesh() calls)
-	if (meshes.size() < meshData.size()) {
-		meshes.resize(meshData.size());
-	}
-
 	// Dispatch each mesh
-	for (int i = 0; i < meshData.size(); i++) {
+	for (uint32_t i = 0; i < meshData.size(); i++) {
 		// Get mesh data metrics
 		uint32_t nVertices = meshData[i].vertices.size();
 		uint32_t nIndices = meshData[i].indices.size();
@@ -142,6 +138,11 @@ void Model::dispatchGPU()
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		// Mesh is not existing yet, create empty mesh
+		if (meshes.find(i) == meshes.end()) {
+			meshes[i] = Mesh();
+		}
 
 		// Update mesh
 		meshes[i].setData(vao, vbo, ebo, nVertices, nIndices, materialIndex);

@@ -15,7 +15,8 @@ fpsUpdateTimer(0.0f)
 void DiagnosticsWindow::render()
 {
 	// Get fps
-	float fps = 1000000.0f / Profiler::getUs("render");
+	// float fps = 1000000.0f / Profiler::getUs("render");
+	float fps = Diagnostics::getFps();
 
 	ImGui::Begin(UIUtils::windowTitle("Diagnostics"), nullptr, EditorFlag::fixed);
 

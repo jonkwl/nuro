@@ -1,10 +1,8 @@
-
 #include "game_logic.h"
 
 #include "../core/engine.h"
 
-#include <thread>
-#include <chrono>
+#include <iostream>
 
 Entity cameraEntity;
 Entity kinematicEntity;
@@ -19,12 +17,12 @@ void _example() {
 	// Models
 	Model* cubeModel = new Model();
 	cubeModel->setSource("../resources/primitives/cube.fbx");
-	loader.createSync(cubeModel);
+	loader.createAsync(cubeModel);
 	const Mesh* cubeMesh = cubeModel->queryMesh(0);
 
 	Model* sphereModel = new Model();
 	sphereModel->setSource("../resources/primitives/sphere.fbx");
-	loader.createSync(sphereModel);
+	loader.createAsync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
 	// Standard Material
@@ -153,6 +151,17 @@ void _example() {
 	cube.transform.scale = glm::vec3(5.0f);
 	cube.add<MeshRendererComponent>(cubeMesh, cubeMaterial);
 
+	// Big model async loading example
+	Model* dragonModel = new Model();
+	dragonModel->setSource("./src/example/assets/models/dragon.fbx");
+	loader.createAsync(dragonModel);
+
+	for (uint32_t i = 0; i < 26; i++) {
+		EntityContainer dragon("Dragon Part " + std::to_string(i + 1), ECS::createEntity());
+		dragon.transform.position = glm::vec3(0.0f, 20.0f, 20.0f);
+		dragon.transform.scale = glm::vec3(10.0f);
+		dragon.add<MeshRendererComponent>(dragonModel->queryMesh(i), cubeMaterial);
+	}
 }
 
 void gameSetup() {

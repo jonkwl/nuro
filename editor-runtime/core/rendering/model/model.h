@@ -3,6 +3,7 @@
 #include <string>
 #include <glm.hpp>
 #include <cstdint>
+#include <unordered_map>
 
 #include "../core/resource/resource.h"
 #include "../core/rendering/model/mesh.h"
@@ -53,8 +54,8 @@ public:
 	// Returns models mesh at given index or creates an empty mesh at that index
 	const Mesh* queryMesh(uint32_t index);
 
-	// Returns all models meshes
-	const std::vector<Mesh>& getMeshes();
+	// Returns amount of loaded and dispatched meshes
+	uint32_t nLoadedMeshes() const;
 
 	// Returns models metrics
 	Metrics getMetrics() const;
@@ -116,7 +117,7 @@ private:
 	std::vector<MeshData> meshData;
 
 	// Final dispatched meshes
-	std::vector<Mesh> meshes;
+	std::unordered_map<uint32_t, Mesh> meshes;
 
 	//
 	// MODEL METRICS
