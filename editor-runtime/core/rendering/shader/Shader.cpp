@@ -6,7 +6,7 @@
 #include "../../utils/console.h"
 #include "../../utils/iohandler.h"
 
-Shader::Shader() : path(""),
+Shader::Shader() : path(),
 data(),
 id(0),
 uniforms()
@@ -80,6 +80,10 @@ void Shader::releaseData()
 
 void Shader::dispatchGPU()
 {
+	// Don't dispatch shader if there is no data
+	if (data.vertexSource.empty() || data.fragmentSource.empty()) return;
+
+	// Shader backend ids
 	uint32_t vertexShader, fragmentShader;
 
 	// Compile vertex shader source

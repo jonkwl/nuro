@@ -7,15 +7,11 @@
 
 #include "../core/rendering/model/mesh.h"
 
-class Model
+#include "../core/resource/resource.h"
+
+class Model : public Resource
 {
 public:
-	// Loads and returns the model from provided path
-	static Model* load(std::string path);
-
-	// Destroys the model and all of its meshes
-	void destroy();
-
 	struct Metrics
 	{
 		// Total number of meshes in model
@@ -46,6 +42,12 @@ public:
 		float furthest = 0.0f;
 	};
 
+public:
+	Model();
+
+	// Sets the path of the models source
+	void setSource(std::string path);
+
 	// Returns models metrics
 	Metrics getMetrics() const;
 
@@ -55,20 +57,64 @@ public:
 	// Returns all meshes from model
 	const std::vector<Mesh>& getMeshes();
 
-private:
-	explicit Model(std::string path);
+	std::string sourcePath() override;
 
-	void resolveModel(std::string path);
+protected:
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+
+private:
+	struct VertexData
+	{
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 uv;
+		glm::vec3 tangent;
+		glm::vec3 bitangent;
+	};
+
+	struct MeshData {
+		std::vector<VertexData> vertices;
+		std::vector<uint32_t> indices;
+		uint32_t materialIndex;
+
+		explicit MeshData(std::vector<VertexData> vertices, std::vector<uint32_t> indices, uint32_t materialIndex) : vertices(vertices), indices(indices), materialIndex(materialIndex) {};
+	};
+
+private:
+	//
+	// MODEL CREATION
+	//
 
 	void processNode(aiNode* node, const aiScene* scene);
-	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	MeshData processMesh(aiMesh* mesh, const aiScene* scene);
 
+	void dispatchMesh(MeshData meshData);
+
+	//
+	// MODEL DATA
+	//
+
+	// Path of models source
+	std::string path;
+
+	// Intermediate temporary representation of mesh data
+	std::vector<MeshData> data;
+
+	// Final dispatched meshes
 	std::vector<Mesh> meshes;
 
-	std::vector<aiMaterial*> modelMaterials;
+	//
+	// MODEL METRICS
+	//
 
-	// Model metrics
+	// Models metrics
 	Metrics metrics;
-	void addMeshToMetrics(std::vector<Mesh::VertexData> vertices); // Called for each of the models meshes
-	void finalizeMetrics(); // Called after all meshes were added to metrics
+
+	// Adds a mesh to the metrics using its vertices
+	void addMeshToMetrics(const std::vector<VertexData>& vertices);
+	
+	// Finalizes the metrics after all meshes have been added
+	void finalizeMetrics();
 };

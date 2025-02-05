@@ -10,7 +10,7 @@
 class Shader : public Resource
 {
 public:
-	explicit Shader();
+	Shader();
 
 	std::string sourcePath() override;
 

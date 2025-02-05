@@ -178,10 +178,48 @@ namespace Runtime {
 		config.menubarVisible = false;
 		config.vsync = true;
 		config.resizeable = false;
+		config.visible = false;
 
 		// Create application context instance
 		ApplicationContext::create(config);
 
+	}
+
+	void _launchEditor() {
+		// Print welcome
+		Console::out::welcome();
+
+		// Setup editor ui
+		EditorUI::setup();
+
+		// Show editor window
+		ApplicationContext::setResizeable(true);
+		ApplicationContext::maximizeWindow();
+		ApplicationContext::setVisible(true);
+	}
+
+	void _nextFrame() {
+		// START NEW APPLICATION CONTEXT FRAME
+		ApplicationContext::nextFrame();
+
+		// CLEAR FRAME COLOR
+		glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// UPDATE GAME IF GAME IS RUNNING
+		if (gGameState == GameState::GAME_RUNNING) _stepGame();
+
+		// RENDER NEXT FRAME
+		_renderShadowsGlobal();
+		gSceneViewPipeline.render();
+		gGameViewPipeline.render();
+		gPreviewPipeline.render();
+
+		// RENDER EDITOR
+		_renderEditor();
+
+		// END CURRENT FRAME
+		ApplicationContext::endFrame();
 	}
 
 	//
@@ -202,10 +240,7 @@ namespace Runtime {
 		_createResources();
 
 		// LAUNCH EDITOR
-		Console::out::welcome();
-		EditorUI::setup();
-		ApplicationContext::setResizeable(true);
-		ApplicationContext::maximizeWindow();
+		_launchEditor();
 
 		// GAME SETUP
 		gameSetup();
@@ -213,27 +248,7 @@ namespace Runtime {
 
 		while (ApplicationContext::running())
 		{
-			// START NEW APPLICATION CONTEXT FRAME
-			ApplicationContext::nextFrame();
-
-			// CLEAR FRAME COLOR
-			glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			// UPDATE GAME IF GAME IS RUNNING
-			if (gGameState == GameState::GAME_RUNNING) _stepGame();
-
-			// RENDER NEXT FRAME
-			_renderShadowsGlobal();
-			gSceneViewPipeline.render();
-			gGameViewPipeline.render();
-			gPreviewPipeline.render();
-
-			// RENDER EDITOR
-			_renderEditor();
-
-			// END CURRENT FRAME
-			ApplicationContext::endFrame();
+			_nextFrame();
 		}
 
 		// Exit application

@@ -12,17 +12,16 @@
 #include "../core/utils/iohandler.h"
 #include "../core/utils/string_helper.h"
 
-Model* Model::load(std::string path)
+Model::Model() : path(),
+data(),
+meshes(),
+metrics()
 {
-	return new Model(path);
 }
 
-void Model::destroy()
+void Model::setSource(std::string _path)
 {
-	// Destroy all meshes
-	for (auto mesh : meshes) {
-		mesh.destroy();
-	}
+	path = _path;
 }
 
 Model::Metrics Model::getMetrics() const
@@ -40,47 +39,98 @@ const std::vector<Mesh>& Model::getMeshes()
 	return meshes;
 }
 
-Model::Model(std::string path) : meshes(),
-modelMaterials(),
-metrics()
+std::string Model::sourcePath()
 {
-	resolveModel(path);
+	return std::string();
 }
 
-void Model::resolveModel(std::string path)
+void Model::loadData()
 {
-	std::string filename = IOHandler::getFilename(path);
-
-	Console::out::processStart("Model", "Loading model '" + filename + "'...");
-
-	// Set model import flags
-	uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
-
 	// Read file
 	Assimp::Importer import;
+	const uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 	const aiScene* scene = import.ReadFile(path, importSettings);
 
-	// Make sure model is valid
+	// Validate model
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		Console::out::warning("Model", "Couldn't load model '" + filename + "'!", import.GetErrorString());
+		Console::out::warning("Model", "Couldn't load model '" + IOHandler::getFilename(path) + "'", import.GetErrorString());
 		return;
 	}
 
-	// Add all models materials
-	modelMaterials.reserve(scene->mNumMaterials);
+	// Reserve materials
+	/*modelMaterials.reserve(scene->mNumMaterials);
 	for (uint32_t i = 0; i < static_cast<uint32_t>(scene->mNumMaterials); i++)
 	{
 		modelMaterials.push_back(scene->mMaterials[i]);
-	}
+	}*/
 
-	// Process each model node, adding each mesh
+	// Initiate recursive processing of model
 	processNode(scene->mRootNode, scene);
 
 	// Finalize the metrics
 	finalizeMetrics();
+}
 
-	Console::out::processDone("Model", "Built model '" + filename + "'");
+void Model::releaseData()
+{
+	data.clear();
+}
+
+void Model::dispatchGPU()
+{
+	// Don't dispatch model if there is no data
+	if (data.empty()) return;
+
+	// Dispatch each mesh
+	for (MeshData meshData : data) {
+		uint32_t vao, vbo, ebo;
+
+		uint32_t nVertices = meshData.vertices.size();
+		uint32_t nIndices = meshData.indices.size();
+		uint32_t materialIndex = meshData.materialIndex;
+
+		// Generate VAO, VBO and EBO
+		glGenVertexArrays(1, &vao);
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &ebo);
+
+		// Bind VAO
+		glBindVertexArray(vao);
+
+		// Bind VBO, allocate its memory send vertex data
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, nVertices * sizeof(VertexData), meshData.vertices.data(), GL_STATIC_DRAW);
+
+		// Bind EBO, allocate its memory and send indice data
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint32_t), meshData.indices.data(), GL_STATIC_DRAW);
+
+		// Set attributes for VAO
+		// Vertex position attribute (location = 0)
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, position));
+		// Normal attribute (location = 1)
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));
+		// Texture coordinates attribute (location = 2)
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));
+		// Tangent attribute (location = 3)
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, tangent));
+		// Bitangent attribute (location = 3)
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, bitangent));
+
+		// Unbind VAO, ABO and EBO
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		// Create and add mesh
+		meshes.push_back(Mesh(vao, vbo, ebo, nVertices, nIndices, materialIndex));
+	}
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)
@@ -88,7 +138,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene));
+		data.push_back(processMesh(mesh, scene));
 	}
 	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
@@ -96,18 +146,20 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	}
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Model::MeshData Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-	Console::out::processInfo("- Building mesh " + std::to_string(meshes.size() + 1));
+	//
+	// IMPLEMENT MOVE SEMANTICS HERE / CODE CAN BE OPTIMIZED!
+	//
 
 	// Initialize mesh buffers
-	std::vector<Mesh::VertexData> vertices;
+	std::vector<VertexData> vertices;
 	std::vector<uint32_t> indices;
 	uint32_t materialIndex;
 
 	for (uint32_t i = 0; i < mesh->mNumVertices; i++)
 	{
-		Mesh::VertexData vertex;
+		VertexData vertex;
 
 		// Define unconditional vertex data
 		glm::vec3 position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
@@ -158,16 +210,17 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	// Add mesh to metrics
 	addMeshToMetrics(vertices);
 
-	return Mesh(vertices, indices, materialIndex);
+	// Construct and return mesh data
+	return MeshData(vertices, indices, materialIndex);
 }
 
-void Model::addMeshToMetrics(std::vector<Mesh::VertexData> vertices)
+void Model::addMeshToMetrics(const std::vector<VertexData>& vertices)
 {
 	// Loop through all mesh vertices
 	for (int32_t i = 0; i < vertices.size(); i++)
 	{
 		// Get current vertex
-		Mesh::VertexData vertex = vertices[i];
+		VertexData vertex = vertices[i];
 
 		// Update min and max point
 		metrics.minPoint = glm::min(metrics.minPoint, vertex.position);

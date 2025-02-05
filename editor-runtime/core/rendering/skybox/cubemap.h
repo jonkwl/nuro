@@ -41,7 +41,7 @@ private:
 		std::vector<std::string> paths;
 	};
 
-	struct Face
+	struct FaceData
 	{
 		std::vector<unsigned char> data;
 		int32_t width;
@@ -49,7 +49,7 @@ private:
 		int32_t channels;
 	};
 
-	struct Image
+	struct ImageData
 	{
 		unsigned char* data;
 		int32_t width;
@@ -61,14 +61,14 @@ private:
 	// Cubemap source
 	Source source;
 
-	// All loaded cubemap faces
-	std::vector<Face> faces;
+	// Cubemap data
+	std::vector<FaceData> data;
 
 	// Backend id of cubemap texture
 	uint32_t id;
 
 	// Loads given images data
-	Image loadImageData(std::string path);
+	ImageData loadImageData(std::string path);
 
 	// Loads a cubemap by multiple faces in one file
 	void loadCrossCubemap(std::string path);

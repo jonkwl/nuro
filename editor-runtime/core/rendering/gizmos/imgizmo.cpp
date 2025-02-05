@@ -4,16 +4,16 @@
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 
-#include "../core/rendering/model/model.h"
-#include "../core/rendering/transformation/transformation.h"
-#include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/shader/shader.h"
-#include "../core/rendering/model/mesh.h"
 #include "../core/utils/console.h"
+#include "../core/rendering/model/mesh.h"
+#include "../core/rendering/model/model.h"
+#include "../core/rendering/shader/shader.h"
+#include "../core/context/application_context.h"
+#include "../core/rendering/shader/shader_pool.h"
+#include "../core/rendering/transformation/transformation.h"
 
 // Global gizmo resources
 IMGizmo::StaticData IMGizmo::staticData;
-
 
 IMGizmo::IMGizmo() : color(glm::vec3(1.0f)),
 opacity(0.4f),
@@ -28,12 +28,25 @@ void IMGizmo::create()
 	// Load all static data if not loaded already
 	if (!staticData.loaded) {
 
+		ResourceLoader& loader = ApplicationContext::getResourceLoader();
+
 		staticData.fillShader = ShaderPool::get("gizmo_fill");
 		staticData.iconShader = ShaderPool::get("gizmo_icon");
 
-		staticData.planeMesh = Model::load("../resources/primitives/plane.fbx")->getMesh(0);
-		staticData.boxMesh = createWireframeBox(); // tmp solution for drawing line based meshes, move to shaders later
-		staticData.sphereMesh = Model::load("../resources/primitives/sphere.fbx")->getMesh(0);
+		Model* planeModel = new Model();
+		planeModel->setSource("../resources/primitives/plane.fbx");
+		loader.createSync(planeModel);
+		staticData.planeMesh = planeModel->getMesh(0);
+
+		Model* boxModel = new Model();
+		boxModel->setSource("../resources/primitives/cube.fbx");
+		loader.createSync(boxModel);
+		staticData.boxMesh = boxModel->getMesh(0);
+
+		Model* sphereModel = new Model();
+		sphereModel->setSource("../resources/primitives/sphere.fbx");
+		loader.createSync(sphereModel);
+		staticData.sphereMesh = sphereModel->getMesh(0);
 	}
 }
 
@@ -311,11 +324,11 @@ float IMGizmo::get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3
 	return alpha;
 }
 
-const Mesh* IMGizmo::createWireframeBox() // tmp
+// tmp
+const Mesh* IMGizmo::createWireframeBox()
 {
-
-#define zeroVec2 glm::vec2(0.0f)
-#define zeroVec3 glm::vec3(0.0f)
+	/* const glm::vec2 zeroVec2 = glm::vec2(0.0f);
+	const glm::vec3 zeroVec3 = glm::vec3(0.0f);
 
 	// Define the 8 vertices of a unit cube (centered at origin)
 	std::vector<Mesh::VertexData> vertices = {
@@ -337,5 +350,7 @@ const Mesh* IMGizmo::createWireframeBox() // tmp
 	};
 
 	// Create and return the Mesh with materialIndex = 0
-	return new Mesh(vertices, indices, 0);
+	return new Mesh(vertices, indices, 0); */
+
+	return nullptr;
 }

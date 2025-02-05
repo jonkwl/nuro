@@ -1,3 +1,4 @@
+
 #include "game_logic.h"
 
 #include "../core/engine.h"
@@ -12,12 +13,18 @@ Entity planeEntity;
 
 void _example() {
 
-	// Models
-	Model* cubeModel = Model::load("../resources/primitives/cube.fbx");
-	Model* sphereModel = Model::load("../resources/primitives/sphere.fbx");
+	// Get loader
+	ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
-	// Meshes
+	// Models
+	Model* cubeModel = new Model();
+	cubeModel->setSource("../resources/primitives/cube.fbx");
+	loader.createSync(cubeModel);
 	const Mesh* cubeMesh = cubeModel->getMesh(0);
+
+	Model* sphereModel = new Model();
+	sphereModel->setSource("../resources/primitives/sphere.fbx");
+	loader.createSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->getMesh(0);
 
 	// Standard Material
@@ -109,8 +116,6 @@ void _example() {
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	// Async asset loading test
-	ResourceLoader& loader = ApplicationContext::getResourceLoader();
-
 	Texture* albedo = new Texture();
 	albedo->setSource(TextureType::ALBEDO, "./src/example/assets/textures/sci-fi/albedo.jpg");
 	loader.createAsync(albedo);

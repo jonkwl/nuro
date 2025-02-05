@@ -61,12 +61,18 @@ void Texture::loadData()
 
 void Texture::releaseData()
 {
+	// Don't release data if there is none
+	if (!data) return;
+
 	// Free memory allocated for image data
 	stbi_image_free(data);
 }
 
 void Texture::dispatchGPU()
 {
+	// Don't dispatch texture if there is no data
+	if (!data) return;
+
 	// Generate texture
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);

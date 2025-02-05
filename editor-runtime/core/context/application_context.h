@@ -21,6 +21,7 @@ namespace ApplicationContext
 		bool menubarVisible = true;
 		bool vsync = true;
 		bool resizeable = true;
+		bool visible = true;
 	};
 
 	// Creates application context with given configuration
@@ -61,6 +62,9 @@ namespace ApplicationContext
 
 	// Updates the vsync configuration option
 	void setVSync(bool value);
+
+	// Shows or hides the window
+	void setVisible(bool value);
 
 	// Sets position of window on the screen
 	void setPosition(glm::ivec2 position);

@@ -26,7 +26,7 @@ protected:
 	// Atomic state of the resource
 	std::atomic<ResourceState> state;
 
-	// Loads assets data from I/O
+	// Loads the resources data from I/O
 	virtual void loadData() = 0;
 
 	// Releases previously loaded data

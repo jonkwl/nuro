@@ -85,6 +85,11 @@ namespace ApplicationContext {
 			gLastWindowSize = configuration.windowSize;
 		}
 
+		// Hide window initially if configured
+		if (!gConfiguration.visible) {
+			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		}
+
 		// Create window
 		gWindow = glfwCreateWindow(configuration.windowSize.x, configuration.windowSize.y, configuration.windowTitle.c_str(), nullptr, nullptr);
 
@@ -113,6 +118,8 @@ namespace ApplicationContext {
 
 		// Set resizeable
 		setResizeable(configuration.resizeable);
+
+		glfwHideWindow(gWindow);
 
 		//
 		// SETUP OTHER SYSTEMS
@@ -273,6 +280,20 @@ namespace ApplicationContext {
 
 		// Sync config
 		gConfiguration.vsync = value;
+	}
+
+	void setVisible(bool value)
+	{
+		// Show or hide window based on value
+		if (value) {
+			glfwShowWindow(gWindow);
+		}
+		else {
+			glfwHideWindow(gWindow);
+		}
+
+		// Sync config
+		gConfiguration.visible = value;
 	}
 
 	void setPosition(glm::ivec2 position)

@@ -7,7 +7,7 @@
 #include "../core/utils/iohandler.h"
 
 Cubemap::Cubemap() : source(),
-faces(),
+data(),
 id(0)
 {
 }
@@ -62,17 +62,20 @@ void Cubemap::loadData()
 
 void Cubemap::releaseData()
 {
-	faces.clear();
+	data.clear();
 }
 
 void Cubemap::dispatchGPU()
 {
+	// Don't dispatch cubemap if there is no data
+	if (data.empty()) return;
+
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
 
-	for (int32_t i = 0; i < faces.size(); i++)
+	for (int32_t i = 0; i < data.size(); i++)
 	{
-		Face face = faces[i];
+		FaceData face = data[i];
 
 		GLenum format = GL_RGB;
 		if (face.channels == 4)
@@ -92,7 +95,7 @@ void Cubemap::dispatchGPU()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-Cubemap::Image Cubemap::loadImageData(std::string path)
+Cubemap::ImageData Cubemap::loadImageData(std::string path)
 {
 	stbi_set_flip_vertically_on_load(false);
 
@@ -101,10 +104,10 @@ Cubemap::Image Cubemap::loadImageData(std::string path)
 	if (!data)
 	{
 		Console::out::warning("Cubemap", "Failed to load cubemap at " + path);
-		return Image();
+		return ImageData();
 	}
 
-	return Image{ data, width, height, channels };
+	return ImageData{ data, width, height, channels };
 }
 
 void Cubemap::loadCrossCubemap(std::string path)
@@ -114,14 +117,14 @@ void Cubemap::loadCrossCubemap(std::string path)
 	//
 	
 	// Load temporary image data
-	Image image = loadImageData(path);
+	ImageData image = loadImageData(path);
 
 	// Calculate dimensions of each face (assuming default 4x3 layout)
 	int32_t faceWidth = image.width / 4;
 	int32_t faceHeight = image.height / 3;
 
-	// Resize faces vector to hold 6 faces
-	faces.resize(6);
+	// Resize data vector to hold 6 faces
+	data.resize(6);
 
 	// Define offsets for each face
 	std::vector<std::pair<int32_t, int32_t>> offsets = {
@@ -140,10 +143,10 @@ void Cubemap::loadCrossCubemap(std::string path)
 		int32_t yOffset = offsets[i].second;
 
 		// Allocate memory for face data
-		faces[i].data.resize(faceWidth * faceHeight * image.channels);
-		faces[i].width = faceWidth;
-		faces[i].height = faceHeight;
-		faces[i].channels = image.channels;
+		data[i].data.resize(faceWidth * faceHeight * image.channels);
+		data[i].width = faceWidth;
+		data[i].height = faceHeight;
+		data[i].channels = image.channels;
 
 		// Copy pixel data for each face
 		for (int32_t y = 0; y < faceHeight; ++y)
@@ -152,7 +155,7 @@ void Cubemap::loadCrossCubemap(std::string path)
 			{
 				int32_t srcIndex = ((yOffset + y) * image.width + (xOffset + x)) * image.channels;
 				int32_t dstIndex = (y * faceWidth + x) * image.channels;
-				memcpy(&faces[i].data[dstIndex], &image.data[srcIndex], image.channels);
+				memcpy(&data[i].data[dstIndex], &image.data[srcIndex], image.channels);
 			}
 		}
 	}
@@ -168,18 +171,18 @@ void Cubemap::loadIndividualFace(std::string path)
 	//
 
 	// Load temporary image data
-	Image image = loadImageData(path);
+	ImageData image = loadImageData(path);
 
 	// Initialize face data
 	std::vector<unsigned char> faceData(image.data, image.data + (image.width * image.height * image.channels));
 
 	// Create face
-	Face face;
+	FaceData face;
 	face.data = faceData;
 	face.width = image.width;
 	face.height = image.height;
 	face.channels = image.channels;
-	faces.push_back(face);
+	data.push_back(face);
 
 	// Free temporary image data
 	stbi_image_free(image.data);
