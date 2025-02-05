@@ -5,22 +5,23 @@
 #include <string>
 #include <unordered_map>
 
-class Shader
+#include "../core/resource/resource.h"
+
+class Shader : public Resource
 {
 public:
-	explicit Shader(const std::string& name);
+	explicit Shader();
 
-	bool compile(const char* vertexSource, const char* fragmentSource);
+	std::string sourcePath() override;
 
-	void bind();
+	// Sets the path of the shaders source
+	void setSource(std::string path);
 
-	inline uint32_t getId() const { 
-		return id; 
-	}
+	// Binds the shader program
+	void bind() const;
 
-	inline const std::string& getName() const { 
-		return name; 
-	}
+	// Returns the shader programs backend id
+	uint32_t getId() const;
 
 	void setBool(const std::string& identifier, bool value);
 	void setInt(const std::string& identifier, int32_t value);
@@ -31,12 +32,32 @@ public:
 	void setMatrix3(const std::string& identifier, glm::mat3 value);
 	void setMatrix4(const std::string& identifier, glm::mat4 value);
 
+protected:
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+
 private:
+	struct Data {
+		std::string vertexSource;
+		std::string fragmentSource;
+	};
+
+	// Path of shader source
+	std::string path;
+
+	// Shader source data
+	Data data;
+
+	// Shader program backend id
 	uint32_t id;
-	std::string name;
+
+	// Shader program uniform location cache
 	std::unordered_map<std::string, int32_t> uniforms;
 
+private:
 	int32_t getUniformLocation(const std::string& identifier);
+
 	bool shaderCompiled(const char* type, int32_t shader);
 	bool programLinked(int32_t program);
 };

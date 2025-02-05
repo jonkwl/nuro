@@ -29,6 +29,16 @@ uint32_t Cubemap::getId() const
 	return id;
 }
 
+std::string Cubemap::sourcePath()
+{
+	if (source.paths.size() > 0) {
+		return IOHandler::getFilename(source.paths[0]);
+	}
+	else {
+		return "";
+	}
+}
+
 void Cubemap::loadData()
 {
 	switch (source.type) {
@@ -80,16 +90,6 @@ void Cubemap::dispatchGPU()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-}
-
-std::string Cubemap::sourcePath()
-{
-	if (source.paths.size() > 0) {
-		return IOHandler::getFilename(source.paths[0]);
-	}
-	else {
-		return "";
-	}
 }
 
 Cubemap::Image Cubemap::loadImageData(std::string path)

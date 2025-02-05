@@ -7,12 +7,15 @@ class Shader;
 
 namespace ShaderPool
 {
-	// Loads and compiles all shaders within the given paths (each folder within a given path is treated as a shader and expected to contain the shader source files)
-	void load(const std::vector<std::string>& path);
+	// Loads all shaders from the given directory synchronously
+	void loadAllSync(const std::string& directory);
 
-	// Returns a global empty default shader
+	// Loads all shaders from the given directory asynchronously
+	void loadAllAsync(const std::string& directory);
+
+	// Returns the global empty default shader
 	Shader* empty();
 
-	// Returns a loaded shader by its name
-	Shader* get(const std::string& name);
+	// Returns a loaded shader by the given identifier
+	Shader* get(const std::string& identifier);
 };

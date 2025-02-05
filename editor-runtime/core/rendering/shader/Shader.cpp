@@ -6,46 +6,31 @@
 #include "../../utils/console.h"
 #include "../../utils/iohandler.h"
 
-Shader::Shader(const std::string& _name) : id(0),
-name(name),
+Shader::Shader() : path(""),
+data(),
+id(0),
 uniforms()
 {
-	name = _name;
 }
 
-bool Shader::compile(const char* vertexSource, const char* fragmentSource)
+std::string Shader::sourcePath()
 {
-	uint32_t vertex, fragment;
-
-	// Compile vertex shader source
-	vertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex, 1, &vertexSource, nullptr);
-	glCompileShader(vertex);
-	if (!shaderCompiled("vertex", vertex)) return false;
-
-	// Compile fragment shader source
-	fragment = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment, 1, &fragmentSource, nullptr);
-	glCompileShader(fragment);
-	if (!shaderCompiled("fragment", fragment)) return false;
-
-	// Create and link shader program
-	id = glCreateProgram();
-	glAttachShader(id, vertex);
-	glAttachShader(id, fragment);
-	glLinkProgram(id);
-	if (!programLinked(id)) return false;
-
-	// Delete shader sources
-	glDeleteShader(vertex);
-	glDeleteShader(fragment);
-
-	return true;
+	return path;
 }
 
-void Shader::bind()
+void Shader::setSource(std::string _path)
+{
+	path = _path;
+}
+
+void Shader::bind() const
 {
 	glUseProgram(id);
+}
+
+uint32_t Shader::getId() const
+{
+	return id;
 }
 
 void Shader::setBool(const std::string& identifier, bool value)
@@ -79,6 +64,48 @@ void Shader::setMatrix3(const std::string& identifier, glm::mat3 value)
 void Shader::setMatrix4(const std::string& identifier, glm::mat4 value)
 {
 	glUniformMatrix4fv(getUniformLocation(identifier), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::loadData()
+{
+	data.vertexSource = IOHandler::readFile(path + "/.vert");
+	data.fragmentSource = IOHandler::readFile(path + "/.frag");
+}
+
+void Shader::releaseData()
+{
+	data.vertexSource = "";
+	data.fragmentSource = "";
+}
+
+void Shader::dispatchGPU()
+{
+	uint32_t vertexShader, fragmentShader;
+
+	// Compile vertex shader source
+	const char* vertexSource = data.vertexSource.c_str();
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
+	glCompileShader(vertexShader);
+	if (!shaderCompiled("vertex", vertexShader)) return;
+
+	// Compile fragment shader source
+	const char* fragmentSource = data.fragmentSource.c_str();
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
+	glCompileShader(fragmentShader);
+	if (!shaderCompiled("fragment", fragmentShader)) return;
+
+	// Create and link shader program
+	id = glCreateProgram();
+	glAttachShader(id, vertexShader);
+	glAttachShader(id, fragmentShader);
+	glLinkProgram(id);
+	if (!programLinked(id)) return;
+
+	// Delete shader sources
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 }
 
 int32_t Shader::getUniformLocation(const std::string& identifier)

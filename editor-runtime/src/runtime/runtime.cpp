@@ -68,13 +68,11 @@ namespace Runtime {
 	void _loadDependencies() {
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
-		// Loading all shaders
-		std::vector<std::string> shader_paths = {
-			"../resources/shaders/materials",
-			"../resources/shaders/postprocessing",
-			"../resources/shaders/gizmo",
-			"../resources/shaders/passes" };
-		ShaderPool::load(shader_paths);
+		// Load shaders
+		ShaderPool::loadAllSync("../resources/shaders/materials");
+		ShaderPool::loadAllSync("../resources/shaders/postprocessing");
+		ShaderPool::loadAllSync("../resources/shaders/gizmo");
+		ShaderPool::loadAllSync("../resources/shaders/passes");
 
 		// Create default texture
 		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");
@@ -83,7 +81,7 @@ namespace Runtime {
 
 		// Load various editor icons
 		IconPool::createFallbackIconSync("../resources/icons/invalid.png");
-		IconPool::loadSync("../resources/icons");
+		IconPool::loadAllSync("../resources/icons");
 
 		// Create default cubemap
 		gDefaultCubemap->setSource_Cross("../resources/skybox/default/default_night.png");
@@ -91,7 +89,7 @@ namespace Runtime {
 
 		// Create default skybox
 		gDefaultSkybox.setCubemap(gDefaultCubemap);
-		gDefaultSkybox.createSync();
+		gDefaultSkybox.create();
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 	}
 

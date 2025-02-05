@@ -26,7 +26,7 @@ class Texture : public Resource
 public:
 	Texture();
 
-	// Sets the textures type and source path
+	// Sets the textures type and path of texture source
 	void setSource(TextureType type, const std::string& path);
 
 	// Returns the textures backend id
@@ -35,10 +35,12 @@ public:
 	// Sets the given texture backend id to be the default backend id for new textures
 	static void setDefaultTexture(uint32_t textureId);
 
+	std::string sourcePath() override;
+
+protected:
 	void loadData() override;
 	void releaseData() override;
 	void dispatchGPU() override;
-	std::string sourcePath() override;
 
 private:
 	// Default texture fallback

@@ -15,16 +15,20 @@ namespace IconPool {
 	std::unordered_map<std::string, Texture*> gIcons;
 	Texture* gInvalidIcon = new Texture();
 
-	void _load(const std::string& directoryPath, bool async)
+	void _loadAll(const std::string& directory, bool async)
 	{
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 		uint32_t nLoaded = 0;
 
-		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directoryPath, gValidExtensions);
+		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directory, gValidExtensions);
 		for (const auto& file : files) {
-
-			// Get icon identifier and texture type
+			// Get icon identifier
 			std::string identifier = IOHandler::getFilenameRaw(file);
+
+			// Skip icon creation if it already exists
+			if (gIcons.find(identifier) != gIcons.end()) continue;
+
+			// Get icon texture type
 			TextureType type = IOHandler::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
 			// Insert new icon
@@ -53,16 +57,16 @@ namespace IconPool {
 		ApplicationContext::getResourceLoader().createSync(gInvalidIcon);
 	}
 
-	void loadSync(const std::string& directoryPath)
+	void loadAllSync(const std::string& directory)
 	{
-		Console::out::processStart("Icon Pool", "Loading icons from " + directoryPath);
-		_load(directoryPath, false);
+		Console::out::processStart("Icon Pool", "Loading icons from '" + directory + "'");
+		_loadAll(directory, false);
 	}
 
-	void loadAsync(const std::string& directoryPath)
+	void loadAllAsync(const std::string& directory)
 	{
-		Console::out::processStart("Icon Pool", "Queued loading of icons in " + directoryPath);
-		_load(directoryPath, true);
+		Console::out::processStart("Icon Pool", "Queued loading icons in '" + directory + "'");
+		_loadAll(directory, true);
 	}
 
 	uint32_t get(const std::string& identifier)

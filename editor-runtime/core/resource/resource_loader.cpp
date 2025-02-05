@@ -25,16 +25,23 @@ ResourceLoader::WorkerState ResourceLoader::readWorkerState() const
 
 void ResourceLoader::createSync(Resource* resource)
 {
+	// Load resources data
 	resource->loadData();
+
+	// Dispatch resource to gpu
 	resource->dispatchGPU();
+
+	// Release resources data
 	resource->releaseData();
 }
 
 void ResourceLoader::createAsync(Resource* resource)
 {
 	// Add task to load tasks queue
-	// Check: Possible race condition on the worker tasks queue
-	workerTasks.push(resource);
+	workerTasks.push(resource); // Possible race condition on the worker tasks queue
+
+	// Update resources state
+	resource->state = ResourceState::QUEUED;
 
 	// Update worker state
 	workerTasksPending++;
@@ -55,9 +62,17 @@ void ResourceLoader::dispatchNext()
 	
 	// Dispatch next resource in queue (only one per frame to prevent heavy main thread blocking)
 	if (!mainTasks.empty()) {
-		Resource* task = mainTasks.front();
-		task->dispatchGPU();
-		task->releaseData();
+		// Fetch resource to be dispatched
+		Resource* resource = mainTasks.front();
+
+		// Dispatch resource and release its data
+		resource->dispatchGPU();
+		resource->releaseData();
+
+		// Update resources state
+		resource->state = ResourceState::READY;
+
+		// Pop resource from queue safely
 		popSafe(mainTasks);
 	}
 
@@ -84,6 +99,9 @@ void ResourceLoader::asyncWorker()
 		while (!workerTasks.empty()) {
 			// Fetch resource to be loaded
 			Resource* resource = workerTasks.front();
+
+			// Update resources state
+			resource->state = ResourceState::CREATING;
 
 			// Sync worker state
 			workerTasksPending = workerTasks.size();

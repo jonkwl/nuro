@@ -1,3 +1,4 @@
+
 #include "shader_pool.h"
 
 #include <unordered_map>
@@ -5,54 +6,63 @@
 #include "../core/utils/console.h"
 #include "../core/utils/iohandler.h"
 #include "../core/rendering/shader/shader.h"
+#include "../core/context/application_context.h"
+
+#include <thread>
+#include <chrono>
 
 namespace ShaderPool {
 
-	Shader* gEmpty = new Shader("empty");
+	Shader* gEmpty = new Shader();
 	std::unordered_map<std::string, Shader*> gShaders;
 
-	void load(const std::vector<std::string>& paths)
+	void _loadAll(const std::string& directory, bool async)
 	{
-		Console::out::processStart("ShaderPool", "Building shaders...");
-		Console::out::processState("ShaderPool", "Fetching shaders...");
+		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 		std::vector<std::string> shader_paths;
 		std::vector<std::string> shader_names;
 
-		for (int32_t i = 0; i < paths.size(); i++)
+		std::vector<std::string> shaders_in_folder = IOHandler::getFolders(directory);
+		for (int32_t x = 0; x < shaders_in_folder.size(); x++)
 		{
-
-			Console::out::processInfo(paths[i] + ":");
-
-			std::vector<std::string> shaders_in_folder = IOHandler::getFolders(paths[i]);
-			for (int32_t x = 0; x < shaders_in_folder.size(); x++)
-			{
-				shader_paths.push_back(paths[i] + "/" + shaders_in_folder[x]);
-				shader_names.push_back(shaders_in_folder[x]);
-				Console::out::processInfo("- " + shader_names[shader_names.size() - 1]);
-			}
+			shader_paths.push_back(directory + "/" + shaders_in_folder[x]);
+			shader_names.push_back(shaders_in_folder[x]);
 		}
 
-		Console::out::processState("ShaderPool", "Compiling shaders...");
 		for (int32_t i = 0; i < shader_paths.size(); i++)
 		{
-			std::string vertex_code = IOHandler::readFile(shader_paths[i] + "/.vert");
-			std::string fragment_code = IOHandler::readFile(shader_paths[i] + "/.frag");
-			const char* vertex_src = vertex_code.c_str();
-			const char* fragment_src = fragment_code.c_str();
+			// Get shaders identifier
+			std::string identifier = shader_names[i];
 
-			std::string name = shader_names[i];
-			Shader* shader = new Shader(name);
-			bool compiled = shader->compile(vertex_src, fragment_src);
-			
-			if (compiled)
-			{
-				gShaders[name] = shader;
-				Console::out::processInfo("Compiled " + name);
+			// Skip shader creation if it already exists
+			if (gShaders.find(identifier) != gShaders.end()) continue;
+
+			// Create new shader and set its source
+			Shader* shader = new Shader();
+			shader->setSource(shader_paths[i]);
+
+			// Create shader
+			if (async) {
+				loader.createAsync(shader);
 			}
+			else {
+				loader.createSync(shader);
+			}
+			gShaders[identifier] = shader;
 		}
+	}
 
-		Console::out::processDone("ShaderPool", "Finished loading shaders");
+	void loadAllSync(const std::string& directory)
+	{
+		Console::out::processStart("Shader Pool", "Loading shaders from '" + directory + "'");
+		_loadAll(directory, false);
+	}
+
+	void loadAllAsync(const std::string& directory)
+	{
+		Console::out::processStart("Shader Pool", "Queued loading shader in '" + directory + "'");
+		_loadAll(directory, true);
 	}
 
 	Shader* empty()
@@ -60,15 +70,15 @@ namespace ShaderPool {
 		return gEmpty;
 	}
 
-	Shader* get(const std::string& name)
+	Shader* get(const std::string& identifier)
 	{
-		if (gShaders.find(name) != gShaders.end()) {
+		if (gShaders.find(identifier) != gShaders.end()) {
 			// Shader available, return shader
-			return gShaders[name];
+			return gShaders[identifier];
 		}
 		else {
 			// Shader not found, return empty shader
-			Console::out::warning("ShaderPool", "Shader '" + name + "' was requested but does not exist!");
+			Console::out::warning("Shader Pool", "Shader '" + identifier + "' was requested but does not exist!");
 			return gEmpty;
 		}
 	}

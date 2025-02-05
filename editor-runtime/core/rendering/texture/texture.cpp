@@ -35,11 +35,13 @@ void Texture::setDefaultTexture(uint32_t textureId)
 	defaultTextureId = textureId;
 }
 
+std::string Texture::sourcePath()
+{
+	return path;
+}
+
 void Texture::loadData()
 {
-	// Start loading texture
-	Console::out::processInfo("Loading texture '" + IOHandler::getFilename(path) + "'...");
-
 	// Load image data
 	int _width, _height, _channels;
 	stbi_set_flip_vertically_on_load(true);
@@ -61,15 +63,10 @@ void Texture::releaseData()
 {
 	// Free memory allocated for image data
 	stbi_image_free(data);
-
-	Console::out::processInfo("Texture data for '" + IOHandler::getFilename(path) + "' was released");
 }
 
 void Texture::dispatchGPU()
 {
-	// Start uploading texture
-	Console::out::processInfo("Uploading texture '" + IOHandler::getFilename(path) + "'...");
-
 	// Generate texture
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -136,11 +133,4 @@ void Texture::dispatchGPU()
 
 	// Undbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	Console::out::processInfo("Texture '" + IOHandler::getFilename(path) + "'is ready");
-}
-
-std::string Texture::sourcePath()
-{
-	return path;
 }

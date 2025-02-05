@@ -20,10 +20,12 @@ public:
 	// Returns the backend id of the cubemap texture
 	uint32_t getId() const;
 
+	std::string sourcePath() override;
+
+protected:
 	void loadData() override;
 	void releaseData() override;
 	void dispatchGPU() override;
-	std::string sourcePath() override;
 
 private:
 	struct Source {

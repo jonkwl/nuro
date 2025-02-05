@@ -35,7 +35,7 @@ float Skybox::getEmission() const
 	return emission;
 }
 
-void Skybox::createSync()
+void Skybox::create()
 {
 	Console::out::processStart("Skybox", "Generating skybox...");
 

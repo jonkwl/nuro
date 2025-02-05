@@ -26,8 +26,8 @@ public:
 	// Returns the current emission of the skybox
 	float getEmission() const;
 
-	// Generates the skybox synchronously
-	void createSync();
+	// Generates the skybox
+	void create();
 
 	// Renders the skybox with the given transformation matrices
 	void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
