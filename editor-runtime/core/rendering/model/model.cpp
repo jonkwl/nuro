@@ -1,9 +1,10 @@
 #include "model.h"
 
-#include <glad/glad.h>
-#include <sstream>
 #include <vector>
+#include <sstream>
+#include <glad/glad.h>
 
+#include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
@@ -13,7 +14,7 @@
 #include "../core/utils/string_helper.h"
 
 Model::Model() : path(),
-data(),
+meshData(),
 meshes(),
 metrics()
 {
@@ -24,19 +25,26 @@ void Model::setSource(std::string _path)
 	path = _path;
 }
 
-Model::Metrics Model::getMetrics() const
+const Mesh* Model::queryMesh(uint32_t index)
 {
-	return metrics;
-}
+	// Requested mesh is not existing in meshes (may be loaded later)
+	if (index >= meshes.size()) {
+		// Resize meshes to contain default mesh at given index
+		meshes.resize(index + 1);
+	}
 
-const Mesh* Model::getMesh(uint32_t index)
-{
+	// Return queried mesh
 	return &meshes[index];
 }
 
 const std::vector<Mesh>& Model::getMeshes()
 {
 	return meshes;
+}
+
+Model::Metrics Model::getMetrics() const
+{
+	return metrics;
 }
 
 std::string Model::sourcePath()
@@ -74,21 +82,28 @@ void Model::loadData()
 
 void Model::releaseData()
 {
-	data.clear();
+	meshData.clear();
 }
 
 void Model::dispatchGPU()
 {
 	// Don't dispatch model if there is no data
-	if (data.empty()) return;
+	if (meshData.empty()) return;
+
+	// Resize meshes if it doesn't have enough elements (e.g., from previous queryMesh() calls)
+	if (meshes.size() < meshData.size()) {
+		meshes.resize(meshData.size());
+	}
 
 	// Dispatch each mesh
-	for (MeshData meshData : data) {
-		uint32_t vao, vbo, ebo;
+	for (int i = 0; i < meshData.size(); i++) {
+		// Get mesh data metrics
+		uint32_t nVertices = meshData[i].vertices.size();
+		uint32_t nIndices = meshData[i].indices.size();
+		uint32_t materialIndex = meshData[i].materialIndex;
 
-		uint32_t nVertices = meshData.vertices.size();
-		uint32_t nIndices = meshData.indices.size();
-		uint32_t materialIndex = meshData.materialIndex;
+		// VAO, VBO and EBO backend ids
+		uint32_t vao, vbo, ebo;
 
 		// Generate VAO, VBO and EBO
 		glGenVertexArrays(1, &vao);
@@ -100,11 +115,11 @@ void Model::dispatchGPU()
 
 		// Bind VBO, allocate its memory send vertex data
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, nVertices * sizeof(VertexData), meshData.vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, nVertices * sizeof(VertexData), meshData[i].vertices.data(), GL_STATIC_DRAW);
 
 		// Bind EBO, allocate its memory and send indice data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint32_t), meshData.indices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint32_t), meshData[i].indices.data(), GL_STATIC_DRAW);
 
 		// Set attributes for VAO
 		// Vertex position attribute (location = 0)
@@ -128,8 +143,8 @@ void Model::dispatchGPU()
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		// Create and add mesh
-		meshes.push_back(Mesh(vao, vbo, ebo, nVertices, nIndices, materialIndex));
+		// Update mesh
+		meshes[i].setData(vao, vbo, ebo, nVertices, nIndices, materialIndex);
 	}
 }
 
@@ -137,8 +152,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 {
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		data.push_back(processMesh(mesh, scene));
+		meshData.push_back(processMesh(scene->mMeshes[node->mMeshes[i]], scene));
 	}
 	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
@@ -149,79 +163,80 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 Model::MeshData Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	//
-	// IMPLEMENT MOVE SEMANTICS HERE / CODE CAN BE OPTIMIZED!
-	//
+	// INITIALIZE BUFFERS
+	// 
 
-	// Initialize mesh buffers
 	std::vector<VertexData> vertices;
 	std::vector<uint32_t> indices;
 	uint32_t materialIndex;
 
+	//
+	// ADD VERTICES
+	//
+
+	vertices.reserve(mesh->mNumVertices);
+
 	for (uint32_t i = 0; i < mesh->mNumVertices; i++)
 	{
-		VertexData vertex;
-
-		// Define unconditional vertex data
-		glm::vec3 position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-		glm::vec3 normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-		glm::vec2 uv = glm::vec2(0.0f, 0.0f);
-		glm::vec3 tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
-		glm::vec3 bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
-
-		// Set conditional vertex data
-		if (mesh->mTextureCoords[0])
-		{
-			uv = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
-		}
-
-		// Assign data to vertex
-		vertex.position = position;
-		vertex.normal = normal;
-		vertex.uv = uv;
-		vertex.tangent = tangent;
-		vertex.bitangent = bitangent;
-
-		vertices.push_back(vertex);
-
-		// Add to total vertices metric
-		metrics.nVertices++;
+		vertices.emplace_back(
+			glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), // POSITION
+			glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z), // NORMAL
+			mesh->mTextureCoords[0] ? glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y) : glm::vec2(0.0f, 0.0f), // UV
+			glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z), // TANGENT
+			glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z) // BITANGENT
+		);
 	}
+
+	//
+	// ADD INDICES
+	//
+
+	indices.reserve(mesh->mNumFaces * 3); // Reserve 3 indices per face because each face is a triangle
 
 	for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 	{
-		aiFace face = mesh->mFaces[i];
+		// Get current face
+		const aiFace& face = mesh->mFaces[i];
+
+		// Add indices
 		for (uint32_t j = 0; j < face.mNumIndices; j++)
 		{
 			indices.push_back(face.mIndices[j]);
 		}
-
-		// Add to total faces metric
-		metrics.nFaces++;
 	}
 
-	// Texture name linking can be implemented here
+	//
+	// HANDLE MESH MATERIAL
+	//
 
 	// Get meshes material index
 	materialIndex = mesh->mMaterialIndex;
 
-	// Add to total materials metric if current index is the highest index
+	// Implement texture name linking here
+
+	//
+	// HANDLE MESH METRICS
+	//
+
+	// Update total materials metric if current material index as element count is the highest
 	metrics.nMaterials = std::max(metrics.nMaterials, materialIndex + 1);
 
 	// Add mesh to metrics
-	addMeshToMetrics(vertices);
+	addMeshToMetrics(vertices, mesh->mNumFaces);
 
 	// Construct and return mesh data
-	return MeshData(vertices, indices, materialIndex);
+	return MeshData(std::move(vertices), std::move(indices), materialIndex);
 }
 
-void Model::addMeshToMetrics(const std::vector<VertexData>& vertices)
+void Model::addMeshToMetrics(const std::vector<VertexData>& vertices, uint32_t nFaces)
 {
-	// Loop through all mesh vertices
-	for (int32_t i = 0; i < vertices.size(); i++)
-	{
-		// Get current vertex
-		VertexData vertex = vertices[i];
+	// Add number of vertices and faces to metrics
+	metrics.nVertices += vertices.size();
+	metrics.nFaces += nFaces;
 
+	// Loop through all mesh vertices
+	for (const VertexData& vertex : vertices)
+	{
 		// Update min and max point
 		metrics.minPoint = glm::min(metrics.minPoint, vertex.position);
 		metrics.maxPoint = glm::max(metrics.maxPoint, vertex.position);

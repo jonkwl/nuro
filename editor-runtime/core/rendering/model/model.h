@@ -1,13 +1,15 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <glm.hpp>
-#include <assimp/scene.h>
-
-#include "../core/rendering/model/mesh.h"
+#include <cstdint>
 
 #include "../core/resource/resource.h"
+#include "../core/rendering/model/mesh.h"
+
+class aiScene;
+class aiNode;
+class aiMesh;
 
 class Model : public Resource
 {
@@ -48,14 +50,14 @@ public:
 	// Sets the path of the models source
 	void setSource(std::string path);
 
+	// Returns models mesh at given index or creates an empty mesh at that index
+	const Mesh* queryMesh(uint32_t index);
+
+	// Returns all models meshes
+	const std::vector<Mesh>& getMeshes();
+
 	// Returns models metrics
 	Metrics getMetrics() const;
-
-	// Returns models mesh at given index
-	const Mesh* getMesh(uint32_t index);
-
-	// Returns all meshes from model
-	const std::vector<Mesh>& getMeshes();
 
 	std::string sourcePath() override;
 
@@ -72,6 +74,15 @@ private:
 		glm::vec2 uv;
 		glm::vec3 tangent;
 		glm::vec3 bitangent;
+
+		VertexData() : position(), normal(), uv(), tangent(), bitangent() {};
+
+		explicit VertexData(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent, glm::vec3 bitangent) : position(position), 
+			normal(normal), 
+			uv(uv), 
+			tangent(tangent), 
+			bitangent(bitangent) 
+		{};
 	};
 
 	struct MeshData {
@@ -79,7 +90,11 @@ private:
 		std::vector<uint32_t> indices;
 		uint32_t materialIndex;
 
-		explicit MeshData(std::vector<VertexData> vertices, std::vector<uint32_t> indices, uint32_t materialIndex) : vertices(vertices), indices(indices), materialIndex(materialIndex) {};
+		explicit MeshData(std::vector<VertexData>&& vertices, std::vector<uint32_t>&& indices, uint32_t materialIndex) : 
+			vertices(std::move(vertices)),
+			indices(std::move(indices)),
+			materialIndex(materialIndex) 
+		{};
 	};
 
 private:
@@ -90,8 +105,6 @@ private:
 	void processNode(aiNode* node, const aiScene* scene);
 	MeshData processMesh(aiMesh* mesh, const aiScene* scene);
 
-	void dispatchMesh(MeshData meshData);
-
 	//
 	// MODEL DATA
 	//
@@ -100,7 +113,7 @@ private:
 	std::string path;
 
 	// Intermediate temporary representation of mesh data
-	std::vector<MeshData> data;
+	std::vector<MeshData> meshData;
 
 	// Final dispatched meshes
 	std::vector<Mesh> meshes;
@@ -113,7 +126,7 @@ private:
 	Metrics metrics;
 
 	// Adds a mesh to the metrics using its vertices
-	void addMeshToMetrics(const std::vector<VertexData>& vertices);
+	void addMeshToMetrics(const std::vector<VertexData>& vertices, uint32_t nFaces);
 	
 	// Finalizes the metrics after all meshes have been added
 	void finalizeMetrics();

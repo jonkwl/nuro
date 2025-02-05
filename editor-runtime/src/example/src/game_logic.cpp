@@ -20,12 +20,12 @@ void _example() {
 	Model* cubeModel = new Model();
 	cubeModel->setSource("../resources/primitives/cube.fbx");
 	loader.createSync(cubeModel);
-	const Mesh* cubeMesh = cubeModel->getMesh(0);
+	const Mesh* cubeMesh = cubeModel->queryMesh(0);
 
 	Model* sphereModel = new Model();
 	sphereModel->setSource("../resources/primitives/sphere.fbx");
 	loader.createSync(sphereModel);
-	const Mesh* sphereMesh = sphereModel->getMesh(0);
+	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
 	// Standard Material
 	LitMaterial* standardMaterial = new LitMaterial();

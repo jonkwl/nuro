@@ -7,8 +7,10 @@
 class Mesh
 {
 public:
-	// Constructs a mesh container from existing backend buffers
-	explicit Mesh(uint32_t vao, uint32_t vbo, uint32_t ebo, uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex);
+	Mesh();
+
+	// Sets the meshes existing backend buffers and metrics
+	void setData(uint32_t vao, uint32_t vbo, uint32_t ebo, uint32_t nVertices, uint32_t nIndices, uint32_t materialIndex);
 	
 	// Returns the meshes vertex array object
 	uint32_t getVAO() const;

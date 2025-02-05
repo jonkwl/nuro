@@ -35,18 +35,18 @@ void IMGizmo::create()
 
 		Model* planeModel = new Model();
 		planeModel->setSource("../resources/primitives/plane.fbx");
-		loader.createSync(planeModel);
-		staticData.planeMesh = planeModel->getMesh(0);
+		loader.createAsync(planeModel);
+		staticData.planeMesh = planeModel->queryMesh(0);
 
 		Model* boxModel = new Model();
 		boxModel->setSource("../resources/primitives/cube.fbx");
-		loader.createSync(boxModel);
-		staticData.boxMesh = boxModel->getMesh(0);
+		loader.createAsync(boxModel);
+		staticData.boxMesh = boxModel->queryMesh(0);
 
 		Model* sphereModel = new Model();
 		sphereModel->setSource("../resources/primitives/sphere.fbx");
-		loader.createSync(sphereModel);
-		staticData.sphereMesh = sphereModel->getMesh(0);
+		loader.createAsync(sphereModel);
+		staticData.sphereMesh = sphereModel->queryMesh(0);
 	}
 }
 
@@ -103,7 +103,7 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 		}
 
 		// Render mesh
-		const Mesh* mesh = getMesh(gizmo.shape);
+		const Mesh* mesh = queryMesh(gizmo.shape);
 		glBindVertexArray(mesh->getVAO());
 		glDrawElements(GL_LINES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 
@@ -182,7 +182,7 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Get mesh
-		const Mesh* mesh = getMesh(Shape::PLANE);
+		const Mesh* mesh = queryMesh(Shape::PLANE);
 
 		// Set static material uniforms
 		staticData.iconShader->setMatrix4("mvpMatrix", mvpMatrix);
@@ -255,7 +255,7 @@ IMGizmo::RenderState IMGizmo::getCurrentState() {
 	return state;
 }
 
-const Mesh* IMGizmo::getMesh(Shape shape)
+const Mesh* IMGizmo::queryMesh(Shape shape)
 {
 	switch (shape)
 	{

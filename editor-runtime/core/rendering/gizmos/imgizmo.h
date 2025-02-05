@@ -131,7 +131,7 @@ private:
 
 private:
 	RenderState getCurrentState();
-	const Mesh* getMesh(Shape shape);
+	const Mesh* queryMesh(Shape shape);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
