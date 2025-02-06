@@ -63,14 +63,14 @@ public:
 
 private:
 	struct StaticData {
-		bool loaded;
+		bool loaded = false;
 
-		Shader* fillShader;
-		Shader* iconShader;
+		Shader* fillShader = nullptr;
+		Shader* iconShader = nullptr;
 
-		const Mesh* planeMesh;
-		const Mesh* boxMesh;
-		const Mesh* sphereMesh;
+		const Mesh* planeMesh = nullptr;
+		const Mesh* boxMesh = nullptr;
+		const Mesh* sphereMesh = nullptr;
 	};
 
 	struct RenderState {

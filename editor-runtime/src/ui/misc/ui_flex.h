@@ -3,6 +3,10 @@
 #include <cstdint>
 #include <imgui.h>
 
+//
+// DEPRECATED, BAD CODE!
+//
+
 #define FLEX_FULL_WIDTH ImGui::GetContentRegionAvail().x
 #define FLEX_FULL_HEIGHT ImGui::GetContentRegionAvail().y
 

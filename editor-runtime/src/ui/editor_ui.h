@@ -18,31 +18,31 @@ namespace EditorUI
 	struct Fonts
 	{
 		// Paragraph
-		ImFont* p;
-		ImFont* p_bold;
+		ImFont* p = nullptr;
+		ImFont* p_bold = nullptr;
 
 		// Headline 1
-		ImFont* h1;
-		ImFont* h1_bold;
+		ImFont* h1 = nullptr;
+		ImFont* h1_bold = nullptr;
 
 		// Headline 2
-		ImFont* h2;
-		ImFont* h2_bold;
+		ImFont* h2 = nullptr;
+		ImFont* h2_bold = nullptr;
 
 		// Headline 3
-		ImFont* h3;
-		ImFont* h3_bold;
+		ImFont* h3 = nullptr;
+		ImFont* h3_bold = nullptr;
 
 		// Headline 4
-		ImFont* h4;
-		ImFont* h4_bold;
+		ImFont* h4 = nullptr;
+		ImFont* h4_bold = nullptr;
 		
 		// Small
-		ImFont* s;
-		ImFont* s_bold;
+		ImFont* s = nullptr;
+		ImFont* s_bold = nullptr;
 
 		// Icons
-		ImFont* icons;
+		ImFont* icons = nullptr;
 	};
 
 	// Sets up editor ui

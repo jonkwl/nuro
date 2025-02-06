@@ -24,18 +24,19 @@ public:
 	};
 
 	struct Folder {
-		std::string name = "Unnamed";
-		std::string path = "";
+		std::string name;
+		std::string path;
+
+		std::vector<Folder> children;
 
 		bool expanded = false;
-		std::vector<Folder> children;
 	};
 
 	// Holds data needed for drawing a ui asset element
 	struct AssetUIData {
 
 		// Configuration
-		ImFont* font;
+		ImFont* font = nullptr;
 		ImVec2 padding;
 		ImVec2 iconSize;
 
@@ -46,13 +47,11 @@ public:
 	};
 
 	struct Asset {
-		std::string name = "Asset";
-		std::string path = "";
+		std::string name;
+		std::string path;
 
 		AssetType type = AssetType::FILE;
-
 		uint32_t thumbnail = 0;
-
 		bool loading = false;
 
 		AssetUIData uiData;

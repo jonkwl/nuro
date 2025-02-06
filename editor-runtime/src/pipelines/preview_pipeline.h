@@ -10,8 +10,8 @@ class Model;
 class LitMaterial;
 
 struct PreviewOutput {
-	uint32_t texture = 0;
 	Viewport viewport;
+	uint32_t texture = 0;
 	bool resizePending = false;
 };
 

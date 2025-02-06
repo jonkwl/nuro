@@ -61,7 +61,7 @@ void Footer::renderContent(ImDrawList& drawList)
     auto worker = ApplicationContext::getResourceLoader().readWorkerState();
 
     // Create information text
-    std::string informationText = "";
+    std::string informationText;
     bool loading = false;
     if (worker.active && worker.target) {
         informationText = "Loading '" + IOHandler::getFilename(worker.target->sourcePath()) + "'... (" + std::to_string(worker.tasksPending) + " remaining)";

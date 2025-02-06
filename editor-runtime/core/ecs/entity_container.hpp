@@ -19,8 +19,8 @@
 ///																///
 ///////////////////////////////////////////////////////////////////
 
-struct EntityContainer {
-
+class EntityContainer {
+public:
 	// Construct entity by root
 	explicit EntityContainer(std::string name, Entity root) : name(name), root(root), registry(G_REGISTRY), transform(get<TransformComponent>()) {};
 

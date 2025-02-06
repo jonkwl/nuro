@@ -107,7 +107,7 @@ Cubemap::ImageData Cubemap::loadImageData(std::string path)
 		return ImageData();
 	}
 
-	return ImageData{ data, width, height, channels };
+	return ImageData(data, width, height, channels);
 }
 
 void Cubemap::loadCrossCubemap(std::string path)
@@ -168,6 +168,7 @@ void Cubemap::loadIndividualFace(std::string path)
 {
 	//
 	// WORK ON MEMORY EFFICIENCY HERE!
+	// Can be optimized using move semantics etc
 	//
 
 	// Load temporary image data

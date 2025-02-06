@@ -39,7 +39,11 @@ public:
 		// Overlay color when selected
 		ImU32 selectedColor;
 
-		ItemStyle(ToggleBarStyle defaultStyle) : rounding(defaultStyle.defaultItemRounding), hoveredColor(defaultStyle.defaultItemHoveredColor), selectedColor(defaultStyle.defaultItemSelectedColor) {};
+		ItemStyle(ToggleBarStyle defaultStyle) : 
+			rounding(defaultStyle.defaultItemRounding), 
+			hoveredColor(defaultStyle.defaultItemHoveredColor), 
+			selectedColor(defaultStyle.defaultItemSelectedColor) 
+		{};
 	};
 
 	struct Item {
@@ -61,7 +65,14 @@ public:
 		// Current item style
 		ItemStyle style;
 
-		Item(const char* text, bool& value, bool readonly, ToggleBarStyle defaultStyle) : text(text), value(value), readonly(readonly), clicked(false), size(ImVec2(0.0f, 0.0f)), style(defaultStyle) {};
+		Item(const char* text, bool& value, bool readonly, ToggleBarStyle defaultStyle) : 
+			text(text), 
+			value(value), 
+			readonly(readonly), 
+			clicked(false), 
+			size(ImVec2(0.0f, 0.0f)), 
+			style(defaultStyle) 
+		{};
 	};
 
 public:

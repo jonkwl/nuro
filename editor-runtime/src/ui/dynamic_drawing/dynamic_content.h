@@ -7,8 +7,9 @@
 
 #include "dynamic_text.h"
 
-struct DynamicContent
+class DynamicContent
 {
+public:
 	//
 	// PROPERTIES
 	//

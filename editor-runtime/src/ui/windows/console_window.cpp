@@ -86,13 +86,13 @@ void ConsoleWindow::render()
 	ImGui::PopStyleVar();
 }
 
-void ConsoleWindow::addLog(ConsoleLog log)
+void ConsoleWindow::addLog(const ConsoleLog& log)
 {
 	// Add log
 	logsToAdd.push_back(log);
 }
 
-void ConsoleWindow::drawLog(ImDrawList& drawList, ConsoleLog log)
+void ConsoleWindow::drawLog(ImDrawList& drawList, const ConsoleLog& log)
 {
 	// Evaluate log type
 	ImU32 textColor = IM_COL32(255, 255, 255, 255);
@@ -174,10 +174,10 @@ ImVec2 ConsoleWindow::drawLatestLog(ImDrawList& drawList)
 
 	// Evaluate text
 	std::string originText = "Console empty";
-	std::string contentText = "";
+	std::string contentText;
 	
 	if (logs.size() > 0) {
-		ConsoleLog& log = logs[logs.size() - 1];
+		const ConsoleLog& log = logs[logs.size() - 1];
 		originText = log.origin + ":";
 		contentText = log.content;
 	}

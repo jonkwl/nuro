@@ -3,8 +3,11 @@
 #include <imgui.h>
 #include <cmath>
 
-bool UIFlex::debugMode = false;
+//
+// DEPRECATED, BAD CODE!
+//
 
+bool UIFlex::debugMode = false;
 FlexBuffer UIFlex::lastFlex;
 
 float UIFlex::mapAlignment(Alignment alignment)

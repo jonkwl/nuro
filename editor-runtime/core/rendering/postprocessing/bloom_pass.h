@@ -32,10 +32,10 @@ private:
 
 	struct Mip
 	{
-		glm::ivec2 iSize;
-		glm::vec2 fSize;
-		glm::vec2 inversedSize;
-		uint32_t texture;
+		glm::ivec2 iSize = glm::ivec2(0, 0);
+		glm::vec2 fSize = glm::vec2(0.0f, 0.0f);
+		glm::vec2 inversedSize = glm::vec2(0.0f, 0.0f);
+		uint32_t texture = 0;
 	};
 	std::vector<Mip> mipChain;
 

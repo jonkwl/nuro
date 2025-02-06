@@ -74,8 +74,8 @@ void Shader::loadData()
 
 void Shader::releaseData()
 {
-	data.vertexSource = "";
-	data.fragmentSource = "";
+	data.vertexSource.clear();
+	data.fragmentSource.clear();
 }
 
 void Shader::dispatchGPU()

@@ -35,7 +35,7 @@ private:
 		};
 
 		// Type of the cubemap source
-		Type type;
+		Type type = Type::CROSS;
 
 		// All image source paths associated with the cubemap
 		std::vector<std::string> paths;
@@ -44,9 +44,9 @@ private:
 	struct FaceData
 	{
 		std::vector<unsigned char> data;
-		int32_t width;
-		int32_t height;
-		int32_t channels;
+		int32_t width = 0;
+		int32_t height = 0;
+		int32_t channels = 0;
 	};
 
 	struct ImageData
@@ -55,6 +55,20 @@ private:
 		int32_t width;
 		int32_t height;
 		int32_t channels;
+
+		ImageData() :
+			data(nullptr),
+			width(0),
+			height(0),
+			channels(0)
+		{};
+
+		ImageData(unsigned char* data, uint32_t width, uint32_t height, uint32_t channels) :
+			data(data),
+			width(width),
+			height(height),
+			channels(channels)
+		{};
 	};
 
 private:

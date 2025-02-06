@@ -18,6 +18,12 @@ struct ConsoleLog {
 	std::string content;
 	std::string origin;
 	ConsoleLogType type;
+
+	ConsoleLog(std::string content, std::string origin, ConsoleLogType type) :
+		content(content),
+		origin(origin),
+		type(type)
+	{};
 };
 
 class ConsoleWindow : public EditorWindow
@@ -27,7 +33,7 @@ public:
 
 	void render() override;
 
-	static void addLog(ConsoleLog log);
+	static void addLog(const ConsoleLog& log);
 private:
 	bool showMessages;
 	bool showWarnings;
@@ -42,7 +48,7 @@ private:
 	static std::vector<ConsoleLog> logsToAdd;
 
 	// Draws a log
-	void drawLog(ImDrawList& drawList, ConsoleLog log);
+	void drawLog(ImDrawList& drawList, const ConsoleLog& log);
 
 	// Draws the latest log element and returns its size
 	ImVec2 drawLatestLog(ImDrawList& drawList);

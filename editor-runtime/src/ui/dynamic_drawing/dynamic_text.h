@@ -7,8 +7,9 @@
 
 #include "enums.h"
 
-struct DynamicText
+class DynamicText
 {
+public:
 	DynamicText(ImFont* font);
 
 	//
@@ -19,7 +20,7 @@ struct DynamicText
 	ImFont* font;
 
 	// Text value of element
-	std::string text = "";
+	std::string text;
 
 	// Position of text (may be controlled by parent)
 	ImVec2 position = ImVec2(0.0f, 0.0f);
