@@ -8,14 +8,14 @@ ResourceLoader::ResourceLoader()
 {
 	// Launch worker
 	running = true;
-	worker = std::jthread(&ResourceLoader::asyncWorker, this);
+	worker = std::thread(&ResourceLoader::asyncWorker, this);
 }
 
 ResourceLoader::~ResourceLoader()
 {
 	// Stop worker
 	running = false;
-	worker.request_stop();
+	worker.join();
 }
 
 ResourceLoader::WorkerState ResourceLoader::readWorkerState() const

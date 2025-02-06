@@ -10,7 +10,7 @@ Entity playerEntity;
 Entity planeEntity;
 
 void _example() {
-	/* // Get loader
+	// Get loader
 	ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 	// Models
@@ -71,7 +71,7 @@ void _example() {
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
-	int objectAmount = 16;
+	int objectAmount = 128;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube", ECS::createEntity());
@@ -150,17 +150,16 @@ void _example() {
 	cube.transform.scale = glm::vec3(5.0f);
 	cube.add<MeshRendererComponent>(cubeMesh, cubeMaterial);
 
-	// Big model async loading example
-	Model* dragonModel = new Model();
-	dragonModel->setSource("./src/example/assets/models/dragon.fbx");
-	loader.createAsync(dragonModel);
+	// Model async loading example
+	Model* asyncModel = new Model();
+	asyncModel->setSource("./src/example/assets/models/mannequin.fbx");
+	loader.createAsync(asyncModel);
 
-	for (uint32_t i = 0; i < 26; i++) {
-		EntityContainer dragon("Dragon Part " + std::to_string(i + 1), ECS::createEntity());
-		dragon.transform.position = glm::vec3(0.0f, 20.0f, 20.0f);
-		dragon.transform.scale = glm::vec3(10.0f);
-		dragon.add<MeshRendererComponent>(dragonModel->queryMesh(i), cubeMaterial);
-	} */
+	EntityContainer e("Async Model", ECS::createEntity());
+	e.transform.position = glm::vec3(8.0f, 3.0f, 10.0f);
+	e.transform.rotation = glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	e.transform.scale = glm::vec3(7.0f);
+	e.add<MeshRendererComponent>(asyncModel->queryMesh(0), cubeMaterial);
 }
 
 void gameSetup() {

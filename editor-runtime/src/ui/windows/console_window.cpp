@@ -49,7 +49,7 @@ void ConsoleWindow::render()
 
 		ImVec2 contentAvail = ImGui::GetContentRegionAvail();
 		ImVec2 logsSize = ImVec2(contentAvail.x, contentAvail.y - latestLogSize.y);
-		IMComponents::beginChild(logsSize);
+		IMComponents::beginClippedChild(logsSize);
 		{
 			// Evaluate logs to add
 			for (int32_t i = 0; i < logsToAdd.size(); i++) {
@@ -80,7 +80,7 @@ void ConsoleWindow::render()
 			// Clear logs to add
 			logsToAdd.clear();
 		}
-		IMComponents::endChild();
+		IMComponents::endClippedChild();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();

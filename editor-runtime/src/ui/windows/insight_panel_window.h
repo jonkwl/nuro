@@ -15,9 +15,6 @@ public:
 	static void inspect(Inspectable* inspectable);
 
 public:
-	// Renders the given component component
-	static void renderComponent(ImDrawList& drawList);
-
 	// Renders an image by the given backend texture id
 	static void renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin = { 0.0f, 15.0f });
 

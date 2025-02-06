@@ -56,11 +56,11 @@ void InsightPanelWindow::render()
 			ImGui::Dummy(margin);
 
 			// Dynamic inspected content child
-			IMComponents::beginChild(contentSize - margin);
+			IMComponents::beginClippedChild(contentSize - margin);
 			{
 				inspected->renderDynamicContent(drawList);
 			}
-			IMComponents::endChild();
+			IMComponents::endClippedChild();
 
 			// Render preview viewer if available
 			if (renderingPreview) renderPreviewViewer(drawList, previewSize);
@@ -82,74 +82,6 @@ void InsightPanelWindow::inspect(Inspectable* inspectable)
 
 	// Set new inspected object
 	inspected = inspectable;
-}
-
-void InsightPanelWindow::renderComponent(ImDrawList& drawList)
-{
-	static bool collapsed = true;
-
-	//
-	// EVALUATE 
-	//
-
-	ImVec2 contentAvail = ImGui::GetContentRegionAvail();
-	ImVec2 cursorPos = ImGui::GetCursorScreenPos();
-
-	float titleHeight = EditorSizing::h4_FontSize;
-	ImVec2 titlePadding = ImVec2(10.0f, 10.0f);
-	
-	float collapsedHeight = titleHeight + titlePadding.y * 2;
-	float expandedHeight = 250.0f;
-	
-	float yMargin = 2.0f;
-	ImVec2 size = ImVec2(contentAvail.x, collapsed ? collapsedHeight : expandedHeight);
-	ImVec2 p0 = ImVec2(cursorPos.x, cursorPos.y + yMargin);
-	ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
-
-	const bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
-
-	//
-	// CLICK COLLAPSE
-	//
-
-	if (hovered && ImGui::IsMouseClicked(1)) {
-		collapsed = !collapsed;
-	}
-
-	//
-	// DRAW BACKGROUND
-	//
-
-	drawList.AddRectFilled(p0, p1, EditorColor::element, 10.0f);
-
-	//
-	// DRAW EXPANSION CARET
-	//
-
-	ImVec2 caretPos = p0 + titlePadding;
-	if (IMComponents::caret(drawList, caretPos, ImVec2(-1.0f, 2.0f), collapsed ? ICON_FA_CARET_RIGHT : ICON_FA_CARET_DOWN, EditorColor::element, EditorColor::elementActive)) {
-		collapsed = !collapsed;
-	}
-
-	//
-	// DRAW COMPONENT ICON
-	//
-
-	ImVec2 iconSize = ImVec2(18.0f, 18.0f);
-	ImVec2 iconPos = caretPos + ImVec2(24.0f, -1.0f);
-	drawList.AddImage(IconPool::get("component"), iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
-
-	//
-	// DRAW COMPONENT TEXT
-	//
-
-	drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, iconPos + ImVec2(26.0f, 0.0f), EditorColor::text, "Component Name");
-
-	//
-	// ADVANCE CURSOR
-	//
-
-	ImGui::Dummy(ImVec2(size.x, size.y + yMargin));
 }
 
 void InsightPanelWindow::renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin)

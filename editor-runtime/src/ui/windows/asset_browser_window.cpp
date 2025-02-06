@@ -20,10 +20,6 @@ targetAssetScale(1.0f)
 			a.name = "Material " + std::to_string(i);
 		}
 
-		if (i < 10) {
-			a.loading = true;
-		}
-
 		currentAssets.push_back(a);
 	}
 }
@@ -213,7 +209,7 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 	c.children.push_back(Folder());
 	c.expanded = true;
 
-	IMComponents::beginChild(size, position);
+	IMComponents::beginClippedChild(size, position);
 	{
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 
@@ -223,7 +219,7 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 	}
-	IMComponents::endChild();
+	IMComponents::endClippedChild();
 
 	return size;
 }
@@ -252,7 +248,7 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 	ImVec2 padding = ImVec2(16.0f, 10.0f);
 	ImVec2 gap = ImVec2(1.0f, 3.5f);
 
-	IMComponents::beginChild(size, position);
+	IMComponents::beginClippedChild(size, position);
 	{
 		//
 		// CREATE ASSET UI DATA (GEOMETRY ETC)
@@ -295,7 +291,7 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 		// Add bottom padding
 		ImGui::SetCursorPos(cursor + ImVec2(0.0f, padding.y + lastAssetSize.y));
 	}
-	IMComponents::endChild();
+	IMComponents::endClippedChild();
 }
 
 void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, uint32_t indentation)

@@ -3,6 +3,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <string>
+#include <functional>
 
 enum class HeadlineJustification
 {
@@ -49,10 +50,13 @@ namespace IMComponents
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size);
 
 	// Begins a child and pushes fitting clip rect
-	void beginChild(ImVec2 size, ImVec2 position = ImGui::GetCursorScreenPos());
+	void beginClippedChild(ImVec2 size, ImVec2 position = ImGui::GetCursorScreenPos());
 
 	// Ends child and pops clip rect
-	void endChild();
+	void endClippedChild();
+
+	// Draws a component wrapper item
+	void componentWrapper(ImDrawList& drawList, std::string label, uint32_t icon, std::function<void()> drawContent, bool& enabled, bool& opened);
 
 	// Draws a clickable caret background cirlce at the given cursor screen position and returns true if it was clicked
 	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor);

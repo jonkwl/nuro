@@ -23,11 +23,18 @@ void EntityInspectable::renderStaticContent(ImDrawList& drawList)
 
 void EntityInspectable::renderDynamicContent(ImDrawList& drawList)
 {
-	InsightPanelWindow::renderComponent(drawList);
-	InsightPanelWindow::renderComponent(drawList);
-	InsightPanelWindow::renderComponent(drawList);
-	InsightPanelWindow::renderComponent(drawList);
-	InsightPanelWindow::renderComponent(drawList);
-	InsightPanelWindow::renderComponent(drawList);
-	InsightPanelWindow::renderComponent(drawList);
+	static float inputFloat = 0.0f;
+	static bool inputBool = false;
+
+	static bool enabled = true;
+	static bool opened = false;
+
+	auto drawContent = [&]() {
+		IMComponents::input("Value 1", inputFloat);
+		IMComponents::input("Value 2", inputFloat);
+		IMComponents::input("Value 3", inputFloat);
+		IMComponents::input("Value 4", inputBool);
+	};
+
+	IMComponents::componentWrapper(drawList, "Component", IconPool::get("component"), drawContent, enabled, opened);
 }

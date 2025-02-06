@@ -69,7 +69,7 @@ private:
 	//
 
 	// Worker thread handle
-	std::jthread worker;
+	std::thread worker;
 
 	// Worker thread mutex
 	std::mutex workerMtx;

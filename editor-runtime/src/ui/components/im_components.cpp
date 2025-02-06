@@ -457,17 +457,105 @@ namespace IMComponents {
 		ImPlot::PopStyleVar();
 	}
 
-	void beginChild(ImVec2 size, ImVec2 position)
+	void beginClippedChild(ImVec2 size, ImVec2 position)
 	{
 		ImGui::SetCursorScreenPos(position);
 		ImGui::PushClipRect(ImVec2(position), ImVec2(position + size), true);
 		ImGui::BeginChild(EditorUI::generateId(), size);
 	}
 
-	void endChild()
+	void endClippedChild()
 	{
 		ImGui::EndChild();
 		ImGui::PopClipRect();
+	}
+
+	void componentWrapper(ImDrawList& drawList, std::string label, uint32_t icon, std::function<void()> drawContent, bool& enabled, bool& opened)
+	{
+		//
+		// EVALUATE 
+		//
+
+		ImVec2 contentAvail = ImGui::GetContentRegionAvail();
+		ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+		float titleHeight = EditorSizing::h4_FontSize;
+		ImVec2 titlePadding = ImVec2(10.0f, 10.0f);
+
+		float collapsedHeight = titleHeight + titlePadding.y * 2;
+		float expandedHeight = 250.0f;
+
+		float yMargin = 2.0f;
+		ImVec2 size = ImVec2(contentAvail.x, opened ? expandedHeight : collapsedHeight);
+		ImVec2 p0 = ImVec2(cursorPos.x, cursorPos.y + yMargin);
+		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
+
+		const bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
+
+		//
+		// CLICK COLLAPSE
+		//
+
+		if (hovered && ImGui::IsMouseDoubleClicked(0)) {
+			opened = !opened;
+		}
+
+		//
+		// DRAW BACKGROUND
+		//
+
+		drawList.AddRectFilled(p0, p1, IM_COL32(30, 30, 30, 255), 10.0f);
+
+		//
+		// DRAW EXPANSION CARET
+		//
+
+		ImVec2 caretPos = p0 + titlePadding;
+		if (IMComponents::caret(drawList, caretPos, ImVec2(-1.0f, 2.0f), opened ? ICON_FA_CARET_DOWN : ICON_FA_CARET_RIGHT, IM_COL32(0, 0, 0, 0), EditorColor::element)) {
+			opened = !opened;
+		}
+
+		//
+		// DRAW COMPONENT CHECKBOX
+		//
+
+		ImVec2 checkboxPos = caretPos + ImVec2(26.0f, -2.0f);
+		ImVec2 cursorCache = ImGui::GetCursorScreenPos();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
+
+		ImGui::SetCursorScreenPos(checkboxPos);
+		ImGui::Checkbox(EditorUI::generateIdString().c_str(), &enabled);
+		ImGui::SetCursorScreenPos(cursorCache);
+
+		ImGui::PopStyleVar();
+
+		//
+		// DRAW COMPONENT ICON
+		//
+
+		ImVec2 iconSize = ImVec2(18.0f, 18.0f);
+		ImVec2 iconPos = caretPos + ImVec2(56.0f, -1.0f);
+		drawList.AddImage(icon, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
+
+		//
+		// DRAW COMPONENT TEXT
+		//
+
+		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, iconPos + ImVec2(26.0f, 0.0f), EditorColor::text, label.c_str());
+
+		//
+		// ADVANCE CURSOR AND DRAW CUSTOM CONTENT
+		//
+
+		if (opened) {
+			ImGui::Dummy(ImVec2(0.0f, collapsedHeight + titlePadding.y));
+			drawContent();
+		}
+		else {
+			ImGui::Dummy(ImVec2(size.x, size.y + yMargin));
+		}
+
 	}
 
 	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor)
