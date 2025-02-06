@@ -70,6 +70,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)build\output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -100,7 +104,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -117,7 +121,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -132,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\physics\core\physics_bridge.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="core\resource\resource_loader.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -162,7 +167,6 @@
     <ClCompile Include="core\physics\core\physics_context.cpp" />
     <ClCompile Include="core\physics\rigidbody\rigidbody.cpp" />
     <ClCompile Include="core\physics\utils\px_translator.cpp" />
-    <ClCompile Include="core\physics\core\physics_factory.cpp" />
     <ClCompile Include="src\ui\windows\registry_window.cpp" />
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp" />
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp" />
@@ -253,9 +257,8 @@
     <ClInclude Include="core\rendering\icons\icon_pool.h" />
     <ClInclude Include="core\physics\core\physics_context.h" />
     <ClInclude Include="core\physics\rigidbody\rigidbody.h" />
-    <ClInclude Include="core\physics\events\physics_ecs_listener.hpp" />
+    <ClInclude Include="core\physics\core\physics_bridge.h" />
     <ClInclude Include="core\physics\utils\px_translator.h" />
-    <ClInclude Include="core\physics\core\physics_factory.h" />
     <ClInclude Include="src\gizmos\editor_gizmo_color.h" />
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_drawing.h" />
     <ClInclude Include="src\ui\dynamic_drawing\enums.h" />

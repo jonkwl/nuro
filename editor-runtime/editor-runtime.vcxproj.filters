@@ -174,9 +174,6 @@
     <ClCompile Include="core\physics\utils\px_translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\core\physics_factory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\context\application_context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -259,6 +256,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\implot_items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\physics\core\physics_bridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -455,16 +455,13 @@
     <ClInclude Include="src\gizmos\editor_gizmo_color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\events\physics_ecs_listener.hpp">
+    <ClInclude Include="core\physics\core\physics_bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\utils\px_translator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\entity_container.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\physics\core\physics_factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\context\application_context.h">

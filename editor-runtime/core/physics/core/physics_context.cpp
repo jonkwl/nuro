@@ -14,7 +14,7 @@ physics(nullptr),
 dispatcher(nullptr),
 scene(nullptr),
 pvd(nullptr),
-ecsListener(physics, scene),
+bridge(physics, scene),
 timeStep(1.0f / 60.0f),
 gravity(PxVec3(0.0f, -9.81f, 0.0f)),
 accumulatedTime(0.0f)
@@ -47,20 +47,20 @@ void PhysicsContext::create()
 	}
 
 	// Setup ecs listener
-	ecsListener.setup();
+	bridge.setup();
 
 	//
 	// Register all observer events
 	//
 
-	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsEcsListener::constructBoxCollider>(ecsListener);
-	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsEcsListener::destroyBoxCollider>(ecsListener);
+	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsBridge::constructBoxCollider>(bridge);
+	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsBridge::destroyBoxCollider>(bridge);
 
-	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsEcsListener::constructSphereCollider>(ecsListener);
-	ECS::gRegistry.on_destroy<SphereColliderComponent>().disconnect<&PhysicsEcsListener::destroySphereCollider>(ecsListener);
+	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsBridge::constructSphereCollider>(bridge);
+	ECS::gRegistry.on_destroy<SphereColliderComponent>().disconnect<&PhysicsBridge::destroySphereCollider>(bridge);
 
-	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsEcsListener::constructRigidbody>(ecsListener);
-	ECS::gRegistry.on_destroy<RigidbodyComponent>().disconnect<&PhysicsEcsListener::destroyRigidbody>(ecsListener);
+	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsBridge::constructRigidbody>(bridge);
+	ECS::gRegistry.on_destroy<RigidbodyComponent>().disconnect<&PhysicsBridge::destroyRigidbody>(bridge);
 
 }
 

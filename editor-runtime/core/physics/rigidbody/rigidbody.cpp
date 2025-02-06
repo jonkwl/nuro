@@ -2,6 +2,7 @@
 
 #include <PxPhysicsAPI.h>
 
+#include "../core/utils/console.h"
 #include "../core/physics/utils/px_translator.h"
 
 using namespace physx;
@@ -9,7 +10,7 @@ using namespace physx;
 namespace Rigidbody {
 
 	// Get current force mode
-	PxForceMode::Enum getForceMode(RB_ForceMode mode) {
+	PxForceMode::Enum _getBackendForceMode(RB_ForceMode mode) {
 		switch (mode)
 		{
 		case RB_ForceMode::LINEAR:
@@ -30,14 +31,32 @@ namespace Rigidbody {
 		}
 	}
 
+	bool validate(RigidbodyComponent& rigidbody)
+	{
+		// Make sure rigidbody actor was created
+		if (rigidbody.actor) {
+			return true;
+		}
+		else {
+			Console::out::warning("Rigidbody", "Invalid rigidbody was accessed!");
+			return false;
+		}
+	}
+
 	void setInterpolation(RigidbodyComponent& rigidbody, RB_Interpolation value)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Set interpolation of rigidbody component
 		rigidbody.interpolation = value;
 	}
 
 	void setCollisionDetection(RigidbodyComponent& rigidbody, RB_CollisionDetection value)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// If actor is kinematic, always fall back to discrete collision detection
 		if (rigidbody.kinematic) {
 			value = RB_CollisionDetection::DISCRETE;
@@ -65,6 +84,9 @@ namespace Rigidbody {
 
 	void setResistance(RigidbodyComponent& rigidbody, float value)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Set actors linear damping according to value
 		rigidbody.actor->setLinearDamping(value);
 
@@ -74,6 +96,9 @@ namespace Rigidbody {
 
 	void setAngularResistance(RigidbodyComponent& rigidbody, float value)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Set actors angular damping according to value
 		rigidbody.actor->setAngularDamping(value);
 
@@ -83,6 +108,9 @@ namespace Rigidbody {
 
 	void setGravity(RigidbodyComponent& rigidbody, bool value)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Enable or disable actors gravity according to value
 		rigidbody.actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !value);
 
@@ -92,6 +120,9 @@ namespace Rigidbody {
 
 	void setKinematic(RigidbodyComponent& rigidbody, bool value)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Make sure actors collision detection is discrete
 		setCollisionDetection(rigidbody, RB_CollisionDetection::DISCRETE);
 
@@ -104,13 +135,19 @@ namespace Rigidbody {
 
 	void addForce(RigidbodyComponent& rigidbody, glm::vec3 value, RB_ForceMode mode)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Apply force to actor
-		rigidbody.actor->addForce(PxTranslator::convert(value), getForceMode(mode));
+		rigidbody.actor->addForce(PxTranslator::convert(value), _getBackendForceMode(mode));
 	}
 
 	void addTorque(RigidbodyComponent& rigidbody, glm::vec3 value, RB_ForceMode mode)
 	{
+		// Validate rigidbody
+		if (!validate(rigidbody)) return;
+
 		// Apply torque to actor
-		rigidbody.actor->addTorque(PxTranslator::convert(value), getForceMode(mode));
+		rigidbody.actor->addTorque(PxTranslator::convert(value), _getBackendForceMode(mode));
 	}
 }

@@ -8,6 +8,9 @@
 namespace Rigidbody
 {
 
+	// Checks if a rigidbody components is associated with a valid rigidbody
+	bool validate(RigidbodyComponent& rigidbody);
+
 	// Sets interpolation of rigidbody
 	void setInterpolation(RigidbodyComponent& rigidbody, RB_Interpolation value);
 

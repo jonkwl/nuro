@@ -85,7 +85,7 @@ namespace Runtime {
 
 		// Create default cubemap
 		gDefaultCubemap->setSource_Cross("../resources/skybox/default/default_night.png");
-		loader.createAsync(gDefaultCubemap);
+		// loader.createAsync(gDefaultCubemap);
 
 		// Create default skybox
 		gDefaultSkybox.setCubemap(gDefaultCubemap);

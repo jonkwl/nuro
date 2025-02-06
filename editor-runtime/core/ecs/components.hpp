@@ -185,7 +185,6 @@ struct RigidbodyComponent {
 	// Current rigidbody physics-internal rotation
 	glm::quat rotation = glm::identity<glm::quat>();
 
-	// UNSAFE - MUST BE FIXED
 	// Physics backend actor handle
 	physx::PxRigidDynamic* actor = nullptr;
 

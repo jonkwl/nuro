@@ -10,19 +10,18 @@ Entity playerEntity;
 Entity planeEntity;
 
 void _example() {
-
-	// Get loader
+	/* // Get loader
 	ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 	// Models
 	Model* cubeModel = new Model();
 	cubeModel->setSource("../resources/primitives/cube.fbx");
-	loader.createAsync(cubeModel);
+	loader.createSync(cubeModel);
 	const Mesh* cubeMesh = cubeModel->queryMesh(0);
 
 	Model* sphereModel = new Model();
 	sphereModel->setSource("../resources/primitives/sphere.fbx");
-	loader.createAsync(sphereModel);
+	loader.createSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
 	// Standard Material
@@ -161,7 +160,7 @@ void _example() {
 		dragon.transform.position = glm::vec3(0.0f, 20.0f, 20.0f);
 		dragon.transform.scale = glm::vec3(10.0f);
 		dragon.add<MeshRendererComponent>(dragonModel->queryMesh(i), cubeMaterial);
-	}
+	} */
 }
 
 void gameSetup() {

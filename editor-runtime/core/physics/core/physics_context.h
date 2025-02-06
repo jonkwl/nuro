@@ -3,7 +3,7 @@
 #include <PxPhysicsAPI.h>
 #include <glm.hpp>
 
-#include "../core/physics/events/physics_ecs_listener.hpp"
+#include "../core/physics/core/physics_bridge.h"
 
 class PhysicsContext
 {
@@ -38,7 +38,7 @@ private:
 	physx::PxScene* scene;
 	physx::PxPvd* pvd;
 
-	PhysicsEcsListener ecsListener;
+	PhysicsBridge bridge;
 
 private:
 	const physx::PxReal timeStep;
