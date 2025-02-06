@@ -501,13 +501,11 @@ namespace IMComponents {
 		return circleClicked;
 	}
 
-	void loadingBuffer(float radius, int thickness, const ImU32& color) {
+	void loadingBuffer(ImDrawList& drawList, ImVec2 position, float radius, int thickness, const ImU32& color) {
 		// Fetch needed objects
-		ImDrawList& drawList = *ImGui::GetForegroundDrawList();
 		ImGuiContext& context = *ImGui::GetCurrentContext();
 
-		// Evaluate position and size
-		ImVec2 position = ImGui::GetCursorScreenPos();
+		// Evaluate size
 		ImVec2 size(radius * 2, radius * 2);
 
 		// Add rect item

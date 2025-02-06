@@ -58,5 +58,5 @@ namespace IMComponents
 	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor);
 
 	// Draws a loading buffer at the current cursor position
-	void loadingBuffer(float radius, int thickness, const ImU32& color);
+	void loadingBuffer(ImDrawList& drawList, ImVec2 position, float radius, int thickness, const ImU32& color);
 };

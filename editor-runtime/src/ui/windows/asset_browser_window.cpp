@@ -20,7 +20,11 @@ targetAssetScale(1.0f)
 			a.name = "Material " + std::to_string(i);
 		}
 
-		currentAsset.push_back(a);
+		if (i < 10) {
+			a.loading = true;
+		}
+
+		currentAssets.push_back(a);
 	}
 }
 
@@ -51,7 +55,7 @@ void AssetBrowserWindow::render()
 		position.y += navigationSize.y;
 
 		ImVec2 contentsSize = size - ImVec2(folderStructureSize.x, navigationSize.y);
-		renderFolderContent(drawList, position, contentsSize);
+		renderAssets(drawList, position, contentsSize);
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -224,7 +228,7 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 	return size;
 }
 
-void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 position, ImVec2 size)
+void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImVec2 size)
 {
 	//
 	// EVALUATE
@@ -252,10 +256,10 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 	{
 		//
 		// CREATE ASSET UI DATA (GEOMETRY ETC)
+		// Optimization: Doesnt have to be done every frame, only when assets change and only for those who changed
 		//
 
-		// Optimization: Doesnt have to be done every frame, only when assets change and only for those who changed
-		for (Asset& asset : currentAsset) {
+		for (Asset& asset : currentAssets) {
 			createAssetUIData(asset);
 		}
 
@@ -268,7 +272,7 @@ void AssetBrowserWindow::renderFolderContent(ImDrawList& drawList, ImVec2 positi
 
 		ImVec2 lastAssetSize = ImVec2(0.0f, 0.0f);
 
-		for (Asset asset : currentAsset) {
+		for (Asset asset : currentAssets) {
 			// Check for new line
 			if (cursor.x + asset.uiData.size.x > size.x - padding.x) {
 				// Start new line using current assets height
@@ -571,8 +575,20 @@ void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImV
 		}
 	}
 
+	ImU32 iconColor = asset.loading ? IM_COL32(200, 200, 200, 180) : IM_COL32_WHITE;
 	ImVec2 iconPos = ImVec2(position.x + (asset.uiData.size.x - asset.uiData.iconSize.x) * 0.5f, position.y + asset.uiData.padding.y);
-	drawList.AddImageRounded(icon, iconPos, iconPos + asset.uiData.iconSize, ImVec2(0, 1), ImVec2(1, 0), IM_COL32_WHITE, 10.0f);
+
+	drawList.AddImageRounded(icon, iconPos, iconPos + asset.uiData.iconSize, ImVec2(0, 1), ImVec2(1, 0), iconColor, 10.0f);
+
+	//
+	// DRAW LOADING BUFFER IF NEEDED
+	//
+
+	if (asset.loading) {
+		float bufferSize = asset.uiData.size.x * 0.45f;
+		ImVec2 bufferPos = ImVec2(position.x + (asset.uiData.size.x - bufferSize) * 0.5f, position.y + asset.uiData.padding.y + (asset.uiData.iconSize.y - bufferSize) * 0.5f);
+		IMComponents::loadingBuffer(drawList, bufferPos, bufferSize * 0.5f, 2, IM_COL32_WHITE);
+	}
 
 	//
 	// DRAW TEXT

@@ -53,6 +53,8 @@ public:
 
 		uint32_t thumbnail = 0;
 
+		bool loading = false;
+
 		AssetUIData uiData;
 	};
 
@@ -60,16 +62,16 @@ private:
 	// Checks for asset broser related inputs
 	void evaluateInputs();
 
-	// Renders navigation element at given position and returns its size
+	// Renders navigation at given position and returns its size
 	ImVec2 renderNavigation(ImDrawList& drawList, ImVec2 position);
 
-	// Renders folder structure element at given position and returns its size
+	// Renders folder structure at given position and returns its size
 	ImVec2 renderFolderStructure(ImDrawList& drawList, ImVec2 position);
 
-	// Renders folder content element at given position with given size
-	void renderFolderContent(ImDrawList& drawList, ImVec2 position, ImVec2 size);
+	// Renders asset items for current folder at given position with given size
+	void renderAssets(ImDrawList& drawList, ImVec2 position, ImVec2 size);
 
-	// Renders a folder item for the folder structure element
+	// Renders a folder item for the folder structure
 	void renderFolderItem(ImDrawList& drawList, Folder& folder, uint32_t indentation);
 
 	// Evaluates and sets an assets ui data
@@ -86,5 +88,5 @@ private:
 	float targetAssetScale;
 
 	// Currently shown assets from selected folder
-	std::vector<Asset> currentAsset;
+	std::vector<Asset> currentAssets;
 };

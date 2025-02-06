@@ -77,8 +77,7 @@ void Footer::renderContent(ImDrawList& drawList)
         float bufferSize = style.height * 0.4f;
         if (loading) {
             ImVec2 bufferPos = ImVec2(footerPosition.x + footerSize.x - bufferSize - style.padding.x, footerPosition.y + (footerSize.y - bufferSize) * 0.5f);
-            ImGui::SetCursorScreenPos(bufferPos);
-            IMComponents::loadingBuffer(bufferSize * 0.5f, 2, style.primaryTextColor);
+            IMComponents::loadingBuffer(drawList, bufferPos, bufferSize * 0.5f, 2, style.primaryTextColor);
         }
 
         // Draw text
