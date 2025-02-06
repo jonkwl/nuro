@@ -18,7 +18,7 @@ void DiagnosticsWindow::render()
 	// float fps = 1000000.0f / Profiler::getUs("render");
 	float fps = Diagnostics::getFps();
 
-	ImGui::Begin(UIUtils::windowTitle("Diagnostics"), nullptr, EditorFlag::fixed);
+	ImGui::Begin(UIUtils::windowTitle("Diagnostics").c_str(), nullptr, EditorFlag::fixed);
 
 	IMComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM, HeadlineJustification::LEFT);
 

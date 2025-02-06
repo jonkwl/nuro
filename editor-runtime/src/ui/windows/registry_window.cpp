@@ -41,7 +41,7 @@ cameraTarget(nullptr)
 void RegistryWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20.0f, 20.0f));
-	ImGui::Begin(UIUtils::windowTitle("Registry"), nullptr, EditorFlag::fixed);
+	ImGui::Begin(UIUtils::windowTitle("Registry").c_str(), nullptr, EditorFlag::fixed);
 	{
 		renderContextMenu();
 

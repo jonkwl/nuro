@@ -154,6 +154,6 @@ private:
 	}
 
 	void verifyFailed() {
-		Console::out::warning("Entity Container", "Couldn't perform operation on entity '" + name + "' because it doesn't exist anymore.");
+		Console::out::warning("Entity Container", "Couldn't perform operation on entity '" + name + "' because it doesn't exist.");
 	}
 };

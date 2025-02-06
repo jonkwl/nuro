@@ -147,17 +147,6 @@ namespace Runtime {
 		}
 	}
 
-	void _renderEditor() {
-
-		Profiler::start("ui_pass");
-
-		EditorUI::newFrame();
-		EditorUI::render();
-
-		Profiler::stop("ui_pass");
-
-	}
-
 	void _stepGame() {
 
 		// UPDATE GAME LOGIC
@@ -216,7 +205,10 @@ namespace Runtime {
 		gPreviewPipeline.render();
 
 		// RENDER EDITOR
-		_renderEditor();
+		Profiler::start("ui_pass");
+		EditorUI::newFrame();
+		EditorUI::render();
+		Profiler::stop("ui_pass");
 
 		// END CURRENT FRAME
 		ApplicationContext::endFrame();

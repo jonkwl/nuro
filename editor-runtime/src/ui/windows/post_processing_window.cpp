@@ -6,7 +6,7 @@ PostProcessingWindow::PostProcessingWindow(PostProcessing::Profile& targetProfil
 
 void PostProcessingWindow::render()
 {
-	ImGui::Begin(UIUtils::windowTitle("Post Processing"), nullptr, EditorFlag::standard);
+	ImGui::Begin(UIUtils::windowTitle("Post Processing").c_str(), nullptr, EditorFlag::standard);
 	{
 		IMComponents::headline("Post Processing", ICON_FA_SPARKLES, HeadlineJustification::LEFT);
 

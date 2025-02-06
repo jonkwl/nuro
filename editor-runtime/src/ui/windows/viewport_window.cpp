@@ -87,7 +87,7 @@ void ViewportWindow::render()
 	mouseCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(UIUtils::windowTitle("Viewport"), nullptr, EditorFlag::standard);
+	ImGui::Begin(UIUtils::windowTitle("Viewport").c_str(), nullptr, EditorFlag::standard);
 	{
 
 		windowFocused = UIUtils::windowFocused();
@@ -102,7 +102,7 @@ void ViewportWindow::render()
 	}
 
 	// Try render speed change indicator
-	renderSpeedChangeIndicator();
+	// renderSpeedChangeIndicator();
 
 	ImGui::End();
 	ImGui::PopStyleVar();

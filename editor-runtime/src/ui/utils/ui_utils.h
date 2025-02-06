@@ -2,6 +2,7 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <string>
 #include <glm.hpp>
 
 namespace UIUtils
@@ -26,7 +27,7 @@ namespace UIUtils
 	void calculateAspectFitting(float aspectRatio, ImVec2& size, ImVec2& offset);
 
 	// Returns title for window with adjusted spacing
-	const char* windowTitle(const char* title);
+	std::string windowTitle(const char* title);
 
 	// Returns if the current window is focused
 	bool windowFocused();

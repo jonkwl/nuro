@@ -206,29 +206,29 @@ namespace EditorUI {
 		// Note: Permanently allocated, as they will be needed throughout the whole runtime
 		//
 
-		ViewportWindow* sceneWindow = new ViewportWindow();
-		gWindows.push_back(sceneWindow);
+		ViewportWindow* viewportWindow = new ViewportWindow();
+		gWindows.emplace_back(viewportWindow);
 
 		GameWindow* gameWindow = new GameWindow();
-		gWindows.push_back(gameWindow);
+		gWindows.emplace_back(gameWindow);
 
 		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::getGameViewPipeline().getProfile());
-		gWindows.push_back(postProcessingWindow);
+		gWindows.emplace_back(postProcessingWindow);
 
 		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
-		gWindows.push_back(diagnosticsWindow);
+		gWindows.emplace_back(diagnosticsWindow);
 
 		ConsoleWindow* consoleWindow = new ConsoleWindow();
-		gWindows.push_back(consoleWindow);
+		gWindows.emplace_back(consoleWindow);
 
-		RegistryWindow* hierarchyWindow = new RegistryWindow();
-		gWindows.push_back(hierarchyWindow);
+		RegistryWindow* registryWindow = new RegistryWindow();
+		gWindows.emplace_back(registryWindow);
 
 		InsightPanelWindow* insightPanelWindow = new InsightPanelWindow();
-		gWindows.push_back(insightPanelWindow);
+		gWindows.emplace_back(insightPanelWindow);
 
 		AssetBrowserWindow* assetBrowserWindow = new AssetBrowserWindow();
-		gWindows.push_back(assetBrowserWindow);
+		gWindows.emplace_back(assetBrowserWindow);
 
 		//
 		// SETUP WINDOW ELEMENTS
@@ -336,7 +336,7 @@ namespace EditorUI {
 		//
 		// DRAW CALLS
 		//
-
+		
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
