@@ -199,11 +199,6 @@ void gameUpdate() {
 	RigidbodyComponent& playerRb = player.get<RigidbodyComponent>();
 	Rigidbody::addForce(playerRb, forceDirection);
 
-	auto type = entt::resolve<TransformComponent>();
-	if (auto data = type.data("Position"_hs); data) {
-		Console::out::warning("Testing", "Player X is at " + std::to_string(data.get(player.transform).cast<glm::vec3>().x));
-	}
-	
 	float jumpForce = 8.0f;
 	if (Input::mouseDown(MouseButton::LEFT) && !jumped) {
 		Rigidbody::addForce(playerRb, glm::vec3(0.0f, jumpForce, 0.0f), RB_ForceMode::IMPULSE);

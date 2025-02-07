@@ -48,10 +48,9 @@ public:
 	Texture* emissiveMap;
 	Texture* heightMap;
 
-	void syncStaticUniforms();
-	void syncLightUniforms();
-
-	void setSampleDirectionalLight();
+	void syncStaticUniforms() const;
+	void syncLightUniforms() const;
+	void setSampleDirectionalLight() const;
 
 public:
 	// Instance counter

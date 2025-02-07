@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\physics\core\physics_bridge.cpp" />
+    <ClCompile Include="src\ui\components\inspectable_components.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="core\resource\resource_loader.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -221,11 +222,11 @@
     <ClCompile Include="src\ui\components\toggle_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\ecs\composed.h" />
     <ClInclude Include="core\ecs\ecs_collection.h" />
-    <ClInclude Include="core\ecs\entity_container.h" />
+    <ClInclude Include="core\ecs\entity_container.hpp" />
     <ClInclude Include="core\resource\resource.h" />
     <ClInclude Include="core\resource\resource_loader.h" />
+    <ClInclude Include="src\ui\components\inspectable_components.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\ImGuizmo.h" />

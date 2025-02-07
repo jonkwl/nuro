@@ -1,9 +1,14 @@
 #include "entity_inspectable.h"
 
+#include <glm.hpp>
+
+#include "../core/ecs/components.h"
+
 #include "../src/ui/editor_ui.h"
-#include "../src/ui/components/im_components.h"
 #include "../src/ui/windows/registry_window.h"
+#include "../src/ui/components/im_components.h"
 #include "../src/ui/windows/insight_panel_window.h"
+#include "../src/ui/components/inspectable_components.h"
 
 EntityInspectable::EntityInspectable(HierarchyItem& item) : item(item)
 {
@@ -23,18 +28,14 @@ void EntityInspectable::renderStaticContent(ImDrawList& drawList)
 
 void EntityInspectable::renderDynamicContent(ImDrawList& drawList)
 {
-	static float inputFloat = 0.0f;
-	static bool inputBool = false;
-
-	static bool enabled = true;
-	static bool opened = false;
-
-	auto drawContent = [&]() {
-		IMComponents::input("Value 1", inputFloat);
-		IMComponents::input("Value 2", inputFloat);
-		IMComponents::input("Value 3", inputFloat);
-		IMComponents::input("Value 4", inputBool);
-	};
-
-	IMComponents::componentWrapper(drawList, "Component", IconPool::get("component"), drawContent, enabled, opened);
+	add<TransformComponent>(InspectableComponents::drawTransform);
+	add<MeshRendererComponent>(InspectableComponents::drawMeshRenderer);
+	add<CameraComponent>(InspectableComponents::drawCamera);
+	add<DirectionalLightComponent>(InspectableComponents::drawDirectionalLight);
+	add<PointLightComponent>(InspectableComponents::drawPointLight);
+	add<SpotlightComponent>(InspectableComponents::drawSpotlight);
+	add<VelocityComponent>(InspectableComponents::drawVelocity);
+	add<BoxColliderComponent>(InspectableComponents::drawBoxCollider);
+	add<SphereColliderComponent>(InspectableComponents::drawSphereCollider);
+	add<RigidbodyComponent>(InspectableComponents::drawRigidbody);
 }

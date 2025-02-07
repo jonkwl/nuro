@@ -67,6 +67,8 @@ void LitMaterial::bind() const
 	// Bad temporary code
 	if (!shader || !viewport || !cameraTransform || !profile || !mainShadowDisk || !mainShadowMap) return;
 
+	syncLightUniforms();
+
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", mainShadowMap->getLightSpace());
 	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
@@ -179,7 +181,7 @@ uint32_t LitMaterial::getShaderId() const
 	return shaderId;
 }
 
-void LitMaterial::syncStaticUniforms()
+void LitMaterial::syncStaticUniforms() const
 {
 	//
 	// Sync static texture units
@@ -208,7 +210,7 @@ void LitMaterial::syncStaticUniforms()
 	// shader->setFloat("fog.data[0]", 0.01);
 }
 
-void LitMaterial::syncLightUniforms()
+void LitMaterial::syncLightUniforms() const
 {
 	//
 	// Sync lights
@@ -278,7 +280,7 @@ void LitMaterial::syncLightUniforms()
 	shader->setInt("configuration.numSpotLights", nSpotlights);
 }
 
-void LitMaterial::setSampleDirectionalLight()
+void LitMaterial::setSampleDirectionalLight() const
 {
 	shader->setInt("configuration.numDirectionalLights", 1);
 	shader->setInt("configuration.numPointLights", 0);

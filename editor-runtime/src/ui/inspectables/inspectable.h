@@ -6,10 +6,7 @@
 class Inspectable
 {
 public:
-	virtual std::string getName() { 
-		return "Default";
-	}
-
-	virtual void renderStaticContent(ImDrawList& drawList) { }
-	virtual void renderDynamicContent(ImDrawList& drawList) { }
+	virtual std::string getName() = 0;
+	virtual void renderStaticContent(ImDrawList& drawList) = 0;
+	virtual void renderDynamicContent(ImDrawList& drawList) = 0;
 };

@@ -1,20 +1,19 @@
 #pragma once
 
+#include <tuple>
 #include <cstdint>
 #include <entt.hpp>
 #include <optional>
 #include <sstream>
-#include <tuple>
 
-#include "../core/ecs/composed.h"
 #include "../core/ecs/components.h"
+
+using namespace entt::literals;
 
 using Entity = entt::entity;
 using Registry = entt::registry;
-
 using RenderQueue = std::vector<std::tuple<Entity, TransformComponent&, MeshRendererComponent&>>;
-
-using namespace entt::literals;
+using Camera = std::tuple<TransformComponent&, CameraComponent&>;
 
 namespace ECS {
 

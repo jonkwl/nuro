@@ -1,9 +1,9 @@
 #include "im_components.h"
 
-#include <imgui_internal.h>
+#include <array>
 #include <implot.h>
 #include <algorithm>
-#include <array>
+#include <imgui_internal.h>
 
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/misc/ui_flex.h"
@@ -28,14 +28,14 @@ namespace IMComponents {
 		return numStr;
 	}
 
-	void headline(std::string title, const char* icon, HeadlineJustification justification, bool seperator)
+	void headline(std::string title, const char* icon, bool seperator)
 	{
 		const float marginTop = 20.0f - ImGui::GetStyle().WindowPadding.y;
 		const float marginBottom = 3.0f;
 		const float marginSubSeperator = 7.0f;
 
 		ImGui::Dummy(ImVec2(0.0f, marginTop));
-		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, (Justification)justification, Alignment::CENTER, 10.0f, Margin());
+		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 10.0f, Margin());
 		{
 			tryIcon(icon);
 			ImGui::PushFont(EditorUI::getFonts().h4_bold);
@@ -232,6 +232,7 @@ namespace IMComponents {
 
 	void input(std::string label, bool& value)
 	{
+		label += ":";
 		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
 			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
@@ -255,6 +256,7 @@ namespace IMComponents {
 
 	void input(std::string label, int32_t& value, float speed)
 	{
+		label += ":";
 		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
 			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
@@ -269,7 +271,7 @@ namespace IMComponents {
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushItemWidth(-1);
 			std::string id = EditorUI::generateIdString();
-			ImGui::DragInt(id.c_str(), &value, speed);
+			ImGui::DragInt(id.c_str(), &value, speed, 0.0f, 0.0f, "%.2f");
 			ImGui::PopItemWidth();
 
 			ImGui::EndTable();
@@ -278,6 +280,7 @@ namespace IMComponents {
 
 	void input(std::string label, float& value, float speed)
 	{
+		label += ":";
 		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
 			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
@@ -292,37 +295,160 @@ namespace IMComponents {
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushItemWidth(-1);
 			std::string id = EditorUI::generateIdString();
-			ImGui::DragFloat(id.c_str(), &value, speed);
+			ImGui::DragFloat(id.c_str(), &value, speed, 0.0f, 0.0f, "%.2f");
 			ImGui::PopItemWidth();
 
 			ImGui::EndTable();
 		}
+	}
 
-		/*// Begin a table with 2 columns
-		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
+
+	void input(std::string label, glm::vec3& value, float speed)
+	{
+		label += ":";
+		/*if (ImGui::BeginTable("##table", 7, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
 		{
-			// Set both columns to take up 50% of the available space
-			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.3f);
-			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 0.7f);
-
-			// Create a new row for the input
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 1.0f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 10.0f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 1.0f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 10.0f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 1.0f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 10.0f);
+			ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 1.0f);
 			ImGui::TableNextRow();
 
-			// Left column (Label)
+			// Label
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text(label.c_str());
 
-			// Right column (Input)
+			// X Input
 			ImGui::TableSetColumnIndex(1);
-
 			ImGui::PushItemWidth(-1);
 			std::string id = EditorUI::generateIdString();
-			ImGui::DragFloat(id.c_str(), &value, speed);
+			ImGui::DragFloat(id.c_str(), &value.x, speed);
 			ImGui::PopItemWidth();
 
-			// End the table (Only 1 row for this input)
+			// X Label
+			ImGui::TableSetColumnIndex(2);
+			ImGui::Text("X");
+
+			// Y Input
+			ImGui::TableSetColumnIndex(3);
+			ImGui::PushItemWidth(-1);
+			id = EditorUI::generateIdString();
+			ImGui::DragFloat(id.c_str(), &value.y, speed);
+			ImGui::PopItemWidth();
+
+			// Y Label
+			ImGui::TableSetColumnIndex(4);
+			ImGui::Text("Y");
+
+			// Z Input
+			ImGui::TableSetColumnIndex(5);
+			ImGui::PushItemWidth(-1);
+			id = EditorUI::generateIdString();
+			ImGui::DragFloat(id.c_str(), &value.z, speed);
+			ImGui::PopItemWidth();
+
+			// Z Label
+			ImGui::TableSetColumnIndex(6);
+			ImGui::Text("Z");
+
 			ImGui::EndTable();
 		}*/
+
+		//
+		// EVALUATE
+		//
+
+		float fallbackValue = 0.0f;
+		
+		float xRegionAvail = ImGui::GetContentRegionAvail().x;
+		float labelWidth = xRegionAvail * 0.3f;
+		float componentsWidth = xRegionAvail * 0.55f;
+
+		ImFont* buttonFont = EditorUI::getFonts().p_bold;
+
+		ImGui::PushID(EditorUI::generateId());
+
+		//
+		// SETUP COLUMNS
+		//
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, labelWidth);
+
+		//
+		// LABEL
+		//
+
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		//
+		// SETUP COMPONENTS
+		//
+		 
+		ImGui::PushMultiItemsWidths(3, componentsWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 6.0f, 0.0f });
+
+		//
+		// X COMPONENT
+		//
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.0f, 0.25f, 0.3f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.8f, 0.0f, 0.25f, 0.4f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.0f, 0.25f, 0.7f });
+		ImGui::PushFont(buttonFont);
+		if (ImGui::Button("X")) value.x = fallbackValue;
+		ImGui::PopFont();
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##_X", &value.x, speed, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		//
+		// Y COMPONENT
+		//
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.25f, 0.8f, 0.25f, 0.3f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.25f, 0.8f, 0.25f, 0.4f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.25f, 0.8f, 0.25f, 0.7f });
+		ImGui::PushFont(buttonFont);
+		if (ImGui::Button("Y")) value.y = fallbackValue;
+		ImGui::PopFont();
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##_Y", &value.y, speed, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		//
+		// Z COMPONENT
+		//
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 0.3f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.1f, 0.25f, 0.8f, 0.4f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 0.7f });
+		ImGui::PushFont(buttonFont);
+		if (ImGui::Button("Z")) value.z = fallbackValue;
+		ImGui::PopFont();
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##_Z", &value.z, speed, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+
+		//
+		// EXIT
+		//
+
+		ImGui::PopStyleVar();
+		ImGui::Columns(1);
+		ImGui::PopID();
 	}
 
 	void indicatorLabel(std::string label, std::string value, std::string additional)
@@ -399,6 +525,7 @@ namespace IMComponents {
 
 	void colorPicker(std::string label, float value[3])
 	{
+		label += ":";
 		ImU32 color = IM_COL32(
 			static_cast<unsigned char>(value[0] * 255.0f),
 			static_cast<unsigned char>(value[1] * 255.0f),
@@ -451,6 +578,12 @@ namespace IMComponents {
 		}
 	}
 
+	void colorPicker(std::string label, glm::vec3& value)
+	{
+		float color[3] = { value.x, value.y, value.z };
+		colorPicker(label, color);
+	}
+
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size)
 	{
 		ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
@@ -477,95 +610,6 @@ namespace IMComponents {
 	{
 		ImGui::EndChild();
 		ImGui::PopClipRect();
-	}
-
-	void componentWrapper(ImDrawList& drawList, std::string label, uint32_t icon, std::function<void()> drawContent, bool& enabled, bool& opened)
-	{
-		//
-		// EVALUATE 
-		//
-
-		ImVec2 contentAvail = ImGui::GetContentRegionAvail();
-		ImVec2 cursorPos = ImGui::GetCursorScreenPos();
-
-		float titleHeight = EditorSizing::h4_FontSize;
-		ImVec2 titlePadding = ImVec2(10.0f, 10.0f);
-
-		float collapsedHeight = titleHeight + titlePadding.y * 2;
-		float expandedHeight = 250.0f;
-
-		float yMargin = 2.0f;
-		ImVec2 size = ImVec2(contentAvail.x, opened ? expandedHeight : collapsedHeight);
-		ImVec2 p0 = ImVec2(cursorPos.x, cursorPos.y + yMargin);
-		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
-
-		const bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
-
-		//
-		// CLICK COLLAPSE
-		//
-
-		if (hovered && ImGui::IsMouseDoubleClicked(0)) {
-			opened = !opened;
-		}
-
-		//
-		// DRAW BACKGROUND
-		//
-
-		drawList.AddRectFilled(p0, p1, IM_COL32(30, 30, 30, 255), 10.0f);
-
-		//
-		// DRAW EXPANSION CARET
-		//
-
-		ImVec2 caretPos = p0 + titlePadding;
-		if (IMComponents::caret(drawList, caretPos, ImVec2(-1.0f, 2.0f), opened ? ICON_FA_CARET_DOWN : ICON_FA_CARET_RIGHT, IM_COL32(0, 0, 0, 0), EditorColor::element)) {
-			opened = !opened;
-		}
-
-		//
-		// DRAW COMPONENT CHECKBOX
-		//
-
-		ImVec2 checkboxPos = caretPos + ImVec2(26.0f, -2.0f);
-		ImVec2 cursorCache = ImGui::GetCursorScreenPos();
-
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
-
-		ImGui::SetCursorScreenPos(checkboxPos);
-		std::string id = EditorUI::generateIdString();
-		ImGui::Checkbox(id.c_str(), &enabled);
-		ImGui::SetCursorScreenPos(cursorCache);
-
-		ImGui::PopStyleVar();
-
-		//
-		// DRAW COMPONENT ICON
-		//
-
-		ImVec2 iconSize = ImVec2(18.0f, 18.0f);
-		ImVec2 iconPos = caretPos + ImVec2(56.0f, -1.0f);
-		drawList.AddImage(icon, iconPos, iconPos + iconSize, ImVec2(0, 1), ImVec2(1, 0));
-
-		//
-		// DRAW COMPONENT TEXT
-		//
-
-		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, iconPos + ImVec2(26.0f, 0.0f), EditorColor::text, label.c_str());
-
-		//
-		// ADVANCE CURSOR AND DRAW CUSTOM CONTENT
-		//
-
-		if (opened) {
-			ImGui::Dummy(ImVec2(0.0f, collapsedHeight + titlePadding.y));
-			drawContent();
-		}
-		else {
-			ImGui::Dummy(ImVec2(size.x, size.y + yMargin));
-		}
-
 	}
 
 	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor)

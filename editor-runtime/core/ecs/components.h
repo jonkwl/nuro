@@ -36,8 +36,11 @@ struct TransformComponent {
 
 struct MeshRendererComponent {
 
-	MeshRendererComponent() : mesh(nullptr), material(nullptr) {};
-	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : mesh(mesh), material(material) {};
+	MeshRendererComponent() : enabled(true), mesh(nullptr), material(nullptr) {};
+	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : enabled(true), mesh(mesh), material(material) {};
+	
+	// Enables / disables components
+	bool enabled;
 
 	// Mesh render target
 	const Mesh* mesh;
@@ -47,6 +50,9 @@ struct MeshRendererComponent {
 };
 
 struct CameraComponent {
+
+	// Enables / disables components
+	bool enabled = true;
 
 	// Cameras y fov in degrees
 	float fov = 70.0f;
@@ -61,6 +67,9 @@ struct CameraComponent {
 
 struct DirectionalLightComponent {
 
+	// Enables / disables components
+	bool enabled = true;
+
 	// Intensity of the directional light
 	float intensity;
 
@@ -69,6 +78,9 @@ struct DirectionalLightComponent {
 };
 
 struct PointLightComponent {
+
+	// Enables / disables components
+	bool enabled = true;
 
 	// Intensity of the point light
 	float intensity;
@@ -84,6 +96,9 @@ struct PointLightComponent {
 };
 
 struct SpotlightComponent {
+
+	// Enables / disables components
+	bool enabled = true;
 
 	// Intensity of the spotlight
 	float intensity;
@@ -106,6 +121,9 @@ struct SpotlightComponent {
 
 struct VelocityComponent {
 
+	// Enables / disables components
+	bool enabled = true;
+
 	// Intensity of the velocity impact
 	float intensity = 1.0f;
 
@@ -115,6 +133,9 @@ struct VelocityComponent {
 };
 
 struct BoxColliderComponent {
+
+	// Enables / disables components
+	bool enabled = true;
 
 	// Offset relative to transform origin
 	glm::vec3 center = glm::vec3(0.0f);
@@ -134,6 +155,9 @@ struct BoxColliderComponent {
 
 struct SphereColliderComponent {
 
+	// Enables / disables components
+	bool enabled = true;
+
 	// Offset relative to transform origin
 	glm::vec3 center = glm::vec3(0.0f);
 
@@ -151,6 +175,9 @@ struct SphereColliderComponent {
 };
 
 struct RigidbodyComponent {
+
+	// Enables / disables components
+	bool enabled = true;
 
 	// Interpolation mode
 	RB_Interpolation interpolation = RB_Interpolation::INTERPOLATE;

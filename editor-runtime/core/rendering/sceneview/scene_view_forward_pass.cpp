@@ -195,6 +195,9 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 {
 	// Transform components model and mvp must have been calculated beforehand
 
+	// Renderer must be enabled
+	if (!renderer.enabled) return;
+
 	// Make sure mesh is available
 	if (!renderer.mesh) return;
 
@@ -256,13 +259,19 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	TransformComponent& transform = entity->transform;
 	MeshRendererComponent& renderer = entity->get<MeshRendererComponent>();
 
+	// Renderer must be enabled
+	if (!renderer.enabled) return;
+
+	// Get camera transform
+	TransformComponent& cameraTransform = std::get<0>(camera);
+
 	// Render selected entitites gizmos if needed
 	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer
 	glStencilMask(0xFF); // Enable stencil writes
-
+		
 	// Forward render entities base mesh
 	Shader* shader = renderer.material->getShader();
 	shader->bind();
@@ -286,7 +295,7 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Get outline thickness according to camera distance
-	float distance = glm::distance(camera.transform.position, transform.position);
+	float distance = glm::distance(cameraTransform.position, transform.position);
 	float baseThickness = 0.038f;
 	float thickness = baseThickness;
 

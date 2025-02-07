@@ -54,7 +54,7 @@ void SceneViewPipeline::create()
 	defaultProfile.ambientOcclusion.enabled = false;
 
 	// Setup fly camera
-	flyCamera.root.fov = 90.0f;
+	std::get<1>(flyCamera).fov = 90.0f;
 
 	// Create passes
 	createPasses();
@@ -74,22 +74,23 @@ void SceneViewPipeline::render()
 	Profiler::start("scene_view");
 
 	// Pick variable items for rendering
-	Camera& targetCamera = flyCamera;
+	Camera& camera = flyCamera;
+	auto& [cameraTransform, cameraHandle] = camera;
 
 	// Select game profile if profile effects are enabled and not rendering wireframe
 	bool useDefaultProfile = !useProfileEffects || wireframe;
 	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::getGameViewPipeline().getProfile();
 
 	// Get transformation matrices
-	view = Transformation::view(targetCamera.transform.position, targetCamera.transform.rotation);
-	projection = Transformation::projection(targetCamera.root.fov, viewport.getAspect(), targetCamera.root.near, targetCamera.root.far);
+	view = Transformation::view(cameraTransform.position, cameraTransform.rotation);
+	projection = Transformation::projection(cameraHandle.fov, viewport.getAspect(), cameraHandle.near, cameraHandle.far);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	// Start new gizmo frame
 	IMGizmo& gizmos = Runtime::getSceneGizmos();
 	gizmos.newFrame();
-	ComponentGizmos::renderSceneViewIcons(gizmos, targetCamera.transform);
+	ComponentGizmos::renderSceneViewIcons(gizmos, cameraTransform);
 
 	//
 	// PREPROCESSOR PASS
@@ -127,7 +128,7 @@ void SceneViewPipeline::render()
 
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &viewport; // Redundant most of the times atm
-	LitMaterial::cameraTransform = &targetCamera.transform; // Redundant most of the times atm
+	LitMaterial::cameraTransform = &cameraTransform; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &targetProfile;
 	LitMaterial::castShadows = renderShadows;
@@ -138,7 +139,7 @@ void SceneViewPipeline::render()
 	sceneViewForwardPass.drawSkybox = showSkybox;
 	sceneViewForwardPass.linkSkybox(Runtime::getGameViewPipeline().getLinkedSkybox());
 	sceneViewForwardPass.drawGizmos = showGizmos;
-	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, targetCamera, selectedEntities);
+	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, camera, selectedEntities);
 
 	//
 	// POST PROCESSING PASS

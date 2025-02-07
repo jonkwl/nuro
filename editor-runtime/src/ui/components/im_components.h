@@ -1,20 +1,14 @@
 #pragma once
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
 #include <string>
+#include <glm.hpp>
+#include <imgui.h>
 #include <functional>
-
-enum class HeadlineJustification
-{
-	LEFT,
-	CENTER,
-	RIGHT
-};
 
 namespace IMComponents
 {
-	void headline(std::string title, const char* icon = "", HeadlineJustification justification = HeadlineJustification::LEFT, bool seperator = true);
+	void headline(std::string title, const char* icon = "", bool seperator = true);
 	
 	void tooltip(std::string tooltip);
 
@@ -34,6 +28,7 @@ namespace IMComponents
 	void input(std::string label, bool& value);
 	void input(std::string label, int32_t& value, float speed = 0.1f);
 	void input(std::string label, float& value, float speed = 0.1f);
+	void input(std::string label, glm::vec3& value, float speed = 0.1f);
 
 	void indicatorLabel(std::string label, std::string value, std::string additional = "");
 	void indicatorLabel(std::string label, int32_t value, std::string additional = "");
@@ -46,6 +41,7 @@ namespace IMComponents
 	bool header(std::string label);
 
 	void colorPicker(std::string label, float value[3]);
+	void colorPicker(std::string label, glm::vec3& value);
 
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size);
 
@@ -54,9 +50,6 @@ namespace IMComponents
 
 	// Ends child and pops clip rect
 	void endClippedChild();
-
-	// Draws a component wrapper item
-	void componentWrapper(ImDrawList& drawList, std::string label, uint32_t icon, std::function<void()> drawContent, bool& enabled, bool& opened);
 
 	// Draws a clickable caret background cirlce at the given cursor screen position and returns true if it was clicked
 	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor);

@@ -57,10 +57,11 @@ void GameViewPipeline::render()
 	}
 	cameraAvailable = true;
 	Camera& camera = *_camera;
+	auto& [cameraTransform, cameraHandle] = camera;
 
 	// Get transformation matrices
-	glm::mat4 view = Transformation::view(camera.transform.position, camera.transform.rotation);
-	glm::mat4 projection = Transformation::projection(camera.root.fov, viewport.getAspect(), camera.root.near, camera.root.far);
+	glm::mat4 view = Transformation::view(cameraTransform.position, cameraTransform.rotation);
+	glm::mat4 projection = Transformation::projection(cameraHandle.fov, viewport.getAspect(), cameraHandle.near, cameraHandle.far);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
@@ -116,7 +117,7 @@ void GameViewPipeline::render()
 
 	// Prepare lit material with current render data
 	LitMaterial::viewport = &viewport; // Redundant most of the times atm
-	LitMaterial::cameraTransform = &camera.transform; // Redundant most of the times atm
+	LitMaterial::cameraTransform = &cameraTransform; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &profile;
 	LitMaterial::castShadows = true;

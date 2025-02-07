@@ -71,7 +71,9 @@ namespace ECS {
 		auto group = gRegistry.group<TransformComponent>(entt::get<CameraComponent>);
 		for (auto entity : group) {
 			auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
-			return Camera(transform, camera);
+
+			if (camera.enabled) return Camera(transform, camera);
+			else return std::nullopt;
 		}
 		return std::nullopt;
 	}

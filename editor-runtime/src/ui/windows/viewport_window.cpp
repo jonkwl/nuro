@@ -347,19 +347,19 @@ void ViewportWindow::renderSpeedChangeIndicator()
 void ViewportWindow::updateMovement()
 {
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
-	Camera& camera = pipeline.getFlyCamera();
+	TransformComponent& cameraTransform = std::get<0>(pipeline.getFlyCamera());
 
 	// Get values needed
 	float delta = Time::deltaf();
-	glm::vec3 camForward = Transform::forward(camera.transform);
-	glm::vec3 camRight = Transform::right(camera.transform);
-	glm::vec3 camUp = Transform::up(camera.transform);
+	glm::vec3 camForward = Transform::forward(cameraTransform);
+	glm::vec3 camRight = Transform::right(cameraTransform);
+	glm::vec3 camUp = Transform::up(cameraTransform);
 
 	// Move in scene view
 	glm::vec2 currentKeyAxis = !sceneViewRightclicked ? glm::vec2(0.0f) : Input::moveAxis();
 	moveAxis = glm::mix(moveAxis, currentKeyAxis, moveAxisSmoothingFactor * delta);
 	glm::vec3 movementDir = camForward * moveAxis.x + camRight * moveAxis.y;
-	camera.transform.position += movementDir * movementSpeed * delta;
+	cameraTransform.position += movementDir * movementSpeed * delta;
 
 	// If theres a right click interaction with scene view
 	if (sceneViewRightclicked) {
@@ -374,14 +374,14 @@ void ViewportWindow::updateMovement()
 		/*glm::vec3 cameraEulerAngles = glm::degrees(glm::eulerAngles(camera.transform.rotation));
 		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
 		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
-		camera.transform.rotation = glm::quat(glm::radians(newRotation));*/
+		cameraTransform.rotation = glm::quat(glm::radians(newRotation));*/
 	}
 
 	// If theres a middle click interaction with scene view
 	if (sceneViewMiddleclicked) {
 		// Panning in scene view
 		glm::vec3 panningDir = (camRight * -mouseDelta.x) + (camUp * -mouseDelta.y);
-		camera.transform.position += panningDir * movementSpeed * delta * 0.1f; // 0.1f is a good factor to match movement speed
+		cameraTransform.position += panningDir * movementSpeed * delta * 0.1f; // 0.1f is a good factor to match movement speed
 	}
 
 	// Evaluate if fly camera moved this frame

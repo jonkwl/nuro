@@ -183,6 +183,10 @@ void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponen
 {
 	// Transform components model and mvp must have been calculated beforehand
 
+	// Renderer must be enabled
+	if (!renderer.enabled) return;
+
+	// Make sure mesh is available
 	if (!renderer.mesh) return;
 
 	// Set shader uniforms

@@ -22,25 +22,25 @@ namespace ComponentGizmos {
 		// Render camera icons
 		auto cameras = ECS::gRegistry.view<TransformComponent, CameraComponent>();
 		for (auto [entity, transform, camera] : cameras.each()) {
-			addIcon("camera", transform.position);
+			addIcon("camera_gizmo", transform.position);
 		}
 
 		// Render directional light icons
 		auto directionalLights = ECS::gRegistry.view<TransformComponent, DirectionalLightComponent>();
 		for (auto [entity, transform, directionalLight] : directionalLights.each()) {
-			addIcon("light", transform.position);
+			addIcon("point_light_gizmo", transform.position);
 		}
 
 		// Render point light icons
 		auto pointLights = ECS::gRegistry.view<TransformComponent, PointLightComponent>();
 		for (auto [entity, transform, pointLight] : pointLights.each()) {
-			addIcon("light", transform.position);
+			addIcon("point_light_gizmo", transform.position);
 		}
 
 		// Render spotlight icons
 		auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
 		for (auto [entity, transform, spotlight] : spotlights.each()) {
-			addIcon("light", transform.position);
+			addIcon("point_light_gizmo", transform.position);
 		}
 	}
 

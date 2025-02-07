@@ -49,7 +49,7 @@ void RegistryWindow::render()
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
-		IMComponents::headline("Registry", ICON_FA_SITEMAP, HeadlineJustification::LEFT);
+		IMComponents::headline("Registry", ICON_FA_SITEMAP);
 
 		renderSearch(drawList);
 		renderHierarchy(drawList);
@@ -496,8 +496,8 @@ void RegistryWindow::updateCameraMovement()
 
 	if (!cameraTarget) return;
 
-	// Get fly camera
-	Camera& flyCamera = Runtime::getSceneViewPipeline().getFlyCamera();
+	// Get fly camera transform
+	TransformComponent& cameraTransform = std::get<0>(Runtime::getSceneViewPipeline().getFlyCamera());
 
 	// Get target transform
 	TransformComponent& targetTransform = *cameraTarget;
@@ -513,20 +513,20 @@ void RegistryWindow::updateCameraMovement()
 		float t = glm::clamp(cameraMovementTime / duration, 0.0f, 1.0f);
 
 		// Get smoothed targets
-		glm::vec3 newPosition = glm::mix(flyCamera.transform.position, targetPosition, t);
-		glm::quat newRotation = glm::slerp(flyCamera.transform.rotation, targetRotation, t);
+		glm::vec3 newPosition = glm::mix(cameraTransform.position, targetPosition, t);
+		glm::quat newRotation = glm::slerp(cameraTransform.rotation, targetRotation, t);
 
 		// Set new position and rotation
-		flyCamera.transform.position = newPosition;
-		flyCamera.transform.rotation = newRotation;
+		cameraTransform.position = newPosition;
+		cameraTransform.rotation = newRotation;
 
 		// Add to elapsed camera movement time
 		cameraMovementTime += Time::deltaf();
 	}
 	else {
 		// Stop camera movement
-		flyCamera.transform.position = targetPosition;
-		flyCamera.transform.rotation = targetRotation;
+		cameraTransform.position = targetPosition;
+		cameraTransform.rotation = targetRotation;
 
 		// Reset
 		cameraMoving = false;

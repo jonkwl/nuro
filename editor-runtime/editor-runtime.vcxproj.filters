@@ -264,6 +264,9 @@
     <ClCompile Include="core\ecs\reflection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\components\inspectable_components.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -563,13 +566,13 @@
     <ClInclude Include="core\ecs\reflection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\composed.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="core\ecs\ecs_collection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\entity_container.h">
+    <ClInclude Include="core\ecs\entity_container.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\components\inspectable_components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
