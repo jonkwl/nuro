@@ -245,7 +245,8 @@ namespace IMComponents {
 			// Input
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushItemWidth(-1);
-			ImGui::Checkbox(EditorUI::generateIdString().c_str(), &value);
+			std::string id = EditorUI::generateIdString();
+			ImGui::Checkbox(id.c_str(), &value);
 			ImGui::PopItemWidth();
 
 			ImGui::EndTable();
@@ -267,7 +268,8 @@ namespace IMComponents {
 			// Input
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushItemWidth(-1);
-			ImGui::DragInt(EditorUI::generateIdString().c_str(), &value, speed);
+			std::string id = EditorUI::generateIdString();
+			ImGui::DragInt(id.c_str(), &value, speed);
 			ImGui::PopItemWidth();
 
 			ImGui::EndTable();
@@ -289,7 +291,8 @@ namespace IMComponents {
 			// Input
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushItemWidth(-1);
-			ImGui::DragFloat(EditorUI::generateIdString().c_str(), &value, speed);
+			std::string id = EditorUI::generateIdString();
+			ImGui::DragFloat(id.c_str(), &value, speed);
 			ImGui::PopItemWidth();
 
 			ImGui::EndTable();
@@ -313,7 +316,8 @@ namespace IMComponents {
 			ImGui::TableSetColumnIndex(1);
 
 			ImGui::PushItemWidth(-1);
-			ImGui::DragFloat(EditorUI::generateIdString().c_str(), &value, speed);
+			std::string id = EditorUI::generateIdString();
+			ImGui::DragFloat(id.c_str(), &value, speed);
 			ImGui::PopItemWidth();
 
 			// End the table (Only 1 row for this input)
@@ -337,12 +341,14 @@ namespace IMComponents {
 
 	void indicatorLabel(std::string label, int32_t value, std::string additional)
 	{
-		indicatorLabel(label, _formatInteger(value).c_str(), additional);
+		std::string text = _formatInteger(value);
+		indicatorLabel(label, text.c_str(), additional);
 	}
 
 	void indicatorLabel(std::string label, uint32_t value, std::string additional)
 	{
-		indicatorLabel(label, _formatInteger(value).c_str(), additional);
+		std::string text = _formatInteger(value);
+		indicatorLabel(label, text.c_str(), additional);
 	}
 
 	void indicatorLabel(std::string label, float value, std::string additional)
@@ -367,7 +373,8 @@ namespace IMComponents {
 	{
 		// Draw checkbox
 		ImVec2 cursor = ImGui::GetCursorPos();
-		ImGui::Checkbox(EditorUI::generateIdString().c_str(), &value);
+		std::string id = EditorUI::generateIdString();
+		ImGui::Checkbox(id.c_str(), &value);
 		
 		// Draw icon
 		cursor.x += 35.0f;
@@ -421,7 +428,8 @@ namespace IMComponents {
 			ImGui::PushStyleColor(ImGuiCol_Button, color);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, color);
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
-			ImGui::Button(EditorUI::generateIdString().c_str(), ImVec2(-1.0f, 0.0f));
+			std::string id = EditorUI::generateIdString();
+			ImGui::Button(id.c_str(), ImVec2(-1.0f, 0.0f));
 			ImGui::PopStyleColor(3);
 
 			ImGui::EndTable();
@@ -431,7 +439,8 @@ namespace IMComponents {
 		if (ImGui::BeginPopupModal("##Color_Picker_Popup"))
 		{
 			/*ImGui::PushItemWidth(140);
-			ImGui::ColorPicker3(EditorUI::generateIdString().c_str(), value, ImGuiColorEditFlags_NoSidePreview);
+			std::string id = EditorUI::generateIdString();
+			ImGui::ColorPicker3(id.c_str(), value, ImGuiColorEditFlags_NoSidePreview);
 			ImGui::PopItemWidth();*/
 
 			ImGui::Text("Color Picker Popup");
@@ -525,7 +534,8 @@ namespace IMComponents {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
 
 		ImGui::SetCursorScreenPos(checkboxPos);
-		ImGui::Checkbox(EditorUI::generateIdString().c_str(), &enabled);
+		std::string id = EditorUI::generateIdString();
+		ImGui::Checkbox(id.c_str(), &enabled);
 		ImGui::SetCursorScreenPos(cursorCache);
 
 		ImGui::PopStyleVar();

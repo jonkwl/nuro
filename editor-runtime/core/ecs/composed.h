@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 
 // Collection of composed object structures from specific components for engine internal usage
 

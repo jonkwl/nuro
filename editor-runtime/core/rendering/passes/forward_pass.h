@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 #include "../core/viewport/viewport.h"
 #include "../core/rendering/gizmos/imgizmo.h"
 

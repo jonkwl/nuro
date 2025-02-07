@@ -261,6 +261,9 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\ecs\reflection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -422,25 +425,16 @@
     <ClInclude Include="core\rendering\icons\icon_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\components.hpp">
+    <ClInclude Include="core\ecs\components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pipelines\game_view_pipeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\ecs\composed.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\ecs\ecs_collection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\ecs\ecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\registry_window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\ecs\registry_state.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\core\physics_context.h">
@@ -459,9 +453,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\physics\utils\px_translator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\ecs\entity_container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\context\application_context.h">
@@ -567,6 +558,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\reflection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\composed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\ecs_collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ecs\entity_container.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

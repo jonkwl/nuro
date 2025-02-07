@@ -7,13 +7,14 @@
 #include <tuple>
 
 #include "../core/ecs/composed.h"
-#include "../core/ecs/components.hpp"
-#include "../core/ecs/registry_state.hpp"
+#include "../core/ecs/components.h"
 
 using Entity = entt::entity;
 using Registry = entt::registry;
 
 using RenderQueue = std::vector<std::tuple<Entity, TransformComponent&, MeshRendererComponent&>>;
+
+using namespace entt::literals;
 
 namespace ECS {
 
@@ -22,6 +23,9 @@ namespace ECS {
 	//
 
 	inline Registry gRegistry;
+
+	// Sets up global entity component system
+	void setup();
 
 	//
 	// CORE FUNCTIONS
@@ -35,16 +39,6 @@ namespace ECS {
 
 	// (Re-)Generates the global render queue
 	void generateRenderQueue();
-
-	//
-	// SERIALIZATION FUNCTIONS
-	//
-
-	// Captures current state of registry
-	RegistryState captureState();
-
-	// Loads given state into registry
-	void loadState(RegistryState& state);
 
 	//
 	// HELPER FUNCTIONS

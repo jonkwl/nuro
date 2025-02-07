@@ -11,7 +11,7 @@
 
 #include "../core/ecs/ecs.h"
 #include "../core/utils/console.h"
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 
 ///////////////////////////////////////////////////////////////////
 ///																///

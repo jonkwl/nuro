@@ -13,7 +13,7 @@
 #include "../core/ecs/ecs_collection.h"
 #include "../core/rendering/transformation/transformation.h"
 #include "../core/transform/transform.h"
-#include "../core/ecs/components.hpp"
+#include "../core/ecs/components.h"
 #include "../core/rendering/material/lit/lit_material.h"
 
 #include "../core/input/input.h"
@@ -87,7 +87,8 @@ void ViewportWindow::render()
 	mouseCurrent = Cursor::getPosition();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(UIUtils::windowTitle("Viewport").c_str(), nullptr, EditorFlag::standard);
+	std::string title = UIUtils::windowTitle("Viewport");
+	ImGui::Begin(title.c_str(), nullptr, EditorFlag::standard);
 	{
 
 		windowFocused = UIUtils::windowFocused();

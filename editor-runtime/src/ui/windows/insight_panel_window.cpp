@@ -16,7 +16,8 @@ previewCameraTransform()
 void InsightPanelWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20.0f, 20.0f));
-	ImGui::Begin(UIUtils::windowTitle("Insight Panel").c_str(), nullptr, EditorFlag::fixed);
+	std::string title = UIUtils::windowTitle("Insight Panel");
+	ImGui::Begin(title.c_str(), nullptr, EditorFlag::fixed);
 	{
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();

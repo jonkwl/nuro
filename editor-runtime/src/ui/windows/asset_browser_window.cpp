@@ -27,7 +27,8 @@ targetAssetScale(1.0f)
 void AssetBrowserWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(UIUtils::windowTitle("Asset Browser").c_str(), nullptr, EditorFlag::standard);
+	std::string title = UIUtils::windowTitle("Asset Browser");
+	ImGui::Begin(title.c_str(), nullptr, EditorFlag::standard);
 	{
 		// Get draw list
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();

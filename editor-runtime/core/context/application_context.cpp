@@ -3,10 +3,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../core/utils/console.h"
+#include "../core/ecs/ecs.h"
 #include "../core/time/time.h"
 #include "../core/input/input.h"
 #include "../core/input/cursor.h"
+#include "../core/utils/console.h"
 #include "../core/diagnostics/diagnostics.h"
 #include "../core/rendering/primitives/global_quad.h"
 
@@ -124,6 +125,9 @@ namespace ApplicationContext {
 		//
 		// SETUP OTHER SYSTEMS
 		//
+
+		// Setup ECS
+		ECS::setup();
 
 		// Setup input and cursor
 		Input::setup();

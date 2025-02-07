@@ -5,11 +5,37 @@
 #include <algorithm>
 
 #include "../core/utils/console.h"
+#include "../core/ecs/reflection.h"
 #include "../core/transform/transform.h"
 
 namespace ECS {
 
 	RenderQueue gRenderQueue;
+
+	void setup() {
+		Reflection::setup();
+	}
+
+	std::tuple<Entity, TransformComponent&> createEntity(TransformComponent* parent)
+	{
+		// Create new entity and emplace transform component
+		Entity entity = gRegistry.create();
+		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
+
+		// Add parent if set
+		if (parent) transform.parent = parent;
+
+		// Perform initial transform evaluation with empty perspective matrix
+		Transform::evaluate(transform, glm::perspective(0.0f, 0.0f, 0.0f, 0.0f));
+
+		// Return entity and transform component
+		return std::tuple<Entity, TransformComponent&>(entity, transform);
+	}
+
+	RenderQueue& getRenderQueue()
+	{
+		return gRenderQueue;
+	}
 
 	void generateRenderQueue()
 	{
@@ -39,50 +65,6 @@ namespace ECS {
 		for (auto entity : targetQueue) {
 			gRenderQueue.emplace_back(entity, gRegistry.get<TransformComponent>(entity), gRegistry.get<MeshRendererComponent>(entity));
 		}
-	}
-
-	std::tuple<Entity, TransformComponent&> createEntity(TransformComponent* parent)
-	{
-		// Create new entity and emplace transform component
-		Entity entity = gRegistry.create();
-		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
-
-		// Add parent if set
-		if (parent) transform.parent = parent;
-
-		// Perform initial transform evaluation with empty perspective matrix
-		Transform::evaluate(transform, glm::perspective(0.0f, 0.0f, 0.0f, 0.0f));
-
-		// Return entity and transform component
-		return std::tuple<Entity, TransformComponent&>(entity, transform);
-	}
-
-	RenderQueue& getRenderQueue()
-	{
-		return gRenderQueue;
-	}
-
-	RegistryState captureState()
-	{
-		RegistryState state;
-		entt::snapshot{ gRegistry }
-			.get<Entity>(state)
-			.get<TransformComponent>(state)
-			.get<MeshRendererComponent>(state)
-			.get<CameraComponent>(state);
-
-		return state;
-	}
-
-	void loadState(RegistryState& state)
-	{
-		gRegistry.clear();
-
-		entt::snapshot_loader{ gRegistry }
-			.get<Entity>(state)
-			.get<TransformComponent>(state)
-			.get<MeshRendererComponent>(state)
-			.get<CameraComponent>(state);
 	}
 
 	std::optional<Camera> getLatestCamera() {

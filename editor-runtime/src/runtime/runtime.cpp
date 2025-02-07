@@ -53,9 +53,6 @@ namespace Runtime {
 	// Global game state
 	GameState gGameState = GameState::GAME_SLEEPING;
 
-	// Global registry state
-	RegistryState gSceneState;
-
 	// Default settings
 	glm::ivec2 gStartupWindowSize = glm::ivec2(800.0f, 400.0f);
 
@@ -238,6 +235,9 @@ namespace Runtime {
 		gameSetup();
 		ECS::generateRenderQueue();
 
+		// TMP
+		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
+
 		while (ApplicationContext::running())
 		{
 			_nextFrame();
@@ -269,10 +269,11 @@ namespace Runtime {
 
 	void startGame()
 	{
-		// Re-Generate render queue
+		// Re-generate render queue
+		// ...
 
 		// Cache scene state
-		// gSceneState = ECS::captureState();
+		// ...
 
 		// Perform awake logic
 		gameAwake();
@@ -290,7 +291,7 @@ namespace Runtime {
 		gGameState = GameState::GAME_SLEEPING;
 
 		// Restore scene state
-		// ECS::loadState(gSceneState);
+		// ...
 	}
 
 	void pauseGame() {

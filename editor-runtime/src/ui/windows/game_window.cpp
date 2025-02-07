@@ -35,7 +35,8 @@ gameViewBounds(ImVec4(0.0f, 0.0f, 0.0f, 0.0f))
 void GameWindow::render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	bool windowVisible = ImGui::Begin(UIUtils::windowTitle("Game View").c_str(), nullptr, EditorFlag::standard);
+	std::string title = UIUtils::windowTitle("Game View");
+	bool windowVisible = ImGui::Begin(title.c_str(), nullptr, EditorFlag::standard);
 	{
 
 		// Get draw list
