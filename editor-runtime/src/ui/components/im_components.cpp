@@ -38,7 +38,7 @@ namespace IMComponents {
 		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 10.0f, Margin());
 		{
 			tryIcon(icon);
-			ImGui::PushFont(EditorUI::getFonts().h4_bold);
+			ImGui::PushFont(EditorUI::getFonts().h3_bold);
 			ImGui::Text(title.c_str());
 			ImGui::PopFont();
 		}

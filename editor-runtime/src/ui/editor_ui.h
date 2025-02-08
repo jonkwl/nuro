@@ -73,11 +73,11 @@ namespace EditorUI
 struct EditorSizing
 {
 	static constexpr float p_FontSize = 14.0f;
-	static constexpr float h1_FontSize = 30.0f;
-	static constexpr float h2_FontSize = 26.0f;
-	static constexpr float h3_FontSize = 20.0f;
+	static constexpr float h1_FontSize = 26.0f;
+	static constexpr float h2_FontSize = 22.0f;
+	static constexpr float h3_FontSize = 17.0f;
 	static constexpr float h4_FontSize = 15.0f;
-	static constexpr float s_FontSize = 12.0f;
+	static constexpr float s_FontSize = 13.0f;
 
 	static constexpr float p_IconSize = 22.0f;
 	static constexpr float p_bold_IconSize = 25.0f;

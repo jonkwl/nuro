@@ -24,7 +24,7 @@ public:
 	};
 
 	struct Folder {
-		std::string name;
+		std::string name = "Unnamed Folder";
 		std::string path;
 
 		std::vector<Folder> children;

@@ -12,7 +12,7 @@
 
 namespace InspectableComponents {
 
-	bool _beginComponent(std::string label, uint32_t icon, bool& opened, bool* enabledPtr)
+	bool _beginComponent(std::string label, uint32_t icon, bool* enabledPtr)
 	{
 		//
 		// EVALUATE 
@@ -26,17 +26,17 @@ namespace InspectableComponents {
 		float titleHeight = EditorSizing::h4_FontSize;
 		ImVec2 titlePadding = ImVec2(10.0f, 10.0f);
 
-		float collapsedHeight = titleHeight + titlePadding.y * 2;
-		float expandedHeight = 250.0f;
-
+		float height = titleHeight + titlePadding.y * 2;
 		float yMargin = 2.0f;
-		ImVec2 size = ImVec2(contentAvail.x, opened ? expandedHeight : collapsedHeight);
+		ImVec2 size = ImVec2(contentAvail.x, height);
+		
 		ImVec2 p0 = ImVec2(cursorPos.x, cursorPos.y + yMargin);
 		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
-
 		const bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
 
 		ImVec2 cursor = p0 + titlePadding;
+
+		bool opened = true;
 
 		//
 		// CLICK COLLAPSE
@@ -98,7 +98,7 @@ namespace InspectableComponents {
 		//
 
 		if (opened) {
-			ImGui::Dummy(ImVec2(0.0f, collapsedHeight + titlePadding.y));
+			ImGui::Dummy(ImVec2(0.0f, size.y + yMargin + 12.0f));
 		}
 		else {
 			ImGui::Dummy(ImVec2(size.x, size.y + yMargin));
@@ -107,8 +107,12 @@ namespace InspectableComponents {
 		return opened;
 	}
 
+	void _endComponent() {
+		ImGui::Dummy(ImVec2(0.0f, 15.0f));
+	}
+
 	void _headline(std::string label) {
-		IMComponents::label(label, EditorUI::getFonts().p_bold);
+		IMComponents::label(label, EditorUI::getFonts().h4_bold);
 		ImGui::Dummy(ImVec2(0.0f, 1.0f));
 	}
 
@@ -118,70 +122,78 @@ namespace InspectableComponents {
 
 	void drawTransform(TransformComponent& transform)
 	{
-		static bool opened = false;
-		if (_beginComponent("Transform", IconPool::get("transform"), opened, nullptr))
+		if (_beginComponent("Transform", IconPool::get("transform"), nullptr))
 		{
-			ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+			_headline("General");
 			glm::vec3 rotationTmp = glm::degrees(glm::eulerAngles(transform.rotation));
 			IMComponents::input("Position", transform.position);
 			IMComponents::input("Rotation", rotationTmp);
 			IMComponents::input("Scale", transform.scale);
+
+			_endComponent();
 		}
 	}
 
 	void drawMeshRenderer(MeshRendererComponent& meshRenderer)
 	{
-		static bool opened = false;
-		if (_beginComponent("Mesh Renderer", IconPool::get("mesh_renderer"), opened, &meshRenderer.enabled))
+		if (_beginComponent("Mesh Renderer", IconPool::get("mesh_renderer"), &meshRenderer.enabled))
 		{
+			_endComponent();
 		}
 	}
 
 	void drawCamera(CameraComponent& camera)
 	{
-		static bool opened = false;
-		if (_beginComponent("Camera", IconPool::get("camera"), opened, &camera.enabled))
+		if (_beginComponent("Camera", IconPool::get("camera"), &camera.enabled))
 		{
 			_headline("General");
 			IMComponents::input("FOV", camera.fov);
 			IMComponents::input("Near", camera.near);
 			IMComponents::input("Far", camera.far);
+
+			_endComponent();
 		}
 	}
 
 	void drawDirectionalLight(DirectionalLightComponent& directionalLight)
 	{
-		static bool opened = false;
-		if (_beginComponent("Directional Light", IconPool::get("directional_light"), opened, &directionalLight.enabled))
+		if (_beginComponent("Directional Light", IconPool::get("directional_light"), &directionalLight.enabled))
 		{
+			_headline("General");
 			IMComponents::input("Intensity", directionalLight.intensity);
 			IMComponents::colorPicker("Color", directionalLight.color);
+
+			_endComponent();
 		}
 	}
 
 	void drawPointLight(PointLightComponent& pointLight)
 	{
-		static bool opened = false;
-		if (_beginComponent("Point Light", IconPool::get("point_light"), opened, &pointLight.enabled))
+		if (_beginComponent("Point Light", IconPool::get("point_light"), &pointLight.enabled))
 		{
+			_headline("General");
 			IMComponents::input("Intensity", pointLight.intensity);
 			IMComponents::colorPicker("Color", pointLight.color);
 			IMComponents::input("Range", pointLight.range);
 			IMComponents::input("Falloff", pointLight.falloff);
+
+			_endComponent();
 		}
 	}
 
 	void drawSpotlight(SpotlightComponent& spotlight)
 	{
-		static bool opened = false;
-		if (_beginComponent("Spotlight", IconPool::get("spotlight"), opened, &spotlight.enabled))
+		if (_beginComponent("Spotlight", IconPool::get("spotlight"), &spotlight.enabled))
 		{
+			_headline("General");
 			IMComponents::input("Intensity", spotlight.intensity);
 			IMComponents::colorPicker("Color", spotlight.color);
 			IMComponents::input("Range", spotlight.range);
 			IMComponents::input("Falloff", spotlight.falloff);
 			IMComponents::input("Inner Angle", spotlight.innerAngle);
 			IMComponents::input("Outer Angle", spotlight.outerAngle);
+
+			_endComponent();
 		}
 	}
 

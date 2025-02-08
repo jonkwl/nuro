@@ -77,7 +77,7 @@ namespace EditorUI {
 
 		//
 		// LOAD FONTS
-		//
+		//	
 
 		// p
 		gFonts.p = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::p_FontSize);
