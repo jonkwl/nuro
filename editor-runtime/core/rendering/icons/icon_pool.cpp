@@ -71,11 +71,12 @@ namespace IconPool {
 
 	uint32_t get(const std::string& identifier)
 	{
-		auto it = gIcons.find(identifier);
-		if (it != gIcons.end()) {
+		if (auto it = gIcons.find(identifier); it != gIcons.end()) {
+			// Icon found, return its backend id
 			return it->second->getId();
 		}
 		else {
+			// Icon not found, return invalid icons backend id
 			Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
 			return gInvalidIcon->getId();
 		}

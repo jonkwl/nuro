@@ -29,12 +29,7 @@ void Model::setSource(std::string _path)
 
 const Mesh* Model::queryMesh(uint32_t index)
 {
-	// Requested mesh is not existing yet, create empty mesh
-	if (meshes.find(index) == meshes.end()) {
-		meshes[index] = Mesh();
-	}
-
-	// Return queried mesh
+	// Return queried mesh (Creates empty mesh if requested mesh is not existing yet)
 	return &meshes[index];
 }
 

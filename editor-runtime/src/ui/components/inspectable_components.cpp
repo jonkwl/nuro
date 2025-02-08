@@ -22,10 +22,6 @@ namespace InspectableComponents {
 
 	// Returns if current component is opened
 	bool* _isOpened(ComponentID component) {
-		if (g_Opened.find(component) == g_Opened.end()) {
-			g_Opened[component] = false;
-		}
-
 		return &g_Opened[component];
 	}
 

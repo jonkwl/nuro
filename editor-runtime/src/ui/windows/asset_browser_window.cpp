@@ -1,27 +1,18 @@
 #include "asset_browser_window.h"
 
 #include <algorithm>
+#include <entt.hpp>
 
 #include "../src/ui/windows/insight_panel_window.h"
 
 AssetBrowserWindow::AssetBrowserWindow() : assetScale(1.0f),
-targetAssetScale(1.0f)
+targetAssetScale(1.0f),
+folderStructure(),
+folderAssets(),
+selectedFolder(nullptr),
+projectPath("C:/Users/jonko/Dokumente/development/nuro/editor-runtime/src/example")
 {
-	// tmp
-	for (int i = 0; i < 100; i++) {
-		Asset a;
-
-		if (i < 20) {
-			a.type = AssetType::FOLDER;
-			a.name = "Folder " + std::to_string(i);
-		}
-		else {
-			a.type = AssetType::MATERIAL;
-			a.name = "Material " + std::to_string(i);
-		}
-
-		currentAssets.push_back(a);
-	}
+	buildFolderStructure();
 }
 
 void AssetBrowserWindow::render()
@@ -100,6 +91,80 @@ void AssetBrowserWindow::evaluateInputs()
 	assetScale = glm::mix(assetScale, targetAssetScale, assetScaleSmoothing * Time::deltaf());
 }
 
+void AssetBrowserWindow::buildFolderStructure()
+{
+	// Remove selected folder
+	selectedFolder = nullptr;
+
+	// Clear existing folder structure
+	folderStructure.clear();
+
+	// Verify project path is a valid directory
+	if (!fs::is_directory(projectPath)) return;
+
+	// Init folder structure build recursion
+	folderStructureRecursion(projectPath, folderStructure);
+
+	// Select first folder of newly built folder structure if existing
+	if (folderStructure.size() > 0) {
+		selectedFolder = &folderStructure[0];
+		selectedFolder->expanded = true;
+	}
+}
+
+void AssetBrowserWindow::buildAssetBatch(const fs::path& directory)
+{
+	AssetBatch& batch = folderAssets[hashPath(directory)];
+	batch.assets.clear();
+
+	try {
+		// Iterate through directory
+		for (const auto& entry : fs::directory_iterator(directory)) {
+			// Check if asset is a folder (skip folders)
+			if (fs::is_directory(entry)) continue;
+
+			// Create new asset
+			Asset asset;
+			asset.absolutePath = entry.path();
+			asset.name = entry.path().filename().string();
+
+			// Create assets ui data
+			createAssetUIData(asset);
+			
+			// Add asset
+			batch.assets.push_back(asset);
+		}
+	}
+	catch (const fs::filesystem_error& e) {
+		Console::out::warning("Project Manager", "Couldn't read directory '" + directory.string() + "'", e.what());
+	}
+}
+
+uint32_t AssetBrowserWindow::hashPath(const fs::path& path)
+{
+	std::string pathString = path.string();
+	return entt::hashed_string::value(pathString.c_str());
+}
+
+void AssetBrowserWindow::folderStructureRecursion(const fs::path& directory, std::vector<Folder>& folderList)
+{
+	// Loop through each directory in current directory
+	for (const auto& entry : fs::directory_iterator(directory))
+	{
+		if (fs::is_directory(entry)) {
+			Folder folder;
+			folder.name = entry.path().filename().string();
+			folder.absolutePath = entry.path();
+			folder.relativePath = fs::relative(folder.absolutePath, projectPath);
+
+			// Recursively build children folders for subdirectory
+			folderStructureRecursion(entry.path(), folder.children);
+
+			// Add current folder to list
+			folderList.push_back(folder);
+		}
+	}
+}
 
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
 {
@@ -116,6 +181,8 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 
 	ImU32 color = IM_COL32(11, 11, 11, 255);
 
+	if (!selectedFolder) return size;
+
 	//
 	// DRAW BACKGROUND
 	//
@@ -127,11 +194,11 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 	//
 
 	// Example strings
-	std::string pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + "Project Folder / Asset Folder / Sub Folder / ";
-	std::string pathEnd = "Current Folder";
+	std::string pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + selectedFolder->relativePath.parent_path().string();
+	std::string pathEnd = "/" + selectedFolder->name;
 
 	// Evaluate position
-	ImFont* baseFont = EditorUI::getFonts().p;
+	ImFont* baseFont = EditorUI::getFonts().h4;
 	ImVec2 textSize = baseFont->CalcTextSizeA(baseFont->FontSize, FLT_MAX, 0.0f, pathRoot.c_str());
 	ImVec2 textPosition = ImVec2(position.x + xPadding, position.y + (height - textSize.y) * 0.5f);
 	
@@ -140,7 +207,7 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 
 	// Path end text
 	textPosition.x += textSize.x;
-	drawList.AddText(EditorUI::getFonts().p_bold, EditorUI::getFonts().p_bold->FontSize, textPosition, EditorColor::text, pathEnd.c_str());
+	drawList.AddText(EditorUI::getFonts().h4_bold, EditorUI::getFonts().h4_bold->FontSize, textPosition, EditorColor::text, pathEnd.c_str());
 
 	return size;
 }
@@ -170,53 +237,13 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 	// DRAW FOLDERS
 	//
 
-	Folder a;
-	a.children.push_back(Folder());
-	a.children.push_back(Folder());
-	a.children.push_back(Folder());
-	a.children.push_back(Folder());
-	a.children.push_back(Folder());
-	a.expanded = true;
-
-	Folder x;
-	x.children.push_back(Folder());
-	x.children.push_back(Folder());
-	x.expanded = true;
-	a.children.push_back(x);
-
-	Folder y;
-	y.children.push_back(Folder());
-	y.children.push_back(Folder());
-	y.expanded = true;
-	x.children.push_back(y);
-
-	Folder z;
-	z.children.push_back(Folder());
-	z.expanded = true;
-	y.children.push_back(z);
-
-	Folder w;
-	w.children.push_back(Folder());
-	w.expanded = true;
-	z.children.push_back(w);
-
-	Folder b;
-	b.children.push_back(Folder());
-	b.expanded = true;
-
-	Folder c;
-	c.children.push_back(Folder());
-	c.children.push_back(Folder());
-	c.children.push_back(Folder());
-	c.expanded = true;
-
 	IMComponents::beginClippedChild(size, position);
 	{
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 
-		renderFolderItem(drawList, a, 0.0f);
-		renderFolderItem(drawList, b, 0.0f);
-		renderFolderItem(drawList, c, 0.0f);
+		for (Folder& folder : folderStructure) {
+			renderFolderItem(drawList, &folder, 0.0f);
+		}
 
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 	}
@@ -230,6 +257,8 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 	//
 	// EVALUATE
 	//
+
+	if (!selectedFolder) return;
 
 	ImVec2 p0 = position;
 	ImVec2 p1 = p0 + size;
@@ -252,24 +281,20 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 	IMComponents::beginClippedChild(size, position);
 	{
 		//
-		// CREATE ASSET UI DATA (GEOMETRY ETC)
-		// Optimization: Doesnt have to be done every frame, only when assets change and only for those who changed
-		//
-
-		for (Asset& asset : currentAssets) {
-			createAssetUIData(asset);
-		}
-
-		//
 		// DRAW ASSETS
 		//
+
+		// Fetch assets to be drawn
+		uint32_t pathHash = hashPath(selectedFolder->absolutePath);
+		if(folderAssets.find(pathHash) == folderAssets.end()) buildAssetBatch(selectedFolder->absolutePath);
+		std::vector<Asset>& currentAssets = folderAssets[pathHash].assets;
 
 		// Initialize cursor with padding (local cursor relative to window)
 		ImVec2 cursor = padding;
 
 		ImVec2 lastAssetSize = ImVec2(0.0f, 0.0f);
 
-		for (Asset asset : currentAssets) {
+		for (Asset& asset : currentAssets) {
 			// Check for new line
 			if (cursor.x + asset.uiData.size.x > size.x - padding.x) {
 				// Start new line using current assets height
@@ -295,8 +320,10 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 	IMComponents::endClippedChild();
 }
 
-void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, uint32_t indentation)
+void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder* folder, uint32_t indentation)
 {
+	if (!folder) return;
+
 	//
 	// ADDITIONALLY GET FOREGROUND DRAW LIST
 	//
@@ -312,8 +339,8 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 	// EVALUATE
 	//
 
-	const bool selected = false;
-	const bool hasChildren = folder.children.size() > 0;
+	const bool selected = folder == selectedFolder;
+	const bool hasChildren = folder->children.size() > 0;
 	const float itemHeight = ImGui::GetFontSize();
 	const float textOffset = indentation * indentationOffset;
 
@@ -328,9 +355,10 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 	const ImVec2 finalSize = rectMax - rectMin;
 
 	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax);
-	const bool clicked = ImGui::IsMouseClicked(0) && hovered;
-	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
-	const bool draggingThis = ImGui::IsMouseDragging(0) && hovered;
+	const bool clicked = hovered && ImGui::IsMouseClicked(0);
+	const bool doubleClicked = hovered && ImGui::IsMouseDoubleClicked(0);
+	const bool wheelClicked = hovered && ImGui::IsMouseClicked(2);
+	const bool draggingThis = hovered && ImGui::IsMouseDragging(0);
 
 	//
 	// EVALUATE COLOR
@@ -354,79 +382,8 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 	//
 
 	if (clicked) {
-
-		/*
-		ImGuiIO& io = ImGui::GetIO();
-
-		auto select = [this](HierarchyItem& _item) -> void {
-			// Item already selected
-			if (selectedItems.find(_item.id) != selectedItems.end()) return;
-
-			// Select item
-			selectedItems[_item.id] = &_item;
-			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);
-
-			// Update insight panel
-			InsightPanelWindow::inspect(new EntityInspectable(_item));
-			};
-
-		// Just handle current items selection
-		if (io.KeyCtrl) {
-			// Item not selected yet, add to selected items
-			if (selectedItems.find(item.id) == selectedItems.end()) {
-				select(item);
-			}
-			// Item already selected, remove from selected items
-			else {
-				selectedItems.erase(item.id);
-			}
-		}
-		// Select all between latest selection and this item
-		else if (io.KeyShift) {
-			// Make sure last selected is set to prevent memory errors
-			if (!lastSelected) lastSelected = &item;
-
-			// Find multiselect start and end elements
-			auto start = std::find(currentHierarchy.begin(), currentHierarchy.end(), *lastSelected);
-			auto end = std::find(currentHierarchy.begin(), currentHierarchy.end(), item);
-
-			// Select all items between start and end
-			if (start != currentHierarchy.end() && end != currentHierarchy.end()) {
-				if (start <= end) {
-					for (auto i = start; i != end; ++i) {
-						select(*i);
-					}
-					select(*end);
-				}
-				else {
-					for (auto i = start; i != end; --i) {
-						select(*i);
-					}
-					select(*end);
-				}
-			}
-		}
-		// Only select this item
-		else {
-			// If theres multiple selected items, only select this item if it's not among the multiple selected ones
-			if (selectedItems.size() > 1) {
-				if (selectedItems.find(item.id) == selectedItems.end()) {
-					selectedItems.clear();
-					select(item);
-				}
-			}
-			// Not multiple selected items, just select this item
-			else {
-				selectedItems.clear();
-				select(item);
-			}
-		}
-
-		// Cache last selected item
-		lastSelected = &item;
-
-		*/
-
+		selectedFolder = folder;
+		if(!selectedFolder->expanded) selectedFolder->expanded = true;
 	}
 
 	//
@@ -464,8 +421,8 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
 		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
 
-		// Check for circle click (-> expand)
-		if (circleClicked) folder.expanded = !folder.expanded;
+		// Check for circle click opr mouse wheel click (-> expand)
+		if ((circleClicked) || wheelClicked) folder->expanded = !folder->expanded;
 
 		// Evaluate color
 		ImU32 circleColor = circleHovered ? (selected ? UIUtils::darken(color, 0.25f) : EditorColor::elementActive) : color;
@@ -478,13 +435,13 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 	// EVALUATE ICON
 	//
 
-	const char* icon = hasChildren ? (folder.expanded ? ICON_FA_CARET_DOWN " " : ICON_FA_CARET_RIGHT " ") : "";
+	const char* icon = hasChildren ? (folder->expanded ? ICON_FA_CARET_DOWN " " : ICON_FA_CARET_RIGHT " ") : "";
 
 	//
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon) + folder.name;
+	std::string textValue = std::string(icon) + folder->name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -492,16 +449,17 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder& folder, 
 	//
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y - 6.0f));
-	ImGui::PopStyleVar();
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+	ImGui::Dummy(ImVec2(contentRegion.x, finalSize.y));
+	ImGui::PopStyleVar(2);
 
 	//
 	// RENDER CHILDREN
 	//
 
-	if (hasChildren && folder.expanded) {
-		for (auto& child : folder.children) {
-			renderFolderItem(drawList, child, indentation + 1);
+	if (hasChildren && folder->expanded) {
+		for (auto& child : folder->children) {
+			renderFolderItem(drawList, &child, indentation + 1);
 		}
 	}
 }

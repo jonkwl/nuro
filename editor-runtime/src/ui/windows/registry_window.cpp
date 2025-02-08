@@ -133,9 +133,10 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	const ImVec2 finalSize = rectMax - rectMin;
 
 	const bool hovered = ImGui::IsMouseHoveringRect(rectMin, rectMax) && !contextMenuUsed;
-	const bool clicked = ImGui::IsMouseClicked(0) && hovered;
-	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0) && hovered;
-	const bool draggingThis = ImGui::IsMouseDragging(0) && hovered;
+	const bool clicked = hovered && ImGui::IsMouseClicked(0);
+	const bool doubleClicked = hovered && ImGui::IsMouseDoubleClicked(0);
+	const bool wheelClicked = hovered && ImGui::IsMouseClicked(2);
+	const bool draggingThis = hovered && ImGui::IsMouseDragging(0);
 
 	if (hovered) lastHovered = &item;
 
@@ -322,8 +323,8 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
 		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
 		
-		// Check for circle click (-> expand)
-		if (circleClicked) item.expanded = !item.expanded;
+		// Check for circle click or mouse wheel click (-> expand)
+		if (circleClicked || wheelClicked) item.expanded = !item.expanded;
 		
 		// Evaluate color
 		ImU32 circleColor = circleHovered && dropType == NO_DROP ? (selected ? UIUtils::darken(color, 0.25f) : EditorColor::elementActive) : color;

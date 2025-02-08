@@ -72,9 +72,9 @@ namespace ShaderPool {
 
 	Shader* get(const std::string& identifier)
 	{
-		if (gShaders.find(identifier) != gShaders.end()) {
+		if (auto it = gShaders.find(identifier); it != gShaders.end()) {
 			// Shader available, return shader
-			return gShaders[identifier];
+			return it->second;
 		}
 		else {
 			// Shader not found, return empty shader
