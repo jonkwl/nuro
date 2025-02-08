@@ -1,10 +1,10 @@
 #pragma once
 
 #include <tuple>
+#include <sstream>
 #include <cstdint>
 #include <entt.hpp>
 #include <optional>
-#include <sstream>
 
 #include "../core/ecs/components.h"
 

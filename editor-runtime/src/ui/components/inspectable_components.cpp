@@ -1,8 +1,10 @@
 #include "inspectable_components.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
 #include <string>
+#include <imgui.h>
+#include <cstdint>
+#include <unordered_map>
 
 #include "../core/rendering/icons/icon_pool.h"
 
@@ -12,10 +14,25 @@
 
 namespace InspectableComponents {
 
-	bool _beginComponent(std::string label, uint32_t icon, bool* enabledPtr)
+	// A component id is the numeric representation of its hashed identifier
+	using ComponentID = uint32_t;
+
+	// Stores if components are opened or closed
+	std::unordered_map<ComponentID, bool> g_Opened;
+
+	// Returns if current component is opened
+	bool* _isOpened(ComponentID component) {
+		if (g_Opened.find(component) == g_Opened.end()) {
+			g_Opened[component] = false;
+		}
+
+		return &g_Opened[component];
+	}
+
+	bool _beginComponent(std::string identifier, uint32_t icon, bool* enabledPtr, bool alwaysOpened = false)
 	{
 		//
-		// EVALUATE 
+		// EVALUATE
 		//
 
 		ImDrawList& drawList = *ImGui::GetWindowDrawList();
@@ -36,14 +53,19 @@ namespace InspectableComponents {
 
 		ImVec2 cursor = p0 + titlePadding;
 
-		bool opened = true;
+		bool alwaysEnabled = !enabledPtr;
+
+		ComponentID componentId = entt::hashed_string::value(identifier.c_str());
+		bool* openedPtr = _isOpened(componentId);
 
 		//
 		// CLICK COLLAPSE
 		//
 
-		if (hovered && ImGui::IsMouseClicked(2)) {
-			opened = !opened;
+		if (!alwaysOpened) {
+			if (hovered && ImGui::IsMouseClicked(2)) {
+				*openedPtr = !(*openedPtr);
+			}
 		}
 
 		//
@@ -56,10 +78,12 @@ namespace InspectableComponents {
 		// DRAW EXPANSION CARET
 		//
 
-		if (IMComponents::caret(drawList, cursor, ImVec2(-1.0f, 2.0f), opened ? ICON_FA_CARET_DOWN : ICON_FA_CARET_RIGHT, IM_COL32(0, 0, 0, 0), EditorColor::element)) {
-			opened = !opened;
+		if (!alwaysOpened) {
+			if (IMComponents::caret(drawList, cursor, ImVec2(-1.0f, 2.0f), *openedPtr ? ICON_FA_CARET_DOWN : ICON_FA_CARET_RIGHT, IM_COL32(0, 0, 0, 0), EditorColor::element)) {
+				*openedPtr = !(*openedPtr);
+			}
+			cursor.x += 22.0f;
 		}
-		cursor.x += 22.0f;
 
 		//
 		// DRAW COMPONENT ICON
@@ -73,7 +97,7 @@ namespace InspectableComponents {
 		// DRAW COMPONENT CHECKBOX
 		//
 
-		if (enabledPtr) {
+		if (!alwaysEnabled) {
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
 
@@ -91,20 +115,22 @@ namespace InspectableComponents {
 		// DRAW COMPONENT TEXT
 		//
 
-		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, cursor, EditorColor::text, label.c_str());
+		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, cursor, EditorColor::text, identifier.c_str());
 
 		//
 		// ADVANCE CURSOR AND DRAW CUSTOM CONTENT
 		//
 
-		if (opened) {
+		bool currentlyOpened = alwaysOpened ? true : *openedPtr;
+
+		if (currentlyOpened) {
 			ImGui::Dummy(ImVec2(0.0f, size.y + yMargin + 12.0f));
 		}
 		else {
 			ImGui::Dummy(ImVec2(size.x, size.y + yMargin));
 		}
 
-		return opened;
+		return currentlyOpened;
 	}
 
 	void _endComponent() {
@@ -122,7 +148,7 @@ namespace InspectableComponents {
 
 	void drawTransform(TransformComponent& transform)
 	{
-		if (_beginComponent("Transform", IconPool::get("transform"), nullptr))
+		if (_beginComponent("Transform", IconPool::get("transform"), nullptr, true))
 		{
 			_headline("General");
 			glm::vec3 rotationTmp = glm::degrees(glm::eulerAngles(transform.rotation));
