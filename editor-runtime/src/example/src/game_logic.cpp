@@ -26,11 +26,25 @@ void _physics_example() {
 
 	// Standard Material
 	LitMaterial* standardMaterial = new LitMaterial();
-	standardMaterial->baseColor = glm::vec4(glm::vec3(0.25f), 1.0f);
+	standardMaterial->baseColor = glm::vec4(glm::vec3(0.5f), 1.0f);
 	standardMaterial->roughness = 0.4f;
 
 	// Sci-Fi Plane Material
 	LitMaterial* planeMaterial = new LitMaterial();
+
+	// Cube batch
+	int objectAmount = 360;
+	uint32_t c = 1;
+	for (int x = 0; x < std::sqrt(objectAmount); x++) {
+		for (int y = 0; y < std::sqrt(objectAmount); y++) {
+			EntityContainer e("Cube " + std::to_string(c), ECS::createEntity());
+			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
+			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+			e.add<BoxColliderComponent>();
+			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
+			c++;
+		}
+	}
 
 	// Directional light (sun)
 	EntityContainer sun("Sun", ECS::createEntity());
@@ -69,19 +83,6 @@ void _physics_example() {
 	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
 	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
-
-	// Cube batch
-	int objectAmount = 256;
-	for (int x = 0; x < std::sqrt(objectAmount); x++) {
-		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e("Cube", ECS::createEntity());
-			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
-			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
-			r.material = planeMaterial;
-			e.add<BoxColliderComponent>();
-			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
-		}
-	}
 
 	// Kinematic sphere
 	EntityContainer kinematic("Kinematic", ECS::createEntity());
@@ -173,6 +174,7 @@ void gameQuit()
 }
 
 void gameUpdate() {
+	
 	static bool jumped = false;
 	static float zoom = -20.0f;
 
@@ -205,13 +207,13 @@ void gameUpdate() {
 		jumped = false;
 	}
 
-	EntityContainer camera("Camera", cameraEntity);
+	/*EntityContainer camera("Camera", cameraEntity);
 	float zoomStrength = 150.0f;
 	glm::vec2 scrollDelta = Input::scrollDelta();
 	if (scrollDelta.y > 0.0f) zoom += zoomStrength * delta;
 	if (scrollDelta.y < 0.0f) zoom -= zoomStrength * delta;
 	zoom = glm::clamp(zoom, -20.0f, -5.0f);
 	glm::vec3 offset = glm::vec3(0.0f, 1.5f, zoom);
-	camera.transform.position = glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta);
+	camera.transform.position = glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta);*/
 
 }

@@ -545,14 +545,6 @@ void RegistryWindow::buildSceneHierarchy()
 		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(transform.name, entity), {}));
 		i++;
 	}
-
-	int _i = 0;
-	for (auto [entity, transform] : transforms.each()) {
-		if (_i > 0 && _i < 11) {
-			currentHierarchy[_i].children.push_back(HierarchyItem(i + _i + 1, EntityContainer("Child " + std::to_string(_i), entity), {}));
-		}
-		_i++;
-	}
 }
 
 void RegistryWindow::setCameraTarget(TransformComponent* target)
