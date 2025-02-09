@@ -1,9 +1,9 @@
 <div align="center">
   <h1>Nuro Engine</h1>
-  <img src="https://i.ibb.co/Psm7MDTW/nuro-banner.jpg" alt="Nuro Banner">
+  <img src="https://github.com/jonkwl/nuro/blob/main/.gthub-media/nuro_banner.jpg" alt="Nuro Banner" width=800>
   <p></p>
   <p><b>A lightweight, bloat-free 3D game engine for fast development and rapid iteration</b></p>
-  <p><a href="#contributing">💁‍♂️ Contributing to Nuro</a> | <a href="#showcase">📷 Showcase</a> | <a href="#features">📃 Features</a> | <a href="#roadmap">✈ Roadmap</a> </p>
+  <p><a href="#about">💁‍♂️ About Nuro</a> | <a href="#showcase">📷 Showcase (WIP)</a> | <a href="#features">📃 Current Features</a> </p>
   <p></p>
 </div>
 
@@ -11,8 +11,8 @@
 
 ## Disclaimer: Work In Progress! 🚧
 
-Hey! This project is currently **under active development.**  
-Please take a look at the vision below, and feel free to [contribute](#contributing) to help bring it to life! 💜
+Hey! This project is currently **under development.**  
+Please take a look at the vision below! 💜
 
 ⭐ Feel free to **star the project**, it motivates a lot :)
 
@@ -25,28 +25,24 @@ Please take a look at the vision below, and feel free to [contribute](#contribut
 
 This project is still in an early state and **not ready to use yet**, however please feel encouraged to **help realize the vision** by [contributing](#contributing). To get an overview of the current state of the project, **check out the [showcase](#showcase)**. 📷
 
-<img src="https://i.ibb.co/7t9PqtM9/nuro-snippet-02-02-2025.png" alt="Screenshot of an example scene in the nuro engine editor" width=1000>
+<img src="https://github.com/jonkwl/nuro/blob/main/.gthub-media/nuro-example-1.jpg" alt="Screenshot of an example scene in the nuro engine editor" width=1000>
 
 *Screenshot of an example scene within the Nuro Editor*
 
-## Contributing
-
-### Contributing plan to be added
-
 ## Showcase
 
-### Media / links to be added
+### I'll link more media here soon!
 
 ## Features
 
 - 🖥️ **Intuitive Editor**
   - **Instant game testing** without compiling or resource loading.
-  - Multiple **workspaces** tailored for their use cases:
+  - Multiple **workspaces** tailored for their use cases (Sketch):
     - 📁 *Project Workspace*
       - Manage project settings and resources.
     - ⭕ *General Workspace*
       - All-purpose development, entity and world inspectation etc.
-    - 🏗 *Level Building Workspace*
+    - 🏭 *Level Building Workspace*
       - Support for fast level prototyping
     - 🖱️ *Scripting Workspace*
       - Comprehensive overview for the games logic.
@@ -74,7 +70,3 @@ This project is still in an early state and **not ready to use yet**, however pl
   - The physics layer ensures support for realistic and performant 3D simulations.
 
 ### ...and much more already!
-
-## Roadmap
-
-### Roadmap to be added
