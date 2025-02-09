@@ -15,97 +15,97 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\diagnostics\diagnostics.cpp">
+    <ClCompile Include="src\core\diagnostics\diagnostics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\diagnostics\profiler.cpp">
+    <ClCompile Include="src\core\diagnostics\profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\input\cursor.cpp">
+    <ClCompile Include="src\core\input\cursor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\input\input.cpp">
+    <ClCompile Include="src\core\input\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\passes\forward_pass.cpp">
+    <ClCompile Include="src\core\rendering\passes\forward_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\passes\pre_pass.cpp">
+    <ClCompile Include="src\core\rendering\passes\pre_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\transformation\transformation.cpp">
+    <ClCompile Include="src\core\rendering\transformation\transformation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\culling\bounding_volume.cpp">
+    <ClCompile Include="src\core\rendering\culling\bounding_volume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\gizmos\imgizmo.cpp">
+    <ClCompile Include="src\core\rendering\gizmos\imgizmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\material\lit\lit_material.cpp">
+    <ClCompile Include="src\core\rendering\material\lit\lit_material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\material\unlit\unlit_material.cpp">
+    <ClCompile Include="src\core\rendering\material\unlit\unlit_material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\model\mesh.cpp">
+    <ClCompile Include="src\core\rendering\model\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\model\model.cpp">
+    <ClCompile Include="src\core\rendering\model\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\postprocessing\bloom_pass.cpp">
+    <ClCompile Include="src\core\rendering\postprocessing\bloom_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\postprocessing\motion_blur_pass.cpp">
+    <ClCompile Include="src\core\rendering\postprocessing\motion_blur_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\postprocessing\post_processing_pipeline.cpp">
+    <ClCompile Include="src\core\rendering\postprocessing\post_processing_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\primitives\global_quad.cpp">
+    <ClCompile Include="src\core\rendering\primitives\global_quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\shader\Shader.cpp">
+    <ClCompile Include="src\core\rendering\shader\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\shader\shader_pool.cpp">
+    <ClCompile Include="src\core\rendering\shader\shader_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\shadows\shadow_disk.cpp">
+    <ClCompile Include="src\core\rendering\shadows\shadow_disk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\shadows\shadow_map.cpp">
+    <ClCompile Include="src\core\rendering\shadows\shadow_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\skybox\cubemap.cpp">
+    <ClCompile Include="src\core\rendering\skybox\cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\skybox\skybox.cpp">
+    <ClCompile Include="src\core\rendering\skybox\skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\passes\ssao_pass.cpp">
+    <ClCompile Include="src\core\rendering\passes\ssao_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\texture\texture.cpp">
+    <ClCompile Include="src\core\rendering\texture\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\velocitybuffer\velocity_buffer.cpp">
+    <ClCompile Include="src\core\rendering\velocitybuffer\velocity_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\time\time.cpp">
+    <ClCompile Include="src\core\time\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\transform\transform.cpp">
+    <ClCompile Include="src\core\transform\transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\utils\iohandler.cpp">
+    <ClCompile Include="src\core\utils\iohandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\utils\console.cpp">
+    <ClCompile Include="src\core\utils\console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\utils\string_helper.cpp">
+    <ClCompile Include="src\core\utils\string_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\example\src\game_logic.cpp">
@@ -135,7 +135,7 @@
     <ClCompile Include="src\ui\windows\viewport_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\misc\stb_image.cpp">
+    <ClCompile Include="src\core\misc\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\windows\console_window.cpp">
@@ -144,7 +144,7 @@
     <ClCompile Include="src\ui\utils\ui_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\sceneview\scene_view_forward_pass.cpp">
+    <ClCompile Include="src\core\rendering\sceneview\scene_view_forward_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\windows\game_window.cpp">
@@ -153,28 +153,28 @@
     <ClCompile Include="src\pipelines\scene_view_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\icons\icon_pool.cpp">
+    <ClCompile Include="src\core\rendering\icons\icon_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pipelines\game_view_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\ecs\ecs.cpp">
+    <ClCompile Include="src\core\ecs\ecs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\windows\registry_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\core\physics_context.cpp">
+    <ClCompile Include="src\core\physics\core\physics_context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\rigidbody\rigidbody.cpp">
+    <ClCompile Include="src\core\physics\rigidbody\rigidbody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\utils\px_translator.cpp">
+    <ClCompile Include="src\core\physics\utils\px_translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\context\application_context.cpp">
+    <ClCompile Include="src\core\context\application_context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_content.cpp">
@@ -189,10 +189,10 @@
     <ClCompile Include="src\gizmos\component_gizmos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\viewport\viewport.cpp">
+    <ClCompile Include="src\core\viewport\viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\rendering\passes\preprocessor_pass.cpp">
+    <ClCompile Include="src\core\rendering\passes\preprocessor_pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\windows\insight_panel_window.cpp">
@@ -222,10 +222,10 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\resource\resource_loader.cpp">
+    <ClCompile Include="src\core\resource\resource_loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\physics\core\physics_bridge.cpp">
+    <ClCompile Include="src\core\physics\core\physics_bridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -261,7 +261,7 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\ecs\reflection.cpp">
+    <ClCompile Include="src\core\ecs\reflection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\components\inspectable_components.cpp">
@@ -272,115 +272,115 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\diagnostics\diagnostics.h">
+    <ClInclude Include="src\core\diagnostics\diagnostics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\diagnostics\profiler.h">
+    <ClInclude Include="src\core\diagnostics\profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\engine.h">
+    <ClInclude Include="src\core\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\input\cursor.h">
+    <ClInclude Include="src\core\input\cursor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\input\input.h">
+    <ClInclude Include="src\core\input\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\passes\forward_pass.h">
+    <ClInclude Include="src\core\rendering\passes\forward_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\passes\pre_pass.h">
+    <ClInclude Include="src\core\rendering\passes\pre_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\transformation\transformation.h">
+    <ClInclude Include="src\core\rendering\transformation\transformation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\culling\bounding_volume.h">
+    <ClInclude Include="src\core\rendering\culling\bounding_volume.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\gizmos\gizmos.h">
+    <ClInclude Include="src\core\rendering\gizmos\gizmos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\gizmos\gizmo_color.h">
+    <ClInclude Include="src\core\rendering\gizmos\gizmo_color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\gizmos\imgizmo.h">
+    <ClInclude Include="src\core\rendering\gizmos\imgizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\material\imaterial.h">
+    <ClInclude Include="src\core\rendering\material\imaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\material\lit\lit_material.h">
+    <ClInclude Include="src\core\rendering\material\lit\lit_material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\material\unlit\unlit_material.h">
+    <ClInclude Include="src\core\rendering\material\unlit\unlit_material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\model\mesh.h">
+    <ClInclude Include="src\core\rendering\model\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\model\model.h">
+    <ClInclude Include="src\core\rendering\model\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\postprocessing\bloom_pass.h">
+    <ClInclude Include="src\core\rendering\postprocessing\bloom_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\postprocessing\motion_blur_pass.h">
+    <ClInclude Include="src\core\rendering\postprocessing\motion_blur_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\postprocessing\post_processing.h">
+    <ClInclude Include="src\core\rendering\postprocessing\post_processing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\postprocessing\post_processing_pipeline.h">
+    <ClInclude Include="src\core\rendering\postprocessing\post_processing_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\primitives\global_quad.h">
+    <ClInclude Include="src\core\rendering\primitives\global_quad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\shader\Shader.h">
+    <ClInclude Include="src\core\rendering\shader\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\shader\shader_pool.h">
+    <ClInclude Include="src\core\rendering\shader\shader_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\shadows\shadow_disk.h">
+    <ClInclude Include="src\core\rendering\shadows\shadow_disk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\shadows\shadow_map.h">
+    <ClInclude Include="src\core\rendering\shadows\shadow_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\skybox\cubemap.h">
+    <ClInclude Include="src\core\rendering\skybox\cubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\skybox\skybox.h">
+    <ClInclude Include="src\core\rendering\skybox\skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\passes\ssao_pass.h">
+    <ClInclude Include="src\core\rendering\passes\ssao_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\texture\texture.h">
+    <ClInclude Include="src\core\rendering\texture\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\velocitybuffer\velocity_buffer.h">
+    <ClInclude Include="src\core\rendering\velocitybuffer\velocity_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\time\time.h">
+    <ClInclude Include="src\core\time\time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\transform\transform.h">
+    <ClInclude Include="src\core\transform\transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\utils\iohandler.h">
+    <ClInclude Include="src\core\utils\iohandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\utils\console.h">
+    <ClInclude Include="src\core\utils\console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\utils\string_helper.h">
+    <ClInclude Include="src\core\utils\string_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\viewport\viewport.h">
+    <ClInclude Include="src\core\viewport\viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\example\src\game_logic.h">
@@ -419,7 +419,7 @@
     <ClInclude Include="src\ui\utils\ui_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\sceneview\scene_view_forward_pass.h">
+    <ClInclude Include="src\core\rendering\sceneview\scene_view_forward_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\game_window.h">
@@ -428,43 +428,43 @@
     <ClInclude Include="src\pipelines\scene_view_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\icons\icon_pool.h">
+    <ClInclude Include="src\core\rendering\icons\icon_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\components.h">
+    <ClInclude Include="src\core\ecs\components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pipelines\game_view_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\ecs.h">
+    <ClInclude Include="src\core\ecs\ecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\registry_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\core\physics_context.h">
+    <ClInclude Include="src\core\physics\core\physics_context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\physics.h">
+    <ClInclude Include="src\core\physics\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\rigidbody\rigidbody.h">
+    <ClInclude Include="src\core\physics\rigidbody\rigidbody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gizmos\editor_gizmo_color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\core\physics_bridge.h">
+    <ClInclude Include="src\core\physics\core\physics_bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\utils\px_translator.h">
+    <ClInclude Include="src\core\physics\utils\px_translator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\context\application_context.h">
+    <ClInclude Include="src\core\context\application_context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\backend\api.h">
+    <ClInclude Include="src\core\backend\api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_drawing.h">
@@ -491,10 +491,10 @@
     <ClInclude Include="src\gizmos\component_gizmos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\physics\rigidbody\rigidbody_enums.h">
+    <ClInclude Include="src\core\physics\rigidbody\rigidbody_enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\rendering\passes\preprocessor_pass.h">
+    <ClInclude Include="src\core\rendering\passes\preprocessor_pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\windows\insight_panel_window.h">
@@ -524,10 +524,10 @@
     <ClInclude Include="src\ui\windows\asset_browser_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\resource\resource_loader.h">
+    <ClInclude Include="src\core\resource\resource_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\resource\resource.h">
+    <ClInclude Include="src\core\resource\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
@@ -566,13 +566,13 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\reflection.h">
+    <ClInclude Include="src\core\ecs\reflection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\ecs_collection.h">
+    <ClInclude Include="src\core\ecs\ecs_collection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ecs\entity_container.hpp">
+    <ClInclude Include="src\core\ecs\entity_container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\components\inspectable_components.h">

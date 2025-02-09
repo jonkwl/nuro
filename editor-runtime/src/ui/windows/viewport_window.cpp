@@ -7,17 +7,17 @@
 #include <ImGuizmo.h>
 #include <tuple>
 
-#include "../core/rendering/postprocessing/post_processing.h"
-#include "../core/time/time.h"
-#include "../core/utils/console.h"
-#include "../core/ecs/ecs_collection.h"
-#include "../core/rendering/transformation/transformation.h"
-#include "../core/transform/transform.h"
-#include "../core/ecs/components.h"
-#include "../core/rendering/material/lit/lit_material.h"
+#include "../src/core/rendering/postprocessing/post_processing.h"
+#include "../src/core/time/time.h"
+#include "../src/core/utils/console.h"
+#include "../src/core/ecs/ecs_collection.h"
+#include "../src/core/rendering/transformation/transformation.h"
+#include "../src/core/transform/transform.h"
+#include "../src/core/ecs/components.h"
+#include "../src/core/rendering/material/lit/lit_material.h"
 
-#include "../core/input/input.h"
-#include "../core/input/cursor.h"
+#include "../src/core/input/input.h"
+#include "../src/core/input/cursor.h"
 
 ViewportWindow::ViewportWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),

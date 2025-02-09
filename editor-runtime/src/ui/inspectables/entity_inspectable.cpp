@@ -2,7 +2,7 @@
 
 #include <glm.hpp>
 
-#include "../core/ecs/components.h"
+#include "../src/core/ecs/components.h"
 
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/windows/registry_window.h"

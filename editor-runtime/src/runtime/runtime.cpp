@@ -9,24 +9,24 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
 
-#include "../core/rendering/model/model.h"
-#include "../core/rendering/shader/shader.h"
-#include "../core/rendering/skybox/cubemap.h"
-#include "../core/rendering/texture/texture.h"
-#include "../core/rendering/shader/shader_pool.h"
-#include "../core/rendering/shadows/shadow_map.h"
-#include "../core/rendering/shadows/shadow_disk.h"
-#include "../core/rendering/material/lit/lit_material.h"
-#include "../core/rendering/transformation/transformation.h"
+#include "../src/core/rendering/model/model.h"
+#include "../src/core/rendering/shader/shader.h"
+#include "../src/core/rendering/skybox/cubemap.h"
+#include "../src/core/rendering/texture/texture.h"
+#include "../src/core/rendering/shader/shader_pool.h"
+#include "../src/core/rendering/shadows/shadow_map.h"
+#include "../src/core/rendering/shadows/shadow_disk.h"
+#include "../src/core/rendering/material/lit/lit_material.h"
+#include "../src/core/rendering/transformation/transformation.h"
 
-#include "../core/utils/console.h"
-#include "../core/time/time.h"
-#include "../core/physics/physics.h"
-#include "../core/viewport/viewport.h"
-#include "../core/ecs/ecs_collection.h"
-#include "../core/transform/transform.h"
-#include "../core/diagnostics/profiler.h"
-#include "../core/context/application_context.h"
+#include "../src/core/utils/console.h"
+#include "../src/core/time/time.h"
+#include "../src/core/physics/physics.h"
+#include "../src/core/viewport/viewport.h"
+#include "../src/core/ecs/ecs_collection.h"
+#include "../src/core/transform/transform.h"
+#include "../src/core/diagnostics/profiler.h"
+#include "../src/core/context/application_context.h"
 
 namespace Runtime {
 
@@ -69,10 +69,10 @@ namespace Runtime {
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 		// Load shaders
-		ShaderPool::loadAllSync("../resources/shaders/materials");
-		ShaderPool::loadAllSync("../resources/shaders/postprocessing");
-		ShaderPool::loadAllSync("../resources/shaders/gizmo");
-		ShaderPool::loadAllSync("../resources/shaders/passes");
+		ShaderPool::loadAllSync("./src/shaders/materials");
+		ShaderPool::loadAllSync("./src/shaders/postprocessing");
+		ShaderPool::loadAllSync("./src/shaders/gizmo");
+		ShaderPool::loadAllSync("./src/shaders/passes");
 
 		// Create default texture
 		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");

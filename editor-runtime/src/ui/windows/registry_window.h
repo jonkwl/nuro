@@ -7,7 +7,7 @@
 
 #include "editor_window.h"
 
-#include "../core/ecs/ecs_collection.h"
+#include "../src/core/ecs/ecs_collection.h"
 
 struct HierarchyItem {
 

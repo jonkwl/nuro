@@ -3,9 +3,9 @@
 #include <glm.hpp>
 #include <implot.h>
 
-#include "../core/time/time.h"
-#include "../core/diagnostics/profiler.h"
-#include "../core/diagnostics/diagnostics.h"
+#include "../src/core/time/time.h"
+#include "../src/core/diagnostics/profiler.h"
+#include "../src/core/diagnostics/diagnostics.h"
 
 DiagnosticsWindow::DiagnosticsWindow() : fpsCache(std::deque<float>(100)),
 fpsUpdateTimer(0.0f)
@@ -15,8 +15,7 @@ fpsUpdateTimer(0.0f)
 void DiagnosticsWindow::render()
 {
 	// Get fps
-	// float fps = 1000000.0f / Profiler::getUs("render");
-	float fps = Diagnostics::getFps();
+	float fps = 1000000.0f / Profiler::getUs("render");
 
 	std::string title = UIUtils::windowTitle("Diagnostics");
 	ImGui::Begin(title.c_str(), nullptr, EditorFlag::fixed);

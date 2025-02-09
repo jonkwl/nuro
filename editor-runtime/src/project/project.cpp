@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "../core/utils/console.h"
+#include "../src/core/utils/console.h"
 
 Project::Project() : _configuration(),
 _path()

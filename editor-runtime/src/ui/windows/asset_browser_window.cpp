@@ -113,7 +113,7 @@ void AssetBrowserWindow::createAssetUIData(Asset& asset)
 	// asset.uiData.size.x = std::max(asset.uiData.size.x, asset.uiData.textSize.x + asset.uiData.padding.x * 2.0f);
 
 	// Fixed width
-	float xFixedPadding = 10.0f;
+	float xFixedPadding = 13.0f;
 	asset.uiData.size.x = asset.uiData.iconSize.x + asset.uiData.padding.x * 2.0f + xFixedPadding;
 }
 

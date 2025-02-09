@@ -9,7 +9,7 @@
 #include "../src/ui/misc/ui_flex.h"
 #include "../src/ui/utils/ui_utils.h"
 
-#include "../core/utils/console.h"
+#include "../src/core/utils/console.h"
 #include "../src/ui/collection/IconsFontAwesome6.h"
 
 namespace IMComponents {

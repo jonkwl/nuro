@@ -3,8 +3,8 @@
 #include <glm.hpp>
 #include <vector>
 
-#include "../core/ecs/components.h"
-#include "../core/viewport/viewport.h"
+#include "../src/core/ecs/components.h"
+#include "../src/core/viewport/viewport.h"
 
 class Model;
 class LitMaterial;

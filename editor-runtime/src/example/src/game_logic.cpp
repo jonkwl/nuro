@@ -1,6 +1,6 @@
 #include "game_logic.h"
 
-#include "../core/engine.h"
+#include "../src/core/engine.h"
 
 #include <iostream>
 
@@ -9,7 +9,7 @@ Entity kinematicEntity;
 Entity playerEntity;
 Entity planeEntity;
 
-void _example() {
+void _physics_example() {
 	// Get loader
 	ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
@@ -71,7 +71,7 @@ void _example() {
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 
 	// Cube batch
-	int objectAmount = 128;
+	int objectAmount = 256;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube", ECS::createEntity());
@@ -143,12 +143,9 @@ void _example() {
 	cubeMaterial->metallicMap = metallic;
 	cubeMaterial->roughnessMap = roughness;
 	cubeMaterial->emissiveMap = emissive;
+	cubeMaterial->emission = true;
+	cubeMaterial->emissionIntensity = 250.0f;
 	cubeMaterial->occlusionMap = occlusion;
-
-	EntityContainer cube("Example Showcase", ECS::createEntity());
-	cube.transform.position = glm::vec3(0.0f, 7.0f, 21.0f);
-	cube.transform.scale = glm::vec3(5.0f);
-	cube.add<MeshRendererComponent>(cubeMesh, cubeMaterial);
 
 	// Model async loading example
 	Model* asyncModel = new Model();
@@ -163,7 +160,7 @@ void _example() {
 }
 
 void gameSetup() {
-	_example();
+	_physics_example();
 }
 
 void gameAwake() {

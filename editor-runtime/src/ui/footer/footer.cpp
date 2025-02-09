@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
-#include "../core/context/application_context.h"
-#include "../core/utils/iohandler.h"
+#include "../src/core/context/application_context.h"
+#include "../src/core/utils/iohandler.h"
 
-#include "../core/utils/console.h"
+#include "../src/core/utils/console.h"
 
 #include "../src/ui/components/im_components.h"
 

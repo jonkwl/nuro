@@ -1,8 +1,8 @@
 #include "title_bar.h"
 
-#include "../core/utils/console.h"
-#include "../core/input/cursor.h"
-#include "../core/context/application_context.h"
+#include "../src/core/utils/console.h"
+#include "../src/core/input/cursor.h"
+#include "../src/core/context/application_context.h"
 
 #include "../src/runtime/runtime.h"
 #include "../src/ui/collection/IconsFontAwesome6.h"

@@ -5,7 +5,7 @@
 
 #include "inspectable.h"
 
-#include "../core/ecs/ecs_collection.h"
+#include "../src/core/ecs/ecs_collection.h"
 
 #include "../src/ui/windows/registry_window.h"
 

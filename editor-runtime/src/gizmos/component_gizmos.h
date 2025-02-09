@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../core/ecs/ecs_collection.h"
-#include "../core/rendering/gizmos/gizmos.h"
+#include "../src/core/ecs/ecs_collection.h"
+#include "../src/core/rendering/gizmos/gizmos.h"
 
 namespace ComponentGizmos
 {

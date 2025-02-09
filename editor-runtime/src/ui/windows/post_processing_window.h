@@ -2,7 +2,7 @@
 
 #include "editor_window.h"
 
-#include "../core/rendering/postprocessing/post_processing.h"
+#include "../src/core/rendering/postprocessing/post_processing.h"
 
 class PostProcessingWindow : public EditorWindow
 {

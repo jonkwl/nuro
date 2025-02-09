@@ -4,8 +4,8 @@
 #include <imgui.h>
 #include <glm.hpp>
 
-#include "../core/time/time.h"
-#include "../core/utils/console.h"
+#include "../src/core/time/time.h"
+#include "../src/core/utils/console.h"
 
 #include "../src/ui/editor_ui.h"
 #include "../src/runtime/runtime.h"

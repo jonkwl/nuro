@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "../core/transform/transform.h"
+#include "../src/core/transform/transform.h"
 
 #include "../src/ui/windows/insight_panel_window.h"
 #include "../src/ui/inspectables/entity_inspectable.h"

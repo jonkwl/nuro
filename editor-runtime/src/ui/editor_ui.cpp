@@ -7,9 +7,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "../core/utils/console.h"
-#include "../core/input/cursor.h"
-#include "../core/context/application_context.h"
+#include "../src/core/utils/console.h"
+#include "../src/core/input/cursor.h"
+#include "../src/core/context/application_context.h"
 
 #include "../src/ui/misc/ui_flex.h"
 #include "../src/runtime/runtime.h"

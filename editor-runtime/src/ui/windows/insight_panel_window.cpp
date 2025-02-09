@@ -1,6 +1,6 @@
 #include "insight_panel_window.h"
 
-#include "../core/input/cursor.h"
+#include "../src/core/input/cursor.h"
 
 Inspectable* InsightPanelWindow::inspected;
 

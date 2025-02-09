@@ -10,7 +10,7 @@ class Project
 {
 public:
 	struct Configuration {
-		std::string name = "Unnamed Project";
+		std::string name = "Unnamed Project*";
 	};
 
 public:

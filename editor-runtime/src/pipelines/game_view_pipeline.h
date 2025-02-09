@@ -2,15 +2,15 @@
 
 #include <vector>
 
-#include "../core/viewport/viewport.h"
-#include "../core/rendering/gizmos/gizmos.h"
-#include "../core/rendering/passes/ssao_pass.h"
-#include "../core/rendering/passes/pre_pass.h"
-#include "../core/rendering/passes/forward_pass.h"
-#include "../core/rendering/passes/preprocessor_pass.h"
-#include "../core/rendering/velocitybuffer/velocity_buffer.h"
-#include "../core/rendering/postprocessing/post_processing.h"
-#include "../core/rendering/postprocessing/post_processing_pipeline.h"
+#include "../src/core/viewport/viewport.h"
+#include "../src/core/rendering/gizmos/gizmos.h"
+#include "../src/core/rendering/passes/ssao_pass.h"
+#include "../src/core/rendering/passes/pre_pass.h"
+#include "../src/core/rendering/passes/forward_pass.h"
+#include "../src/core/rendering/passes/preprocessor_pass.h"
+#include "../src/core/rendering/velocitybuffer/velocity_buffer.h"
+#include "../src/core/rendering/postprocessing/post_processing.h"
+#include "../src/core/rendering/postprocessing/post_processing_pipeline.h"
 
 class Skybox;
 
