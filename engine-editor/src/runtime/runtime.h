@@ -2,6 +2,7 @@
 
 #include <filesystem>
 
+#include "../src/core/engine.h"
 #include "../src/core/rendering/gizmos/imgizmo.h"
 #include "../src/core/physics/core/physics_context.h"
 

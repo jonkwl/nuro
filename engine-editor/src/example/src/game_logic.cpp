@@ -1,3 +1,7 @@
+//
+// TEMPORARY CODE!
+//
+
 #include "game_logic.h"
 
 #include "../src/core/engine.h"
@@ -33,7 +37,7 @@ void _physics_example() {
 	LitMaterial* planeMaterial = new LitMaterial();
 
 	// Cube batch
-	int objectAmount = 360;
+	int objectAmount = 16;
 	uint32_t c = 1;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {

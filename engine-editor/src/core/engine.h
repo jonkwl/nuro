@@ -1,5 +1,8 @@
 #pragma once
 
+// tmp
+#define PROJECT_PATH "C:/Users/jonko/Dokumente/development/nuro/engine-editor/src/example"
+
 // Useful includes for applications using engine
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>

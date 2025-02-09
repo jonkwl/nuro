@@ -1,3 +1,4 @@
+
 #include "project.h"
 
 #include <fstream>
@@ -12,7 +13,7 @@ _path()
 bool Project::load(const fs::path& directory)
 {
 	if (!fs::exists(directory) || !fs::is_directory(directory)) {
-		Console::out::warning("Project", "Project path is invalid.");
+		Console::out::error("Project", "Project path is invalid.");
 		return false;
 	}
 

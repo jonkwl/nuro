@@ -2,6 +2,6 @@
 
 int main()
 {
-	Runtime::loadProject("C:/Users/jonko/Dokumente/development/nuro/editor-runtime/src/example");
+	Runtime::loadProject(PROJECT_PATH);
 	return Runtime::START_LOOP();
 }
