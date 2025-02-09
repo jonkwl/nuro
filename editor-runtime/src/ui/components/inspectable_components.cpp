@@ -59,9 +59,7 @@ namespace InspectableComponents {
 		//
 
 		if (!alwaysOpened) {
-			if (hovered && ImGui::IsMouseClicked(2)) {
-				*openedPtr = !(*openedPtr);
-			}
+			if (hovered && ImGui::IsMouseClicked(2)) *openedPtr = !(*openedPtr);
 		}
 
 		//
@@ -74,12 +72,13 @@ namespace InspectableComponents {
 		// DRAW EXPANSION CARET
 		//
 
-		if (!alwaysOpened) {
-			if (IMComponents::caret(drawList, cursor, ImVec2(-1.0f, 2.0f), *openedPtr ? ICON_FA_CARET_DOWN : ICON_FA_CARET_RIGHT, IM_COL32(0, 0, 0, 0), EditorColor::element)) {
-				*openedPtr = !(*openedPtr);
-			}
-			cursor.x += 22.0f;
+		if (alwaysOpened) {
+			drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, cursor, EditorColor::text, ICON_FA_CARET_DOWN);
 		}
+		else {
+			IMComponents::caret(*openedPtr, drawList, cursor, ImVec2(-1.0f, 2.0f), IM_COL32(0, 0, 0, 0), EditorColor::element);
+		}
+		cursor.x += 22.0f;
 
 		//
 		// DRAW COMPONENT ICON

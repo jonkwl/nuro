@@ -343,7 +343,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon) + "   " + item.entity.name;
+	std::string textValue = std::string(icon) + "   " + item.entity.name();
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -363,7 +363,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 
 		// Update drag rect text
 		size_t nSelectedItems = selectedItems.size();
-		std::string text = nSelectedItems > 1 ? std::to_string(selectedItems.size()) + " selected" : "Selected " + item.entity.name;
+		std::string text = nSelectedItems > 1 ? std::to_string(selectedItems.size()) + " selected" : "Selected " + item.entity.name();
 		std::string icon(ICON_FA_LEFT_LONG);
 		dragRect.modifyText(0).text = icon + "   " + text;
 
@@ -542,7 +542,7 @@ void RegistryWindow::buildSceneHierarchy()
 	auto transforms = ECS::gRegistry.view<TransformComponent>();
 	uint32_t i = 1;
 	for (auto [entity, transform] : transforms.each()) {
-		currentHierarchy.push_back(HierarchyItem(i, EntityContainer("Item " + std::to_string(i), entity), {}));
+		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(transform.name, entity), {}));
 		i++;
 	}
 

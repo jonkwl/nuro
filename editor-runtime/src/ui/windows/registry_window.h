@@ -61,13 +61,19 @@ private:
 
 	char searchBuffer[128];
 
+	// Set if the context menu was used within the last frame
 	bool contextMenuUsed;
 
+	// Current hierarchy
 	std::vector<HierarchyItem> currentHierarchy;
+
+	// Map of pointers to the currently selected items of the hierarchy sorted by their id
 	std::unordered_map<uint32_t, HierarchyItem*> selectedItems;
+
 	HierarchyItem* lastSelected;
 	HierarchyItem* lastHovered;
 
+	// Rect for dragged hierarchy items
 	DynamicContent dragRect;
 	bool draggingHierarchy;
 

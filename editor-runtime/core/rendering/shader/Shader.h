@@ -21,7 +21,7 @@ public:
 	void bind() const;
 
 	// Returns the shader programs backend id
-	uint32_t getId() const;
+	uint32_t id() const;
 
 	void setBool(const std::string& identifier, bool value);
 	void setInt(const std::string& identifier, int32_t value);
@@ -50,7 +50,7 @@ private:
 	Data data;
 
 	// Shader program backend id
-	uint32_t id;
+	uint32_t _id;
 
 	// Shader program uniform location cache
 	std::unordered_map<std::string, int32_t> uniforms;

@@ -7,12 +7,11 @@
 
 AssetBrowserWindow::AssetBrowserWindow() : assetScale(1.0f),
 targetAssetScale(1.0f),
-folderStructure(),
-folderAssets(),
-selectedFolder(nullptr),
-projectPath("C:/Users/jonko/Dokumente/development/nuro/editor-runtime/src/example")
+folders(),
+folderContent(),
+selectedFolder(0)
 {
-	buildFolderStructure();
+	reload();
 }
 
 void AssetBrowserWindow::render()
@@ -47,6 +46,12 @@ void AssetBrowserWindow::render()
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+void AssetBrowserWindow::reload()
+{
+	buildFolders(Runtime::getProject().path(), folders);
+	if (folders.size() > 0) selectFolder(&folders[0]);
 }
 
 void AssetBrowserWindow::evaluateInputs()
@@ -91,48 +96,100 @@ void AssetBrowserWindow::evaluateInputs()
 	assetScale = glm::mix(assetScale, targetAssetScale, assetScaleSmoothing * Time::deltaf());
 }
 
-void AssetBrowserWindow::buildFolderStructure()
+void AssetBrowserWindow::createAssetUIData(Asset& asset)
 {
-	// Remove selected folder
-	selectedFolder = nullptr;
+	//
+	// EVALUATE
+	//
 
-	// Clear existing folder structure
-	folderStructure.clear();
+	asset.uiData.font = EditorUI::getFonts().p;
+	asset.uiData.padding = ImVec2(10.0f, 7.0f) * assetScale;
+	asset.uiData.iconSize = ImVec2(50.0f, 50.0f) * assetScale;
 
-	// Verify project path is a valid directory
-	if (!fs::is_directory(projectPath)) return;
+	asset.uiData.textSize = asset.uiData.font->CalcTextSizeA(asset.uiData.font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
+	asset.uiData.size = asset.uiData.iconSize + asset.uiData.padding * 2.0f + ImVec2(0.0f, asset.uiData.textSize.y + asset.uiData.padding.y);
+	
+	// Modular width
+	// asset.uiData.size.x = std::max(asset.uiData.size.x, asset.uiData.textSize.x + asset.uiData.padding.x * 2.0f);
 
-	// Init folder structure build recursion
-	folderStructureRecursion(projectPath, folderStructure);
+	// Fixed width
+	float xFixedPadding = 10.0f;
+	asset.uiData.size.x = asset.uiData.iconSize.x + asset.uiData.padding.x * 2.0f + xFixedPadding;
+}
 
-	// Select first folder of newly built folder structure if existing
-	if (folderStructure.size() > 0) {
-		selectedFolder = &folderStructure[0];
+void AssetBrowserWindow::selectFolder(Folder* folder)
+{
+	selectedFolder = folder;
+	if (selectedFolder) {
 		selectedFolder->expanded = true;
 	}
 }
 
-void AssetBrowserWindow::buildAssetBatch(const fs::path& directory)
+void AssetBrowserWindow::buildFolders(const fs::path& directory, std::vector<Folder>& target, uint32_t i)
 {
-	AssetBatch& batch = folderAssets[hashPath(directory)];
-	batch.assets.clear();
+	if (i == 0) {
+		// Clear existing folder structure
+		folders.clear();
+	}
+
+	// Loop through current directory
+	for (const auto& entry : fs::directory_iterator(directory))
+	{
+		if (!fs::is_directory(entry)) continue;
+
+		Folder folder;
+
+		folder.name = entry.path().filename().string();
+
+		folder.absolutePath = entry.path();
+		folder.absolutePathHash = hash(folder.absolutePath);
+		folder.relativePath = Runtime::getProject().relative(folder.absolutePath);
+
+		// Recursively build children folders for subdirectory
+		buildFolders(entry.path(), folder.children, ++i);
+
+		// Add current folder to list
+		target.push_back(folder);
+	}
+}
+
+void AssetBrowserWindow::buildFolderContent(const fs::path& directory)
+{
+	// Code is very unoptimized, boilerplate
+
+	FolderContent& content = folderContent[hash(directory)];
+	content.assets.clear();
+
+	std::vector<Asset> folders;
+	std::vector<Asset> files;
 
 	try {
 		// Iterate through directory
 		for (const auto& entry : fs::directory_iterator(directory)) {
-			// Check if asset is a folder (skip folders)
-			if (fs::is_directory(entry)) continue;
-
 			// Create new asset
 			Asset asset;
-			asset.absolutePath = entry.path();
-			asset.name = entry.path().filename().string();
 
-			// Create assets ui data
+			asset.name = entry.path().filename().string();
+			asset.absolutePath = entry.path();
+			asset.relativePath = Runtime::getProject().relative(asset.absolutePath);
+
+			// Check whether it's a folder or a file
+			if (fs::is_directory(entry)) {
+				asset.type = Asset::Type::FOLDER;
+				folders.push_back(asset);  // Store folders
+			}
+			else {
+				asset.type = Asset::Type::FILE;
+				files.push_back(asset);  // Store files
+			}
+		}
+
+		// Insert all folders first, then all files
+		content.assets.insert(content.assets.end(), folders.begin(), folders.end());
+		content.assets.insert(content.assets.end(), files.begin(), files.end());
+
+		for (Asset& asset : content.assets) {
 			createAssetUIData(asset);
-			
-			// Add asset
-			batch.assets.push_back(asset);
 		}
 	}
 	catch (const fs::filesystem_error& e) {
@@ -140,30 +197,10 @@ void AssetBrowserWindow::buildAssetBatch(const fs::path& directory)
 	}
 }
 
-uint32_t AssetBrowserWindow::hashPath(const fs::path& path)
+uint32_t AssetBrowserWindow::hash(const fs::path& path)
 {
 	std::string pathString = path.string();
 	return entt::hashed_string::value(pathString.c_str());
-}
-
-void AssetBrowserWindow::folderStructureRecursion(const fs::path& directory, std::vector<Folder>& folderList)
-{
-	// Loop through each directory in current directory
-	for (const auto& entry : fs::directory_iterator(directory))
-	{
-		if (fs::is_directory(entry)) {
-			Folder folder;
-			folder.name = entry.path().filename().string();
-			folder.absolutePath = entry.path();
-			folder.relativePath = fs::relative(folder.absolutePath, projectPath);
-
-			// Recursively build children folders for subdirectory
-			folderStructureRecursion(entry.path(), folder.children);
-
-			// Add current folder to list
-			folderList.push_back(folder);
-		}
-	}
 }
 
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
@@ -181,8 +218,6 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 
 	ImU32 color = IM_COL32(11, 11, 11, 255);
 
-	if (!selectedFolder) return size;
-
 	//
 	// DRAW BACKGROUND
 	//
@@ -193,9 +228,12 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 	// DRAW PATH BREADCRUMB
 	//
 
-	// Example strings
-	std::string pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + selectedFolder->relativePath.parent_path().string();
-	std::string pathEnd = "/" + selectedFolder->name;
+	std::string pathRoot = "No folder selected";
+	std::string pathEnd;
+	if (selectedFolder) {
+		pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + selectedFolder->relativePath.parent_path().string();
+		pathEnd = "/" + selectedFolder->name;
+	}
 
 	// Evaluate position
 	ImFont* baseFont = EditorUI::getFonts().h4;
@@ -241,8 +279,8 @@ ImVec2 AssetBrowserWindow::renderFolderStructure(ImDrawList& drawList, ImVec2 po
 	{
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 
-		for (Folder& folder : folderStructure) {
-			renderFolderItem(drawList, &folder, 0.0f);
+		for (Folder& folder : folders) {
+			renderFolder(drawList, &folder, 0.0f);
 		}
 
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
@@ -285,9 +323,13 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 		//
 
 		// Fetch assets to be drawn
-		uint32_t pathHash = hashPath(selectedFolder->absolutePath);
-		if(folderAssets.find(pathHash) == folderAssets.end()) buildAssetBatch(selectedFolder->absolutePath);
-		std::vector<Asset>& currentAssets = folderAssets[pathHash].assets;
+		uint32_t pathHash = hash(selectedFolder->absolutePath);
+
+		// Build folder content if it isnt available
+		if(folderContent.find(pathHash) == folderContent.end()) buildFolderContent(selectedFolder->absolutePath);
+
+		// 
+		std::vector<Asset>& currentAssets = folderContent[pathHash].assets;
 
 		// Initialize cursor with padding (local cursor relative to window)
 		ImVec2 cursor = padding;
@@ -308,7 +350,7 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 			ImGui::SetCursorPos(cursor);
 
 			// Draw asset
-			renderAssetItem(drawList, asset, ImGui::GetCursorScreenPos());
+			renderAsset(drawList, asset, ImGui::GetCursorScreenPos());
 
 			// Add vertical gap for next asset
 			cursor.x += asset.uiData.size.x + gap.x;
@@ -320,7 +362,7 @@ void AssetBrowserWindow::renderAssets(ImDrawList& drawList, ImVec2 position, ImV
 	IMComponents::endClippedChild();
 }
 
-void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder* folder, uint32_t indentation)
+void AssetBrowserWindow::renderFolder(ImDrawList& drawList, Folder* folder, uint32_t indentation)
 {
 	if (!folder) return;
 
@@ -381,10 +423,7 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder* folder, 
 	// CHECK FOR SELECTION
 	//
 
-	if (clicked) {
-		selectedFolder = folder;
-		if(!selectedFolder->expanded) selectedFolder->expanded = true;
-	}
+	if (clicked) selectFolder(folder);
 
 	//
 	// DRAW FOLDER ICON
@@ -459,31 +498,12 @@ void AssetBrowserWindow::renderFolderItem(ImDrawList& drawList, Folder* folder, 
 
 	if (hasChildren && folder->expanded) {
 		for (auto& child : folder->children) {
-			renderFolderItem(drawList, &child, indentation + 1);
+			renderFolder(drawList, &child, indentation + 1);
 		}
 	}
 }
 
-void AssetBrowserWindow::createAssetUIData(Asset& asset)
-{
-	//
-	// EVALUATE
-	//
-
-	asset.uiData.font = EditorUI::getFonts().p;
-	asset.uiData.padding = ImVec2(10.0f, 7.0f) * assetScale;
-	asset.uiData.iconSize = ImVec2(50.0f, 50.0f) * assetScale;
-
-	asset.uiData.textSize = asset.uiData.font->CalcTextSizeA(asset.uiData.font->FontSize, FLT_MAX, 0.0f, asset.name.c_str());
-	asset.uiData.size = asset.uiData.iconSize + asset.uiData.padding * 2.0f + ImVec2(0.0f, asset.uiData.textSize.y + asset.uiData.padding.y);
-	//asset.uiData.size.x = std::max(asset.uiData.size.x, asset.uiData.textSize.x + asset.uiData.padding.x * 2.0f);
-	
-	// Fixed width for all
-	float xFixedPadding = 6.0f;
-	asset.uiData.size.x = asset.uiData.iconSize.x + asset.uiData.padding.x * 2.0f + xFixedPadding;
-}
-
-void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImVec2 position)
+void AssetBrowserWindow::renderAsset(ImDrawList& drawList, Asset& asset, ImVec2 position)
 {
 	//
 	// EVALUATE
@@ -515,13 +535,13 @@ void AssetBrowserWindow::renderAssetItem(ImDrawList& drawList, Asset& asset, ImV
 	if (asset.thumbnail) icon = asset.thumbnail;
 	else {
 		switch (asset.type) {
-		case AssetType::FILE:
+		case Asset::Type::FILE:
 			icon = IconPool::get("file");
 			break;
-		case AssetType::FOLDER:
+		case Asset::Type::FOLDER:
 			icon = IconPool::get("folder");
 			break;
-		case AssetType::MATERIAL:
+		case Asset::Type::MATERIAL:
 			icon = IconPool::get("material");
 			break;
 		default:

@@ -267,6 +267,9 @@
     <ClCompile Include="src\ui\components\inspectable_components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\project\project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\diagnostics\diagnostics.h">
@@ -573,6 +576,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\components\inspectable_components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\project\project.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

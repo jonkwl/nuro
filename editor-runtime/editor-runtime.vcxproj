@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\physics\core\physics_bridge.cpp" />
+    <ClCompile Include="src\project\project.cpp" />
     <ClCompile Include="src\ui\components\inspectable_components.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="core\resource\resource_loader.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="core\ecs\entity_container.hpp" />
     <ClInclude Include="core\resource\resource.h" />
     <ClInclude Include="core\resource\resource_loader.h" />
+    <ClInclude Include="src\project\project.h" />
     <ClInclude Include="src\ui\components\inspectable_components.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

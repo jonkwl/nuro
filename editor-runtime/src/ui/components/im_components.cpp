@@ -612,7 +612,7 @@ namespace IMComponents {
 		ImGui::PopClipRect();
 	}
 
-	bool caret(ImDrawList& drawList, ImVec2 position, ImVec2 offset, const char* icon, ImU32 color, ImU32 hoveredColor)
+	bool caret(bool& opened, ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor)
 	{
 		// Circle geometry
 		float circleRadius = 9.0f;
@@ -637,8 +637,14 @@ namespace IMComponents {
 		// Draw circle
 		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);
 
+		// Get icon
+		const char* icon = opened ? ICON_FA_CARET_DOWN : ICON_FA_CARET_RIGHT;
+
 		// Draw icon
 		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, position, EditorColor::text, icon);
+
+		// Flip opened on click
+		if (circleClicked) opened = !opened;
 
 		return circleClicked;
 	}

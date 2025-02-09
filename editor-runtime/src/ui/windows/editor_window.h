@@ -4,11 +4,12 @@
 #include <imgui.h>
 #include <glm.hpp>
 
-#include "../core/utils/console.h"
 #include "../core/time/time.h"
-#include "../src/ui/misc/ui_flex.h"
+#include "../core/utils/console.h"
+
 #include "../src/ui/editor_ui.h"
 #include "../src/runtime/runtime.h"
+#include "../src/ui/misc/ui_flex.h"
 #include "../src/ui/utils/ui_utils.h"
 #include "../src/ui/inspectables/inspectable.h"
 #include "../src/ui/components/im_components.h"

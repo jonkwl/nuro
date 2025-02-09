@@ -16,12 +16,12 @@ EntityInspectable::EntityInspectable(HierarchyItem& item) : item(item)
 
 std::string EntityInspectable::getName()
 {
-	return item.entity.name;
+	return item.entity.name();
 }
 
 void EntityInspectable::renderStaticContent(ImDrawList& drawList)
 {
-	IMComponents::label(item.entity.name, EditorUI::getFonts().h3_bold);
+	IMComponents::label(item.entity.name(), EditorUI::getFonts().h3_bold);
 	ImGui::Dummy(ImVec2(0.0f, 3.0f));
 	IMComponents::buttonBig("Add Component");
 }

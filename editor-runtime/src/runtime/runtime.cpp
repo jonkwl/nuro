@@ -30,6 +30,9 @@
 
 namespace Runtime {
 
+	// Project
+	Project gProject;
+
 	// Pipelines
 	SceneViewPipeline gSceneViewPipeline;
 	GameViewPipeline gGameViewPipeline;
@@ -74,7 +77,7 @@ namespace Runtime {
 		// Create default texture
 		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");
 		loader.createSync(gDefaultTexture);
-		Texture::setDefaultTexture(gDefaultTexture->getId());
+		Texture::setDefaultTexture(gDefaultTexture->id());
 
 		// Load various editor icons
 		IconPool::createFallbackIconSync("../resources/icons/invalid.png");
@@ -265,6 +268,16 @@ namespace Runtime {
 		std::exit(0);
 
 		return 0;
+	}
+
+	void loadProject(const fs::path& path)
+	{
+		gProject.load(path);
+	}
+
+	const Project& getProject()
+	{
+		return gProject;
 	}
 
 	void startGame()

@@ -73,12 +73,12 @@ namespace IconPool {
 	{
 		if (auto it = gIcons.find(identifier); it != gIcons.end()) {
 			// Icon found, return its backend id
-			return it->second->getId();
+			return it->second->id();
 		}
 		else {
 			// Icon not found, return invalid icons backend id
 			Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
-			return gInvalidIcon->getId();
+			return gInvalidIcon->id();
 		}
 	}
 

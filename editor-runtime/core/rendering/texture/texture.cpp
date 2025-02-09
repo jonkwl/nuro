@@ -15,7 +15,7 @@ width(0),
 height(0),
 channels(0),
 data(nullptr),
-id(defaultTextureId)
+_id(defaultTextureId)
 {
 }
 
@@ -25,9 +25,9 @@ void Texture::setSource(TextureType _type, const std::string& _path)
 	path = _path;
 }
 
-uint32_t Texture::getId() const
+uint32_t Texture::id() const
 {
-	return id;
+	return _id;
 }
 
 void Texture::setDefaultTexture(uint32_t textureId)
@@ -74,8 +74,8 @@ void Texture::dispatchGPU()
 	if (!data) return;
 
 	// Generate texture
-	glGenTextures(1, &id);
-	glBindTexture(GL_TEXTURE_2D, id);
+	glGenTextures(1, &_id);
+	glBindTexture(GL_TEXTURE_2D, _id);
 
 	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

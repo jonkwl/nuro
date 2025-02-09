@@ -8,7 +8,7 @@
 
 Shader::Shader() : path(),
 data(),
-id(0),
+_id(0),
 uniforms()
 {
 }
@@ -25,12 +25,12 @@ void Shader::setSource(std::string _path)
 
 void Shader::bind() const
 {
-	glUseProgram(id);
+	glUseProgram(_id);
 }
 
-uint32_t Shader::getId() const
+uint32_t Shader::id() const
 {
-	return id;
+	return _id;
 }
 
 void Shader::setBool(const std::string& identifier, bool value)
@@ -101,11 +101,11 @@ void Shader::dispatchGPU()
 	if (!shaderCompiled("fragment", fragmentShader)) return;
 
 	// Create and link shader program
-	id = glCreateProgram();
-	glAttachShader(id, vertexShader);
-	glAttachShader(id, fragmentShader);
-	glLinkProgram(id);
-	if (!programLinked(id)) return;
+	_id = glCreateProgram();
+	glAttachShader(_id, vertexShader);
+	glAttachShader(_id, fragmentShader);
+	glLinkProgram(_id);
+	if (!programLinked(_id)) return;
 
 	// Delete shader sources
 	glDeleteShader(vertexShader);
@@ -118,7 +118,7 @@ int32_t Shader::getUniformLocation(const std::string& identifier)
 	if (uniforms.find(identifier) != uniforms.end()) return uniforms[identifier];
 
 	// Uniform not found in cache, fetch and save uniform location
-	int32_t location = glGetUniformLocation(id, identifier.c_str());
+	int32_t location = glGetUniformLocation(_id, identifier.c_str());
 	uniforms[identifier] = location;
 
 	// Return newly fetched uniform location

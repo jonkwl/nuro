@@ -1,3 +1,11 @@
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!													  !!
+   !! 			    BAD TEMPORARY CODE!					  !!
+   !!  I am aware this code is so bad its almost spooky.  !!
+   !! 			 Please ignore for now. :)				  !!
+   !!													  !!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
 #include "lit_material.h"
 
 #include <glad/glad.h>
@@ -7,14 +15,6 @@
 #include "../core/rendering/shader/shader_pool.h"
 #include "../core/rendering/shadows/shadow_disk.h"
 #include "../core/rendering/transformation/transformation.h"
-
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!													  !!
-   !! 			    BAD TEMPORARY CODE!					  !!
-   !!  I am aware this code is so bad its almost spooky.  !!
-   !! 			 Please ignore for now. :)				  !!
-   !!													  !!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
 uint32_t LitMaterial::instances = 0;
 Viewport* LitMaterial::viewport = nullptr;
@@ -55,7 +55,7 @@ shaderId(0)
 	instances++;
 
 	id = instances;
-	shaderId = shader->getId();
+	shaderId = shader->id();
 
 	shader->bind();
 	syncStaticUniforms();
@@ -111,14 +111,14 @@ void LitMaterial::bind() const
 	if (albedoMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + ALBEDO_UNIT);
-		glBindTexture(GL_TEXTURE_2D, albedoMap->getId());
+		glBindTexture(GL_TEXTURE_2D, albedoMap->id());
 	}
 
 	shader->setBool("material.enableRoughnessMap", roughnessMap);
 	if (roughnessMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + ROUGHNESS_UNIT);
-		glBindTexture(GL_TEXTURE_2D, roughnessMap->getId());
+		glBindTexture(GL_TEXTURE_2D, roughnessMap->id());
 	}
 	else
 	{
@@ -129,7 +129,7 @@ void LitMaterial::bind() const
 	if (metallicMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + METALLIC_UNIT);
-		glBindTexture(GL_TEXTURE_2D, metallicMap->getId());
+		glBindTexture(GL_TEXTURE_2D, metallicMap->id());
 	}
 	else
 	{
@@ -140,28 +140,28 @@ void LitMaterial::bind() const
 	if (normalMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + NORMAL_UNIT);
-		glBindTexture(GL_TEXTURE_2D, normalMap->getId());
+		glBindTexture(GL_TEXTURE_2D, normalMap->id());
 	}
 	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
 	shader->setBool("material.enableOcclusionMap", occlusionMap);
 	if (occlusionMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + OCCLUSION_UNIT);
-		glBindTexture(GL_TEXTURE_2D, occlusionMap->getId());
+		glBindTexture(GL_TEXTURE_2D, occlusionMap->id());
 	}
 
 	shader->setBool("material.enableEmissiveMap", emissiveMap);
 	if (emissiveMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + EMISSIVE_UNIT);
-		glBindTexture(GL_TEXTURE_2D, emissiveMap->getId());
+		glBindTexture(GL_TEXTURE_2D, emissiveMap->id());
 	}
 
 	shader->setBool("material.enableHeightMap", heightMap);
 	if (heightMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + HEIGHT_UNIT);
-		glBindTexture(GL_TEXTURE_2D, heightMap->getId());
+		glBindTexture(GL_TEXTURE_2D, heightMap->id());
 	}
 	shader->setFloat("material.heightMapScale", heightMapScale);
 }

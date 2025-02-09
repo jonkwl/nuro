@@ -13,12 +13,6 @@
 class ShadowDisk;
 class ShadowMap;
 
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!					   !!
-   !! BAD TEMPORARY CODE!  !!
-   !!					   !!
-   !!!!!!!!!!!!!!!!!!!!!!!!!! */
-
 class LitMaterial : public IMaterial
 {
 public:
@@ -29,11 +23,11 @@ public:
 	Shader* getShader() const override;
 	uint32_t getShaderId() const override;
 
-	glm::vec4 baseColor = glm::vec4(1.0f);  
-	glm::vec2 tiling = glm::vec2(1.0f);
-	glm::vec2 offset = glm::vec2(0.0f);
-	float roughness = 0.0f;
-	float metallic = 0.0f;
+	glm::vec4 baseColor;
+	glm::vec2 tiling;
+	glm::vec2 offset;
+	float roughness;
+	float metallic;
 	float normalMapIntensity;
 	bool emission;
 	float emissionIntensity;

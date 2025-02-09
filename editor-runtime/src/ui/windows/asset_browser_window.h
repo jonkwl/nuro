@@ -16,22 +16,47 @@ public:
 
 	void render() override;
 
+	// Refetches project paths and reloads asset browser
+	void reload();
+
 public:
-	enum class AssetType {
-		FILE,
-		FOLDER,
-		SCENE,
-		MODEL,
-		MATERIAL,
-		SHADER,
-		SCRIPT,
-		MARKDOWN,
+	struct Asset {
+		enum class Type {
+			FILE,
+			FOLDER,
+			SCENE,
+			MODEL,
+			MATERIAL,
+			SHADER,
+			SCRIPT,
+			MARKDOWN,
+		};
+
+		struct UIData {
+			ImFont* font = nullptr;
+			ImVec2 padding;
+			ImVec2 iconSize;
+			ImVec2 textSize;
+			ImVec2 size;
+		};
+
+		std::string name;
+		Type type = Type::FILE;
+
+		fs::path absolutePath;
+		fs::path relativePath;
+
+		UIData uiData;
+
+		uint32_t thumbnail = 0;
+		bool loading = false;
 	};
 
 	struct Folder {
 		std::string name;
 
 		fs::path absolutePath;
+		uint32_t absolutePathHash = 0;
 		fs::path relativePath;
 
 		std::vector<Folder> children;
@@ -39,54 +64,28 @@ public:
 		bool expanded = false;
 	};
 
-	// Holds data needed for drawing a ui asset element
-	struct AssetUIData {
-
-		// Configuration
-		ImFont* font = nullptr;
-		ImVec2 padding;
-		ImVec2 iconSize;
-
-		// Geometry
-		ImVec2 textSize;
-		ImVec2 size;
-
-	};
-
-	struct Asset {
-		std::string name;
-
-		fs::path absolutePath;
-
-		AssetType type = AssetType::FILE;
-		uint32_t thumbnail = 0;
-		bool loading = false;
-
-		AssetUIData uiData;
-	};
-
-	// Batch of assets, e.g. within some project folder
-	struct AssetBatch {
-
+	struct FolderContent {
 		std::vector<Asset> assets;
-
 	};
 
 private:
+
+	//
+	// MISC
+	// 
+	
 	// Checks for asset broser related inputs
 	void evaluateInputs();
 
-	// Builds the project paths folder structure recursively
-	void buildFolderStructure();
+	// Evaluates and sets an assets ui data
+	void createAssetUIData(Asset& asset);
 
-	// Builds the asset batch for the given directory path
-	void buildAssetBatch(const fs::path& directory);
+	// Selects the given folder (provide nullptr for unselection of current folder)
+	void selectFolder(Folder* folder);
 
-	// Returns the hashed version of given paths
-	uint32_t hashPath(const fs::path& path);
-
-	// Folder structure building recursion
-	void folderStructureRecursion(const fs::path& directory, std::vector<Folder>& folderList);
+	//
+	// RENDERING FUNCTIONS
+	//
 
 	// Renders navigation at given position and returns its size
 	ImVec2 renderNavigation(ImDrawList& drawList, ImVec2 position);
@@ -98,13 +97,26 @@ private:
 	void renderAssets(ImDrawList& drawList, ImVec2 position, ImVec2 size);
 
 	// Renders a folder item for the folder structure
-	void renderFolderItem(ImDrawList& drawList, Folder* folder, uint32_t indentation);
-
-	// Evaluates and sets an assets ui data
-	void createAssetUIData(Asset& asset);
+	void renderFolder(ImDrawList& drawList, Folder* folder, uint32_t indentation);
 
 	// Renders a ui asset item at the given screen position using its ui data created before
-	void renderAssetItem(ImDrawList& drawList, Asset& asset, ImVec2 position);
+	void renderAsset(ImDrawList& drawList, Asset& asset, ImVec2 position);
+
+	//
+	// IO BACKEND FUNCTIONS
+	// 
+	// Implementing multithreading would be very smart here, 
+	// however it's just not a top priority right now.
+	//
+
+	// Builds the folder structure for the given directory recursively
+	void buildFolders(const fs::path& directory, std::vector<Folder>& target, uint32_t i = 0);
+
+	// Builds the folder content for the given directory path
+	void buildFolderContent(const fs::path& directory);
+
+	// Returns the path hashed as an integer
+	uint32_t hash(const fs::path& path);
 
 private:
 	// Current displayed scale of ui assets
@@ -113,15 +125,12 @@ private:
 	// Target asset scale for smoothly interpolated asset scaling
 	float targetAssetScale;
 
-	// Current folder structure
-	std::vector<Folder> folderStructure;
+	// Current folder structure for quickly iterating over project folders
+	std::vector<Folder> folders;
 
-	// Cached assets for each folder sorted by hashed folder path
-	std::unordered_map<uint32_t, AssetBatch> folderAssets;
+	// Cached folder content sorted by hash of folders absolute path
+	std::unordered_map<uint32_t, FolderContent> folderContent;
 
-	// Currently selected project folder
+	// Pointer to the currently selected folder (nullptr if none selected)
 	Folder* selectedFolder;
-
-	// Path to the currently loaded project
-	fs::path projectPath;
 };

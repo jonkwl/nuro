@@ -30,19 +30,26 @@ namespace EditorUI {
 
 	static const ImWchar gIconRange[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 
+	// Id counter
 	uint32_t gIdCounter = 0;
+
+	// Editor Windows
 	std::vector<EditorWindow*> gWindows;
 
+	// Loaded fonts
 	Fonts gFonts;
 
+	// Global title bar
 	TitleBar gTitleBar;
+	uint32_t gLogoTexture = 0;
+
+	// Global footer
 	Footer gFooter;
 
+	// Cursor settings
 	bool gOverwriteCursor = false; // Overwrites the default imgui cursor
 	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t gOverwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
-
-	uint32_t gLogoTexture = 0;
 
 	void _mergeIcons(ImGuiIO& io, float fontSize) {
 		float iconsFontSize = fontSize * 2.0f / 3.0f;

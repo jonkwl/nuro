@@ -22,13 +22,20 @@
 class EntityContainer {
 public:
 	// Construct entity by root
-	explicit EntityContainer(std::string name, Entity root) : name(name), root(root), registry(G_REGISTRY), transform(get<TransformComponent>()) {};
+	explicit EntityContainer(std::string name, Entity root) : root(root), 
+	registry(G_REGISTRY), 
+	transform(get<TransformComponent>()) 
+	{
+		transform.name = name;
+	};
 
 	// Construct entity container with data tuple
-	explicit EntityContainer(std::string name, std::tuple<Entity, TransformComponent&> data) : name(name), root(std::get<0>(data)), registry(G_REGISTRY), transform(std::get<1>(data)) {};
-
-	// Entity containers name
-	std::string name;
+	explicit EntityContainer(std::string name, std::tuple<Entity, TransformComponent&> data) : root(std::get<0>(data)), 
+	registry(G_REGISTRY),
+	transform(std::get<1>(data)) 
+	{
+		transform.name = name;
+	};
 
 	// Entity containers backend entity handle
 	Entity root;
@@ -38,6 +45,11 @@ public:
 
 	// Transform component of entity
 	TransformComponent& transform;
+
+	// Returns name of entity
+	inline std::string name() {
+		return transform.name;
+	}
 
 	// Returns if entity is valid in registry
 	inline bool verify() {
@@ -150,10 +162,10 @@ private:
 
 	template<typename T>
 	void operationFailed(std::string operation, std::string reason) {
-		Console::out::warning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity '" + name + "' " + reason + ".");
+		Console::out::warning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity '" + name() + "' " + reason + ".");
 	}
 
 	void verifyFailed() {
-		Console::out::warning("Entity Container", "Couldn't perform operation on entity '" + name + "' because it doesn't exist.");
+		Console::out::warning("Entity Container", "Couldn't perform operation on entity '" + name() + "' because it doesn't exist.");
 	}
 };

@@ -1,11 +1,16 @@
 #pragma once
 
+#include <filesystem>
+
 #include "../core/rendering/gizmos/imgizmo.h"
 #include "../core/physics/core/physics_context.h"
 
+#include "../src/project/project.h"
 #include "../src/pipelines/game_view_pipeline.h"
 #include "../src/pipelines/scene_view_pipeline.h"
 #include "../src/pipelines/preview_pipeline.h"
+
+namespace fs = std::filesystem;
 
 class ShadowDisk;
 class ShadowMap;
@@ -28,6 +33,13 @@ namespace Runtime
 
 	int START_LOOP();
 	int TERMINATE();
+
+	//
+	// Project
+	//
+
+	void loadProject(const fs::path& path);
+	const Project& getProject();
 
 	//
 	// Game functions

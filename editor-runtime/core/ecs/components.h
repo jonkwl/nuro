@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cstdint>
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
@@ -11,6 +12,9 @@
 
 struct TransformComponent {
 
+	// Name of entity
+	std::string name;
+
 	// Current position of transform
 	glm::vec3 position = glm::vec3(0.0f);
 
@@ -21,7 +25,7 @@ struct TransformComponent {
 	glm::vec3 scale = glm::vec3(1.0f);
 
 	// Optional parent
-	const TransformComponent* parent;
+	const TransformComponent* parent = nullptr;
 
 	// Latest computed model-view-projection matrix
 	glm::mat4 mvp = glm::mat4(1.0f);
@@ -39,7 +43,7 @@ struct MeshRendererComponent {
 	MeshRendererComponent() : enabled(true), mesh(nullptr), material(nullptr) {};
 	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : enabled(true), mesh(mesh), material(material) {};
 	
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled;
 
 	// Mesh render target
@@ -51,7 +55,7 @@ struct MeshRendererComponent {
 
 struct CameraComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Cameras y fov in degrees
@@ -67,7 +71,7 @@ struct CameraComponent {
 
 struct DirectionalLightComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Intensity of the directional light
@@ -79,7 +83,7 @@ struct DirectionalLightComponent {
 
 struct PointLightComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Intensity of the point light
@@ -97,7 +101,7 @@ struct PointLightComponent {
 
 struct SpotlightComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Intensity of the spotlight
@@ -121,7 +125,7 @@ struct SpotlightComponent {
 
 struct VelocityComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Intensity of the velocity impact
@@ -134,7 +138,7 @@ struct VelocityComponent {
 
 struct BoxColliderComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Offset relative to transform origin
@@ -143,11 +147,9 @@ struct BoxColliderComponent {
 	// Scale relative to transforms scale
 	glm::vec3 size = glm::vec3(1.0f);
 
-	// UNSAFE - MUST BE FIXED
 	// Physics material
 	physx::PxMaterial* material = nullptr;
 
-	// UNSAFE - MUST BE FIXED
 	// Shape handle
 	physx::PxShape* shape = nullptr;
 
@@ -155,7 +157,7 @@ struct BoxColliderComponent {
 
 struct SphereColliderComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Offset relative to transform origin
@@ -164,11 +166,9 @@ struct SphereColliderComponent {
 	// Radius relative to transforms scale
 	float radius = 1.0f;
 
-	// UNSAFE - MUST BE FIXED
 	// Physics material
 	physx::PxMaterial* material = nullptr;
 
-	// UNSAFE - MUST BE FIXED
 	// Physics backend shape handle
 	physx::PxShape* shape = nullptr;
 
@@ -176,7 +176,7 @@ struct SphereColliderComponent {
 
 struct RigidbodyComponent {
 
-	// Enables / disables components
+	// Set if component is enabled
 	bool enabled = true;
 
 	// Interpolation mode

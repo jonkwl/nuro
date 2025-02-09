@@ -30,7 +30,7 @@ public:
 	void setSource(TextureType type, const std::string& path);
 
 	// Returns the textures backend id
-	uint32_t getId() const;
+	uint32_t id() const;
 
 	// Sets the given texture backend id to be the default backend id for new textures
 	static void setDefaultTexture(uint32_t textureId);
@@ -60,5 +60,5 @@ private:
 	uint32_t channels;
 
 	// Backend id of texture
-	uint32_t id;
+	uint32_t _id;
 };
