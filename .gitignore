@@ -437,7 +437,7 @@ depth_map.png
 /resources/other
 /resources/icons
 /resources/primitives/sphere.fbx
-/editor-runtime/src/example/assets
+/engine-editor/src/example/assets
 
 **/fa-solid-900.ttf
 

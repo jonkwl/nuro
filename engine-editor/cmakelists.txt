@@ -1,0 +1,3 @@
+TO BE ADDED!
+
+Right now i only sync the vs2022 solution because during development MVSC should be the used compiler
