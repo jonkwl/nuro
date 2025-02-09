@@ -17,7 +17,7 @@ public:
 	Project();
 
 	// Loads the  project located in the given directory
-	void load(const fs::path& directory);
+	bool load(const fs::path& directory);
 
 	// Returns the projects configuration as readonly
 	const Configuration& config() const;
@@ -32,5 +32,6 @@ private:
 	Configuration _configuration;
 	fs::path _path;
 
-	bool configValid();
+	// Validates project configuration exists by creating one if it doesnt
+	bool validateConfig();
 };

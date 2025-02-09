@@ -112,7 +112,7 @@ void TitleBar::renderContent(ImDrawList& drawList)
     // DRAW APPLICATION HEADER
     //
 
-    std::string headerText = "Nuro 0.0.1";
+    std::string headerText = "Nuro  -  " + Runtime::getProject().config().name;
     ImVec2 headerSize = style.primaryFont->CalcTextSizeA(style.primaryFont->FontSize, FLT_MAX, 0.0f, headerText.c_str());
     ImVec2 headerPosition = ImVec2(titleBarPosition.x + (titleBarSize.x - headerSize.x) * 0.5f, titleBarPosition.y + style.padding.y * 1.2f);
     drawList.AddText(style.primaryFont, style.primaryFont->FontSize, headerPosition, style.secondaryTextColor, headerText.c_str());
