@@ -3,7 +3,7 @@
   <img src="https://github.com/jonkwl/nuro/blob/main/.gthub-media/nuro_banner.jpg" alt="Nuro Banner" width=800>
   <p></p>
   <p><b>A lightweight, bloat-free 3D game engine for fast development and rapid iteration</b></p>
-  <p><a href="#about">💁‍♂️ About Nuro</a> | <a href="#showcase">📷 Showcase (WIP)</a> | <a href="#features">📃 Current Features</a> </p>
+  <p><a href="#about">💁‍♂️ About Nuro</a> | <a href="#contributing-and-help">💜 Contribute</a> | <a href="#showcase">📷 Showcase (WIP)</a> | <a href="#features">📃 Current Features</a> </p>
   <p></p>
 </div>
 
@@ -15,6 +15,11 @@ Hey! This project is currently **under development.**
 Please take a look at the vision below! 💜
 
 ⭐ Feel free to **star the project**, it motivates a lot :)
+
+## Contributing and Help
+
+💁‍♂️ Please join the **Discord-Server** for **contributing, asking for help, reporting bugs and submitting suggestions**:  
+📎 https://discord.gg/GgezYPZz
 
 ## About
 ⚡ **Nuro** is a **3D game engine** written in C++ designed for **rapid iteration** and a **seamless development** workflow. It’s supposed to help developers focus on what matters most, with minimal setup and **no interruptions**.
