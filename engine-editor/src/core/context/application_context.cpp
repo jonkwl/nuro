@@ -142,6 +142,7 @@ namespace ApplicationContext {
 		// Destroy window and terminate glfw
 		if (gWindow != nullptr)
 		{
+			glfwSetWindowShouldClose(gWindow, GL_TRUE);
 			glfwDestroyWindow(gWindow);
 			glfwTerminate();
 		}

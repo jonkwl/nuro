@@ -2,9 +2,12 @@
 
 #include <stb_image.h>
 #include <glad/glad.h>
+#include <filesystem>
 
 #include "../src/core/utils/console.h"
 #include "../src/core/utils/iohandler.h"
+
+namespace fs = std::filesystem;
 
 Cubemap::Cubemap() : source(),
 data(),
@@ -14,12 +17,32 @@ id(0)
 
 void Cubemap::setSource_Cross(std::string path)
 {
+	// Validate source path
+	if (!fs::exists(path)) {
+		Console::out::warning("Cubemap", "Cubemap source at '" + path + "' could not be found");
+	}
+
 	source.type = Source::Type::CROSS;
 	source.paths = { path };
 }
 
 void Cubemap::setSource_Individual(std::string rightPath, std::string leftPath, std::string topPath, std::string bottomPath, std::string frontPath, std::string backPath)
 {
+	// Source path validation lambda
+	auto validatePath = [](const std::string& path, const std::string& face) {
+		if (!fs::exists(path)) {
+			Console::out::warning("Cubemap", "Cubemap source for '" + face + "' face at '" + path + "' could not be found");
+		}
+	};
+
+	// Validate source paths
+	validatePath(rightPath, "right");
+	validatePath(leftPath, "left");
+	validatePath(topPath, "top");
+	validatePath(bottomPath, "bottom");
+	validatePath(frontPath, "front");
+	validatePath(backPath, "back");
+
 	source.type = Source::Type::INDIVIDUAL;
 	source.paths = { rightPath, leftPath, topPath, bottomPath, frontPath, backPath };
 }

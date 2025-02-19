@@ -2,10 +2,13 @@
 
 #include <glad/glad.h>
 #include <stb_image.h>
+#include <filesystem>
 
 #include "../src/core/utils/console.h"
 #include "../src/core/utils/iohandler.h"
 #include "../src/core/context/application_context.h"
+
+namespace fs = std::filesystem;
 
 uint32_t Texture::defaultTextureId = 0;
 
@@ -21,6 +24,11 @@ _id(defaultTextureId)
 
 void Texture::setSource(TextureType _type, const std::string& _path)
 {
+	// Validate source path
+	if (!fs::exists(_path)) {
+		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
+	}
+
 	type = _type;
 	path = _path;
 }

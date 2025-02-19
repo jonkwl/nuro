@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 #include "editor_window.h"
 
@@ -11,8 +12,18 @@ public:
 
 	void render() override;
 
-	// Deletes previously inspected inspectable and sets given inspectable as inspected. Takes ownership of the provided inspectable!
-	static void inspect(Inspectable* inspectable);
+	template <typename T, typename... Args>
+	static void inspect(Args&&... args)
+	{
+		// Make sure provided type is derived from inspectable
+		static_assert(std::is_base_of_v<Inspectable, T>, "Only objects which are derived from class 'Inspectable' can be inspected!");
+
+		// Delete old inspected object if existing
+		if (inspected) delete inspected;
+
+		// Instantiate new inspectable
+		inspected = new T(std::forward<Args>(args)...);
+	}
 
 public:
 	// Renders an image by the given backend texture id

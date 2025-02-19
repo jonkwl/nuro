@@ -76,15 +76,6 @@ void InsightPanelWindow::render()
 	ImGui::PopStyleVar();
 }
 
-void InsightPanelWindow::inspect(Inspectable* inspectable)
-{
-	// Delete old inspected object
-	if (inspected) delete inspected;
-
-	// Set new inspected object
-	inspected = inspectable;
-}
-
 void InsightPanelWindow::renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin)
 {
 	// Add margin

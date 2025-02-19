@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <sstream>
+#include <filesystem>
 #include <glad/glad.h>
 
 #include <assimp/scene.h>
@@ -13,7 +14,7 @@
 #include "../src/core/utils/iohandler.h"
 #include "../src/core/utils/string_helper.h"
 
-#include <iostream>
+namespace fs = std::filesystem;
 
 Model::Model() : path(),
 meshData(),
@@ -24,6 +25,11 @@ metrics()
 
 void Model::setSource(std::string _path)
 {
+	// Validate source path
+	if (!fs::exists(_path)) {
+		Console::out::warning("Model", "Model source at '" + _path + "' could not be found");
+	}
+
 	path = _path;
 }
 

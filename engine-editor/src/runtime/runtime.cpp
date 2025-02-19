@@ -236,23 +236,25 @@ namespace Runtime {
 		// LAUNCH EDITOR
 		_launchEditor();
 
-		// GAME SETUP
+		// SETUP GAME
 		gameSetup();
+
+		// GENERATE INITIAL RENDER QUEUE
 		ECS::generateRenderQueue();
 
-		// TMP
+		// TMP LOADING DEFAULT CUBEMAP ASYNCHRONOUSLY HERE
 		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
 
 		// SHOW WELCOME INSPECTABLE
-		InsightPanelWindow::inspect(new WelcomeInspectable());
+		InsightPanelWindow::inspect<WelcomeInspectable>();
 
+		// MAIN LOOP
 		while (ApplicationContext::running())
 		{
 			_nextFrame();
 		}
 
 		// Exit application
-
 		return TERMINATE();
 	}
 

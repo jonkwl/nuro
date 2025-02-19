@@ -103,7 +103,7 @@ void ViewportWindow::render()
 	}
 
 	// Try render speed change indicator
-	// renderSpeedChangeIndicator();
+	renderSpeedChangeIndicator();
 
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -334,7 +334,7 @@ void ViewportWindow::renderSpeedChangeIndicator()
 	if (speedChangeTimer < 0.5f) visible = true;
 
 	// Set alpha color according to visibility
-	speedChangeIndicator.color = IM_COL32(0, 0, 0, visible ? visibleAlpha : 0);
+	speedChangeIndicator.color = IM_COL32(0, 0, 10, visible ? visibleAlpha : 0);
 
 	// Set text
 	std::string icon = std::string(ICON_FA_GAUGE);

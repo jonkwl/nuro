@@ -77,7 +77,7 @@ namespace IconPool {
 		}
 		else {
 			// Icon not found, return invalid icons backend id
-			Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
+			// Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
 			return gInvalidIcon->id();
 		}
 	}

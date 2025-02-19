@@ -220,7 +220,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);
 
 			// Update insight panel
-			InsightPanelWindow::inspect(new EntityInspectable(_item));
+			InsightPanelWindow::inspect<EntityInspectable>(_item);
 		};
 
 		// Just handle current items selection
@@ -537,11 +537,20 @@ void RegistryWindow::updateCameraMovement()
 
 void RegistryWindow::buildSceneHierarchy()
 {
+	// Temporary scene serialization
+
 	currentHierarchy.clear();
 
 	auto transforms = ECS::gRegistry.view<TransformComponent>();
-	uint32_t i = 1;
+	std::vector<std::pair<entt::entity, TransformComponent>> transformList;
+
 	for (auto [entity, transform] : transforms.each()) {
+		transformList.push_back({ entity, transform });
+	}
+
+	uint32_t i = 1;
+	for (auto it = transformList.rbegin(); it != transformList.rend(); ++it) {
+		auto& [entity, transform] = *it;
 		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(transform.name, entity), {}));
 		i++;
 	}

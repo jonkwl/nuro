@@ -17,4 +17,7 @@ public:
 private:
 	// Snapshot of the engines console logs at instantiation of this welcome inspectable
 	std::vector<ConsoleLog> consoleSnapshot;
+
+	// Set if game was played through welcome inspectable already
+	bool playedGame;
 };

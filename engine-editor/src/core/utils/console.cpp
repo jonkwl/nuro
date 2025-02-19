@@ -47,7 +47,7 @@ namespace Console
 			}
 
 #if EDITOR_CONNECTED
-			ConsoleWindow::log(ConsoleLog("[Internal] " + warning, "Engine Core - " + origin, ConsoleLogType::WARNING));
+			ConsoleWindow::log(ConsoleLog(warning, "Engine Core - " + origin, ConsoleLogType::WARNING));
 #endif
 		}
 

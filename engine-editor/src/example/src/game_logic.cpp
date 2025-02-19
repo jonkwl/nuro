@@ -28,27 +28,19 @@ void _physics_example() {
 	loader.createSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
-	// Standard Material
+	// Standard material
 	LitMaterial* standardMaterial = new LitMaterial();
 	standardMaterial->baseColor = glm::vec4(glm::vec3(0.5f), 1.0f);
 	standardMaterial->roughness = 0.4f;
+	standardMaterial->metallic = 0.6f;
 
-	// Sci-Fi Plane Material
-	LitMaterial* planeMaterial = new LitMaterial();
+	// Red material
+	LitMaterial* redMaterial = new LitMaterial();
+	redMaterial->baseColor = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
+	redMaterial->roughness = 0.9f;
 
-	// Cube batch
-	int objectAmount = 16;
-	uint32_t c = 1;
-	for (int x = 0; x < std::sqrt(objectAmount); x++) {
-		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e("Cube " + std::to_string(c), ECS::createEntity());
-			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
-			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
-			e.add<BoxColliderComponent>();
-			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
-			c++;
-		}
-	}
+	// Player material
+	LitMaterial* playerMaterial = new LitMaterial();
 
 	// Directional light (sun)
 	EntityContainer sun("Sun", ECS::createEntity());
@@ -58,9 +50,9 @@ void _physics_example() {
 
 	// Sample point light
 	EntityContainer pointLight("Point Light", ECS::createEntity());
-	pointLight.transform.position = glm::vec3(0.0f, 2.0f, 45.0f);
+	pointLight.transform.position = glm::vec3(8.0f, 2.0f, 32.0f);
 	PointLightComponent& pointLightSource = pointLight.add<PointLightComponent>();
-	pointLightSource.intensity = 3.0f;
+	pointLightSource.intensity = 7.0f;
 	pointLightSource.color = glm::vec3(0.5f, 0.0f, 1.0f);
 	pointLightSource.range = 25.0f;
 	pointLightSource.falloff = 15.0f;
@@ -91,16 +83,13 @@ void _physics_example() {
 	// Kinematic sphere
 	EntityContainer kinematic("Kinematic", ECS::createEntity());
 	kinematicEntity = kinematic.root;
-	kinematic.transform.position = glm::vec3(12.0f, 6.0f, -5.0f);
-	kinematic.transform.scale = glm::vec3(6.0f);
-	kinematic.add<MeshRendererComponent>(sphereMesh, standardMaterial);
+	kinematic.transform.position = glm::vec3(1.0f, 0.5f, 6.0f);
+	kinematic.transform.scale = glm::vec3(2.0f);
+	kinematic.add<MeshRendererComponent>(sphereMesh, redMaterial);
 	kinematic.add<SphereColliderComponent>();
 	RigidbodyComponent& kinematicRb = kinematic.add<RigidbodyComponent>();
 	Rigidbody::setCollisionDetection(kinematicRb, RB_CollisionDetection::CONTINUOUS);
 	Rigidbody::setKinematic(kinematicRb, true);
-
-	// Player material
-	LitMaterial* playerMaterial = new LitMaterial();
 
 	// Player sphere
 	EntityContainer player("Player", ECS::createEntity());
@@ -116,6 +105,20 @@ void _physics_example() {
 	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
+
+	// Cube batch
+	int objectAmount = 32;
+	uint32_t c = 1;
+	for (int x = 0; x < std::sqrt(objectAmount); x++) {
+		for (int y = 0; y < std::sqrt(objectAmount); y++) {
+			EntityContainer e("Cube " + std::to_string(c), ECS::createEntity());
+			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
+			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+			e.add<BoxColliderComponent>();
+			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
+			c++;
+		}
+	}
 
 	// Async asset loading test
 	Texture* albedo = new Texture();
@@ -158,7 +161,7 @@ void _physics_example() {
 	loader.createAsync(asyncModel);
 
 	EntityContainer e("Async Model", ECS::createEntity());
-	e.transform.position = glm::vec3(8.0f, 3.0f, 10.0f);
+	e.transform.position = glm::vec3(6.0f, 0.0f, 10.0f);
 	e.transform.rotation = glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	e.transform.scale = glm::vec3(7.0f);
 	e.add<MeshRendererComponent>(asyncModel->queryMesh(0), cubeMaterial);
