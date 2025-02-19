@@ -431,6 +431,10 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# Dont sync project filters and user config
+*.vcxproj.filters
+*.vcxproj.user
+
 depth_map.png
 
 /resources/skybox/default
