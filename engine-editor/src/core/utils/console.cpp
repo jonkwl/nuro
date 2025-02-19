@@ -35,10 +35,7 @@ namespace Console
 			{
 				_print(TextColor::White, BackgroundColor::Black, additional_info);
 			}
-
-#if EDITOR_CONNECTED
-			Runtime::TERMINATE();
-#endif
+			std::exit(-1);
 		}
 
 		void warning(std::string origin, std::string warning, std::string additional_info)
@@ -50,7 +47,7 @@ namespace Console
 			}
 
 #if EDITOR_CONNECTED
-			ConsoleWindow::addLog(ConsoleLog("[Internal] " + warning, "Engine Core - " + origin, ConsoleLogType::WARNING));
+			ConsoleWindow::log(ConsoleLog("[Internal] " + warning, "Engine Core - " + origin, ConsoleLogType::WARNING));
 #endif
 		}
 

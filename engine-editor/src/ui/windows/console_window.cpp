@@ -53,9 +53,9 @@ void ConsoleWindow::render()
 		IMComponents::beginClippedChild(logsSize);
 		{
 			// Evaluate logs to add
-			for (int32_t i = 0; i < logsToAdd.size(); i++) {
+			for (ConsoleLog& log : logsToAdd) {
 				// Add new log
-				logs.push_back(logsToAdd[i]);
+				logs.push_back(log);
 
 				// Remove first log if maximum size is exceeded
 				if (logs.size() > maxLogs) {
@@ -64,8 +64,8 @@ void ConsoleWindow::render()
 			}
 
 			// Draw logs
-			for (int32_t i = 0; i < logs.size(); i++) {
-				drawLog(drawList, logs[i]);
+			for (ConsoleLog& log : logs) {
+				drawLog(drawList, log);
 			}
 
 			// Add spacing under last log
@@ -87,10 +87,18 @@ void ConsoleWindow::render()
 	ImGui::PopStyleVar();
 }
 
-void ConsoleWindow::addLog(const ConsoleLog& log)
+void ConsoleWindow::log(const ConsoleLog& _log)
 {
-	// Add log
-	logsToAdd.push_back(log);
+	logsToAdd.push_back(_log);
+}
+
+std::vector<ConsoleLog> ConsoleWindow::snapshot()
+{
+	std::vector<ConsoleLog> mergedLogs;
+	mergedLogs.reserve(logs.size() + logsToAdd.size());
+	mergedLogs.insert(mergedLogs.end(), logs.begin(), logs.end());
+	mergedLogs.insert(mergedLogs.end(), logsToAdd.begin(), logsToAdd.end());
+	return mergedLogs;
 }
 
 void ConsoleWindow::drawLog(ImDrawList& drawList, const ConsoleLog& log)

@@ -270,6 +270,9 @@
     <ClCompile Include="src\project\project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\inspectables\welcome_inspectable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\diagnostics\diagnostics.h">
@@ -579,6 +582,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\project\project.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\inspectables\welcome_inspectable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

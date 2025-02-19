@@ -438,7 +438,7 @@ depth_map.png
 /resources/icons
 /engine-editor/src/example/assets
 
-#**/fa-solid-900.ttf
+**/iconpack-full.ttf
 
 **/shadow_map.png
 **/depth_pre_pass.png

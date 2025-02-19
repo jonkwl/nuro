@@ -33,7 +33,11 @@ public:
 
 	void render() override;
 
-	static void addLog(const ConsoleLog& log);
+	// Log to console
+	static void log(const ConsoleLog& log);
+
+	// Get snapshot of current console logs
+	static std::vector<ConsoleLog> snapshot();
 private:
 	bool showMessages;
 	bool showWarnings;

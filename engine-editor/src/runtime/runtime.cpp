@@ -13,9 +13,11 @@
 #include "../src/core/rendering/shader/shader.h"
 #include "../src/core/rendering/skybox/cubemap.h"
 #include "../src/core/rendering/texture/texture.h"
+#include "../src/ui/windows/insight_panel_window.h"
 #include "../src/core/rendering/shader/shader_pool.h"
 #include "../src/core/rendering/shadows/shadow_map.h"
 #include "../src/core/rendering/shadows/shadow_disk.h"
+#include "../src/ui/inspectables/welcome_inspectable.h"
 #include "../src/core/rendering/material/lit/lit_material.h"
 #include "../src/core/rendering/transformation/transformation.h"
 
@@ -240,6 +242,9 @@ namespace Runtime {
 
 		// TMP
 		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
+
+		// SHOW WELCOME INSPECTABLE
+		InsightPanelWindow::inspect(new WelcomeInspectable());
 
 		while (ApplicationContext::running())
 		{

@@ -1,12 +1,10 @@
 #pragma once
 
-#include <string>
 #include <functional>
 
 #include "inspectable.h"
 
 #include "../src/core/ecs/ecs_collection.h"
-
 #include "../src/ui/windows/registry_window.h"
 
 class EntityInspectable : public Inspectable
@@ -14,7 +12,6 @@ class EntityInspectable : public Inspectable
 public:
 	EntityInspectable(HierarchyItem& item);
 
-	std::string getName() override;
 	void renderStaticContent(ImDrawList& drawList) override;
 	void renderDynamicContent(ImDrawList& drawList) override;
 private:

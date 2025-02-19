@@ -13,7 +13,7 @@ _path()
 bool Project::load(const fs::path& directory)
 {
 	if (!fs::exists(directory) || !fs::is_directory(directory)) {
-		Console::out::error("Project", "Project path is invalid.");
+		Console::out::error("Project", "Project path is invalid.", "Provided path was '" + directory.string() + "'");
 		return false;
 	}
 
@@ -48,11 +48,11 @@ bool Project::validateConfig()
 
 	std::ofstream file(file_path);
 	if (file.is_open()) {
-		Console::out::processStart("Project", "Created project configuration at " + file_path.string());
+		Console::out::processStart("Project", "Created project configuration at '" + file_path.string() + "'");
 		return true;
 	}
 	else {
-		Console::out::error("Project", "Couldn't create project configuration.", "Tried to create it at " + file_path.string());
+		Console::out::error("Project", "Couldn't create project configuration.", "Tried to create it at '" + file_path.string() + "'");
 		return false;
 	}
 }

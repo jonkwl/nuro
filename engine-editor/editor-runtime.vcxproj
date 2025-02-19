@@ -221,6 +221,7 @@
     <ClCompile Include="src\ui\dynamic_drawing\dynamic_text.cpp" />
     <ClCompile Include="src\ui\workspace_bar\workspace_bar.cpp" />
     <ClCompile Include="src\ui\components\toggle_bar.cpp" />
+    <ClCompile Include="src\ui\inspectables\welcome_inspectable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\ecs\ecs_collection.h" />
@@ -326,6 +327,7 @@
     <ClInclude Include="src\ui\dynamic_drawing\dynamic_text.h" />
     <ClInclude Include="src\ui\workspace_bar\workspace_bar.h" />
     <ClInclude Include="src\ui\components\toggle_bar.h" />
+    <ClInclude Include="src\ui\inspectables\welcome_inspectable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

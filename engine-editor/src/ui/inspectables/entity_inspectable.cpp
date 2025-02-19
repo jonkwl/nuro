@@ -14,11 +14,6 @@ EntityInspectable::EntityInspectable(HierarchyItem& item) : item(item)
 {
 }
 
-std::string EntityInspectable::getName()
-{
-	return item.entity.name();
-}
-
 void EntityInspectable::renderStaticContent(ImDrawList& drawList)
 {
 	IMComponents::label(item.entity.name(), EditorUI::getFonts().h3_bold);

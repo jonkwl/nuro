@@ -11,7 +11,7 @@ public:
 
 	void render() override;
 
-	// Deletes previously inspected inspectable and sets given inspectable as inspected
+	// Deletes previously inspected inspectable and sets given inspectable as inspected. Takes ownership of the provided inspectable!
 	static void inspect(Inspectable* inspectable);
 
 public:

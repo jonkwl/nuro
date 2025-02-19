@@ -1,14 +1,15 @@
 #include "editor_ui.h"
 
 #include <implot.h>
+#include <filesystem>
 #include <ImGuizmo.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "../src/core/utils/console.h"
 #include "../src/core/input/cursor.h"
+#include "../src/core/utils/console.h"
 #include "../src/core/context/application_context.h"
 
 #include "../src/ui/misc/ui_flex.h"
@@ -25,6 +26,8 @@
 #include "../src/ui/windows/asset_browser_window.h"
 #include "../src/ui/collection/IconsFontAwesome6.h"
 #include "../src/ui/windows/post_processing_window.h"
+
+namespace fs = std::filesystem;
 
 namespace EditorUI {
 
@@ -59,7 +62,14 @@ namespace EditorUI {
 		iconsConfig.PixelSnapH = true;
 		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
 
-		gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
+		// Check if full iconpack exists
+		if (fs::exists(fs::path(EditorFontPath::iconsFull))) {
+			gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::iconsFull, iconsFontSize, &iconsConfig, gIconRange);
+		}
+		// Load open source icons
+		else {
+			gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
+		}
 	}
 
 	void setup()
@@ -85,6 +95,11 @@ namespace EditorUI {
 		//
 		// LOAD FONTS
 		//	
+
+		// Full iconpack exists, print warning
+		if (!fs::exists(fs::path(EditorFontPath::iconsFull))) {
+			Console::out::warning("Editor UI", "Licensed icons aren't available when cloned from the open source repository.");
+		}
 
 		// p
 		gFonts.p = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::p_FontSize);

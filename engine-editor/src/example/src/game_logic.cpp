@@ -211,13 +211,13 @@ void gameUpdate() {
 		jumped = false;
 	}
 
-	/*EntityContainer camera("Camera", cameraEntity);
+	EntityContainer camera("Camera", cameraEntity);
 	float zoomStrength = 150.0f;
 	glm::vec2 scrollDelta = Input::scrollDelta();
 	if (scrollDelta.y > 0.0f) zoom += zoomStrength * delta;
 	if (scrollDelta.y < 0.0f) zoom -= zoomStrength * delta;
 	zoom = glm::clamp(zoom, -20.0f, -5.0f);
 	glm::vec3 offset = glm::vec3(0.0f, 1.5f, zoom);
-	camera.transform.position = glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta);*/
+	camera.transform.position = glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta);
 
 }
