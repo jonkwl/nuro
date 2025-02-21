@@ -6,6 +6,22 @@
 
 namespace ComponentGizmos {
 
+	void _renderBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider)
+	{
+		gizmos.foreground = true;
+		gizmos.color = EditorGizmoColor::COLLIDER;
+		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
+		gizmos.boxWire(transform.position, boxCollider.size, transform.rotation);
+	}
+
+	void _renderSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider)
+	{
+		gizmos.foreground = true;
+		gizmos.color = EditorGizmoColor::COLLIDER;
+		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
+		gizmos.sphereWire(transform.position, sphereCollider.radius, transform.rotation);
+	}
+
 	void renderSceneViewIcons(IMGizmo& gizmos, TransformComponent& cameraTransform)
 	{
 		// Setup gizmos for icons
@@ -47,26 +63,10 @@ namespace ComponentGizmos {
 	void renderEntityGizmos(IMGizmo& gizmos, EntityContainer& entity)
 	{
 		// Render box collider
-		if (entity.has<BoxColliderComponent>()) ComponentGizmos::renderBoxCollider(gizmos, entity.transform, entity.get<BoxColliderComponent>());
+		if (entity.has<BoxColliderComponent>()) ComponentGizmos::_renderBoxCollider(gizmos, entity.transform, entity.get<BoxColliderComponent>());
 
 		// Render sphere collider
-		if (entity.has<SphereColliderComponent>()) ComponentGizmos::renderSphereCollider(gizmos, entity.transform, entity.get<SphereColliderComponent>());
-	}
-
-	void renderBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider)
-	{
-		gizmos.foreground = true;
-		gizmos.color = EditorGizmoColor::COLLIDER;
-		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
-		gizmos.boxWire(transform.position, boxCollider.size, transform.rotation);
-	}
-
-	void renderSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider)
-	{
-		gizmos.foreground = true;
-		gizmos.color = EditorGizmoColor::COLLIDER;
-		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
-		gizmos.sphereWire(transform.position, sphereCollider.radius, transform.rotation);
+		if (entity.has<SphereColliderComponent>()) ComponentGizmos::_renderSphereCollider(gizmos, entity.transform, entity.get<SphereColliderComponent>());
 	}
 
 }

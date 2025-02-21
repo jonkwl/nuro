@@ -51,8 +51,11 @@ namespace IMComponents
 	// Ends child and pops clip rect
 	void endClippedChild();
 
-	// Draws a clickable caret background cirlce at the given cursor screen position and returns true if it was clicked
+	// Draws a clickable expansion caret at the given cursor screen position and returns true if it was clicked
 	bool caret(bool& opened, ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor);
+
+	// Draws a clickable icon button at the given cursor screen position and returns true if it was clicked
+	bool iconButton(const char* icon, ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor);
 
 	// Draws a loading buffer at the current cursor position
 	void loadingBuffer(ImDrawList& drawList, ImVec2 position, float radius, int thickness, const ImU32& color);

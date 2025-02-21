@@ -252,6 +252,9 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)
 {
+	// Render selected entitites gizmos if needed
+	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
+
 	// Make sure selected entity is renderable
 	if (!entity->has<MeshRendererComponent>()) return;
 
@@ -264,9 +267,6 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 
 	// Get camera transform
 	TransformComponent& cameraTransform = std::get<0>(camera);
-
-	// Render selected entitites gizmos if needed
-	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
 
 	// Render the selected entity and write to stencil
 	glStencilFunc(GL_ALWAYS, 1, 0xFF); // Always pass, write 1 to stencil buffer

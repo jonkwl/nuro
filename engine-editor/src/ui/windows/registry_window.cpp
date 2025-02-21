@@ -63,14 +63,15 @@ void RegistryWindow::render()
 
 void RegistryWindow::renderSearch(ImDrawList& drawList)
 {
-	const float padding = 8.0f;
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(padding, padding));
+	ImGui::PushFont(EditorUI::getFonts().h4);
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 8.0f));
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
 	if (ImGui::InputTextWithHint("##Search", "Search...", searchBuffer, IM_ARRAYSIZE(searchBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-		Console::out::warning("Hierarchy Window", "Search not implemented yet");
+		Console::out::warning("Registry Window", "Search not implemented yet");
 	}
 
+	ImGui::PopFont();
 	ImGui::PopItemWidth();
 	ImGui::PopStyleVar();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -116,6 +117,8 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	//
 	// EVALUATE
 	//
+
+	ImGuiIO& io = ImGui::GetIO();
 
 	const bool selected = selectedItems.count(item.id) > 0;
 	const bool hasChildren = item.children.size() > 0;
@@ -209,8 +212,6 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 
 	if (clicked) {
 
-		ImGuiIO& io = ImGui::GetIO();
-
 		auto select = [this](HierarchyItem& _item) -> void {
 			// Item already selected
 			if (selectedItems.find(_item.id) != selectedItems.end()) return;
@@ -289,10 +290,10 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	}
 
 	//
-	// CHECK FOR F KEYPRESS WHEN SELECTED (-> move to entity)
+	// CHECK FOR CTRL F KEYPRESS WHEN SELECTED (-> move to entity)
 	// 
 
-	if (selected && ImGui::IsKeyPressed(ImGuiKey_F)) {
+	if (selected && io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_F)) {
 		setCameraTarget(&item.entity.transform);
 	}
 

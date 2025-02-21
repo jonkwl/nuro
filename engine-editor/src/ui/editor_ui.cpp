@@ -21,6 +21,7 @@
 #include "../src/ui/windows/console_window.h"
 #include "../src/ui/windows/registry_window.h"
 #include "../src/ui/components/im_components.h"
+#include "../src/ui/search_popup/search_popup.h"
 #include "../src/ui/windows/diagnostics_window.h"
 #include "../src/ui/windows/insight_panel_window.h"
 #include "../src/ui/windows/asset_browser_window.h"
@@ -209,6 +210,8 @@ namespace EditorUI {
 		imguiColors[ImGuiCol_DockingPreview] = ImColor(EditorColor::elementActive);
 		imguiColors[ImGuiCol_DockingEmptyBg] = ImColor(EditorColor::elementActive);
 
+		imguiColors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.0f, 0.0f, 0.02f, 0.59f);
+
 		//
 		// IMPLEMENT IMGUI BACKEND
 		//
@@ -337,6 +340,12 @@ namespace EditorUI {
 		{
 			gWindows[i]->render();
 		}
+
+		//
+		// RENDER SEARCH POPUPS
+		//
+
+		SearchPopup::render();
 
 		//
 		// HANDLE CUSTOM CURSOR

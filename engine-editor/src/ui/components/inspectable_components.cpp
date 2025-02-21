@@ -25,7 +25,8 @@ namespace InspectableComponents {
 		return &g_Opened[component];
 	}
 
-	bool _beginComponent(std::string identifier, uint32_t icon, bool* enabledPtr, bool alwaysOpened = false)
+	// Draws a component element and returns true if its expanded. Pointer parameters can be set to nullptr to disable the corresponding feature (e.g., removedPtr set as nullptr means component cant be removed)
+	bool _beginComponent(std::string identifier, uint32_t icon, bool* enabledPtr = nullptr, bool* removedPtr = nullptr, bool alwaysOpened = false)
 	{
 		//
 		// EVALUATE
@@ -113,6 +114,18 @@ namespace InspectableComponents {
 		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, cursor, EditorColor::text, identifier.c_str());
 
 		//
+		// DRAW REMOVE BUTTON
+		//
+
+		if (removedPtr) {
+			float size = 20.0f;
+			cursor.x = p1.x - size - titlePadding.x;
+			if (IMComponents::iconButton(ICON_FA_XMARK, drawList, cursor, ImVec2(-1.0f, 2.0f), IM_COL32(0, 0, 0, 0), IM_COL32(255, 65, 65, 90))) {
+				*removedPtr = true;
+			}
+		}
+
+		//
 		// ADVANCE CURSOR AND DRAW CUSTOM CONTENT
 		//
 
@@ -129,7 +142,7 @@ namespace InspectableComponents {
 	}
 
 	void _endComponent() {
-		ImGui::Dummy(ImVec2(0.0f, 15.0f));
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
 	}
 
 	void _headline(std::string label) {
@@ -141,31 +154,48 @@ namespace InspectableComponents {
 		ImGui::Dummy(ImVec2(0.0f, 6.0f));
 	}
 
-	void drawTransform(TransformComponent& transform)
+	void drawTransform(Entity entity, TransformComponent& transform)
 	{
-		if (_beginComponent("Transform", IconPool::get("transform"), nullptr, true))
+		if (_beginComponent("Transform", IconPool::get("transform"), nullptr, nullptr, true))
 		{
-			_headline("General");
+			_headline("Properties");
 			glm::vec3 rotationTmp = glm::degrees(glm::eulerAngles(transform.rotation));
 			IMComponents::input("Position", transform.position);
 			IMComponents::input("Rotation", rotationTmp);
 			IMComponents::input("Scale", transform.scale);
+			if (transform.parent) IMComponents::label("Parent: " + transform.parent->name);
 
 			_endComponent();
 		}
 	}
 
-	void drawMeshRenderer(MeshRendererComponent& meshRenderer)
+	void drawMeshRenderer(Entity entity, MeshRendererComponent& meshRenderer)
 	{
-		if (_beginComponent("Mesh Renderer", IconPool::get("mesh_renderer"), &meshRenderer.enabled))
+		bool removed = false;
+
+		if (_beginComponent("Mesh Renderer", IconPool::get("mesh_renderer"), &meshRenderer.enabled, &removed))
 		{
+			_headline("General");
+
+			if (meshRenderer.mesh) {
+				IMComponents::label("Mesh ID: " + std::to_string(meshRenderer.mesh->getVAO()));
+			}
+
+			if (meshRenderer.material) {
+				IMComponents::label("Material ID: " + std::to_string(meshRenderer.material->getId()));
+			}
+
 			_endComponent();
 		}
+
+		if (removed) ECS::gRegistry.remove<MeshRendererComponent>(entity);
 	}
 
-	void drawCamera(CameraComponent& camera)
+	void drawCamera(Entity entity, CameraComponent& camera)
 	{
-		if (_beginComponent("Camera", IconPool::get("camera"), &camera.enabled))
+		bool removed = false;
+
+		if (_beginComponent("Camera", IconPool::get("camera"), &camera.enabled, &removed))
 		{
 			_headline("General");
 			IMComponents::input("FOV", camera.fov);
@@ -174,25 +204,33 @@ namespace InspectableComponents {
 
 			_endComponent();
 		}
+
+		if (removed) ECS::gRegistry.remove<CameraComponent>(entity);
 	}
 
-	void drawDirectionalLight(DirectionalLightComponent& directionalLight)
+	void drawDirectionalLight(Entity entity, DirectionalLightComponent& directionalLight)
 	{
-		if (_beginComponent("Directional Light", IconPool::get("directional_light"), &directionalLight.enabled))
+		bool removed = false;
+
+		if (_beginComponent("Directional Light", IconPool::get("directional_light"), &directionalLight.enabled, &removed))
 		{
-			_headline("General");
+			_headline("Properties");
 			IMComponents::input("Intensity", directionalLight.intensity);
 			IMComponents::colorPicker("Color", directionalLight.color);
 
 			_endComponent();
 		}
+
+		if (removed) ECS::gRegistry.remove<DirectionalLightComponent>(entity);
 	}
 
-	void drawPointLight(PointLightComponent& pointLight)
+	void drawPointLight(Entity entity, PointLightComponent& pointLight)
 	{
-		if (_beginComponent("Point Light", IconPool::get("point_light"), &pointLight.enabled))
+		bool removed = false;
+
+		if (_beginComponent("Point Light", IconPool::get("point_light"), &pointLight.enabled, &removed))
 		{
-			_headline("General");
+			_headline("Properties");
 			IMComponents::input("Intensity", pointLight.intensity);
 			IMComponents::colorPicker("Color", pointLight.color);
 			IMComponents::input("Range", pointLight.range);
@@ -200,13 +238,17 @@ namespace InspectableComponents {
 
 			_endComponent();
 		}
-	}
 
-	void drawSpotlight(SpotlightComponent& spotlight)
+		if (removed) ECS::gRegistry.remove<PointLightComponent>(entity);
+	}
+	
+	void drawSpotlight(Entity entity, SpotlightComponent& spotlight)
 	{
-		if (_beginComponent("Spotlight", IconPool::get("spotlight"), &spotlight.enabled))
+		bool removed = false;
+
+		if (_beginComponent("Spotlight", IconPool::get("spotlight"), &spotlight.enabled, &removed))
 		{
-			_headline("General");
+			_headline("Properties");
 			IMComponents::input("Intensity", spotlight.intensity);
 			IMComponents::colorPicker("Color", spotlight.color);
 			IMComponents::input("Range", spotlight.range);
@@ -216,21 +258,85 @@ namespace InspectableComponents {
 
 			_endComponent();
 		}
+
+		if (removed) ECS::gRegistry.remove<SpotlightComponent>(entity);
 	}
 
-	void drawVelocity(VelocityComponent& velocity)
+	void drawVelocity(Entity entity, VelocityComponent& velocity)
 	{
+		bool removed = false;
+
+		if (_beginComponent("Velocity Blur", IconPool::get("velocity_blur"), &velocity.enabled, &removed))
+		{
+			_headline("General");
+			IMComponents::input("Intensity", velocity.intensity);
+
+			_endComponent();
+		}
+
+		if (removed) ECS::gRegistry.remove<VelocityComponent>(entity);
 	}
 
-	void drawBoxCollider(BoxColliderComponent& boxCollider)
+	void drawBoxCollider(Entity entity, BoxColliderComponent& boxCollider)
 	{
+		bool removed = false;
+
+		if (_beginComponent("Box Collider", IconPool::get("box_collider"), nullptr, &removed))
+		{
+			_headline("Transform");
+			IMComponents::buttonBig("Reset Dimensions");
+			ImGui::Dummy(ImVec2(0.0f, 3.0f));
+			IMComponents::input("Center", boxCollider.center);
+			IMComponents::input("Size", boxCollider.size);
+			
+			ImGui::Dummy(ImVec2(0.0f, 10.0f));
+			_headline("Material");
+			IMComponents::label("Material: Default Physics Material");
+
+			_endComponent();
+		}
+
+		if (removed) ECS::gRegistry.remove<BoxColliderComponent>(entity);
 	}
 
-	void drawSphereCollider(SphereColliderComponent& sphereCollider)
+	void drawSphereCollider(Entity entity, SphereColliderComponent& sphereCollider)
 	{
+		bool removed = false;
+
+		if (_beginComponent("Sphere Collider", IconPool::get("sphere_collider"), nullptr, &removed))
+		{
+			_headline("Transform");
+			IMComponents::buttonBig("Reset Dimensions");
+			ImGui::Dummy(ImVec2(0.0f, 3.0f));
+			IMComponents::input("Center", sphereCollider.center);
+			IMComponents::input("Radius", sphereCollider.radius);
+
+			ImGui::Dummy(ImVec2(0.0f, 10.0f));
+			_headline("Material");
+			IMComponents::label("Material: Default Physics Material");
+
+			_endComponent();
+		}
+
+		if (removed) ECS::gRegistry.remove<SphereColliderComponent>(entity);
 	}
 
-	void drawRigidbody(RigidbodyComponent& rigidbody)
+	void drawRigidbody(Entity entity, RigidbodyComponent& rigidbody)
 	{
+		bool removed = false;
+
+		if (_beginComponent("Rigidbody", IconPool::get("rigidbody"), nullptr, &removed))
+		{
+			_headline("Properties");
+			IMComponents::input("Mass", rigidbody.mass);
+			IMComponents::input("Resistance", rigidbody.resistance);
+			IMComponents::input("Angular Resistance", rigidbody.angularResistance);
+			IMComponents::input("Use Gravity", rigidbody.gravity);
+			IMComponents::input("Is Kinematic", rigidbody.kinematic);
+
+			_endComponent();
+		}
+
+		if (removed) ECS::gRegistry.remove<RigidbodyComponent>(entity);
 	}
 }

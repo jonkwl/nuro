@@ -54,13 +54,13 @@ void PhysicsContext::create()
 	//
 
 	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsBridge::constructBoxCollider>(bridge);
-	ECS::gRegistry.on_destroy<BoxColliderComponent>().disconnect<&PhysicsBridge::destroyBoxCollider>(bridge);
+	ECS::gRegistry.on_destroy<BoxColliderComponent>().connect<&PhysicsBridge::destroyBoxCollider>(bridge);
 
 	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsBridge::constructSphereCollider>(bridge);
-	ECS::gRegistry.on_destroy<SphereColliderComponent>().disconnect<&PhysicsBridge::destroySphereCollider>(bridge);
+	ECS::gRegistry.on_destroy<SphereColliderComponent>().connect<&PhysicsBridge::destroySphereCollider>(bridge);
 
 	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsBridge::constructRigidbody>(bridge);
-	ECS::gRegistry.on_destroy<RigidbodyComponent>().disconnect<&PhysicsBridge::destroyRigidbody>(bridge);
+	ECS::gRegistry.on_destroy<RigidbodyComponent>().connect<&PhysicsBridge::destroyRigidbody>(bridge);
 
 }
 

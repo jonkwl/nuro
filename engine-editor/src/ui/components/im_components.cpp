@@ -449,6 +449,12 @@ namespace IMComponents {
 		ImGui::PopStyleVar();
 		ImGui::Columns(1);
 		ImGui::PopID();
+
+		//
+		// PADDING
+		//
+
+		ImGui::Dummy(ImVec2(0.0f, 2.0f));
 	}
 
 	void indicatorLabel(std::string label, std::string value, std::string additional)
@@ -645,6 +651,37 @@ namespace IMComponents {
 
 		// Flip opened on click
 		if (circleClicked) opened = !opened;
+
+		return circleClicked;
+	}
+
+	bool iconButton(const char* icon, ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor)
+	{
+		// Circle geometry
+		float circleRadius = 9.0f;
+		ImVec2 circlePosition = ImVec2(
+			position.x + circleRadius + offset.x,
+			position.y + circleRadius * 0.5f + offset.y);
+		const ImVec2 mousePosition = ImGui::GetMousePos();
+
+		// Fetch circle interactions
+		float circleDistance =
+			(mousePosition.x - circlePosition.x) *
+			(mousePosition.x - circlePosition.x) +
+			(mousePosition.y - circlePosition.y) *
+			(mousePosition.y - circlePosition.y);
+
+		bool circleHovered = circleDistance <= (circleRadius * circleRadius);
+		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
+
+		// Evaluate color
+		ImU32 circleColor = circleHovered ? hoveredColor : color;
+
+		// Draw circle
+		drawList.AddCircleFilled(circlePosition, circleRadius, circleColor);
+
+		// Draw icon
+		drawList.AddText(EditorUI::getFonts().h4_bold, EditorSizing::h4_FontSize, position, EditorColor::text, icon);
 
 		return circleClicked;
 	}

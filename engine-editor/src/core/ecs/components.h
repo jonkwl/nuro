@@ -44,7 +44,7 @@ struct MeshRendererComponent {
 	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : enabled(true), mesh(mesh), material(material) {};
 	
 	// Set if component is enabled
-	bool enabled;
+	bool enabled = true;
 
 	// Mesh render target
 	const Mesh* mesh;
@@ -138,9 +138,6 @@ struct VelocityComponent {
 
 struct BoxColliderComponent {
 
-	// Set if component is enabled
-	bool enabled = true;
-
 	// Offset relative to transform origin
 	glm::vec3 center = glm::vec3(0.0f);
 
@@ -157,9 +154,6 @@ struct BoxColliderComponent {
 
 struct SphereColliderComponent {
 
-	// Set if component is enabled
-	bool enabled = true;
-
 	// Offset relative to transform origin
 	glm::vec3 center = glm::vec3(0.0f);
 
@@ -175,9 +169,6 @@ struct SphereColliderComponent {
 };
 
 struct RigidbodyComponent {
-
-	// Set if component is enabled
-	bool enabled = true;
 
 	// Interpolation mode
 	RB_Interpolation interpolation = RB_Interpolation::INTERPOLATE;

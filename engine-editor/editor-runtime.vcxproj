@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\search_popup\search_popup.cpp" />
     <ClCompile Include="src\core\physics\core\physics_bridge.cpp" />
     <ClCompile Include="src\project\project.cpp" />
     <ClCompile Include="src\ui\components\inspectable_components.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="src\ui\inspectables\welcome_inspectable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\search_popup\search_popup.h" />
     <ClInclude Include="src\core\ecs\ecs_collection.h" />
     <ClInclude Include="src\core\ecs\entity_container.hpp" />
     <ClInclude Include="src\core\resource\resource.h" />

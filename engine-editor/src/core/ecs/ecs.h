@@ -36,9 +36,6 @@ namespace ECS {
 	// Returns the global render queue
 	RenderQueue& getRenderQueue();
 
-	// (Re-)Generates the global render queue
-	void generateRenderQueue();
-
 	//
 	// HELPER FUNCTIONS
 	//

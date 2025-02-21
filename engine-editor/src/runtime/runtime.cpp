@@ -239,9 +239,6 @@ namespace Runtime {
 		// SETUP GAME
 		gameSetup();
 
-		// GENERATE INITIAL RENDER QUEUE
-		ECS::generateRenderQueue();
-
 		// TMP LOADING DEFAULT CUBEMAP ASYNCHRONOUSLY HERE
 		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
 
@@ -254,7 +251,7 @@ namespace Runtime {
 			_nextFrame();
 		}
 
-		// Exit application
+		// EXIT APPLICATION
 		return TERMINATE();
 	}
 

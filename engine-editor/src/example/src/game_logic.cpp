@@ -99,15 +99,22 @@ void _physics_example() {
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
+	Rigidbody::setInterpolation(playerRb, RB_Interpolation::INTERPOLATE);
 
 	// Player child
 	EntityContainer playerChild("Player Child", ECS::createEntity(&player.transform));
 	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
+	SphereColliderComponent playerChildCollider = playerChild.add<SphereColliderComponent>();
+	playerChildCollider.radius = 0.5f;
+	RigidbodyComponent& playerChildRb = playerChild.add<RigidbodyComponent>();
+	Rigidbody::setKinematic(playerChildRb, true);
+	Rigidbody::setCollisionDetection(playerChildRb, RB_CollisionDetection::CONTINUOUS);
+	Rigidbody::setInterpolation(playerChildRb, RB_Interpolation::INTERPOLATE);
 
 	// Cube batch
-	int objectAmount = 32;
+	int objectAmount = 64;
 	uint32_t c = 1;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {

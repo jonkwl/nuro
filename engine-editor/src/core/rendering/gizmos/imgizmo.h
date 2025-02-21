@@ -138,5 +138,6 @@ private:
 	// Returns the alpha of a 3D icon depending on its distance to the camera
 	float get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition);
 
-	const Mesh* createWireframeBox();
+	const Mesh* createPlaneMesh();
+	const Mesh* createBoxMesh();
 };

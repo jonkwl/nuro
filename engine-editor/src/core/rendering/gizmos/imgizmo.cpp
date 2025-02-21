@@ -30,22 +30,15 @@ void IMGizmo::create()
 
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
-		staticData.fillShader = ShaderPool::get("gizmo_fill");
-		staticData.iconShader = ShaderPool::get("gizmo_icon");
-
-		Model* planeModel = new Model();
-		planeModel->setSource("../resources/primitives/plane.fbx");
-		loader.createAsync(planeModel);
-		staticData.planeMesh = planeModel->queryMesh(0);
-
-		Model* boxModel = new Model();
-		boxModel->setSource("../resources/primitives/cube.fbx");
-		loader.createAsync(boxModel);
-		staticData.boxMesh = boxModel->queryMesh(0);
-
 		Model* sphereModel = new Model();
 		sphereModel->setSource("../resources/primitives/sphere.fbx");
 		loader.createAsync(sphereModel);
+
+		staticData.fillShader = ShaderPool::get("gizmo_fill");
+		staticData.iconShader = ShaderPool::get("gizmo_icon");
+
+		staticData.planeMesh = createPlaneMesh();
+		staticData.boxMesh = createBoxMesh();
 		staticData.sphereMesh = sphereModel->queryMesh(0);
 	}
 }
@@ -324,33 +317,52 @@ float IMGizmo::get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3
 	return alpha;
 }
 
-// tmp
-const Mesh* IMGizmo::createWireframeBox()
+const Mesh* IMGizmo::createPlaneMesh()
 {
-	/* const glm::vec2 zeroVec2 = glm::vec2(0.0f);
+	const glm::vec2 zeroVec2 = glm::vec2(0.0f);
 	const glm::vec3 zeroVec3 = glm::vec3(0.0f);
 
-	// Define the 8 vertices of a unit cube (centered at origin)
-	std::vector<Mesh::VertexData> vertices = {
-		{glm::vec3(-1.0f, -1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},  // 0
-		{glm::vec3(1.0f, -1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 1
-		{glm::vec3(1.0f,  1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 2
-		{glm::vec3(-1.0f,  1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},  // 3
-		{glm::vec3(-1.0f, -1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},  // 4
-		{glm::vec3(1.0f, -1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 5
-		{glm::vec3(1.0f,  1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3},   // 6
-		{glm::vec3(-1.0f,  1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3}   // 7
+	// Vertices of the plane
+	std::vector<Model::VertexData> vertices = {
+		Model::VertexData(glm::vec3(-1.0f, 0.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3), // 0
+		Model::VertexData(glm::vec3(1.0f, 0.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),  // 1
+		Model::VertexData(glm::vec3(1.0f, 0.0f, 1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),   // 2
+		Model::VertexData(glm::vec3(-1.0f, 0.0f, 1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3)   // 3
 	};
 
-	// Define the indices for the wireframe (lines between vertices)
+	// Indices of the planes face
+	std::vector<uint32_t> indices = {
+		0, 1, 1, 2, 2, 3, 3, 0
+	};
+
+	// Create and return mesh
+	return Model::createStaticMesh(vertices, indices);
+}
+
+const Mesh* IMGizmo::createBoxMesh()
+{
+	const glm::vec2 zeroVec2 = glm::vec2(0.0f);
+	const glm::vec3 zeroVec3 = glm::vec3(0.0f);
+
+	// Vertices of the box
+	std::vector<Model::VertexData> vertices = {
+		Model::VertexData(glm::vec3(-1.0f, -1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),  // 0
+		Model::VertexData(glm::vec3(1.0f, -1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),   // 1
+		Model::VertexData(glm::vec3(1.0f,  1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),   // 2
+		Model::VertexData(glm::vec3(-1.0f,  1.0f, -1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),  // 3
+		Model::VertexData(glm::vec3(-1.0f, -1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),  // 4
+		Model::VertexData(glm::vec3(1.0f, -1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),   // 5
+		Model::VertexData(glm::vec3(1.0f,  1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3),   // 6
+		Model::VertexData(glm::vec3(-1.0f,  1.0f,  1.0f), zeroVec3, zeroVec2, zeroVec3, zeroVec3)   // 7
+	};
+
+	// Indices of the boxes faces
 	std::vector<uint32_t> indices = {
 		0, 1, 1, 2, 2, 3, 3, 0, // Bottom face (edges)
 		4, 5, 5, 6, 6, 7, 7, 4, // Top face (edges)
 		0, 4, 1, 5, 2, 6, 3, 7  // Side edges
 	};
 
-	// Create and return the Mesh with materialIndex = 0
-	return new Mesh(vertices, indices, 0); */
-
-	return nullptr;
+	// Create and return mesh
+	return Model::createStaticMesh(vertices, indices);
 }
