@@ -1,2 +1,45 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# C++ source and header files
+*.cpp    text
+*.h      text
+*.hpp    text
+
+# Object files, compiled binaries, and static libraries
+*.o      binary
+*.obj    binary
+*.a      binary
+*.lib    binary
+*.dll    binary
+
+# CMake and build system files
+CMakeLists.txt text
+*.cmake   text
+Makefile  text
+
+# Asset files (handled as binary)
+*.ttf    binary
+*.otf    binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.bmp    binary
+*.tga    binary
+*.dds    binary
+*.hdr    binary
+*.psd    binary
+*.raw    binary
+*.fbx    binary
+*.obj    binary
+*.dae    binary
+*.3ds    binary
+*.blend  binary
+
+# Ignore temporary and IDE specific files
+.vscode/* binary
+.idea/*   binary
+*.user    binary
+*.swp     binary
+
+# Miscellaneous
+*.log    text
+*.md     text
