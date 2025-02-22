@@ -12,6 +12,9 @@ namespace ComponentGizmos
 	// Renders gizmos of all components for specific entity
 	void drawEntityGizmos(IMGizmo& gizmos, EntityContainer& entity);
 
+	// Draws a camera component gizmo
+	void drawCamera(IMGizmo& gizmos, TransformComponent& transform, CameraComponent& camera);
+
 	// Draws a box collider component gizmo
 	void drawBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider);
 

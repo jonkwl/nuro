@@ -45,6 +45,38 @@ public:
 		float furthest = 0.0f;
 	};
 
+	struct VertexData
+	{
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 uv;
+		glm::vec3 tangent;
+		glm::vec3 bitangent;
+
+		VertexData() : position(), normal(), uv(), tangent(), bitangent() {};
+
+		explicit VertexData(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent, glm::vec3 bitangent) : position(position),
+			normal(normal),
+			uv(uv),
+			tangent(tangent),
+			bitangent(bitangent)
+		{
+		};
+	};
+
+	struct MeshData {
+		std::vector<VertexData> vertices;
+		std::vector<uint32_t> indices;
+		uint32_t materialIndex;
+
+		explicit MeshData(std::vector<VertexData>&& vertices, std::vector<uint32_t>&& indices, uint32_t materialIndex) :
+			vertices(std::move(vertices)),
+			indices(std::move(indices)),
+			materialIndex(materialIndex)
+		{
+		};
+	};
+
 public:
 	Model();
 
@@ -67,36 +99,9 @@ protected:
 	void releaseData() override;
 	void dispatchGPU() override;
 
-private:
-	struct VertexData
-	{
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 uv;
-		glm::vec3 tangent;
-		glm::vec3 bitangent;
-
-		VertexData() : position(), normal(), uv(), tangent(), bitangent() {};
-
-		explicit VertexData(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent, glm::vec3 bitangent) : position(position), 
-			normal(normal), 
-			uv(uv), 
-			tangent(tangent), 
-			bitangent(bitangent) 
-		{};
-	};
-
-	struct MeshData {
-		std::vector<VertexData> vertices;
-		std::vector<uint32_t> indices;
-		uint32_t materialIndex;
-
-		explicit MeshData(std::vector<VertexData>&& vertices, std::vector<uint32_t>&& indices, uint32_t materialIndex) : 
-			vertices(std::move(vertices)),
-			indices(std::move(indices)),
-			materialIndex(materialIndex) 
-		{};
-	};
+public:
+	// Creates a static mesh with the given vertices and indices
+	static Mesh* createStaticMesh(std::vector<VertexData>& vertices, std::vector<uint32_t>& indices);
 
 private:
 	//

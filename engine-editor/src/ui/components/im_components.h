@@ -40,7 +40,6 @@ namespace IMComponents
 
 	bool header(std::string label);
 
-	void colorPicker(std::string label, float value[3]);
 	void colorPicker(std::string label, glm::vec3& value);
 
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size);

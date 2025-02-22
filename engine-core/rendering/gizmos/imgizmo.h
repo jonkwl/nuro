@@ -44,6 +44,9 @@ public:
 	// If gizmo should always be in foreground
 	bool foreground;
 
+	// Scale of 3D icons
+	float iconScale;
+
 	//
 	// Shapes
 	//
@@ -59,7 +62,7 @@ public:
 	// Icons
 	//
 
-	void icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale = glm::vec3(1.0f));
+	void icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform);
 
 private:
 	struct StaticData {
@@ -109,11 +112,11 @@ private:
 	{
 		uint32_t iconTexture;
 		glm::vec3 position;
-		glm::vec3 scale;
+		float scale;
 		TransformComponent& cameraTransform;
 		RenderState state;
 
-		IconRenderTarget(uint32_t iconTexture, glm::vec3 position, glm::vec3 scale, TransformComponent& cameraTransform, RenderState state) :
+		IconRenderTarget(uint32_t iconTexture, glm::vec3 position, float scale, TransformComponent& cameraTransform, RenderState state) :
 			iconTexture(iconTexture),
 			position(position),
 			scale(scale),
@@ -135,8 +138,6 @@ private:
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 	glm::mat4 getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
-	// Returns the alpha of a 3D icon depending on its distance to the camera
-	float get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition);
-
-	const Mesh* createWireframeBox();
+	const Mesh* createPlaneMesh();
+	const Mesh* createBoxMesh();
 };

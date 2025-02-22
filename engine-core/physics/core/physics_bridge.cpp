@@ -17,10 +17,6 @@ defaultMaterial(nullptr)
 
 void PhysicsBridge::setup() {
 	defaultMaterial = createMaterial(physics, 0.6f, 0.6f, 0.55f);
-
-	// tmp
-	PxRigidStatic* plane = PxCreatePlane(*physics, PxPlane(0.0f, 1.0f, 0.0f, 10.0f), *defaultMaterial);
-	scene->addActor(*plane);
 }
 
 void PhysicsBridge::constructBoxCollider(Registry& reg, Entity ent) {

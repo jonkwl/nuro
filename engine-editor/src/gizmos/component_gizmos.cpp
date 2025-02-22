@@ -9,13 +9,9 @@ namespace ComponentGizmos {
 
 	void drawSceneViewIcons(IMGizmo& gizmos, TransformComponent& cameraTransform)
 	{
-		// Setup gizmos for icons
-		gizmos.opacity = 0.08f;
-
-		// Render camera icons
-		auto cameras = ECS::gRegistry.view<TransformComponent, CameraComponent>();
-		for (auto [entity, transform, camera] : cameras.each()) {
-			gizmos.icon3d(IconPool::get("camera_gizmo"), transform.position, cameraTransform, glm::vec3(0.8f));
+		// Try draw scene icon of every component instance
+		for (const auto& [name, component] : ComponentRegistry::get()) {
+			component.tryDrawSceneIcons(gizmos, cameraTransform);
 		}
 	}
 
@@ -25,6 +21,14 @@ namespace ComponentGizmos {
 		for (const auto& [name, component] : ComponentRegistry::get()) {
 			component.tryDrawGizmo(entity.root, gizmos);
 		}
+	}
+
+	void drawCamera(IMGizmo& gizmos, TransformComponent& transform, CameraComponent& camera)
+	{
+		gizmos.foreground = true;
+		gizmos.color = EditorGizmoColor::CAMERA;
+		gizmos.opacity = EditorGizmoColor::CAMERA.a;
+		gizmos.boxWire(transform.position, glm::vec3(2.0f), transform.rotation);
 	}
 
 	void drawBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider)

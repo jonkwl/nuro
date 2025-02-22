@@ -2,8 +2,6 @@
 
 #include <chrono>
 
-#include "../src/core/utils/console.h"
-
 ResourceLoader::ResourceLoader()
 {
 	// Launch worker

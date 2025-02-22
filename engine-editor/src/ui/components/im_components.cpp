@@ -530,13 +530,16 @@ namespace IMComponents {
 		return ImGui::CollapsingHeader(label.c_str());
 	}
 
-	void colorPicker(std::string label, float value[3])
+	void colorPicker(std::string label, glm::vec3& value)
 	{
+		static glm::vec3* openedFor = nullptr;
+		static glm::vec3 initialColor;
+
 		label += ":";
 		ImU32 color = IM_COL32(
-			static_cast<unsigned char>(value[0] * 255.0f),
-			static_cast<unsigned char>(value[1] * 255.0f),
-			static_cast<unsigned char>(value[2] * 255.0f),
+			static_cast<unsigned char>(value.r * 255.0f),
+			static_cast<unsigned char>(value.g * 255.0f),
+			static_cast<unsigned char>(value.b * 255.0f),
 			255);
 
 		if (ImGui::BeginTable("##table", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_NoSavedSettings))
@@ -553,7 +556,8 @@ namespace IMComponents {
 			ImGui::TableSetColumnIndex(1);
 			if (ImGui::Button("Pick Color"))
 			{
-				ImGui::OpenPopup("##Color_Picker_Popup", ImGuiPopupFlags_AnyPopupLevel);
+				openedFor = &value;
+				initialColor = value;
 			}
 
 			// Color indicator
@@ -569,26 +573,49 @@ namespace IMComponents {
 			ImGui::EndTable();
 		}
 
+		if (openedFor == &value) {
+			ImGui::OpenPopup("Color Picker");
+			ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos());
+		}
+
 		// Color picker popup
-		if (ImGui::BeginPopupModal("##Color_Picker_Popup"))
+		if (ImGui::BeginPopup("Color Picker", ImGuiWindowFlags_NoMove))
 		{
-			/*ImGui::PushItemWidth(140);
+			// Title
+			ImGui::Text(ICON_FA_PALETTE);
+			ImGui::SameLine();
+			ImGui::PushFont(EditorUI::getFonts().h4_bold);
+			ImGui::Text(" Pick Color");
+			ImGui::PopFont();
+
+			// Seperator
+			ImGui::Dummy(ImVec2(0.0f, 4.0f));
+			ImGui::Separator();
+			ImGui::Dummy(ImVec2(0.0f, 6.0f));
+
+			// Picker
 			std::string id = EditorUI::generateIdString();
-			ImGui::ColorPicker3(id.c_str(), value, ImGuiColorEditFlags_NoSidePreview);
-			ImGui::PopItemWidth();*/
+			float values[3] = { value.r, value.g, value.b };
+			ImGui::PushItemWidth(140);
+			ImGui::ColorPicker3(id.c_str(), values, ImGuiColorEditFlags_NoSidePreview);
+			ImGui::PopItemWidth();
+			value = glm::vec3(values[0], values[1], values[2]);
 
-			ImGui::Text("Color Picker Popup");
-
-			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+			// Cancel or apply
+			ImGui::Dummy(ImVec2(0.0f, 6.0f));
+			if (buttonBig(ICON_FA_XMARK " Cancel")) {
+				ImGui::CloseCurrentPopup();
+				openedFor = nullptr;
+				value = initialColor;
+			}
+			ImGui::SameLine();
+			if (buttonBig(ICON_FA_CHECK " Apply")) {
+				ImGui::CloseCurrentPopup();
+				openedFor = nullptr;
+			}
 
 			ImGui::EndPopup();
 		}
-	}
-
-	void colorPicker(std::string label, glm::vec3& value)
-	{
-		float color[3] = { value.x, value.y, value.z };
-		colorPicker(label, color);
 	}
 
 	void sparklineGraph(const char* id, const float* values, int32_t count, float min_v, float max_v, int32_t offset, const ImVec4& color, const ImVec2& size)

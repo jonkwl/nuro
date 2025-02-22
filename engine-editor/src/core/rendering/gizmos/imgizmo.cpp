@@ -18,6 +18,7 @@ IMGizmo::StaticData IMGizmo::staticData;
 IMGizmo::IMGizmo() : color(glm::vec3(1.0f)),
 opacity(0.4f),
 foreground(false),
+iconScale(0.8f),
 shapeRenderStack(),
 iconRenderStack()
 {
@@ -30,16 +31,20 @@ void IMGizmo::create()
 
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
-		Model* sphereModel = new Model();
-		sphereModel->setSource("../resources/primitives/sphere.fbx");
-		loader.createAsync(sphereModel);
+		Model* plane = new Model();
+		plane->setSource("../resources/primitives/plane.fbx");
+		loader.createAsync(plane);
+
+		Model* sphere = new Model();
+		sphere->setSource("../resources/primitives/sphere.fbx");
+		loader.createAsync(sphere);
 
 		staticData.fillShader = ShaderPool::get("gizmo_fill");
 		staticData.iconShader = ShaderPool::get("gizmo_icon");
 
-		staticData.planeMesh = createPlaneMesh();
+		staticData.planeMesh = plane->queryMesh(0);
 		staticData.boxMesh = createBoxMesh();
-		staticData.sphereMesh = sphereModel->queryMesh(0);
+		staticData.sphereMesh = sphere->queryMesh(0);
 	}
 }
 
@@ -136,6 +141,10 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 
 	for (int32_t i = 0; i < iconRenderStack.size(); i++)
 	{
+		//
+		// UNOPTIMIZED CODE!
+		//
+
 		// Get gizmo rendering target
 		IconRenderTarget gizmo = iconRenderStack[i];
 
@@ -170,25 +179,36 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		);
 		modelMatrix = modelMatrix * rotation180Z;
 		// Scale gizmo icon
-		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), gizmo.scale);
+		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(gizmo.scale));
 		// Calculate MVP matrix
 		glm::mat4 mvpMatrix = viewProjection * modelMatrix;
 
 		// Get mesh
 		const Mesh* mesh = queryMesh(Shape::PLANE);
 
+		// Calculates and returns the icon alpha relative to the camera
+		auto alpha = [](float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition) {
+			float value = baseAlpha;
+			float minDistance = 0.5f;
+			float maxDistance = 2.5f;
+			float distance = glm::distance(iconPosition, cameraPosition);
+			if (distance < maxDistance) {
+				value = glm::mix(0.0f, value, glm::smoothstep(minDistance, maxDistance, distance));
+			}
+			return value;
+		};
+
 		// Set static material uniforms
 		staticData.iconShader->setMatrix4("mvpMatrix", mvpMatrix);
-		staticData.iconShader->setVec4("color", glm::vec4(gizmo.state.color, gizmo.state.opacity));
 		staticData.iconShader->setVec3("tint", glm::vec3(1.0f));
 
 		// Render with full opacity and depth test
-		staticData.iconShader->setFloat("alpha", get3DIconAlpha(1.0f, gizmoPosition, cameraPosition));
+		staticData.iconShader->setFloat("alpha", alpha(1.0f, gizmoPosition, cameraPosition));
 		glBindVertexArray(mesh->getVAO());
 		glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
-		staticData.iconShader->setFloat("alpha", get3DIconAlpha(0.06f, gizmoPosition, cameraPosition));
+		staticData.iconShader->setFloat("alpha", alpha(0.06f, gizmoPosition, cameraPosition));
 		glDisable(GL_DEPTH_TEST);
 		glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
 		glEnable(GL_DEPTH_TEST);
@@ -234,9 +254,9 @@ void IMGizmo::sphereWire(glm::vec3 position, float radius, glm::quat rotation)
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform, glm::vec3 scale)
+void IMGizmo::icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform)
 {
-	IconRenderTarget gizmo(iconTexture, position, scale, cameraTransform, getCurrentState());
+	IconRenderTarget gizmo(iconTexture, position, iconScale, cameraTransform, getCurrentState());
 	iconRenderStack.push_back(gizmo);
 }
 
@@ -303,18 +323,6 @@ glm::mat4 IMGizmo::getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::v
 	model = glm::scale(model, scale);
 
 	return model;
-}
-
-float IMGizmo::get3DIconAlpha(float baseAlpha, glm::vec3 iconPosition, glm::vec3 cameraPosition)
-{
-	float alpha = baseAlpha;
-	float minDistance = 0.5f;
-	float maxDistance = 2.5f;
-	float distance = glm::distance(iconPosition, cameraPosition);
-	if (distance < maxDistance) {
-		alpha = glm::mix(0.0f, alpha, glm::smoothstep(minDistance, maxDistance, distance));
-	}
-	return alpha;
 }
 
 const Mesh* IMGizmo::createPlaneMesh()

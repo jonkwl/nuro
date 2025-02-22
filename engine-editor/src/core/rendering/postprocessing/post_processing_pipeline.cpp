@@ -163,7 +163,7 @@ void PostProcessingPipeline::syncConfiguration(const PostProcessing::Profile& pr
 
 	finalPassShader->setFloat("configuration.bloom", profile.bloom.enabled);
 	finalPassShader->setFloat("configuration.bloomIntensity", profile.bloom.intensity);
-	finalPassShader->setVec3("configuration.bloomColor", glm::vec3(profile.bloom.color[0], profile.bloom.color[1], profile.bloom.color[2]));
+	finalPassShader->setVec3("configuration.bloomColor", profile.bloom.color);
 	finalPassShader->setFloat("configuration.bloomThreshold", profile.bloom.threshold);
 	finalPassShader->setFloat("configuration.lensDirt", profile.bloom.lensDirtEnabled);
 	finalPassShader->setFloat("configuration.lensDirtIntensity", profile.bloom.lensDirtIntensity);
@@ -174,7 +174,7 @@ void PostProcessingPipeline::syncConfiguration(const PostProcessing::Profile& pr
 
 	finalPassShader->setBool("configuration.vignette", profile.vignette.enabled);
 	finalPassShader->setFloat("configuration.vignetteIntensity", profile.vignette.intensity);
-	finalPassShader->setVec3("configuration.vignetteColor", glm::vec3(profile.vignette.color[0], profile.vignette.color[1], profile.vignette.color[2]));
+	finalPassShader->setVec3("configuration.vignetteColor", profile.vignette.color);
 	finalPassShader->setFloat("configuration.vignetteRadius", profile.vignette.radius);
 	finalPassShader->setFloat("configuration.vignetteSoftness", profile.vignette.softness);
 	finalPassShader->setFloat("configuration.vignetteRoundness", profile.vignette.roundness);

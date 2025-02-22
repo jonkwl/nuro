@@ -1,10 +1,13 @@
 #include "shader.h"
 
+#include <filesystem>
 #include <glad/glad.h>
 #include <gtc/type_ptr.hpp>
 
 #include "../../utils/console.h"
 #include "../../utils/iohandler.h"
+
+namespace fs = std::filesystem;
 
 Shader::Shader() : path(),
 data(),
@@ -20,6 +23,11 @@ std::string Shader::sourcePath()
 
 void Shader::setSource(std::string _path)
 {
+	// Validate source path
+	if (!fs::exists(_path)) {
+		Console::out::warning("Shader", "Shader source at '" + _path + "' could not be found");
+	}
+
 	path = _path;
 }
 

@@ -11,8 +11,13 @@
 
 namespace IconPool {
 
+	// List of valid extensions for icon source files
 	std::vector<std::string> gValidExtensions = { ".png", ".jpg", ".jpeg" };
+
+	// Global registry of all icons
 	std::unordered_map<std::string, Texture*> gIcons;
+
+	// Texture of fallback icon for invalid icons
 	Texture* gInvalidIcon = new Texture();
 
 	void _loadAll(const std::string& directory, bool async)
@@ -51,12 +56,6 @@ namespace IconPool {
 		Console::out::processDone("Icon Pool", "Loaded " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon" : " icons"));
 	}
 
-	void createFallbackIconSync(const std::string& invalidIconPath)
-	{
-		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, invalidIconPath);
-		ApplicationContext::getResourceLoader().createSync(gInvalidIcon);
-	}
-
 	void loadAllSync(const std::string& directory)
 	{
 		Console::out::processStart("Icon Pool", "Loading icons from '" + directory + "'");
@@ -77,9 +76,15 @@ namespace IconPool {
 		}
 		else {
 			// Icon not found, return invalid icons backend id
-			Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
+			// Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
 			return gInvalidIcon->id();
 		}
+	}
+
+	void createFallbackIcon(const std::string& path)
+	{
+		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, path);
+		ApplicationContext::getResourceLoader().createSync(gInvalidIcon);
 	}
 
 }

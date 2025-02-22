@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <glm.hpp>
 
 #include "../src/core/rendering/texture/texture.h"
 
@@ -31,9 +32,8 @@ namespace PostProcessing
 	struct Bloom {
 
 		bool enabled = true;
-		// float intensity = 0.4f;
 		float intensity = 0.075f;
-		float color[3] = { 1.0f, 1.0f, 1.0f };
+		glm::vec3 color = glm::vec3(1.0f);
 		float threshold = 0.465f;
 		float softThreshold = 0.0f;
 		float filterRadius = 0.0f;
@@ -56,7 +56,7 @@ namespace PostProcessing
 
 		bool enabled = true;
 		float intensity = 1.0f;
-		float color[3] = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 color = glm::vec3(0.0f);
 		float radius = 0.74f;
 		float softness = 0.42f;
 		float roundness = 1.8f;

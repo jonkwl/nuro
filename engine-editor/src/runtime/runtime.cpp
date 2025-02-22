@@ -79,13 +79,16 @@ namespace Runtime {
 		ShaderPool::loadAllSync("./src/core/shaders/passes");
 
 		// Create default texture
-		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/default_texture.png");
+		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "../resources/icons/fallback/fallback_texture.png");
 		loader.createSync(gDefaultTexture);
 		Texture::setDefaultTexture(gDefaultTexture->id());
 
 		// Load various editor icons
-		IconPool::createFallbackIconSync("../resources/icons/invalid.png");
-		IconPool::loadAllSync("../resources/icons");
+		IconPool::createFallbackIcon("../resources/icons/fallback/fallback_icon.png");
+		IconPool::loadAllSync("../resources/icons/shared");
+		IconPool::loadAllSync("../resources/icons/assets");
+		IconPool::loadAllSync("../resources/icons/components");
+		IconPool::loadAllSync("../resources/icons/scene");
 
 		// Create default cubemap
 		gDefaultCubemap->setSource_Cross("../resources/skybox/default/default_night.png");
@@ -192,6 +195,9 @@ namespace Runtime {
 		ApplicationContext::setResizeable(true);
 		ApplicationContext::maximizeWindow();
 		ApplicationContext::setVisible(true);
+
+		// Show welcome inspectable
+		InsightPanelWindow::inspect<WelcomeInspectable>();
 	}
 
 	void _nextFrame() {
@@ -246,9 +252,6 @@ namespace Runtime {
 
 		// TMP LOADING DEFAULT CUBEMAP ASYNCHRONOUSLY HERE
 		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
-
-		// SHOW WELCOME INSPECTABLE
-		InsightPanelWindow::inspect<WelcomeInspectable>();
 
 		// MAIN LOOP
 		while (ApplicationContext::running())

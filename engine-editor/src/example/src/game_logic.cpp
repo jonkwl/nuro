@@ -109,12 +109,6 @@ void _physics_example() {
 	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
 	playerChild.transform.scale = glm::vec3(0.5f);
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
-	SphereColliderComponent playerChildCollider = playerChild.add<SphereColliderComponent>();
-	playerChildCollider.radius = 0.5f;
-	RigidbodyComponent& playerChildRb = playerChild.add<RigidbodyComponent>();
-	Rigidbody::setKinematic(playerChildRb, true);
-	Rigidbody::setCollisionDetection(playerChildRb, RB_CollisionDetection::CONTINUOUS);
-	Rigidbody::setInterpolation(playerChildRb, RB_Interpolation::INTERPOLATE);
 
 	// Cube batch
 	int objectAmount = 64;

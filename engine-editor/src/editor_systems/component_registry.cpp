@@ -32,15 +32,16 @@ namespace ComponentRegistry
     void registerComponent(
         const std::string& name,
         std::function<void(Entity, T&)> drawInspectable, 
-        std::optional<std::function<void(IMGizmo&, TransformComponent&, T&)>> drawGizmo)
-    {
-        std::string snakeName = _snakeCase(name);
+        std::optional<std::function<void(IMGizmo&, TransformComponent&, T&)>> drawGizmo,
+        bool hasSceneIcon
+    ){
+        std::string icon = _snakeCase(name);
         gComponentRegistry[name] = {
             // Name
             name,
 
             // Editor icon
-            snakeName,
+            icon,
 
             // Add
             [](Entity entity) {
@@ -70,6 +71,22 @@ namespace ComponentRegistry
                 // Draw gizmo
                 drawGizmo.value()(gizmo, ECS::gRegistry.get<TransformComponent>(entity), ECS::gRegistry.get<T>(entity));
 
+            },
+
+            // Try draw scene icons
+            [icon, hasSceneIcon](IMGizmo& gizmos, TransformComponent& cameraTransform) {
+
+                // Component doesn't have scene view icon
+                if (!hasSceneIcon) return;
+
+                // Scene view icon identifier
+                std::string sceneIcon = icon + "_gizmo";
+
+                // Render scene view icon for each component instance
+                for (auto [entity, transform, camera] : ECS::gRegistry.view<TransformComponent, T>().each()) {
+                    gizmos.icon3d(IconPool::get(sceneIcon), transform.position, cameraTransform);
+                }
+
             }
         };
         gKeysOrdered.push_back(name);
@@ -80,61 +97,71 @@ namespace ComponentRegistry
         registerComponent<TransformComponent>(
             "Transform",
             InspectableComponents::drawTransform,
-            std::nullopt
+            std::nullopt,
+            false
         );
         
         registerComponent<MeshRendererComponent>(
             "Mesh Renderer",
             InspectableComponents::drawMeshRenderer,
-            std::nullopt
+            std::nullopt,
+            false
         );
         
         registerComponent<CameraComponent>(
             "Camera",
             InspectableComponents::drawCamera,
-            std::nullopt
+            ComponentGizmos::drawCamera,
+            true
         );
         
         registerComponent<DirectionalLightComponent>(
             "Directional Light", 
             InspectableComponents::drawDirectionalLight,
-            std::nullopt
+            std::nullopt,
+            true
         );
         
         registerComponent<PointLightComponent>(
             "Point Light",
             InspectableComponents::drawPointLight,
-            std::nullopt
+            std::nullopt,
+            true
         );
         
         registerComponent<SpotlightComponent>(
             "Spotlight",
             InspectableComponents::drawSpotlight,
-            std::nullopt
+            std::nullopt,
+            true
         );
         
         registerComponent<VelocityComponent>(
             "Velocity Blur", 
             InspectableComponents::drawVelocity,
-            std::nullopt
+            std::nullopt,
+            false
         );
         
         registerComponent<BoxColliderComponent>(
             "Box Collider",
             InspectableComponents::drawBoxCollider,
-            ComponentGizmos::drawBoxCollider
+            ComponentGizmos::drawBoxCollider,
+            false
         );
         
         registerComponent<SphereColliderComponent>(
             "Sphere Collider",
             InspectableComponents::drawSphereCollider,
-            ComponentGizmos::drawSphereCollider
+            ComponentGizmos::drawSphereCollider,
+            false
         );
         
         registerComponent<RigidbodyComponent>(
             "Rigidbody",
             InspectableComponents::drawRigidbody,
-            std::nullopt
+            std::nullopt,
+            false
         );
 	}
 

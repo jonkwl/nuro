@@ -150,8 +150,12 @@ namespace InspectableComponents {
 		ImGui::Dummy(ImVec2(0.0f, 1.0f));
 	}
 
-	void _spacing() {
-		ImGui::Dummy(ImVec2(0.0f, 6.0f));
+	void _spacingS() {
+		ImGui::Dummy(ImVec2(0.0f, 3.0));
+	}
+
+	void _spacingM() {
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
 	}
 
 	void drawTransform(Entity entity, TransformComponent& transform)
@@ -218,6 +222,13 @@ namespace InspectableComponents {
 			IMComponents::input("Intensity", directionalLight.intensity);
 			IMComponents::colorPicker("Color", directionalLight.color);
 
+			_spacingM();
+			_headline("Shadows");
+			bool tmp = false;
+			IMComponents::input("Cast Shadows", tmp);
+			IMComponents::input("Soft Shadows", tmp);
+			IMComponents::label(ICON_FA_TRIANGLE_EXCLAMATION " In-editor shadows aren't dynamic yet and can't be changed currently", EditorUI::getFonts().p, IM_COL32(255, 255, 0, 135));
+
 			_endComponent();
 		}
 
@@ -235,6 +246,13 @@ namespace InspectableComponents {
 			IMComponents::colorPicker("Color", pointLight.color);
 			IMComponents::input("Range", pointLight.range);
 			IMComponents::input("Falloff", pointLight.falloff);
+
+			_spacingM();
+			_headline("Shadows");
+			bool tmp = false;
+			IMComponents::input("Cast Shadows", tmp);
+			IMComponents::input("Soft Shadows", tmp);
+			IMComponents::label(ICON_FA_TRIANGLE_EXCLAMATION " In-editor shadows aren't dynamic yet and can't be changed currently", EditorUI::getFonts().p, IM_COL32(255, 255, 0, 135));
 
 			_endComponent();
 		}
@@ -255,6 +273,13 @@ namespace InspectableComponents {
 			IMComponents::input("Falloff", spotlight.falloff);
 			IMComponents::input("Inner Angle", spotlight.innerAngle);
 			IMComponents::input("Outer Angle", spotlight.outerAngle);
+
+			_spacingM();
+			_headline("Shadows");
+			bool tmp = true;
+			IMComponents::input("Cast Shadows", tmp);
+			IMComponents::input("Soft Shadows", tmp);
+			IMComponents::label(ICON_FA_TRIANGLE_EXCLAMATION " In-editor shadows aren't dynamic yet and can't be changed currently", EditorUI::getFonts().p, IM_COL32(255, 255, 0, 135));
 
 			_endComponent();
 		}
@@ -285,11 +310,11 @@ namespace InspectableComponents {
 		{
 			_headline("Transform");
 			IMComponents::buttonBig("Reset Dimensions");
-			ImGui::Dummy(ImVec2(0.0f, 3.0f));
+			_spacingS();
 			IMComponents::input("Center", boxCollider.center);
 			IMComponents::input("Size", boxCollider.size);
 			
-			ImGui::Dummy(ImVec2(0.0f, 10.0f));
+			_spacingM();
 			_headline("Material");
 			IMComponents::label("Material: Default Physics Material");
 
@@ -307,11 +332,11 @@ namespace InspectableComponents {
 		{
 			_headline("Transform");
 			IMComponents::buttonBig("Reset Dimensions");
-			ImGui::Dummy(ImVec2(0.0f, 3.0f));
+			_spacingS();
 			IMComponents::input("Center", sphereCollider.center);
 			IMComponents::input("Radius", sphereCollider.radius);
 
-			ImGui::Dummy(ImVec2(0.0f, 10.0f));
+			_spacingM();
 			_headline("Material");
 			IMComponents::label("Material: Default Physics Material");
 

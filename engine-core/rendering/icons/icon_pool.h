@@ -5,9 +5,6 @@
 class Texture;
 
 namespace IconPool {
-
-	// Creates a fallback icon for invalid icons
-	void createFallbackIconSync(const std::string& invalidIconPath);
 	
 	// Loads all icons from the given directory synchronously
 	void loadAllSync(const std::string& directory);
@@ -17,5 +14,8 @@ namespace IconPool {
 
 	// Returns the texture backend id of an icon by the given identifier
 	uint32_t get(const std::string& identifier);
+
+	// Creates a fallback icon for invalid icons synchronously
+	void createFallbackIcon(const std::string& path);
 
 }

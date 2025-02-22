@@ -44,11 +44,6 @@ namespace Input {
 		gMouseDelta = glm::vec2(mouseX - gMouseLast.x, -(mouseY - gMouseLast.y));
 		gMouseLast = glm::vec2(mouseX, mouseY);
 
-		if (glfwGetKey(gWindow, GLFW_KEY_SPACE) == GLFW_PRESS)
-		{
-			glfwSetWindowShouldClose(gWindow, true);
-		}
-
 		if (glfwGetKey(gWindow, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			gMoveAxis.x = 1.0f;
