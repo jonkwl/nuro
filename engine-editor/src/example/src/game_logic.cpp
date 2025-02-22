@@ -79,6 +79,9 @@ void _physics_example() {
 	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
 	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+	RigidbodyComponent& groundRb = ground.add<RigidbodyComponent>();
+	Rigidbody::setKinematic(groundRb, true);
+	BoxColliderComponent& groundCollider = ground.add<BoxColliderComponent>();
 
 	// Kinematic sphere
 	EntityContainer kinematic("Kinematic", ECS::createEntity());

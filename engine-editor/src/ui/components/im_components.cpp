@@ -6,7 +6,6 @@
 #include <imgui_internal.h>
 
 #include "../src/ui/editor_ui.h"
-#include "../src/ui/misc/ui_flex.h"
 #include "../src/ui/utils/ui_utils.h"
 
 #include "../src/core/utils/console.h"
@@ -32,18 +31,20 @@ namespace IMComponents {
 	{
 		const float marginTop = 20.0f - ImGui::GetStyle().WindowPadding.y;
 		const float marginBottom = 3.0f;
+		const float marginLeft = 40.0f;
 		const float marginSubSeperator = 7.0f;
 
 		ImGui::Dummy(ImVec2(0.0f, marginTop));
-		UIFlex::beginFlex(EditorUI::generateId(), FlexType::ROW, FLEX_FULL_WIDTH, 20.0f, Justification::START, Alignment::CENTER, 10.0f, Margin());
 		{
-			tryIcon(icon);
+			std::string iconText = std::string(icon) + " ";
+			ImGui::Text(iconText.c_str());
+			ImGui::SameLine();
 			ImGui::PushFont(EditorUI::getFonts().h3_bold);
 			ImGui::Text(title.c_str());
 			ImGui::PopFont();
 		}
-		UIFlex::endFlex();
 		ImGui::Dummy(ImVec2(0.0f, marginBottom));
+
 		if (seperator) {
 			ImGui::Separator();
 			ImGui::Dummy(ImVec2(0.0f, marginSubSeperator));

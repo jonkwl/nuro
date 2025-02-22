@@ -253,7 +253,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)
 {
 	// Render selected entitites gizmos if needed
-	if (gizmos) ComponentGizmos::renderEntityGizmos(*gizmos, *entity);
+	if (gizmos) ComponentGizmos::drawEntityGizmos(*gizmos, *entity);
 
 	// Make sure selected entity is renderable
 	if (!entity->has<MeshRendererComponent>()) return;

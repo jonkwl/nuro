@@ -9,6 +9,8 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/example/src/game_logic.h"
 
+#include "../src/editor_systems/component_registry.h"
+
 #include "../src/core/rendering/model/model.h"
 #include "../src/core/rendering/shader/shader.h"
 #include "../src/core/rendering/skybox/cubemap.h"
@@ -179,6 +181,9 @@ namespace Runtime {
 	void _launchEditor() {
 		// Print welcome
 		Console::out::welcome();
+
+		// Create editor component registry
+		ComponentRegistry::create();
 
 		// Setup editor ui
 		EditorUI::setup();

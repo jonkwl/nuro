@@ -17,13 +17,4 @@ public:
 private:
 	// Currently inspected hierarchy item
 	HierarchyItem& item;
-
-	// Adds a component to be drawn if its owned by the entity of the currently inspected hierarchy item
-	template <typename T>
-	void component(std::function<void(Entity entity, T&)> drawFunction) {
-		if (item.entity.has<T>()) {
-			T& component = item.entity.get<T>();
-			drawFunction(item.entity.root, component);
-		}
-	}
 };

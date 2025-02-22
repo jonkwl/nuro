@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\editor_systems\component_registry.cpp" />
     <ClCompile Include="src\ui\search_popup\search_popup.cpp" />
     <ClCompile Include="src\core\physics\core\physics_bridge.cpp" />
     <ClCompile Include="src\project\project.cpp" />
@@ -212,7 +213,6 @@
     <ClCompile Include="src\runtime\runtime.cpp" />
     <ClCompile Include="src\ui\editor_ui.cpp" />
     <ClCompile Include="src\ui\components\im_components.cpp" />
-    <ClCompile Include="src\ui\misc\ui_flex.cpp" />
     <ClCompile Include="src\ui\windows\diagnostics_window.cpp" />
     <ClCompile Include="src\ui\windows\post_processing_window.cpp" />
     <ClCompile Include="src\ui\windows\viewport_window.cpp" />
@@ -225,6 +225,7 @@
     <ClCompile Include="src\ui\inspectables\welcome_inspectable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\editor_systems\component_registry.h" />
     <ClInclude Include="src\ui\search_popup\search_popup.h" />
     <ClInclude Include="src\core\ecs\ecs_collection.h" />
     <ClInclude Include="src\core\ecs\entity_container.hpp" />
@@ -320,7 +321,6 @@
     <ClInclude Include="src\ui\windows\editor_window.h" />
     <ClInclude Include="src\ui\collection\IconsFontAwesome6.h" />
     <ClInclude Include="src\ui\components\im_components.h" />
-    <ClInclude Include="src\ui\misc\ui_flex.h" />
     <ClInclude Include="src\ui\windows\diagnostics_window.h" />
     <ClInclude Include="src\ui\windows\post_processing_window.h" />
     <ClInclude Include="src\ui\windows\viewport_window.h" />

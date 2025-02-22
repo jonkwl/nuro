@@ -11,10 +11,9 @@ namespace Transform {
 	{
 		// Compute model matrix
 		transform.model = Transformation::model(transform.position, transform.rotation, transform.scale);
+		
 		if (transform.parent) {
-			transform.model = 
-				Transformation::model(transform.parent->position, transform.parent->rotation, transform.parent->scale) 
-				* Transformation::model(transform.position, transform.rotation, transform.scale);
+			transform.model = Transformation::model(transform.parent->position, transform.parent->rotation, transform.parent->scale) * transform.model;
 		}
 
 		// Compute model-view-projection matrix

@@ -12,7 +12,6 @@
 #include "../src/core/utils/console.h"
 #include "../src/core/context/application_context.h"
 
-#include "../src/ui/misc/ui_flex.h"
 #include "../src/runtime/runtime.h"
 #include "../src/ui/footer/footer.h"
 #include "../src/ui/title_bar/title_bar.h"

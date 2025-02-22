@@ -7,9 +7,15 @@ namespace ComponentGizmos
 {
 
 	// Renders icon gizmos of all components in register
-	void renderSceneViewIcons(IMGizmo& gizmos, TransformComponent& cameraTransform);
+	void drawSceneViewIcons(IMGizmo& gizmos, TransformComponent& cameraTransform);
 
 	// Renders gizmos of all components for specific entity
-	void renderEntityGizmos(IMGizmo& gizmos, EntityContainer& entity);
+	void drawEntityGizmos(IMGizmo& gizmos, EntityContainer& entity);
+
+	// Draws a box collider component gizmo
+	void drawBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider);
+
+	// Draws a sphere collider component gizmo
+	void drawSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider);
 
 };

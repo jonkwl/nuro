@@ -6,6 +6,7 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/components/im_components.h"
 #include "../src/core/rendering/icons/icon_pool.h"
+#include "../src/editor_systems/component_registry.h"
 
 namespace SearchPopup {
 
@@ -18,14 +19,14 @@ namespace SearchPopup {
     // Name of current search type
     std::string gSearchName;
 
-    // Index of currently selected search item
-    uint32_t gSearchItemIndex = 0;
+    // Set if search popup was opened this frame
+    bool gNewlyOpened;
 
     // Search buffer
     char gSearchBuffer[128];
 
     // Renders a search item element
-    void _searchItem(uint32_t index, const char* label, std::string icon) {
+    void _searchItem(std::string label, std::string icon) {
 
         //
         // EVALUATE
@@ -33,7 +34,7 @@ namespace SearchPopup {
 
         ImFont* font = EditorUI::getFonts().p_bold;
         float fontSize = font->FontSize;
-        ImVec2 textSize = font->CalcTextSizeA(fontSize, FLT_MAX, 0, label);
+        ImVec2 textSize = font->CalcTextSizeA(fontSize, FLT_MAX, 0, label.c_str());
 
         float yPadding = 10.0f;
         ImVec2 position = ImGui::GetCursorScreenPos();
@@ -44,7 +45,6 @@ namespace SearchPopup {
 
         bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
         bool clicked = hovered && ImGui::IsMouseClicked(0);
-        // bool selected = index == gSearchItemIndex;
 
         ImDrawList& drawList = *ImGui::GetWindowDrawList();
 
@@ -52,9 +52,7 @@ namespace SearchPopup {
         // DRAW BACKGROUND
         //
 
-        ImU32 color = IM_COL32(50, 50, 68, 50);
-        if (hovered) color = IM_COL32(50, 50, 180, 70);
-        // if (selected) color = IM_COL32(50, 50, 180, 80);
+        ImU32 color = hovered ? IM_COL32(50, 50, 180, 70) : IM_COL32(50, 50, 68, 50);
         drawList.AddRectFilled(p0, p1, color, 10.0f);
 
         //
@@ -69,14 +67,20 @@ namespace SearchPopup {
         // DRAW TEXT
         //
 
-        ImVec2 textPosition = position += ImVec2(iconSize.x + 5.0f, yPadding * 0.5f);
-        drawList.AddText(font, fontSize, textPosition, IM_COL32_WHITE, label);
+        ImVec2 textPosition = position += ImVec2(iconSize.x + 8.0f, yPadding * 0.5f);
+        drawList.AddText(font, fontSize, textPosition, IM_COL32_WHITE, label.c_str());
 
         //
         // ADVANCE CURSOR
         //
 
         ImGui::Dummy(ImVec2(0.0f, size.y));
+
+        // 
+        // HANDLE CLICKED EVENT
+        //
+
+        // ...
     }
 
     void render()
@@ -120,8 +124,9 @@ namespace SearchPopup {
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 8.0f));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
+            if (gNewlyOpened) ImGui::SetKeyboardFocusHere();
             if (ImGui::InputTextWithHint("##Search", "Search...", gSearchBuffer, IM_ARRAYSIZE(gSearchBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-                gSearchItemIndex = 0;
+
             }
 
             ImGui::PopFont();
@@ -136,25 +141,12 @@ namespace SearchPopup {
             uint32_t nSearchResults = 10;
             IMComponents::beginClippedChild(ImGui::GetContentRegionAvail());
             {
-                _searchItem(0, "Item 1", "icon");
-                _searchItem(1, "Item 2", "icon");
-                _searchItem(2, "Item 3", "icon");
-                _searchItem(3, "Item 4", "icon");
-                _searchItem(4, "Item 5", "icon");
-                _searchItem(5, "Item 6", "icon");
-                _searchItem(6, "Item 7", "icon");
-                _searchItem(7, "Item 8", "icon");
-                _searchItem(8, "Item 9", "icon");
-                _searchItem(9, "Item 10", "icon");
+                // TMP JUST RENDER COMPONENTS FOR NOW
+                for (const auto& [name, component] : ComponentRegistry::get()) {
+                    _searchItem(component.name, component.icon);
+                }
             }
             IMComponents::endClippedChild();
-
-            //
-            // CHECK FOR ARROW KEY SEARCH ITEM NAVIGATION
-            //
-
-            /*if (ImGui::IsKeyPressed(ImGuiKey_UpArrow)) if (gSearchItemIndex > 0) gSearchItemIndex--;
-            if (ImGui::IsKeyPressed(ImGuiKey_DownArrow)) if (gSearchItemIndex < nSearchResults - 1) gSearchItemIndex++;*/
 
             //
             // CHECK FOR CLOSING
@@ -166,6 +158,7 @@ namespace SearchPopup {
             // END POPUP
             //
 
+            gNewlyOpened = false;
             ImGui::EndPopup();
         }
     }
@@ -181,7 +174,7 @@ namespace SearchPopup {
         gShow = true;
         gSearchPosition = position;
         gSearchName = "Components";
-        gSearchItemIndex = 0;
+        gNewlyOpened = true;
 	}
 
 }

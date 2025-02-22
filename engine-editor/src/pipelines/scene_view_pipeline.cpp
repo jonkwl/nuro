@@ -90,7 +90,7 @@ void SceneViewPipeline::render()
 	// Start new gizmo frame
 	IMGizmo& gizmos = Runtime::getSceneGizmos();
 	gizmos.newFrame();
-	ComponentGizmos::renderSceneViewIcons(gizmos, cameraTransform);
+	ComponentGizmos::drawSceneViewIcons(gizmos, cameraTransform);
 
 	//
 	// PREPROCESSOR PASS
