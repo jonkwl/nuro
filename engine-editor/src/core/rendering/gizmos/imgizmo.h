@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/rendering/texture/texture.h"
-#include "../src/core/ecs/components.h"
+#include <rendering/texture/texture.h>
+#include <ecs/components.h>
 
 class Shader;
 class Model;

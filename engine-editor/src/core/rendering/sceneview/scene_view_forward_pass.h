@@ -2,11 +2,11 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/gizmos/imgizmo.h"
+#include <viewport/viewport.h>
+#include <ecs/ecs_collection.h>
+#include <rendering/gizmos/imgizmo.h>
 
 class Skybox;
 class IMaterial;

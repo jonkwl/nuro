@@ -1,13 +1,13 @@
 #include "scene_view_pipeline.h"
 
-#include "../src/core/utils/console.h"
-#include "../src/core/input/input.h"
-#include "../src/core/physics/physics.h"
-#include "../src/core/diagnostics/profiler.h"
-#include "../src/core/rendering/shadows/shadow_map.h"
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/rendering/culling/bounding_volume.h"
-#include "../src/core/rendering/material/lit/lit_material.h"
+#include <utils/console.h>
+#include <input/input.h>
+#include <physics/physics.h>
+#include <diagnostics/profiler.h>
+#include <rendering/shadows/shadow_map.h>
+#include <rendering/transformation/transformation.h>
+#include <rendering/culling/bounding_volume.h>
+#include <rendering/material/lit/lit_material.h>
 
 #include "../src/runtime/runtime.h"
 #include "../src/ui/windows/viewport_window.h"

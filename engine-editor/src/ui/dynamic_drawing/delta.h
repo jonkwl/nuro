@@ -5,7 +5,7 @@
 //
 
 // INCLUDE OBJECT PROVIDING DELTA TIME GETTER
-#include "../src/core/time/time.h"
+#include <time/time.h>
 
 // DEFINE DELTA GETTER AS "delta"
 // DELTA CAN ALSO BE VALUE 0, DONT USE SMOOTHING THEN

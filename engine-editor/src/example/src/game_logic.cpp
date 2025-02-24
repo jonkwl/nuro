@@ -4,7 +4,7 @@
 
 #include "game_logic.h"
 
-#include "../src/core/engine.h"
+#include <engine.h>
 
 #include <iostream>
 
@@ -19,12 +19,12 @@ void _physics_example() {
 
 	// Models
 	Model* cubeModel = new Model();
-	cubeModel->setSource("../resources/primitives/cube.fbx");
+	cubeModel->setSource("resources/primitives/cube.fbx");
 	loader.createSync(cubeModel);
 	const Mesh* cubeMesh = cubeModel->queryMesh(0);
 
 	Model* sphereModel = new Model();
-	sphereModel->setSource("../resources/primitives/sphere.fbx");
+	sphereModel->setSource("resources/primitives/sphere.fbx");
 	loader.createSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 

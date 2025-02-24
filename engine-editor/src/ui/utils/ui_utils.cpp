@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "../src/core/input/cursor.h"
+#include <input/cursor.h>
 #include "../src/ui/editor_ui.h"
 
 namespace UIUtils {

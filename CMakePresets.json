@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "windows-default",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+	  "name": "windows-default",
+	  "configurePreset": "windows-default"
+    }
+  ]
+}

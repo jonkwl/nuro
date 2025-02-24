@@ -1,14 +1,14 @@
 #include "game_view_pipeline.h"
 
-#include "../src/core/input/input.h"
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/diagnostics/profiler.h"
-#include "../src/core/rendering/material/lit/lit_material.h"
-#include "../src/core/rendering/culling/bounding_volume.h"
-#include "../src/core/rendering/skybox/skybox.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/shadows/shadow_map.h"
+#include <input/input.h>
+#include <rendering/transformation/transformation.h>
+#include <utils/console.h>
+#include <diagnostics/profiler.h>
+#include <rendering/material/lit/lit_material.h>
+#include <rendering/culling/bounding_volume.h>
+#include <rendering/skybox/skybox.h>
+#include <ecs/ecs_collection.h>
+#include <rendering/shadows/shadow_map.h>
 
 #include "../src/ui/windows/viewport_window.h"
 #include "../src/runtime/runtime.h"

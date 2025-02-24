@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../src/core/utils/console.h"
+#include <utils/console.h>
 
 namespace IOHandler
 {

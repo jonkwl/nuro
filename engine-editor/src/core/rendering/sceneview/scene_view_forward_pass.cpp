@@ -2,15 +2,15 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/transform/transform.h"
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/rendering/skybox/skybox.h"
-#include "../src/core/rendering/material/imaterial.h"
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/rendering/material/unlit/unlit_material.h"
+#include <utils/console.h>
+#include <transform/transform.h>
+#include <rendering/model/mesh.h>
+#include <rendering/skybox/skybox.h>
+#include <rendering/material/imaterial.h>
+#include <rendering/transformation/transformation.h>
+#include <rendering/material/unlit/unlit_material.h>
 
-#include "../src/gizmos/component_gizmos.h"
+//#include "../src/gizmos/component_gizmos.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -253,7 +253,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)
 {
 	// Render selected entitites gizmos if needed
-	if (gizmos) ComponentGizmos::drawEntityGizmos(*gizmos, *entity);
+	//if (gizmos) ComponentGizmos::drawEntityGizmos(*gizmos, *entity);
 
 	// Make sure selected entity is renderable
 	if (!entity->has<MeshRendererComponent>()) return;

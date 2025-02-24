@@ -1,10 +1,10 @@
 #pragma once
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <vector>
 
-#include "../src/core/ecs/components.h"
-#include "../src/core/viewport/viewport.h"
+#include <ecs/components.h>
+#include <viewport/viewport.h>
 
 class Model;
 class LitMaterial;

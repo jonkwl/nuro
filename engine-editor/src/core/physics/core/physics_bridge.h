@@ -1,9 +1,9 @@
 #pragma once
 
-#include <entt.hpp>
+#include <entt/entt.hpp>
 #include <PxPhysicsAPI.h>
 
-#include "../src/core/ecs/ecs_collection.h"
+#include <ecs/ecs_collection.h>
 
 class PhysicsBridge
 {

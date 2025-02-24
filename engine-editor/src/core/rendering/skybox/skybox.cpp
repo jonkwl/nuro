@@ -2,10 +2,10 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/rendering/skybox/cubemap.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/utils/console.h"
+#include <rendering/skybox/cubemap.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/shader/shader.h>
+#include <utils/console.h>
 
 Skybox::Skybox() : cubemap(nullptr),
 shader(nullptr),

@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/rendering/postprocessing/post_processing.h"
+#include <viewport/viewport.h>
+#include <rendering/postprocessing/post_processing.h>
 #
 
 class Shader;

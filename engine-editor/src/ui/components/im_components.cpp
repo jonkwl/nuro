@@ -8,7 +8,7 @@
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/utils/ui_utils.h"
 
-#include "../src/core/utils/console.h"
+#include <utils/console.h>
 #include "../src/ui/collection/IconsFontAwesome6.h"
 
 namespace IMComponents {

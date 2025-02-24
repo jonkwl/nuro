@@ -1,11 +1,11 @@
 #include "physics_bridge.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <gtx/component_wise.hpp>
+#include <glm/gtx/component_wise.hpp>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/physics/rigidbody/rigidbody.h"
-#include "../src/core/physics/utils/px_translator.h"
+#include <utils/console.h>
+#include <physics/rigidbody/rigidbody.h>
+#include <physics/utils/px_translator.h>
 
 using namespace physx;
 

@@ -1,14 +1,14 @@
 #include "shadow_map.h"
 
 #include <glad/glad.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <vector>
 #include <stb_image_write.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/transformation/transformation.h"
+#include <utils/console.h>
+#include <rendering/model/mesh.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/transformation/transformation.h>
 
 ShadowMap::ShadowMap(uint32_t resolutionWidth, uint32_t resolutionHeight) : resolutionWidth(resolutionWidth),
 resolutionHeight(resolutionHeight),

@@ -1,11 +1,11 @@
 #include "diagnostics_window.h"
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <implot.h>
 
-#include "../src/core/time/time.h"
-#include "../src/core/diagnostics/profiler.h"
-#include "../src/core/diagnostics/diagnostics.h"
+#include <time/time.h>
+#include <diagnostics/profiler.h>
+#include <diagnostics/diagnostics.h>
 
 DiagnosticsWindow::DiagnosticsWindow() : fpsCache(std::deque<float>(100)),
 fpsUpdateTimer(0.0f)

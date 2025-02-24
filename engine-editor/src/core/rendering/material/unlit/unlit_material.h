@@ -2,8 +2,8 @@
 
 #include "../imaterial.h"
 
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/rendering/texture/texture.h"
+#include <viewport/viewport.h>
+#include <rendering/texture/texture.h>
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!
    !!					   !!

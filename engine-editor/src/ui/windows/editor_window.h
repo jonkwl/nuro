@@ -2,10 +2,10 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/time/time.h"
-#include "../src/core/utils/console.h"
+#include <time/time.h>
+#include <utils/console.h>
 
 #include "../src/ui/editor_ui.h"
 #include "../src/runtime/runtime.h"

@@ -1,7 +1,7 @@
 #include "asset_browser_window.h"
 
 #include <algorithm>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
 #include "../src/ui/windows/insight_panel_window.h"
 

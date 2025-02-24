@@ -1,16 +1,16 @@
 #include "imgizmo.h"
 
 #include <glad/glad.h>
-#include <glm.hpp>
-#include <gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/rendering/model/model.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/context/application_context.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/transformation/transformation.h"
+#include <utils/console.h>
+#include <rendering/model/mesh.h>
+#include <rendering/model/model.h>
+#include <rendering/shader/shader.h>
+#include <context/application_context.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/transformation/transformation.h>
 
 // Global gizmo resources
 IMGizmo::StaticData IMGizmo::staticData;
@@ -32,11 +32,11 @@ void IMGizmo::create()
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 		Model* plane = new Model();
-		plane->setSource("../resources/primitives/plane.fbx");
+		plane->setSource("resources/primitives/plane.fbx");
 		loader.createAsync(plane);
 
 		Model* sphere = new Model();
-		sphere->setSource("../resources/primitives/sphere.fbx");
+		sphere->setSource("resources/primitives/sphere.fbx");
 		loader.createAsync(sphere);
 
 		staticData.fillShader = ShaderPool::get("gizmo_fill");

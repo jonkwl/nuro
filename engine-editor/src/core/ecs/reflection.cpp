@@ -1,9 +1,9 @@
 #include "reflection.h"
 
 #include <string>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
-#include "../src/core/ecs/components.h"
+#include <ecs/components.h>
 
 using namespace entt::literals;
 

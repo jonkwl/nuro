@@ -1,12 +1,12 @@
 #include "game_window.h"
 
-#include "../src/core/rendering/postprocessing/post_processing.h"
-#include "../src/core/input/input.h"
-#include "../src/core/input/cursor.h"
-#include "../src/core/time/time.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/rendering/shadows/shadow_map.h"
+#include <rendering/postprocessing/post_processing.h>
+#include <input/input.h>
+#include <input/cursor.h>
+#include <time/time.h>
+#include <utils/console.h>
+#include <rendering/transformation/transformation.h>
+#include <rendering/shadows/shadow_map.h>
 
 GameWindow::GameWindow() : currentContentAvail(ImVec2(0.0f, 0.0f)),
 lastContentAvail(ImVec2(0.0f, 0.0f)),

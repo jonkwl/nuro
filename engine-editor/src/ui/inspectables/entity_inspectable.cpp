@@ -1,9 +1,9 @@
 #include "entity_inspectable.h"
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "../src/ui/editor_ui.h"
-#include "../src/core/ecs/components.h"
+#include <ecs/components.h>
 #include "../src/ui/windows/registry_window.h"
 #include "../src/ui/components/im_components.h"
 #include "../src/ui/search_popup/search_popup.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <filesystem>
 
 namespace fs = std::filesystem;

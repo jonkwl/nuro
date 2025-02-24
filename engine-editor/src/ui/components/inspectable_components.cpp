@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "../src/core/rendering/icons/icon_pool.h"
+#include <rendering/icons/icon_pool.h>
 
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/components/im_components.h"

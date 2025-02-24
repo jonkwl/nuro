@@ -1,7 +1,7 @@
 #include "cursor.h"
 
-#include "../src/core/utils/console.h"
-#include "../src/core/context/application_context.h"
+#include <utils/console.h>
+#include <context/application_context.h>
 
 namespace Cursor {
 
