@@ -1,8 +1,8 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
-#include <glm.hpp>
-#include <gtc/quaternion.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace PxTranslator
 {

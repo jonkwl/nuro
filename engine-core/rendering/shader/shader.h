@@ -1,11 +1,11 @@
 #pragma once
 
 #include <cstdint>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 
-#include "../src/core/resource/resource.h"
+#include <resource/resource.h>
 
 class Shader : public Resource
 {

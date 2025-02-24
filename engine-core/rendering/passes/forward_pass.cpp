@@ -2,13 +2,13 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/rendering/skybox/skybox.h"
-#include "../src/core/diagnostics/diagnostics.h"
-#include "../src/core/rendering/material/imaterial.h"
-#include "../src/core/rendering/transformation/transformation.h"
+#include <utils/console.h>
+#include <ecs/ecs_collection.h>
+#include <rendering/model/mesh.h>
+#include <rendering/skybox/skybox.h>
+#include <diagnostics/diagnostics.h>
+#include <rendering/material/imaterial.h>
+#include <rendering/transformation/transformation.h>
 
 ForwardPass::ForwardPass(const Viewport& viewport) : drawSkybox(false),
 drawGizmos(false),

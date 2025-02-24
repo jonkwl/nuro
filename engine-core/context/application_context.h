@@ -1,10 +1,10 @@
 #pragma once
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <string>
 
-#include "../src/core/backend/api.h"
-#include "../src/core/resource/resource_loader.h"
+#include <backend/api.h>
+#include <resource/resource_loader.h>
 
 struct GLFWwindow;
 struct GLFWmonitor;

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 class Mesh
 {

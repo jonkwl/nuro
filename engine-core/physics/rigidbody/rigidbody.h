@@ -1,9 +1,9 @@
 #pragma once
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/ecs/components.h"
-#include "../src/core/physics/rigidbody/rigidbody_enums.h"
+#include <ecs/components.h>
+#include <physics/rigidbody/rigidbody_enums.h>
 
 namespace Rigidbody
 {

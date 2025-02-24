@@ -3,10 +3,10 @@
 
 #include <unordered_map>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/utils/iohandler.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/context/application_context.h"
+#include <utils/console.h>
+#include <utils/iohandler.h>
+#include <rendering/shader/shader.h>
+#include <context/application_context.h>
 
 #include <thread>
 #include <chrono>

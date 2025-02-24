@@ -21,10 +21,9 @@ find_package(nlohmann_json CONFIG REQUIRED)
 # editor packages
 #
 
-# using custom imgui-mirror
-# find_package(imgui CONFIG REQUIRED)
-# find_package(implot CONFIG REQUIRED)
-# find_package(imguizmo CONFIG REQUIRED)
+# find_package(imgui CONFIG REQUIRED)      # imported from local directory
+# find_package(implot CONFIG REQUIRED)     # imported from local directory
+# find_package(imguizmo CONFIG REQUIRED)   # imported from local directory
 
-add_subdirectory(engine-editor/src/core)
+add_subdirectory(engine-core)
 add_subdirectory(engine-editor)

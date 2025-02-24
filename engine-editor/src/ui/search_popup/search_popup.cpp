@@ -3,9 +3,10 @@
 #include <string>
 #include <cstdint>
 
+#include <rendering/icons/icon_pool.h>
+
 #include "../src/ui/editor_ui.h"
 #include "../src/ui/components/im_components.h"
-#include "../src/core/rendering/icons/icon_pool.h"
 #include "../src/editor_systems/component_registry.h"
 
 namespace SearchPopup {

@@ -2,13 +2,13 @@
 
 #include <string>
 #include <cstdint>
-#include <glm.hpp>
-#include <gtc/quaternion.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <PxPhysicsAPI.h>
 
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/rendering/material/imaterial.h"
-#include "../src/core/physics/rigidbody/rigidbody_enums.h"
+#include <rendering/model/mesh.h>
+#include <rendering/material/imaterial.h>
+#include <physics/rigidbody/rigidbody_enums.h>
 
 struct TransformComponent {
 

@@ -435,16 +435,11 @@ FodyWeavers.xsd
 *.vcxproj.filters
 *.vcxproj.user
 
-depth_map.png
+build/
 
-/resources/skybox/default
+/resources/skybox
 /resources/other
 /resources/icons
-/engine-editor/src/example/assets
+/resources/example-assets
 
 **/iconpack-full.ttf
-
-**/shadow_map.png
-**/depth_pre_pass.png
-
-build/

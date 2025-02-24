@@ -1,6 +1,6 @@
 #include "diagnostics.h"
 
-#include "../src/core/time/time.h"
+#include <time/time.h>
 
 namespace Diagnostics {
 

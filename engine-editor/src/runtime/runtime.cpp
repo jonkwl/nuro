@@ -7,7 +7,7 @@
 #include <chrono>
 
 #include "../src/ui/editor_ui.h"
-#include "../src/example/src/game_logic.h"
+#include "../src/testing/game_logic.h"
 
 #include "../src/editor_systems/component_registry.h"
 

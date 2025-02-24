@@ -1,14 +1,14 @@
 #pragma once
 
 #include <cstdint>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "../imaterial.h"
 
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/texture/texture.h"
-#include "../src/core/rendering/postprocessing/post_processing.h"
+#include <viewport/viewport.h>
+#include <ecs/ecs_collection.h>
+#include <rendering/texture/texture.h>
+#include <rendering/postprocessing/post_processing.h>
 
 class ShadowDisk;
 class ShadowMap;

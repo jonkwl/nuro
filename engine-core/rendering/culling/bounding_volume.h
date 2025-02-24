@@ -1,9 +1,9 @@
 #pragma once
 
-#include <glm.hpp>
-#include <gtc/quaternion.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
-#include "../src/core/rendering/gizmos/gizmos.h"
+#include <rendering/gizmos/gizmos.h>
 
 class Model;
 

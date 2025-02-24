@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/viewport/viewport.h"
+#include <viewport/viewport.h>
 
 class Shader;
 

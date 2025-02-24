@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/shader/shader.h"
+#include <ecs/ecs_collection.h>
+#include <rendering/shader/shader.h>
 
 class ShadowMap
 {

@@ -2,10 +2,10 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/rendering/primitives/global_quad.h"
-#include "../src/core/utils/console.h"
+#include <rendering/shader/shader_pool.h>
+#include <rendering/shader/shader.h>
+#include <rendering/primitives/global_quad.h>
+#include <utils/console.h>
 
 BloomPass::BloomPass(const Viewport& viewport) : viewport(viewport),
 threshold(0.0f),

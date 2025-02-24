@@ -2,8 +2,8 @@
 
 #include <PxPhysicsAPI.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/physics/utils/px_translator.h"
+#include <utils/console.h>
+#include <physics/utils/px_translator.h>
 
 using namespace physx;
 

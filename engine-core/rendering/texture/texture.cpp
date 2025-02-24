@@ -4,9 +4,9 @@
 #include <stb_image.h>
 #include <filesystem>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/utils/iohandler.h"
-#include "../src/core/context/application_context.h"
+#include <utils/console.h>
+#include <utils/iohandler.h>
+#include <context/application_context.h>
 
 namespace fs = std::filesystem;
 

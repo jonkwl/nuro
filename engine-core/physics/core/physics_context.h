@@ -1,9 +1,9 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/physics/core/physics_bridge.h"
+#include <physics/core/physics_bridge.h>
 
 class PhysicsContext
 {

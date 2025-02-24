@@ -3,13 +3,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../src/core/ecs/ecs.h"
-#include "../src/core/time/time.h"
-#include "../src/core/input/input.h"
-#include "../src/core/input/cursor.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/diagnostics/diagnostics.h"
-#include "../src/core/rendering/primitives/global_quad.h"
+#include <ecs/ecs.h>
+#include <time/time.h>
+#include <input/input.h>
+#include <input/cursor.h>
+#include <utils/console.h>
+#include <diagnostics/diagnostics.h>
+#include <rendering/primitives/global_quad.h>
 
 namespace ApplicationContext {
 

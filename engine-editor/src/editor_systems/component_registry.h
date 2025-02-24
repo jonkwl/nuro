@@ -6,8 +6,8 @@
 #include <functional>
 #include <unordered_map>
 
-#include "../core/ecs/ecs_collection.h"
-#include "../src/core/rendering/gizmos/imgizmo.h"
+#include <ecs/ecs_collection.h>
+#include <rendering/gizmos/imgizmo.h>
 
 // Reflection type for an editor compatible ecs component
 struct ComponentInfo {

@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/rendering/skybox/cubemap.h"
+#include <rendering/skybox/cubemap.h>
 
 class Shader;
 

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <string>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <cstdint>
 #include <unordered_map>
 
-#include "../src/core/resource/resource.h"
-#include "../src/core/rendering/model/mesh.h"
+#include <resource/resource.h>
+#include <rendering/model/mesh.h>
 
 class aiScene;
 class aiNode;

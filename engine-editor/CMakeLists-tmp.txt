@@ -1,0 +1,118 @@
+project(engine-editor)
+
+set(SOURCE_FILES 
+	src/testing/game_logic.h
+	src/pipelines/game_view_pipeline.h
+	src/pipelines/preview_pipeline.h
+	src/pipelines/scene_view_pipeline.h
+	src/project/project.h
+	src/runtime/runtime.h
+	src/ui/collection/IconsFontAwesome6.h
+	src/ui/components/im_components.h
+	src/ui/components/inspectable_components.h
+	src/ui/components/toggle_bar.h
+	src/ui/context_menu/context_menu.h
+	src/ui/dynamic_drawing/delta.h
+	src/ui/dynamic_drawing/dynamic_content.h
+	src/ui/dynamic_drawing/dynamic_drawing.h
+	src/ui/dynamic_drawing/dynamic_text.h
+	src/ui/dynamic_drawing/enums.h
+	src/ui/dynamic_drawing/utils.h
+	src/ui/editor_ui.h
+	src/ui/footer/footer.h
+	src/ui/inspectables/entity_inspectable.h
+	src/ui/inspectables/inspectable.h
+	src/ui/inspectables/welcome_inspectable.h
+	src/ui/title_bar/title_bar.h
+	src/ui/utils/ui_utils.h
+	src/ui/windows/asset_browser_window.h
+	src/ui/windows/console_window.h
+	src/ui/windows/diagnostics_window.h
+	src/ui/windows/editor_window.h
+	src/ui/windows/game_window.h
+	src/ui/windows/insight_panel_window.h
+	src/ui/windows/post_processing_window.h
+	src/ui/windows/registry_window.h
+	src/ui/windows/viewport_window.h
+	src/ui/workspace_bar/workspace_bar.h
+	src/testing/game_logic.cpp
+	src/gizmos/component_gizmos.h
+	src/gizmos/editor_gizmo_color.h
+	src/editor_systems/component_registry.h
+	src/ui/search_popup/search_popup.h
+
+	src/main.cpp
+	src/pipelines/game_view_pipeline.cpp
+	src/pipelines/preview_pipeline.cpp
+	src/pipelines/scene_view_pipeline.cpp
+	src/project/project.cpp
+	src/runtime/runtime.cpp
+	src/ui/components/im_components.cpp
+	src/ui/components/inspectable_components.cpp
+	src/ui/components/toggle_bar.cpp
+	src/ui/context_menu/context_menu.cpp
+	src/ui/dynamic_drawing/dynamic_content.cpp
+	src/ui/dynamic_drawing/dynamic_text.cpp
+	src/ui/editor_ui.cpp
+	src/ui/footer/footer.cpp
+	src/ui/inspectables/entity_inspectable.cpp
+	src/ui/inspectables/welcome_inspectable.cpp
+	src/ui/title_bar/title_bar.cpp
+	src/ui/utils/ui_utils.cpp
+	src/ui/windows/asset_browser_window.cpp
+	src/ui/windows/console_window.cpp
+	src/ui/windows/diagnostics_window.cpp
+	src/ui/windows/game_window.cpp
+	src/ui/windows/insight_panel_window.cpp
+	src/ui/windows/post_processing_window.cpp
+	src/ui/windows/registry_window.cpp
+	src/ui/windows/viewport_window.cpp
+	src/ui/workspace_bar/workspace_bar.cpp
+	src/gizmos/component_gizmos.cpp
+	src/editor_systems/component_registry.cpp
+	src/ui/search_popup/search_popup.cpp
+)
+
+set(IMGUI_SOURCES
+    imgui/imgui.cpp
+    imgui/ImGuizmo.cpp
+    imgui/imgui_demo.cpp
+    imgui/imgui_draw.cpp
+    imgui/imgui_impl_glfw.cpp
+    imgui/imgui_impl_opengl3.cpp
+    imgui/imgui_tables.cpp
+    imgui/imgui_widgets.cpp
+    imgui/implot.cpp
+    imgui/implot_demo.cpp
+    imgui/implot_items.cpp
+)
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${IMGUI_SOURCES})
+
+target_include_directories(${PROJECT_NAME}
+	PUBLIC 
+		${CMAKE_CURRENT_LIST_DIR}/src
+	PRIVATE 
+		${CMAKE_CURRENT_LIST_DIR}/imgui)
+
+target_link_libraries(${PROJECT_NAME}
+	PRIVATE
+		nuro::core
+		glm::glm
+		nlohmann_json::nlohmann_json
+		# imgui::imgui           # imported from local directory
+		# implot::implot         # imported from local directory
+		# imguizmo::imguizmo     # imported from local directory
+)
+
+add_custom_command(TARGET engine-editor POST_BUILD
+	COMMAND "${CMAKE_COMMAND}" -E copy_if_different  "${CMAKE_SOURCE_DIR}/engine-editor/imgui.ini" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/resources/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/resources/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/engine-editor/examples/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/examples/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/engine-core/shaders/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/shaders/"
+
+	COMMAND "${CMAKE_COMMAND}" -E copy_if_different  "${CMAKE_SOURCE_DIR}/engine-editor/imgui.ini" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/resources/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/resources/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/engine-editor/examples/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/examples/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/engine-core/shaders/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/shaders/"
+)

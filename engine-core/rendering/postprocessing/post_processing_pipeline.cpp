@@ -1,17 +1,17 @@
 #include "post_processing_pipeline.h"
 
 #include <glad/glad.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/primitives/global_quad.h"
-#include "../src/core/rendering/passes/ssao_pass.h"
-#include "../src/core/rendering/passes/pre_pass.h"
-#include "../src/core/rendering/passes/forward_pass.h"
-#include "../src/core/rendering/texture/texture.h"
-#include "../src/core/utils/console.h"
+#include <utils/console.h>
+#include <rendering/shader/shader.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/primitives/global_quad.h>
+#include <rendering/passes/ssao_pass.h>
+#include <rendering/passes/pre_pass.h>
+#include <rendering/passes/forward_pass.h>
+#include <rendering/texture/texture.h>
+#include <utils/console.h>
 
 PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen) : viewport(viewport),
 renderToScreen(renderToScreen),

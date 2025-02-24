@@ -2,11 +2,11 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/ecs/components.h"
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/rendering/gizmos/imgizmo.h"
+#include <ecs/components.h>
+#include <viewport/viewport.h>
+#include <rendering/gizmos/imgizmo.h>
 
 class Skybox;
 

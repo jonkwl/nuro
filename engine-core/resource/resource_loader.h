@@ -7,7 +7,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#include "../src/core/resource/resource.h"
+#include <resource/resource.h>
 
 class ResourceLoader
 {
