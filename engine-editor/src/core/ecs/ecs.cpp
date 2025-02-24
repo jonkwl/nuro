@@ -1,12 +1,12 @@
 #include "ecs.h"
 
 #include <random>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <algorithm>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/ecs/reflection.h"
-#include "../src/core/transform/transform.h"
+#include <utils/console.h>
+#include <ecs/reflection.h>
+#include <transform/transform.h>
 
 namespace ECS {
 

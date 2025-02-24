@@ -4,10 +4,10 @@
 #include <unordered_map>
 #include <stb_image.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/utils/iohandler.h"
-#include "../src/core/rendering/texture/texture.h"
-#include "../src/core/context/application_context.h"
+#include <utils/console.h>
+#include <utils/iohandler.h>
+#include <rendering/texture/texture.h>
+#include <context/application_context.h>
 
 namespace IconPool {
 

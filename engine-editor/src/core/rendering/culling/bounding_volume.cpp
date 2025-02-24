@@ -1,11 +1,11 @@
 #include "bounding_volume.h"
 
-#include <gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/rendering/model/model.h"
+#include <rendering/transformation/transformation.h>
+#include <rendering/model/model.h>
 
-#include "../src/core/utils/console.h"
+#include <utils/console.h>
 
 BoundingSphere::BoundingSphere()
 {

@@ -3,7 +3,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <string>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace UIUtils
 {

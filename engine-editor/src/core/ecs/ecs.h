@@ -3,10 +3,10 @@
 #include <tuple>
 #include <sstream>
 #include <cstdint>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 #include <optional>
 
-#include "../src/core/ecs/components.h"
+#include <ecs/components.h>
 
 using namespace entt::literals;
 

@@ -1,9 +1,9 @@
 #include "physics_context.h"
 
-#include "../src/core/utils/console.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/diagnostics/profiler.h"
-#include "../src/core/physics/utils/px_translator.h"
+#include <utils/console.h>
+#include <ecs/ecs_collection.h>
+#include <diagnostics/profiler.h>
+#include <physics/utils/px_translator.h>
 
 using namespace physx;
 

@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/rendering/shader/shader.h"
+#include <viewport/viewport.h>
+#include <rendering/shader/shader.h>
 
 class PrePass
 {

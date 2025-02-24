@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define EDITOR_CONNECTED 1
+#define EDITOR_CONNECTED 0
 
 #if EDITOR_CONNECTED
 #include "../src/runtime/runtime.h"

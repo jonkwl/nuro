@@ -4,8 +4,8 @@
 #include <glad/glad.h>
 #include <filesystem>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/utils/iohandler.h"
+#include <utils/console.h>
+#include <utils/iohandler.h>
 
 namespace fs = std::filesystem;
 

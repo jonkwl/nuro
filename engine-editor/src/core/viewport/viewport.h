@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <glad/glad.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 class Viewport
 {

@@ -2,12 +2,12 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/transform/transform.h"
-#include "../src/core/ecs/ecs_collection.h"
+#include <rendering/shader/shader_pool.h>
+#include <utils/console.h>
+#include <rendering/transformation/transformation.h>
+#include <rendering/model/mesh.h>
+#include <transform/transform.h>
+#include <ecs/ecs_collection.h>
 
 PrePass::PrePass(const Viewport& viewport) : viewport(viewport),
 fbo(0),

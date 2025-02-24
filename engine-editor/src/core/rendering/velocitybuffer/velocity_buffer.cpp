@@ -3,12 +3,12 @@
 #include <glad/glad.h>
 #include <vector>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/rendering/primitives/global_quad.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/model/mesh.h"
-#include "../src/core/ecs/ecs_collection.h"
+#include <utils/console.h>
+#include <rendering/shader/shader.h>
+#include <rendering/primitives/global_quad.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/model/mesh.h>
+#include <ecs/ecs_collection.h>
 
 VelocityBuffer::VelocityBuffer(const Viewport& viewport) : viewport(viewport),
 fbo(0),

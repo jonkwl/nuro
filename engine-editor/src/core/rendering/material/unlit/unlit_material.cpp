@@ -1,8 +1,8 @@
 #include "unlit_material.h"
 
-#include "../src/core/rendering/texture/texture.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/utils/console.h"
+#include <rendering/texture/texture.h>
+#include <rendering/shader/shader_pool.h>
+#include <utils/console.h>
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!
    !!					   !!

@@ -2,7 +2,7 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <string>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <imgui.h>
 #include <functional>
 

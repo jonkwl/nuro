@@ -1,6 +1,6 @@
 #include "component_gizmos.h"
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "../src/gizmos/editor_gizmo_color.h"
 #include "../src/editor_systems/component_registry.h"

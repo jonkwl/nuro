@@ -446,3 +446,5 @@ depth_map.png
 
 **/shadow_map.png
 **/depth_pre_pass.png
+
+build/

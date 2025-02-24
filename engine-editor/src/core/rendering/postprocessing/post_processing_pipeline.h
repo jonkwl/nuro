@@ -2,11 +2,11 @@
 
 #include <cstdint>
 
-#include "../src/core/rendering/postprocessing/post_processing.h"
-#include "../src/core/rendering/texture/texture.h"
-#include "../src/core/rendering/postprocessing/motion_blur_pass.h"
-#include "../src/core/rendering/postprocessing/bloom_pass.h"
-#include "../src/core/viewport/viewport.h"
+#include <rendering/postprocessing/post_processing.h>
+#include <rendering/texture/texture.h>
+#include <rendering/postprocessing/motion_blur_pass.h>
+#include <rendering/postprocessing/bloom_pass.h>
+#include <viewport/viewport.h>
 
 class Shader;
 

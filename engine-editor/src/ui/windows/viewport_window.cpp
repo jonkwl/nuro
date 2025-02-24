@@ -1,23 +1,23 @@
 #include "viewport_window.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <gtc/type_ptr.hpp>
-#include <gtx/matrix_decompose.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <ImGuizmo.h>
 #include <tuple>
 
-#include "../src/core/rendering/postprocessing/post_processing.h"
-#include "../src/core/time/time.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/transform/transform.h"
-#include "../src/core/ecs/components.h"
-#include "../src/core/rendering/material/lit/lit_material.h"
+#include <rendering/postprocessing/post_processing.h>
+#include <time/time.h>
+#include <utils/console.h>
+#include <ecs/ecs_collection.h>
+#include <rendering/transformation/transformation.h>
+#include <transform/transform.h>
+#include <ecs/components.h>
+#include <rendering/material/lit/lit_material.h>
 
-#include "../src/core/input/input.h"
-#include "../src/core/input/cursor.h"
+#include <input/input.h>
+#include <input/cursor.h>
 
 ViewportWindow::ViewportWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),

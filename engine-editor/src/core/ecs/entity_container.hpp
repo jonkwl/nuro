@@ -5,13 +5,13 @@
 #include <tuple>
 #include <cctype>
 #include <string>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 #include <typeinfo>
 #include <type_traits>
 
-#include "../src/core/ecs/ecs.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/ecs/components.h"
+#include <ecs/ecs.h>
+#include <utils/console.h>
+#include <ecs/components.h>
 
 ///////////////////////////////////////////////////////////////////
 ///																///

@@ -10,11 +10,11 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/shadows/shadow_map.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/shadows/shadow_disk.h"
-#include "../src/core/rendering/transformation/transformation.h"
+#include <utils/console.h>
+#include <rendering/shadows/shadow_map.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/shadows/shadow_disk.h>
+#include <rendering/transformation/transformation.h>
 
 uint32_t LitMaterial::instances = 0;
 Viewport* LitMaterial::viewport = nullptr;
@@ -144,11 +144,11 @@ void LitMaterial::bind() const
 	}
 	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
 	shader->setBool("material.enableOcclusionMap", occlusionMap);
-	if (occlusionMap)
+	/*if (occlusionMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + OCCLUSION_UNIT);
 		glBindTexture(GL_TEXTURE_2D, occlusionMap->id());
-	}
+	}*/
 
 	shader->setBool("material.enableEmissiveMap", emissiveMap);
 	if (emissiveMap)

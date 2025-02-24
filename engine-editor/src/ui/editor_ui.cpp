@@ -8,9 +8,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "../src/core/input/cursor.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/context/application_context.h"
+#include <input/cursor.h>
+#include <utils/console.h>
+#include <context/application_context.h>
 
 #include "../src/runtime/runtime.h"
 #include "../src/ui/footer/footer.h"

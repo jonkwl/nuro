@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstdint>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/rendering/texture/texture.h"
+#include <rendering/texture/texture.h>
 
 namespace PostProcessing
 {

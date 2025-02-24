@@ -1,19 +1,19 @@
 #pragma once
 
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "../src/core/viewport/viewport.h"
-#include "../src/core/ecs/ecs_collection.h"
-#include "../src/core/rendering/skybox/skybox.h"
-#include "../src/core/rendering/gizmos/gizmos.h"
-#include "../src/core/rendering/passes/ssao_pass.h"
-#include "../src/core/rendering/passes/pre_pass.h"
-#include "../src/core/rendering/passes/preprocessor_pass.h"
-#include "../src/core/rendering/velocitybuffer/velocity_buffer.h"
-#include "../src/core/rendering/postprocessing/post_processing.h"
-#include "../src/core/rendering/sceneview/scene_view_forward_pass.h"
-#include "../src/core/rendering/postprocessing/post_processing_pipeline.h"
+#include <viewport/viewport.h>
+#include <ecs/ecs_collection.h>
+#include <rendering/skybox/skybox.h>
+#include <rendering/gizmos/gizmos.h>
+#include <rendering/passes/ssao_pass.h>
+#include <rendering/passes/pre_pass.h>
+#include <rendering/passes/preprocessor_pass.h>
+#include <rendering/velocitybuffer/velocity_buffer.h>
+#include <rendering/postprocessing/post_processing.h>
+#include <rendering/sceneview/scene_view_forward_pass.h>
+#include <rendering/postprocessing/post_processing_pipeline.h>
 
 class SceneViewPipeline
 {

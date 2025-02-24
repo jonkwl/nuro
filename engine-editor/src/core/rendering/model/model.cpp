@@ -9,10 +9,10 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include "../src/core/rendering/transformation/transformation.h"
-#include "../src/core/utils/console.h"
-#include "../src/core/utils/iohandler.h"
-#include "../src/core/utils/string_helper.h"
+#include <rendering/transformation/transformation.h>
+#include <utils/console.h>
+#include <utils/iohandler.h>
+#include <utils/string_helper.h>
 
 namespace fs = std::filesystem;
 

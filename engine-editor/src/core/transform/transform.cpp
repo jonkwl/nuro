@@ -1,9 +1,9 @@
 #include "transform.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <gtx/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
-#include "../src/core/rendering/transformation/transformation.h"
+#include <rendering/transformation/transformation.h>
 
 namespace Transform {
 

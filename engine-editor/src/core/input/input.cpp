@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../src/core/context/application_context.h"
+#include <context/application_context.h>
 
 namespace Input {
 

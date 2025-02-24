@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <tuple>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../src/core/ecs/ecs_collection.h"
+#include <ecs/ecs_collection.h>
 
 namespace InspectableComponents
 {

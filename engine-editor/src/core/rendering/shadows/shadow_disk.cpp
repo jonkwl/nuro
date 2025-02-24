@@ -4,7 +4,7 @@
 #include <random>
 #include <glad/glad.h>
 
-#include "../src/core/utils/console.h"
+#include <utils/console.h>
 
 #define M_PI 3.14159265358979323846
 

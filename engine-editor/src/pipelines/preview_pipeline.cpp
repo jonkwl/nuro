@@ -2,13 +2,13 @@
 
 #include <glad/glad.h>
 
-#include "../src/core/utils/console.h"
-#include "../src/core/rendering/model/model.h"
-#include "../src/core/rendering/shader/shader.h"
-#include "../src/core/rendering/shader/shader_pool.h"
-#include "../src/core/rendering/primitives/global_quad.h"
-#include "../src/core/rendering/material/lit/lit_material.h"
-#include "../src/core/rendering/transformation/transformation.h"
+#include <utils/console.h>
+#include <rendering/model/model.h>
+#include <rendering/shader/shader.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/primitives/global_quad.h>
+#include <rendering/material/lit/lit_material.h>
+#include <rendering/transformation/transformation.h>
 
 PreviewPipeline::PreviewPipeline() : fbo(0),
 outputs(),

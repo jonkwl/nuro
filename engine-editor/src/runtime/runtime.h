@@ -2,9 +2,9 @@
 
 #include <filesystem>
 
-#include "../src/core/engine.h"
-#include "../src/core/rendering/gizmos/imgizmo.h"
-#include "../src/core/physics/core/physics_context.h"
+#include <engine.h>
+#include <rendering/gizmos/imgizmo.h>
+#include <physics/core/physics_context.h>
 
 #include "../src/project/project.h"
 #include "../src/pipelines/game_view_pipeline.h"
