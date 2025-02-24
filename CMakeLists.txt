@@ -4,7 +4,10 @@ project(nuro CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-#engine packages
+#
+# engine packages
+#
+
 find_package(assimp CONFIG REQUIRED) 
 find_package(EnTT CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
@@ -12,13 +15,16 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Stb REQUIRED)
 find_package(unofficial-omniverse-physx-sdk CONFIG REQUIRED)
-
-#editor packages
 find_package(nlohmann_json CONFIG REQUIRED)
-# find_package(imgui CONFIG REQUIRED) # imgui is imported from local directory
-#find_package(implot CONFIG REQUIRED)
-#find_package(imguizmo CONFIG REQUIRED)
+
+#
+# editor packages
+#
+
+# using custom imgui-mirror
+# find_package(imgui CONFIG REQUIRED)
+# find_package(implot CONFIG REQUIRED)
+# find_package(imguizmo CONFIG REQUIRED)
 
 add_subdirectory(engine-editor/src/core)
 add_subdirectory(engine-editor)
-#add_subdirectory(examples)

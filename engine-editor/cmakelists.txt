@@ -74,7 +74,7 @@ set(SOURCE_FILES
 )
 
 set(IMGUI_SOURCES
-	imgui/imgui.cpp
+    imgui/imgui.cpp
     imgui/ImGuizmo.cpp
     imgui/imgui_demo.cpp
     imgui/imgui_draw.cpp
@@ -98,9 +98,9 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		nuro::core
-		# imgui::imgui # imgui is imported from local directory
-		# implot::implot
-		# imguizmo::imguizmo
+		# imgui::imgui # imported from local directory
+		# implot::implot # imported from local directory
+		# imguizmo::imguizmo # imported from local directory
 		glm::glm
 		nlohmann_json::nlohmann_json
 )

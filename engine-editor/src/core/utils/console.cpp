@@ -2,13 +2,6 @@
 
 #include <iostream>
 
-#define EDITOR_CONNECTED 0
-
-#if EDITOR_CONNECTED
-#include "../src/runtime/runtime.h"
-#include "../src/ui/windows/console_window.h"
-#endif
-
 namespace Console
 {
 
@@ -45,10 +38,6 @@ namespace Console
 			{
 				_print(TextColor::White, BackgroundColor::Black, additional_info);
 			}
-
-#if EDITOR_CONNECTED
-			ConsoleWindow::log(ConsoleLog(warning, "Engine Core - " + origin, ConsoleLogType::WARNING));
-#endif
 		}
 
 		void processStart(std::string origin, std::string process)

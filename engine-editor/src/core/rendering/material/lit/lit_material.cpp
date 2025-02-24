@@ -1,8 +1,7 @@
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!													  !!
    !! 			    BAD TEMPORARY CODE!					  !!
-   !!  I am aware this code is so bad its almost spooky.  !!
-   !! 			 Please ignore for now. :)				  !!
+   !!   Will be replaced with a modular material system   !!
    !!													  !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
@@ -42,12 +41,13 @@ emission(false),
 emissionIntensity(0.0f),
 emissionColor(glm::vec3(1.0f)),
 heightMapScale(0.1f),
-albedoMap(0),
-normalMap(0),
-roughnessMap(0),
-metallicMap(0),
-emissiveMap(0),
-heightMap(0),
+albedoMap(nullptr),
+roughnessMap(nullptr),
+metallicMap(nullptr),
+normalMap(nullptr),
+occlusionMap(nullptr),
+emissiveMap(nullptr),
+heightMap(nullptr),
 id(0),
 shader(ShaderPool::get("lit")),
 shaderId(0)
@@ -143,12 +143,13 @@ void LitMaterial::bind() const
 		glBindTexture(GL_TEXTURE_2D, normalMap->id());
 	}
 	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
-	shader->setBool("material.enableOcclusionMap", occlusionMap);
-	/*if (occlusionMap)
+
+	shader->setBool("material.enableOcclusionMap", false);
+	if (occlusionMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + OCCLUSION_UNIT);
 		glBindTexture(GL_TEXTURE_2D, occlusionMap->id());
-	}*/
+	}
 
 	shader->setBool("material.enableEmissiveMap", emissiveMap);
 	if (emissiveMap)

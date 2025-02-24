@@ -145,10 +145,6 @@ void _physics_example() {
 	emissive->setSource(TextureType::EMISSIVE, "./src/example/assets/textures/sci-fi/emissive.jpg");
 	loader.createAsync(emissive);
 
-	Texture* occlusion = new Texture();
-	occlusion->setSource(TextureType::OCCLUSION, "./src/example/assets/textures/sci-fi/occlusion.jpg");
-	loader.createAsync(occlusion);
-
 	LitMaterial* cubeMaterial = new LitMaterial();
 	cubeMaterial->albedoMap = albedo;
 	cubeMaterial->normalMap = normal;
@@ -157,7 +153,6 @@ void _physics_example() {
 	cubeMaterial->emissiveMap = emissive;
 	cubeMaterial->emission = true;
 	cubeMaterial->emissionIntensity = 250.0f;
-	cubeMaterial->occlusionMap = occlusion;
 
 	// Model async loading example
 	Model* asyncModel = new Model();

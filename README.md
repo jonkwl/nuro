@@ -3,7 +3,7 @@
   <img src="https://github.com/jonkwl/nuro/blob/main/.gthub-media/nuro_banner.jpg" alt="Nuro Banner" width=800>
   <p></p>
   <p><b>A lightweight, bloat-free 3D game engine for fast development and rapid iteration</b></p>
-  <p><a href="#about">💁‍♂️ About Nuro</a> | <a href="#contributing-and-help">💜 Contribute</a> | <a href="#showcase">📷 Showcase (WIP)</a> | <a href="#features">📃 Current Features</a> </p>
+  <p><a href="#contributing">💜 Contributing</a>  |  <a href="#about">💁‍♂️ About Nuro</a>  |  <a href="#building">🔨 Building</a>  |  <a href="#showcase">📷 Showcase</a>  |  <a href="#features">📃 Features</a></p>
   <p></p>
 </div>
 
@@ -16,7 +16,7 @@ Please take a look at the vision below! 💜
 
 ⭐ Feel free to **star the project**, it motivates a lot :)
 
-## Contributing and Help
+## Contributing
 
 💁‍♂️ Please join the **Discord-Server** for **contributing, asking for help, reporting bugs and submitting suggestions**:  
 📎 https://discord.gg/GgezYPZz
@@ -32,11 +32,30 @@ This project is still in an early state and **not ready to use yet**, however pl
 
 <img src="https://github.com/jonkwl/nuro/blob/main/.gthub-media/nuro-example-1.jpg" alt="Screenshot of an example scene in the nuro engine editor" width=1000>
 
-*Screenshot of an example scene within the Nuro Editor*
+> *Screenshot of an example scene within the Nuro Editor*
+
+## Building
+
+Nuro uses **CMake** and **vcpkg** for building and managing dependencies.
+
+```
+# Create a build directory and navigate into it
+mkdir build && cd build
+
+# Build the project using CMake and specify the vcpkg toolchain file
+cmake .. -DCMAKE_TOOLCHAIN_FILE=[path_to_vcpkg]/scripts/buildsystems/vcpkg.cmake
+
+# Optionally, you can build the project after configuring it
+cmake --build .
+```
+
+> \[!IMPORTANT]
+>
+> CMake 4.x pre-release may cause dependency build failures. We recommend using **CMake 3.x stable**.
 
 ## Showcase
 
-### I'll link more media here soon!
+### More media will be linked here soon!
 
 ## Features
 
