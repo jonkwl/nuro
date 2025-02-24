@@ -19,12 +19,12 @@ void _physics_example() {
 
 	// Models
 	Model* cubeModel = new Model();
-	cubeModel->setSource("resources/primitives/cube.fbx");
+	cubeModel->setSource("./resources/primitives/cube.fbx");
 	loader.createSync(cubeModel);
 	const Mesh* cubeMesh = cubeModel->queryMesh(0);
 
 	Model* sphereModel = new Model();
-	sphereModel->setSource("resources/primitives/sphere.fbx");
+	sphereModel->setSource("./resources/primitives/sphere.fbx");
 	loader.createSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
@@ -126,23 +126,23 @@ void _physics_example() {
 
 	// Async asset loading test
 	Texture* albedo = new Texture();
-	albedo->setSource(TextureType::ALBEDO, "resources/example-assets/textures/sci-fi/albedo.jpg");
+	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
 	loader.createAsync(albedo);
 
 	Texture* normal = new Texture();
-	normal->setSource(TextureType::NORMAL, "resources/example-assets/textures/sci-fi/normal.jpg");
+	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
 	loader.createAsync(normal);
 
 	Texture* metallic = new Texture();
-	metallic->setSource(TextureType::METALLIC, "resources/example-assets/textures/sci-fi/metallic.jpg");
+	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
 	loader.createAsync(metallic);
 
 	Texture* roughness = new Texture();
-	roughness->setSource(TextureType::ROUGHNESS, "resources/example-assets/textures/sci-fi/roughness.jpg");
+	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
 	loader.createAsync(roughness);
 
 	Texture* emissive = new Texture();
-	emissive->setSource(TextureType::EMISSIVE, "resources/example-assets/textures/sci-fi/emissive.jpg");
+	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
 	loader.createAsync(emissive);
 
 	LitMaterial* cubeMaterial = new LitMaterial();

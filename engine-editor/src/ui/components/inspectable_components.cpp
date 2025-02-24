@@ -364,4 +364,119 @@ namespace InspectableComponents {
 
 		if (removed) ECS::gRegistry.remove<RigidbodyComponent>(entity);
 	}
+
+	void drawColor(PostProcessing::Color& color)
+	{
+		if (_beginComponent("Color", IconPool::get("color"), nullptr, nullptr))
+		{
+			IMComponents::input("Exposure", color.exposure);
+			IMComponents::input("Contrast", color.contrast);
+			IMComponents::input("Gamma", color.gamma);
+
+			_endComponent();
+		}
+	}
+
+	void drawMotionBlur(PostProcessing::MotionBlur& motionBlur)
+	{
+		if (_beginComponent("Motion Blur", IconPool::get("motion_blur"), &motionBlur.enabled, nullptr))
+		{
+			_headline("Camera Space");
+
+			IMComponents::input("Enable", motionBlur.cameraEnabled);
+			IMComponents::input("Intensity", motionBlur.cameraIntensity);
+			IMComponents::input("Samples", motionBlur.cameraSamples);
+
+			_spacingM();
+			_headline("Object Space");
+
+			IMComponents::input("Enable", motionBlur.objectEnabled);
+			IMComponents::input("Samples", motionBlur.objectSamples);
+
+			if (motionBlur.objectEnabled) {
+				std::string objectInfo = std::string(ICON_FA_PENCIL) + " Objects to be blurred require a 'Velocity' component.";
+				IMComponents::label(objectInfo);
+			}
+
+			_endComponent();
+		}
+	}
+
+	void drawBloom(PostProcessing::Bloom& bloom)
+	{
+		if (_beginComponent("Bloom", IconPool::get("bloom"), &bloom.enabled, nullptr))
+		{
+			IMComponents::input("Intensity", bloom.intensity);
+			IMComponents::colorPicker("Color", bloom.color);
+			IMComponents::input("Filter Radius", bloom.filterRadius);
+
+			_spacingS();
+
+			bool useThreshold = false;
+			IMComponents::input("Use Threshold", useThreshold);
+
+			if (useThreshold) {
+				IMComponents::input("Threshold", bloom.threshold);
+				IMComponents::input("Soft Threshold", bloom.softThreshold);
+			}
+			else {
+				bloom.threshold = 0.0f;
+				bloom.softThreshold = 0.0f;
+			}
+
+			_spacingS();
+
+			bool enableLensDirt = false;
+			IMComponents::input("Enable Lens Dirt", enableLensDirt);
+
+			if (enableLensDirt) {
+				bloom.lensDirtEnabled = true;
+				IMComponents::label("Texture: None");
+				IMComponents::input("Intensity", bloom.lensDirtIntensity);
+			}
+			else {
+				bloom.lensDirtEnabled = false;
+			}
+
+			_endComponent();
+		}
+	}
+
+	void drawChromaticAberration(PostProcessing::ChromaticAberration& chromaticAberration)
+	{
+		if (_beginComponent("Chromatic Aberration", IconPool::get("chromatic_aberration"), &chromaticAberration.enabled, nullptr))
+		{
+			IMComponents::input("Intensity", chromaticAberration.intensity);
+			IMComponents::input("Iterations", chromaticAberration.iterations);
+
+			_endComponent();
+		}
+	}
+
+	void drawVignette(PostProcessing::Vignette& vignette)
+	{
+		if (_beginComponent("Vignette", IconPool::get("vignette"), &vignette.enabled, nullptr))
+		{
+			// IMComponents::input("Intensity", vignette.intensity);
+			IMComponents::colorPicker("Color", vignette.color);
+			IMComponents::input("Radius", vignette.radius);
+			IMComponents::input("Softness", vignette.softness);
+			IMComponents::input("Roundness", vignette.roundness);
+
+			_endComponent();
+		}
+	}
+
+	void drawAmbientOcclusion(PostProcessing::AmbientOcclusion& ambientOcclusion)
+	{
+		if (_beginComponent("Ambient Occlusion", IconPool::get("ambient_occlusion"), &ambientOcclusion.enabled, nullptr))
+		{
+			IMComponents::input("Radius", ambientOcclusion.radius);
+			IMComponents::input("Power", ambientOcclusion.power);
+			IMComponents::input("Bias", ambientOcclusion.bias);
+			IMComponents::input("Samples", ambientOcclusion.samples);
+
+			_endComponent();
+		}
+	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ecs/ecs_collection.h>
+#include <rendering/postprocessing/post_processing.h>
 
 namespace InspectableComponents
 {
@@ -19,5 +20,16 @@ namespace InspectableComponents
 	void drawBoxCollider(Entity entity, BoxColliderComponent& boxCollider);
 	void drawSphereCollider(Entity entity, SphereColliderComponent& sphereCollider);
 	void drawRigidbody(Entity entity, RigidbodyComponent& rigidbody);
+
+	//
+	// INSPECTABLE POST PROCESSING COMPONENTS
+	//
+
+	void drawColor(PostProcessing::Color& color);
+	void drawMotionBlur(PostProcessing::MotionBlur& motionBlur);
+	void drawBloom(PostProcessing::Bloom& bloom);
+	void drawChromaticAberration(PostProcessing::ChromaticAberration& chromaticAberration);
+	void drawVignette(PostProcessing::Vignette& vignette);
+	void drawAmbientOcclusion(PostProcessing::AmbientOcclusion& ambientOcclusion);
 
 };

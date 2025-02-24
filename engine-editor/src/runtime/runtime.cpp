@@ -8,29 +8,28 @@
 
 #include "../src/ui/editor_ui.h"
 #include "../src/testing/game_logic.h"
-
-#include "../src/editor_systems/component_registry.h"
-
-#include <rendering/model/model.h>
-#include <rendering/shader/shader.h>
-#include <rendering/skybox/cubemap.h>
-#include <rendering/texture/texture.h>
 #include "../src/ui/windows/insight_panel_window.h"
-#include <rendering/shader/shader_pool.h>
-#include <rendering/shadows/shadow_map.h>
-#include <rendering/shadows/shadow_disk.h>
+#include "../src/editor_systems/component_registry.h"
 #include "../src/ui/inspectables/welcome_inspectable.h"
-#include <rendering/material/lit/lit_material.h>
-#include <rendering/transformation/transformation.h>
 
-#include <utils/console.h>
 #include <time/time.h>
+#include <utils/console.h>
 #include <physics/physics.h>
 #include <viewport/viewport.h>
 #include <ecs/ecs_collection.h>
 #include <transform/transform.h>
 #include <diagnostics/profiler.h>
 #include <context/application_context.h>
+
+#include <rendering/model/model.h>
+#include <rendering/shader/shader.h>
+#include <rendering/skybox/cubemap.h>
+#include <rendering/texture/texture.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/shadows/shadow_map.h>
+#include <rendering/shadows/shadow_disk.h>
+#include <rendering/material/lit/lit_material.h>
+#include <rendering/transformation/transformation.h>
 
 namespace Runtime {
 
@@ -79,16 +78,17 @@ namespace Runtime {
 		ShaderPool::loadAllSync("./shaders/passes");
 
 		// Create default texture
-		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "resources/icons/fallback/fallback_texture.png");
+		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
 		loader.createSync(gDefaultTexture);
 		Texture::setDefaultTexture(gDefaultTexture->id());
 
 		// Load various editor icons
 		IconPool::createFallbackIcon("./resources/icons/fallback/fallback_icon.png");
 		IconPool::loadAllSync("./resources/icons/shared");
-		IconPool::loadAllSync("./resources/icons/assets");
-		IconPool::loadAllSync("./resources/icons/components");
-		IconPool::loadAllSync("./resources/icons/scene");
+		IconPool::loadAllAsync("./resources/icons/assets");
+		IconPool::loadAllAsync("./resources/icons/components");
+		IconPool::loadAllAsync("./resources/icons/scene");
+		IconPool::loadAllAsync("./resources/icons/post-processing");
 
 		// Create default cubemap
 		gDefaultCubemap->setSource_Cross("./resources/skybox/default/default_night.png");

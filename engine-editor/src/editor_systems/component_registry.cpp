@@ -83,7 +83,7 @@ namespace ComponentRegistry
                 std::string sceneIcon = icon + "_gizmo";
 
                 // Render scene view icon for each component instance
-                for (auto [entity, transform, camera] : ECS::gRegistry.view<TransformComponent, T>().each()) {
+                for (auto [entity, transform, component] : ECS::gRegistry.view<TransformComponent, T>().each()) {
                     gizmos.icon3d(IconPool::get(sceneIcon), transform.position, cameraTransform);
                 }
 

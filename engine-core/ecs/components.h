@@ -47,10 +47,10 @@ struct MeshRendererComponent {
 	bool enabled = true;
 
 	// Mesh render target
-	const Mesh* mesh;
+	const Mesh* mesh = nullptr;
 
 	// Mesh material - TMP - UNSAFE!
-	const IMaterial* material;
+	const IMaterial* material = nullptr;
 };
 
 struct CameraComponent {
