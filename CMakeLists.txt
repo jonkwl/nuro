@@ -25,5 +25,5 @@ find_package(nlohmann_json CONFIG REQUIRED)
 # find_package(implot CONFIG REQUIRED)     # imported from local directory
 # find_package(imguizmo CONFIG REQUIRED)   # imported from local directory
 
-add_subdirectory(engine-core)
-add_subdirectory(engine-editor)
+add_subdirectory(nuro-core)
+add_subdirectory(nuro-editor)
