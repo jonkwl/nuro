@@ -7,20 +7,121 @@
 
 namespace Transform {
 
-	void evaluate(TransformComponent& transform, const glm::mat4 viewProjection)
+	bool evaluate(TransformComponent& transform)
 	{
-		// Compute model matrix
-		transform.model = Transformation::model(transform.position, transform.rotation, transform.scale);
-		
+		// Transform has parent
 		if (transform.parent) {
-			transform.model = Transformation::model(transform.parent->position, transform.parent->rotation, transform.parent->scale) * transform.model;
+
+			// Set transform to be modified if parent is modified
+			if (transform.parent->modified) transform.modified = true;
+
+			// Only evaluate transform if it has been modified
+			if (!transform.modified) return false;
+
+			// Evaluate transforms model matrix relative to parent
+			transform.model = transform.parent->model * Transformation::model(transform.position, transform.rotation, transform.scale);
+
+		}
+		// Transform doesn't have parent
+		else {
+
+			// Only evaluate transform if it has been modified
+			if (!transform.modified) return false;
+
+			// Evaluate transforms model matrix
+			transform.model = Transformation::model(transform.position, transform.rotation, transform.scale);
+
 		}
 
-		// Compute model-view-projection matrix
-		transform.mvp = viewProjection * transform.model;
-
-		// Compute normal matrix
+		// Compute transforms normal matrix
 		transform.normal = Transformation::normal(transform.model);
+
+		return true;
+	}
+
+	void createMvp(TransformComponent& transform, const glm::mat4& viewProjection)
+	{
+		transform.mvp = viewProjection * transform.model;
+	}
+
+	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space)
+	{
+		if (position == transform.position) return;
+
+		// Set position in local space
+		if (space == Space::LOCAL) {
+			transform.position = position;
+		}
+		// Set position in world space
+		else {
+
+		}
+		transform.modified = true;
+	}
+
+	void setRotation(TransformComponent& transform, const glm::quat& rotation, Space space)
+	{
+		// Set rotation in local space
+		if (space == Space::LOCAL) {
+			transform.rotation = rotation;
+		}
+		// Set rotation in world space
+		else {
+
+		}
+		transform.modified = true;
+	}
+
+	void setScale(TransformComponent& transform, const glm::vec3& scale, Space space)
+	{
+		// Set scale in local space
+		if (space == Space::LOCAL) {
+			transform.scale = scale;
+		}
+		// Set scale in world space
+		else {
+
+		}
+		transform.modified = true;
+	}
+
+	void translate(TransformComponent& transform, const glm::vec3& position, Space space)
+	{
+		// Set position in local space
+		if (space == Space::LOCAL) {
+			transform.position += position;
+		}
+		// Set position in world space
+		else {
+
+		}
+		transform.modified = true;
+	}
+
+	void rotate(TransformComponent& transform, const glm::quat& rotation, Space space)
+	{
+		// Set rotation in local space
+		if (space == Space::LOCAL) {
+			transform.rotation = rotation * transform.rotation;
+		}
+		// Set rotation in world space
+		else {
+
+		}
+		transform.modified = true;
+	}
+
+	void scale(TransformComponent& transform, const glm::vec3& scale, Space space)
+	{
+		// Set scale in local space
+		if (space == Space::LOCAL) {
+			transform.scale *= scale;
+		}
+		// Set scale in world space
+		else {
+
+		}
+		transform.modified = true;
 	}
 
 	glm::vec3 forward(const TransformComponent& transform)

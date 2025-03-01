@@ -11,15 +11,15 @@ namespace Transformation
 	// Converts left handed rotation to right handed rotation backend uses
 	glm::quat toBackendRotation(const glm::quat& rotation);
 	
-	// Returns a model matrix by given transform component
+	// Evaluates model matrix
 	glm::mat4 model(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
 
-	// Returns a view matrix by given spatial camera data
+	// Evaluates view matrix
 	glm::mat4 view(const glm::vec3& cameraPosition, const glm::quat& cameraRotation);
 
-	// Returns a projection matrix by given parameters
+	// Evaluates projection matrix
 	glm::mat4 projection(float fov, float aspect, float near, float far);
 
-	// Returns a normal matrix (transposed inversed model matrix) by given model matrix
+	// Evaluates normal matrix (transposed inversed model matrix) of given model matrix
 	glm::mat4 normal(const glm::mat4& model);
 };

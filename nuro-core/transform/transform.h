@@ -5,11 +5,39 @@
 
 #include <ecs/components.h>
 
+enum class Space {
+	LOCAL,
+	WORLD
+};
+
 namespace Transform
 {
 
-	// Computes and updates the transformation matrices of given transform component
-	void evaluate(TransformComponent& transform, const glm::mat4 viewProjection);
+	//
+	// CORE FUNCTIONALITY
+	//
+
+	// Evaluates the given transforms model and normal matrix if it has been modified; Note: its parent must have been evaluated before
+	bool evaluate(TransformComponent& transform);
+
+	// Evaluates the transforms matrix-view-projection matrix using its current model matrix
+	void createMvp(TransformComponent& transform, const glm::mat4& viewProjection);
+
+	//
+	// TRANSFORM GETTERS & SETTERS
+	//
+
+	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space = Space::LOCAL);
+	void setRotation(TransformComponent& transform, const glm::quat& rotation, Space space = Space::LOCAL);
+	void setScale(TransformComponent& transform, const glm::vec3& scale, Space space = Space::LOCAL);
+
+	void translate(TransformComponent& transform, const glm::vec3& position, Space space = Space::LOCAL);
+	void rotate(TransformComponent& transform, const glm::quat& rotation, Space space = Space::LOCAL);
+	void scale(TransformComponent& transform, const glm::vec3& scale, Space space = Space::LOCAL);
+
+	//
+	// HELPERS
+	//
 
 	// Returns the forward direction vector of the transform in world space
 	glm::vec3 forward(const TransformComponent& transform);
@@ -28,18 +56,6 @@ namespace Transform
 
 	// Returns the down direction vector of the transform in world space
 	glm::vec3 down(const TransformComponent& transform);
-
-	// Returns new rotation of transform rotated by the specified degrees around the given axis in world space
-	glm::quat rotate(const TransformComponent& transform, float degrees, glm::vec3 axis);
-
-	// Returns new rotation of transform rotated by the specified degrees around its local x-axis
-	glm::quat rotateX(const TransformComponent& transform, float degrees);
-
-	// Returns new rotation of transform rotated by the specified degrees around its local y-axis
-	glm::quat rotateY(const TransformComponent& transform, float degrees);
-
-	// Returns new rotation of transform rotated by the specified degrees around its local z-axis
-	glm::quat rotateZ(const TransformComponent& transform, float degrees);
 
 	// Returns a quaternion that will rotate the transform to face the target transform
 	glm::quat lookAt(const TransformComponent& transform, const TransformComponent& target);

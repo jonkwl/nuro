@@ -12,29 +12,51 @@
 
 struct TransformComponent {
 
+	//
+	// GENERAL
+	//
+
 	// Name of entity
 	std::string name;
 
-	// Current position of transform
+	// Set if transform has been modified and therefore needs to be evaluated (also initially set)
+	bool modified = true;
+
+	//
+	// TRANSFORMATION
+	//
+
+	// Current position of transform in local space
 	glm::vec3 position = glm::vec3(0.0f);
 
-	// Current rotation of transform
+	// Current rotation of transform in local space
 	glm::quat rotation = glm::identity<glm::quat>();
 
-	// Current scale of transform
+	// Current scale of transform in local space
 	glm::vec3 scale = glm::vec3(1.0f);
+
+	//
+	// HIERARCHY
+	//
 
 	// Optional parent
 	const TransformComponent* parent = nullptr;
 
-	// Latest computed model-view-projection matrix
-	glm::mat4 mvp = glm::mat4(1.0f);
+	// Transforms depth in hierarchy
+	uint32_t depth = 0;
 
-	// Latest computed model matrix
+	//
+	// MATRIX CACHE
+	//
+
+	// Latest evaluated model matrix
 	glm::mat4 model = glm::mat4(1.0f);
 
-	// Latest computed normal matrix
+	// Latest evaluated normal matrix
 	glm::mat4 normal = glm::mat4(1.0f);
+
+	// Latest evaluated model-view-projection matrix
+	glm::mat4 mvp = glm::mat4(1.0f);
 
 };
 

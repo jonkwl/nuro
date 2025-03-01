@@ -50,7 +50,7 @@ void _physics_example() {
 
 	// Sample point light
 	EntityContainer pointLight("Point Light", ECS::createEntity());
-	pointLight.transform.position = glm::vec3(8.0f, 2.0f, 32.0f);
+	Transform::setPosition(pointLight.transform, glm::vec3(8.0f, 2.0f, 32.0f));
 	PointLightComponent& pointLightSource = pointLight.add<PointLightComponent>();
 	pointLightSource.intensity = 7.0f;
 	pointLightSource.color = glm::vec3(0.5f, 0.0f, 1.0f);
@@ -59,7 +59,7 @@ void _physics_example() {
 
 	// Sample spotlight
 	EntityContainer flashlight("Flashlight", ECS::createEntity());
-	flashlight.transform.position = glm::vec3(0.0f, 6.0f, 5.0f);
+	Transform::setPosition(flashlight.transform, glm::vec3(0.0f, 6.0f, 5.0f));
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
 	flashlightSource.intensity = 10.0f;
 	flashlightSource.color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -71,13 +71,13 @@ void _physics_example() {
 	// Camera
 	EntityContainer camera("Camera", ECS::createEntity());
 	cameraEntity = camera.root;
-	camera.transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
+	Transform::setPosition(camera.transform, glm::vec3(5.0f, 0.0f, 0.0f));
 	camera.add<CameraComponent>();
 
 	// Ground
 	EntityContainer ground("Ground", ECS::createEntity());
-	ground.transform.position = glm::vec3(0.0f, -10.1f, 35.0f);
-	ground.transform.scale = glm::vec3(140.0f, 0.1f, 140.0f);
+	Transform::setPosition(ground.transform, glm::vec3(0.0f, -10.1f, 35.0f));
+	Transform::setScale(ground.transform, glm::vec3(140.0f, 0.1f, 140.0f));
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 	RigidbodyComponent& groundRb = ground.add<RigidbodyComponent>();
 	Rigidbody::setKinematic(groundRb, true);
@@ -86,8 +86,8 @@ void _physics_example() {
 	// Kinematic sphere
 	EntityContainer kinematic("Kinematic", ECS::createEntity());
 	kinematicEntity = kinematic.root;
-	kinematic.transform.position = glm::vec3(1.0f, 0.5f, 6.0f);
-	kinematic.transform.scale = glm::vec3(2.0f);
+	Transform::setPosition(kinematic.transform, glm::vec3(1.0f, 0.5f, 6.0f));
+	Transform::setScale(kinematic.transform, glm::vec3(2.0f));
 	kinematic.add<MeshRendererComponent>(sphereMesh, redMaterial);
 	kinematic.add<SphereColliderComponent>();
 	RigidbodyComponent& kinematicRb = kinematic.add<RigidbodyComponent>();
@@ -97,7 +97,7 @@ void _physics_example() {
 	// Player sphere
 	EntityContainer player("Player", ECS::createEntity());
 	playerEntity = player.root;
-	player.transform.position = glm::vec3(8.0f, 0.0f, -4.0f);
+	Transform::setPosition(player.transform, glm::vec3(8.0f, 0.0f, -4.0f));
 	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
@@ -106,17 +106,17 @@ void _physics_example() {
 
 	// Player child
 	EntityContainer playerChild("Player Child", ECS::createEntity(&player.transform));
-	playerChild.transform.position = glm::vec3(0.0f, 2.0f, 0.0f);
-	playerChild.transform.scale = glm::vec3(0.5f);
+	Transform::setPosition(playerChild.transform, glm::vec3(0.0f, 2.0f, 0.0f));
+	Transform::setScale(playerChild.transform, glm::vec3(0.5f));
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	// Cube batch
-	int objectAmount = 64;
+	int objectAmount = 256;
 	uint32_t c = 1;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e("Cube " + std::to_string(c), ECS::createEntity());
-			e.transform.position = glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f);
+			Transform::setPosition(e.transform, glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f));
 			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 			e.add<BoxColliderComponent>();
 			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
@@ -160,9 +160,9 @@ void _physics_example() {
 	loader.createAsync(asyncModel);
 
 	EntityContainer e("Async Model", ECS::createEntity());
-	e.transform.position = glm::vec3(6.0f, 0.0f, 10.0f);
-	e.transform.rotation = glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	e.transform.scale = glm::vec3(7.0f);
+	Transform::setPosition(e.transform, glm::vec3(6.0f, 0.0f, 10.0f));
+	Transform::setRotation(e.transform, glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	Transform::setScale(e.transform, glm::vec3(7.0f));
 	e.add<MeshRendererComponent>(asyncModel->queryMesh(0), cubeMaterial);
 }
 
@@ -187,7 +187,7 @@ void gameUpdate() {
 	float delta = Time::deltaf();
 
 	EntityContainer kinematic("Kinematic", kinematicEntity);
-	kinematic.transform.position += glm::vec3(0.0f, 0.0f, 32.0f * delta);
+	Transform::translate(kinematic.transform, glm::vec3(0.0f, 0.0f, 32.0f * delta));
 
 	float force = 20.0f;
 	glm::vec3 forceDirection = glm::vec3(0.0f);
@@ -220,6 +220,6 @@ void gameUpdate() {
 	if (scrollDelta.y < 0.0f) zoom -= zoomStrength * delta;
 	zoom = glm::clamp(zoom, -20.0f, -5.0f);
 	glm::vec3 offset = glm::vec3(0.0f, 1.5f, zoom);
-	camera.transform.position = glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta);
+	Transform::setPosition(camera.transform, glm::mix(camera.transform.position, player.transform.position + offset, 10 * delta));
 
 }

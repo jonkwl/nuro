@@ -1,14 +1,22 @@
 #include "preprocessor_pass.h"
 
+#include <algorithm>
+
 #include <ecs/ecs_collection.h>
 #include <transform/transform.h>
 
 void PreprocessorPass::perform(glm::mat4 viewProjection)
 {
-	// Pre pass render each entity
-	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
-	for (auto [entity, transform, renderer] : targets.each()) {
-		// Compute transform matrices
-		Transform::evaluate(transform, viewProjection);
+	uint32_t modified = 0;
+
+	// Evaluate transforms
+	for (TransformComponent* transform : ECS::getTransformQueue()) {
+		if (Transform::evaluate(*transform)) modified++;
+		Transform::createMvp(*transform, viewProjection);
+	}
+
+	// Reset transforms modification state
+	for (TransformComponent* transform : ECS::getTransformQueue()) {
+		transform->modified = false;
 	}
 }

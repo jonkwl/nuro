@@ -10,7 +10,26 @@
 
 namespace ECS {
 
+	TransformQueue gTransformQueue;
 	RenderQueue gRenderQueue;
+
+	// Creates the transform queue
+	void _sortTransforms()
+	{
+		// Clear transforms
+		gTransformQueue.clear();
+
+		// Collect all transforms
+		auto targets = ECS::gRegistry.view<TransformComponent>();
+		for (auto [entity, transform] : targets.each()) {
+			gTransformQueue.push_back(&transform);
+		}
+
+		// Sort entities by depth
+		std::sort(gTransformQueue.begin(), gTransformQueue.end(), [](TransformComponent* a, TransformComponent* b) {
+			return a->depth < b->depth;
+			});
+	}
 
 	// Inserts the target entity and its mesh renderer component to the render queue
 	void _insertMeshRenderer(Entity targetEntity) {
@@ -106,16 +125,25 @@ namespace ECS {
 		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
 
 		// Add parent if set
-		if (parent) transform.parent = parent;
+		if (parent) {
+			transform.parent = parent;
+			transform.depth = transform.parent->depth + 1;
+		}
 
-		// Perform initial transform evaluation with empty perspective matrix
-		Transform::evaluate(transform, glm::perspective(0.0f, 0.0f, 0.0f, 0.0f));
+		// Sort transform queue
+		// Note: Can be optimized by inserting transform instead of recreating transform queue
+		_sortTransforms();
 
 		// Return entity and transform component
 		return std::tuple<Entity, TransformComponent&>(entity, transform);
 	}
 
-	RenderQueue& getRenderQueue()
+	const TransformQueue& getTransformQueue()
+	{
+		return gTransformQueue;
+	}
+
+	const RenderQueue& getRenderQueue()
 	{
 		return gRenderQueue;
 	}

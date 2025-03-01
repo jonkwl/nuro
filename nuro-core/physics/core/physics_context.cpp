@@ -2,6 +2,7 @@
 
 #include <utils/console.h>
 #include <ecs/ecs_collection.h>
+#include <transform/transform.h>
 #include <diagnostics/profiler.h>
 #include <physics/utils/px_translator.h>
 
@@ -144,7 +145,7 @@ void PhysicsContext::syncTransformComponent(float delta, TransformComponent& tra
 	glm::quat rotation = rigidbody.rotation;
 
 	// Interpolation
-	float factor = delta / timeStep;
+	/*float factor = delta / timeStep;
 	switch (rigidbody.interpolation) {
 	case RB_Interpolation::INTERPOLATE:
 		position = interpolate(transform.position, position, factor);
@@ -154,11 +155,11 @@ void PhysicsContext::syncTransformComponent(float delta, TransformComponent& tra
 		position = transform.position + rigidbody.velocity * delta;
 		rotation = transform.rotation * glm::normalize(glm::quat(1.0f, rigidbody.angularVelocity * delta));
 		break;
-	}
+	}*/
 
 	// Apply to transform
-	transform.position = position;
-	transform.rotation = rotation;
+	Transform::setPosition(transform, position);
+	Transform::setRotation(transform, rotation);
 }
 
 glm::vec3 PhysicsContext::interpolate(glm::vec3 lastPosition, glm::vec3 position, float factor)

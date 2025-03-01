@@ -12,6 +12,7 @@ using namespace entt::literals;
 
 using Entity = entt::entity;
 using Registry = entt::registry;
+using TransformQueue = std::vector<TransformComponent*>;
 using RenderQueue = std::vector<std::tuple<Entity, TransformComponent&, MeshRendererComponent&>>;
 using Camera = std::tuple<TransformComponent&, CameraComponent&>;
 
@@ -33,8 +34,11 @@ namespace ECS {
 	// Creates an entity
 	std::tuple<Entity, TransformComponent&> createEntity(TransformComponent* parent = nullptr);
 
+	// Returns the global transform queue
+	const TransformQueue& getTransformQueue();
+
 	// Returns the global render queue
-	RenderQueue& getRenderQueue();
+	const RenderQueue& getRenderQueue();
 
 	//
 	// HELPER FUNCTIONS

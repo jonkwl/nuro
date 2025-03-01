@@ -297,18 +297,17 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	// Temporary transform component
 	TransformComponent outlineTransform;
 	float thickness = 0.038f;
+	outlineTransform.parent = transform.parent;
 	outlineTransform.position = transform.position;
 	outlineTransform.rotation = transform.rotation;
 	outlineTransform.scale = transform.scale + thickness;
-	outlineTransform.parent = transform.parent;
-	Transform::evaluate(outlineTransform, viewProjection);
+	Transform::evaluate(outlineTransform);
+	Transform::createMvp(outlineTransform, viewProjection);
 
 	// Render mesh as outline
 	shader = selectionMaterial->getShader();
 	shader->bind();
 	shader->setMatrix4("mvpMatrix", outlineTransform.mvp);
-	shader->setMatrix4("modelMatrix", outlineTransform.model);
-	shader->setMatrix3("normalMatrix", outlineTransform.normal);
 	selectionMaterial->bind();
 	glBindVertexArray(renderer.mesh->getVAO());
 	glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
