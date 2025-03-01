@@ -12,8 +12,9 @@
 #include <rendering/passes/preprocessor_pass.h>
 #include <rendering/velocitybuffer/velocity_buffer.h>
 #include <rendering/postprocessing/post_processing.h>
-#include <rendering/sceneview/scene_view_forward_pass.h>
 #include <rendering/postprocessing/post_processing_pipeline.h>
+
+#include "../pipelines/scene_view_forward_pass.h"
 
 class SceneViewPipeline
 {

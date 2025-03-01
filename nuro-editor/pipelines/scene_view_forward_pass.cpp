@@ -10,7 +10,7 @@
 #include <rendering/transformation/transformation.h>
 #include <rendering/material/unlit/unlit_material.h>
 
-//#include "../src/gizmos/component_gizmos.h"
+#include "../gizmos/component_gizmos.h"
 
 SceneViewForwardPass::SceneViewForwardPass(const Viewport& viewport) : wireframe(false),
 clearColor(glm::vec4(0.0f)),
@@ -253,7 +253,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const glm::mat4& viewProjection, const Camera& camera)
 {
 	// Render selected entitites gizmos if needed
-	//if (gizmos) ComponentGizmos::drawEntityGizmos(*gizmos, *entity);
+	if (gizmos) ComponentGizmos::drawEntityGizmos(*gizmos, *entity);
 
 	// Make sure selected entity is renderable
 	if (!entity->has<MeshRendererComponent>()) return;
@@ -294,13 +294,9 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Get outline thickness according to camera distance
-	float distance = glm::distance(cameraTransform.position, transform.position);
-	float baseThickness = 0.038f;
-	float thickness = baseThickness;
-
 	// Temporary transform component
 	TransformComponent outlineTransform;
+	float thickness = 0.038f;
 	outlineTransform.position = transform.position;
 	outlineTransform.rotation = transform.rotation;
 	outlineTransform.scale = transform.scale + thickness;

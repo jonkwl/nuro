@@ -38,7 +38,6 @@ set(SOURCE_FILES
 	rendering/postprocessing/post_processing.h
 	rendering/postprocessing/post_processing_pipeline.h
 	rendering/primitives/global_quad.h
-	rendering/sceneview/scene_view_forward_pass.h
 	rendering/shader/shader.h
 	rendering/shader/shader_pool.h
 	rendering/shadows/shadow_disk.h
@@ -83,7 +82,6 @@ set(SOURCE_FILES
 	rendering/postprocessing/motion_blur_pass.cpp
 	rendering/postprocessing/post_processing_pipeline.cpp
 	rendering/primitives/global_quad.cpp
-	rendering/sceneview/scene_view_forward_pass.cpp
 	rendering/shader/shader.cpp
 	rendering/shader/shader_pool.cpp
 	rendering/shadows/shadow_disk.cpp

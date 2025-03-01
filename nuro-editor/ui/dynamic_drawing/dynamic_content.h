@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "draw_alignments.h"
 #include "dynamic_text.h"
 
 class DynamicContent

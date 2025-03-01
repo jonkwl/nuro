@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <string>
 
-#include "enums.h"
+#include "draw_alignments.h"
 
 class DynamicText
 {

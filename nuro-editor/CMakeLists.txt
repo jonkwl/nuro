@@ -5,6 +5,7 @@ set(SOURCE_FILES
 	pipelines/game_view_pipeline.h
 	pipelines/preview_pipeline.h
 	pipelines/scene_view_pipeline.h
+	pipelines/scene_view_forward_pass.h
 	project/project.h
 	runtime/runtime.h
 	ui/collection/IconsFontAwesome6.h
@@ -12,12 +13,9 @@ set(SOURCE_FILES
 	ui/components/inspectable_components.h
 	ui/components/toggle_bar.h
 	ui/context_menu/context_menu.h
-	ui/dynamic_drawing/delta.h
 	ui/dynamic_drawing/dynamic_content.h
-	ui/dynamic_drawing/dynamic_drawing.h
 	ui/dynamic_drawing/dynamic_text.h
-	ui/dynamic_drawing/enums.h
-	ui/dynamic_drawing/utils.h
+	ui/dynamic_drawing/draw_alignments.h
 	ui/editor_ui.h
 	ui/footer/footer.h
 	ui/inspectables/entity_inspectable.h
@@ -34,7 +32,6 @@ set(SOURCE_FILES
 	ui/windows/post_processing_window.h
 	ui/windows/registry_window.h
 	ui/windows/viewport_window.h
-	ui/workspace_bar/workspace_bar.h
 	testing/game_logic.cpp
 	gizmos/component_gizmos.h
 	gizmos/editor_gizmo_color.h
@@ -45,6 +42,7 @@ set(SOURCE_FILES
 	pipelines/game_view_pipeline.cpp
 	pipelines/preview_pipeline.cpp
 	pipelines/scene_view_pipeline.cpp
+	pipelines/scene_view_forward_pass.cpp
 	project/project.cpp
 	runtime/runtime.cpp
 	ui/components/im_components.cpp
@@ -67,7 +65,6 @@ set(SOURCE_FILES
 	ui/windows/post_processing_window.cpp
 	ui/windows/registry_window.cpp
 	ui/windows/viewport_window.cpp
-	ui/workspace_bar/workspace_bar.cpp
 	gizmos/component_gizmos.cpp
 	reflection/component_registry.cpp
 	ui/search/search_popup.cpp

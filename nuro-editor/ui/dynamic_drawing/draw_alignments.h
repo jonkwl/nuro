@@ -1,9 +1,5 @@
 #pragma once
 
-//
-// COLLECTION OF ENUMS
-//
-
 enum class TextAlign {
 	LEFT,
 	CENTER,
