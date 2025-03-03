@@ -73,36 +73,21 @@ set(SOURCE_FILES
 	ui/search/search_popup.cpp
 )
 
-set(IMGUI_SOURCES
-    imgui/imgui.cpp
-    imgui/ImGuizmo.cpp
-    imgui/imgui_demo.cpp
-    imgui/imgui_draw.cpp
-    imgui/imgui_impl_glfw.cpp
-    imgui/imgui_impl_opengl3.cpp
-    imgui/imgui_tables.cpp
-    imgui/imgui_widgets.cpp
-    imgui/implot.cpp
-    imgui/implot_demo.cpp
-    imgui/implot_items.cpp
-)
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${IMGUI_SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} )
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC 
 		${CMAKE_CURRENT_LIST_DIR}/src
-	PRIVATE 
-		${CMAKE_CURRENT_LIST_DIR}/imgui)
+)
 
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		nuro::core
 		glm::glm
 		nlohmann_json::nlohmann_json
-		# imgui::imgui           # imported from local directory
-		# implot::implot         # imported from local directory
-		# imguizmo::imguizmo     # imported from local directory
+		imgui::imgui
+		implot::implot
+		imguizmo::imguizmo
 )
 
 add_custom_command(TARGET nuro-editor POST_BUILD
