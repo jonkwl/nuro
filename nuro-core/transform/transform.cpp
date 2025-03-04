@@ -7,7 +7,7 @@
 
 namespace Transform {
 
-	bool evaluate(TransformComponent& transform)
+	void evaluate(TransformComponent& transform)
 	{
 		// Transform has parent
 		if (transform.parent) {
@@ -16,7 +16,7 @@ namespace Transform {
 			if (transform.parent->modified) transform.modified = true;
 
 			// Only evaluate transform if it has been modified
-			if (!transform.modified) return false;
+			if (!transform.modified) return;
 
 			// Evaluate transforms model matrix relative to parent
 			transform.model = transform.parent->model * Transformation::model(transform.position, transform.rotation, transform.scale);
@@ -26,7 +26,7 @@ namespace Transform {
 		else {
 
 			// Only evaluate transform if it has been modified
-			if (!transform.modified) return false;
+			if (!transform.modified) return;
 
 			// Evaluate transforms model matrix
 			transform.model = Transformation::model(transform.position, transform.rotation, transform.scale);
@@ -35,8 +35,6 @@ namespace Transform {
 
 		// Compute transforms normal matrix
 		transform.normal = Transformation::normal(transform.model);
-
-		return true;
 	}
 
 	void createMvp(TransformComponent& transform, const glm::mat4& viewProjection)

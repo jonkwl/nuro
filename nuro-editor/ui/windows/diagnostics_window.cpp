@@ -77,7 +77,7 @@ void DiagnosticsWindow::render()
 		IMComponents::indicatorLabel("Rendering:", Profiler::getMs("render"), "ms");
 		IMComponents::indicatorLabel("Physics:", Profiler::getMs("physics"), "ms");
 		IMComponents::indicatorLabel("Shadow Pass:", Profiler::getMs("shadow_pass"), "ms");
-		IMComponents::indicatorLabel("Preprocessor Pass:", Profiler::getMs("preprocessor_pass"), "ms");
+		IMComponents::indicatorLabel("Preprocessor Pass:", Profiler::getUs("preprocessor_pass"), "ns");
 		IMComponents::indicatorLabel("Pre Pass:", Profiler::getMs("pre_pass"), "ms");
 		IMComponents::indicatorLabel("SSAO Pass:", Profiler::getMs("ssao"), "ms");
 		IMComponents::indicatorLabel("Velocity Buffer Pass:", Profiler::getMs("velocity_buffer"), "ms");

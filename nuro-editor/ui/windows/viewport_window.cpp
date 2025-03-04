@@ -299,7 +299,7 @@ void ViewportWindow::renderTransformGizmos()
 		glm::decompose(delta, scaleDelta, rotationDelta, positionDelta, skewDelta, perspectiveDelta);
 
 		// Update transforms position
-		transform.position += Transformation::toBackendPosition(positionDelta);
+		Transform::translate(transform, Transformation::toBackendPosition(positionDelta));
 
 		// Update transforms rotation
 		// transform.rotation = Transformation::toBackendRotation(rotationDelta) * transform.rotation;
@@ -319,7 +319,7 @@ void ViewportWindow::renderTransformGizmos()
 		}
 
 		// Apply new scale
-		transform.scale = newScale;
+		Transform::scale(transform, newScale);
 	}
 }
 

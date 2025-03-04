@@ -18,7 +18,7 @@ namespace Transform
 	//
 
 	// Evaluates the given transforms model and normal matrix if it has been modified; Note: its parent must have been evaluated before
-	bool evaluate(TransformComponent& transform);
+	void evaluate(TransformComponent& transform);
 
 	// Evaluates the transforms matrix-view-projection matrix using its current model matrix
 	void createMvp(TransformComponent& transform, const glm::mat4& viewProjection);

@@ -2,16 +2,15 @@
 
 #include <algorithm>
 
+#include <diagnostics/profiler.h>
 #include <ecs/ecs_collection.h>
 #include <transform/transform.h>
 
 void PreprocessorPass::perform(glm::mat4 viewProjection)
 {
-	uint32_t modified = 0;
-
 	// Evaluate transforms
 	for (TransformComponent* transform : ECS::getTransformQueue()) {
-		if (Transform::evaluate(*transform)) modified++;
+		Transform::evaluate(*transform);
 		Transform::createMvp(*transform, viewProjection);
 	}
 
