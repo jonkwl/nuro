@@ -19,7 +19,7 @@ namespace ComponentGizmos {
 	{
 		// Try draw gizmo of every component type for entity
 		for (const auto& [name, component] : ComponentRegistry::get()) {
-			component.tryDrawGizmo(entity.root, gizmos);
+			component.tryDrawGizmo(entity.handle(), gizmos);
 		}
 	}
 

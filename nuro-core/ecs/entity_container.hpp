@@ -1,17 +1,17 @@
 #pragma once
 
-#define G_REGISTRY ECS::gRegistry
-
 #include <tuple>
 #include <cctype>
 #include <string>
-#include <entt/entt.hpp>
 #include <typeinfo>
 #include <type_traits>
+#include <entt/entt.hpp>
 
 #include <ecs/ecs.h>
 #include <utils/console.h>
 #include <ecs/components.h>
+
+#define G_REGISTRY ECS::gRegistry
 
 ///////////////////////////////////////////////////////////////////
 ///																///
@@ -21,45 +21,69 @@
 
 class EntityContainer {
 public:
-	// Construct entity by root
-	explicit EntityContainer(std::string name, Entity root) : root(root), 
-	registry(G_REGISTRY), 
-	transform(get<TransformComponent>()) 
+	// Construct empty entity container
+	EntityContainer() : _registry(G_REGISTRY), _handle(entt::null), _transform(nullptr)
 	{
-		transform.name = name;
 	};
 
-	// Construct entity container with data tuple
-	explicit EntityContainer(std::string name, std::tuple<Entity, TransformComponent&> data) : root(std::get<0>(data)), 
-	registry(G_REGISTRY),
-	transform(std::get<1>(data)) 
+	// Copy entity container
+	EntityContainer(const EntityContainer& other) : _registry(G_REGISTRY), _handle(other._handle), _transform(other._transform)
 	{
-		transform.name = name;
+	}
+
+	// Construct entity container by entity handle
+	explicit EntityContainer(Entity handle) : _registry(G_REGISTRY), _handle(handle), _transform(&get<TransformComponent>())
+	{
 	};
 
-	// Entity containers backend entity handle
-	Entity root;
+	// Construct entity container by ecs native entity creation data tuple
+	explicit EntityContainer(std::tuple<Entity, TransformComponent&> data) : _registry(G_REGISTRY), _handle(std::get<0>(data)), _transform(&std::get<1>(data))
+	{
+	};
 
-	// Registry entity container is bound to
-	Registry& registry;
+	// Assign entity container
+	EntityContainer& operator=(const EntityContainer& other)
+	{
+		if (this != &other) {
+			_handle = other._handle;
+			_transform = other._transform;
+		}
+		return *this;
+	}
 
-	// Transform component of entity
-	TransformComponent& transform;
+	// Returns native entity handle
+	inline Entity handle() {
+		return _handle;
+	}
+
+	// Returns transform of entity
+	inline TransformComponent& transform() {
+		// Make sure transform is available
+		if (!_transform) {
+			fetchTransformFailed();
+			static TransformComponent defaultTransform;
+			return defaultTransform;
+		}
+
+		// Return transform as reference
+		return *_transform;;
+	}
 
 	// Returns name of entity
 	inline std::string name() {
-		return transform.name;
+		if (!_transform) return "Invalid Entity";
+		return _transform->name;
 	}
 
 	// Returns if entity is valid in registry
 	inline bool verify() {
-		return registry.valid(root);
+		return _registry.valid(_handle);
 	}
 
 	// Returns true if entity has a component of given component type
 	template<typename T>
 	inline bool has() {
-		return registry.any_of<T>(root);
+		return _registry.any_of<T>(_handle);
 	}
 
 	// Adds a component of given component type with given arguments to the entity
@@ -75,13 +99,13 @@ public:
 
 		// Fail if entity already has component
 		if (has<T>()) {
-			operationFailed<T>("add", "already owns an instance of it");
+			componentOperationFailed<T>("add", "already owns an instance of it");
 			static T defaultComponent;
 			return defaultComponent;
 		}
 
 		// Emplace component
-		return registry.emplace<T>(root, std::forward<Args>(args)...);
+		return _registry.emplace<T>(_handle, std::forward<Args>(args)...);
 	}
 
 	// Returns component of given component type if attached to entity
@@ -95,10 +119,12 @@ public:
 			return defaultComponent;
 		}
 
-		// Use EnTT's try_get to safely attempt to get the component
-		auto component = registry.try_get<T>(root);
+		// Safely attempt to fetch the component
+		auto component = _registry.try_get<T>(_handle);
+
+		// Check if component was fetched
 		if (!component) {
-			operationFailed<T>("get", "doesn't own an instance of it");
+			componentOperationFailed<T>("get", "doesn't own an instance of it");
 			static T defaultComponent;
 			return defaultComponent;
 		}
@@ -117,55 +143,43 @@ public:
 			return;
 		}
 
-		// Use EnTT's has to check if the entity has the component
+		// Check if entity has the component
 		if (!has<T>()) {
-			operationFailed<T>("remove", "doesn't own an instance of it");
+			componentOperationFailed<T>("remove", "doesn't own an instance of it");
 			return;
 		}
 
 		// Fail if component to remove is transform component
 		if (std::is_same<T, TransformComponent>::value) {
-			operationFailed<T>("remove", "must own a transform component");
+			componentOperationFailed<T>("remove", "must own a transform component");
 			return;
 		}
 
 		// Erase component
-		registry.erase<T>(root);
-	}
-
-	// Compares entity class with ecs root
-	bool operator == (const Entity& other) const {
-		return root == other;
+		_registry.erase<T>(_handle);
 	}
 
 private:
+	// Registry entity container is bound to
+	Registry& _registry;
+
+	// Entity containers backend entity handle
+	Entity _handle;
+
+	// Transform component of entity
+	TransformComponent* _transform;
+
+private:
 	template<typename T>
-	std::string getTypename() {
-		// Get base typename
-		std::string base = typeid(T).name();
-
-		// Remove "struct " keyword if present (.name() is compiler dependant)
-		size_t pos = base.find("struct ");
-		if (pos != std::string::npos) base.erase(pos, 7);
-
-		// Construct formatted typename
-		std::string result;
-		for (char c : base) {
-			if (std::isupper(c) && !result.empty()) {
-				result += ' ';
-			}
-			result += std::tolower(c);
-		}
-
-		return result;
+	void componentOperationFailed(std::string operation, std::string reason) {
+		Console::out::warning("Entity Container", "Couldn't " + operation + " some component because entity '" + name() + "' " + reason + ".");
 	}
 
-	template<typename T>
-	void operationFailed(std::string operation, std::string reason) {
-		Console::out::warning("Entity Container", "Couldn't " + operation + " " + getTypename<T>() + " because entity '" + name() + "' " + reason + ".");
+	void fetchTransformFailed() {
+		Console::out::warning("Entity Container", "Couldn't fetch transform component of some entity.");
 	}
 
 	void verifyFailed() {
-		Console::out::warning("Entity Container", "Couldn't perform operation on entity '" + name() + "' because it doesn't exist.");
+		Console::out::warning("Entity Container", "Couldn't perform operation on some entity because it doesn't exist.");
 	}
 };

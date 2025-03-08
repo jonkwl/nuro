@@ -17,6 +17,12 @@ namespace Transform
 	// CORE FUNCTIONALITY
 	//
 
+	// Returns if a transform has a paren
+	bool hasParent(TransformComponent& transform);
+
+	// Returns a transforms parent; make sure transform has parent before using!
+	TransformComponent& fetchParent(TransformComponent& transform);
+
 	// Evaluates the given transforms model and normal matrix if it has been modified; Note: its parent must have been evaluated before
 	void evaluate(TransformComponent& transform);
 

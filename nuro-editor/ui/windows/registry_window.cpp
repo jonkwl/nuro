@@ -286,7 +286,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	//
 
 	if (doubleClicked) {
-		setCameraTarget(&item.entity.transform);
+		setCameraTarget(&item.entity.transform());
 	}
 
 	//
@@ -294,7 +294,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	// 
 
 	if (selected && io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_F)) {
-		setCameraTarget(&item.entity.transform);
+		setCameraTarget(&item.entity.transform());
 	}
 
 	//
@@ -552,7 +552,7 @@ void RegistryWindow::buildSceneHierarchy()
 	uint32_t i = 1;
 	for (auto it = transformList.rbegin(); it != transformList.rend(); ++it) {
 		auto& [entity, transform] = *it;
-		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(transform.name, entity), {}));
+		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(entity), {}));
 		i++;
 	}
 }

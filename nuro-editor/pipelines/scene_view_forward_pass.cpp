@@ -228,7 +228,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 		// Skip if target entity is selected entity
 		// tmp
 		if (skippedEntities.size() > 0) {
-			if (skippedEntities[0]->root == entity) continue;
+			if (skippedEntities[0]->handle() == entity) continue;
 		}
 
 		uint32_t shaderId = renderer.material->getShaderId();
@@ -259,7 +259,7 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	if (!entity->has<MeshRendererComponent>()) return;
 
 	// Fetch components
-	TransformComponent& transform = entity->transform;
+	TransformComponent& transform = entity->transform();
 	MeshRendererComponent& renderer = entity->get<MeshRendererComponent>();
 
 	// Renderer must be enabled

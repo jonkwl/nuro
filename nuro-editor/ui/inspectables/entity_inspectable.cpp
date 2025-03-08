@@ -30,6 +30,6 @@ void EntityInspectable::renderDynamicContent(ImDrawList& drawList)
 	const auto& keysOrdered = ComponentRegistry::keysOrdered();
 
 	for (const auto& key : keysOrdered) {
-		components.at(key).tryDrawInspectable(item.entity.root);
+		components.at(key).tryDrawInspectable(item.entity.handle());
 	}
 }

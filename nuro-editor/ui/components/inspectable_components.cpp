@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <unordered_map>
 
+#include <transform/transform.h>
 #include <rendering/icons/icon_pool.h>
 
 #include "../ui/editor_ui.h"
@@ -167,7 +168,7 @@ namespace InspectableComponents {
 			IMComponents::input("Position", transform.position);
 			IMComponents::input("Rotation", rotationTmp);
 			IMComponents::input("Scale", transform.scale);
-			if (transform.parent) IMComponents::label("Parent: " + transform.parent->name);
+			if (Transform::hasParent(transform)) IMComponents::label("Parent: " + Transform::fetchParent(transform).depth);
 			IMComponents::label("Depth: " + std::to_string(transform.depth));
 
 			_endComponent();

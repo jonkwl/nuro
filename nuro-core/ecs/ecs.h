@@ -32,7 +32,8 @@ namespace ECS {
 	//
 
 	// Creates an entity
-	std::tuple<Entity, TransformComponent&> createEntity(TransformComponent* parent = nullptr);
+	std::tuple<Entity, TransformComponent&> createEntity(std::string name);
+	std::tuple<Entity, TransformComponent&> createEntity(std::string name, Entity parent);
 
 	// Returns the global transform queue
 	const TransformQueue& getTransformQueue();

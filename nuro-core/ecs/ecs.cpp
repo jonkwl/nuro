@@ -118,21 +118,33 @@ namespace ECS {
 		ECS::gRegistry.on_destroy<MeshRendererComponent>().connect<&_purgeMeshRenderer>();
 	}
 
-	std::tuple<Entity, TransformComponent&> createEntity(TransformComponent* parent)
+	std::tuple<Entity, TransformComponent&> createEntity(std::string name)
 	{
 		// Create new entity and emplace transform component
 		Entity entity = gRegistry.create();
 		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
-
-		// Add parent if set
-		if (parent) {
-			transform.parent = parent;
-			transform.depth = transform.parent->depth + 1;
-		}
+		
+		// Set transforms name
+		transform.name = name;
 
 		// Sort transform queue
 		// Note: Can be optimized by inserting transform instead of recreating transform queue
 		_sortTransforms();
+
+		// Return entity and transform component
+		return std::tuple<Entity, TransformComponent&>(entity, transform);
+	}
+
+	std::tuple<Entity, TransformComponent&> createEntity(std::string name, Entity parent)
+	{
+		// Create new entity
+		auto [entity, transform] = createEntity(name);
+
+		// Link parent to transform
+		transform.parent = parent;
+		 
+		// Evaluate transforms hierarchy depth
+		transform.depth = Transform::fetchParent(transform).depth + 1;
 
 		// Return entity and transform component
 		return std::tuple<Entity, TransformComponent&>(entity, transform);

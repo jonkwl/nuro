@@ -1,14 +1,18 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <cstdint>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <entt/entt.hpp>
 #include <PxPhysicsAPI.h>
+#include <glm/gtc/quaternion.hpp>
 
 #include <rendering/model/mesh.h>
 #include <rendering/material/imaterial.h>
 #include <physics/rigidbody/rigidbody_enums.h>
+
+using Entity = entt::entity;
 
 struct TransformComponent {
 
@@ -39,8 +43,20 @@ struct TransformComponent {
 	// HIERARCHY
 	//
 
+	// Node for entity linked list
+	struct EntityNode {
+		Entity entity;
+		EntityNode* next = nullptr;
+
+		EntityNode(Entity entity) : entity(entity) {}
+		~EntityNode() { delete next; }
+	};
+
 	// Optional parent
-	const TransformComponent* parent = nullptr;
+	Entity parent = entt::null;
+
+	// Head of children linked list
+	EntityNode* children = nullptr;
 
 	// Transforms depth in hierarchy
 	uint32_t depth = 0;
@@ -97,10 +113,10 @@ struct DirectionalLightComponent {
 	bool enabled = true;
 
 	// Intensity of the directional light
-	float intensity;
+	float intensity = 1.0f;
 
 	// Color directional light is emitting
-	glm::vec3 color;
+	glm::vec3 color = glm::vec3(1.0f);
 };
 
 struct PointLightComponent {
@@ -109,16 +125,16 @@ struct PointLightComponent {
 	bool enabled = true;
 
 	// Intensity of the point light
-	float intensity;
+	float intensity = 1.0f;
 
 	// Color point light is emitting
-	glm::vec3 color;
+	glm::vec3 color = glm::vec3(1.0f);
 
 	// Range of the point light
-	float range;
+	float range = 10.0f;
 
 	// Falloff of the point light
-	float falloff;
+	float falloff = 5.0f;
 };
 
 struct SpotlightComponent {
@@ -127,22 +143,22 @@ struct SpotlightComponent {
 	bool enabled = true;
 
 	// Intensity of the spotlight
-	float intensity;
+	float intensity = 1.0f;
 
 	// Color spotlight is emitting
-	glm::vec3 color;
+	glm::vec3 color = glm::vec3(1.0f);
 
 	// Range of the spotlight
-	float range;
+	float range = 10.0f;
 
 	// Falloff of the spotlight
-	float falloff;
+	float falloff = 5.0f;
 
 	// Inner cutoff angle in degrees of the spotlight
-	float innerAngle;
+	float innerAngle = 45.0f;
 
 	// Outer cutoff angle in degrees of the spotlight
-	float outerAngle;
+	float outerAngle = 60.0f;
 };
 
 struct VelocityComponent {

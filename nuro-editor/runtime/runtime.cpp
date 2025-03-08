@@ -215,7 +215,7 @@ namespace Runtime {
 		_renderShadowsGlobal();
 		gSceneViewPipeline.render();
 		gGameViewPipeline.render();
-		gPreviewPipeline.render();
+		// gPreviewPipeline.render();
 
 		// RENDER EDITOR
 		Profiler::start("ui_pass");
@@ -254,10 +254,7 @@ namespace Runtime {
 		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
 
 		// MAIN LOOP
-		while (ApplicationContext::running())
-		{
-			_nextFrame();
-		}
+		while (ApplicationContext::running()) _nextFrame();
 
 		// EXIT APPLICATION
 		return TERMINATE();

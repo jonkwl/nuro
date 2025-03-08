@@ -3,23 +3,36 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include <ecs/ecs.h>
 #include <rendering/transformation/transformation.h>
 
 namespace Transform {
 
+	bool hasParent(TransformComponent& transform)
+	{
+		return transform.parent != entt::null;
+	}
+
+	TransformComponent& fetchParent(TransformComponent& transform)
+	{
+		return ECS::gRegistry.get<TransformComponent>(transform.parent);
+	}
+
 	void evaluate(TransformComponent& transform)
 	{
 		// Transform has parent
-		if (transform.parent) {
+		if (hasParent(transform)) {
+
+			TransformComponent& parent = fetchParent(transform);
 
 			// Set transform to be modified if parent is modified
-			if (transform.parent->modified) transform.modified = true;
+			if (parent.modified) transform.modified = true;
 
 			// Only evaluate transform if it has been modified
 			if (!transform.modified) return;
 
 			// Evaluate transforms model matrix relative to parent
-			transform.model = transform.parent->model * Transformation::model(transform.position, transform.rotation, transform.scale);
+			transform.model = parent.model * Transformation::model(transform.position, transform.rotation, transform.scale);
 
 		}
 		// Transform doesn't have parent

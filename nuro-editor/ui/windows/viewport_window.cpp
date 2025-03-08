@@ -7,17 +7,16 @@
 #include <ImGuizmo.h>
 #include <tuple>
 
-#include <rendering/postprocessing/post_processing.h>
 #include <time/time.h>
-#include <utils/console.h>
-#include <ecs/ecs_collection.h>
-#include <rendering/transformation/transformation.h>
-#include <transform/transform.h>
-#include <ecs/components.h>
-#include <rendering/material/lit/lit_material.h>
-
 #include <input/input.h>
 #include <input/cursor.h>
+#include <utils/console.h>
+#include <ecs/components.h>
+#include <ecs/ecs_collection.h>
+#include <transform/transform.h>
+#include <rendering/material/lit/lit_material.h>
+#include <rendering/transformation/transformation.h>
+#include <rendering/postprocessing/post_processing.h>
 
 ViewportWindow::ViewportWindow() : currentWindowSize(glm::vec2(0.0f)),
 lastWindowSize(glm::vec2(0.0f)),
@@ -272,7 +271,7 @@ void ViewportWindow::renderTransformGizmos()
 	// Get gizmo model matrix
 	TransformComponent& transform = selected->get<TransformComponent>();
 	glm::mat4 model = Transformation::model(transform.position, transform.rotation, transform.scale);
-	if (transform.parent) model = transform.parent->model * model;
+	if (Transform::hasParent(transform)) model = Transform::fetchParent(transform).model * model;
 
 	// Check for snapping
 	bool snapping = Input::keyDown(Key::LEFT_CONTROL);
@@ -371,7 +370,7 @@ void ViewportWindow::updateMovement()
 		}
 
 		// Look around movement (needs to be fixed)
-		/*glm::vec3 cameraEulerAngles = glm::degrees(glm::eulerAngles(camera.transform.rotation));
+		/*glm::vec3 cameraEulerAngles = glm::degrees(glm::eulerAngles(cameraTransform.rotation));
 		glm::vec3 rotationDir = glm::vec3(-mouseDelta.y, mouseDelta.x, 0.0f);
 		glm::vec3 newRotation = cameraEulerAngles + (rotationDir * mouseSensitivity);
 		cameraTransform.rotation = glm::quat(glm::radians(newRotation));*/

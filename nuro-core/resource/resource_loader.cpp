@@ -4,16 +4,20 @@
 
 ResourceLoader::ResourceLoader()
 {
-	// Launch worker
+	// Set running
 	running = true;
+
+	// Launch worker
 	worker = std::thread(&ResourceLoader::asyncWorker, this);
 }
 
 ResourceLoader::~ResourceLoader()
 {
-	// Stop worker
+	// Unset running
 	running = false;
-	worker.join();
+
+	// Detach worker if required
+	if (worker.joinable()) worker.detach();
 }
 
 ResourceLoader::WorkerState ResourceLoader::readWorkerState() const
