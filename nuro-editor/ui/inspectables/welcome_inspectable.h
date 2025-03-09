@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <string_view>
+#include <textselect.hpp>
 
 #include "inspectable.h"
 
@@ -20,4 +22,13 @@ private:
 
 	// Set if game was played through welcome inspectable already
 	bool playedGame;
+
+	//
+	// Text selection
+	//
+
+	std::vector<std::string_view> loggedIssues;
+	std::string_view logLineAt(size_t i);
+	size_t nLogs();
+	TextSelect logSelect;
 };

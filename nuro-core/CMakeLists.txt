@@ -106,7 +106,8 @@ add_library(nuro::core ALIAS ${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} 
 	PUBLIC 
 		${CMAKE_CURRENT_LIST_DIR}
-		${Stb_INCLUDE_DIR})
+		${Stb_INCLUDE_DIR}
+)
 
 target_link_libraries(${PROJECT_NAME} 
 	PUBLIC

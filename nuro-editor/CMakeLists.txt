@@ -82,24 +82,23 @@ set(IMGUI_SOURCES
     imgui/implot.cpp
     imgui/implot_demo.cpp
     imgui/implot_items.cpp
+    imgui/textselect.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${IMGUI_SOURCES})
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC 
-		${CMAKE_CURRENT_LIST_DIR}/src
+		${CMAKE_CURRENT_LIST_DIR}/utfcpp # vendor library: utfcpp
 	PRIVATE 
-		${CMAKE_CURRENT_LIST_DIR}/imgui)
+		${CMAKE_CURRENT_LIST_DIR}/imgui
+)
 
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		nuro::core
 		glm::glm
 		nlohmann_json::nlohmann_json
-		# imgui::imgui           # imported from local directory
-		# implot::implot         # imported from local directory
-		# imguizmo::imguizmo     # imported from local directory
 )
 
 add_custom_command(TARGET nuro-editor POST_BUILD

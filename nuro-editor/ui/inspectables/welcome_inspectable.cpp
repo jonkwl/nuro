@@ -1,5 +1,7 @@
 #include "welcome_inspectable.h"
 
+#include <functional>
+
 #include "../ui/editor_ui.h"
 #include "../runtime/runtime.h"
 #include "../ui/windows/registry_window.h"
@@ -8,10 +10,21 @@
 #include "../ui/components/inspectable_components.h"
 
 WelcomeInspectable::WelcomeInspectable() : consoleSnapshot(),
-playedGame(false)
+playedGame(false),
+loggedIssues(),
+logSelect(
+    std::bind(&WelcomeInspectable::logLineAt, this, std::placeholders::_1), 
+    std::bind(&WelcomeInspectable::nLogs, this))
 {
     // Take snapshot of current console
     consoleSnapshot = ConsoleWindow::snapshot();
+
+    // Fetch logs from console snapshot
+    for (ConsoleLog& log : consoleSnapshot) {
+        if (log.type != ConsoleLogType::MESSAGE) {
+            loggedIssues.push_back(log.content);
+        }
+    }
 }
 
 void WelcomeInspectable::renderStaticContent(ImDrawList& drawList)
@@ -64,19 +77,41 @@ void WelcomeInspectable::renderStaticContent(ImDrawList& drawList)
 
 void WelcomeInspectable::renderDynamicContent(ImDrawList& drawList)
 {
-    // Amount of issues logged
-    uint32_t nIssues = 0;
+    // Issues were logged
+    if (loggedIssues.size()) {
+        ImGui::BeginChild("logs", {}, 0, ImGuiWindowFlags_NoMove);
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 180, 15, 255));
+            for (const auto& line : loggedIssues) {
+                std::string logText = std::string(line.data()) + "  " + ICON_FA_TRIANGLE_EXCLAMATION;
+                ImGui::TextUnformatted(logText.c_str());
+            }
+            ImGui::PopStyleColor();
 
-    // Display all logs except for normal message logs
-    for (ConsoleLog& log : consoleSnapshot) {
-        if (log.type != ConsoleLogType::MESSAGE) {
-            IMComponents::label(ICON_FA_TRIANGLE_EXCLAMATION " " + log.content, EditorUI::getFonts().h4, IM_COL32(255, 180, 15, 255));
-            nIssues++;
+            logSelect.update();
+
+            if (ImGui::BeginPopupContextWindow()) {
+                ImGui::BeginDisabled(!logSelect.hasSelection());
+                if (ImGui::MenuItem("Copy", "Ctrl+C")) logSelect.copy();
+                ImGui::EndDisabled();
+                if (ImGui::MenuItem("Select all", "Ctrl+A")) logSelect.selectAll();
+                ImGui::EndPopup();
+            }
         }
+        ImGui::EndChild();
     }
-
-    // No issues logged
-    if (!nIssues) {
+    // No issues were logged
+    else {
         IMComponents::label(ICON_FA_CHECK " No issues found", EditorUI::getFonts().h4, IM_COL32(160, 255, 160, 255));
     }
+}
+
+std::string_view WelcomeInspectable::logLineAt(size_t i)
+{
+    return loggedIssues[i];
+}
+
+size_t WelcomeInspectable::nLogs()
+{
+    return loggedIssues.size();
 }
