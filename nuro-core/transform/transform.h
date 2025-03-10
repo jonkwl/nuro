@@ -23,11 +23,14 @@ namespace Transform
 	// Returns a transforms parent; make sure transform has parent before using!
 	TransformComponent& fetchParent(TransformComponent& transform);
 
-	// Evaluates the given transforms model and normal matrix if it has been modified; Note: its parent must have been evaluated before
+	// Evaluates the given transform if it has been modified, its parent must have been evaluated before
 	void evaluate(TransformComponent& transform);
 
+	// Evaluates the given transform and its children recursively
+	void evaluateRecursive(TransformComponent& transform);
+
 	// Evaluates the transforms matrix-view-projection matrix using its current model matrix
-	void createMvp(TransformComponent& transform, const glm::mat4& viewProjection);
+	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection);
 
 	//
 	// TRANSFORM GETTERS & SETTERS

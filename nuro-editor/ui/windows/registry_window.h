@@ -11,7 +11,10 @@
 
 struct HierarchyItem {
 
-	HierarchyItem(uint32_t id, EntityContainer entity, std::vector<HierarchyItem> children) : id(id), entity(entity), children(children), expanded(false) {};
+	HierarchyItem(uint32_t id, EntityContainer entity, std::vector<HierarchyItem> children) : 
+		id(id), entity(entity), children(children), expanded(false) 
+	{
+	};
 
 	uint32_t id;
 	EntityContainer entity;
@@ -52,6 +55,9 @@ private:
 
 	// Builds the opened scene into a hierarchy
 	void buildSceneHierarchy();
+
+	// Recursive hierarchy build step for a given entity and parent
+	void buildHierarchyRecursive(Entity entity, HierarchyItem& parentItem);
 
 	// Sets a new target for the camera movement
 	void setCameraTarget(TransformComponent* target);

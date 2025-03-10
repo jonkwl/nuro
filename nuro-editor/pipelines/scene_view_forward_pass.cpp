@@ -302,7 +302,7 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	outlineTransform.rotation = transform.rotation;
 	outlineTransform.scale = transform.scale + thickness;
 	Transform::evaluate(outlineTransform);
-	Transform::createMvp(outlineTransform, viewProjection);
+	Transform::evaluateMvp(outlineTransform, viewProjection);
 
 	// Render mesh as outline
 	shader = selectionMaterial->getShader();

@@ -8,14 +8,21 @@
 
 void PreprocessorPass::perform(glm::mat4 viewProjection)
 {
+	auto transforms = ECS::gRegistry.view<TransformComponent>();
+
 	// Evaluate transforms
-	for (TransformComponent* transform : ECS::getTransformQueue()) {
-		Transform::evaluate(*transform);
-		Transform::createMvp(*transform, viewProjection);
+	for (auto [entity, transform] : transforms.each()) {
+		// Initiate recursive evaluation for root transforms
+		if (!Transform::hasParent(transform)) {
+			Transform::evaluateRecursive(transform);
+		}
+
+		// Evaluate transforms model-view-projection
+		Transform::evaluateMvp(transform, viewProjection);
 	}
 
-	// Reset transforms modification state
-	for (TransformComponent* transform : ECS::getTransformQueue()) {
-		transform->modified = false;
+	// Create mvp matrix and reset modification state
+	for (auto [entity, transform] : transforms.each()) {
+		transform.modified = false;
 	}
 }

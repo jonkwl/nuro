@@ -168,8 +168,9 @@ namespace InspectableComponents {
 			IMComponents::input("Position", transform.position);
 			IMComponents::input("Rotation", rotationTmp);
 			IMComponents::input("Scale", transform.scale);
-			if (Transform::hasParent(transform)) IMComponents::label("Parent: " + Transform::fetchParent(transform).depth);
+			if (Transform::hasParent(transform)) IMComponents::label("Parent: " + Transform::fetchParent(transform).name);
 			IMComponents::label("Depth: " + std::to_string(transform.depth));
+			IMComponents::label("ID: " + std::to_string(transform.id));
 
 			_endComponent();
 		}

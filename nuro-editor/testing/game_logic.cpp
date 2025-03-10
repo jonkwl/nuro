@@ -106,6 +106,12 @@ void _physics_example() {
 	Transform::setScale(playerChild.transform(), glm::vec3(0.5f));
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
+	// Second child
+	EntityContainer secondChild(ECS::createEntity("Second Child", playerChild.handle()));
+	Transform::setPosition(secondChild.transform(), glm::vec3(-2.5f, 0.0f, 0.0f));
+	Transform::setScale(secondChild.transform(), glm::vec3(0.6f));
+	secondChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
+
 	// Cube batch
 	int objectAmount = 128;
 	uint32_t c = 1;

@@ -10,25 +10,16 @@
 
 namespace ECS {
 
-	TransformQueue gTransformQueue;
+	// Global id counter
+	uint32_t gIdCounter = 0;
+
+	// Global render queue
 	RenderQueue gRenderQueue;
 
-	// Creates the transform queue
-	void _sortTransforms()
-	{
-		// Clear transforms
-		gTransformQueue.clear();
-
-		// Collect all transforms
-		auto targets = ECS::gRegistry.view<TransformComponent>();
-		for (auto [entity, transform] : targets.each()) {
-			gTransformQueue.push_back(&transform);
-		}
-
-		// Sort entities by depth
-		std::sort(gTransformQueue.begin(), gTransformQueue.end(), [](TransformComponent* a, TransformComponent* b) {
-			return a->depth < b->depth;
-			});
+	// Return unique id
+	uint32_t _getId() {
+		gIdCounter++;
+		return gIdCounter;
 	}
 
 	// Inserts the target entity and its mesh renderer component to the render queue
@@ -123,13 +114,10 @@ namespace ECS {
 		// Create new entity and emplace transform component
 		Entity entity = gRegistry.create();
 		TransformComponent& transform = gRegistry.emplace<TransformComponent>(entity);
-		
-		// Set transforms name
-		transform.name = name;
 
-		// Sort transform queue
-		// Note: Can be optimized by inserting transform instead of recreating transform queue
-		_sortTransforms();
+		// Set transform data
+		transform.id = _getId();
+		transform.name = name;
 
 		// Return entity and transform component
 		return std::tuple<Entity, TransformComponent&>(entity, transform);
@@ -142,17 +130,18 @@ namespace ECS {
 
 		// Link parent to transform
 		transform.parent = parent;
+
+		// Fetch parent
+		TransformComponent& parentTransform = Transform::fetchParent(transform);
+
+		// Add to parents children
+		parentTransform.children.push_back(entity);
 		 
-		// Evaluate transforms hierarchy depth
-		transform.depth = Transform::fetchParent(transform).depth + 1;
+		// Evaluate hierarchy depth
+		transform.depth = parentTransform.depth + 1;
 
 		// Return entity and transform component
 		return std::tuple<Entity, TransformComponent&>(entity, transform);
-	}
-
-	const TransformQueue& getTransformQueue()
-	{
-		return gTransformQueue;
 	}
 
 	const RenderQueue& getRenderQueue()

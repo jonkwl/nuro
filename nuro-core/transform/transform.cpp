@@ -50,7 +50,18 @@ namespace Transform {
 		transform.normal = Transformation::normal(transform.model);
 	}
 
-	void createMvp(TransformComponent& transform, const glm::mat4& viewProjection)
+	void evaluateRecursive(TransformComponent& transform)
+	{
+		// Evaluate transform
+		evaluate(transform);
+
+		// Evaluate children recursively
+		for (Entity child : transform.children) {
+			evaluateRecursive(ECS::gRegistry.get<TransformComponent>(child));
+		}
+	}
+
+	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection)
 	{
 		transform.mvp = viewProjection * transform.model;
 	}

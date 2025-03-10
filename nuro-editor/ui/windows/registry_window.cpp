@@ -536,24 +536,39 @@ void RegistryWindow::updateCameraMovement()
 	}
 }
 
-void RegistryWindow::buildSceneHierarchy()
-{
-	// Temporary scene serialization
-
+void RegistryWindow::buildSceneHierarchy() {
+	// Clear the current hierarchy before rebuilding
 	currentHierarchy.clear();
 
+	// Get all transforms
 	auto transforms = ECS::gRegistry.view<TransformComponent>();
 	std::vector<std::pair<entt::entity, TransformComponent>> transformList;
 
+	// Fill transform list for reversed iteration
 	for (auto [entity, transform] : transforms.each()) {
 		transformList.push_back({ entity, transform });
 	}
 
-	uint32_t i = 1;
+	// Recursively build root entities in reverse
 	for (auto it = transformList.rbegin(); it != transformList.rend(); ++it) {
 		auto& [entity, transform] = *it;
-		currentHierarchy.push_back(HierarchyItem(i, EntityContainer(entity), {}));
-		i++;
+		if (!Transform::hasParent(transform)) {
+			HierarchyItem item(transform.id, EntityContainer(entity), {});
+			buildHierarchyRecursive(entity, item);
+			currentHierarchy.push_back(item);
+		}
+	}
+}
+
+void RegistryWindow::buildHierarchyRecursive(Entity entity, HierarchyItem& parentItem) {
+	// Get transform component
+	TransformComponent& transform = ECS::gRegistry.get<TransformComponent>(entity);
+
+	// Recursively build children
+	for (Entity child : transform.children) {
+		HierarchyItem item(transform.id, EntityContainer(child), {});
+		buildHierarchyRecursive(child, item);
+		parentItem.children.push_back(item);
 	}
 }
 

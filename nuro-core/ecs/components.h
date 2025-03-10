@@ -20,10 +20,13 @@ struct TransformComponent {
 	// GENERAL
 	//
 
+	// Unique id of entity
+	uint32_t id = 0;
+
 	// Name of entity
 	std::string name;
 
-	// Set if transform has been modified and therefore needs to be evaluated (also initially set)
+	// Set if transform was modified and needs to be evaluated (initially set)
 	bool modified = true;
 
 	//
@@ -43,20 +46,11 @@ struct TransformComponent {
 	// HIERARCHY
 	//
 
-	// Node for entity linked list
-	struct EntityNode {
-		Entity entity;
-		EntityNode* next = nullptr;
-
-		EntityNode(Entity entity) : entity(entity) {}
-		~EntityNode() { delete next; }
-	};
-
 	// Optional parent
 	Entity parent = entt::null;
 
-	// Head of children linked list
-	EntityNode* children = nullptr;
+	// List of children
+	std::vector<Entity> children;
 
 	// Transforms depth in hierarchy
 	uint32_t depth = 0;
