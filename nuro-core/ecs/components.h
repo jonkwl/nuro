@@ -39,6 +39,9 @@ struct TransformComponent {
 	// Current rotation of transform in local space
 	glm::quat rotation = glm::identity<glm::quat>();
 
+	// Current reflected euler angles of transform in local space
+	glm::vec3 eulerAnlges = glm::vec3(0.0f);
+
 	// Current scale of transform in local space
 	glm::vec3 scale = glm::vec3(1.0f);
 
@@ -51,9 +54,6 @@ struct TransformComponent {
 
 	// List of children
 	std::vector<Entity> children;
-
-	// Transforms depth in hierarchy
-	uint32_t depth = 0;
 
 	//
 	// MATRIX CACHE

@@ -68,11 +68,11 @@ namespace Transform {
 
 	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space)
 	{
-		// Set position in local space
+		// Local space
 		if (space == Space::LOCAL) {
 			transform.position = position;
 		}
-		// Set position in world space
+		// World space
 		else {
 
 		}
@@ -81,11 +81,28 @@ namespace Transform {
 
 	void setRotation(TransformComponent& transform, const glm::quat& rotation, Space space)
 	{
-		// Set rotation in local space
+		// Local space
 		if (space == Space::LOCAL) {
 			transform.rotation = rotation;
+
+			// Lossy euler angles synchronization
+			transform.eulerAnlges = glm::degrees(glm::eulerAngles(rotation));
 		}
-		// Set rotation in world space
+		// World space
+		else {
+
+		}
+		transform.modified = true;
+	}
+
+	void setEulerAngles(TransformComponent& transform, const glm::vec3& eulerAngles, Space space)
+	{
+		// Local space
+		if (space == Space::LOCAL) {
+			transform.rotation = glm::quat(glm::radians(eulerAngles));
+			transform.eulerAnlges = eulerAngles;
+		}
+		// World space
 		else {
 
 		}
@@ -94,43 +111,39 @@ namespace Transform {
 
 	void setScale(TransformComponent& transform, const glm::vec3& scale, Space space)
 	{
-		// Set scale in local space
+		// Local space
 		if (space == Space::LOCAL) {
 			transform.scale = scale;
 		}
-		// Set scale in world space
+		// World space
 		else {
 
 		}
 		transform.modified = true;
 	}
 
-	// Get position in specified space
 	glm::vec3 getPosition(TransformComponent& transform, Space space)
 	{
-		// Return position in local space (no evaluation needed)
+		// Local space
 		if (space == Space::LOCAL) {
 			return transform.position;
 		}
-		// Extract position from world transform matrix
+		// World space
 		else {
 			return Transformation::toBackendPosition(glm::vec3(transform.model[3]));
 		}
 	}
 
-	// Get rotation in specified space
 	glm::quat getRotation(TransformComponent& transform, Space space)
 	{
-		// Return rotation in local space (no evaluation needed)
+		// Local space
 		if (space == Space::LOCAL) {
 			return transform.rotation;
 		}
-		// Extract rotation from world transform matrix
+		// World space
 		else {
-			// Extract rotation from the model matrix by removing scale
 			glm::mat3 rotationMatrix(transform.model);
 
-			// Normalize each column to remove scale influence
 			glm::vec3 col0 = glm::normalize(glm::vec3(rotationMatrix[0]));
 			glm::vec3 col1 = glm::normalize(glm::vec3(rotationMatrix[1]));
 			glm::vec3 col2 = glm::normalize(glm::vec3(rotationMatrix[2]));
@@ -139,21 +152,30 @@ namespace Transform {
 			rotationMatrix[1] = col1;
 			rotationMatrix[2] = col2;
 
-			// Convert the orthonormal 3x3 matrix to a quaternion
 			return Transformation::toBackendRotation(glm::quat_cast(rotationMatrix));
 		}
 	}
 
-	// Get scale in specified space
+	glm::vec3 getEulerAngles(TransformComponent& transform, Space space)
+	{
+		// Local space
+		if (space == Space::LOCAL) {
+			return transform.eulerAnlges;
+		}
+		// World space
+		else {
+			return glm::vec3(0.0f);
+		}
+	}
+
 	glm::vec3 getScale(TransformComponent& transform, Space space)
 	{
-		// Return scale in local space (no evaluation needed)
+		// Local space
 		if (space == Space::LOCAL) {
 			return transform.scale;
 		}
-		// Extract scale from world transform matrix
+		// World space
 		else {
-			// Extract scale by getting the length of each basis vector
 			return glm::vec3(
 				glm::length(glm::vec3(transform.model[0])),
 				glm::length(glm::vec3(transform.model[1])),
@@ -164,11 +186,11 @@ namespace Transform {
 
 	void translate(TransformComponent& transform, const glm::vec3& position, Space space)
 	{
-		// Set position in local space
+		// Local space
 		if (space == Space::LOCAL) {
 			transform.position += position;
 		}
-		// Set position in world space
+		// World space
 		else {
 
 		}
@@ -177,11 +199,11 @@ namespace Transform {
 
 	void rotate(TransformComponent& transform, const glm::quat& rotation, Space space)
 	{
-		// Set rotation in local space
+		// Local space
 		if (space == Space::LOCAL) {
 			transform.rotation = rotation * transform.rotation;
 		}
-		// Set rotation in world space
+		// World space
 		else {
 
 		}
@@ -190,11 +212,11 @@ namespace Transform {
 
 	void scale(TransformComponent& transform, const glm::vec3& scale, Space space)
 	{
-		// Set scale in local space
+		// Local space
 		if (space == Space::LOCAL) {
 			transform.scale *= scale;
 		}
-		// Set scale in world space
+		// World space
 		else {
 
 		}

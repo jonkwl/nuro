@@ -164,18 +164,21 @@ namespace InspectableComponents {
 		if (_beginComponent("Transform", IconPool::get("transform"), nullptr, nullptr, true))
 		{
 			_headline("Properties");
-			glm::vec3 rotationTmp = glm::degrees(glm::eulerAngles(transform.rotation));
 			IMComponents::input("Position", transform.position);
-			IMComponents::input("Rotation", rotationTmp);
+			IMComponents::input("Rotation", transform.eulerAnlges);
 			IMComponents::input("Scale", transform.scale);
 			if (Transform::hasParent(transform)) IMComponents::label("Parent: " + Transform::fetchParent(transform).name);
-			IMComponents::label("Depth: " + std::to_string(transform.depth));
 			IMComponents::label("ID: " + std::to_string(transform.id));
 
 			if (Transform::hasParent(transform)) {
 				glm::vec3 worldPos = Transform::getPosition(transform, Space::WORLD);
 				IMComponents::label("World X: " + std::to_string(worldPos.x) + " Y: " + std::to_string(worldPos.y) + " Z: " + std::to_string(worldPos.z));
 			}
+
+			// tmp
+			Transform::setPosition(transform, transform.position);
+			Transform::setEulerAngles(transform, transform.eulerAnlges);
+			Transform::setScale(transform, transform.scale);
 
 			_endComponent();
 		}

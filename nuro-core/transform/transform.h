@@ -38,10 +38,12 @@ namespace Transform
 
 	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space = Space::LOCAL);
 	void setRotation(TransformComponent& transform, const glm::quat& rotation, Space space = Space::LOCAL);
+	void setEulerAngles(TransformComponent& transform, const glm::vec3& eulerAngles, Space space = Space::LOCAL);
 	void setScale(TransformComponent& transform, const glm::vec3& scale, Space space = Space::LOCAL);
 
 	glm::vec3 getPosition(TransformComponent& transform, Space space = Space::LOCAL);
 	glm::quat getRotation(TransformComponent& transform, Space space = Space::LOCAL);
+	glm::vec3 getEulerAngles(TransformComponent& transform, Space space = Space::LOCAL);
 	glm::vec3 getScale(TransformComponent& transform, Space space = Space::LOCAL);
 
 	void translate(TransformComponent& transform, const glm::vec3& position, Space space = Space::LOCAL);
