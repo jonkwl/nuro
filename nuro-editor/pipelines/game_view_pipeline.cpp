@@ -60,7 +60,7 @@ void GameViewPipeline::render()
 	auto& [cameraTransform, cameraHandle] = camera;
 
 	// Get transformation matrices
-	glm::mat4 view = Transformation::view(cameraTransform.position, cameraTransform.rotation);
+	glm::mat4 view = Transformation::view(Transform::getPosition(cameraTransform, Space::WORLD), Transform::getRotation(cameraTransform, Space::WORLD));
 	glm::mat4 projection = Transformation::projection(cameraHandle.fov, viewport.getAspect(), cameraHandle.near, cameraHandle.far);
 	glm::mat4 viewProjection = projection * view;
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));

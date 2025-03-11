@@ -41,6 +41,14 @@ void _physics_example() {
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
 
+	// Head
+	EntityContainer head = EntityContainer(ECS::createEntity("Head"));
+
+	// Camera
+	camera = EntityContainer(ECS::createEntity("Camera", head.handle()));
+	Transform::setPosition(camera.transform(), glm::vec3(5.0f, 0.0f, 0.0f));
+	camera.add<CameraComponent>();
+
 	// Directional light (sun)
 	EntityContainer sun(ECS::createEntity("Sun"));
 	DirectionalLightComponent& sunLight = sun.add<DirectionalLightComponent>();
@@ -57,7 +65,7 @@ void _physics_example() {
 	pointLightSource.falloff = 15.0f;
 
 	// Sample spotlight
-	EntityContainer flashlight(ECS::createEntity("Flashlight"));
+	EntityContainer flashlight(ECS::createEntity("Flashlight", camera.handle()));
 	Transform::setPosition(flashlight.transform(), glm::vec3(0.0f, 6.0f, 5.0f));
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
 	flashlightSource.intensity = 10.0f;
@@ -66,11 +74,6 @@ void _physics_example() {
 	flashlightSource.falloff = 10.0f;
 	flashlightSource.innerAngle = 45.0f;
 	flashlightSource.outerAngle = 90.0f;
-
-	// Camera
-	camera = EntityContainer(ECS::createEntity("Camera"));
-	Transform::setPosition(camera.transform(), glm::vec3(5.0f, 0.0f, 0.0f));
-	camera.add<CameraComponent>();
 
 	// Ground
 	EntityContainer ground(ECS::createEntity("Ground"));

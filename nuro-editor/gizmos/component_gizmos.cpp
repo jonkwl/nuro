@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include <transform/transform.h>
+
 #include "../gizmos/editor_gizmo_color.h"
 #include "../reflection/component_registry.h"
 
@@ -28,7 +30,7 @@ namespace ComponentGizmos {
 		gizmos.foreground = true;
 		gizmos.color = EditorGizmoColor::CAMERA;
 		gizmos.opacity = EditorGizmoColor::CAMERA.a;
-		gizmos.boxWire(transform.position, glm::vec3(2.0f), transform.rotation);
+		gizmos.boxWire(Transform::getPosition(transform, Space::WORLD), glm::vec3(2.0f), Transform::getRotation(transform, Space::WORLD));
 	}
 
 	void drawBoxCollider(IMGizmo& gizmos, TransformComponent& transform, BoxColliderComponent& boxCollider)
@@ -36,7 +38,7 @@ namespace ComponentGizmos {
 		gizmos.foreground = true;
 		gizmos.color = EditorGizmoColor::COLLIDER;
 		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
-		gizmos.boxWire(transform.position, boxCollider.size, transform.rotation);
+		gizmos.boxWire(Transform::getPosition(transform, Space::WORLD), boxCollider.size, Transform::getRotation(transform, Space::WORLD));
 	}
 
 	void drawSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider)
@@ -44,7 +46,7 @@ namespace ComponentGizmos {
 		gizmos.foreground = true;
 		gizmos.color = EditorGizmoColor::COLLIDER;
 		gizmos.opacity = EditorGizmoColor::COLLIDER.a;
-		gizmos.sphereWire(transform.position, sphereCollider.radius, transform.rotation);
+		gizmos.sphereWire(Transform::getPosition(transform, Space::WORLD), sphereCollider.radius, Transform::getRotation(transform, Space::WORLD));
 	}
 
 }

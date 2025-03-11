@@ -68,8 +68,6 @@ namespace Transform {
 
 	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space)
 	{
-		if (position == transform.position) return;
-
 		// Set position in local space
 		if (space == Space::LOCAL) {
 			transform.position = position;
@@ -105,6 +103,63 @@ namespace Transform {
 
 		}
 		transform.modified = true;
+	}
+
+	// Get position in specified space
+	glm::vec3 getPosition(TransformComponent& transform, Space space)
+	{
+		// Return position in local space (no evaluation needed)
+		if (space == Space::LOCAL) {
+			return transform.position;
+		}
+		// Extract position from world transform matrix
+		else {
+			return Transformation::toBackendPosition(glm::vec3(transform.model[3]));
+		}
+	}
+
+	// Get rotation in specified space
+	glm::quat getRotation(TransformComponent& transform, Space space)
+	{
+		// Return rotation in local space (no evaluation needed)
+		if (space == Space::LOCAL) {
+			return transform.rotation;
+		}
+		// Extract rotation from world transform matrix
+		else {
+			// Extract rotation from the model matrix by removing scale
+			glm::mat3 rotationMatrix(transform.model);
+
+			// Normalize each column to remove scale influence
+			glm::vec3 col0 = glm::normalize(glm::vec3(rotationMatrix[0]));
+			glm::vec3 col1 = glm::normalize(glm::vec3(rotationMatrix[1]));
+			glm::vec3 col2 = glm::normalize(glm::vec3(rotationMatrix[2]));
+
+			rotationMatrix[0] = col0;
+			rotationMatrix[1] = col1;
+			rotationMatrix[2] = col2;
+
+			// Convert the orthonormal 3x3 matrix to a quaternion
+			return Transformation::toBackendRotation(glm::quat_cast(rotationMatrix));
+		}
+	}
+
+	// Get scale in specified space
+	glm::vec3 getScale(TransformComponent& transform, Space space)
+	{
+		// Return scale in local space (no evaluation needed)
+		if (space == Space::LOCAL) {
+			return transform.scale;
+		}
+		// Extract scale from world transform matrix
+		else {
+			// Extract scale by getting the length of each basis vector
+			return glm::vec3(
+				glm::length(glm::vec3(transform.model[0])),
+				glm::length(glm::vec3(transform.model[1])),
+				glm::length(glm::vec3(transform.model[2]))
+			);
+		}
 	}
 
 	void translate(TransformComponent& transform, const glm::vec3& position, Space space)

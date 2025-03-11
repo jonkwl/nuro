@@ -172,6 +172,11 @@ namespace InspectableComponents {
 			IMComponents::label("Depth: " + std::to_string(transform.depth));
 			IMComponents::label("ID: " + std::to_string(transform.id));
 
+			if (Transform::hasParent(transform)) {
+				glm::vec3 worldPos = Transform::getPosition(transform, Space::WORLD);
+				IMComponents::label("World X: " + std::to_string(worldPos.x) + " Y: " + std::to_string(worldPos.y) + " Z: " + std::to_string(worldPos.z));
+			}
+
 			_endComponent();
 		}
 	}

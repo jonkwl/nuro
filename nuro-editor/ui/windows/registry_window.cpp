@@ -505,9 +505,9 @@ void RegistryWindow::updateCameraMovement()
 	TransformComponent& targetTransform = *cameraTarget;
 
 	// Get targets
-	float distance = 5.0f + cameraTarget->scale.z;
-	glm::vec3 targetPosition = targetTransform.position + Transform::backward(targetTransform) * distance;
-	glm::quat targetRotation = Transform::lookFromAt(targetPosition, targetTransform);
+	float distance = 5.0f + Transform::getScale(targetTransform, Space::WORLD).z;
+	glm::vec3 targetPosition = Transform::getPosition(targetTransform, Space::WORLD) + glm::vec3(0.0f, 0.0f, -1.0f) * distance;
+	// glm::quat targetRotation = Transform::lookFromAt(targetPosition, targetTransform);
 
 	float duration = 0.5f;
 	if (cameraMovementTime < duration) {
@@ -516,11 +516,11 @@ void RegistryWindow::updateCameraMovement()
 
 		// Get smoothed targets
 		glm::vec3 newPosition = glm::mix(cameraTransform.position, targetPosition, t);
-		glm::quat newRotation = glm::slerp(cameraTransform.rotation, targetRotation, t);
+		// glm::quat newRotation = glm::slerp(cameraTransform.rotation, targetRotation, t);
 
 		// Set new position and rotation
 		cameraTransform.position = newPosition;
-		cameraTransform.rotation = newRotation;
+		// cameraTransform.rotation = newRotation;
 
 		// Add to elapsed camera movement time
 		cameraMovementTime += Time::deltaf();
@@ -528,7 +528,7 @@ void RegistryWindow::updateCameraMovement()
 	else {
 		// Stop camera movement
 		cameraTransform.position = targetPosition;
-		cameraTransform.rotation = targetRotation;
+		// cameraTransform.rotation = targetRotation;
 
 		// Reset
 		cameraMoving = false;

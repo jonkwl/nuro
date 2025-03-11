@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cctype>
 
+#include <transform/transform.h>
+
 #include "../gizmos/component_gizmos.h"
 #include "../ui/components/inspectable_components.h"
 
@@ -84,7 +86,7 @@ namespace ComponentRegistry
 
                 // Render scene view icon for each component instance
                 for (auto [entity, transform, component] : ECS::gRegistry.view<TransformComponent, T>().each()) {
-                    gizmos.icon3d(IconPool::get(sceneIcon), transform.position, cameraTransform);
+                    gizmos.icon3d(IconPool::get(sceneIcon), Transform::getPosition(transform, Space::WORLD), cameraTransform);
                 }
 
             }

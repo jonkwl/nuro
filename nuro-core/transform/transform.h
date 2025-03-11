@@ -33,12 +33,16 @@ namespace Transform
 	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection);
 
 	//
-	// TRANSFORM GETTERS & SETTERS
+	// TRANSFORMATION
 	//
 
 	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space = Space::LOCAL);
 	void setRotation(TransformComponent& transform, const glm::quat& rotation, Space space = Space::LOCAL);
 	void setScale(TransformComponent& transform, const glm::vec3& scale, Space space = Space::LOCAL);
+
+	glm::vec3 getPosition(TransformComponent& transform, Space space = Space::LOCAL);
+	glm::quat getRotation(TransformComponent& transform, Space space = Space::LOCAL);
+	glm::vec3 getScale(TransformComponent& transform, Space space = Space::LOCAL);
 
 	void translate(TransformComponent& transform, const glm::vec3& position, Space space = Space::LOCAL);
 	void rotate(TransformComponent& transform, const glm::quat& rotation, Space space = Space::LOCAL);
