@@ -66,7 +66,7 @@ void Cubemap::loadData()
 {
 	switch (source.type) {
 	case Source::Type::CROSS:
-		if (source.paths.size() < 1) return;
+		if (source.paths.empty()) return;
 		loadCrossCubemap(source.paths[0]);
 		break;
 	case Source::Type::INDIVIDUAL:

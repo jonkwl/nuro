@@ -19,7 +19,7 @@ SceneViewPipeline::SceneViewPipeline() : wireframe(false),
 useProfileEffects(true),
 showSkybox(false),
 showGizmos(true),
-renderShadows(true),
+renderingShadows(true),
 viewport(),
 msaaSamples(4),
 defaultProfile(),
@@ -75,6 +75,8 @@ void SceneViewPipeline::render()
 
 	// Pick variable items for rendering
 	Camera& camera = flyCamera;
+	
+	// Get camera bindings
 	auto& [cameraTransform, cameraHandle] = camera;
 
 	// Select game profile if profile effects are enabled and not rendering wireframe
@@ -131,7 +133,7 @@ void SceneViewPipeline::render()
 	LitMaterial::cameraTransform = &cameraTransform; // Redundant most of the times atm
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &targetProfile;
-	LitMaterial::castShadows = renderShadows;
+	LitMaterial::castShadows = renderingShadows;
 	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
 	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
 

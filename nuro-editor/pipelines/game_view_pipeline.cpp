@@ -52,12 +52,12 @@ void GameViewPipeline::render()
 	// Get active camera
 	auto _camera = ECS::getLatestCamera();
 	if (!_camera) {
+		// No camera available, cancel rendering
 		cameraAvailable = false;
 		return;
 	}
 	cameraAvailable = true;
-	Camera& camera = *_camera;
-	auto& [cameraTransform, cameraHandle] = camera;
+	auto& [cameraTransform, cameraHandle] = *_camera;
 
 	// Get transformation matrices
 	glm::mat4 view = Transformation::view(Transform::getPosition(cameraTransform, Space::WORLD), Transform::getRotation(cameraTransform, Space::WORLD));

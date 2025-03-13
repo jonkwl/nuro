@@ -6,6 +6,7 @@
 #include <stb_image_write.h>
 
 #include <utils/console.h>
+#include <transform/transform.h>
 #include <rendering/model/mesh.h>
 #include <rendering/shader/shader_pool.h>
 #include <rendering/transformation/transformation.h>
@@ -91,7 +92,7 @@ void ShadowMap::castShadows(SpotlightComponent& spotlight, TransformComponent& t
 {
 	glm::vec3 direction = glm::vec3(0.0f, 0.0f, 1.0f); // tmp
 
-	glm::mat4 view = getView(transform.position, direction);
+	glm::mat4 view = getView(Transform::getPosition(transform, Space::WORLD), direction);
 	glm::mat4 projection = getProjectionPerspective(spotlight.outerAngle, 1.0f, 0.3f, spotlight.range);
 	
 	renderSingular(view, projection);

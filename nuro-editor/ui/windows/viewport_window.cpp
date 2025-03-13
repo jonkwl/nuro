@@ -63,7 +63,7 @@ gizmoScaleMin(0.1f)
 	// Setup main toggles
 	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
 	mainToggles.addItem(ICON_FA_CUBE, pipeline.wireframe);
-	mainToggles.addItem(ICON_FA_ECLIPSE, pipeline.renderShadows);
+	mainToggles.addItem(ICON_FA_ECLIPSE, pipeline.renderingShadows);
 	mainToggles.addItem(ICON_FA_SUN, pipeline.showSkybox);
 	mainToggles.addItem(ICON_FA_SPARKLES, pipeline.useProfileEffects);
 	mainToggles.addItem(ICON_FA_DRAW_SQUARE, pipeline.showGizmos);
@@ -233,49 +233,35 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 
 void ViewportWindow::renderTransformGizmos()
 {
+	// Fetch selected entities
 	const std::vector<EntityContainer*>& selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
-
-	if (selectedEntities.size() < 1) return;
-
+	if (selectedEntities.empty()) return;
 	EntityContainer* selected = selectedEntities[0];
 
 	// Dont render transform gizmos if scene view is interacted with
 	if (sceneViewRightclicked || sceneViewMiddleclicked) return;
 
-	// Get boundaries
+	// Setup gizmo viewport
 	ImVec2 itemPosition = ImGui::GetItemRectMin();
 	ImVec2 itemSize = ImGui::GetItemRectSize();
-	float itemX = itemPosition.x;
-	float itemY = itemPosition.y;
-	float itemWidth = itemSize.x;
-	float itemHeight = itemSize.y;
-
-	// Setup imguizmo
 	ImGuizmo::SetOrthographic(false);
 	ImGuizmo::SetDrawlist();
-	ImGuizmo::SetRect(itemX, itemY, itemWidth, itemHeight);
+	ImGuizmo::SetRect(itemPosition.x, itemPosition.y, itemSize.x, itemSize.y);
 
-	// Change gizmo operation if issued
+	// Change gizmo operation
 	if (windowFocused) {
-		if (Input::command(Key::T)) {
-			gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-		}
-		else if (Input::command(Key::R)) {
-			gizmoOperation = ImGuizmo::OPERATION::ROTATE;
-		}
-		else if (Input::command(Key::S)) {
-			gizmoOperation = ImGuizmo::OPERATION::SCALE;
-		}
+		if (Input::command(Key::T)) gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		else if (Input::command(Key::R)) gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		else if (Input::command(Key::S)) gizmoOperation = ImGuizmo::OPERATION::SCALE;
 	}
 
-	// Get gizmo model matrix
+	// Copy transforms model matrix
 	TransformComponent& transform = selected->get<TransformComponent>();
-	glm::mat4 model = Transformation::model(transform.position, transform.rotation, transform.scale);
-	if (Transform::hasParent(transform)) model = Transform::fetchParent(transform).model * model;
+	glm::mat4 model = transform.model;
 
-	// Check for snapping
+	// Snapping
 	bool snapping = Input::keyDown(Key::LEFT_CONTROL);
-	float snapValue = gizmoOperation == ImGuizmo::OPERATION::ROTATE ? 45.0f : 0.5f; // Snap to 45 degrees if rotating or 0.5 units otherwise
+	float snapValue = gizmoOperation == ImGuizmo::OPERATION::ROTATE ? 45.0f : 0.5f; // Snap 0.5 units or 45 degrees for rotating
 	const float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	// Draw transformation gizmo
@@ -289,36 +275,27 @@ void ViewportWindow::renderTransformGizmos()
 		glm::value_ptr(delta),
 		snapping ? snapValues : nullptr);
 
-	// Update entities transform if gizmo is being used
+	// Update entities transform if gizmo is used
 	if (ImGuizmo::IsUsing()) {
-		// Get components from transform matrix
+		// Get components from transformation
 		glm::vec3 positionDelta, scaleDelta, skewDelta;
 		glm::vec4 perspectiveDelta;
 		glm::quat rotationDelta;
 		glm::decompose(delta, scaleDelta, rotationDelta, positionDelta, skewDelta, perspectiveDelta);
 
-		// Update transforms position
+		// Update position
 		Transform::translate(transform, Transformation::toBackendPosition(positionDelta));
 
-		// Update transforms rotation
-		// transform.rotation = Transformation::toBackendRotation(rotationDelta) * transform.rotation;
+		// Update rotation
+		Transform::rotate(transform, Transformation::toBackendRotation(glm::normalize(rotationDelta)));
 
-		// Get transforms new scale
-		glm::vec3 newScale = transform.scale * scaleDelta;
-
-		// Dont change scale axis, if it's being decreased and is smaller than minimum
-		if (newScale.x < transform.scale.x && newScale.x < gizmoScaleMin) {
-			newScale.x = transform.scale.x;
-		}
-		if (newScale.y < transform.scale.y && newScale.y < gizmoScaleMin) {
-			newScale.y = transform.scale.y;
-		}
-		if (newScale.z < transform.scale.z && newScale.z < gizmoScaleMin) {
-			newScale.z = transform.scale.z;
-		}
-
-		// Apply new scale
-		Transform::scale(transform, newScale);
+		// Update scale
+		/*glm::vec3 newScale = transform.scale * scaleDelta;
+		newScale.x = (newScale.x < transform.scale.x && newScale.x < gizmoScaleMin) ? transform.scale.x : newScale.x;
+		newScale.y = (newScale.y < transform.scale.y && newScale.y < gizmoScaleMin) ? transform.scale.y : newScale.y;
+		newScale.z = (newScale.z < transform.scale.z && newScale.z < gizmoScaleMin) ? transform.scale.z : newScale.z;
+		newScale = glm::max(newScale, glm::min(transform.scale, gizmoScaleMin));
+		Transform::scale(transform, newScale);*/
 	}
 }
 

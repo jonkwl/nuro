@@ -107,7 +107,7 @@ add_custom_command(TARGET nuro-editor POST_BUILD
 	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/nuro-editor/examples/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/examples/"
 	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/nuro-core/shaders/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/shaders/"
 
-	COMMAND "${CMAKE_COMMAND}" -E copy_if_different  "${CMAKE_SOURCE_DIR}/nuro-editor/layouts/imgui.ini" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/"
+	COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_SOURCE_DIR}/nuro-editor/layouts/imgui.ini" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/"
 	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/resources/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/resources/"
 	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/nuro-editor/examples/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/examples/"
 	COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/nuro-core/shaders/" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/shaders/"

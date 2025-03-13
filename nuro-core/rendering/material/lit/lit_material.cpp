@@ -72,7 +72,7 @@ void LitMaterial::bind() const
 
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", mainShadowMap->getLightSpace());
-	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(cameraTransform->position));
+	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(Transform::getPosition(*cameraTransform, Space::WORLD)));
 
 	// General configuration
 	shader->setFloat("configuration.gamma", profile->color.gamma);

@@ -55,7 +55,7 @@ public:
 	bool showGizmos;
 
 	// Enable or disable shadows
-	bool renderShadows;
+	bool renderingShadows;
 
 	// Updates the msaa samples of the scene view
 	void updateMsaaSamples(uint32_t msaaSamples);
