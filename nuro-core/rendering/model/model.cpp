@@ -311,9 +311,9 @@ void Model::finalizeMetrics()
 {
 	// Calculate models center and transform to world space
 	metrics.origin = (metrics.minPoint + metrics.maxPoint) * 0.5f;
-	metrics.origin = Transformation::toBackendPosition(metrics.origin);
+	metrics.origin = Transformation::swap(metrics.origin);
 
 	// Average centroid and transform to world space
 	metrics.centroid /= metrics.nVertices;
-	metrics.centroid = Transformation::toBackendPosition(metrics.centroid);
+	metrics.centroid = Transformation::swap(metrics.centroid);
 }

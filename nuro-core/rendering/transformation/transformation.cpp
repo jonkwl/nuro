@@ -5,15 +5,13 @@
 
 namespace Transformation {
 
-	glm::vec3 toBackendPosition(const glm::vec3& position)
+	glm::vec3 swap(const glm::vec3& position)
 	{
-		// Use to convert left handed coordinates to right handed coordinates backend uses
 		return glm::vec3(position.x, position.y, -position.z);
 	}
 
-	glm::quat toBackendRotation(const glm::quat& rotation)
+	glm::quat swap(const glm::quat& rotation)
 	{
-		// Use to convert left handed rotation to right handed rotation backend uses
 		return glm::quat(rotation.w, -rotation.x, -rotation.y, rotation.z);
 	}
 
@@ -22,13 +20,13 @@ namespace Transformation {
 		glm::mat4 model(1.0f);
 
 		// Convert left handed transform position to right handed position
-		glm::vec3 backendPosition = toBackendPosition(position);
+		glm::vec3 backendPosition = swap(position);
 
 		// Transpose model matrix
 		model = glm::translate(model, backendPosition);
 
 		// Convert left handed rotation to right handed rotation
-		glm::quat backendRotation = toBackendRotation(rotation);
+		glm::quat backendRotation = swap(rotation);
 
 		// Normalize rotation
 		backendRotation = glm::normalize(backendRotation);
@@ -45,8 +43,8 @@ namespace Transformation {
 
 	glm::mat4 view(const glm::vec3& cameraPosition, const glm::quat& cameraRotation)
 	{
-		glm::vec3 position = toBackendPosition(cameraPosition);
-		glm::quat rotation = toBackendRotation(cameraRotation);
+		glm::vec3 position = swap(cameraPosition);
+		glm::quat rotation = swap(cameraRotation);
 
 		// Normalize rotation
 		rotation = glm::normalize(rotation);

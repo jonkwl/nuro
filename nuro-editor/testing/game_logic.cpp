@@ -105,7 +105,7 @@ void _physics_example() {
 
 	// Player child
 	EntityContainer playerChild(ECS::createEntity("Player Child", player.handle()));
-	Transform::setPosition(playerChild.transform(), glm::vec3(0.0f, 2.0f, 0.0f));
+	Transform::setPosition(playerChild.transform(), glm::vec3(5.0f, 5.0f, 5.0f), Space::WORLD);
 	Transform::setScale(playerChild.transform(), glm::vec3(0.5f));
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 

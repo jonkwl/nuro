@@ -29,6 +29,9 @@ namespace Transform
 	// Evaluates the given transform and its children recursively
 	void evaluateRecursive(TransformComponent& transform);
 
+	// Evaluates the given transform and its parents recursively
+	void evaluateReversed(TransformComponent& transform);
+
 	// Evaluates the transforms matrix-view-projection matrix using its current model matrix
 	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection);
 

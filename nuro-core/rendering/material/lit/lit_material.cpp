@@ -72,7 +72,7 @@ void LitMaterial::bind() const
 
 	// World parameters
 	shader->setMatrix4("lightSpaceMatrix", mainShadowMap->getLightSpace());
-	shader->setVec3("configuration.cameraPosition", Transformation::toBackendPosition(Transform::getPosition(*cameraTransform, Space::WORLD)));
+	shader->setVec3("configuration.cameraPosition", Transformation::swap(Transform::getPosition(*cameraTransform, Space::WORLD)));
 
 	// General configuration
 	shader->setFloat("configuration.gamma", profile->color.gamma);
@@ -240,9 +240,9 @@ void LitMaterial::syncLightUniforms() const
 
 		if (!directionalLight.enabled) continue;
 		shader->setFloat(uniformArray("directionalLights[].intensity", nDirectionalLights), directionalLight.intensity);
-		shader->setVec3(uniformArray("directionalLights[].direction", nDirectionalLights), Transformation::toBackendPosition(directionalDirection));
+		shader->setVec3(uniformArray("directionalLights[].direction", nDirectionalLights), Transformation::swap(directionalDirection));
 		shader->setVec3(uniformArray("directionalLights[].color", nDirectionalLights), directionalLight.color);
-		shader->setVec3(uniformArray("directionalLights[].position", nDirectionalLights), Transformation::toBackendPosition(directionalPosition));
+		shader->setVec3(uniformArray("directionalLights[].position", nDirectionalLights), Transformation::swap(directionalPosition));
 
 		nDirectionalLights++;
 		if (nDirectionalLights >= maxDirectionalLights) break;
@@ -251,7 +251,7 @@ void LitMaterial::syncLightUniforms() const
 	// Setup all point lights
 	for (auto [entity, transform, pointLight] : pointLights.each()) {
 		if (!pointLight.enabled) continue;
-		shader->setVec3(uniformArray("pointLights[].position", nPointLights), Transformation::toBackendPosition(Transform::getPosition(transform, Space::WORLD)));
+		shader->setVec3(uniformArray("pointLights[].position", nPointLights), Transformation::swap(Transform::getPosition(transform, Space::WORLD)));
 		shader->setVec3(uniformArray("pointLights[].color", nPointLights), pointLight.color);
 		shader->setFloat(uniformArray("pointLights[].intensity", nPointLights), pointLight.intensity);
 		shader->setFloat(uniformArray("pointLights[].range", nPointLights), pointLight.range);
@@ -266,8 +266,8 @@ void LitMaterial::syncLightUniforms() const
 		glm::vec3 spotlightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 
 		if (!spotlight.enabled) continue;
-		shader->setVec3(uniformArray("spotlights[].position", nSpotlights), Transformation::toBackendPosition(Transform::getPosition(transform, Space::WORLD)));
-		shader->setVec3(uniformArray("spotlights[].direction", nSpotlights), Transformation::toBackendPosition(spotlightDirection));
+		shader->setVec3(uniformArray("spotlights[].position", nSpotlights), Transformation::swap(Transform::getPosition(transform, Space::WORLD)));
+		shader->setVec3(uniformArray("spotlights[].direction", nSpotlights), Transformation::swap(spotlightDirection));
 		shader->setVec3(uniformArray("spotlights[].color", nSpotlights), spotlight.color);
 		shader->setFloat(uniformArray("spotlights[].intensity", nSpotlights), spotlight.intensity);
 		shader->setFloat(uniformArray("spotlights[].range", nSpotlights), spotlight.range);
@@ -293,7 +293,7 @@ void LitMaterial::setSampleDirectionalLight() const
 
 	size_t index = 0;
 	shader->setFloat(uniformArray("directionalLights[].intensity", index), 1.0f);
-	shader->setVec3(uniformArray("directionalLights[].direction", index), Transformation::toBackendPosition(glm::vec3(-0.5f, -0.5f, 0.5f)));
+	shader->setVec3(uniformArray("directionalLights[].direction", index), Transformation::swap(glm::vec3(-0.5f, -0.5f, 0.5f)));
 	shader->setVec3(uniformArray("directionalLights[].color", index), glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setVec3(uniformArray("directionalLights[].position", index), Transformation::toBackendPosition(glm::vec3(0.0f, 0.0f, 0.0f)));
+	shader->setVec3(uniformArray("directionalLights[].position", index), Transformation::swap(glm::vec3(0.0f, 0.0f, 0.0f)));
 }

@@ -61,6 +61,17 @@ namespace Transform {
 		}
 	}
 
+	void evaluateReversed(TransformComponent& transform)
+	{
+		if (hasParent(transform)) {
+			TransformComponent& parent = fetchParent(transform);
+			if (parent.modified) evaluateReversed(parent);
+		}
+
+		evaluate(transform);
+		transform.modified = false;
+	}
+
 	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection)
 	{
 		transform.mvp = viewProjection * transform.model;
@@ -69,12 +80,17 @@ namespace Transform {
 	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.position = position;
 		}
-		// World space
+		// World space with parent
 		else {
+			TransformComponent& parent = fetchParent(transform);
+			if (parent.modified) evaluateReversed(parent);
 
+			glm::vec3 worldBackendPos = Transformation::swap(position);
+			glm::vec3 localBackendPos = glm::vec3(glm::inverse(parent.model) * glm::vec4(worldBackendPos, 1.0f));
+			transform.position = Transformation::swap(localBackendPos);
 		}
 		transform.modified = true;
 	}
@@ -82,13 +98,13 @@ namespace Transform {
 	void setRotation(TransformComponent& transform, const glm::quat& rotation, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.rotation = rotation;
 
 			// Lossy euler angles synchronization
 			transform.eulerAnlges = glm::degrees(glm::eulerAngles(rotation));
 		}
-		// World space
+		// World space with parent
 		else {
 
 		}
@@ -98,11 +114,11 @@ namespace Transform {
 	void setEulerAngles(TransformComponent& transform, const glm::vec3& eulerAngles, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.rotation = glm::quat(glm::radians(eulerAngles));
 			transform.eulerAnlges = eulerAngles;
 		}
-		// World space
+		// World space with parent
 		else {
 
 		}
@@ -112,10 +128,10 @@ namespace Transform {
 	void setScale(TransformComponent& transform, const glm::vec3& scale, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.scale = scale;
 		}
-		// World space
+		// World space with parent
 		else {
 
 		}
@@ -125,22 +141,22 @@ namespace Transform {
 	glm::vec3 getPosition(TransformComponent& transform, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			return transform.position;
 		}
-		// World space
+		// World space with parent
 		else {
-			return Transformation::toBackendPosition(glm::vec3(transform.model[3]));
+			return Transformation::swap(glm::vec3(transform.model[3]));
 		}
 	}
 
 	glm::quat getRotation(TransformComponent& transform, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			return transform.rotation;
 		}
-		// World space
+		// World space with parent
 		else {
 			glm::mat3 rotationMatrix(transform.model);
 
@@ -152,17 +168,17 @@ namespace Transform {
 			rotationMatrix[1] = col1;
 			rotationMatrix[2] = col2;
 
-			return Transformation::toBackendRotation(glm::quat_cast(rotationMatrix));
+			return Transformation::swap(glm::quat_cast(rotationMatrix));
 		}
 	}
 
 	glm::vec3 getEulerAngles(TransformComponent& transform, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			return transform.eulerAnlges;
 		}
-		// World space
+		// World space with parent
 		else {
 			return glm::vec3(0.0f);
 		}
@@ -171,10 +187,10 @@ namespace Transform {
 	glm::vec3 getScale(TransformComponent& transform, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			return transform.scale;
 		}
-		// World space
+		// World space with parent
 		else {
 			return glm::vec3(
 				glm::length(glm::vec3(transform.model[0])),
@@ -187,10 +203,10 @@ namespace Transform {
 	void translate(TransformComponent& transform, const glm::vec3& position, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.position += position;
 		}
-		// World space
+		// World space with parent
 		else {
 
 		}
@@ -200,10 +216,10 @@ namespace Transform {
 	void rotate(TransformComponent& transform, const glm::quat& rotation, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.rotation = rotation * transform.rotation;
 		}
-		// World space
+		// World space with parent
 		else {
 
 		}
@@ -213,10 +229,10 @@ namespace Transform {
 	void scale(TransformComponent& transform, const glm::vec3& scale, Space space)
 	{
 		// Local space
-		if (space == Space::LOCAL) {
+		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.scale *= scale;
 		}
-		// World space
+		// World space with parent
 		else {
 
 		}

@@ -5,11 +5,11 @@
 
 namespace Transformation
 {
-	// Converts left handed coordinates to right handed coordinates backend uses
-	glm::vec3 toBackendPosition(const glm::vec3& position);
+	// Converts a position between backend and user coordinates
+	glm::vec3 swap(const glm::vec3& position);
 
-	// Converts left handed rotation to right handed rotation backend uses
-	glm::quat toBackendRotation(const glm::quat& rotation);
+	// Converts a rotation between backend and user coordinates
+	glm::quat swap(const glm::quat& rotation);
 	
 	// Evaluates model matrix
 	glm::mat4 model(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);

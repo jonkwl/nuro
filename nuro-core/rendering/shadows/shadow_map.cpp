@@ -196,8 +196,8 @@ void ShadowMap::renderSingular(glm::mat4 view, glm::mat4 projection)
 glm::mat4 ShadowMap::getView(const glm::vec3& lightPosition, const glm::vec3& lightDirection) const
 {
 	// Calculate light view matrix parameters
-	glm::vec3 position = Transformation::toBackendPosition(lightPosition);
-	glm::vec3 target = position + glm::normalize(Transformation::toBackendPosition(lightDirection));
+	glm::vec3 position = Transformation::swap(lightPosition);
+	glm::vec3 target = position + glm::normalize(Transformation::swap(lightDirection));
 
 	// Create and return light view matrix
 	return glm::lookAt(position, target, glm::vec3(0.0f, 1.0f, 0.0f));

@@ -281,13 +281,13 @@ void ViewportWindow::renderTransformGizmos()
 		glm::vec3 positionDelta, scaleDelta, skewDelta;
 		glm::vec4 perspectiveDelta;
 		glm::quat rotationDelta;
-		glm::decompose(delta, scaleDelta, rotationDelta, positionDelta, skewDelta, perspectiveDelta);
+		glm::decompose(model, scaleDelta, rotationDelta, positionDelta, skewDelta, perspectiveDelta);
 
 		// Update position
-		Transform::translate(transform, Transformation::toBackendPosition(positionDelta));
+		Transform::setPosition(transform, Transformation::swap(positionDelta), Space::WORLD);
 
 		// Update rotation
-		Transform::rotate(transform, Transformation::toBackendRotation(glm::normalize(rotationDelta)));
+		Transform::setRotation(transform, Transformation::swap(glm::normalize(rotationDelta)), Space::WORLD);
 
 		// Update scale
 		/*glm::vec3 newScale = transform.scale * scaleDelta;

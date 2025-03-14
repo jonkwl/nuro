@@ -156,8 +156,8 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 		glBindTexture(GL_TEXTURE_2D, gizmo.iconTexture);
 
 		// Get cameras position and direction
-		glm::vec3 gizmoPosition = Transformation::toBackendPosition(gizmo.position);
-		glm::vec3 cameraPosition = Transformation::toBackendPosition(gizmo.cameraTransform.position);
+		glm::vec3 gizmoPosition = Transformation::swap(gizmo.position);
+		glm::vec3 cameraPosition = Transformation::swap(gizmo.cameraTransform.position);
 		// Compute direction vector from gizmo to camera in XZ plane
 		glm::vec3 directionToCamera = glm::normalize(glm::vec3(cameraPosition.x - gizmoPosition.x, 0.0f, cameraPosition.z - gizmoPosition.z));
 		glm::vec3 right = glm::normalize(glm::vec3(-directionToCamera.z, 0.0f, directionToCamera.x));
@@ -291,11 +291,11 @@ glm::mat4 IMGizmo::getModelMatrix(glm::vec3 position, glm::quat rotation, glm::v
 	glm::mat4 model(1.0f);
 
 	// object position
-	glm::vec3 worldPosition = Transformation::toBackendPosition(position);
+	glm::vec3 worldPosition = Transformation::swap(position);
 	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
-	rotation = Transformation::toBackendRotation(rotation);
+	rotation = Transformation::swap(rotation);
 	rotation = glm::normalize(rotation);
 	glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
 	model = model * rotationMatrix;
@@ -311,7 +311,7 @@ glm::mat4 IMGizmo::getModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::v
 	glm::mat4 model(1.0f);
 
 	// object position
-	glm::vec3 worldPosition = Transformation::toBackendPosition(position);
+	glm::vec3 worldPosition = Transformation::swap(position);
 	model = glm::translate(model, glm::vec3(worldPosition.x, worldPosition.y, worldPosition.z));
 
 	// object rotation
