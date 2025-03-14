@@ -165,19 +165,21 @@ namespace InspectableComponents {
 		{
 			_headline("Properties");
 			IMComponents::input("Position", transform.position);
-			IMComponents::input("Rotation", transform.eulerAnlges);
+			IMComponents::input("Rotation", transform.eulerAngles);
 			IMComponents::input("Scale", transform.scale);
 			if (Transform::hasParent(transform)) IMComponents::label("Parent: " + Transform::fetchParent(transform).name);
 			IMComponents::label("ID: " + std::to_string(transform.id));
 
 			if (Transform::hasParent(transform)) {
 				glm::vec3 worldPos = Transform::getPosition(transform, Space::WORLD);
-				IMComponents::label("World X: " + std::to_string(worldPos.x) + " Y: " + std::to_string(worldPos.y) + " Z: " + std::to_string(worldPos.z));
+				glm::vec3 worldScale = Transform::getScale(transform, Space::WORLD);
+				IMComponents::label("World Position X: " + std::to_string(worldPos.x) + " Y: " + std::to_string(worldPos.y) + " Z: " + std::to_string(worldPos.z));
+				IMComponents::label("World Scale X: " + std::to_string(worldScale.x) + " Y: " + std::to_string(worldScale.y) + " Z: " + std::to_string(worldScale.z));
 			}
 
 			// tmp
 			Transform::setPosition(transform, transform.position);
-			Transform::setEulerAngles(transform, transform.eulerAnlges);
+			Transform::setEulerAngles(transform, transform.eulerAngles);
 			Transform::setScale(transform, transform.scale);
 
 			_endComponent();

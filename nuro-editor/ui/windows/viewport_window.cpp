@@ -278,24 +278,27 @@ void ViewportWindow::renderTransformGizmos()
 	// Update entities transform if gizmo is used
 	if (ImGuizmo::IsUsing()) {
 		// Get components from transformation
-		glm::vec3 positionDelta, scaleDelta, skewDelta;
-		glm::vec4 perspectiveDelta;
+		glm::vec3 position, scale, skew;
+		glm::vec4 perspective;
 		glm::quat rotationDelta;
-		glm::decompose(model, scaleDelta, rotationDelta, positionDelta, skewDelta, perspectiveDelta);
+		glm::decompose(model, scale, rotationDelta, position, skew, perspective);
 
-		// Update position
-		Transform::setPosition(transform, Transformation::swap(positionDelta), Space::WORLD);
-
-		// Update rotation
-		Transform::setRotation(transform, Transformation::swap(glm::normalize(rotationDelta)), Space::WORLD);
-
-		// Update scale
-		/*glm::vec3 newScale = transform.scale * scaleDelta;
-		newScale.x = (newScale.x < transform.scale.x && newScale.x < gizmoScaleMin) ? transform.scale.x : newScale.x;
-		newScale.y = (newScale.y < transform.scale.y && newScale.y < gizmoScaleMin) ? transform.scale.y : newScale.y;
-		newScale.z = (newScale.z < transform.scale.z && newScale.z < gizmoScaleMin) ? transform.scale.z : newScale.z;
-		newScale = glm::max(newScale, glm::min(transform.scale, gizmoScaleMin));
-		Transform::scale(transform, newScale);*/
+		// Update transform
+		switch (gizmoOperation) {
+		case ImGuizmo::OPERATION::TRANSLATE:
+			Transform::setPosition(transform, Transformation::swap(position), Space::WORLD);
+			break;
+		case ImGuizmo::OPERATION::ROTATE:
+			Transform::setRotation(transform, Transformation::swap(glm::normalize(rotationDelta)), Space::WORLD);
+			break;
+		case ImGuizmo::OPERATION::SCALE:
+			scale.x = (scale.x < transform.scale.x && scale.x < gizmoScaleMin) ? transform.scale.x : scale.x;
+			scale.y = (scale.y < transform.scale.y && scale.y < gizmoScaleMin) ? transform.scale.y : scale.y;
+			scale.z = (scale.z < transform.scale.z && scale.z < gizmoScaleMin) ? transform.scale.z : scale.z;
+			scale = glm::max(scale, glm::min(transform.scale, gizmoScaleMin));
+			Transform::setScale(transform, scale, Space::WORLD);
+			break;
+		}
 	}
 }
 

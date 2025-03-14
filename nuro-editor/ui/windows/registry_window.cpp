@@ -120,7 +120,9 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 
 	ImGuiIO& io = ImGui::GetIO();
 
-	const bool selected = selectedItems.count(item.id) > 0;
+	uint32_t itemId = item.entity.id();
+
+	const bool selected = selectedItems.count(itemId) > 0;
 	const bool hasChildren = item.children.size() > 0;
 	const float itemHeight = ImGui::GetFontSize();
 	const float textOffset = indentation * indentationOffset;
@@ -214,10 +216,10 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 
 		auto select = [this](HierarchyItem& _item) -> void {
 			// Item already selected
-			if (selectedItems.find(_item.id) != selectedItems.end()) return;
+			if (selectedItems.find(_item.entity.id()) != selectedItems.end()) return;
 
 			// Select item
-			selectedItems[_item.id] = &_item;
+			selectedItems[_item.entity.id()] = &_item;
 			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);
 
 			// Update insight panel
@@ -227,12 +229,12 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		// Just handle current items selection
 		if (io.KeyCtrl) {
 			// Item not selected yet, add to selected items
-			if (selectedItems.find(item.id) == selectedItems.end()) {
+			if (selectedItems.find(itemId) == selectedItems.end()) {
 				select(item);
 			}
 			// Item already selected, remove from selected items
 			else {
-				selectedItems.erase(item.id);
+				selectedItems.erase(itemId);
 			}
 		}
 		// Select all between latest selection and this item
@@ -264,7 +266,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		else {
 			// If theres multiple selected items, only select this item if it's not among the multiple selected ones
 			if (selectedItems.size() > 1) {
-				if (selectedItems.find(item.id) == selectedItems.end()) {
+				if (selectedItems.find(itemId) == selectedItems.end()) {
 					selectedItems.clear();
 					select(item);
 				}
@@ -494,9 +496,7 @@ void RegistryWindow::renderContextMenu()
 
 void RegistryWindow::updateCameraMovement()
 {
-	if (!cameraMoving) return;
-
-	if (!cameraTarget) return;
+	if (!cameraMoving || !cameraTarget) return;
 
 	// Get fly camera transform
 	TransformComponent& cameraTransform = std::get<0>(Runtime::getSceneViewPipeline().getFlyCamera());
@@ -507,7 +507,7 @@ void RegistryWindow::updateCameraMovement()
 	// Get targets
 	float distance = 5.0f + Transform::getScale(targetTransform, Space::WORLD).z;
 	glm::vec3 targetPosition = Transform::getPosition(targetTransform, Space::WORLD) + glm::vec3(0.0f, 0.0f, -1.0f) * distance;
-	// glm::quat targetRotation = Transform::lookFromAt(targetPosition, targetTransform);
+	// glm::quat targetRotation = Transform::lookAt(Transform::getPosition(cameraTransform, Space::WORLD), targetPosition);
 
 	float duration = 0.5f;
 	if (cameraMovementTime < duration) {
@@ -552,23 +552,18 @@ void RegistryWindow::buildSceneHierarchy() {
 	// Recursively build root entities in reverse
 	for (auto it = transformList.rbegin(); it != transformList.rend(); ++it) {
 		auto& [entity, transform] = *it;
-		if (!Transform::hasParent(transform)) {
-			HierarchyItem item(transform.id, EntityContainer(entity), {});
-			buildHierarchyRecursive(entity, item);
-			currentHierarchy.push_back(item);
-		}
+		if (Transform::hasParent(transform)) continue;
+		HierarchyItem item = HierarchyItem(EntityContainer(entity));
+		buildHierarchyChildren(item);
+		currentHierarchy.push_back(item);
 	}
 }
 
-void RegistryWindow::buildHierarchyRecursive(Entity entity, HierarchyItem& parentItem) {
-	// Get transform component
-	TransformComponent& transform = ECS::gRegistry.get<TransformComponent>(entity);
-
-	// Recursively build children
-	for (Entity child : transform.children) {
-		HierarchyItem item(transform.id, EntityContainer(child), {});
-		buildHierarchyRecursive(child, item);
-		parentItem.children.push_back(item);
+void RegistryWindow::buildHierarchyChildren(HierarchyItem& parent) {
+	for (Entity childEntity : parent.entity.transform().children) {
+		HierarchyItem item = HierarchyItem(EntityContainer(childEntity));
+		buildHierarchyChildren(item);
+		parent.children.push_back(item);
 	}
 }
 

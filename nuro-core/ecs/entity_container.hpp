@@ -69,20 +69,26 @@ public:
 		return *_transform;;
 	}
 
+	// Returns id of entity
+	inline uint32_t id() const {
+		if (!_transform) return 0;
+		return _transform->id;
+	}
+
 	// Returns name of entity
-	inline std::string name() {
+	inline std::string name() const {
 		if (!_transform) return "Invalid Entity";
 		return _transform->name;
 	}
 
 	// Returns if entity is valid in registry
-	inline bool verify() {
+	inline bool verify() const {
 		return _registry.valid(_handle);
 	}
 
 	// Returns true if entity has a component of given component type
 	template<typename T>
-	inline bool has() {
+	inline bool has() const {
 		return _registry.any_of<T>(_handle);
 	}
 

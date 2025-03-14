@@ -65,7 +65,7 @@ namespace Transform {
 	{
 		if (hasParent(transform)) {
 			TransformComponent& parent = fetchParent(transform);
-			if (parent.modified) evaluateReversed(parent);
+			evaluateReversed(parent);
 		}
 
 		evaluate(transform);
@@ -88,10 +88,12 @@ namespace Transform {
 			TransformComponent& parent = fetchParent(transform);
 			if (parent.modified) evaluateReversed(parent);
 
-			glm::vec3 worldBackendPos = Transformation::swap(position);
-			glm::vec3 localBackendPos = glm::vec3(glm::inverse(parent.model) * glm::vec4(worldBackendPos, 1.0f));
-			transform.position = Transformation::swap(localBackendPos);
+			glm::vec4 localBackendPos = glm::vec4(Transformation::swap(position), 1.0f);
+			glm::vec3 worldBackendPos = glm::vec3(glm::inverse(parent.model) * localBackendPos);
+
+			transform.position = Transformation::swap(worldBackendPos);
 		}
+
 		transform.modified = true;
 	}
 
@@ -100,28 +102,38 @@ namespace Transform {
 		// Local space
 		if (space == Space::LOCAL || !hasParent(transform)) {
 			transform.rotation = rotation;
-
-			// Lossy euler angles synchronization
-			transform.eulerAnlges = glm::degrees(glm::eulerAngles(rotation));
+			transform.eulerAngles = toEuler(rotation);
 		}
 		// World space with parent
 		else {
+			TransformComponent& parent = fetchParent(transform);
+			if (parent.modified) evaluateReversed(parent);
 
+			transform.rotation = glm::inverse(parent.rotation) * rotation;
+			transform.eulerAngles = toEuler(transform.rotation);
 		}
+
 		transform.modified = true;
 	}
 
 	void setEulerAngles(TransformComponent& transform, const glm::vec3& eulerAngles, Space space)
 	{
+		glm::quat rotation = glm::quat(glm::radians(eulerAngles));
+
 		// Local space
 		if (space == Space::LOCAL || !hasParent(transform)) {
-			transform.rotation = glm::quat(glm::radians(eulerAngles));
-			transform.eulerAnlges = eulerAngles;
+			transform.rotation = rotation;
+			transform.eulerAngles = eulerAngles;
 		}
 		// World space with parent
 		else {
+			TransformComponent& parent = fetchParent(transform);
+			if (parent.modified) evaluateReversed(parent);
 
+			transform.rotation = glm::inverse(parent.rotation) * rotation;
+			transform.eulerAngles = toEuler(transform.rotation);
 		}
+
 		transform.modified = true;
 	}
 
@@ -133,8 +145,19 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
+			TransformComponent& parent = fetchParent(transform);
+			if (parent.modified) evaluateReversed(parent);
 
+			glm::mat4 parentModel = parent.model;
+			glm::vec3 parentWorldScale = glm::vec3(
+				glm::length(glm::vec3(parentModel[0])),
+				glm::length(glm::vec3(parentModel[1])),
+				glm::length(glm::vec3(parentModel[2]))
+			);
+
+			transform.scale = scale / parentWorldScale;
 		}
+
 		transform.modified = true;
 	}
 
@@ -146,6 +169,8 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
+			if (transform.modified) evaluateReversed(transform);
+
 			return Transformation::swap(glm::vec3(transform.model[3]));
 		}
 	}
@@ -158,6 +183,8 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
+			if (transform.modified) evaluateReversed(transform);
+
 			glm::mat3 rotationMatrix(transform.model);
 
 			glm::vec3 col0 = glm::normalize(glm::vec3(rotationMatrix[0]));
@@ -176,7 +203,7 @@ namespace Transform {
 	{
 		// Local space
 		if (space == Space::LOCAL || !hasParent(transform)) {
-			return transform.eulerAnlges;
+			return transform.eulerAngles;
 		}
 		// World space with parent
 		else {
@@ -192,6 +219,8 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
+			if (transform.modified) evaluateReversed(transform);
+
 			return glm::vec3(
 				glm::length(glm::vec3(transform.model[0])),
 				glm::length(glm::vec3(transform.model[1])),
@@ -210,6 +239,7 @@ namespace Transform {
 		else {
 
 		}
+
 		transform.modified = true;
 	}
 
@@ -223,6 +253,7 @@ namespace Transform {
 		else {
 
 		}
+
 		transform.modified = true;
 	}
 
@@ -236,92 +267,63 @@ namespace Transform {
 		else {
 
 		}
+
 		transform.modified = true;
 	}
 
-	glm::vec3 forward(const TransformComponent& transform)
+	glm::vec3 _direction(glm::vec3 base, TransformComponent& transform, Space space) {
+		if (space == Space::LOCAL) {
+			return glm::rotate(transform.rotation, base);
+		}
+		else {
+			return glm::rotate(getRotation(transform, Space::WORLD), base);
+		}
+	}
+
+	glm::vec3 forward(TransformComponent& transform, Space space)
 	{
-		glm::vec3 forward_local = glm::vec3(0.0f, 0.0f, 1.0f);
-		glm::vec3 forward_vector = glm::rotate(transform.rotation, forward_local);
-		return forward_vector;
+		return _direction(glm::vec3(0.0f, 0.0f, 1.0f), transform, space);
 	}
 
-	glm::vec3 backward(const TransformComponent& transform)
+	glm::vec3 backward(TransformComponent& transform, Space space)
 	{
-		glm::vec3 backward_local = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 backward_vector = glm::rotate(transform.rotation, backward_local);
-		return backward_vector;
+		return _direction(glm::vec3(0.0f, 0.0f, -1.0f), transform, space);;
 	}
 
-	glm::vec3 right(const TransformComponent& transform)
+	glm::vec3 right(TransformComponent& transform, Space space)
 	{
-		glm::vec3 right_local = glm::vec3(1.0f, 0.0f, 0.0f);
-		glm::vec3 right_vector = glm::rotate(transform.rotation, right_local);
-		return right_vector;
+		return _direction(glm::vec3(1.0f, 0.0f, 0.0f), transform, space);;
 	}
 
-	glm::vec3 left(const TransformComponent& transform)
+	glm::vec3 left(TransformComponent& transform, Space space)
 	{
-		glm::vec3 left_local = glm::vec3(-1.0f, 0.0f, 0.0f);
-		glm::vec3 left_vector = glm::rotate(transform.rotation, left_local);
-		return left_vector;
+		return _direction(glm::vec3(-1.0f, 0.0f, 0.0f), transform, space);;
 	}
 
-	glm::vec3 up(const TransformComponent& transform)
+	glm::vec3 up(TransformComponent& transform, Space space)
 	{
-		glm::vec3 up_local = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 up_vector = glm::rotate(transform.rotation, up_local);
-		return up_vector;
+		return _direction(glm::vec3(0.0f, 1.0f, 0.0f), transform, space);;
 	}
 
-	glm::vec3 down(const TransformComponent& transform)
+	glm::vec3 down(TransformComponent& transform, Space space)
 	{
-		glm::vec3 down_local = glm::vec3(0.0f, -1.0f, 0.0f);
-		glm::vec3 down_vector = glm::rotate(transform.rotation, down_local);
-		return down_vector;
+		return _direction(glm::vec3(0.0f, -1.0f, 0.0f), transform, space);;
 	}
 
-	glm::quat rotate(const TransformComponent& transform, float degrees, glm::vec3 axis) {
-		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::normalize(axis)));
-	}
-
-	glm::quat rotateX(const TransformComponent& transform, float degrees) {
-		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f)));
-	}
-
-	glm::quat rotateY(const TransformComponent& transform, float degrees) {
-		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 1.0f, 0.0f)));
-	}
-
-	glm::quat rotateZ(const TransformComponent& transform, float degrees) {
-		return glm::normalize(transform.rotation * glm::angleAxis(glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f)));
-	}
-
-	glm::quat lookAt(const TransformComponent& transform, const TransformComponent& target)
+	glm::quat lookAt(const glm::vec3& position, const glm::vec3& target)
 	{
-		// Get direction vector from current position to target position
-		glm::vec3 direction = glm::normalize(target.position - transform.position);
-
-		// Get local forward vector
-		glm::vec3 forwardLocal = glm::vec3(0.0f, 0.0f, 1.0f);
-
-		// Get rotation that aligns forward direction with direction
-		glm::quat rotation = glm::rotation(forwardLocal, direction);
-
-		return rotation;
+		glm::vec3 direction = glm::normalize(target - position);
+		glm::vec3 forwardLocal = position;
+		return glm::rotation(forwardLocal, direction);
 	}
 
-	glm::quat lookFromAt(const glm::vec3 from, const TransformComponent& target)
+	glm::quat toQuat(glm::vec3 eulerAngles)
 	{
-		glm::vec3 direction = glm::normalize(target.position - from);
-		glm::vec3 forwardLocal = glm::vec3(0.0f, 0.0f, 1.0f);
-		glm::quat rotation = glm::rotation(forwardLocal, direction);
-		return rotation;
+		return glm::quat(glm::radians(eulerAngles));
 	}
 
-	glm::quat fromEuler(float x, float y, float z)
+	glm::vec3 toEuler(const glm::quat& quaternion)
 	{
-		return glm::quat(glm::vec3(glm::radians(x), glm::radians(y), glm::radians(z)));
+		return glm::degrees(glm::eulerAngles(quaternion));
 	}
-
 }

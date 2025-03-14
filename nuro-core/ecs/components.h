@@ -40,7 +40,7 @@ struct TransformComponent {
 	glm::quat rotation = glm::identity<glm::quat>();
 
 	// Current reflected euler angles of transform in local space
-	glm::vec3 eulerAnlges = glm::vec3(0.0f);
+	glm::vec3 eulerAngles = glm::vec3(0.0f);
 
 	// Current scale of transform in local space
 	glm::vec3 scale = glm::vec3(1.0f);

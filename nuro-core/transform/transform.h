@@ -57,31 +57,31 @@ namespace Transform
 	// HELPERS
 	//
 
-	// Returns the forward direction vector of the transform in world space
-	glm::vec3 forward(const TransformComponent& transform);
+	// Returns the forward direction vector of the transform
+	glm::vec3 forward(TransformComponent& transform, Space space = Space::LOCAL);
 
-	// Returns the backward direction vector of the transform in world space
-	glm::vec3 backward(const TransformComponent& transform);
+	// Returns the backward direction vector of the transform
+	glm::vec3 backward(TransformComponent& transform, Space space = Space::LOCAL);
 
-	// Returns the right direction vector of the transform in world space
-	glm::vec3 right(const TransformComponent& transform);
+	// Returns the right direction vector of the transform
+	glm::vec3 right(TransformComponent& transform, Space space = Space::LOCAL);
 
-	// Returns the left direction vector of the transform in world space
-	glm::vec3 left(const TransformComponent& transform);
+	// Returns the left direction vector of the transform
+	glm::vec3 left(TransformComponent& transform, Space space = Space::LOCAL);
 
-	// Returns the up direction vector of the transform in world space
-	glm::vec3 up(const TransformComponent& transform);
+	// Returns the up direction vector of the transform
+	glm::vec3 up(TransformComponent& transform, Space space = Space::LOCAL);
 
-	// Returns the down direction vector of the transform in world space
-	glm::vec3 down(const TransformComponent& transform);
+	// Returns the down direction vector of the transform
+	glm::vec3 down(TransformComponent& transform, Space space = Space::LOCAL);
 
-	// Returns a quaternion that will rotate the transform to face the target transform
-	glm::quat lookAt(const TransformComponent& transform, const TransformComponent& target);
-
-	// Returns a quaternion that will rotate some transform at given positionto face the target transform
-	glm::quat lookFromAt(const glm::vec3 from, const TransformComponent& target);
+	// Returns a quaternion that will rotate an object at given position to face the target position
+	glm::quat lookAt(const glm::vec3& position, const glm::vec3& target);
 
 	// Converts euler angles in degrees to a quaternion
-	glm::quat fromEuler(float x, float y, float z);
+	glm::quat toQuat(glm::vec3 eulerAngles);
+
+	// Convers a quaternion to euler angles in degrees
+	glm::vec3 toEuler(const glm::quat& quaternion);
 
 };
