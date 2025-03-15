@@ -15,14 +15,15 @@ fpsUpdateTimer(0.0f)
 void DiagnosticsWindow::render()
 {
 	// Get fps
-	float fps = 1000000.0f / Profiler::getUs("render");
+	// float fps = 1000000.0f / Profiler::getUs("render");
+	float fps = Diagnostics::getFps();
 
 	std::string title = UIUtils::windowTitle("Diagnostics");
 	ImGui::Begin(title.c_str(), nullptr, EditorFlag::fixed);
 	{
 		IMComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM);
 
-		IMComponents::indicatorLabel("Rendering FPS:", fps);
+		IMComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
 
 		const int32_t values = 100;
 		const float updateRate = 0.025f;

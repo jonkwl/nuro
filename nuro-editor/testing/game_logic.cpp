@@ -17,10 +17,8 @@ void _physics_example() {
 	ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 	// Models
-	Model* cubeModel = new Model();
-	cubeModel->setSource("./resources/primitives/cube.fbx");
-	loader.createSync(cubeModel);
-	const Mesh* cubeMesh = cubeModel->queryMesh(0);
+	const Mesh* planeMesh = Shapes::createPlane();
+	const Mesh* cubeMesh = Shapes::createCube();
 
 	Model* sphereModel = new Model();
 	sphereModel->setSource("./resources/primitives/sphere.fbx");
@@ -37,6 +35,36 @@ void _physics_example() {
 	LitMaterial* redMaterial = new LitMaterial();
 	redMaterial->baseColor = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
 	redMaterial->roughness = 0.9f;
+
+	// Async texture loading example
+	Texture* albedo = new Texture();
+	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
+	loader.createAsync(albedo);
+
+	Texture* normal = new Texture();
+	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
+	loader.createAsync(normal);
+
+	Texture* metallic = new Texture();
+	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
+	loader.createAsync(metallic);
+
+	Texture* roughness = new Texture();
+	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
+	loader.createAsync(roughness);
+
+	Texture* emissive = new Texture();
+	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
+	loader.createAsync(emissive);
+
+	LitMaterial* scifiMaterial = new LitMaterial();
+	scifiMaterial->albedoMap = albedo;
+	scifiMaterial->normalMap = normal;
+	scifiMaterial->metallicMap = metallic;
+	scifiMaterial->roughnessMap = roughness;
+	scifiMaterial->emissiveMap = emissive;
+	scifiMaterial->emission = true;
+	scifiMaterial->emissionIntensity = 250.0f;
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
@@ -115,49 +143,12 @@ void _physics_example() {
 	Transform::setScale(secondChild.transform(), glm::vec3(0.6f));
 	secondChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
-	// Cube batch
-	int objectAmount = 128;
-	uint32_t c = 1;
-	for (int x = 0; x < std::sqrt(objectAmount); x++) {
-		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e(ECS::createEntity("Cube " + std::to_string(c)));
-			Transform::setPosition(e.transform(), glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f));
-			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
-			e.add<BoxColliderComponent>();
-			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
-			c++;
-		}
-	}
-
-	// Async asset loading test
-	Texture* albedo = new Texture();
-	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
-	loader.createAsync(albedo);
-
-	Texture* normal = new Texture();
-	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
-	loader.createAsync(normal);
-
-	Texture* metallic = new Texture();
-	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
-	loader.createAsync(metallic);
-
-	Texture* roughness = new Texture();
-	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
-	loader.createAsync(roughness);
-
-	Texture* emissive = new Texture();
-	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
-	loader.createAsync(emissive);
-
-	LitMaterial* cubeMaterial = new LitMaterial();
-	cubeMaterial->albedoMap = albedo;
-	cubeMaterial->normalMap = normal;
-	cubeMaterial->metallicMap = metallic;
-	cubeMaterial->roughnessMap = roughness;
-	cubeMaterial->emissiveMap = emissive;
-	cubeMaterial->emission = true;
-	cubeMaterial->emissionIntensity = 250.0f;
+	// Height mapping example
+	EntityContainer plane = EntityContainer(ECS::createEntity("Height Mapped Plane"));
+	Transform::setPosition(plane.transform(), glm::vec3(-11.0f, 0.0f, 5.0f));
+	Transform::setEulerAngles(plane.transform(), glm::vec3(90.0f, 0.0f, 0.0f));
+	Transform::setScale(plane.transform(), glm::vec3(4.0f));
+	MeshRendererComponent& planeRenderer = plane.add<MeshRendererComponent>(planeMesh, scifiMaterial);
 
 	// Model async loading example
 	Model* asyncModel = new Model();
@@ -168,7 +159,25 @@ void _physics_example() {
 	Transform::setPosition(e.transform(), glm::vec3(6.0f, 0.0f, 10.0f));
 	Transform::setRotation(e.transform(), glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	Transform::setScale(e.transform(), glm::vec3(7.0f));
-	e.add<MeshRendererComponent>(asyncModel->queryMesh(0), cubeMaterial);
+	e.add<MeshRendererComponent>(asyncModel->queryMesh(0), scifiMaterial);
+
+	// Cube parent
+	EntityContainer cubes(ECS::createEntity("Cubes"));
+	Transform::setPosition(cubes.transform(), glm::vec3(0.0f, 0.0f, 0.0f));
+
+	// Cube batch
+	int objectAmount = 128;
+	uint32_t c = 1;
+	for (int x = 0; x < std::sqrt(objectAmount); x++) {
+		for (int y = 0; y < std::sqrt(objectAmount); y++) {
+			EntityContainer e(ECS::createEntity("Cube " + std::to_string(c), cubes.handle()));
+			Transform::setPosition(e.transform(), glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f));
+			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+			e.add<BoxColliderComponent>();
+			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
+			c++;
+		}
+	}
 }
 
 void gameSetup() {

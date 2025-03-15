@@ -4,6 +4,7 @@
 #include <glm/gtx/component_wise.hpp>
 
 #include <utils/console.h>
+#include <transform/transform.h>
 #include <physics/rigidbody/rigidbody.h>
 #include <physics/utils/px_translator.h>
 
@@ -75,11 +76,18 @@ void PhysicsBridge::constructRigidbody(Registry& reg, Entity ent) {
 	RigidbodyComponent& rigidbody = get<RigidbodyComponent>(reg, ent);
 	TransformComponent& transform = get<TransformComponent>(reg, ent);
 
+	glm::vec3 position = Transform::getPosition(transform);
+	glm::quat rotation = Transform::getRotation(transform);
+
 	// Create rigidbody
-	PxRigidDynamic* rbActor = createDynamicRigidbody(physics, scene, transform.position, transform.rotation);
+	PxRigidDynamic* rbActor = createDynamicRigidbody(physics, scene, position, rotation);
 
 	// Set rigidbody actor
 	rigidbody.actor = rbActor;
+
+	// Set rigidbodies initial transform
+	rigidbody.position = position;
+	rigidbody.rotation = rotation;
 
 	// Attach all existing colliders to rigidbody actor
 	try_rbAttachExistingColliders(reg, ent, rbActor);
@@ -90,10 +98,6 @@ void PhysicsBridge::constructRigidbody(Registry& reg, Entity ent) {
 	Rigidbody::setAngularResistance(rigidbody, rigidbody.angularResistance);
 	Rigidbody::setGravity(rigidbody, rigidbody.gravity);
 	Rigidbody::setKinematic(rigidbody, rigidbody.kinematic);
-
-	// Set rigidbodies initial transform
-	rigidbody.position = transform.position;
-	rigidbody.rotation = transform.rotation;
 }
 
 void PhysicsBridge::destroyRigidbody(Registry& reg, Entity ent) {
