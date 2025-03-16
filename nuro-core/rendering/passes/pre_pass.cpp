@@ -105,7 +105,7 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 	prePassShader->bind();
 
 	// Pre pass render each entity
-	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::main().view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		if (!renderer.mesh) return;
 

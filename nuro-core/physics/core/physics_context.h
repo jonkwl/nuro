@@ -1,7 +1,8 @@
 #pragma once
 
-#include <PxPhysicsAPI.h>
 #include <glm/glm.hpp>
+#include <PxPhysicsAPI.h>
+#include <ecs/ecs_collection.h>
 
 #include <physics/core/physics_bridge.h>
 

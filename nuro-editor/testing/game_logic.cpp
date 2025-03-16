@@ -16,6 +16,9 @@ void _physics_example() {
 	// Get loader
 	ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
+	// Get ecs
+	ECS& ecs = ECS::main();
+
 	// Models
 	const Mesh* planeMesh = Shapes::createPlane();
 	const Mesh* cubeMesh = Shapes::createCube();
@@ -76,20 +79,20 @@ void _physics_example() {
 	LitMaterial* playerMaterial = new LitMaterial();
 
 	// Head
-	EntityContainer head = EntityContainer(ECS::createEntity("Head"));
+	EntityContainer head = EntityContainer(ecs.createEntity("Head"));
 
 	// Camera
-	camera = EntityContainer(ECS::createEntity("Camera", head.handle()));
+	camera = EntityContainer(ecs.createEntity("Camera", head.handle()));
 	camera.add<CameraComponent>();
 
 	// Directional light (sun)
-	EntityContainer sun(ECS::createEntity("Sun"));
+	EntityContainer sun(ecs.createEntity("Sun"));
 	DirectionalLightComponent& sunLight = sun.add<DirectionalLightComponent>();
 	sunLight.intensity = 0.3f;
 	sunLight.color = glm::vec3(1.0, 1.0, 1.0f);
 
 	// Sample point light
-	EntityContainer pointLight(ECS::createEntity("Point Light"));
+	EntityContainer pointLight(ecs.createEntity("Point Light"));
 	Transform::setPosition(pointLight.transform(), glm::vec3(8.0f, 2.0f, 32.0f));
 	PointLightComponent& pointLightSource = pointLight.add<PointLightComponent>();
 	pointLightSource.intensity = 7.0f;
@@ -98,7 +101,7 @@ void _physics_example() {
 	pointLightSource.falloff = 15.0f;
 
 	// Sample spotlight
-	EntityContainer flashlight(ECS::createEntity("Flashlight", camera.handle()));
+	EntityContainer flashlight(ecs.createEntity("Flashlight", camera.handle()));
 	Transform::setPosition(flashlight.transform(), glm::vec3(0.0f, 6.0f, 5.0f));
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
 	flashlightSource.intensity = 10.0f;
@@ -109,7 +112,7 @@ void _physics_example() {
 	flashlightSource.outerAngle = 90.0f;
 
 	// Ground
-	EntityContainer ground(ECS::createEntity("Ground"));
+	EntityContainer ground(ecs.createEntity("Ground"));
 	Transform::setPosition(ground.transform(), glm::vec3(0.0f, -10.1f, 35.0f));
 	Transform::setScale(ground.transform(), glm::vec3(140.0f, 0.1f, 140.0f));
 	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
@@ -118,7 +121,7 @@ void _physics_example() {
 	BoxColliderComponent& groundCollider = ground.add<BoxColliderComponent>();
 
 	// Kinematic sphere
-	kinematic = EntityContainer(ECS::createEntity("Kinematic"));
+	kinematic = EntityContainer(ecs.createEntity("Kinematic"));
 	Transform::setPosition(kinematic.transform(), glm::vec3(1.0f, 0.5f, 6.0f));
 	Transform::setScale(kinematic.transform(), glm::vec3(2.0f));
 	kinematic.add<MeshRendererComponent>(sphereMesh, redMaterial);
@@ -128,7 +131,7 @@ void _physics_example() {
 	Rigidbody::setKinematic(kinematicRb, true);
 
 	// Player sphere
-	player = EntityContainer(ECS::createEntity("Player"));
+	player = EntityContainer(ecs.createEntity("Player"));
 	Transform::setPosition(player.transform(), glm::vec3(8.0f, 0.0f, -4.0f));
 	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 	player.add<SphereColliderComponent>();
@@ -137,19 +140,19 @@ void _physics_example() {
 	Rigidbody::setInterpolation(playerRb, RB_Interpolation::INTERPOLATE);
 
 	// Player child
-	EntityContainer playerChild(ECS::createEntity("Player Child", player.handle()));
+	EntityContainer playerChild(ecs.createEntity("Player Child", player.handle()));
 	Transform::setPosition(playerChild.transform(), glm::vec3(8.0f, 2.0f, -4.5f), Space::WORLD);
 	Transform::setScale(playerChild.transform(), glm::vec3(0.5f));
 	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	// Second child
-	EntityContainer secondChild(ECS::createEntity("Second Child", playerChild.handle()));
+	EntityContainer secondChild(ecs.createEntity("Second Child", playerChild.handle()));
 	Transform::setPosition(secondChild.transform(), glm::vec3(-2.5f, 0.0f, 0.0f));
 	Transform::setScale(secondChild.transform(), glm::vec3(0.6f));
 	secondChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	// Height mapping example
-	EntityContainer plane = EntityContainer(ECS::createEntity("Height Mapped Plane"));
+	EntityContainer plane = EntityContainer(ecs.createEntity("Height Mapped Plane"));
 	Transform::setPosition(plane.transform(), glm::vec3(-11.0f, 0.0f, 5.0f));
 	Transform::setEulerAngles(plane.transform(), glm::vec3(90.0f, 0.0f, 0.0f));
 	Transform::setScale(plane.transform(), glm::vec3(4.0f));
@@ -160,7 +163,7 @@ void _physics_example() {
 	asyncModel->setSource("resources/example-assets/models/mannequin.fbx");
 	loader.createAsync(asyncModel);
 
-	EntityContainer asyncModelEntity(ECS::createEntity("Async Model"));
+	EntityContainer asyncModelEntity(ecs.createEntity("Async Model"));
 	Transform::setPosition(asyncModelEntity.transform(), glm::vec3(6.0f, 0.0f, 10.0f));
 	Transform::setRotation(asyncModelEntity.transform(), glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	Transform::setScale(asyncModelEntity.transform(), glm::vec3(7.0f));
@@ -171,7 +174,7 @@ void _physics_example() {
 	uint32_t c = 1;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e(ECS::createEntity("Cube " + std::to_string(c)));
+			EntityContainer e(ecs.createEntity("Cube " + std::to_string(c)));
 			Transform::setPosition(e.transform(), glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f));
 			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 			e.add<BoxColliderComponent>();

@@ -5,7 +5,7 @@
 
 #include <transform/transform.h>
 
-class PreprocessorPass
+class TransformPass
 {
 public:
 	// Performs the preprocessing needed before rendering for all entities

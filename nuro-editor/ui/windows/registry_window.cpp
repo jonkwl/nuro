@@ -541,7 +541,7 @@ void RegistryWindow::buildSceneHierarchy() {
 	currentHierarchy.clear();
 
 	// Get all transforms
-	auto transforms = ECS::gRegistry.view<TransformComponent>();
+	auto transforms = ECS::main().view<TransformComponent>();
 	std::vector<std::pair<entt::entity, TransformComponent>> transformList;
 
 	// Fill transform list for reversed iteration

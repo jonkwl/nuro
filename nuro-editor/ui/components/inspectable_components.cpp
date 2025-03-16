@@ -206,7 +206,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<MeshRendererComponent>(entity);
+		if (removed) ECS::main().remove<MeshRendererComponent>(entity);
 	}
 
 	void drawCamera(Entity entity, CameraComponent& camera)
@@ -223,7 +223,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<CameraComponent>(entity);
+		if (removed) ECS::main().remove<CameraComponent>(entity);
 	}
 
 	void drawDirectionalLight(Entity entity, DirectionalLightComponent& directionalLight)
@@ -246,7 +246,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<DirectionalLightComponent>(entity);
+		if (removed) ECS::main().remove<DirectionalLightComponent>(entity);
 	}
 
 	void drawPointLight(Entity entity, PointLightComponent& pointLight)
@@ -271,7 +271,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<PointLightComponent>(entity);
+		if (removed) ECS::main().remove<PointLightComponent>(entity);
 	}
 	
 	void drawSpotlight(Entity entity, SpotlightComponent& spotlight)
@@ -298,7 +298,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<SpotlightComponent>(entity);
+		if (removed) ECS::main().remove<SpotlightComponent>(entity);
 	}
 
 	void drawVelocity(Entity entity, VelocityComponent& velocity)
@@ -313,7 +313,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<VelocityComponent>(entity);
+		if (removed) ECS::main().remove<VelocityComponent>(entity);
 	}
 
 	void drawBoxCollider(Entity entity, BoxColliderComponent& boxCollider)
@@ -335,7 +335,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<BoxColliderComponent>(entity);
+		if (removed) ECS::main().remove<BoxColliderComponent>(entity);
 	}
 
 	void drawSphereCollider(Entity entity, SphereColliderComponent& sphereCollider)
@@ -357,7 +357,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<SphereColliderComponent>(entity);
+		if (removed) ECS::main().remove<SphereColliderComponent>(entity);
 	}
 
 	void drawRigidbody(Entity entity, RigidbodyComponent& rigidbody)
@@ -376,7 +376,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::gRegistry.remove<RigidbodyComponent>(entity);
+		if (removed) ECS::main().remove<RigidbodyComponent>(entity);
 	}
 
 	void drawColor(PostProcessing::Color& color)

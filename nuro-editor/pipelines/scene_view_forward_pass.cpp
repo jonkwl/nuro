@@ -223,7 +223,7 @@ void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& ski
 	uint16_t newBoundMaterials = 0;
 
 	// Render each entity except for skipped one
-	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
+	for (auto& [entity, transform, renderer] : ECS::main().getRenderQueue()) {
 
 		// Skip if target entity is selected entity
 		// tmp

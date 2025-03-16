@@ -145,7 +145,7 @@ namespace Runtime {
 		if (!gMainShadowMap) return;
 
 		// Temporary: Render first spotlight to be found in registry
-		auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
+		auto spotlights = ECS::main().view<TransformComponent, SpotlightComponent>();
 		for (auto [entity, transform, spotlight] : spotlights.each()) {
 			Profiler::start("shadow_pass");
 			gMainShadowMap->castShadows(spotlight, transform);

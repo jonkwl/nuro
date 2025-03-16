@@ -1,7 +1,6 @@
 #include "physics_context.h"
 
 #include <utils/console.h>
-#include <ecs/ecs_collection.h>
 #include <transform/transform.h>
 #include <diagnostics/profiler.h>
 #include <physics/utils/px_translator.h>
@@ -54,14 +53,16 @@ void PhysicsContext::create()
 	// Register all observer events
 	//
 
-	ECS::gRegistry.on_construct<BoxColliderComponent>().connect<&PhysicsBridge::constructBoxCollider>(bridge);
-	ECS::gRegistry.on_destroy<BoxColliderComponent>().connect<&PhysicsBridge::destroyBoxCollider>(bridge);
+	ECS& ecs = ECS::main();
 
-	ECS::gRegistry.on_construct<SphereColliderComponent>().connect<&PhysicsBridge::constructSphereCollider>(bridge);
-	ECS::gRegistry.on_destroy<SphereColliderComponent>().connect<&PhysicsBridge::destroySphereCollider>(bridge);
+	ecs.reg().on_construct<BoxColliderComponent>().connect<&PhysicsBridge::constructBoxCollider>(bridge);
+	ecs.reg().on_destroy<BoxColliderComponent>().connect<&PhysicsBridge::destroyBoxCollider>(bridge);
 
-	ECS::gRegistry.on_construct<RigidbodyComponent>().connect<&PhysicsBridge::constructRigidbody>(bridge);
-	ECS::gRegistry.on_destroy<RigidbodyComponent>().connect<&PhysicsBridge::destroyRigidbody>(bridge);
+	ecs.reg().on_construct<SphereColliderComponent>().connect<&PhysicsBridge::constructSphereCollider>(bridge);
+	ecs.reg().on_destroy<SphereColliderComponent>().connect<&PhysicsBridge::destroySphereCollider>(bridge);
+
+	ecs.reg().on_construct<RigidbodyComponent>().connect<&PhysicsBridge::constructRigidbody>(bridge);
+	ecs.reg().on_destroy<RigidbodyComponent>().connect<&PhysicsBridge::destroyRigidbody>(bridge);
 
 }
 
@@ -98,7 +99,7 @@ void PhysicsContext::step(float delta)
 	// 
 
 	// Sync transform components
-	auto view = ECS::gRegistry.view<TransformComponent, RigidbodyComponent>();
+	auto view = ECS::main().view<TransformComponent, RigidbodyComponent>();
 	for (auto [entity, transform, rigidbody] : view.each()) {
 		syncTransformComponent(delta, transform, rigidbody);
 	}
@@ -114,7 +115,7 @@ void PhysicsContext::simulate(float delta)
 	scene->fetchResults(true);
 
 	// Sync rigidbody components
-	auto view = ECS::gRegistry.view<RigidbodyComponent>();
+	auto view = ECS::main().view<RigidbodyComponent>();
 	for (auto [entity, rigidbody] : view.each()) {
 		syncRigidbodyComponent(rigidbody);
 	}

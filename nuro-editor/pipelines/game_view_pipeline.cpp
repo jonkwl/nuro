@@ -21,7 +21,7 @@ msaaSamples(4),
 profile(),
 skybox(nullptr),
 gizmos(nullptr),
-preprocessorPass(),
+transformPass(),
 prePass(viewport),
 forwardPass(viewport),
 ssaoPass(viewport),
@@ -50,7 +50,7 @@ void GameViewPipeline::render()
 	Profiler::start("render");
 
 	// Get active camera
-	auto _camera = ECS::getLatestCamera();
+	auto _camera = ECS::main().getActiveCamera();
 	if (!_camera) {
 		// No camera available, cancel rendering
 		cameraAvailable = false;
@@ -66,10 +66,10 @@ void GameViewPipeline::render()
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	//
-	// PREPROCESSOR PASS
-	// Evaluate and update transforms, perform culling etc.
+	// TRANSFORM PASS
+	// Evaluate and update transforms
 	// 
-	preprocessorPass.perform(viewProjection);
+	transformPass.perform(viewProjection);
 
 	//
 	// PRE PASS

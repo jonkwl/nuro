@@ -219,9 +219,10 @@ void LitMaterial::syncLightUniforms() const
 	//
 
 	// Fetch lights
-	auto directionalLights = ECS::gRegistry.view<TransformComponent, DirectionalLightComponent>();
-	auto pointLights = ECS::gRegistry.view<TransformComponent, PointLightComponent>();
-	auto spotlights = ECS::gRegistry.view<TransformComponent, SpotlightComponent>();
+	ECS& ecs = ECS::main();
+	auto directionalLights = ecs.view<TransformComponent, DirectionalLightComponent>();
+	auto pointLights = ecs.view<TransformComponent, PointLightComponent>();
+	auto spotlights = ecs.view<TransformComponent, SpotlightComponent>();
 
 	// Light count
 	size_t nDirectionalLights = 0;

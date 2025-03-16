@@ -47,17 +47,17 @@ namespace ComponentRegistry
 
             // Add
             [](Entity entity) {
-                ECS::gRegistry.emplace<T>(entity);
+                ECS::main().add<T>(entity);
             },
 
             // Try draw inspectable
             [drawInspectable](Entity entity) {
 
                 // Entity doesn't have component
-                if (!ECS::gRegistry.any_of<T>(entity)) return;
+                if (!ECS::main().has<T>(entity)) return;
 
                 // Draw inspectable
-                drawInspectable(entity, ECS::gRegistry.get<T>(entity));
+                drawInspectable(entity, ECS::main().get<T>(entity));
 
             },
 
@@ -68,10 +68,10 @@ namespace ComponentRegistry
                 if (!drawGizmo.has_value()) return;
 
                 // Entity doesn't have component
-                if (!ECS::gRegistry.any_of<T>(entity)) return;
+                if (!ECS::main().has<T>(entity)) return;
 
                 // Draw gizmo
-                drawGizmo.value()(gizmo, ECS::gRegistry.get<TransformComponent>(entity), ECS::gRegistry.get<T>(entity));
+                drawGizmo.value()(gizmo, ECS::main().get<TransformComponent>(entity), ECS::main().get<T>(entity));
 
             },
 
@@ -85,7 +85,7 @@ namespace ComponentRegistry
                 std::string sceneIcon = icon + "_gizmo";
 
                 // Render scene view icon for each component instance
-                for (auto [entity, transform, component] : ECS::gRegistry.view<TransformComponent, T>().each()) {
+                for (auto [entity, transform, component] : ECS::main().view<TransformComponent, T>().each()) {
                     gizmos.icon3d(IconPool::get(sceneIcon), Transform::getPosition(transform, Space::WORLD), cameraTransform);
                 }
 

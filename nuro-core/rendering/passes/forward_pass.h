@@ -4,8 +4,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include <ecs/components.h>
 #include <viewport/viewport.h>
+#include <ecs/ecs_collection.h>
 #include <rendering/gizmos/imgizmo.h>
 
 class Skybox;

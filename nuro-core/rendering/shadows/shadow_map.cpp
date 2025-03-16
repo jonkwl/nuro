@@ -174,7 +174,7 @@ void ShadowMap::renderSingular(glm::mat4 view, glm::mat4 projection)
 
 	shadowPassShader->bind();
 
-	auto targets = ECS::gRegistry.view<TransformComponent, MeshRendererComponent>();
+	auto targets = ECS::main().view<TransformComponent, MeshRendererComponent>();
 	for (auto [entity, transform, renderer] : targets.each()) {
 		if (!renderer.mesh) return; 
 

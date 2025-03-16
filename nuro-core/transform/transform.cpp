@@ -22,7 +22,7 @@ namespace Transform {
 
 	TransformComponent& fetchParent(TransformComponent& transform)
 	{
-		return ECS::gRegistry.get<TransformComponent>(transform.parent);
+		return ECS::main().get<TransformComponent>(transform.parent);
 	}
 
 	void evaluate(TransformComponent& transform)

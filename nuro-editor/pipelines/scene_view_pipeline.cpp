@@ -26,7 +26,7 @@ defaultProfile(),
 flyCameraTransform(),
 flyCameraRoot(),
 flyCamera(flyCameraTransform, flyCameraRoot),
-preprocessorPass(),
+transformPass(),
 prePass(viewport),
 sceneViewForwardPass(viewport),
 ssaoPass(viewport),
@@ -95,12 +95,12 @@ void SceneViewPipeline::render()
 	ComponentGizmos::drawSceneViewIcons(gizmos, cameraTransform);
 
 	//
-	// PREPROCESSOR PASS
-	// Evaluate and update transforms, perform culling etc.
+	// TRANSFORM PASS
+	// Evaluate and update transforms
 	// 
-	Profiler::start("preprocessor_pass");
-	preprocessorPass.perform(viewProjection);
-	Profiler::stop("preprocessor_pass");
+	Profiler::start("transform_pass");
+	transformPass.perform(viewProjection);
+	Profiler::stop("transform_pass");
 
 	//
 	// PRE PASS

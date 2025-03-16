@@ -7,9 +7,9 @@
 #include <ecs/ecs_collection.h>
 #include <rendering/skybox/skybox.h>
 #include <rendering/gizmos/gizmos.h>
-#include <rendering/passes/ssao_pass.h>
+#include <transform/transform_pass.h>
 #include <rendering/passes/pre_pass.h>
-#include <rendering/passes/preprocessor_pass.h>
+#include <rendering/passes/ssao_pass.h>
 #include <rendering/velocitybuffer/velocity_buffer.h>
 #include <rendering/postprocessing/post_processing.h>
 #include <rendering/postprocessing/post_processing_pipeline.h>
@@ -107,7 +107,7 @@ private:
 	// Linked passes
 	//
 
-	PreprocessorPass preprocessorPass;
+	TransformPass transformPass;
 	PrePass prePass;
 	SceneViewForwardPass sceneViewForwardPass;
 	SSAOPass ssaoPass;

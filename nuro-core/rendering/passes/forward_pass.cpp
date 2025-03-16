@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include <utils/console.h>
-#include <ecs/ecs_collection.h>
 #include <rendering/model/mesh.h>
 #include <rendering/skybox/skybox.h>
 #include <diagnostics/diagnostics.h>
@@ -208,7 +207,7 @@ void ForwardPass::renderMeshes()
 	uint32_t currentMaterialId = 0;
 
 	// Render each entity
-	for (auto& [entity, transform, renderer] : ECS::getRenderQueue()) {
+	for (auto& [entity, transform, renderer] : ECS::main().getRenderQueue()) {
 
 		uint32_t shaderId = renderer.material->getShaderId();
 		if (shaderId != currentShaderId) {

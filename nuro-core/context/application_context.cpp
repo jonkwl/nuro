@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <entt/entt.hpp>
 
 #include <ecs/ecs.h>
 #include <time/time.h>
@@ -127,7 +128,7 @@ namespace ApplicationContext {
 		//
 
 		// Setup ECS
-		ECS::setup();
+		entt::locator<ECS>::emplace();
 
 		// Setup input and cursor
 		Input::setup();

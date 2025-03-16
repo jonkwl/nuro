@@ -11,8 +11,6 @@
 #include <utils/console.h>
 #include <ecs/components.h>
 
-#define G_REGISTRY ECS::gRegistry
-
 ///////////////////////////////////////////////////////////////////
 ///																///
 ///			SECURE CONTAINER FOR HANDLING ECS ENTITIES			///
@@ -22,24 +20,24 @@
 class EntityContainer {
 public:
 	// Construct empty entity container
-	EntityContainer() : _registry(G_REGISTRY), _handle(entt::null), _transform(nullptr)
+	EntityContainer() : _handle(entt::null), _transform(nullptr)
 	{
-	};
+	}
 
 	// Copy entity container
-	EntityContainer(const EntityContainer& other) : _registry(G_REGISTRY), _handle(other._handle), _transform(other._transform)
+	EntityContainer(const EntityContainer& other) : _handle(other._handle), _transform(other._transform)
 	{
 	}
 
 	// Construct entity container by entity handle
-	explicit EntityContainer(Entity handle) : _registry(G_REGISTRY), _handle(handle), _transform(&get<TransformComponent>())
+	explicit EntityContainer(Entity handle) : _handle(handle), _transform(&get<TransformComponent>())
 	{
-	};
+	}
 
 	// Construct entity container by ecs native entity creation data tuple
-	explicit EntityContainer(std::tuple<Entity, TransformComponent&> data) : _registry(G_REGISTRY), _handle(std::get<0>(data)), _transform(&std::get<1>(data))
+	explicit EntityContainer(std::tuple<Entity, TransformComponent&> data) : _handle(std::get<0>(data)), _transform(&std::get<1>(data))
 	{
-	};
+	}
 
 	// Assign entity container
 	EntityContainer& operator=(const EntityContainer& other)
@@ -66,7 +64,7 @@ public:
 		}
 
 		// Return transform as reference
-		return *_transform;;
+		return *_transform;
 	}
 
 	// Returns id of entity
@@ -83,13 +81,13 @@ public:
 
 	// Returns if entity is valid in registry
 	inline bool verify() const {
-		return _registry.valid(_handle);
+		return ECS::main().verify(_handle);
 	}
 
 	// Returns true if entity has a component of given component type
 	template<typename T>
 	inline bool has() const {
-		return _registry.any_of<T>(_handle);
+		return ECS::main().has<T>(_handle);
 	}
 
 	// Adds a component of given component type with given arguments to the entity
@@ -103,15 +101,15 @@ public:
 			return defaultComponent;
 		}
 
-		// Fail if entity already has component
-		if (has<T>()) {
+		// Fail if component cant be added
+		if (!ECS::main().canAdd<T>(_handle)) {
 			componentOperationFailed<T>("add", "already owns an instance of it");
 			static T defaultComponent;
 			return defaultComponent;
 		}
 
 		// Emplace component
-		return _registry.emplace<T>(_handle, std::forward<Args>(args)...);
+		return ECS::main().add<T>(_handle, std::forward<Args>(args)...);
 	}
 
 	// Returns component of given component type if attached to entity
@@ -125,50 +123,24 @@ public:
 			return defaultComponent;
 		}
 
-		// Safely attempt to fetch the component
-		auto component = _registry.try_get<T>(_handle);
-
-		// Check if component was fetched
-		if (!component) {
+		// Make sure entity has component
+		if (!has<T>()) {
 			componentOperationFailed<T>("get", "doesn't own an instance of it");
 			static T defaultComponent;
 			return defaultComponent;
 		}
 
-		// Return component
-		return *component;
+		// Fetch and return component
+		return ECS::main().get<T>(_handle);
 	}
 
 	// Removes component of given component type if attached to entity
 	template<typename T>
 	void remove() {
-
-		// Fail if entity isn't valid
-		if (!verify()) {
-			verifyFailed();
-			return;
-		}
-
-		// Check if entity has the component
-		if (!has<T>()) {
-			componentOperationFailed<T>("remove", "doesn't own an instance of it");
-			return;
-		}
-
-		// Fail if component to remove is transform component
-		if (std::is_same<T, TransformComponent>::value) {
-			componentOperationFailed<T>("remove", "must own a transform component");
-			return;
-		}
-
-		// Erase component
-		_registry.erase<T>(_handle);
+		ECS::main().remove<T>(_handle);
 	}
 
 private:
-	// Registry entity container is bound to
-	Registry& _registry;
-
 	// Entity containers backend entity handle
 	Entity _handle;
 

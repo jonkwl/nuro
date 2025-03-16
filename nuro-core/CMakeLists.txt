@@ -30,7 +30,6 @@ set(SOURCE_FILES
 	rendering/model/mesh.h
 	rendering/model/model.h
 	rendering/passes/forward_pass.h
-	rendering/passes/preprocessor_pass.h
 	rendering/passes/pre_pass.h
 	rendering/passes/ssao_pass.h
 	rendering/postprocessing/bloom_pass.h
@@ -52,6 +51,7 @@ set(SOURCE_FILES
 	resource/resource_loader.h
 	time/time.h
 	transform/transform.h
+	transform/transform_pass.h
 	utils/console.h
 	utils/iohandler.h
 	utils/string_helper.h
@@ -76,7 +76,6 @@ set(SOURCE_FILES
 	rendering/model/mesh.cpp
 	rendering/model/model.cpp
 	rendering/passes/forward_pass.cpp
-	rendering/passes/preprocessor_pass.cpp
 	rendering/passes/pre_pass.cpp
 	rendering/passes/ssao_pass.cpp
 	rendering/postprocessing/bloom_pass.cpp
@@ -96,6 +95,7 @@ set(SOURCE_FILES
 	resource/resource_loader.cpp
 	time/time.cpp
 	transform/transform.cpp
+	transform/transform_pass.cpp
 	utils/console.cpp
 	utils/iohandler.cpp
 	utils/string_helper.cpp

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <string>
+#include <glm/glm.hpp>
 
 #include <backend/api.h>
 #include <resource/resource_loader.h>

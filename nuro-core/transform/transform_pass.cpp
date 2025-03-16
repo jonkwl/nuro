@@ -1,14 +1,14 @@
-#include "preprocessor_pass.h"
+#include "transform_pass.h"
 
 #include <algorithm>
 
-#include <diagnostics/profiler.h>
 #include <ecs/ecs_collection.h>
 #include <transform/transform.h>
+#include <diagnostics/profiler.h>
 
-void PreprocessorPass::perform(glm::mat4 viewProjection)
+void TransformPass::perform(glm::mat4 viewProjection)
 {
-	auto transforms = ECS::gRegistry.view<TransformComponent>();
+	auto transforms = ECS::main().view<TransformComponent>();
 
 	// Evaluate transforms
 	for (auto [entity, transform] : transforms.each()) {
@@ -20,25 +20,25 @@ void PreprocessorPass::perform(glm::mat4 viewProjection)
 	}
 }
 
-void PreprocessorPass::evaluate(TransformComponent& transform)
+void TransformPass::evaluate(TransformComponent& transform)
 {
 	if(transform.modified) Transform::evaluate(transform);
 
 	for (Entity child : transform.children) {
-		evaluate(ECS::gRegistry.get<TransformComponent>(child), transform, transform.modified);
+		evaluate(ECS::main().get<TransformComponent>(child), transform, transform.modified);
 	}
 
 	transform.modified = false;
 }
 
-void PreprocessorPass::evaluate(TransformComponent& transform, TransformComponent& parent, bool propagateModified)
+void TransformPass::evaluate(TransformComponent& transform, TransformComponent& parent, bool propagateModified)
 {
 	if (propagateModified) transform.modified = true;
 
 	if(transform.modified) Transform::evaluate(transform, parent);
 
 	for (Entity child : transform.children) {
-		evaluate(ECS::gRegistry.get<TransformComponent>(child), transform, transform.modified);
+		evaluate(ECS::main().get<TransformComponent>(child), transform, transform.modified);
 	}
 
 	transform.modified = false; 
