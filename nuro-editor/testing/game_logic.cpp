@@ -57,6 +57,10 @@ void _physics_example() {
 	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
 	loader.createAsync(emissive);
 
+	Texture* height = new Texture();
+	height->setSource(TextureType::HEIGHT, "./resources/example-assets/textures/sci-fi/height.jpg");
+	loader.createAsync(height);
+
 	LitMaterial* scifiMaterial = new LitMaterial();
 	scifiMaterial->albedoMap = albedo;
 	scifiMaterial->normalMap = normal;
@@ -65,6 +69,8 @@ void _physics_example() {
 	scifiMaterial->emissiveMap = emissive;
 	scifiMaterial->emission = true;
 	scifiMaterial->emissionIntensity = 250.0f;
+	// scifiMaterial->heightMap = height;
+	// scifiMaterial->heightMapScale = 0.2f;
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
@@ -74,7 +80,6 @@ void _physics_example() {
 
 	// Camera
 	camera = EntityContainer(ECS::createEntity("Camera", head.handle()));
-	Transform::setPosition(camera.transform(), glm::vec3(5.0f, 0.0f, 0.0f));
 	camera.add<CameraComponent>();
 
 	// Directional light (sun)
@@ -155,22 +160,18 @@ void _physics_example() {
 	asyncModel->setSource("resources/example-assets/models/mannequin.fbx");
 	loader.createAsync(asyncModel);
 
-	EntityContainer e(ECS::createEntity("Async Model"));
-	Transform::setPosition(e.transform(), glm::vec3(6.0f, 0.0f, 10.0f));
-	Transform::setRotation(e.transform(), glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	Transform::setScale(e.transform(), glm::vec3(7.0f));
-	e.add<MeshRendererComponent>(asyncModel->queryMesh(0), scifiMaterial);
-
-	// Cube parent
-	EntityContainer cubes(ECS::createEntity("Cubes"));
-	Transform::setPosition(cubes.transform(), glm::vec3(0.0f, 0.0f, 0.0f));
+	EntityContainer asyncModelEntity(ECS::createEntity("Async Model"));
+	Transform::setPosition(asyncModelEntity.transform(), glm::vec3(6.0f, 0.0f, 10.0f));
+	Transform::setRotation(asyncModelEntity.transform(), glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	Transform::setScale(asyncModelEntity.transform(), glm::vec3(7.0f));
+	asyncModelEntity.add<MeshRendererComponent>(asyncModel->queryMesh(0), scifiMaterial);
 
 	// Cube batch
 	int objectAmount = 128;
 	uint32_t c = 1;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
-			EntityContainer e(ECS::createEntity("Cube " + std::to_string(c), cubes.handle()));
+			EntityContainer e(ECS::createEntity("Cube " + std::to_string(c)));
 			Transform::setPosition(e.transform(), glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f));
 			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
 			e.add<BoxColliderComponent>();

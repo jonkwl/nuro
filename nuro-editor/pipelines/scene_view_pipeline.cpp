@@ -98,13 +98,17 @@ void SceneViewPipeline::render()
 	// PREPROCESSOR PASS
 	// Evaluate and update transforms, perform culling etc.
 	// 
+	Profiler::start("preprocessor_pass");
 	preprocessorPass.perform(viewProjection);
+	Profiler::stop("preprocessor_pass");
 
 	//
 	// PRE PASS
 	// Create geometry pass with depth buffer before forward pass
 	//
+	Profiler::start("pre_pass");
 	prePass.render(viewProjection, viewNormal);
+	Profiler::stop("pre_pass");
 	const uint32_t PRE_PASS_DEPTH_OUTPUT = prePass.getDepthOutput();
 	const uint32_t PRE_PASS_NORMAL_OUTPUT = prePass.getNormalOutput();
 
@@ -112,12 +116,14 @@ void SceneViewPipeline::render()
 	// SCREEN SPACE AMBIENT OCCLUSION PASS
 	// Calculate screen space ambient occlusion if enabled
 	//
+	Profiler::start("ssao");
 	uint32_t _ssaoOutput = 0;
 	if (targetProfile.ambientOcclusion.enabled)
 	{
 		_ssaoOutput = ssaoPass.render(projection, targetProfile, PRE_PASS_DEPTH_OUTPUT, PRE_PASS_NORMAL_OUTPUT);
 	}
 	const uint32_t SSAO_OUTPUT = _ssaoOutput;
+	Profiler::stop("ssao");
 
 	//
 	// VELOCITY BUFFER RENDER PASS (NONE)

@@ -169,6 +169,7 @@ namespace InspectableComponents {
 			IMComponents::input("Scale", transform.scale);
 			if (Transform::hasParent(transform)) IMComponents::label("Parent: " + Transform::fetchParent(transform).name);
 			IMComponents::label("ID: " + std::to_string(transform.id));
+			IMComponents::label("Depth: " + std::to_string(transform.depth));
 
 			if (Transform::hasParent(transform)) {
 				glm::vec3 worldPos = Transform::getPosition(transform, Space::WORLD);

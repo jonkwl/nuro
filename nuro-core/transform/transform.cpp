@@ -6,11 +6,18 @@
 #include <ecs/ecs.h>
 #include <rendering/transformation/transformation.h>
 
+#include <utils/console.h>
+
 namespace Transform {
+
+	bool isRoot(TransformComponent& transform)
+	{
+		return !transform.depth;
+	}
 
 	bool hasParent(TransformComponent& transform)
 	{
-		return transform.parent != entt::null;
+		return transform.depth;
 	}
 
 	TransformComponent& fetchParent(TransformComponent& transform)
@@ -20,61 +27,30 @@ namespace Transform {
 
 	void evaluate(TransformComponent& transform)
 	{
-		// Transform has parent
-		if (hasParent(transform)) {
-
-			TransformComponent& parent = fetchParent(transform);
-
-			// Set transform to be modified if parent is modified
-			if (parent.modified) transform.modified = true;
-
-			// Only evaluate transform if it has been modified
-			if (!transform.modified) return;
-
-			// Evaluate transforms model matrix relative to parent
-			transform.model = parent.model * Transformation::model(transform.position, transform.rotation, transform.scale);
-
-		}
-		// Transform doesn't have parent
-		else {
-
-			// Only evaluate transform if it has been modified
-			if (!transform.modified) return;
-
-			// Evaluate transforms model matrix
-			transform.model = Transformation::model(transform.position, transform.rotation, transform.scale);
-
-		}
-
-		// Compute transforms normal matrix
+		transform.model = Transformation::model(transform.position, transform.rotation, transform.scale);
 		transform.normal = Transformation::normal(transform.model);
 	}
 
-	void evaluateRecursive(TransformComponent& transform)
-	{
-		// Evaluate transform
-		evaluate(transform);
-
-		// Evaluate children recursively
-		for (Entity child : transform.children) {
-			evaluateRecursive(ECS::gRegistry.get<TransformComponent>(child));
-		}
+	void evaluate(TransformComponent& transform, TransformComponent& parent) {
+		transform.model = parent.model * Transformation::model(transform.position, transform.rotation, transform.scale);
+		transform.normal = Transformation::normal(transform.model);	
 	}
 
-	void evaluateReversed(TransformComponent& transform)
+	void updateMvp(TransformComponent& transform, const glm::mat4& viewProjection)
+	{
+		transform.mvp = viewProjection * transform.model;
+	}
+
+	void _tmp_updateModel(TransformComponent& transform)
 	{
 		if (hasParent(transform)) {
 			TransformComponent& parent = fetchParent(transform);
-			evaluateReversed(parent);
+			_tmp_updateModel(parent);
+			evaluate(transform, parent);
 		}
-
-		evaluate(transform);
-		transform.modified = false;
-	}
-
-	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection)
-	{
-		transform.mvp = viewProjection * transform.model;
+		else {
+			evaluate(transform);
+		}
 	}
 
 	void setPosition(TransformComponent& transform, const glm::vec3& position, Space space)
@@ -86,7 +62,8 @@ namespace Transform {
 		// World space with parent
 		else {
 			TransformComponent& parent = fetchParent(transform);
-			if (parent.modified) evaluateReversed(parent);
+			
+			_tmp_updateModel(parent); // tmp; inefficient!
 
 			glm::vec4 localBackendPos = glm::vec4(Transformation::swap(position), 1.0f);
 			glm::vec3 worldBackendPos = glm::vec3(glm::inverse(parent.model) * localBackendPos);
@@ -107,7 +84,8 @@ namespace Transform {
 		// World space with parent
 		else {
 			TransformComponent& parent = fetchParent(transform);
-			if (parent.modified) evaluateReversed(parent);
+
+			_tmp_updateModel(parent); // tmp; inefficient!
 
 			transform.rotation = glm::inverse(parent.rotation) * rotation;
 			transform.eulerAngles = toEuler(transform.rotation);
@@ -128,7 +106,8 @@ namespace Transform {
 		// World space with parent
 		else {
 			TransformComponent& parent = fetchParent(transform);
-			if (parent.modified) evaluateReversed(parent);
+
+			_tmp_updateModel(parent); // tmp; inefficient!
 
 			transform.rotation = glm::inverse(parent.rotation) * rotation;
 			transform.eulerAngles = toEuler(transform.rotation);
@@ -146,7 +125,8 @@ namespace Transform {
 		// World space with parent
 		else {
 			TransformComponent& parent = fetchParent(transform);
-			if (parent.modified) evaluateReversed(parent);
+
+			_tmp_updateModel(parent); // tmp; inefficient!
 
 			glm::mat4 parentModel = parent.model;
 			glm::vec3 parentWorldScale = glm::vec3(
@@ -169,8 +149,6 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
-			if (transform.modified) evaluateReversed(transform);
-
 			return Transformation::swap(glm::vec3(transform.model[3]));
 		}
 	}
@@ -183,8 +161,6 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
-			if (transform.modified) evaluateReversed(transform);
-
 			glm::mat3 rotationMatrix(transform.model);
 
 			glm::vec3 col0 = glm::normalize(glm::vec3(rotationMatrix[0]));
@@ -219,8 +195,6 @@ namespace Transform {
 		}
 		// World space with parent
 		else {
-			if (transform.modified) evaluateReversed(transform);
-
 			return glm::vec3(
 				glm::length(glm::vec3(transform.model[0])),
 				glm::length(glm::vec3(transform.model[1])),

@@ -12,17 +12,34 @@ void PreprocessorPass::perform(glm::mat4 viewProjection)
 
 	// Evaluate transforms
 	for (auto [entity, transform] : transforms.each()) {
-		// Initiate recursive evaluation for root transforms
-		if (!Transform::hasParent(transform)) {
-			Transform::evaluateRecursive(transform);
-		}
+		// Evaluate root node
+		if (Transform::isRoot(transform)) evaluate(transform);
 
-		// Evaluate transforms model-view-projection
-		Transform::evaluateMvp(transform, viewProjection);
+		// Update transforms model-view-projection
+		Transform::updateMvp(transform, viewProjection);
+	}
+}
+
+void PreprocessorPass::evaluate(TransformComponent& transform)
+{
+	if(transform.modified) Transform::evaluate(transform);
+
+	for (Entity child : transform.children) {
+		evaluate(ECS::gRegistry.get<TransformComponent>(child), transform, transform.modified);
 	}
 
-	// Create mvp matrix and reset modification state
-	for (auto [entity, transform] : transforms.each()) {
-		transform.modified = false;
+	transform.modified = false;
+}
+
+void PreprocessorPass::evaluate(TransformComponent& transform, TransformComponent& parent, bool propagateModified)
+{
+	if (propagateModified) transform.modified = true;
+
+	if(transform.modified) Transform::evaluate(transform, parent);
+
+	for (Entity child : transform.children) {
+		evaluate(ECS::gRegistry.get<TransformComponent>(child), transform, transform.modified);
 	}
+
+	transform.modified = false; 
 }

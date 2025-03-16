@@ -131,8 +131,14 @@ namespace ECS {
 		// Link parent to transform
 		transform.parent = parent;
 
+		// Fetch parent
+		TransformComponent& parentTransform = Transform::fetchParent(transform);
+
 		// Add to parents children
-		Transform::fetchParent(transform).children.push_back(entity);
+		parentTransform.children.push_back(entity);
+
+		// Update depth
+		transform.depth = parentTransform.depth + 1;
 
 		// Return entity and transform component
 		return std::tuple<Entity, TransformComponent&>(entity, transform);

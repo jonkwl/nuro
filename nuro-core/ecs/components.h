@@ -55,17 +55,20 @@ struct TransformComponent {
 	// List of children
 	std::vector<Entity> children;
 
+	// Depth in hierarchy
+	uint32_t depth = 0;
+
 	//
 	// MATRIX CACHE
 	//
 
-	// Latest evaluated model matrix
+	// Transforms current model matrix in world space
 	glm::mat4 model = glm::mat4(1.0f);
 
-	// Latest evaluated normal matrix
+	// Transforms current normal matrix in world space
 	glm::mat4 normal = glm::mat4(1.0f);
 
-	// Latest evaluated model-view-projection matrix
+	// Transforms current model-view-projection matrix
 	glm::mat4 mvp = glm::mat4(1.0f);
 
 };

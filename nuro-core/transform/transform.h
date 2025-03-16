@@ -17,23 +17,23 @@ namespace Transform
 	// CORE FUNCTIONALITY
 	//
 
-	// Returns if a transform has a paren
+	// Returns if a transform is a root transform
+	bool isRoot(TransformComponent& transform);
+
+	// Returns if a transform has a parent
 	bool hasParent(TransformComponent& transform);
 
 	// Returns a transforms parent; make sure transform has parent before using!
 	TransformComponent& fetchParent(TransformComponent& transform);
 
-	// Evaluates the given transform if it has been modified, its parent must have been evaluated before
+	// Updates a transforms model matrix
 	void evaluate(TransformComponent& transform);
 
-	// Evaluates the given transform and its children recursively
-	void evaluateRecursive(TransformComponent& transform);
+	// Updates a transforms model matrix relative to the given parent
+	void evaluate(TransformComponent& transform, TransformComponent& parent);
 
-	// Evaluates the given transform and its parents recursively
-	void evaluateReversed(TransformComponent& transform);
-
-	// Evaluates the transforms matrix-view-projection matrix using its current model matrix
-	void evaluateMvp(TransformComponent& transform, const glm::mat4& viewProjection);
+	// Updates a transforms model-view-projection matrix
+	void updateMvp(TransformComponent& transform, const glm::mat4& viewProjection);
 
 	//
 	// TRANSFORMATION

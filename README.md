@@ -19,7 +19,7 @@ Please take a look at the vision below! 💜
 ## Contributing
 
 💁‍♂️ Please join the **Discord-Server** for **contributing, asking for help, reporting bugs and submitting suggestions**:  
-📎 https://discord.gg/GgezYPZz
+📎 https://discord.gg/hHh3m6Vncz
 
 ## About
 ⚡ **Nuro** is a **3D game engine** written in C++ designed for **rapid iteration** and a **seamless development** workflow. It’s supposed to help developers focus on what matters most, with minimal setup and **no interruptions**.
@@ -67,7 +67,7 @@ cmake --build .
     - ⭕ *General Workspace*
       - All-purpose development, entity and world inspectation etc.
     - 🏭 *Level Building Workspace*
-      - Support for fast level prototyping
+      - Support for fast level prototyping.
     - 🖱️ *Scripting Workspace*
       - Comprehensive overview for the games logic.
     - 🔦 *Lighting Workspace*

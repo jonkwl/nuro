@@ -172,7 +172,7 @@ namespace Runtime {
 		config.windowSize = gStartupWindowSize;
 		config.fullscreen = false;
 		config.menubarVisible = false;
-		config.vsync = true;
+		config.vsync = false;
 		config.resizeable = false;
 		config.visible = false;
 

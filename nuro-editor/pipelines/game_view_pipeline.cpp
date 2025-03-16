@@ -69,9 +69,7 @@ void GameViewPipeline::render()
 	// PREPROCESSOR PASS
 	// Evaluate and update transforms, perform culling etc.
 	// 
-	Profiler::start("preprocessor_pass");
 	preprocessorPass.perform(viewProjection);
-	Profiler::stop("preprocessor_pass");
 
 	//
 	// PRE PASS
