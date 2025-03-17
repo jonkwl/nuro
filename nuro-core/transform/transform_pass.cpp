@@ -8,10 +8,8 @@
 
 void TransformPass::perform(glm::mat4 viewProjection)
 {
-	auto transforms = ECS::main().view<TransformComponent>();
-
 	// Evaluate transforms
-	for (auto [entity, transform] : transforms.each()) {
+	for (auto [entity, transform] : ECS::main().view<TransformComponent>().each()) {
 		// Evaluate root node
 		if (Transform::isRoot(transform)) evaluate(transform);
 

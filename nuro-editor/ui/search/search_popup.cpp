@@ -1,3 +1,8 @@
+//
+// TEMPORARY UI CODE
+// Will make modular search system later, with "searchable" base class
+//
+
 #include "search_popup.h"
 
 #include <string>
@@ -25,6 +30,9 @@ namespace SearchPopup {
 
     // Search buffer
     char gSearchBuffer[128];
+
+    // Search entity
+    Entity gSearchEntity;
 
     // Renders a search item element
     void _searchItem(std::string label, std::string icon) {
@@ -144,7 +152,7 @@ namespace SearchPopup {
             {
                 // TMP JUST RENDER COMPONENTS FOR NOW
                 for (const auto& [name, component] : ComponentRegistry::get()) {
-                    _searchItem(component.name, component.icon);
+                    if (!component.has(gSearchEntity)) _searchItem(component.name, component.icon);
                 }
             }
             IMComponents::endClippedChild();
@@ -170,12 +178,13 @@ namespace SearchPopup {
         ImGui::CloseCurrentPopup();
     }
 
-    void searchComponents(ImVec2 position)
+    void searchComponents(ImVec2 position, Entity target)
 	{
         gShow = true;
         gSearchPosition = position;
         gSearchName = "Components";
         gNewlyOpened = true;
+        gSearchEntity = target;
 	}
 
 }

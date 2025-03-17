@@ -211,7 +211,7 @@ struct RigidbodyComponent {
 	// Collision detection mode
 	RB_CollisionDetection collisionDetection = RB_CollisionDetection::DISCRETE;
 	
-	// Mass (Determines the rigidbody density relative to the volume of its colliders)
+	// Determines the rigidbody density relative to the volume of its colliders
 	float mass = 1.0f;
 
 	// Linear resistance coefficient
@@ -220,11 +220,17 @@ struct RigidbodyComponent {
 	// Angular resistance coefficient
 	float angularResistance = 0.05f;
 
-	// Sets if the rigidobody is being affected by gravity
+	// If set, rigidbody is being affected by gravity
 	bool gravity = true;
 
-	// Sets rigidbody to kinematic, not being affected by physics if set
+	// If set, rigidbody is not being affected by physics
 	bool kinematic = false;
+
+	// Flag to check if rigidbody is currently asleep
+	bool sleeping = false;
+
+	// Flag to check if rigidbody is currently moving (velocity not zero)
+	bool moving = false;
 
 	// Current linear velocity
 	glm::vec3 velocity = glm::vec3(0.0f);

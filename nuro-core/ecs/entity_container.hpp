@@ -150,14 +150,14 @@ private:
 private:
 	template<typename T>
 	void componentOperationFailed(std::string operation, std::string reason) {
-		Console::out::warning("Entity Container", "Couldn't " + operation + " some component because entity '" + name() + "' " + reason + ".");
+		Console::out::warning("Entity Container", "Couldn't " + operation + " some component because entity '" + name() + "' " + reason + "");
 	}
 
 	void fetchTransformFailed() {
-		Console::out::warning("Entity Container", "Couldn't fetch transform component of some entity.");
+		Console::out::warning("Entity Container", "Couldn't fetch transform component of some entity");
 	}
 
 	void verifyFailed() {
-		Console::out::warning("Entity Container", "Couldn't perform operation on some entity because it doesn't exist.");
+		Console::out::warning("Entity Container", "Couldn't perform operation on some entity because it doesn't exist");
 	}
 };

@@ -1,41 +1,96 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 
 namespace Console
 {
+
+	//
+	// TEXT COLORS
+	//
+
 	enum class TextColor
 	{
-		Black = 30,
-		Red = 31,
-		Green = 32,
-		Yellow = 33,
-		Blue = 34,
-		Magenta = 35,
-		Cyan = 36,
-		White = 37,
+		DEFAULT = 39,
+		BLACK = 30,
+		RED = 31,
+		GREEN = 32,
+		YELLOW = 33,
+		BLUE = 34,
+		MAGENTA = 35,
+		CYAN = 36,
+		WHITE = 37,
+		GRAY = 90
 	};
+
+	//
+	// BACKGROUND COLORS
+	//
 
 	enum class BackgroundColor
 	{
-		Black = 40,
-		Red = 41,
-		Green = 42,
-		Yellow = 43,
-		Blue = 44,
-		Magenta = 45,
-		Cyan = 46,
-		White = 47,
+		NONE = 49,
+		BLACK = 40,
+		RED = 41,
+		GREEN = 42,
+		YELLOW = 43,
+		BLUE = 44,
+		MAGENTA = 45,
+		CYAN = 46,
+		WHITE = 47	
 	};
+
+	//
+	// OUTPUT TAGS
+	//
+
+	class EndLine {};
+	class ResetText {};
+	class ResetBackground {};
+
+	//
+	// PRINTER
+	//
+
+	class Printer {
+	private:
+		TextColor textColor;
+		BackgroundColor backgroundColor;
+
+	public:
+		Printer();
+		~Printer();
+
+		Printer& operator>>(const std::string& text);
+		Printer& operator>>(TextColor color);
+		Printer& operator>>(BackgroundColor color);
+
+		Printer& operator>>(EndLine endLine);
+		Printer& operator>>(ResetText resetText);
+		Printer& operator>>(ResetBackground resetBackground);
+
+	};
+
+	//
+	// INSTANCES
+	//
+
+	inline EndLine endLine;
+	inline ResetText resetText;
+	inline ResetBackground resetBackground;
+	inline Printer print;
+
+	//
+	// PREFABRICATED OUTPUT
+	//
 
 	namespace out {
 
 		// Prints an error and terminates the program if possible
-		void error(std::string origin, std::string error, std::string additional_info = "");
+		void error(std::string origin, std::string error, std::string additionalInfo = "");
 
 		// Prints a warning
-		void warning(std::string origin, std::string warning, std::string additional_info = "");
+		void warning(std::string origin, std::string warning, std::string additionalInfo = "");
 
 		// Prints that some specified process has started
 		void processStart(std::string origin, std::string process);

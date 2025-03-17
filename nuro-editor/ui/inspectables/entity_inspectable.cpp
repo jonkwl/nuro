@@ -21,7 +21,7 @@ void EntityInspectable::renderStaticContent(ImDrawList& drawList)
 	ImGui::Dummy(ImVec2(0.0f, 3.0f));
 
 	ImVec2 searchPosition = ImGui::GetCursorScreenPos() + ImVec2(0.0f, 38.0f);
-	if (IMComponents::buttonBig("Add Component")) SearchPopup::searchComponents(searchPosition);
+	if (IMComponents::buttonBig("Add Component")) SearchPopup::searchComponents(searchPosition, item.entity.handle());
 }
 
 void EntityInspectable::renderDynamicContent(ImDrawList& drawList)

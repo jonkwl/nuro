@@ -51,18 +51,19 @@ public:
 	// Shapes
 	//
 
-	void plane(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
-	void box(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
-	void sphere(glm::vec3 position, float radius = 0.5f, glm::quat rotation = glm::identity<glm::quat>());
-	void planeWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
-	void boxWire(glm::vec3 position, glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), glm::quat rotation = glm::identity<glm::quat>());
-	void sphereWire(glm::vec3 position, float radius = 0.5f, glm::quat rotation = glm::identity<glm::quat>());
+	void plane(const glm::vec3& position, const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f), const glm::quat& rotation = glm::identity<glm::quat>());
+	void box(const glm::vec3& position, const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f), const glm::quat& rotation = glm::identity<glm::quat>());
+	void sphere(const glm::vec3& position, float radius = 0.5f, const glm::quat& rotation = glm::identity<glm::quat>());
+	
+	void planeWire(const glm::vec3& position, const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f), const glm::quat& rotation = glm::identity<glm::quat>());
+	void boxWire(const glm::vec3& position, const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f), const glm::quat& rotation = glm::identity<glm::quat>());
+	void sphereWire(const glm::vec3& position, float radius = 0.5f, const glm::quat& rotation = glm::identity<glm::quat>());
 
 	//
 	// Icons
 	//
 
-	void icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform);
+	void icon3d(uint32_t iconTexture, const glm::vec3& position, TransformComponent& cameraTransform);
 
 private:
 	struct StaticData {

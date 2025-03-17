@@ -17,7 +17,7 @@ namespace Transform {
 
 	bool hasParent(TransformComponent& transform)
 	{
-		return transform.depth;
+		return ECS::main().has<TransformComponent>(transform.parent);
 	}
 
 	TransformComponent& fetchParent(TransformComponent& transform)

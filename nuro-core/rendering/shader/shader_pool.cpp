@@ -55,13 +55,13 @@ namespace ShaderPool {
 
 	void loadAllSync(const std::string& directory)
 	{
-		Console::out::processStart("Shader Pool", "Loading shaders from '" + directory + "'");
+		Console::out::processState("Shader Pool", "Loading shaders from '" + directory + "'");
 		_loadAll(directory, false);
 	}
 
 	void loadAllAsync(const std::string& directory)
 	{
-		Console::out::processStart("Shader Pool", "Queued loading shader in '" + directory + "'");
+		Console::out::processState("Shader Pool", "Queued loading shader in '" + directory + "'");
 		_loadAll(directory, true);
 	}
 

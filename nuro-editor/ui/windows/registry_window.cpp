@@ -383,12 +383,16 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		switch (dropType) {
 		case DROP_ITEM:
 			// Drop dragged item here action
+
+			// tmp
+			// for (auto [id, selected] : selectedItems) ECS::main().setParent(selected->entity.handle(), item.entity.handle());
+
 			break;
 		case MOVE_ITEM_UP:
-			// Move dragged item up action
+			// Moved item up action
 			break;
 		case MOVE_ITEM_DOWN:
-			// Movw dragged item down action
+			// Moved item down action
 			break;
 		}
 	}
@@ -579,8 +583,8 @@ void RegistryWindow::performAutoScroll()
 	if (!draggingHierarchy) return;
 
 	// Properties
-	const float maxScrollSpeed = 45.0f;
-	const float scrollArea = 0.3f;
+	const float maxScrollSpeed = 35.0f;
+	const float scrollArea = 0.15f;
 
 	// Get data
 	float mouseY = ImGui::GetMousePos().y;

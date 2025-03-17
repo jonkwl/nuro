@@ -21,14 +21,23 @@ class ECS {
 public:
 	ECS();
 
-	std::tuple<Entity, TransformComponent&> createEntity(std::string name);
-	std::tuple<Entity, TransformComponent&> createEntity(std::string name, Entity parent);
-
 	// Returns the render queue
 	const RenderQueue& getRenderQueue();
 
 	// Returns the camera currently rendering
 	std::optional<Camera> getActiveCamera();
+
+	// Creates a new entity
+	std::tuple<Entity, TransformComponent&> createEntity(std::string name);
+
+	// Creates a new entity with a parent
+	std::tuple<Entity, TransformComponent&> createEntity(std::string name, Entity parent);
+
+	// Sets the parent of an entity
+	void setParent(Entity entity, Entity parent);
+
+	// Removes the parent of an entity if it has one
+	void removeParent(Entity entity);
 
 public:
 	// Returns a reference to the registry; use with caution, prefer wrapper methods!
@@ -55,7 +64,7 @@ public:
 
 	// Returns if a component of given type can be added to entity
 	template<typename T>
-	inline bool canAdd(Entity entity) {
+	bool canAdd(Entity entity) const {
 		return !registry.any_of<T>(entity);
 	}
 

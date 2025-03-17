@@ -23,7 +23,6 @@ namespace IconPool {
 	void _loadAll(const std::string& directory, bool async)
 	{
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
-		uint32_t nLoaded = 0;
 
 		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directory, gValidExtensions);
 		for (const auto& file : files) {
@@ -49,22 +48,18 @@ namespace IconPool {
 				loader.createSync(icon);
 			}
 
-			nLoaded++;
-
 		}
-
-		Console::out::processDone("Icon Pool", "Loaded " + std::to_string(nLoaded) + (nLoaded == 1 ? " icon" : " icons"));
 	}
 
 	void loadAllSync(const std::string& directory)
 	{
-		Console::out::processStart("Icon Pool", "Loading icons from '" + directory + "'");
+		Console::out::processState("Icon Pool", "Loading icons from '" + directory + "'");
 		_loadAll(directory, false);
 	}
 
 	void loadAllAsync(const std::string& directory)
 	{
-		Console::out::processStart("Icon Pool", "Queued loading icons in '" + directory + "'");
+		Console::out::processState("Icon Pool", "Queued loading icons in '" + directory + "'");
 		_loadAll(directory, true);
 	}
 

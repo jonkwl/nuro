@@ -37,7 +37,7 @@ float Skybox::getEmission() const
 
 void Skybox::create()
 {
-	Console::out::processStart("Skybox", "Generating skybox...");
+	Console::out::processState("Skybox", "Generating skybox");
 
 	// Set shader
 	shader = ShaderPool::get("skybox");
@@ -101,8 +101,6 @@ void Skybox::create()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	Console::out::processDone("Skybox", "Skybox generated");
 }
 
 void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)

@@ -13,7 +13,7 @@
 #include <rendering/texture/texture.h>
 #include <utils/console.h>
 
-PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, const bool renderToScreen) : viewport(viewport),
+PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, bool renderToScreen) : viewport(viewport),
 renderToScreen(renderToScreen),
 fbo(0),
 output(0),

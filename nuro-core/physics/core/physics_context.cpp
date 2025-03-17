@@ -123,12 +123,21 @@ void PhysicsContext::simulate(float delta)
 
 void PhysicsContext::syncRigidbodyComponent(RigidbodyComponent& rigidbody)
 {
-	// Update rigidbody components velocity data
-	rigidbody.velocity = PxTranslator::convert(rigidbody.actor->getLinearVelocity());
-	rigidbody.angularVelocity = PxTranslator::convert(rigidbody.actor->getAngularVelocity());
+	PxRigidDynamic* actor = rigidbody.actor;
 
-	// Update rigidbody components transform data
-	PxTransform globalPose = rigidbody.actor->getGlobalPose();
+	PxVec3 linearVelocity = actor->getLinearVelocity();
+	PxVec3 angularVelocity = actor->getAngularVelocity();
+
+	// Flags
+	rigidbody.sleeping = actor->isSleeping();
+	rigidbody.moving = !(linearVelocity.isZero() && angularVelocity.isZero());
+
+	// Velocity data
+	rigidbody.velocity = PxTranslator::convert(linearVelocity);
+	rigidbody.angularVelocity = PxTranslator::convert(angularVelocity);
+
+	// Ttransform data
+	PxTransform globalPose = actor->getGlobalPose();
 	rigidbody.position = PxTranslator::convert(globalPose.p);
 	rigidbody.rotation = PxTranslator::convert(globalPose.q);
 }
@@ -158,9 +167,11 @@ void PhysicsContext::syncTransformComponent(float delta, TransformComponent& tra
 		break;
 	}*/
 
-	// Apply to transform
-	Transform::setPosition(transform, position);
-	Transform::setRotation(transform, rotation);
+	// Apply transform if rigidbody is moving
+	if (rigidbody.moving) {
+		Transform::setPosition(transform, position);
+		Transform::setRotation(transform, rotation);
+	}
 }
 
 glm::vec3 PhysicsContext::interpolate(glm::vec3 lastPosition, glm::vec3 position, float factor)

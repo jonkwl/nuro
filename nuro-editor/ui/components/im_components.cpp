@@ -1,6 +1,9 @@
 #include "im_components.h"
 
 #include <array>
+#include <sstream>
+#include <iomanip>
+#include <iostream>
 #include <implot.h>
 #include <algorithm>
 #include <imgui_internal.h>
@@ -13,18 +16,54 @@
 
 namespace IMComponents {
 
-	std::string _formatInteger(int32_t number)
+	// Format integer to string (inserts ',' for thousands)
+	std::string _formatNum(int32_t number)
 	{
 		std::string numStr = std::to_string(number);
 		int32_t insertPosition = numStr.length() - 3;
 
 		while (insertPosition > 0)
 		{
-			numStr.insert(insertPosition, ".");
+			numStr.insert(insertPosition, ",");
 			insertPosition -= 3;
 		}
 
 		return numStr;
+	}
+
+	// Format integer to string (inserts ',' for thousands)
+	std::string _formatNum(uint32_t number)
+	{
+		std::string numStr = std::to_string(number);
+		int32_t insertPosition = numStr.length() - 3;
+
+		while (insertPosition > 0)
+		{
+			numStr.insert(insertPosition, ",");
+			insertPosition -= 3;
+		}
+
+		return numStr;
+	}
+
+	// Format float to string (inserts ',' for thousands and limits the fractional part)
+	std::string _formatNum(float value, uint8_t precision = 2) {
+		std::ostringstream oss;
+		oss << std::fixed << std::setprecision(precision) << value;
+		std::string result = oss.str();
+
+		size_t decimalPos = result.find('.');
+
+		std::string integerPart = result.substr(0, decimalPos);
+		std::string fractionalPart = (decimalPos != std::string::npos) ? result.substr(decimalPos) : "";
+
+		int insertPos = integerPart.length() - 3;
+		while (insertPos > 0) {
+			integerPart.insert(insertPos, ",");
+			insertPos -= 3;
+		}
+
+		return integerPart + fractionalPart;
 	}
 
 	void headline(std::string title, const char* icon, bool seperator)
@@ -155,6 +194,24 @@ namespace IMComponents {
 		ImGui::Text(text.c_str());
 		ImGui::PopFont();
 		ImGui::PopStyleColor();
+	}
+
+	void flagLabel(std::string text, bool flag)
+	{
+		IMComponents::label(text + ": ");
+		ImGui::SameLine();
+		IMComponents::label(flag ? "Yes" : "No", flag ? IM_COL32(145, 255, 145, 200) : IM_COL32(255, 145, 145, 230));
+	}
+
+	void vectorLabel(std::string text, const glm::vec3& vector)
+	{
+		IMComponents::label(text + ": ");
+		ImGui::SameLine();
+		IMComponents::label(_formatNum(vector.x) + "x ", IM_COL32(255, 145, 145, 230));
+		ImGui::SameLine();
+		IMComponents::label(_formatNum(vector.y) + "y ", IM_COL32(145, 255, 145, 230));
+		ImGui::SameLine();
+		IMComponents::label(_formatNum(vector.z) + "z ", IM_COL32(145, 145, 255, 230));
 	}
 
 	void labelBold(std::string text)
@@ -474,13 +531,13 @@ namespace IMComponents {
 
 	void indicatorLabel(std::string label, int32_t value, std::string additional)
 	{
-		std::string text = _formatInteger(value);
+		std::string text = _formatNum(value);
 		indicatorLabel(label, text.c_str(), additional);
 	}
 
 	void indicatorLabel(std::string label, uint32_t value, std::string additional)
 	{
-		std::string text = _formatInteger(value);
+		std::string text = _formatNum(value);
 		indicatorLabel(label, text.c_str(), additional);
 	}
 

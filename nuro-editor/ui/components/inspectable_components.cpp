@@ -172,10 +172,8 @@ namespace InspectableComponents {
 			IMComponents::label("Depth: " + std::to_string(transform.depth));
 
 			if (Transform::hasParent(transform)) {
-				glm::vec3 worldPos = Transform::getPosition(transform, Space::WORLD);
-				glm::vec3 worldScale = Transform::getScale(transform, Space::WORLD);
-				IMComponents::label("World Position X: " + std::to_string(worldPos.x) + " Y: " + std::to_string(worldPos.y) + " Z: " + std::to_string(worldPos.z));
-				IMComponents::label("World Scale X: " + std::to_string(worldScale.x) + " Y: " + std::to_string(worldScale.y) + " Z: " + std::to_string(worldScale.z));
+				IMComponents::vectorLabel("World Position", Transform::getPosition(transform, Space::WORLD));
+				IMComponents::vectorLabel("World Scale", Transform::getScale(transform, Space::WORLD));
 			}
 
 			// tmp
@@ -236,7 +234,7 @@ namespace InspectableComponents {
 			IMComponents::input("Intensity", directionalLight.intensity);
 			IMComponents::colorPicker("Color", directionalLight.color);
 
-			_spacingM();
+			_spacingS();
 			_headline("Shadows");
 			bool tmp = false;
 			IMComponents::input("Cast Shadows", tmp);
@@ -261,7 +259,7 @@ namespace InspectableComponents {
 			IMComponents::input("Range", pointLight.range);
 			IMComponents::input("Falloff", pointLight.falloff);
 
-			_spacingM();
+			_spacingS();
 			_headline("Shadows");
 			bool tmp = false;
 			IMComponents::input("Cast Shadows", tmp);
@@ -288,7 +286,7 @@ namespace InspectableComponents {
 			IMComponents::input("Inner Angle", spotlight.innerAngle);
 			IMComponents::input("Outer Angle", spotlight.outerAngle);
 
-			_spacingM();
+			_spacingS();
 			_headline("Shadows");
 			bool tmp = true;
 			IMComponents::input("Cast Shadows", tmp);
@@ -328,7 +326,7 @@ namespace InspectableComponents {
 			IMComponents::input("Center", boxCollider.center);
 			IMComponents::input("Size", boxCollider.size);
 			
-			_spacingM();
+			_spacingS();
 			_headline("Material");
 			IMComponents::label("Material: Default Physics Material");
 
@@ -350,7 +348,7 @@ namespace InspectableComponents {
 			IMComponents::input("Center", sphereCollider.center);
 			IMComponents::input("Radius", sphereCollider.radius);
 
-			_spacingM();
+			_spacingS();
 			_headline("Material");
 			IMComponents::label("Material: Default Physics Material");
 
@@ -372,6 +370,13 @@ namespace InspectableComponents {
 			IMComponents::input("Angular Resistance", rigidbody.angularResistance);
 			IMComponents::input("Use Gravity", rigidbody.gravity);
 			IMComponents::input("Is Kinematic", rigidbody.kinematic);
+
+			_spacingS();
+			_headline("State");
+			IMComponents::flagLabel("Sleeping", rigidbody.sleeping);
+			IMComponents::flagLabel("Moving", rigidbody.moving);
+			IMComponents::vectorLabel("Velocity", rigidbody.velocity);
+			IMComponents::vectorLabel("Angular Velocity", rigidbody.angularVelocity);
 
 			_endComponent();
 		}

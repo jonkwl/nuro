@@ -1,8 +1,8 @@
 #include "ecs.h"
 
 #include <random>
-#include <glm/glm.hpp>
 #include <algorithm>
+#include <glm/glm.hpp>
 
 #include <utils/console.h>
 #include <ecs/reflection.h>
@@ -16,41 +16,6 @@ ECS::ECS() : registry(), idCounter(0), renderQueue()
 	// Register render queue updates
 	registry.on_construct<MeshRendererComponent>().connect<&ECS::insertMeshRenderer>(this);
 	registry.on_destroy<MeshRendererComponent>().connect<&ECS::purgeMeshRenderer>(this);
-}
-
-std::tuple<Entity, TransformComponent&> ECS::createEntity(std::string name)
-{
-	// Create new entity and emplace transform component
-	Entity entity = registry.create();
-	TransformComponent& transform = add<TransformComponent>(entity);
-
-	// Set transform data
-	transform.id = getId();
-	transform.name = name;
-
-	// Return entity and transform component
-	return std::tuple<Entity, TransformComponent&>(entity, transform);
-}
-
-std::tuple<Entity, TransformComponent&> ECS::createEntity(std::string name, Entity parent)
-{
-	// Create new entity
-	auto [entity, transform] = createEntity(name);
-
-	// Link parent to transform
-	transform.parent = parent;
-
-	// Fetch parent
-	TransformComponent& parentTransform = Transform::fetchParent(transform);
-
-	// Add to parents children
-	parentTransform.children.push_back(entity);
-
-	// Update depth
-	transform.depth = parentTransform.depth + 1;
-
-	// Return entity and transform component
-	return std::tuple<Entity, TransformComponent&>(entity, transform);
 }
 
 const RenderQueue& ECS::getRenderQueue()
@@ -69,10 +34,97 @@ std::optional<Camera> ECS::getActiveCamera() {
 	return std::nullopt;
 }
 
+std::tuple<Entity, TransformComponent&> ECS::createEntity(std::string name)
+{
+	// Create new entity and emplace transform component
+	Entity entity = registry.create();
+	TransformComponent& transform = add<TransformComponent>(entity);
+
+	// Set transform data
+	transform.id = getId();
+	transform.name = name;
+
+	// Return entity and transform component
+	return std::tuple<Entity, TransformComponent&>(entity, transform);
+}
+
+std::tuple<Entity, TransformComponent&> ECS::createEntity(std::string name, Entity parent)
+{
+	// Ensure parent is valid, create entity without parent otherwise
+	if (!has<TransformComponent>(parent)) {
+		Console::out::warning("ECS", "Tried to create entity '" + name + "' with invalid parent");
+		return createEntity(name);
+	}
+
+	// Create new entity
+	auto [entity, transform] = createEntity(name);
+
+	// Fetch parent
+	TransformComponent& parentTransform = get<TransformComponent>(parent);
+
+	// Set parent
+	setParent(entity, parent);
+
+	// Return entity and transform component
+	return std::tuple<Entity, TransformComponent&>(entity, transform);
+}
+
+void ECS::setParent(Entity entity, Entity parent)
+{
+	// Verify entity
+	if (!has<TransformComponent>(entity)) {
+		Console::out::warning("ECS", "Tried to modify parent of invalid entity");
+		return;
+	}
+
+	// Verify parent
+	if (!has<TransformComponent>(parent)) {
+		Console::out::warning("ECS", "Tried to make invalid entity a parent");
+		return;
+	}
+
+	// Remove current parent if any
+	removeParent(entity);
+
+	// Fetch transforms
+	TransformComponent& transform = get<TransformComponent>(entity);
+	TransformComponent& parentTransform = get<TransformComponent>(parent);
+
+	// Add entity to parents children
+	parentTransform.children.push_back(entity);
+
+	// Update transform
+	transform.parent = parent;
+	transform.depth = parentTransform.depth + 1;
+	transform.modified = true;
+}
+
+void ECS::removeParent(Entity entity)
+{
+	TransformComponent& transform = get<TransformComponent>(entity);
+
+	// Return if entity doesn't have parent
+	if (!Transform::hasParent(transform)) return;
+
+	// Remove entity from children of parent
+	// Inefficient, add e.g. binary search here later
+	auto& children = Transform::fetchParent(transform).children;
+	auto it = std::find(children.begin(), children.end(), entity);
+	if (it != children.end()) {
+		std::swap(*it, children.back());
+		children.pop_back();
+	}
+
+	// Update transform
+	transform.parent = entt::null;
+	transform.depth = 0;
+	transform.modified = true;
+}
+
 ECS& ECS::main()
 {
 	if (!entt::locator<ECS>::has_value()) 
-		Console::out::error("ECS", "Fatal: No main ECS service was instantiated!");
+		Console::out::error("ECS", "Fatal: No main ECS service was instantiated");
 
 	return entt::locator<ECS>::value();
 }

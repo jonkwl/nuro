@@ -18,6 +18,9 @@ struct ComponentInfo {
     // Editor component icon identifier
     std::string icon;
 
+    // Function returning if component is owned by an entity
+    std::function<bool(Entity)> has;
+
     // Function adding component to an entity
     std::function<void(Entity)> add;
 

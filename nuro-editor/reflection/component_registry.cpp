@@ -45,6 +45,11 @@ namespace ComponentRegistry
             // Editor icon
             icon,
 
+            // Has
+            [](Entity entity) {
+                return ECS::main().has<T>(entity);
+            },
+
             // Add
             [](Entity entity) {
                 ECS::main().add<T>(entity);
@@ -127,14 +132,14 @@ namespace ComponentRegistry
         registerComponent<PointLightComponent>(
             "Point Light",
             InspectableComponents::drawPointLight,
-            std::nullopt,
+            ComponentGizmos::drawPointLight,
             true
         );
         
         registerComponent<SpotlightComponent>(
             "Spotlight",
             InspectableComponents::drawSpotlight,
-            std::nullopt,
+            ComponentGizmos::drawSpotlight,
             true
         );
         

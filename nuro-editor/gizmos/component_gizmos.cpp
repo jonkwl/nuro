@@ -49,4 +49,17 @@ namespace ComponentGizmos {
 		gizmos.sphereWire(Transform::getPosition(transform, Space::WORLD), sphereCollider.radius, Transform::getRotation(transform, Space::WORLD));
 	}
 
+	void drawPointLight(IMGizmo& gizmos, TransformComponent& transform, PointLightComponent& pointLight)
+	{
+		gizmos.foreground = true;
+		gizmos.color = pointLight.color;
+		gizmos.opacity = 0.1f;
+		gizmos.sphereWire(Transform::getPosition(transform, Space::WORLD), pointLight.range, glm::identity<glm::quat>());
+	}
+
+	void drawSpotlight(IMGizmo& gizmos, TransformComponent& transform, SpotlightComponent& spotlight)
+	{
+		//
+	}
+
 }

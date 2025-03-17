@@ -43,9 +43,7 @@ namespace ApplicationContext {
 
 		// Debug graphics api version
 		const char* version = (const char*)glGetString(GL_VERSION);
-		Console::out::processDone("Application Context", "Initialized, OpenGL version: " + std::string(version));
-
-		Console::out::processDone("Application Context", "Created application context");
+		Console::out::processState("Application Context", "Initialized, OpenGL version: " + std::string(version));
 	}
 
 	void create(Configuration configuration)
@@ -58,7 +56,7 @@ namespace ApplicationContext {
 		gConfiguration = configuration;
 
 		// Start creating application context
-		Console::out::processStart("Application Context", "Creating application context...");
+		Console::out::processStart("Application Context", "Creating application context");
 
 		// Set error callback and initialize context
 		glfwSetErrorCallback(_glfwErrorCallback);
@@ -136,6 +134,8 @@ namespace ApplicationContext {
 
 		// Create essential primitives
 		GlobalQuad::create();
+
+		Console::out::processDone("Application Context", "Created application context");
 	}
 
 	void destroy()

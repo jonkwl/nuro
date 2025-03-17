@@ -218,43 +218,43 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 	glDisable(GL_BLEND);
 }
 
-void IMGizmo::plane(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+void IMGizmo::plane(const glm::vec3& position, const glm::vec3& scale, const glm::quat& rotation)
 {
 	ShapeRenderTarget gizmo(Shape::PLANE, position, rotation, scale, false, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::box(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+void IMGizmo::box(const glm::vec3& position, const glm::vec3& scale, const glm::quat& rotation)
 {
 	ShapeRenderTarget gizmo(Shape::BOX, position, rotation, scale, false, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::sphere(glm::vec3 position, float radius, glm::quat rotation)
+void IMGizmo::sphere(const glm::vec3& position, float radius, const glm::quat& rotation)
 {
 	ShapeRenderTarget gizmo(Shape::SPHERE, position, rotation, glm::vec3(radius * 2), false, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::planeWire(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+void IMGizmo::planeWire(const glm::vec3& position, const glm::vec3& scale, const glm::quat& rotation)
 {
 	ShapeRenderTarget gizmo(Shape::PLANE, position, rotation, scale, true, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::boxWire(glm::vec3 position, glm::vec3 scale, glm::quat rotation)
+void IMGizmo::boxWire(const glm::vec3& position, const glm::vec3& scale, const glm::quat& rotation)
 {
 	ShapeRenderTarget gizmo(Shape::BOX, position, rotation, scale, true, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::sphereWire(glm::vec3 position, float radius, glm::quat rotation)
+void IMGizmo::sphereWire(const glm::vec3& position, float radius, const glm::quat& rotation)
 {
 	ShapeRenderTarget gizmo(Shape::SPHERE, position, rotation, glm::vec3(radius), true, getCurrentState());
 	shapeRenderStack.push_back(gizmo);
 }
 
-void IMGizmo::icon3d(uint32_t iconTexture, glm::vec3 position, TransformComponent& cameraTransform)
+void IMGizmo::icon3d(uint32_t iconTexture, const glm::vec3& position, TransformComponent& cameraTransform)
 {
 	IconRenderTarget gizmo(iconTexture, position, iconScale, cameraTransform, getCurrentState());
 	iconRenderStack.push_back(gizmo);

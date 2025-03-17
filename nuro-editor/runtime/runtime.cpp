@@ -69,6 +69,8 @@ namespace Runtime {
 	//
 
 	void _loadDependencies() {
+		Console::out::processStart("Runtime", "Loading dependencies");
+
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
 		// Load shaders
@@ -98,9 +100,12 @@ namespace Runtime {
 		gDefaultSkybox.setCubemap(gDefaultCubemap);
 		gDefaultSkybox.create();
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
+
+		Console::out::processDone("Runtime", "Loaded dependencies");
 	}
 
 	void _createResources() {
+		Console::out::processStart("Runtime", "Creating resources");
 
 		// Create pipelines
 		gSceneViewPipeline.create();
@@ -121,6 +126,8 @@ namespace Runtime {
 		gMainShadowDisk = new ShadowDisk(diskWindowSize, diskFilterSize, diskRadius);
 		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
+
+		Console::out::processDone("Runtime", "Created resources");
 
 	}
 
@@ -165,6 +172,9 @@ namespace Runtime {
 	}
 
 	void _createApplicationContext() {
+
+		// Space
+		Console::print >> Console::endLine;
 
 		// Create application context configuration
 		ApplicationContext::Configuration config;

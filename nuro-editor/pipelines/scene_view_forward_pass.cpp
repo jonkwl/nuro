@@ -298,11 +298,10 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	TransformComponent outlineTransform;
 	float thickness = 0.038f;
 	outlineTransform.parent = transform.parent;
-	outlineTransform.position = transform.position;
-	outlineTransform.rotation = transform.rotation;
-	outlineTransform.scale = transform.scale + thickness;
-	if (Transform::hasParent(outlineTransform)) Transform::evaluate(outlineTransform, Transform::fetchParent(outlineTransform));
-	else Transform::evaluate(outlineTransform);
+	glm::vec3 position = Transform::getPosition(transform, Space::WORLD);
+	glm::quat rotation = Transform::getRotation(transform, Space::WORLD);
+	glm::vec3 scale = Transform::getScale(transform, Space::WORLD) + thickness;
+	outlineTransform.model = Transformation::model(position, rotation, scale);
 	Transform::updateMvp(outlineTransform, viewProjection);
 
 	// Render mesh as outline

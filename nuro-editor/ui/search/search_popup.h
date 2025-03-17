@@ -3,6 +3,8 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
+#include <ecs/ecs.h>
+
 namespace SearchPopup
 {
 	// Renders the current search popup if any is opened
@@ -12,5 +14,5 @@ namespace SearchPopup
 	void close();
 
 	// Opens a popup to search for ecs components
-	void searchComponents(ImVec2 position);
+	void searchComponents(ImVec2 position, Entity target);
 };
