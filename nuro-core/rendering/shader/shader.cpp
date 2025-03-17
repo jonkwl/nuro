@@ -9,22 +9,26 @@
 
 namespace fs = std::filesystem;
 
-void Shader::loadData()
+bool Shader::loadData()
 {
 	data.vertexSource = IOUtils::readFile(path + "/.vert");
 	data.fragmentSource = IOUtils::readFile(path + "/.frag");
+
+	return true;
 }
 
-void Shader::releaseData()
+bool Shader::releaseData()
 {
 	data.vertexSource.clear();
 	data.fragmentSource.clear();
+
+	return true;
 }
 
-void Shader::dispatchGPU()
+bool Shader::dispatchGPU()
 {
 	// Don't dispatch shader if there is no data
-	if (data.vertexSource.empty() || data.fragmentSource.empty()) return;
+	if (data.vertexSource.empty() || data.fragmentSource.empty()) return false;
 
 	// Shader backend ids
 	uint32_t vertexShader, fragmentShader;
@@ -34,25 +38,27 @@ void Shader::dispatchGPU()
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
 	glCompileShader(vertexShader);
-	if (!shaderCompiled("vertex", vertexShader)) return;
+	if (!shaderCompiled("vertex", vertexShader)) return false;
 
 	// Compile fragment shader source
 	const char* fragmentSource = data.fragmentSource.c_str();
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
 	glCompileShader(fragmentShader);
-	if (!shaderCompiled("fragment", fragmentShader)) return;
+	if (!shaderCompiled("fragment", fragmentShader)) return false;
 
 	// Create and link shader program
 	_backendId = glCreateProgram();
 	glAttachShader(_backendId, vertexShader);
 	glAttachShader(_backendId, fragmentShader);
 	glLinkProgram(_backendId);
-	if (!programLinked(_backendId)) return;
+	if (!programLinked(_backendId)) return false;
 
 	// Delete shader sources
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+	return true;
 }
 
 Shader::Shader() : path(),

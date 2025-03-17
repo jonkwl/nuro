@@ -9,15 +9,15 @@
 
 namespace fs = std::filesystem;
 
-void Cubemap::loadData()
+bool Cubemap::loadData()
 {
 	switch (source.type) {
 	case Source::Type::CROSS:
-		if (source.paths.empty()) return;
+		if (source.paths.empty()) return false;
 		loadCrossCubemap(source.paths[0]);
 		break;
 	case Source::Type::INDIVIDUAL:
-		if (source.paths.size() < 6) return;
+		if (source.paths.size() < 6) return false;
 		loadIndividualFace(source.paths[0]);
 		loadIndividualFace(source.paths[1]);
 		loadIndividualFace(source.paths[2]);
@@ -28,17 +28,20 @@ void Cubemap::loadData()
 	default:
 		break;
 	}
+
+	return true;
 }
 
-void Cubemap::releaseData()
+bool Cubemap::releaseData()
 {
 	data.clear();
+	return true;
 }
 
-void Cubemap::dispatchGPU()
+bool Cubemap::dispatchGPU()
 {
 	// Don't dispatch cubemap if there is no data
-	if (data.empty()) return;
+	if (data.empty()) return false;
 
 	glGenTextures(1, &_backendId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, _backendId);
@@ -63,6 +66,8 @@ void Cubemap::dispatchGPU()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return true;
 }
 
 Cubemap::Cubemap() : source(),

@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 
 uint32_t Texture::defaultTextureId = 0;
 
-void Texture::loadData()
+bool Texture::loadData()
 {
 	// Load image data
 	int _width, _height, _channels;
@@ -21,7 +21,7 @@ void Texture::loadData()
 	if (!_data)
 	{
 		Console::out::warning("Texture", "Couldn't load data for texture '" + IOUtils::getFilename(path) + "'");
-		return;
+		return false;
 	}
 
 	// Sync loaded data
@@ -29,21 +29,25 @@ void Texture::loadData()
 	height = _height;
 	channels = _channels;
 	data = _data;
+
+	return true;
 }
 
-void Texture::releaseData()
+bool Texture::releaseData()
 {
 	// Don't release data if there is none
-	if (!data) return;
+	if (!data) return true;
 
 	// Free memory allocated for image data
 	stbi_image_free(data);
+
+	return true;
 }
 
-void Texture::dispatchGPU()
+bool Texture::dispatchGPU()
 {
 	// Don't dispatch texture if there is no data
-	if (!data) return;
+	if (!data) return false;
 
 	// Generate texture
 	glGenTextures(1, &_backendId);
@@ -111,6 +115,8 @@ void Texture::dispatchGPU()
 
 	// Undbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return true;
 }
 
 Texture::Texture() : type(TextureType::EMPTY),

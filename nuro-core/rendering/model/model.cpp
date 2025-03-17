@@ -16,7 +16,7 @@
 
 namespace fs = std::filesystem;
 
-void Model::loadData()
+bool Model::loadData()
 {
 	// Read file
 	Assimp::Importer import;
@@ -27,7 +27,7 @@ void Model::loadData()
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		Console::out::warning("Model", "Couldn't load model '" + IOUtils::getFilename(path) + "'", import.GetErrorString());
-		return;
+		return false;
 	}
 
 	// Reserve materials
@@ -42,17 +42,21 @@ void Model::loadData()
 
 	// Finalize the metrics
 	finalizeMetrics();
+
+	return true;
 }
 
-void Model::releaseData()
+bool Model::releaseData()
 {
 	meshData.clear();
+
+	return true;
 }
 
-void Model::dispatchGPU()
+bool Model::dispatchGPU()
 {
 	// Don't dispatch model if there is no data
-	if (meshData.empty()) return;
+	if (meshData.empty()) return false;
 
 	// Dispatch each mesh
 	for (uint32_t i = 0; i < meshData.size(); i++) {
@@ -110,6 +114,8 @@ void Model::dispatchGPU()
 		// Update mesh
 		meshes[i].setData(vao, vbo, ebo, nVertices, nIndices, materialIndex);
 	}
+
+	return true;
 }
 
 Model::Model() : path(),

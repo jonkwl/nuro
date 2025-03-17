@@ -11,11 +11,14 @@ enum class ResourceState {
 	// Resource is queued and waiting for asynchronous creation
 	QUEUED,
 
-	// Resource is being created (e.g., loading data or being dispatched to the GPU)
-	CREATING,
+	// Resource is being loaded (e.g., loading data or being dispatched to the GPU)
+	LOADING,
 
-	// Resource has been successfully created and is ready for use
-	READY
+	// Resource has been successfully loaded and is ready for use
+	READY,
+
+	// Laoding resource failed
+	FAILED
 };
 
 class Resource
@@ -31,13 +34,13 @@ protected:
 	std::atomic<ResourceState> _resourceState;
 
 	// Loads the resources data from I/O
-	virtual void loadData() = 0;
+	virtual bool loadData() = 0;
 
 	// Releases previously loaded data
-	virtual void releaseData() = 0;
+	virtual bool releaseData() = 0;
 
 	// Creates gpu buffers for resource with previously loaded data
-	virtual void dispatchGPU() = 0;
+	virtual bool dispatchGPU() = 0;
 
 	Resource() : _resourceId(0), _resourceState(ResourceState::EMPTY) {};
 	virtual ~Resource() = default;

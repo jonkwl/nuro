@@ -4,6 +4,7 @@
 #include <implot.h>
 
 #include <time/time.h>
+#include <utils/ioutils.h>
 #include <diagnostics/profiler.h>
 #include <diagnostics/diagnostics.h>
 
@@ -39,15 +40,15 @@ void ResourceViewerWindow::render()
 				ImVec2 pos = ImGui::GetCursorScreenPos();
 				switch (resource->resourceState()) {
 				case ResourceState::EMPTY:
-					IMComponents::label("EMPTY", IM_COL32(180, 180, 100, 255));
+					IMComponents::label("EMPTY", IM_COL32(255, 255, 0, 255));
 					ImGui::SameLine();
 					break;
 				case ResourceState::QUEUED:
-					IMComponents::label("QUEUED", IM_COL32(150, 150, 220, 255));
+					IMComponents::label("QUEUED", IM_COL32(180, 180, 255, 255));
 					ImGui::SameLine();
 					break;
-				case ResourceState::CREATING:
-					IMComponents::label("CREATING...", IM_COL32(170, 255, 130, 255));
+				case ResourceState::LOADING:
+					IMComponents::label("CREATING...", IM_COL32(50, 255, 120, 255));
 					ImGui::SetCursorScreenPos(pos);
 					IMComponents::loadingBuffer(drawList, pos + ImVec2(74.0f, 3.0f), 5.0f, 2.0f, IM_COL32(255, 255, 255, 200));
 					ImGui::SetCursorScreenPos(pos + ImVec2(87.0f, 0.0f));
@@ -56,8 +57,12 @@ void ResourceViewerWindow::render()
 					IMComponents::label("READY", IM_COL32(0, 255, 0, 255));
 					ImGui::SameLine();
 					break;
+				case ResourceState::FAILED:
+					IMComponents::label("FAILED", IM_COL32(255, 50, 50, 255));
+					ImGui::SameLine();
+					break;
 				}
-				IMComponents::label(" (" + resource->sourcePath() + ")");
+				IMComponents::label(" (" + IOUtils::getFilename(resource->sourcePath()) + ")");
 			}
 		}
 		ImGui::EndChild();

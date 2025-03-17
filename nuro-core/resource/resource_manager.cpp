@@ -29,10 +29,17 @@ ResourceManager::~ResourceManager()
 void ResourceManager::loadSync(Resource* resource)
 {
 	// Load resources data
-	resource->loadData();
+	if (!resource->loadData()) {
+		resource->_resourceState = ResourceState::FAILED;
+		return;
+	}
 
 	// Dispatch resource to gpu
-	resource->dispatchGPU();
+	if (!resource->dispatchGPU()) {
+		resource->_resourceState = ResourceState::FAILED;
+		resource->releaseData();
+		return;
+	}
 
 	// Release resources data
 	resource->releaseData();
@@ -68,12 +75,19 @@ void ResourceManager::dispatchNext()
 		// Fetch resource to be dispatched
 		Resource* resource = mainTasks.front();
 
-		// Dispatch resource and release its data
-		resource->dispatchGPU();
-		resource->releaseData();
+		// Ensure resource loading didn't fail so far
+		if (resource->_resourceState != ResourceState::FAILED) {
+			// Dispatch resource
+			if (resource->dispatchGPU()) {
+				resource->_resourceState = ResourceState::READY;
+			}
+			else {
+				resource->_resourceState = ResourceState::FAILED;
+			}
 
-		// Update resources state
-		resource->_resourceState = ResourceState::READY;
+			// Release resources data
+			resource->releaseData();
+		}
 
 		// Pop resource from queue safely
 		popSafe(mainTasks);
@@ -109,7 +123,7 @@ void ResourceManager::asyncWorker()
 			Resource* resource = workerTasks.front();
 
 			// Update resources state
-			resource->_resourceState = ResourceState::CREATING;
+			resource->_resourceState = ResourceState::LOADING;
 
 			// Sync worker state
 			workerTasksPending = workerTasks.size();
@@ -117,7 +131,7 @@ void ResourceManager::asyncWorker()
 			workerTarget = resource;
 
 			// Load resource data
-			resource->loadData();
+			if (!resource->loadData()) resource->_resourceState = ResourceState::FAILED;
 
 			// Update queues
 			popSafe(workerTasks);

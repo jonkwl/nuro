@@ -10,9 +10,9 @@
 class Shader : public Resource
 {
 protected:
-	void loadData() override;
-	void releaseData() override;
-	void dispatchGPU() override;
+	bool loadData() override;
+	bool releaseData() override;
+	bool dispatchGPU() override;
 
 public:
 	Shader();
