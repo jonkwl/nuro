@@ -23,26 +23,35 @@ enum class ResourceState {
 
 class Resource
 {
-protected:
-	// Protected methods and members are used and managed by resource loader only
+private:
 	friend class ResourceManager;
 
 	// ID of the resource
 	uint32_t _resourceId;
 
-	// Atomic state of the resource
+	// Atomic state of the resource (indicating its usability rather than the status of its data)
 	std::atomic<ResourceState> _resourceState;
 
-	// Loads the resources data from I/O
-	virtual bool loadData() = 0;
+	// Atomic flag set if resources io data is loaded
+	std::atomic<bool> _loadedIoData;
 
-	// Releases previously loaded data
-	virtual bool releaseData() = 0;
+protected:
+	// Flag setting if io data should be preserved after uploading resource
+	bool _preserveIoData;
 
-	// Creates gpu buffers for resource with previously loaded data
-	virtual bool dispatchGPU() = 0;
+	// Loads the resources data from io
+	virtual bool loadIoData() = 0;
 
-	Resource() : _resourceId(0), _resourceState(ResourceState::EMPTY) {};
+	// Frees any previously loaded io data
+	virtual void freeIoData() = 0;
+
+	// Creates resources target buffers (e.g. on the gpu) with previously loaded data
+	virtual bool uploadBuffers() = 0;
+
+	// Deletes resources previously uploaded target buffers
+	virtual void deleteBuffers() = 0;
+
+	Resource() : _resourceId(0), _resourceState(ResourceState::EMPTY), _loadedIoData(false), _preserveIoData(false) {};
 	virtual ~Resource() = default;
 
 public: 
@@ -54,6 +63,11 @@ public:
 	// Returns the resources current state
 	ResourceState resourceState() const {
 		return _resourceState;
+	}
+
+	// Returns if the resources io data is loaded
+	bool loadedIoData() const {
+		return _loadedIoData;
 	}
 
 	// Returns source path of resource (tmp)

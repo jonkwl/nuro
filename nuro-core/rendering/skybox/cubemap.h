@@ -9,9 +9,10 @@
 class Cubemap : public Resource
 {
 protected:
-	bool loadData() override;
-	bool releaseData() override;
-	bool dispatchGPU() override;
+	bool loadIoData() override;
+	void freeIoData() override;
+	bool uploadBuffers() override;
+	void deleteBuffers() override;
 
 public:
 	Cubemap();

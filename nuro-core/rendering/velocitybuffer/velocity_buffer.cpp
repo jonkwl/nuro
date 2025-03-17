@@ -145,10 +145,10 @@ uint32_t VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4& pr
 		velocityPassShader->setFloat("intensity", velocity.intensity);
 
 		// Bind mesh
-		glBindVertexArray(renderer.mesh->getVAO());
+		glBindVertexArray(renderer.mesh->vao());
 		  
 		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh->getVerticeCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, renderer.mesh->verticeCount(), GL_UNSIGNED_INT, 0);
 
 		// Update last model matrix cache
 		velocity.lastModel = transform.model;

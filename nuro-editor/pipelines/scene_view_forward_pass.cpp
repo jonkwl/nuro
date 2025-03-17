@@ -208,10 +208,10 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	shader->setMatrix3("normalMatrix", transform.normal);
 
 	// Bind mesh
-	glBindVertexArray(renderer.mesh->getVAO());
+	glBindVertexArray(renderer.mesh->vao());
 
 	// Render mesh
-	glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, renderer.mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 }
 
 void SceneViewForwardPass::renderMeshes(const std::vector<EntityContainer*>& skippedEntities)
@@ -279,8 +279,8 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	shader->setMatrix4("modelMatrix", transform.model);
 	shader->setMatrix3("normalMatrix", transform.normal);
 	renderer.material->bind();
-	glBindVertexArray(renderer.mesh->getVAO());
-	glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(renderer.mesh->vao());
+	glDrawElements(GL_TRIANGLES, renderer.mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 
 	// Don't render outline if wireframe is enabled
 	if (wireframe) return;
@@ -309,8 +309,8 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	shader->bind();
 	shader->setMatrix4("mvpMatrix", outlineTransform.mvp);
 	selectionMaterial->bind();
-	glBindVertexArray(renderer.mesh->getVAO());
-	glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(renderer.mesh->vao());
+	glDrawElements(GL_TRIANGLES, renderer.mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 
 	// Reset state
 	glDisable(GL_BLEND);

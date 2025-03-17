@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <condition_variable>
 
+#include <utils/console.h>
 #include <resource/resource.h>
 
 class ResourceManager
@@ -44,6 +45,9 @@ public:
 
 	// Queues resource for asynchronous loading, not blocking
 	void loadAsync(Resource* resource);
+
+	// Destroy buffers (e.g. on the gpu) of a resource if it is ready
+	void deleteBuffers(Resource* resource);
 
 	// Dispatch next pending resource to gpu (call when updating frame on main thread)
 	void dispatchNext();
@@ -97,9 +101,9 @@ private:
 		}
 
 		// Resource not found, dynamically allocate empty resource
-		Console::out::warning("Resource Manager", "A resource with an invalid id was accessed!");
-		uint32_t id = allocate<T>();
-		return resources[id];
+		auto [_id, _resource] = allocate<T>();
+		Console::out::warning("Resource Manager", "A resource with an invalid id (" + std::to_string(id) + ") was accessed", "Created empty resource with id " + std::to_string(_id) + " as fallback");
+		return _resource;
 	}
 
 	//
@@ -142,4 +146,11 @@ private:
 
 	// Points to the resource the worker is currently loading (nullptr if worker isn't loading any resource)
 	std::atomic<Resource*> workerTarget;
+
+	//
+	// HELPERS
+	//
+
+	// Frees the io data of a resource if it isn't set to be preserved
+	void tryFreeIoData(Resource* resource);
 };

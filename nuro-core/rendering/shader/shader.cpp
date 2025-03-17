@@ -9,7 +9,7 @@
 
 namespace fs = std::filesystem;
 
-bool Shader::loadData()
+bool Shader::loadIoData()
 {
 	data.vertexSource = IOUtils::readFile(path + "/.vert");
 	data.fragmentSource = IOUtils::readFile(path + "/.frag");
@@ -17,15 +17,13 @@ bool Shader::loadData()
 	return true;
 }
 
-bool Shader::releaseData()
+void Shader::freeIoData()
 {
 	data.vertexSource.clear();
 	data.fragmentSource.clear();
-
-	return true;
 }
 
-bool Shader::dispatchGPU()
+bool Shader::uploadBuffers()
 {
 	// Don't dispatch shader if there is no data
 	if (data.vertexSource.empty() || data.fragmentSource.empty()) return false;
@@ -59,6 +57,12 @@ bool Shader::dispatchGPU()
 	glDeleteShader(fragmentShader);
 
 	return true;
+}
+
+void Shader::deleteBuffers()
+{
+	if (_backendId) glDeleteProgram(_backendId);
+	_backendId = 0;
 }
 
 Shader::Shader() : path(),

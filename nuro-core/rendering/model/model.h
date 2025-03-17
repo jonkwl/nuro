@@ -15,9 +15,10 @@ class aiMesh;
 class Model : public Resource
 {
 protected:
-	bool loadData() override;
-	bool releaseData() override;
-	bool dispatchGPU() override;
+	bool loadIoData() override;
+	void freeIoData() override;
+	bool uploadBuffers() override;
+	void deleteBuffers() override;
 
 public:
 	struct Metrics

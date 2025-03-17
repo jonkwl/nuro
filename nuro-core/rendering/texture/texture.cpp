@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 
 uint32_t Texture::defaultTextureId = 0;
 
-bool Texture::loadData()
+bool Texture::loadIoData()
 {
 	// Load image data
 	int _width, _height, _channels;
@@ -33,18 +33,18 @@ bool Texture::loadData()
 	return true;
 }
 
-bool Texture::releaseData()
+void Texture::freeIoData()
 {
-	// Don't release data if there is none
-	if (!data) return true;
+	// No data loaded
+	if (!data) return;
 
 	// Free memory allocated for image data
 	stbi_image_free(data);
 
-	return true;
+	return;
 }
 
-bool Texture::dispatchGPU()
+bool Texture::uploadBuffers()
 {
 	// Don't dispatch texture if there is no data
 	if (!data) return false;
@@ -117,6 +117,12 @@ bool Texture::dispatchGPU()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	return true;
+}
+
+void Texture::deleteBuffers()
+{
+	if (_backendId) glDeleteTextures(1, &_backendId);
+	_backendId = defaultTextureId;
 }
 
 Texture::Texture() : type(TextureType::EMPTY),

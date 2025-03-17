@@ -42,12 +42,12 @@ namespace GlobalQuad {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 
-	const uint32_t getVBO()
+	const uint32_t vbo()
 	{
 		return _vbo;
 	}
 
-	const uint32_t getVAO()
+	const uint32_t vao()
 	{
 		return _vao;
 	}

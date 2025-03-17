@@ -84,7 +84,7 @@ namespace Console
 				>> resetText 
 				>> error >> endLine;
 
-			if (!additionalInfo.empty()) print >> additionalInfo >> endLine;
+			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endLine;
 
 			_execCallbacks(origin, error, LogType::ERROR);
 
@@ -105,7 +105,7 @@ namespace Console
 				>> warning 
 				>> endLine;
 
-			if (!additionalInfo.empty()) print >> additionalInfo >> endLine;
+			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endLine;
 
 			_execCallbacks(origin, warning, LogType::WARNING);
 		}

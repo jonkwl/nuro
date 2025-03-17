@@ -194,7 +194,7 @@ namespace InspectableComponents {
 			_headline("General");
 
 			if (meshRenderer.mesh) {
-				IMComponents::label("Mesh ID: " + std::to_string(meshRenderer.mesh->getVAO()));
+				IMComponents::label("Mesh ID: " + std::to_string(meshRenderer.mesh->vao()));
 			}
 
 			if (meshRenderer.material) {

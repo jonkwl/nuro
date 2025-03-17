@@ -54,6 +54,7 @@ namespace Runtime {
 
 	// Default assets
 	Skybox gDefaultSkybox;
+	uint32_t gDefaultCubemap = 0;
 
 	// Global game state
 	GameState gGameState = GameState::GAME_SLEEPING;
@@ -94,8 +95,8 @@ namespace Runtime {
 
 		// Create default cubemap
 		auto [cubemapId, cubemap] = resource.create<Cubemap>();
+		gDefaultCubemap = cubemapId;
 		cubemap->setSource_Cross("./resources/skybox/default/default_night.png");
-		resource.loadAsync(cubemap);
 
 		// Create default skybox
 		gDefaultSkybox.setCubemap(cubemap);
@@ -269,6 +270,10 @@ namespace Runtime {
 
 		// SETUP GAME
 		gameSetup();
+
+		// LOAD DEFAULT CUBEMAP
+		ResourceManager& resource = ApplicationContext::resourceManager();
+		resource.loadAsync(resource.get<Cubemap>(gDefaultCubemap));
 
 		// MAIN LOOP
 		while (ApplicationContext::running()) _nextFrame();

@@ -9,7 +9,7 @@
 
 namespace fs = std::filesystem;
 
-bool Cubemap::loadData()
+bool Cubemap::loadIoData()
 {
 	switch (source.type) {
 	case Source::Type::CROSS:
@@ -32,13 +32,12 @@ bool Cubemap::loadData()
 	return true;
 }
 
-bool Cubemap::releaseData()
+void Cubemap::freeIoData()
 {
 	data.clear();
-	return true;
 }
 
-bool Cubemap::dispatchGPU()
+bool Cubemap::uploadBuffers()
 {
 	// Don't dispatch cubemap if there is no data
 	if (data.empty()) return false;
@@ -68,6 +67,12 @@ bool Cubemap::dispatchGPU()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	return true;
+}
+
+void Cubemap::deleteBuffers()
+{
+	if (_backendId) glDeleteTextures(1, &_backendId);
+	_backendId = 0;
 }
 
 Cubemap::Cubemap() : source(),

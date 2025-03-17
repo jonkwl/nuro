@@ -131,8 +131,8 @@ void PreviewPipeline::render()
 		// Bind and render all meshes of model
 		for (int i = 0; i < instruction.model->nLoadedMeshes(); i++) {
 			const Mesh* mesh = instruction.model->queryMesh(i);
-			glBindVertexArray(mesh->getVAO());
-			glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(mesh->vao());
+			glDrawElements(GL_TRIANGLES, mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 		}
 
 		instruction.modelMaterial->syncLightUniforms();

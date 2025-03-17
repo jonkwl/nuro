@@ -16,7 +16,7 @@
 
 namespace fs = std::filesystem;
 
-bool Model::loadData()
+bool Model::loadIoData()
 {
 	// Read file
 	Assimp::Importer import;
@@ -46,14 +46,12 @@ bool Model::loadData()
 	return true;
 }
 
-bool Model::releaseData()
+void Model::freeIoData()
 {
 	meshData.clear();
-
-	return true;
 }
 
-bool Model::dispatchGPU()
+bool Model::uploadBuffers()
 {
 	// Don't dispatch model if there is no data
 	if (meshData.empty()) return false;
@@ -116,6 +114,17 @@ bool Model::dispatchGPU()
 	}
 
 	return true;
+}
+
+void Model::deleteBuffers()
+{
+	for (auto& [id, mesh] : meshes) {
+		uint32_t vao = mesh.vao(), vbo = mesh.vbo(), ebo = mesh.ebo();
+		glDeleteVertexArrays(1, &vao);
+		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &ebo);
+	}
+	meshes.clear();
 }
 
 Model::Model() : path(),

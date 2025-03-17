@@ -9,7 +9,7 @@ namespace GlobalQuad
 	void bind();
 	void render();
 
-	const uint32_t getVBO();
-	const uint32_t getVAO();
+	const uint32_t vbo();
+	const uint32_t vao();
 
 };

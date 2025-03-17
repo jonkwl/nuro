@@ -183,10 +183,10 @@ void ShadowMap::renderSingular(glm::mat4 view, glm::mat4 projection)
 		shadowPassShader->setMatrix4("lightSpaceMatrix", lightSpace);
 
 		// Bind mesh
-		glBindVertexArray(renderer.mesh->getVAO());
+		glBindVertexArray(renderer.mesh->vao());
 
 		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, renderer.mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 	}
 
 	// Unbind shadow map framebuffer

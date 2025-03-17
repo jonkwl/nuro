@@ -21,7 +21,7 @@ ResourceManager::~ResourceManager()
 
 	// Delete resources
 	for (auto& [id, resource] : resources) {
-		resource->releaseData();
+		resource->freeIoData();
 		delete resource;
 	}
 }
@@ -29,20 +29,22 @@ ResourceManager::~ResourceManager()
 void ResourceManager::loadSync(Resource* resource)
 {
 	// Load resources data
-	if (!resource->loadData()) {
+	resource->_loadedIoData = resource->loadIoData();
+	if (!resource->_loadedIoData) {
 		resource->_resourceState = ResourceState::FAILED;
 		return;
 	}
 
 	// Dispatch resource to gpu
-	if (!resource->dispatchGPU()) {
+	if (!resource->uploadBuffers()) {
 		resource->_resourceState = ResourceState::FAILED;
-		resource->releaseData();
+		resource->freeIoData();
 		return;
 	}
 
-	// Release resources data
-	resource->releaseData();
+	tryFreeIoData(resource);
+
+	resource->_resourceState = ResourceState::READY;
 }
 
 void ResourceManager::loadAsync(Resource* resource)
@@ -60,6 +62,14 @@ void ResourceManager::loadAsync(Resource* resource)
 	workerTasksAvailable.notify_one();
 }
 
+void ResourceManager::deleteBuffers(Resource* resource)
+{
+	if (resource->_resourceState == ResourceState::READY) {
+		resource->deleteBuffers();
+		resource->_resourceState = ResourceState::EMPTY;
+	}
+}
+
 void ResourceManager::dispatchNext()
 {
 	// [MAIN THREAD]
@@ -68,7 +78,9 @@ void ResourceManager::dispatchNext()
 	if (!mainDispatchNext) return;
 
 	// Make sure worker thread is locked during dispatch (since main tasks is a shared resource)
-	std::lock_guard<std::mutex> lock(workerMtx);
+	std::unique_lock<std::mutex> lock(workerMtx);
+
+	if (!lock.owns_lock()) Console::out::warning("Resource Manager", "Couldn't lock worker mutex on main thread");
 	
 	// Dispatch next resource in queue (only one per frame to prevent heavy main thread blocking)
 	if (!mainTasks.empty()) {
@@ -78,15 +90,14 @@ void ResourceManager::dispatchNext()
 		// Ensure resource loading didn't fail so far
 		if (resource->_resourceState != ResourceState::FAILED) {
 			// Dispatch resource
-			if (resource->dispatchGPU()) {
+			if (resource->uploadBuffers()) {
 				resource->_resourceState = ResourceState::READY;
 			}
 			else {
 				resource->_resourceState = ResourceState::FAILED;
 			}
 
-			// Release resources data
-			resource->releaseData();
+			tryFreeIoData(resource);
 		}
 
 		// Pop resource from queue safely
@@ -131,7 +142,12 @@ void ResourceManager::asyncWorker()
 			workerTarget = resource;
 
 			// Load resource data
-			if (!resource->loadData()) resource->_resourceState = ResourceState::FAILED;
+			if (!resource->loadIoData()) {
+				resource->_resourceState = ResourceState::FAILED;
+			}
+			else {
+				resource->_loadedIoData = true;
+			}
 
 			// Update queues
 			popSafe(workerTasks);
@@ -145,5 +161,13 @@ void ResourceManager::asyncWorker()
 		workerTasksPending = 0;
 		workerActive = false;
 		workerTarget = nullptr;
+	}
+}
+
+void ResourceManager::tryFreeIoData(Resource* resource)
+{
+	if (!resource->_preserveIoData) {
+		resource->freeIoData();
+		resource->_loadedIoData = false;
 	}
 }

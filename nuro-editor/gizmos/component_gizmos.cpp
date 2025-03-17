@@ -51,7 +51,7 @@ namespace ComponentGizmos {
 
 	void drawPointLight(IMGizmo& gizmos, TransformComponent& transform, PointLightComponent& pointLight)
 	{
-		gizmos.foreground = true;
+		gizmos.foreground = false;
 		gizmos.color = pointLight.color;
 		gizmos.opacity = 0.1f;
 		gizmos.sphereWire(Transform::getPosition(transform, Space::WORLD), pointLight.range, glm::identity<glm::quat>());

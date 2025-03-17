@@ -102,14 +102,14 @@ void IMGizmo::renderShapes(const glm::mat4& viewProjection)
 
 		// Render mesh
 		const Mesh* mesh = queryMesh(gizmo.shape);
-		glBindVertexArray(mesh->getVAO());
-		glDrawElements(GL_LINES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(mesh->vao());
+		glDrawElements(GL_LINES, mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Optional foreground pass without depth testing and reduced opacity
 		if (gizmo.state.foreground) {
 			staticData.fillShader->setVec4("color", glm::vec4(gizmo.state.color, 0.035f));
 			glDisable(GL_DEPTH_TEST);
-			glDrawElements(GL_LINES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_LINES, mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
@@ -204,13 +204,13 @@ void IMGizmo::renderIcons(const glm::mat4& viewProjection)
 
 		// Render with full opacity and depth test
 		staticData.iconShader->setFloat("alpha", alpha(1.0f, gizmoPosition, cameraPosition));
-		glBindVertexArray(mesh->getVAO());
-		glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(mesh->vao());
+		glDrawElements(GL_TRIANGLES, mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 
 		// Render with transparency but without depth test
 		staticData.iconShader->setFloat("alpha", alpha(0.06f, gizmoPosition, cameraPosition));
 		glDisable(GL_DEPTH_TEST);
-		glDrawElements(GL_TRIANGLES, mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 		glEnable(GL_DEPTH_TEST);
 	}
 

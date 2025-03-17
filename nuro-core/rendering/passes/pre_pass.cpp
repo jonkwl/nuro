@@ -110,14 +110,14 @@ void PrePass::render(glm::mat4 viewProjection, glm::mat3 viewNormal)
 		if (!renderer.mesh) return;
 
 		// Bind mesh
-		glBindVertexArray(renderer.mesh->getVAO());
+		glBindVertexArray(renderer.mesh->vao());
 
 		// Set depth pre pass shader uniforms
 		prePassShader->setMatrix4("mvpMatrix", transform.mvp);
 		prePassShader->setMatrix3("viewNormalMatrix", viewNormal);
 
 		// Render mesh
-		glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, renderer.mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 	}
 }
 

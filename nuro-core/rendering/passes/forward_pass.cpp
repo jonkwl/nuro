@@ -195,10 +195,10 @@ void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponen
 	shader->setMatrix3("normalMatrix", transform.normal);
 
 	// Bind mesh
-	glBindVertexArray(renderer.mesh->getVAO());
+	glBindVertexArray(renderer.mesh->vao());
 
 	// Render mesh
-	glDrawElements(GL_TRIANGLES, renderer.mesh->getIndiceCount(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, renderer.mesh->indiceCount(), GL_UNSIGNED_INT, 0);
 }
 
 void ForwardPass::renderMeshes()
