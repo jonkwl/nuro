@@ -23,6 +23,11 @@ enum class TextureType
 
 class Texture : public Resource
 {
+protected:
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+
 public:
 	Texture();
 
@@ -30,17 +35,12 @@ public:
 	void setSource(TextureType type, const std::string& path);
 
 	// Returns the textures backend id
-	uint32_t id() const;
+	uint32_t backendId() const;
 
 	// Sets the given texture backend id to be the default backend id for new textures
-	static void setDefaultTexture(uint32_t textureId);
+	static void setDefaultTexture(Texture* texture);
 
 	std::string sourcePath() override;
-
-protected:
-	void loadData() override;
-	void releaseData() override;
-	void dispatchGPU() override;
 
 private:
 	// Default texture fallback
@@ -60,5 +60,5 @@ private:
 	uint32_t channels;
 
 	// Backend id of texture
-	uint32_t _id;
+	uint32_t _backendId;
 };

@@ -48,7 +48,7 @@ set(SOURCE_FILES
 	rendering/transformation/transformation.h
 	rendering/velocitybuffer/velocity_buffer.h
 	resource/resource.h
-	resource/resource_loader.h
+	resource/resource_manager.h
 	time/time.h
 	transform/transform.h
 	transform/transform_pass.h
@@ -92,7 +92,7 @@ set(SOURCE_FILES
 	rendering/texture/texture.cpp
 	rendering/transformation/transformation.cpp
 	rendering/velocitybuffer/velocity_buffer.cpp
-	resource/resource_loader.cpp
+	resource/resource_manager.cpp
 	time/time.cpp
 	transform/transform.cpp
 	transform/transform_pass.cpp
@@ -108,18 +108,27 @@ add_library(nuro::core ALIAS ${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} 
 	PUBLIC 
 		${CMAKE_CURRENT_LIST_DIR}
+	PRIVATE
 		${Stb_INCLUDE_DIR}
+		${FFMPEG_INCLUDE_DIRS}
+)
+
+target_link_directories(${PROJECT_NAME} 
+	PRIVATE 
+		${FFMPEG_LIBRARY_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME} 
 	PUBLIC
-		unofficial::omniverse-physx-sdk::sdk
 		glad::glad 
 		glm::glm 
+		unofficial::omniverse-physx-sdk::sdk
 	PRIVATE 
 		assimp::assimp
 		EnTT::EnTT	
-		glfw 
+		glfw
+		${FFMPEG_LIBRARIES}
+		OpenAL::OpenAL
 )
 
 if (MSVC)

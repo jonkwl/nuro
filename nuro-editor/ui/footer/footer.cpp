@@ -58,7 +58,7 @@ void Footer::renderContent(ImDrawList& drawList)
     //
 
     // Fetch worker state
-    auto worker = ApplicationContext::getResourceLoader().readWorkerState();
+    auto worker = ApplicationContext::resourceManager().readWorkerState();
 
     // Create information text
     std::string informationText;

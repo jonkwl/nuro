@@ -13,8 +13,8 @@ EntityContainer kinematic;
 EntityContainer player;
 
 void _physics_example() {
-	// Get loader
-	ResourceLoader& loader = ApplicationContext::getResourceLoader();
+	// Get resource manager
+	ResourceManager& resource = ApplicationContext::resourceManager();
 
 	// Get ecs
 	ECS& ecs = ECS::main();
@@ -23,9 +23,9 @@ void _physics_example() {
 	const Mesh* planeMesh = Shapes::createPlane();
 	const Mesh* cubeMesh = Shapes::createCube();
 
-	Model* sphereModel = new Model();
+	auto [sphereModelId, sphereModel] = resource.create<Model>();
 	sphereModel->setSource("./resources/primitives/sphere.fbx");
-	loader.createSync(sphereModel);
+	resource.loadSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
 	// Standard material
@@ -40,29 +40,29 @@ void _physics_example() {
 	redMaterial->roughness = 0.9f;
 
 	// Async texture loading example
-	Texture* albedo = new Texture();
+	auto [albedoId, albedo] = resource.create<Texture>();
 	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
-	loader.createAsync(albedo);
+	resource.loadAsync(albedo);
 
-	Texture* normal = new Texture();
+	auto [normalId, normal] = resource.create<Texture>();
 	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
-	loader.createAsync(normal);
+	resource.loadAsync(normal);
 
-	Texture* metallic = new Texture();
+	auto [metallicId, metallic] = resource.create<Texture>();
 	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
-	loader.createAsync(metallic);
+	resource.loadAsync(metallic);
 
-	Texture* roughness = new Texture();
+	auto [roughnessId, roughness] = resource.create<Texture>();
 	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
-	loader.createAsync(roughness);
+	resource.loadAsync(roughness);
 
-	Texture* emissive = new Texture();
+	auto [emissiveId, emissive] = resource.create<Texture>();
 	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
-	loader.createAsync(emissive);
+	resource.loadAsync(emissive);
 
-	Texture* height = new Texture();
+	auto [heightId, height] = resource.create<Texture>();
 	height->setSource(TextureType::HEIGHT, "./resources/example-assets/textures/sci-fi/height.jpg");
-	loader.createAsync(height);
+	resource.loadAsync(height);
 
 	LitMaterial* scifiMaterial = new LitMaterial();
 	scifiMaterial->albedoMap = albedo;
@@ -159,9 +159,9 @@ void _physics_example() {
 	MeshRendererComponent& planeRenderer = plane.add<MeshRendererComponent>(planeMesh, scifiMaterial);
 
 	// Model async loading example
-	Model* asyncModel = new Model();
+	auto [asyncModelId, asyncModel] = resource.create<Model>();
 	asyncModel->setSource("resources/example-assets/models/mannequin.fbx");
-	loader.createAsync(asyncModel);
+	resource.loadAsync(asyncModel);
 
 	EntityContainer asyncModelEntity(ecs.createEntity("Async Model"));
 	Transform::setPosition(asyncModelEntity.transform(), glm::vec3(6.0f, 0.0f, 10.0f));
@@ -189,12 +189,12 @@ void gameSetup() {
 }
 
 void gameAwake() {
-	Console::out::processInfo("Game Start");
+	Console::out::info("Game Start");
 }
 
 void gameQuit()
 {
-	Console::out::processInfo("Game End");
+	Console::out::info("Game End");
 }
 
 void gameUpdate() {

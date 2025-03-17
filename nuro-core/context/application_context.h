@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <backend/api.h>
-#include <resource/resource_loader.h>
+#include <resource/resource_manager.h>
 
 struct GLFWwindow;
 struct GLFWmonitor;
@@ -81,7 +81,7 @@ namespace ApplicationContext
 	// Returns a read-only reference to the currently active configuration
 	const Configuration& readConfiguration();
 
-	// Returns the global resource loader
-	ResourceLoader& getResourceLoader();
+	// Returns the global resource manager
+	ResourceManager& resourceManager();
 
 };

@@ -8,6 +8,11 @@
 
 class Cubemap : public Resource
 {
+protected:
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+
 public:
 	Cubemap();
 
@@ -18,14 +23,9 @@ public:
 	void setSource_Individual(std::string rightPath, std::string leftPath, std::string topPath, std::string bottomPath, std::string frontPath, std::string backPath);
 
 	// Returns the backend id of the cubemap texture
-	uint32_t getId() const;
+	uint32_t backendId() const;
 
 	std::string sourcePath() override;
-
-protected:
-	void loadData() override;
-	void releaseData() override;
-	void dispatchGPU() override;
 
 private:
 	struct Source {
@@ -79,7 +79,7 @@ private:
 	std::vector<FaceData> data;
 
 	// Backend id of cubemap texture
-	uint32_t id;
+	uint32_t _backendId;
 
 	// Loads given images data
 	ImageData loadImageData(std::string path);

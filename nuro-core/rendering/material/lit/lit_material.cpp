@@ -56,7 +56,7 @@ shaderId(0)
 	instances++;
 
 	id = instances;
-	shaderId = shader->id();
+	shaderId = shader->backendId();
 
 	shader->bind();
 	syncStaticUniforms();
@@ -112,14 +112,14 @@ void LitMaterial::bind() const
 	if (albedoMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + ALBEDO_UNIT);
-		glBindTexture(GL_TEXTURE_2D, albedoMap->id());
+		glBindTexture(GL_TEXTURE_2D, albedoMap->backendId());
 	}
 
 	shader->setBool("material.enableRoughnessMap", roughnessMap);
 	if (roughnessMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + ROUGHNESS_UNIT);
-		glBindTexture(GL_TEXTURE_2D, roughnessMap->id());
+		glBindTexture(GL_TEXTURE_2D, roughnessMap->backendId());
 	}
 	else
 	{
@@ -130,7 +130,7 @@ void LitMaterial::bind() const
 	if (metallicMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + METALLIC_UNIT);
-		glBindTexture(GL_TEXTURE_2D, metallicMap->id());
+		glBindTexture(GL_TEXTURE_2D, metallicMap->backendId());
 	}
 	else
 	{
@@ -141,7 +141,7 @@ void LitMaterial::bind() const
 	if (normalMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + NORMAL_UNIT);
-		glBindTexture(GL_TEXTURE_2D, normalMap->id());
+		glBindTexture(GL_TEXTURE_2D, normalMap->backendId());
 	}
 	shader->setFloat("material.normalMapIntensity", normalMapIntensity);
 
@@ -149,21 +149,21 @@ void LitMaterial::bind() const
 	if (occlusionMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + OCCLUSION_UNIT);
-		glBindTexture(GL_TEXTURE_2D, occlusionMap->id());
+		glBindTexture(GL_TEXTURE_2D, occlusionMap->backendId());
 	}
 
 	shader->setBool("material.enableEmissiveMap", emissiveMap);
 	if (emissiveMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + EMISSIVE_UNIT);
-		glBindTexture(GL_TEXTURE_2D, emissiveMap->id());
+		glBindTexture(GL_TEXTURE_2D, emissiveMap->backendId());
 	}
 
 	shader->setBool("material.enableHeightMap", heightMap);
 	if (heightMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + HEIGHT_UNIT);
-		glBindTexture(GL_TEXTURE_2D, heightMap->id());
+		glBindTexture(GL_TEXTURE_2D, heightMap->backendId());
 	}
 	shader->setFloat("material.heightMapScale", heightMapScale);
 }

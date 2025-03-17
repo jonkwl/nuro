@@ -29,15 +29,15 @@ void IMGizmo::create()
 	// Load all static data if not loaded already
 	if (!staticData.loaded) {
 
-		ResourceLoader& loader = ApplicationContext::getResourceLoader();
+		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		Model* plane = new Model();
+		auto[planeId, plane] = resource.create<Model>();
 		plane->setSource("resources/primitives/plane.fbx");
-		loader.createAsync(plane);
+		resource.loadAsync(plane);
 
-		Model* sphere = new Model();
+		auto [sphereId, sphere] = resource.create<Model>();
 		sphere->setSource("resources/primitives/sphere.fbx");
-		loader.createAsync(sphere);
+		resource.loadAsync(sphere);
 
 		staticData.fillShader = ShaderPool::get("gizmo_fill");
 		staticData.iconShader = ShaderPool::get("gizmo_icon");

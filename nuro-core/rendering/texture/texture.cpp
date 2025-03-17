@@ -12,42 +12,6 @@ namespace fs = std::filesystem;
 
 uint32_t Texture::defaultTextureId = 0;
 
-Texture::Texture() : type(TextureType::EMPTY),
-path(),
-width(0),
-height(0),
-channels(0),
-data(nullptr),
-_id(defaultTextureId)
-{
-}
-
-void Texture::setSource(TextureType _type, const std::string& _path)
-{
-	// Validate source path
-	if (!fs::exists(_path)) {
-		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
-	}
-
-	type = _type;
-	path = _path;
-}
-
-uint32_t Texture::id() const
-{
-	return _id;
-}
-
-void Texture::setDefaultTexture(uint32_t textureId)
-{
-	defaultTextureId = textureId;
-}
-
-std::string Texture::sourcePath()
-{
-	return path;
-}
-
 void Texture::loadData()
 {
 	// Load image data
@@ -82,8 +46,8 @@ void Texture::dispatchGPU()
 	if (!data) return;
 
 	// Generate texture
-	glGenTextures(1, &_id);
-	glBindTexture(GL_TEXTURE_2D, _id);
+	glGenTextures(1, &_backendId);
+	glBindTexture(GL_TEXTURE_2D, _backendId);
 
 	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -147,4 +111,40 @@ void Texture::dispatchGPU()
 
 	// Undbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+Texture::Texture() : type(TextureType::EMPTY),
+path(),
+width(0),
+height(0),
+channels(0),
+data(nullptr),
+_backendId(defaultTextureId)
+{
+}
+
+void Texture::setSource(TextureType _type, const std::string& _path)
+{
+	// Validate source path
+	if (!fs::exists(_path)) {
+		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
+	}
+
+	type = _type;
+	path = _path;
+}
+
+uint32_t Texture::backendId() const
+{
+	return _backendId;
+}
+
+void Texture::setDefaultTexture(Texture* texture)
+{
+	defaultTextureId = texture->backendId();
+}
+
+std::string Texture::sourcePath()
+{
+	return path;
 }

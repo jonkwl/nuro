@@ -110,7 +110,7 @@ namespace Console
 			_execCallbacks(origin, warning, LogType::WARNING);
 		}
 
-		void processStart(std::string origin, std::string process)
+		void start(std::string origin, std::string info)
 		{
 			print 
 				>> " [" 
@@ -122,14 +122,29 @@ namespace Console
 				>> origin 
 				>> ": " 
 				>> resetText 
-				>> process 
+				>> info
 				>> "..." 
 				>> endLine;
 
-			_execCallbacks(origin, process, LogType::DEFAULT);
+			_execCallbacks(origin, info, LogType::DEFAULT);
 		}
 
-		void processState(std::string origin, std::string process)
+		void info(std::string info)
+		{
+			print
+				>> " ["
+				>> TextColor::GREEN
+				>> "info"
+				>> resetText
+				>> "] "
+				>> TextColor::GRAY
+				>> info
+				>> endLine;
+
+			_execCallbacks("Info", info, LogType::DEFAULT);
+		}
+
+		void info(std::string origin, std::string info)
 		{
 			print 
 				>> " [" 
@@ -141,28 +156,13 @@ namespace Console
 				>> origin 
 				>> ": " 
 				>> resetText 
-				>> process 
+				>> info
 				>> endLine;
 
-			_execCallbacks(origin, process, LogType::DEFAULT);
+			_execCallbacks(origin, info, LogType::DEFAULT);
 		}
 
-		void processInfo(std::string info)
-		{
-			print 
-				>> " [" 
-				>> TextColor::GREEN 
-				>> "info" 
-				>> resetText
-				>> "] "
-				>> TextColor::GRAY 
-				>> info 
-				>> endLine;
-
-			_execCallbacks("Info", info, LogType::DEFAULT);
-		}
-
-		void processDone(std::string origin, std::string process)
+		void done(std::string origin, std::string info)
 		{
 			print 
 				>> " ["
@@ -174,11 +174,11 @@ namespace Console
 				>> origin 
 				>> ": " 
 				>> resetText 
-				>> process 
+				>> info
 				>> "." 
 				>> endLine;
 
-			_execCallbacks(origin, process, LogType::DEFAULT);
+			_execCallbacks(origin, info, LogType::DEFAULT);
 		}
 
 		void welcome() {

@@ -1,31 +1,32 @@
-#include "resource_loader.h"
+#include "resource_manager.h"
 
 #include <chrono>
 
-ResourceLoader::ResourceLoader()
+ResourceManager::ResourceManager() : idCounter(0)
 {
 	// Set running
 	running = true;
 
 	// Launch worker
-	worker = std::thread(&ResourceLoader::asyncWorker, this);
+	worker = std::thread(&ResourceManager::asyncWorker, this);
 }
 
-ResourceLoader::~ResourceLoader()
+ResourceManager::~ResourceManager()
 {
 	// Unset running
 	running = false;
 
 	// Detach worker if required
 	if (worker.joinable()) worker.detach();
+
+	// Delete resources
+	for (auto& [id, resource] : resources) {
+		resource->releaseData();
+		delete resource;
+	}
 }
 
-ResourceLoader::WorkerState ResourceLoader::readWorkerState() const
-{
-	return WorkerState(workerActive, workerTarget, workerTasksPending);
-}
-
-void ResourceLoader::createSync(Resource* resource)
+void ResourceManager::loadSync(Resource* resource)
 {
 	// Load resources data
 	resource->loadData();
@@ -37,13 +38,13 @@ void ResourceLoader::createSync(Resource* resource)
 	resource->releaseData();
 }
 
-void ResourceLoader::createAsync(Resource* resource)
+void ResourceManager::loadAsync(Resource* resource)
 {
 	// Add task to load tasks queue
 	workerTasks.push(resource); // Possible race condition on the worker tasks queue
 
 	// Update resources state
-	resource->state = ResourceState::QUEUED;
+	resource->_resourceState = ResourceState::QUEUED;
 
 	// Update worker state
 	workerTasksPending++;
@@ -52,7 +53,7 @@ void ResourceLoader::createAsync(Resource* resource)
 	workerTasksAvailable.notify_one();
 }
 
-void ResourceLoader::dispatchNext()
+void ResourceManager::dispatchNext()
 {
 	// [MAIN THREAD]
 
@@ -72,7 +73,7 @@ void ResourceLoader::dispatchNext()
 		resource->releaseData();
 
 		// Update resources state
-		resource->state = ResourceState::READY;
+		resource->_resourceState = ResourceState::READY;
 
 		// Pop resource from queue safely
 		popSafe(mainTasks);
@@ -85,7 +86,12 @@ void ResourceLoader::dispatchNext()
 	workerAwaitingDispatch.notify_one();
 }
 
-void ResourceLoader::asyncWorker()
+ResourceManager::WorkerState ResourceManager::readWorkerState() const
+{
+	return WorkerState(workerActive, workerTarget, workerTasksPending);
+}
+
+void ResourceManager::asyncWorker()
 {
 	// [WORKER THREAD]
 
@@ -103,7 +109,7 @@ void ResourceLoader::asyncWorker()
 			Resource* resource = workerTasks.front();
 
 			// Update resources state
-			resource->state = ResourceState::CREATING;
+			resource->_resourceState = ResourceState::CREATING;
 
 			// Sync worker state
 			workerTasksPending = workerTasks.size();

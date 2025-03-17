@@ -7,21 +7,8 @@
 		"glm",
 		"physx",
 		"stb",
-		{
-			"name": "imgui",
-			"features": [
-				"docking-experimental",
-				"glfw-binding",
-				"opengl3-binding"
-			]
-		},
-		"implot",
-		"imguizmo",
-		"nlohmann-json"
-	],
-	"overrides": [
-		{
-			"name": "imgui", "version": "1.91.5#0"
-		}
+		"nlohmann-json",
+		"ffmpeg",
+		"openal-soft"
 	]
 }

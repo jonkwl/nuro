@@ -22,8 +22,8 @@ namespace ApplicationContext {
 	GLFWmonitor* gMonitor = nullptr;
 	glm::ivec2 gLastWindowSize = glm::ivec2(0.0f, 0.0f);
 
-	// Global resource loader
-	ResourceLoader gResourceLoader;
+	// Global resource manager
+	ResourceManager gResourceManager;
 
 	// Default glfw error callback
 	static void _glfwErrorCallback(int32_t error, const char* description)
@@ -43,7 +43,7 @@ namespace ApplicationContext {
 
 		// Debug graphics api version
 		const char* version = (const char*)glGetString(GL_VERSION);
-		Console::out::processState("Application Context", "Initialized, OpenGL version: " + std::string(version));
+		Console::out::info("Application Context", "Initialized, OpenGL version: " + std::string(version));
 	}
 
 	void create(Configuration configuration)
@@ -56,7 +56,7 @@ namespace ApplicationContext {
 		gConfiguration = configuration;
 
 		// Start creating application context
-		Console::out::processStart("Application Context", "Creating application context");
+		Console::out::start("Application Context", "Creating application context");
 
 		// Set error callback and initialize context
 		glfwSetErrorCallback(_glfwErrorCallback);
@@ -135,7 +135,7 @@ namespace ApplicationContext {
 		// Create essential primitives
 		GlobalQuad::create();
 
-		Console::out::processDone("Application Context", "Created application context");
+		Console::out::done("Application Context", "Created application context");
 	}
 
 	void destroy()
@@ -155,7 +155,7 @@ namespace ApplicationContext {
 		glfwPollEvents();
 
 		// Make global resource loader dispatch next pending resource to gpu
-		gResourceLoader.dispatchNext();
+		gResourceManager.dispatchNext();
 
 		// Step global time
 		Time::step(glfwGetTime());
@@ -335,9 +335,9 @@ namespace ApplicationContext {
 		return gConfiguration;
 	}
 
-	ResourceLoader& getResourceLoader()
+	ResourceManager& resourceManager()
 	{
-		return gResourceLoader;
+		return gResourceManager;
 	}
 
 }

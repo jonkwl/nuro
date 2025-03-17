@@ -9,71 +9,6 @@
 
 namespace fs = std::filesystem;
 
-Shader::Shader() : path(),
-data(),
-_id(0),
-uniforms()
-{
-}
-
-std::string Shader::sourcePath()
-{
-	return path;
-}
-
-void Shader::setSource(std::string _path)
-{
-	// Validate source path
-	if (!fs::exists(_path)) {
-		Console::out::warning("Shader", "Shader source at '" + _path + "' could not be found");
-	}
-
-	path = _path;
-}
-
-void Shader::bind() const
-{
-	glUseProgram(_id);
-}
-
-uint32_t Shader::id() const
-{
-	return _id;
-}
-
-void Shader::setBool(const std::string& identifier, bool value)
-{
-	glUniform1i(getUniformLocation(identifier), (int32_t)value);
-}
-void Shader::setInt(const std::string& identifier, int32_t value)
-{
-	glUniform1i(getUniformLocation(identifier), value);
-}
-void Shader::setFloat(const std::string& identifier, float value)
-{
-	glUniform1f(getUniformLocation(identifier), value);
-}
-void Shader::setVec2(const std::string& identifier, glm::vec2 value)
-{
-	glUniform2f(getUniformLocation(identifier), value.x, value.y);
-}
-void Shader::setVec3(const std::string& identifier, glm::vec3 value)
-{
-	glUniform3f(getUniformLocation(identifier), value.x, value.y, value.z);
-}
-void Shader::setVec4(const std::string& identifier, glm::vec4 value)
-{
-	glUniform4f(getUniformLocation(identifier), value.x, value.y, value.z, value.w);
-}
-void Shader::setMatrix3(const std::string& identifier, glm::mat3 value)
-{
-	glUniformMatrix3fv(getUniformLocation(identifier), 1, GL_FALSE, glm::value_ptr(value));
-}
-void Shader::setMatrix4(const std::string& identifier, glm::mat4 value)
-{
-	glUniformMatrix4fv(getUniformLocation(identifier), 1, GL_FALSE, glm::value_ptr(value));
-}
-
 void Shader::loadData()
 {
 	data.vertexSource = IOUtils::readFile(path + "/.vert");
@@ -109,15 +44,80 @@ void Shader::dispatchGPU()
 	if (!shaderCompiled("fragment", fragmentShader)) return;
 
 	// Create and link shader program
-	_id = glCreateProgram();
-	glAttachShader(_id, vertexShader);
-	glAttachShader(_id, fragmentShader);
-	glLinkProgram(_id);
-	if (!programLinked(_id)) return;
+	_backendId = glCreateProgram();
+	glAttachShader(_backendId, vertexShader);
+	glAttachShader(_backendId, fragmentShader);
+	glLinkProgram(_backendId);
+	if (!programLinked(_backendId)) return;
 
 	// Delete shader sources
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+}
+
+Shader::Shader() : path(),
+data(),
+uniforms(),
+_backendId(0)
+{
+}
+
+std::string Shader::sourcePath()
+{
+	return path;
+}
+
+void Shader::setSource(std::string _path)
+{
+	// Validate source path
+	if (!fs::exists(_path)) {
+		Console::out::warning("Shader", "Shader source at '" + _path + "' could not be found");
+	}
+
+	path = _path;
+}
+
+void Shader::bind() const
+{
+	glUseProgram(_backendId);
+}
+
+uint32_t Shader::backendId() const
+{
+	return _backendId;
+}
+
+void Shader::setBool(const std::string& identifier, bool value)
+{
+	glUniform1i(getUniformLocation(identifier), (int32_t)value);
+}
+void Shader::setInt(const std::string& identifier, int32_t value)
+{
+	glUniform1i(getUniformLocation(identifier), value);
+}
+void Shader::setFloat(const std::string& identifier, float value)
+{
+	glUniform1f(getUniformLocation(identifier), value);
+}
+void Shader::setVec2(const std::string& identifier, glm::vec2 value)
+{
+	glUniform2f(getUniformLocation(identifier), value.x, value.y);
+}
+void Shader::setVec3(const std::string& identifier, glm::vec3 value)
+{
+	glUniform3f(getUniformLocation(identifier), value.x, value.y, value.z);
+}
+void Shader::setVec4(const std::string& identifier, glm::vec4 value)
+{
+	glUniform4f(getUniformLocation(identifier), value.x, value.y, value.z, value.w);
+}
+void Shader::setMatrix3(const std::string& identifier, glm::mat3 value)
+{
+	glUniformMatrix3fv(getUniformLocation(identifier), 1, GL_FALSE, glm::value_ptr(value));
+}
+void Shader::setMatrix4(const std::string& identifier, glm::mat4 value)
+{
+	glUniformMatrix4fv(getUniformLocation(identifier), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 int32_t Shader::getUniformLocation(const std::string& identifier)
@@ -126,7 +126,7 @@ int32_t Shader::getUniformLocation(const std::string& identifier)
 	if (uniforms.find(identifier) != uniforms.end()) return uniforms[identifier];
 
 	// Uniform not found in cache, fetch and save uniform location
-	int32_t location = glGetUniformLocation(_id, identifier.c_str());
+	int32_t location = glGetUniformLocation(_backendId, identifier.c_str());
 	uniforms[identifier] = location;
 
 	// Return newly fetched uniform location

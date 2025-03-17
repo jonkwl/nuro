@@ -37,7 +37,7 @@ float Skybox::getEmission() const
 
 void Skybox::create()
 {
-	Console::out::processState("Skybox", "Generating skybox");
+	Console::out::info("Skybox", "Generating skybox");
 
 	// Set shader
 	shader = ShaderPool::get("skybox");
@@ -126,7 +126,7 @@ void Skybox::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatr
 
 	// Bind cubemap texture
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->getId());
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->backendId());
 
 	// Draw skybox
 	glDrawArrays(GL_TRIANGLES, 0, 36);

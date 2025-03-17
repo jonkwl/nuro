@@ -2,6 +2,7 @@
 
 #include <string>
 #include <atomic>
+#include <cstdint>
 
 enum class ResourceState {
 	// Resource has not been initialized or loaded yet
@@ -21,10 +22,13 @@ class Resource
 {
 protected:
 	// Protected methods and members are used and managed by resource loader only
-	friend class ResourceLoader;
+	friend class ResourceManager;
+
+	// ID of the resource
+	uint32_t _resourceId;
 
 	// Atomic state of the resource
-	std::atomic<ResourceState> state;
+	std::atomic<ResourceState> _resourceState;
 
 	// Loads the resources data from I/O
 	virtual void loadData() = 0;
@@ -35,13 +39,18 @@ protected:
 	// Creates gpu buffers for resource with previously loaded data
 	virtual void dispatchGPU() = 0;
 
-	Resource() : state(ResourceState::EMPTY) {};
+	Resource() : _resourceId(0), _resourceState(ResourceState::EMPTY) {};
 	virtual ~Resource() = default;
 
-public:
+public: 
+	// Returns the resources id
+	uint32_t resourceId() const {
+		return _resourceId;
+	}
+
 	// Returns the resources current state
-	ResourceState getState() const {
-		return state;
+	ResourceState resourceState() const {
+		return _resourceState;
 	}
 
 	// Returns source path of resource (tmp)

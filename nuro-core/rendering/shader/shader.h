@@ -9,6 +9,11 @@
 
 class Shader : public Resource
 {
+protected:
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+
 public:
 	Shader();
 
@@ -21,7 +26,7 @@ public:
 	void bind() const;
 
 	// Returns the shader programs backend id
-	uint32_t id() const;
+	uint32_t backendId() const;
 
 	void setBool(const std::string& identifier, bool value);
 	void setInt(const std::string& identifier, int32_t value);
@@ -31,11 +36,6 @@ public:
 	void setVec4(const std::string& identifier, glm::vec4 value);
 	void setMatrix3(const std::string& identifier, glm::mat3 value);
 	void setMatrix4(const std::string& identifier, glm::mat4 value);
-
-protected:
-	void loadData() override;
-	void releaseData() override;
-	void dispatchGPU() override;
 
 private:
 	struct Data {
@@ -49,11 +49,11 @@ private:
 	// Shader source data
 	Data data;
 
-	// Shader program backend id
-	uint32_t _id;
-
 	// Shader program uniform location cache
 	std::unordered_map<std::string, int32_t> uniforms;
+
+	// Shader program backend id
+	uint32_t _backendId;
 
 private:
 	int32_t getUniformLocation(const std::string& identifier);

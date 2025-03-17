@@ -18,7 +18,7 @@ namespace ShaderPool {
 
 	void _loadAll(const std::string& directory, bool async)
 	{
-		ResourceLoader& loader = ApplicationContext::getResourceLoader();
+		ResourceManager& resource = ApplicationContext::resourceManager();
 
 		std::vector<std::string> shader_paths;
 		std::vector<std::string> shader_names;
@@ -39,15 +39,15 @@ namespace ShaderPool {
 			if (gShaders.find(identifier) != gShaders.end()) continue;
 
 			// Create new shader and set its source
-			Shader* shader = new Shader();
+			auto [_, shader] = resource.create<Shader>();
 			shader->setSource(shader_paths[i]);
 
-			// Create shader
+			// Load shader
 			if (async) {
-				loader.createAsync(shader);
+				resource.loadAsync(shader);
 			}
 			else {
-				loader.createSync(shader);
+				resource.loadSync(shader);
 			}
 			gShaders[identifier] = shader;
 		}
@@ -55,13 +55,13 @@ namespace ShaderPool {
 
 	void loadAllSync(const std::string& directory)
 	{
-		Console::out::processState("Shader Pool", "Loading shaders from '" + directory + "'");
+		Console::out::info("Shader Pool", "Loading shaders from '" + directory + "'");
 		_loadAll(directory, false);
 	}
 
 	void loadAllAsync(const std::string& directory)
 	{
-		Console::out::processState("Shader Pool", "Queued loading shader in '" + directory + "'");
+		Console::out::info("Shader Pool", "Queued loading shader in '" + directory + "'");
 		_loadAll(directory, true);
 	}
 

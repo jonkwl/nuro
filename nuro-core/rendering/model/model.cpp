@@ -16,44 +16,6 @@
 
 namespace fs = std::filesystem;
 
-Model::Model() : path(),
-meshData(),
-meshes(),
-metrics()
-{
-}
-
-void Model::setSource(std::string _path)
-{
-	// Validate source path
-	if (!fs::exists(_path)) {
-		Console::out::warning("Model", "Model source at '" + _path + "' could not be found");
-	}
-
-	path = _path;
-}
-
-const Mesh* Model::queryMesh(uint32_t index)
-{
-	// Return queried mesh (Creates empty mesh if requested mesh is not existing yet)
-	return &meshes[index];
-}
-
-uint32_t Model::nLoadedMeshes() const
-{
-	return meshes.size();
-}
-
-Model::Metrics Model::getMetrics() const
-{
-	return metrics;
-}
-
-std::string Model::sourcePath()
-{
-	return path;
-}
-
 void Model::loadData()
 {
 	// Read file
@@ -148,6 +110,44 @@ void Model::dispatchGPU()
 		// Update mesh
 		meshes[i].setData(vao, vbo, ebo, nVertices, nIndices, materialIndex);
 	}
+}
+
+Model::Model() : path(),
+meshData(),
+meshes(),
+metrics()
+{
+}
+
+void Model::setSource(std::string _path)
+{
+	// Validate source path
+	if (!fs::exists(_path)) {
+		Console::out::warning("Model", "Model source at '" + _path + "' could not be found");
+	}
+
+	path = _path;
+}
+
+const Mesh* Model::queryMesh(uint32_t index)
+{
+	// Return queried mesh (Creates empty mesh if requested mesh is not existing yet)
+	return &meshes[index];
+}
+
+uint32_t Model::nLoadedMeshes() const
+{
+	return meshes.size();
+}
+
+Model::Metrics Model::getMetrics() const
+{
+	return metrics;
+}
+
+std::string Model::sourcePath()
+{
+	return path;
 }
 
 Mesh* Model::createStaticMesh(std::vector<VertexData>& vertices, std::vector<uint32_t>& indices)

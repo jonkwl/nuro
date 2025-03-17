@@ -17,7 +17,7 @@ id(0),
 shader(ShaderPool::get("unlit")),
 shaderId(0)
 {
-	shaderId = shader->id();
+	shaderId = shader->backendId();
 }
 
 void UnlitMaterial::bind() const

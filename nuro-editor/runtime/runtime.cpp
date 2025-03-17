@@ -53,8 +53,6 @@ namespace Runtime {
 	ShadowMap* gMainShadowMap = nullptr;
 
 	// Default assets
-	Texture* gDefaultTexture = new Texture();
-	Cubemap* gDefaultCubemap = new Cubemap();
 	Skybox gDefaultSkybox;
 
 	// Global game state
@@ -70,9 +68,9 @@ namespace Runtime {
 	//
 
 	void _loadDependencies() {
-		Console::out::processStart("Runtime", "Loading dependencies");
+		Console::out::start("Runtime", "Loading dependencies");
 
-		ResourceLoader& loader = ApplicationContext::getResourceLoader();
+		ResourceManager& resource = ApplicationContext::resourceManager();
 
 		// Load shaders
 		ShaderPool::loadAllSync("./shaders/materials");
@@ -81,9 +79,10 @@ namespace Runtime {
 		ShaderPool::loadAllSync("./shaders/passes");
 
 		// Create default texture
-		gDefaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
-		loader.createSync(gDefaultTexture);
-		Texture::setDefaultTexture(gDefaultTexture->id());
+		auto [defaultTextureId, defaultTexture] = resource.create<Texture>();
+		defaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
+		resource.loadSync(defaultTexture);
+		Texture::setDefaultTexture(defaultTexture);
 
 		// Load various editor icons
 		IconPool::createFallbackIcon("./resources/icons/fallback/fallback_icon.png");
@@ -94,19 +93,20 @@ namespace Runtime {
 		IconPool::loadAllAsync("./resources/icons/post-processing");
 
 		// Create default cubemap
-		gDefaultCubemap->setSource_Cross("./resources/skybox/default/default_night.png");
-		// loader.createAsync(gDefaultCubemap);
+		auto [cubemapId, cubemap] = resource.create<Cubemap>();
+		cubemap->setSource_Cross("./resources/skybox/default/default_night.png");
+		resource.loadAsync(cubemap);
 
 		// Create default skybox
-		gDefaultSkybox.setCubemap(gDefaultCubemap);
+		gDefaultSkybox.setCubemap(cubemap);
 		gDefaultSkybox.create();
 		gGameViewPipeline.linkSkybox(&gDefaultSkybox);
 
-		Console::out::processDone("Runtime", "Loaded dependencies");
+		Console::out::done("Runtime", "Loaded dependencies");
 	}
 
 	void _createResources() {
-		Console::out::processStart("Runtime", "Creating resources");
+		Console::out::start("Runtime", "Creating resources");
 
 		// Create pipelines
 		gSceneViewPipeline.create();
@@ -128,7 +128,7 @@ namespace Runtime {
 		gMainShadowMap = new ShadowMap(4096, 4096);
 		gMainShadowMap->create();
 
-		Console::out::processDone("Runtime", "Created resources");
+		Console::out::done("Runtime", "Created resources");
 
 	}
 
@@ -269,9 +269,6 @@ namespace Runtime {
 
 		// SETUP GAME
 		gameSetup();
-
-		// TMP LOADING DEFAULT CUBEMAP ASYNCHRONOUSLY HERE
-		ApplicationContext::getResourceLoader().createAsync(gDefaultCubemap);
 
 		// MAIN LOOP
 		while (ApplicationContext::running()) _nextFrame();

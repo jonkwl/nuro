@@ -12,6 +12,8 @@ find_package(glm CONFIG REQUIRED)
 find_package(Stb REQUIRED)
 find_package(unofficial-omniverse-physx-sdk CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(FFMPEG REQUIRED)
+find_package(OpenAL CONFIG REQUIRED)
 
 add_subdirectory(nuro-core)
 add_subdirectory(nuro-editor)

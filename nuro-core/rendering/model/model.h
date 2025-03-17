@@ -14,6 +14,11 @@ class aiMesh;
 
 class Model : public Resource
 {
+protected:
+	void loadData() override;
+	void releaseData() override;
+	void dispatchGPU() override;
+
 public:
 	struct Metrics
 	{
@@ -77,7 +82,6 @@ public:
 		};
 	};
 
-public:
 	Model();
 
 	// Sets the path of the models source
@@ -93,11 +97,6 @@ public:
 	Metrics getMetrics() const;
 
 	std::string sourcePath() override;
-
-protected:
-	void loadData() override;
-	void releaseData() override;
-	void dispatchGPU() override;
 
 public:
 	// Creates a static mesh with the given vertices and indices

@@ -32,6 +32,7 @@ set(SOURCE_FILES
 	ui/windows/post_processing_window.h
 	ui/windows/registry_window.h
 	ui/windows/viewport_window.h
+	ui/windows/resource_viewer_window.h
 	testing/game_logic.cpp
 	gizmos/component_gizmos.h
 	gizmos/editor_gizmo_color.h
@@ -65,6 +66,7 @@ set(SOURCE_FILES
 	ui/windows/post_processing_window.cpp
 	ui/windows/registry_window.cpp
 	ui/windows/viewport_window.cpp
+	ui/windows/resource_viewer_window.cpp
 	gizmos/component_gizmos.cpp
 	reflection/component_registry.cpp
 	ui/search/search_popup.cpp

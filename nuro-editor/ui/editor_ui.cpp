@@ -28,6 +28,7 @@ namespace fs = std::filesystem;
 #include "../ui/windows/asset_browser_window.h"
 #include "../ui/collection/IconsFontAwesome6.h"
 #include "../ui/windows/post_processing_window.h"
+#include "../ui/windows/resource_viewer_window.h"
 
 namespace EditorUI {
 
@@ -53,6 +54,12 @@ namespace EditorUI {
 	bool gOverwriteCursor = false; // Overwrites the default imgui cursor
 	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t gOverwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
+
+	template <typename T, typename... Args>
+	void createWindow(Args&&... args) {
+		static_assert(std::is_base_of<EditorWindow, T>::value, "Only classes that derive from EditorWindow can be added to the editor!");
+		gWindows.emplace_back(new T(std::forward<Args>(args)...));
+	}
 
 	void _mergeIcons(ImGuiIO& io, float fontSize) {
 		float iconsFontSize = fontSize * 2.0f / 3.0f;
@@ -230,29 +237,15 @@ namespace EditorUI {
 		// Note: Permanently allocated, as they will be needed throughout the whole runtime
 		//
 
-		ViewportWindow* viewportWindow = new ViewportWindow();
-		gWindows.emplace_back(viewportWindow);
-
-		GameWindow* gameWindow = new GameWindow();
-		gWindows.emplace_back(gameWindow);
-
-		PostProcessingWindow* postProcessingWindow = new PostProcessingWindow(Runtime::getGameViewPipeline().getProfile());
-		gWindows.emplace_back(postProcessingWindow);
-
-		DiagnosticsWindow* diagnosticsWindow = new DiagnosticsWindow();
-		gWindows.emplace_back(diagnosticsWindow);
-
-		ConsoleWindow* consoleWindow = new ConsoleWindow();
-		gWindows.emplace_back(consoleWindow);
-
-		RegistryWindow* registryWindow = new RegistryWindow();
-		gWindows.emplace_back(registryWindow);
-
-		InsightPanelWindow* insightPanelWindow = new InsightPanelWindow();
-		gWindows.emplace_back(insightPanelWindow);
-
-		AssetBrowserWindow* assetBrowserWindow = new AssetBrowserWindow();
-		gWindows.emplace_back(assetBrowserWindow);
+		createWindow<ViewportWindow>();
+		createWindow<GameWindow>();
+		createWindow<PostProcessingWindow>(Runtime::getGameViewPipeline().getProfile());
+		createWindow<DiagnosticsWindow>();
+		createWindow<ConsoleWindow>();
+		createWindow<RegistryWindow>();
+		createWindow<InsightPanelWindow>();
+		createWindow<AssetBrowserWindow>();
+		createWindow<ResourceViewerWindow>();
 
 		//
 		// SETUP WINDOW ELEMENTS

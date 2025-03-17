@@ -48,7 +48,7 @@ bool Project::validateConfig()
 
 	std::ofstream file(file_path);
 	if (file.is_open()) {
-		Console::out::processStart("Project", "Created project configuration at '" + file_path.string() + "'");
+		Console::out::start("Project", "Created project configuration at '" + file_path.string() + "'");
 		return true;
 	}
 	else {

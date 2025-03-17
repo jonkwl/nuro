@@ -145,7 +145,7 @@ bool ShadowMap::saveAsImage(int32_t width, int32_t height, const std::string& fi
 	}
 	if (stbi_write_png(filename.c_str(), width, height, 1, &flippedImage[0], width) != 0)
 	{
-		Console::out::processDone("Shadow Map", "Shadow map saved as " + filename);
+		Console::out::done("Shadow Map", "Shadow map saved as " + filename);
 		return true;
 	}
 	else

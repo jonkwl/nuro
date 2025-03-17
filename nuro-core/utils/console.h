@@ -99,23 +99,23 @@ namespace Console
 		// Registers a log callback for engine outputs
 		void registerCallback(LogCallback callback);
 
-		// Prints an error and terminates the program if possible
+		// Prints an error
 		void error(std::string origin, std::string error, std::string additionalInfo = "");
 
 		// Prints a warning
 		void warning(std::string origin, std::string warning, std::string additionalInfo = "");
 
 		// Prints that some specified process has started
-		void processStart(std::string origin, std::string process);
+		void start(std::string origin, std::string info);
 
-		// Prints the state of some process
-		void processState(std::string origin, std::string process);
+		// Prints an information
+		void info(std::string info);
 
-		// Prints an information from some process without providing information about the process
-		void processInfo(std::string info);
+		// Prints an information
+		void info(std::string origin, std::string info);
 
 		// Prints that some specified process is done
-		void processDone(std::string origin, std::string process);
+		void done(std::string origin, std::string info);
 
 		// Prints the ASCII welcome message
 		void welcome();

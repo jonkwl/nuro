@@ -22,7 +22,7 @@ namespace IconPool {
 
 	void _loadAll(const std::string& directory, bool async)
 	{
-		ResourceLoader& loader = ApplicationContext::getResourceLoader();
+		ResourceManager& resource = ApplicationContext::resourceManager();
 
 		std::vector<std::string> files = IOUtils::getFilesWithExtensions(directory, gValidExtensions);
 		for (const auto& file : files) {
@@ -36,16 +36,17 @@ namespace IconPool {
 			TextureType type = IOUtils::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
 			// Insert new icon
-			auto [it, inserted] = gIcons.insert({ identifier, new Texture()});
+			auto [_, texture] = resource.create<Texture>();
+			auto [it, inserted] = gIcons.insert({ identifier, texture });
 			auto& icon = it->second;
 
-			// Create icon texture
+			// Load icon texture
 			icon->setSource(type, file);
 			if (async) {
-				loader.createAsync(icon);
+				resource.loadAsync(icon);
 			}
 			else {
-				loader.createSync(icon);
+				resource.loadSync(icon);
 			}
 
 		}
@@ -53,13 +54,13 @@ namespace IconPool {
 
 	void loadAllSync(const std::string& directory)
 	{
-		Console::out::processState("Icon Pool", "Loading icons from '" + directory + "'");
+		Console::out::info("Icon Pool", "Loading icons from '" + directory + "'");
 		_loadAll(directory, false);
 	}
 
 	void loadAllAsync(const std::string& directory)
 	{
-		Console::out::processState("Icon Pool", "Queued loading icons in '" + directory + "'");
+		Console::out::info("Icon Pool", "Queued loading icons in '" + directory + "'");
 		_loadAll(directory, true);
 	}
 
@@ -67,19 +68,23 @@ namespace IconPool {
 	{
 		if (auto it = gIcons.find(identifier); it != gIcons.end()) {
 			// Icon found, return its backend id
-			return it->second->id();
+			return it->second->backendId();
 		}
 		else {
 			// Icon not found, return invalid icons backend id
-			// Console::out::warning("Icon Pool", "Icon '" + identifier + "' was requested but isn't valid");
-			return gInvalidIcon->id();
+			return gInvalidIcon->backendId();
 		}
 	}
 
 	void createFallbackIcon(const std::string& path)
 	{
+		ResourceManager& resource = ApplicationContext::resourceManager();
+
+		auto [_, invalidIcon] = resource.create<Texture>();
+		gInvalidIcon = invalidIcon;
 		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, path);
-		ApplicationContext::getResourceLoader().createSync(gInvalidIcon);
+
+		resource.loadSync(gInvalidIcon);
 	}
 
 }
