@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace IOHandler
+namespace IOUtils
 {
 
 	// Returns the data of a file as a string

@@ -1,5 +1,6 @@
 #include "console.h"
 
+#include <vector>
 #include <iostream>
 
 namespace Console
@@ -60,6 +61,18 @@ namespace Console
 
 	namespace out {
 
+		std::vector<LogCallback> logCallbacks;
+
+		void _execCallbacks(const std::string& origin, const std::string& content, LogType logType) {
+			for (const auto& callback : logCallbacks) callback(origin, content, logType);
+		}
+
+		void registerCallback(LogCallback callback)
+		{
+			logCallbacks.push_back(callback);
+	
+		}
+
 		void error(std::string origin, std::string error, std::string additionalInfo)
 		{
 			print 
@@ -72,6 +85,8 @@ namespace Console
 				>> error >> endLine;
 
 			if (!additionalInfo.empty()) print >> additionalInfo >> endLine;
+
+			_execCallbacks(origin, error, LogType::ERROR);
 
 			std::exit(-1);
 		}
@@ -91,6 +106,8 @@ namespace Console
 				>> endLine;
 
 			if (!additionalInfo.empty()) print >> additionalInfo >> endLine;
+
+			_execCallbacks(origin, warning, LogType::WARNING);
 		}
 
 		void processStart(std::string origin, std::string process)
@@ -108,6 +125,8 @@ namespace Console
 				>> process 
 				>> "..." 
 				>> endLine;
+
+			_execCallbacks(origin, process, LogType::DEFAULT);
 		}
 
 		void processState(std::string origin, std::string process)
@@ -124,6 +143,8 @@ namespace Console
 				>> resetText 
 				>> process 
 				>> endLine;
+
+			_execCallbacks(origin, process, LogType::DEFAULT);
 		}
 
 		void processInfo(std::string info)
@@ -132,9 +153,13 @@ namespace Console
 				>> " [" 
 				>> TextColor::GREEN 
 				>> "info" 
-				>> resetText 
+				>> resetText
+				>> "] "
+				>> TextColor::GRAY 
 				>> info 
 				>> endLine;
+
+			_execCallbacks("Info", info, LogType::DEFAULT);
 		}
 
 		void processDone(std::string origin, std::string process)
@@ -152,6 +177,8 @@ namespace Console
 				>> process 
 				>> "." 
 				>> endLine;
+
+			_execCallbacks(origin, process, LogType::DEFAULT);
 		}
 
 		void welcome() {

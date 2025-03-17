@@ -8,8 +8,9 @@
 
 #include "../ui/editor_ui.h"
 #include "../testing/game_logic.h"
-#include "../ui/windows/insight_panel_window.h"
+#include "../ui/windows/console_window.h"
 #include "../reflection/component_registry.h"
+#include "../ui/windows/insight_panel_window.h"
 #include "../ui/inspectables/welcome_inspectable.h"
 
 #include <time/time.h>
@@ -175,6 +176,15 @@ namespace Runtime {
 
 		// Space
 		Console::print >> Console::endLine;
+
+		// Register callback to log engine outputs to the editor application context
+		Console::out::registerCallback(
+			[](const std::string& origin, const std::string& content, LogType logType)
+			{
+				if(logType != LogType::DEFAULT) 
+					ConsoleWindow::log(ConsoleLog(origin, content, logType));
+			}
+		);
 
 		// Create application context configuration
 		ApplicationContext::Configuration config;

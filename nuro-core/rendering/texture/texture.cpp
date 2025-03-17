@@ -5,7 +5,7 @@
 #include <filesystem>
 
 #include <utils/console.h>
-#include <utils/iohandler.h>
+#include <utils/ioutils.h>
 #include <context/application_context.h>
 
 namespace fs = std::filesystem;
@@ -56,7 +56,7 @@ void Texture::loadData()
 	unsigned char* _data = stbi_load(path.c_str(), &_width, &_height, &_channels, 0);
 	if (!_data)
 	{
-		Console::out::warning("Texture", "Couldn't load data for texture '" + IOHandler::getFilename(path) + "'");
+		Console::out::warning("Texture", "Couldn't load data for texture '" + IOUtils::getFilename(path) + "'");
 		return;
 	}
 

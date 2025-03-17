@@ -1,4 +1,4 @@
-#include "iohandler.h"
+#include "ioutils.h"
 
 #include <filesystem>
 #include <fstream>
@@ -7,7 +7,7 @@
 
 #include <utils/console.h>
 
-namespace IOHandler
+namespace IOUtils
 {
 
 	std::string readFile(const std::string& path)

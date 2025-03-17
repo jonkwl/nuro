@@ -53,7 +53,7 @@ set(SOURCE_FILES
 	transform/transform.h
 	transform/transform_pass.h
 	utils/console.h
-	utils/iohandler.h
+	utils/ioutils.h
 	utils/string_helper.h
 	viewport/viewport.h
 	context/application_context.cpp
@@ -97,7 +97,7 @@ set(SOURCE_FILES
 	transform/transform.cpp
 	transform/transform_pass.cpp
 	utils/console.cpp
-	utils/iohandler.cpp
+	utils/ioutils.cpp
 	utils/string_helper.cpp
 	viewport/viewport.cpp
 )

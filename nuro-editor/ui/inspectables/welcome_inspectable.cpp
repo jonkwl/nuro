@@ -21,7 +21,7 @@ logSelect(
 
     // Fetch logs from console snapshot
     for (ConsoleLog& log : consoleSnapshot) {
-        if (log.type != ConsoleLogType::MESSAGE) {
+        if (log.type != LogType::DEFAULT) {
             loggedIssues.push_back(log.content);
         }
     }

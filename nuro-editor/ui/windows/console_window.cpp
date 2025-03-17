@@ -107,15 +107,15 @@ void ConsoleWindow::drawLog(ImDrawList& drawList, const ConsoleLog& log)
 	ImU32 textColor = IM_COL32(255, 255, 255, 255);
 	ImU32 backgroundColor = IM_COL32(25, 25, 25, 255);
 	switch (log.type) {
-	case ConsoleLogType::MESSAGE:
+	case LogType::DEFAULT:
 		if (!showMessages) return;
 		break;
-	case ConsoleLogType::WARNING:
+	case LogType::WARNING:
 		if (!showWarnings) return;
 		textColor = IM_COL32(255, 255, 100, 255);
 		backgroundColor = IM_COL32(35, 35, 25, 255);
 		break;
-	case ConsoleLogType::ERROR:
+	case LogType::ERROR:
 		if (!showErrors) return;
 		textColor = IM_COL32(255, 100, 100, 255);
 		backgroundColor = IM_COL32(35, 25, 25, 255);
@@ -142,14 +142,14 @@ void ConsoleWindow::drawLog(ImDrawList& drawList, const ConsoleLog& log)
 	// Draw content text with icon
 	ImVec2 contentPosition = ImVec2(p0.x + elementPadding, p0.y + elementPadding);
 	switch (log.type) {
-	case ConsoleLogType::MESSAGE:
+	case LogType::DEFAULT:
 		// drawList.AddText(contentPosition, textColor, messageIcon); 
 		break;
-	case ConsoleLogType::WARNING:
+	case LogType::WARNING:
 		drawList.AddText(contentPosition, textColor, warningIcon);
 		contentPosition.x += 21.0f;
 		break;
-	case ConsoleLogType::ERROR:
+	case LogType::ERROR:
 		drawList.AddText(contentPosition, textColor, errorIcon);
 		contentPosition.x += 21.0f;
 		break;

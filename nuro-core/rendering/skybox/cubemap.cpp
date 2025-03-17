@@ -5,7 +5,7 @@
 #include <filesystem>
 
 #include <utils/console.h>
-#include <utils/iohandler.h>
+#include <utils/ioutils.h>
 
 namespace fs = std::filesystem;
 
@@ -55,7 +55,7 @@ uint32_t Cubemap::getId() const
 std::string Cubemap::sourcePath()
 {
 	if (source.paths.size() > 0) {
-		return IOHandler::getFilename(source.paths[0]);
+		return IOUtils::getFilename(source.paths[0]);
 	}
 	else {
 		return "";

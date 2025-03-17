@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 namespace Console
 {
@@ -85,6 +86,18 @@ namespace Console
 	//
 
 	namespace out {
+
+		enum class LogType {
+			DEFAULT,
+			WARNING,
+			ERROR
+		};
+
+		// Callback for a log event with origin, content and log type
+		using LogCallback = std::function<void(const std::string&, const std::string&, LogType)>;
+
+		// Registers a log callback for engine outputs
+		void registerCallback(LogCallback callback);
 
 		// Prints an error and terminates the program if possible
 		void error(std::string origin, std::string error, std::string additionalInfo = "");

@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../../utils/console.h"
-#include "../../utils/iohandler.h"
+#include "../../utils/ioutils.h"
 
 namespace fs = std::filesystem;
 
@@ -76,8 +76,8 @@ void Shader::setMatrix4(const std::string& identifier, glm::mat4 value)
 
 void Shader::loadData()
 {
-	data.vertexSource = IOHandler::readFile(path + "/.vert");
-	data.fragmentSource = IOHandler::readFile(path + "/.frag");
+	data.vertexSource = IOUtils::readFile(path + "/.vert");
+	data.fragmentSource = IOUtils::readFile(path + "/.frag");
 }
 
 void Shader::releaseData()

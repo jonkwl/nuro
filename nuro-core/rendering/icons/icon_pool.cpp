@@ -5,7 +5,7 @@
 #include <stb_image.h>
 
 #include <utils/console.h>
-#include <utils/iohandler.h>
+#include <utils/ioutils.h>
 #include <rendering/texture/texture.h>
 #include <context/application_context.h>
 
@@ -24,16 +24,16 @@ namespace IconPool {
 	{
 		ResourceLoader& loader = ApplicationContext::getResourceLoader();
 
-		std::vector<std::string> files = IOHandler::getFilesWithExtensions(directory, gValidExtensions);
+		std::vector<std::string> files = IOUtils::getFilesWithExtensions(directory, gValidExtensions);
 		for (const auto& file : files) {
 			// Get icon identifier
-			std::string identifier = IOHandler::getFilenameRaw(file);
+			std::string identifier = IOUtils::getFilenameRaw(file);
 
 			// Skip icon creation if it already exists
 			if (gIcons.find(identifier) != gIcons.end()) continue;
 
 			// Get icon texture type
-			TextureType type = IOHandler::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
+			TextureType type = IOUtils::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
 			// Insert new icon
 			auto [it, inserted] = gIcons.insert({ identifier, new Texture()});

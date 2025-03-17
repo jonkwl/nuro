@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include <utils/console.h>
-#include <utils/iohandler.h>
+#include <utils/ioutils.h>
 #include <rendering/shader/shader.h>
 #include <context/application_context.h>
 
@@ -23,7 +23,7 @@ namespace ShaderPool {
 		std::vector<std::string> shader_paths;
 		std::vector<std::string> shader_names;
 
-		std::vector<std::string> shaders_in_folder = IOHandler::getFolders(directory);
+		std::vector<std::string> shaders_in_folder = IOUtils::getFolders(directory);
 		for (int32_t x = 0; x < shaders_in_folder.size(); x++)
 		{
 			shader_paths.push_back(directory + "/" + shaders_in_folder[x]);

@@ -1,27 +1,25 @@
 #pragma once
 
+#include "editor_window.h"
+
 #include <string>
 #include <deque>
 #include <vector>
 
-#include "editor_window.h"
+#include <utils/console.h>
+
+using LogType = Console::out::LogType;
 
 struct ImVec2;
 
-enum class ConsoleLogType {
-	MESSAGE,
-	WARNING,
-	ERROR
-};
-
 struct ConsoleLog {
-	std::string content;
 	std::string origin;
-	ConsoleLogType type;
+	std::string content;
+	LogType type;
 
-	ConsoleLog(std::string content, std::string origin, ConsoleLogType type) :
-		content(content),
+	ConsoleLog(const std::string& origin, const std::string& content, LogType type) :
 		origin(origin),
+		content(content),
 		type(type)
 	{};
 };

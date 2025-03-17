@@ -11,7 +11,7 @@
 
 #include <rendering/transformation/transformation.h>
 #include <utils/console.h>
-#include <utils/iohandler.h>
+#include <utils/ioutils.h>
 #include <utils/string_helper.h>
 
 namespace fs = std::filesystem;
@@ -64,7 +64,7 @@ void Model::loadData()
 	// Validate model
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		Console::out::warning("Model", "Couldn't load model '" + IOHandler::getFilename(path) + "'", import.GetErrorString());
+		Console::out::warning("Model", "Couldn't load model '" + IOUtils::getFilename(path) + "'", import.GetErrorString());
 		return;
 	}
 

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include <context/application_context.h>
-#include <utils/iohandler.h>
+#include <utils/ioutils.h>
 
 #include <utils/console.h>
 
@@ -64,7 +64,7 @@ void Footer::renderContent(ImDrawList& drawList)
     std::string informationText;
     bool loading = false;
     if (worker.active && worker.target) {
-        informationText = "Loading '" + IOHandler::getFilename(worker.target->sourcePath()) + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
+        informationText = "Loading '" + IOUtils::getFilename(worker.target->sourcePath()) + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
         loading = true;
     }
     else {
