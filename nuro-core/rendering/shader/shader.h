@@ -17,6 +17,7 @@ protected:
 
 public:
 	Shader();
+	~Shader();
 
 	std::string sourcePath() override;
 

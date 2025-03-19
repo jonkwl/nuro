@@ -120,9 +120,8 @@ void AssetBrowserWindow::createAssetUIData(Asset& asset)
 void AssetBrowserWindow::selectFolder(Folder* folder)
 {
 	selectedFolder = folder;
-	if (selectedFolder) {
+	if (selectedFolder)
 		selectedFolder->expanded = true;
-	}
 }
 
 void AssetBrowserWindow::buildFolders(const fs::path& directory, std::vector<Folder>& target, uint32_t i)

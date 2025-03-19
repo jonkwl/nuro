@@ -67,9 +67,8 @@ void RegistryWindow::renderSearch(ImDrawList& drawList)
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 8.0f));
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-	if (ImGui::InputTextWithHint("##Search", "Search...", searchBuffer, IM_ARRAYSIZE(searchBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+	if (ImGui::InputTextWithHint("##Search", "Search...", searchBuffer, IM_ARRAYSIZE(searchBuffer), ImGuiInputTextFlags_EnterReturnsTrue))
 		Console::out::warning("Registry Window", "Search not implemented yet");
-	}
 
 	ImGui::PopFont();
 	ImGui::PopItemWidth();
@@ -240,7 +239,8 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		// Select all between latest selection and this item
 		else if (io.KeyShift) {
 			// Make sure last selected is set to prevent memory errors
-			if (!lastSelected) lastSelected = &item;
+			if (!lastSelected) 
+				lastSelected = &item;
 			
 			// Find multiselect start and end elements
 			auto start = std::find(currentHierarchy.begin(), currentHierarchy.end(), *lastSelected);
@@ -287,17 +287,15 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 	// CHECK FOR DOUBLE CLICK (-> move to entity)
 	//
 
-	if (doubleClicked) {
+	if (doubleClicked)
 		setCameraTarget(&item.entity.transform());
-	}
 
 	//
 	// CHECK FOR CTRL F KEYPRESS WHEN SELECTED (-> move to entity)
 	// 
 
-	if (selected && io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_F)) {
+	if (selected && io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_F))
 		setCameraTarget(&item.entity.transform());
-	}
 
 	//
 	// EVALUATE ITEM TEXT POSITION
@@ -327,7 +325,8 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 		bool circleClicked = ImGui::IsMouseClicked(0) && circleHovered;
 		
 		// Check for circle click or mouse wheel click (-> expand)
-		if (circleClicked || wheelClicked) item.expanded = !item.expanded;
+		if (circleClicked || wheelClicked) 
+			item.expanded = !item.expanded;
 		
 		// Evaluate color
 		ImU32 circleColor = circleHovered && dropType == NO_DROP ? (selected ? UIUtils::darken(color, 0.25f) : EditorColor::elementActive) : color;

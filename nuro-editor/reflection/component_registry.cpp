@@ -170,6 +170,20 @@ namespace ComponentRegistry
             std::nullopt,
             false
         );
+
+        registerComponent<AudioListenerComponent>(
+            "Audio Listener",
+            InspectableComponents::drawAudioListener,
+            std::nullopt,
+            false
+        );
+
+        registerComponent<AudioSourceComponent>(
+            "Audio Source",
+            InspectableComponents::drawAudioSource,
+            ComponentGizmos::drawAudioSource,
+            true
+        );
 	}
 
     const std::unordered_map<std::string, ComponentInfo>& get()

@@ -102,9 +102,8 @@ void GameViewPipeline::render()
 	bool velocityBufferNeeded = profile.motionBlur.objectEnabled;
 	velocityOutput = 0;
 
-	if (velocityBufferNeeded) {
+	if (velocityBufferNeeded)
 		velocityOutput = velocityBuffer.render(view, projection, profile);
-	}
 
 	const uint32_t VELOCITY_BUFFER_OUTPUT = velocityOutput;
 	Profiler::stop("velocity_buffer");

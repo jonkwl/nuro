@@ -384,6 +384,39 @@ namespace InspectableComponents {
 		if (removed) ECS::main().remove<RigidbodyComponent>(entity);
 	}
 
+	void drawAudioListener(Entity entity, AudioListenerComponent& audioListener)
+	{
+		bool removed = false;
+
+		if (_beginComponent("Audio Listener", IconPool::get("audio_listener"), &audioListener.enabled, &removed))
+		{
+			_headline("Properties");
+
+			IMComponents::input("Gain", audioListener.gain);
+			IMComponents::label("...");
+
+			_endComponent();
+		}
+
+		if (removed) ECS::main().remove<AudioListenerComponent>(entity);
+	}
+
+	void drawAudioSource(Entity entity, AudioSourceComponent& audioSource)
+	{
+		bool removed = false;
+
+		if (_beginComponent("Audio Source", IconPool::get("audio_source"), nullptr, &removed))
+		{
+			_headline("Properties");
+
+			IMComponents::label("...");
+
+			_endComponent();
+		}
+
+		if (removed) ECS::main().remove<AudioSourceComponent>(entity);
+	}
+
 	void drawColor(PostProcessing::Color& color)
 	{
 		if (_beginComponent("Color", IconPool::get("color"), nullptr, nullptr))

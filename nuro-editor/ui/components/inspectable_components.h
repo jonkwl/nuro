@@ -20,6 +20,8 @@ namespace InspectableComponents
 	void drawBoxCollider(Entity entity, BoxColliderComponent& boxCollider);
 	void drawSphereCollider(Entity entity, SphereColliderComponent& sphereCollider);
 	void drawRigidbody(Entity entity, RigidbodyComponent& rigidbody);
+	void drawAudioListener(Entity entity, AudioListenerComponent& audioListener);
+	void drawAudioSource(Entity entity, AudioSourceComponent& audioSource);
 
 	//
 	// INSPECTABLE POST PROCESSING COMPONENTS

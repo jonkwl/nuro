@@ -30,12 +30,12 @@ public:
 	}
 
 	// Construct entity container by entity handle
-	explicit EntityContainer(Entity handle) : _handle(handle), _transform(&get<TransformComponent>())
+	EntityContainer(Entity handle) : _handle(handle), _transform(&get<TransformComponent>())
 	{
 	}
 
 	// Construct entity container by ecs native entity creation data tuple
-	explicit EntityContainer(std::tuple<Entity, TransformComponent&> data) : _handle(std::get<0>(data)), _transform(&std::get<1>(data))
+	EntityContainer(std::tuple<Entity, TransformComponent&> data) : _handle(std::get<0>(data)), _transform(&std::get<1>(data))
 	{
 	}
 

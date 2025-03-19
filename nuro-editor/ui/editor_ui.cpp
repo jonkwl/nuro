@@ -105,7 +105,7 @@ namespace EditorUI {
 
 		// Full iconpack exists, print warning
 		if (!fs::exists(fs::path(EditorFontPath::iconsFull))) {
-			Console::out::warning("Editor UI", "Licensed icons aren't available when cloned from the open source repository.");
+			Console::out::warning("Editor UI", "Licensed icons aren't available when cloned from the open source repository");
 		}
 
 		// p

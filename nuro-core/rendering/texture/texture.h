@@ -31,6 +31,7 @@ protected:
 
 public:
 	Texture();
+	~Texture();
 
 	// Sets the textures type and path of texture source
 	void setSource(TextureType type, const std::string& path);

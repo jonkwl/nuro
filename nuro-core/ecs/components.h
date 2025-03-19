@@ -8,6 +8,7 @@
 #include <PxPhysicsAPI.h>
 #include <glm/gtc/quaternion.hpp>
 
+#include <audio/audio_clip.h>
 #include <rendering/model/mesh.h>
 #include <rendering/material/imaterial.h>
 #include <physics/rigidbody/rigidbody_enums.h>
@@ -246,5 +247,58 @@ struct RigidbodyComponent {
 
 	// Physics backend actor handle
 	physx::PxRigidDynamic* actor = nullptr;
+
+};
+
+struct AudioListenerComponent {
+
+	// Sets if audio listener is enabled
+	bool enabled = true;
+
+	// Gain of audio listener
+	float gain = 1.0f;
+
+	// Distance model used by audio listener
+	int32_t distanceModel = 0;
+
+	// Strength of doppler effect
+	float dopplerFactor = 0.0f;
+
+	// Velocity for doppler effect
+	float dopplerVelocity = 0.0f;
+
+};
+
+struct AudioSourceComponent {
+
+	// Type of audio source
+	int32_t sourceType = 0;
+
+	// Audio clip of audio source
+	AudioClip* clip;
+
+	// Gain of audio source playback
+	float gain = 1.0f;
+
+	// Pitch of audio source playback
+	float pitch = 0.0f;
+
+	// Sets if audio source playback should loop
+	bool looping = false;
+
+	// Enables spatial audio
+	bool is3D = true;
+
+	// Reference distance for spatial audio source
+	float referenceDistance = 1.0f;
+
+	// Maximum distance for spatial audio source to be hearable
+	float maxDistance = 25.0f;
+
+	// Loudness roll off factor for spatial audio source
+	float rollOffFactor = 1.0f;
+
+	// Backend id handle of audio source
+	uint32_t backendId;
 
 };

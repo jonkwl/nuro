@@ -21,6 +21,9 @@ protected:
 	void deleteBuffers() override;
 
 public:
+	Model();
+	~Model();
+
 	struct Metrics
 	{
 		// Total number of meshes in model
@@ -82,8 +85,6 @@ public:
 		{
 		};
 	};
-
-	Model();
 
 	// Sets the path of the models source
 	void setSource(std::string path);

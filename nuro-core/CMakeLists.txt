@@ -1,6 +1,13 @@
 project(nuro-core)
 
 set(SOURCE_FILES
+	audio/audio_buffer.h
+	audio/audio_clip.h
+	audio/audio_context.h
+	audio/audio_data.h
+	audio/audio_device.h
+	audio/audio_listener.h
+	audio/audio_source.h
 	backend/api.h
 	context/application_context.h
 	diagnostics/diagnostics.h
@@ -56,6 +63,13 @@ set(SOURCE_FILES
 	utils/ioutils.h
 	utils/string_helper.h
 	viewport/viewport.h
+	audio/audio_buffer.cpp
+	audio/audio_clip.cpp
+	audio/audio_context.cpp
+	audio/audio_data.cpp
+	audio/audio_device.cpp
+	audio/audio_listener.cpp
+	audio/audio_source.cpp
 	context/application_context.cpp
 	diagnostics/diagnostics.cpp
 	diagnostics/profiler.cpp

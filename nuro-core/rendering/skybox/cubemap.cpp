@@ -81,12 +81,17 @@ _backendId(0)
 {
 }
 
+Cubemap::~Cubemap()
+{
+	freeIoData();
+	deleteBuffers();
+}
+
 void Cubemap::setSource_Cross(std::string path)
 {
 	// Validate source path
-	if (!fs::exists(path)) {
+	if (!fs::exists(path))
 		Console::out::warning("Cubemap", "Cubemap source at '" + path + "' could not be found");
-	}
 
 	source.type = Source::Type::CROSS;
 	source.paths = { path };
@@ -96,9 +101,8 @@ void Cubemap::setSource_Individual(std::string rightPath, std::string leftPath, 
 {
 	// Source path validation lambda
 	auto validatePath = [](const std::string& path, const std::string& face) {
-		if (!fs::exists(path)) {
+		if (!fs::exists(path))
 			Console::out::warning("Cubemap", "Cubemap source for '" + face + "' face at '" + path + "' could not be found");
-		}
 	};
 
 	// Validate source paths

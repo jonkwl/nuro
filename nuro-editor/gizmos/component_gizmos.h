@@ -25,5 +25,6 @@ namespace ComponentGizmos
 	void drawSphereCollider(IMGizmo& gizmos, TransformComponent& transform, SphereColliderComponent& sphereCollider);
 	void drawPointLight(IMGizmo& gizmos, TransformComponent& transform, PointLightComponent& pointLight);
 	void drawSpotlight(IMGizmo& gizmos, TransformComponent& transform, SpotlightComponent& spotlight);
+	void drawAudioSource(IMGizmo& gizmos, TransformComponent& transform, AudioSourceComponent& audioSource);
 
 };

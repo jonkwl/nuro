@@ -121,7 +121,9 @@ bool Texture::uploadBuffers()
 
 void Texture::deleteBuffers()
 {
-	if (_backendId) glDeleteTextures(1, &_backendId);
+	if (_backendId) 
+		glDeleteTextures(1, &_backendId);
+
 	_backendId = defaultTextureId;
 }
 
@@ -135,12 +137,17 @@ _backendId(defaultTextureId)
 {
 }
 
+Texture::~Texture()
+{
+	freeIoData();
+	deleteBuffers();
+}
+
 void Texture::setSource(TextureType _type, const std::string& _path)
 {
 	// Validate source path
-	if (!fs::exists(_path)) {
+	if (!fs::exists(_path))
 		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
-	}
 
 	type = _type;
 	path = _path;

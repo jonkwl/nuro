@@ -11,6 +11,7 @@
 EntityContainer camera;
 EntityContainer kinematic;
 EntityContainer player;
+EntityContainer audio;
 
 void _physics_example() {
 	// Get resource manager
@@ -27,6 +28,11 @@ void _physics_example() {
 	sphereModel->setSource("./resources/primitives/sphere.fbx");
 	resource.loadSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
+
+	// Example audio
+	auto [audioClipId, audioClip] = resource.create<AudioClip>();
+	audioClip->setSource("./resources/example-assets/audio/example.wav");
+	resource.loadAsync(audioClip);
 
 	// Standard material
 	LitMaterial* standardMaterial = new LitMaterial();
@@ -72,18 +78,17 @@ void _physics_example() {
 	scifiMaterial->emissiveMap = emissive;
 	scifiMaterial->emission = true;
 	scifiMaterial->emissionIntensity = 250.0f;
-	// scifiMaterial->heightMap = height;
-	// scifiMaterial->heightMapScale = 0.2f;
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
 
 	// Head
-	EntityContainer head = EntityContainer(ecs.createEntity("Head"));
+	EntityContainer head = ecs.createEntity("Head");
 
 	// Camera
-	camera = EntityContainer(ecs.createEntity("Camera", head.handle()));
+	camera = ecs.createEntity("Camera", head.handle());
 	camera.add<CameraComponent>();
+	camera.add<AudioListenerComponent>();
 
 	// Directional light (sun)
 	EntityContainer sun(ecs.createEntity("Sun"));
@@ -111,6 +116,12 @@ void _physics_example() {
 	flashlightSource.innerAngle = 45.0f;
 	flashlightSource.outerAngle = 90.0f;
 
+	// Sample audio source
+	audio = ecs.createEntity("Audio Source");
+	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
+	AudioSourceComponent& audioSource = audio.add<AudioSourceComponent>();
+	audioSource.clip = audioClip;
+
 	// Ground
 	EntityContainer ground(ecs.createEntity("Ground"));
 	Transform::setPosition(ground.transform(), glm::vec3(0.0f, -10.1f, 35.0f));
@@ -121,7 +132,7 @@ void _physics_example() {
 	BoxColliderComponent& groundCollider = ground.add<BoxColliderComponent>();
 
 	// Kinematic sphere
-	kinematic = EntityContainer(ecs.createEntity("Kinematic"));
+	kinematic = ecs.createEntity("Kinematic");
 	Transform::setPosition(kinematic.transform(), glm::vec3(1.0f, 0.5f, 6.0f));
 	Transform::setScale(kinematic.transform(), glm::vec3(2.0f));
 	kinematic.add<MeshRendererComponent>(sphereMesh, redMaterial);
@@ -131,7 +142,7 @@ void _physics_example() {
 	Rigidbody::setKinematic(kinematicRb, true);
 
 	// Player sphere
-	player = EntityContainer(ecs.createEntity("Player"));
+	player = ecs.createEntity("Player");
 	Transform::setPosition(player.transform(), glm::vec3(8.0f, 0.0f, -4.0f));
 	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 	player.add<SphereColliderComponent>();
@@ -152,7 +163,7 @@ void _physics_example() {
 	secondChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
 
 	// Height mapping example
-	EntityContainer plane = EntityContainer(ecs.createEntity("Height Mapped Plane"));
+	EntityContainer plane = ecs.createEntity("Height Mapped Plane");
 	Transform::setPosition(plane.transform(), glm::vec3(-11.0f, 0.0f, 5.0f));
 	Transform::setEulerAngles(plane.transform(), glm::vec3(90.0f, 0.0f, 0.0f));
 	Transform::setScale(plane.transform(), glm::vec3(4.0f));
@@ -190,6 +201,9 @@ void gameSetup() {
 
 void gameAwake() {
 	Console::out::info("Game Start");
+
+	AudioSourceComponent& audioSource = audio.get<AudioSourceComponent>();
+	AudioSource::play(audioSource);
 }
 
 void gameQuit()

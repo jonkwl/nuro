@@ -12,7 +12,7 @@ public:
 	void setup();
 
 	//
-	// CREATE / DESTROY PHYSICS RELATED COMPONENTS
+	// CONSTRUCT / DESTROY PHYSICS RELATED COMPONENTS
 	//
 
 	void constructBoxCollider(Registry& reg, Entity ent);
@@ -34,6 +34,14 @@ private:
 	physx::PxShape* createBoxShape(physx::PxPhysics*& physics, physx::PxMaterial*& material, const glm::vec3& size);
 	physx::PxShape* createSphereShape(physx::PxPhysics*& physics, physx::PxMaterial*& material, float radius);
 	physx::PxRigidDynamic* createDynamicRigidbody(physx::PxPhysics*& physics, physx::PxScene*& scene, const glm::vec3& position, const glm::quat& rotation);
+
+	//
+	// RESOURCES
+	//
+
+	physx::PxPhysics*& physics;
+	physx::PxScene*& scene;
+	physx::PxMaterial* defaultMaterial; // tmp
 
 private:
 
@@ -81,11 +89,5 @@ private:
 		}
 
 	}
-
-private:
-	physx::PxPhysics*& physics;
-	physx::PxScene*& scene;
-
-	physx::PxMaterial* defaultMaterial; // tmp
 
 };

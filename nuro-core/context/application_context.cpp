@@ -4,6 +4,11 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
+extern "C" 
+{
+#include <libavutil/log.h>
+}
+
 #include <ecs/ecs.h>
 #include <time/time.h>
 #include <input/input.h>
@@ -17,10 +22,13 @@ namespace ApplicationContext {
 	// Global configuration
 	Configuration gConfiguration;
 
-	// Global window context variables
+	// Global window variables
 	GLFWwindow* gWindow = nullptr;
 	GLFWmonitor* gMonitor = nullptr;
 	glm::ivec2 gLastWindowSize = glm::ivec2(0.0f, 0.0f);
+
+	// Global audio context
+	AudioContext gAudioContext;
 
 	// Global resource manager
 	ResourceManager gResourceManager;
@@ -29,6 +37,31 @@ namespace ApplicationContext {
 	static void _glfwErrorCallback(int32_t error, const char* description)
 	{
 		Console::out::error("Application Context", "GLFW Error: " + std::to_string(error), description);
+	}
+
+	// Default ffmpeg log callback
+	void avLogCallback(void* ptr, int level, const char* format, va_list args)
+	{
+		char buffer[1024];
+		vsnprintf(buffer, sizeof(buffer), format, args);
+
+		switch (level) {
+		case AV_LOG_WARNING:
+			Console::out::warning("Data Reader [CAUTION]", buffer);
+			break;
+		case AV_LOG_ERROR:
+			Console::out::warning("Data Reader [FAILED]", buffer);
+			break;
+		case AV_LOG_FATAL:
+			Console::out::error("Data Reader [FATAL]", buffer);
+			break;
+		case AV_LOG_PANIC:
+			Console::out::error("Data Reader [PANIC]", buffer);
+			break;
+		default:
+			Console::out::info("Data Reader", buffer);
+			break;
+		}
 	}
 
 	// Loads graphics backend
@@ -132,6 +165,13 @@ namespace ApplicationContext {
 		Input::setup();
 		Cursor::setup();
 
+		// Set ffmpeg log callback
+		// av_log_set_level(AV_LOG_WARNING);
+		// av_log_set_callback(avLogCallback);
+
+		// Create audio context
+		gAudioContext.create();
+
 		// Create essential primitives
 		GlobalQuad::create();
 
@@ -165,6 +205,9 @@ namespace ApplicationContext {
 
 		// Update input system
 		Input::update();
+
+		// Update audio context
+		gAudioContext.update();
 	}
 
 	void endFrame()
@@ -333,6 +376,11 @@ namespace ApplicationContext {
 	const Configuration& readConfiguration()
 	{
 		return gConfiguration;
+	}
+
+	AudioContext& audioContext()
+	{
+		return gAudioContext;
 	}
 
 	ResourceManager& resourceManager()

@@ -6,6 +6,7 @@
 
 #include <utils/console.h>
 #include <ecs/reflection.h>
+#include <audio/audio_context.h>
 #include <transform/transform.h>
 
 ECS::ECS() : registry(), idCounter(0), renderQueue()
@@ -13,9 +14,13 @@ ECS::ECS() : registry(), idCounter(0), renderQueue()
 	// Setup component reflection
 	Reflection::setup();
 
-	// Register render queue updates
+	// Register mesh renderer events
 	registry.on_construct<MeshRendererComponent>().connect<&ECS::insertMeshRenderer>(this);
 	registry.on_destroy<MeshRendererComponent>().connect<&ECS::purgeMeshRenderer>(this);
+
+	// Register audio source events
+	registry.on_construct<AudioSourceComponent>().connect<&AudioContext::constructAudioSource>();
+	registry.on_destroy<AudioSourceComponent>().connect<&AudioContext::destroyAudioSource>();
 }
 
 const RenderQueue& ECS::getRenderQueue()

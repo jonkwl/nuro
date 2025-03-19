@@ -134,12 +134,17 @@ metrics()
 {
 }
 
+Model::~Model()
+{
+	freeIoData();
+	deleteBuffers();
+}
+
 void Model::setSource(std::string _path)
 {
 	// Validate source path
-	if (!fs::exists(_path)) {
+	if (!fs::exists(_path))
 		Console::out::warning("Model", "Model source at '" + _path + "' could not be found");
-	}
 
 	path = _path;
 }

@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <backend/api.h>
+#include <audio/audio_context.h>
 #include <resource/resource_manager.h>
 
 struct GLFWwindow;
@@ -78,10 +79,13 @@ namespace ApplicationContext
 	// Returns a pointer to the applications window
 	GLFWwindow* getWindow();
 
-	// Returns a read-only reference to the currently active configuration
+	// Returns a readonly reference to the currently active configuration
 	const Configuration& readConfiguration();
 
-	// Returns the global resource manager
+	// Returns the audio context
+	AudioContext& audioContext();
+
+	// Returns the resource manager
 	ResourceManager& resourceManager();
 
 };

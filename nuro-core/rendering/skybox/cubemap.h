@@ -16,6 +16,7 @@ protected:
 
 public:
 	Cubemap();
+	~Cubemap();
 
 	// Sets cubemaps source to be cross layout
 	void setSource_Cross(std::string path);

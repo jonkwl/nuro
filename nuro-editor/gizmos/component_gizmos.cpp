@@ -62,4 +62,13 @@ namespace ComponentGizmos {
 		//
 	}
 
+	void drawAudioSource(IMGizmo& gizmos, TransformComponent& transform, AudioSourceComponent& audioSource)
+	{
+		if (!audioSource.is3D) return;
+		gizmos.foreground = true;
+		gizmos.color = EditorGizmoColor::AUDIO_SOURCE;
+		gizmos.opacity = EditorGizmoColor::AUDIO_SOURCE.a;
+		gizmos.sphereWire(Transform::getPosition(transform, Space::WORLD), audioSource.maxDistance, glm::identity<glm::quat>());
+	}
+
 }

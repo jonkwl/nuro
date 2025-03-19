@@ -250,9 +250,14 @@ void ViewportWindow::renderTransformGizmos()
 
 	// Change gizmo operation
 	if (windowFocused) {
-		if (Input::command(Key::T)) gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-		else if (Input::command(Key::R)) gizmoOperation = ImGuizmo::OPERATION::ROTATE;
-		else if (Input::command(Key::S)) gizmoOperation = ImGuizmo::OPERATION::SCALE;
+		if (Input::command(Key::T)) 
+			gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+		else if (Input::command(Key::R)) 
+			gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+
+		else if (Input::command(Key::S)) 
+			gizmoOperation = ImGuizmo::OPERATION::SCALE;
 	}
 
 	// Copy transforms model matrix
