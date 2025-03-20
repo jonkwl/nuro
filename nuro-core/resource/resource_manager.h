@@ -30,8 +30,8 @@ public:
 
 	// Creates a new resource (lifetime managed by resource manager), returns its resource id and pointer 
 	template <typename T, typename... Args>
-	std::pair<uint32_t, T*> create(Args&&... args) {
-		return allocate<T>(std::forward<Args>(args)...);
+	std::pair<uint32_t, T*> create(const std::string& name, Args&&... args) {
+		return allocate<T>(name, std::forward<Args>(args)...);
 	}
 
 	// Returns the pointer to a resource by its id
@@ -79,13 +79,14 @@ private:
 	std::unordered_map<uint32_t, Resource*> resources;
 
 	template <typename T, typename... Args>
-	std::pair<uint32_t, T*> allocate(Args&&... args) {
+	std::pair<uint32_t, T*> allocate(const std::string& name, Args&&... args) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are valid for allocation");
 		
 		// Create and return resource
 		uint32_t id = ++idCounter;
 		T* resource = new T(std::forward<Args>(args)...);
 		resource->_resourceId = id;
+		resource->_resourceName = name;
 		resources[id] = resource;
 		return std::make_pair(id, resource);
 	}
@@ -101,7 +102,8 @@ private:
 		}
 
 		// Resource not found, dynamically allocate empty resource
-		auto [_id, _resource] = allocate<T>();
+		std::string name = "fallback-for-" + std::to_string(id);
+		auto [_id, _resource] = allocate<T>(name);
 		Console::out::warning("Resource Manager", "A resource with an invalid id (" + std::to_string(id) + ") was accessed", "Created empty resource with id " + std::to_string(_id) + " as fallback");
 		return _resource;
 	}

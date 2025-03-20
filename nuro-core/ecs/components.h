@@ -79,7 +79,7 @@ struct MeshRendererComponent {
 	MeshRendererComponent() : enabled(true), mesh(nullptr), material(nullptr) {};
 	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : enabled(true), mesh(mesh), material(material) {};
 	
-	// Set if component is enabled
+	// Set if mesh renderer is enabled
 	bool enabled = true;
 
 	// Mesh render target
@@ -91,7 +91,7 @@ struct MeshRendererComponent {
 
 struct CameraComponent {
 
-	// Set if component is enabled
+	// Set if camera is enabled
 	bool enabled = true;
 
 	// Cameras y fov in degrees
@@ -107,7 +107,7 @@ struct CameraComponent {
 
 struct DirectionalLightComponent {
 
-	// Set if component is enabled
+	// Set if directional light is enabled
 	bool enabled = true;
 
 	// Intensity of the directional light
@@ -119,7 +119,7 @@ struct DirectionalLightComponent {
 
 struct PointLightComponent {
 
-	// Set if component is enabled
+	// Set if point light is enabled
 	bool enabled = true;
 
 	// Intensity of the point light
@@ -137,7 +137,7 @@ struct PointLightComponent {
 
 struct SpotlightComponent {
 
-	// Set if component is enabled
+	// Set if spotlight is enabled
 	bool enabled = true;
 
 	// Intensity of the spotlight
@@ -159,9 +159,9 @@ struct SpotlightComponent {
 	float outerAngle = 60.0f;
 };
 
-struct VelocityComponent {
+struct VelocityBlurComponent {
 
-	// Set if component is enabled
+	// Set if velocity blur is enabled
 	bool enabled = true;
 
 	// Intensity of the velocity impact

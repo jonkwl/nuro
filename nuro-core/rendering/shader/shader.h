@@ -19,8 +19,6 @@ public:
 	Shader();
 	~Shader();
 
-	std::string sourcePath() override;
-
 	// Sets the path of the shaders source
 	void setSource(std::string path);
 

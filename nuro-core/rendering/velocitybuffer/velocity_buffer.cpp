@@ -135,7 +135,7 @@ uint32_t VelocityBuffer::velocityPass(const glm::mat4& view, const glm::mat4& pr
 	velocityPassShader->setMatrix4("projectionMatrix", projection);
 
 	// Render velocity buffer by performing velocity pass on each object
-	auto targets = ECS::main().view<TransformComponent, MeshRendererComponent, VelocityComponent>();
+	auto targets = ECS::main().view<TransformComponent, MeshRendererComponent, VelocityBlurComponent>();
 	for (auto [entity, transform, renderer, velocity] : targets.each()) {
 		if (!renderer.mesh) return 0;
 

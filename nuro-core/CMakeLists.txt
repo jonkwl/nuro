@@ -15,7 +15,7 @@ set(SOURCE_FILES
 	ecs/components.h
 	ecs/ecs.h
 	ecs/ecs_collection.h
-	ecs/entity_container.hpp
+	ecs/entity_container.h
 	ecs/reflection.h
 	engine.h
 	input/cursor.h
@@ -59,7 +59,10 @@ set(SOURCE_FILES
 	time/time.h
 	transform/transform.h
 	transform/transform_pass.h
+	utils/callback.h
 	utils/console.h
+	utils/event.h
+	utils/format.h
 	utils/ioutils.h
 	utils/string_helper.h
 	viewport/viewport.h
@@ -111,6 +114,7 @@ set(SOURCE_FILES
 	transform/transform.cpp
 	transform/transform_pass.cpp
 	utils/console.cpp
+	utils/format.cpp
 	utils/ioutils.cpp
 	utils/string_helper.cpp
 	viewport/viewport.cpp

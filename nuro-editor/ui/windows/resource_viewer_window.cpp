@@ -37,6 +37,10 @@ void ResourceViewerWindow::render()
 			for (const auto& [id, resource] : resources) {
 				IMComponents::label("ID " + std::to_string(id) + ": ", EditorUI::getFonts().p_bold);
 				ImGui::SameLine();
+
+				IMComponents::label(resource->resourceName() + " - ");
+				ImGui::SameLine();
+
 				ImVec2 pos = ImGui::GetCursorScreenPos();
 				switch (resource->resourceState()) {
 				case ResourceState::EMPTY:
@@ -51,7 +55,7 @@ void ResourceViewerWindow::render()
 					IMComponents::label("CREATING...", IM_COL32(100, 255, 145, 255));
 					ImGui::SetCursorScreenPos(pos);
 					IMComponents::loadingBuffer(drawList, pos + ImVec2(74.0f, 3.0f), 5.0f, 2.0f, IM_COL32(255, 255, 255, 200));
-					ImGui::SetCursorScreenPos(pos + ImVec2(87.0f, 0.0f));
+					ImGui::SetCursorScreenPos(pos + ImVec2(83.0f, 0.0f));
 					break;
 				case ResourceState::READY:
 					IMComponents::label("READY", IM_COL32(0, 255, 0, 255));
@@ -62,9 +66,8 @@ void ResourceViewerWindow::render()
 					ImGui::SameLine();
 					break;
 				}
-				IMComponents::label(" (" + IOUtils::getFilename(resource->sourcePath()) + ") ");
-				ImGui::SameLine();
-				IMComponents::flagLabel("- Allocated in RAM", resource->loadedIoData());
+
+				IMComponents::flagLabel(" - Allocated in RAM", resource->loadedIoData());
 			}
 		}
 		ImGui::EndChild();

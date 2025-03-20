@@ -29,6 +29,9 @@ private:
 	// ID of the resource
 	uint32_t _resourceId;
 
+	// Name of resource
+	std::string _resourceName;
+
 	// Atomic state of the resource (indicating its usability rather than the status of its data)
 	std::atomic<ResourceState> _resourceState;
 
@@ -37,7 +40,7 @@ private:
 
 protected:
 	// Flag setting if io data should be preserved after uploading resource
-	bool _preserveIoData;
+	bool preserveIoData;
 
 	// Loads the resources data from io
 	virtual bool loadIoData() = 0;
@@ -51,13 +54,18 @@ protected:
 	// Deletes resources previously uploaded target buffers
 	virtual void deleteBuffers() = 0;
 
-	Resource() : _resourceId(0), _resourceState(ResourceState::EMPTY), _loadedIoData(false), _preserveIoData(false) {};
+	Resource() : _resourceId(0), _resourceName("none"), _resourceState(ResourceState::EMPTY), _loadedIoData(false), preserveIoData(false) {};
 	virtual ~Resource() = default;
 
 public: 
 	// Returns the resources id
 	uint32_t resourceId() const {
 		return _resourceId;
+	}
+
+	// Returns the resources id
+	const std::string& resourceName() const {
+		return _resourceName;
 	}
 
 	// Returns the resources current state
@@ -69,7 +77,4 @@ public:
 	bool loadedIoData() const {
 		return _loadedIoData;
 	}
-
-	// Returns source path of resource (tmp)
-	virtual std::string sourcePath() = 0;
 };

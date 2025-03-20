@@ -8,6 +8,7 @@
 
 #include <transform/transform.h>
 #include <rendering/icons/icon_pool.h>
+#include <physics/rigidbody/rigidbody.h>
 
 #include "../ui/editor_ui.h"
 #include "../ui/components/im_components.h"
@@ -15,15 +16,18 @@
 
 namespace InspectableComponents {
 
-	// A component id is the numeric representation of its hashed identifier
-	using ComponentID = uint32_t;
-
 	// Stores if components are opened or closed
-	std::unordered_map<ComponentID, bool> g_Opened;
+	std::unordered_map<uint32_t, bool> gOpened;
 
 	// Returns if current component is opened
-	bool* _isOpened(ComponentID component) {
-		return &g_Opened[component];
+	bool* _isOpened(uint32_t componentId) {
+		return &gOpened[componentId];
+	}
+
+	// Removes an ecs component from an entity
+	template <typename T>
+	void _ecsRemove(Entity entity) {
+		ECS::main().remove<T>(entity);
 	}
 
 	// Draws a component element and returns true if its expanded. Pointer parameters can be set to nullptr to disable the corresponding feature (e.g., removedPtr set as nullptr means component cant be removed)
@@ -53,7 +57,7 @@ namespace InspectableComponents {
 
 		bool alwaysEnabled = !enabledPtr;
 
-		ComponentID componentId = entt::hashed_string::value(identifier.c_str());
+		uint32_t componentId = entt::hashed_string::value(identifier.c_str());
 		bool* openedPtr = _isOpened(componentId);
 
 		//
@@ -204,7 +208,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<MeshRendererComponent>(entity);
+		if (removed) _ecsRemove<MeshRendererComponent>(entity);
 	}
 
 	void drawCamera(Entity entity, CameraComponent& camera)
@@ -221,7 +225,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<CameraComponent>(entity);
+		if (removed) _ecsRemove<CameraComponent>(entity);
 	}
 
 	void drawDirectionalLight(Entity entity, DirectionalLightComponent& directionalLight)
@@ -244,7 +248,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<DirectionalLightComponent>(entity);
+		if (removed) _ecsRemove<DirectionalLightComponent>(entity);
 	}
 
 	void drawPointLight(Entity entity, PointLightComponent& pointLight)
@@ -269,7 +273,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<PointLightComponent>(entity);
+		if (removed) _ecsRemove<PointLightComponent>(entity);
 	}
 	
 	void drawSpotlight(Entity entity, SpotlightComponent& spotlight)
@@ -296,10 +300,10 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<SpotlightComponent>(entity);
+		if (removed) _ecsRemove<SpotlightComponent>(entity);
 	}
 
-	void drawVelocity(Entity entity, VelocityComponent& velocity)
+	void drawVelocity(Entity entity, VelocityBlurComponent& velocity)
 	{
 		bool removed = false;
 
@@ -311,7 +315,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<VelocityComponent>(entity);
+		if (removed) _ecsRemove<VelocityBlurComponent>(entity);
 	}
 
 	void drawBoxCollider(Entity entity, BoxColliderComponent& boxCollider)
@@ -333,7 +337,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<BoxColliderComponent>(entity);
+		if (removed) _ecsRemove<BoxColliderComponent>(entity);
 	}
 
 	void drawSphereCollider(Entity entity, SphereColliderComponent& sphereCollider)
@@ -355,7 +359,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<SphereColliderComponent>(entity);
+		if (removed) _ecsRemove<SphereColliderComponent>(entity);
 	}
 
 	void drawRigidbody(Entity entity, RigidbodyComponent& rigidbody)
@@ -381,7 +385,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<RigidbodyComponent>(entity);
+		if (removed) _ecsRemove<RigidbodyComponent>(entity);
 	}
 
 	void drawAudioListener(Entity entity, AudioListenerComponent& audioListener)
@@ -398,7 +402,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<AudioListenerComponent>(entity);
+		if (removed) _ecsRemove<AudioListenerComponent>(entity);
 	}
 
 	void drawAudioSource(Entity entity, AudioSourceComponent& audioSource)
@@ -414,7 +418,7 @@ namespace InspectableComponents {
 			_endComponent();
 		}
 
-		if (removed) ECS::main().remove<AudioSourceComponent>(entity);
+		if (removed) _ecsRemove<AudioSourceComponent>(entity);
 	}
 
 	void drawColor(PostProcessing::Color& color)

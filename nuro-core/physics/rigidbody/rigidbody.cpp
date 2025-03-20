@@ -34,36 +34,32 @@ namespace Rigidbody {
 	bool validate(RigidbodyComponent& rigidbody)
 	{
 		// Make sure rigidbody actor was created
-		if (rigidbody.actor) {
-			return true;
-		}
+		if (rigidbody.actor) return true;
 		else {
 			Console::out::warning("Rigidbody", "Invalid rigidbody was accessed!");
 			return false;
 		}
 	}
 
-	void setInterpolation(RigidbodyComponent& rigidbody, RB_Interpolation value)
+	void setInterpolation(RigidbodyComponent& rigidbody, RB_Interpolation interpolation)
 	{
 		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
-		// Set interpolation of rigidbody component
-		rigidbody.interpolation = value;
+		// Sync component
+		rigidbody.interpolation = interpolation;
 	}
 
-	void setCollisionDetection(RigidbodyComponent& rigidbody, RB_CollisionDetection value)
+	void setCollisionDetection(RigidbodyComponent& rigidbody, RB_CollisionDetection collisionDetection)
 	{
 		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
 		// If actor is kinematic, always fall back to discrete collision detection
-		if (rigidbody.kinematic) {
-			value = RB_CollisionDetection::DISCRETE;
-		}
+		if (rigidbody.kinematic) collisionDetection = RB_CollisionDetection::DISCRETE;
 
-		// Set actors collision detection according to given value
-		switch (value) {
+		// Update actors collision detection
+		switch (collisionDetection) {
 		case RB_CollisionDetection::DISCRETE:
 			rigidbody.actor->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);
 			rigidbody.actor->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD, false);
@@ -79,46 +75,46 @@ namespace Rigidbody {
 		}
 
 		// Sync component
-		rigidbody.collisionDetection = value;
+		rigidbody.collisionDetection = collisionDetection;
 	}
 
-	void setResistance(RigidbodyComponent& rigidbody, float value)
+	void setResistance(RigidbodyComponent& rigidbody, float resistance)
 	{
 		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
-		// Set actors linear damping according to value
-		rigidbody.actor->setLinearDamping(value);
+		// Set actors linear damping
+		rigidbody.actor->setLinearDamping(resistance);
 
 		// Sync component
-		rigidbody.resistance = value;
+		rigidbody.resistance = resistance;
 	}
 
-	void setAngularResistance(RigidbodyComponent& rigidbody, float value)
+	void setAngularResistance(RigidbodyComponent& rigidbody, float angularResistance)
 	{
 		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
-		// Set actors angular damping according to value
-		rigidbody.actor->setAngularDamping(value);
+		// Set actors angular damping
+		rigidbody.actor->setAngularDamping(angularResistance);
 
 		// Sync component
-		rigidbody.angularResistance = value;
+		rigidbody.angularResistance = angularResistance;
 	}
 
-	void setGravity(RigidbodyComponent& rigidbody, bool value)
+	void setGravity(RigidbodyComponent& rigidbody, bool gravity)
 	{
 		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
-		// Enable or disable actors gravity according to value
-		rigidbody.actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !value);
+		// Enable or disable actors gravity
+		rigidbody.actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !gravity);
 
 		// Sync component
-		rigidbody.gravity = value;
+		rigidbody.gravity = gravity;
 	}
 
-	void setKinematic(RigidbodyComponent& rigidbody, bool value)
+	void setKinematic(RigidbodyComponent& rigidbody, bool kinematic)
 	{
 		// Validate rigidbody
 		if (!validate(rigidbody)) return;
@@ -126,11 +122,11 @@ namespace Rigidbody {
 		// Make sure actors collision detection is discrete
 		setCollisionDetection(rigidbody, RB_CollisionDetection::DISCRETE);
 
-		// Make actor kinematic or non-kinematic according to value
-		rigidbody.actor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, value);
+		// Make actor kinematic or non-kinematic
+		rigidbody.actor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, kinematic);
 
 		// Sync component
-		rigidbody.kinematic = value;
+		rigidbody.kinematic = kinematic;
 	}
 
 	void addForce(RigidbodyComponent& rigidbody, glm::vec3 value, RB_ForceMode mode)

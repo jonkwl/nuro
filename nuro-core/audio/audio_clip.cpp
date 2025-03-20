@@ -47,8 +47,3 @@ const AudioBuffer& AudioClip::readBuffer()
 {
 	return buffer;
 }
-
-std::string AudioClip::sourcePath()
-{
-	return data.sourcePath();
-}

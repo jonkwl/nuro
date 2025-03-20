@@ -64,7 +64,7 @@ void Footer::renderContent(ImDrawList& drawList)
     std::string informationText;
     bool loading = false;
     if (worker.active && worker.target) {
-        informationText = "Loading '" + IOUtils::getFilename(worker.target->sourcePath()) + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
+        informationText = "Loading '" + worker.target->resourceName() + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
         loading = true;
     }
     else {

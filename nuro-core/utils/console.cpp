@@ -61,22 +61,18 @@ namespace Console
 
 	namespace out {
 
-		std::vector<LogCallback> logCallbacks;
+		Event<const std::string&, const std::string&, LogType> gLogEvent;
 
-		void _execCallbacks(const std::string& origin, const std::string& content, LogType logType) {
-			for (const auto& callback : logCallbacks) callback(origin, content, logType);
-		}
-
-		void registerCallback(LogCallback callback)
+		Event<const std::string&, const std::string&, LogType>& logEvent()
 		{
-			logCallbacks.push_back(callback);
-	
+			return gLogEvent;
 		}
 
 		void error(std::string origin, std::string error, std::string additionalInfo)
 		{
 			print 
-				>> " [" >> TextColor::RED 
+				>> " nuro >>> [" 
+				>> TextColor::RED 
 				>> "error" 
 				>> resetText >> "] " 
 				>> TextColor::GRAY 
@@ -86,7 +82,7 @@ namespace Console
 
 			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endLine;
 
-			_execCallbacks(origin, error, LogType::ERROR);
+			gLogEvent(origin, error, LogType::ERROR);
 
 			std::exit(-1);
 		}
@@ -94,7 +90,7 @@ namespace Console
 		void warning(std::string origin, std::string warning, std::string additionalInfo)
 		{
 			print 
-				>> " [" 
+				>> " nuro >>> ["
 				>> TextColor::YELLOW 
 				>> "warning" 
 				>> resetText 
@@ -107,13 +103,13 @@ namespace Console
 
 			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endLine;
 
-			_execCallbacks(origin, warning, LogType::WARNING);
+			gLogEvent(origin, warning, LogType::WARNING);
 		}
 
 		void start(std::string origin, std::string info)
 		{
 			print 
-				>> " [" 
+				>> " nuro >>> ["
 				>> TextColor::BLUE 
 				>> "process" 
 				>> resetText 
@@ -126,13 +122,13 @@ namespace Console
 				>> "..." 
 				>> endLine;
 
-			_execCallbacks(origin, info, LogType::DEFAULT);
+			gLogEvent(origin, info, LogType::DEFAULT);
 		}
 
 		void info(std::string info)
 		{
 			print
-				>> " ["
+				>> " nuro >>> ["
 				>> TextColor::GREEN
 				>> "info"
 				>> resetText
@@ -141,13 +137,13 @@ namespace Console
 				>> info
 				>> endLine;
 
-			_execCallbacks("Info", info, LogType::DEFAULT);
+			gLogEvent("Info", info, LogType::DEFAULT);
 		}
 
 		void info(std::string origin, std::string info)
 		{
 			print 
-				>> " [" 
+				>> " nuro >>> ["
 				>> TextColor::GREEN 
 				>> "info" 
 				>> resetText 
@@ -159,13 +155,13 @@ namespace Console
 				>> info
 				>> endLine;
 
-			_execCallbacks(origin, info, LogType::DEFAULT);
+			gLogEvent(origin, info, LogType::DEFAULT);
 		}
 
 		void done(std::string origin, std::string info)
 		{
 			print 
-				>> " ["
+				>> " nuro >>> ["
 				>> TextColor::MAGENTA 
 				>> "process" 
 				>> resetText 
@@ -178,7 +174,7 @@ namespace Console
 				>> "." 
 				>> endLine;
 
-			_execCallbacks(origin, info, LogType::DEFAULT);
+			gLogEvent(origin, info, LogType::DEFAULT);
 		}
 
 		void welcome() {

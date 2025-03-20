@@ -165,11 +165,6 @@ Model::Metrics Model::getMetrics() const
 	return metrics;
 }
 
-std::string Model::sourcePath()
-{
-	return path;
-}
-
 Mesh* Model::createStaticMesh(std::vector<VertexData>& vertices, std::vector<uint32_t>& indices)
 {
 	// Get mesh data metrics

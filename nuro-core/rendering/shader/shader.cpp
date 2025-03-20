@@ -78,11 +78,6 @@ Shader::~Shader()
 	deleteBuffers();
 }
 
-std::string Shader::sourcePath()
-{
-	return path;
-}
-
 void Shader::setSource(std::string _path)
 {
 	// Validate source path

@@ -3,6 +3,8 @@
 #include <string>
 #include <functional>
 
+#include <utils/event.h>
+
 namespace Console
 {
 
@@ -93,11 +95,8 @@ namespace Console
 			ERROR
 		};
 
-		// Callback for a log event with origin, content and log type
-		using LogCallback = std::function<void(const std::string&, const std::string&, LogType)>;
-
-		// Registers a log callback for engine outputs
-		void registerCallback(LogCallback callback);
+		// Returns the log event (parameters: origin, content and log type)
+		Event<const std::string&, const std::string&, LogType>& logEvent();
 
 		// Prints an error
 		void error(std::string origin, std::string error, std::string additionalInfo = "");

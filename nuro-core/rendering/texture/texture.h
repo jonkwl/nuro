@@ -42,8 +42,6 @@ public:
 	// Sets the given texture backend id to be the default backend id for new textures
 	static void setDefaultTexture(Texture* texture);
 
-	std::string sourcePath() override;
-
 private:
 	// Default texture fallback
 	static uint32_t defaultTextureId;

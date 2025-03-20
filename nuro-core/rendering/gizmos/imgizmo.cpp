@@ -31,11 +31,11 @@ void IMGizmo::create()
 
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		auto[planeId, plane] = resource.create<Model>();
+		auto[planeId, plane] = resource.create<Model>("gizmo-plane");
 		plane->setSource("resources/primitives/plane.fbx");
 		resource.loadAsync(plane);
 
-		auto [sphereId, sphere] = resource.create<Model>();
+		auto [sphereId, sphere] = resource.create<Model>("gizmo-sphere");
 		sphere->setSource("resources/primitives/sphere.fbx");
 		resource.loadAsync(sphere);
 

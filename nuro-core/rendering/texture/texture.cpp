@@ -162,8 +162,3 @@ void Texture::setDefaultTexture(Texture* texture)
 {
 	defaultTextureId = texture->backendId();
 }
-
-std::string Texture::sourcePath()
-{
-	return path;
-}

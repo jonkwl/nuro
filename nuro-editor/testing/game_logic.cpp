@@ -24,13 +24,13 @@ void _physics_example() {
 	const Mesh* planeMesh = Shapes::createPlane();
 	const Mesh* cubeMesh = Shapes::createCube();
 
-	auto [sphereModelId, sphereModel] = resource.create<Model>();
+	auto [sphereModelId, sphereModel] = resource.create<Model>("sphere");
 	sphereModel->setSource("./resources/primitives/sphere.fbx");
 	resource.loadSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
 	// Example audio
-	auto [audioClipId, audioClip] = resource.create<AudioClip>();
+	auto [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
 	audioClip->setSource("./resources/example-assets/audio/example.wav");
 	resource.loadAsync(audioClip);
 
@@ -46,27 +46,27 @@ void _physics_example() {
 	redMaterial->roughness = 0.9f;
 
 	// Async texture loading example
-	auto [albedoId, albedo] = resource.create<Texture>();
+	auto [albedoId, albedo] = resource.create<Texture>("scifi-albedo");
 	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
 	resource.loadAsync(albedo);
 
-	auto [normalId, normal] = resource.create<Texture>();
+	auto [normalId, normal] = resource.create<Texture>("scifi-nromal");
 	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
 	resource.loadAsync(normal);
 
-	auto [metallicId, metallic] = resource.create<Texture>();
+	auto [metallicId, metallic] = resource.create<Texture>("scifi-metallic");
 	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
 	resource.loadAsync(metallic);
 
-	auto [roughnessId, roughness] = resource.create<Texture>();
+	auto [roughnessId, roughness] = resource.create<Texture>("scifi-roughness");
 	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
 	resource.loadAsync(roughness);
 
-	auto [emissiveId, emissive] = resource.create<Texture>();
+	auto [emissiveId, emissive] = resource.create<Texture>("scifi-emissive");
 	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
 	resource.loadAsync(emissive);
 
-	auto [heightId, height] = resource.create<Texture>();
+	auto [heightId, height] = resource.create<Texture>("scifi-height");
 	height->setSource(TextureType::HEIGHT, "./resources/example-assets/textures/sci-fi/height.jpg");
 	resource.loadAsync(height);
 
@@ -170,7 +170,7 @@ void _physics_example() {
 	MeshRendererComponent& planeRenderer = plane.add<MeshRendererComponent>(planeMesh, scifiMaterial);
 
 	// Model async loading example
-	auto [asyncModelId, asyncModel] = resource.create<Model>();
+	auto [asyncModelId, asyncModel] = resource.create<Model>("mannequin");
 	asyncModel->setSource("resources/example-assets/models/mannequin.fbx");
 	resource.loadAsync(asyncModel);
 

@@ -3,6 +3,8 @@
 #include <ecs/ecs_collection.h>
 #include <rendering/postprocessing/post_processing.h>
 
+#include "../reflection/component_registry.h"
+
 namespace InspectableComponents
 {
 
@@ -16,7 +18,7 @@ namespace InspectableComponents
 	void drawDirectionalLight(Entity entity, DirectionalLightComponent& directionalLight);
 	void drawPointLight(Entity entity, PointLightComponent& pointLight);
 	void drawSpotlight(Entity entity, SpotlightComponent& spotlight);
-	void drawVelocity(Entity entity, VelocityComponent& velocity);
+	void drawVelocity(Entity entity, VelocityBlurComponent& velocity);
 	void drawBoxCollider(Entity entity, BoxColliderComponent& boxCollider);
 	void drawSphereCollider(Entity entity, SphereColliderComponent& sphereCollider);
 	void drawRigidbody(Entity entity, RigidbodyComponent& rigidbody);

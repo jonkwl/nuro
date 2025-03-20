@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 
+#include <utils/format.h>
 #include <transform/transform.h>
 
 #include "../gizmos/component_gizmos.h"
@@ -16,19 +17,6 @@ namespace ComponentRegistry
     // Global ordered keys for registry
     std::vector<std::string> gKeysOrdered;
 
-    // Converts given string to snake case
-    std::string _snakeCase(std::string str) {
-        for (char& c : str) {
-            if (std::isspace(c)) {
-                c = '_';
-            }
-            else {
-                c = std::tolower(c);
-            }
-        }
-        return str;
-    }
-
     // Registers a component onto the registry
     template<typename T>
     void registerComponent(
@@ -37,7 +25,7 @@ namespace ComponentRegistry
         std::optional<std::function<void(IMGizmo&, TransformComponent&, T&)>> drawGizmo,
         bool hasSceneIcon
     ){
-        std::string icon = _snakeCase(name);
+        std::string icon = Format::snakeCase(name);
         gComponentRegistry[name] = {
             // Name
             name,
@@ -81,7 +69,7 @@ namespace ComponentRegistry
             },
 
             // Try draw scene icons
-            [icon, hasSceneIcon](IMGizmo& gizmos, TransformComponent& cameraTransform) {
+            [hasSceneIcon, icon](IMGizmo& gizmos, TransformComponent& cameraTransform) {
 
                 // Component doesn't have scene view icon
                 if (!hasSceneIcon) return;
@@ -143,7 +131,7 @@ namespace ComponentRegistry
             true
         );
         
-        registerComponent<VelocityComponent>(
+        registerComponent<VelocityBlurComponent>(
             "Velocity Blur", 
             InspectableComponents::drawVelocity,
             std::nullopt,

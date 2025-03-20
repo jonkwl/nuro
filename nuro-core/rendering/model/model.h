@@ -98,8 +98,6 @@ public:
 	// Returns models metrics
 	Metrics getMetrics() const;
 
-	std::string sourcePath() override;
-
 public:
 	// Creates a static mesh with the given vertices and indices
 	static Mesh* createStaticMesh(std::vector<VertexData>& vertices, std::vector<uint32_t>& indices);

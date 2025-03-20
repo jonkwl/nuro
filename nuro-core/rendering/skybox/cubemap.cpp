@@ -122,16 +122,6 @@ uint32_t Cubemap::backendId() const
 	return _backendId;
 }
 
-std::string Cubemap::sourcePath()
-{
-	if (source.paths.size() > 0) {
-		return IOUtils::getFilename(source.paths[0]);
-	}
-	else {
-		return "";
-	}
-}
-
 Cubemap::ImageData Cubemap::loadImageData(std::string path)
 {
 	stbi_set_flip_vertically_on_load(false);

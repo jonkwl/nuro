@@ -25,8 +25,6 @@ public:
 	// Returns a readonly reference to the audio clips buffer
 	const AudioBuffer& readBuffer();
 
-	std::string sourcePath() override;
-
 private:
 	AudioData data;
 	AudioBuffer buffer;

@@ -166,7 +166,7 @@ void ResourceManager::asyncWorker()
 
 void ResourceManager::tryFreeIoData(Resource* resource)
 {
-	if (!resource->_preserveIoData) {
+	if (!resource->preserveIoData) {
 		resource->freeIoData();
 		resource->_loadedIoData = false;
 	}

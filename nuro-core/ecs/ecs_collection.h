@@ -6,4 +6,4 @@
 
 #include <ecs/ecs.h>
 #include <ecs/components.h>
-#include <ecs/entity_container.hpp>
+#include <ecs/entity_container.h>

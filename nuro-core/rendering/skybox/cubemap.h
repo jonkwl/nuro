@@ -27,8 +27,6 @@ public:
 	// Returns the backend id of the cubemap texture
 	uint32_t backendId() const;
 
-	std::string sourcePath() override;
-
 private:
 	struct Source {
 		enum class Type {
