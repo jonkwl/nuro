@@ -12,7 +12,7 @@ public:
 	void setup();
 
 	//
-	// CONSTRUCT / DESTROY PHYSICS RELATED COMPONENTS
+	// ECS CALLBACKS: CONSTRUCT / DESTROY PHYSICS COMPONENTS
 	//
 
 	void constructBoxCollider(Registry& reg, Entity ent);

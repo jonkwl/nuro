@@ -43,16 +43,12 @@ namespace Rigidbody {
 
 	void setInterpolation(RigidbodyComponent& rigidbody, RB_Interpolation interpolation)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
-
-		// Sync component
 		rigidbody.interpolation = interpolation;
 	}
 
 	void setCollisionDetection(RigidbodyComponent& rigidbody, RB_CollisionDetection collisionDetection)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
 		// If actor is kinematic, always fall back to discrete collision detection
@@ -74,76 +70,50 @@ namespace Rigidbody {
 			break;
 		}
 
-		// Sync component
 		rigidbody.collisionDetection = collisionDetection;
 	}
 
 	void setResistance(RigidbodyComponent& rigidbody, float resistance)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
-
-		// Set actors linear damping
 		rigidbody.actor->setLinearDamping(resistance);
-
-		// Sync component
 		rigidbody.resistance = resistance;
 	}
 
 	void setAngularResistance(RigidbodyComponent& rigidbody, float angularResistance)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
-
-		// Set actors angular damping
 		rigidbody.actor->setAngularDamping(angularResistance);
-
-		// Sync component
 		rigidbody.angularResistance = angularResistance;
 	}
 
 	void setGravity(RigidbodyComponent& rigidbody, bool gravity)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
-
-		// Enable or disable actors gravity
 		rigidbody.actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !gravity);
-
-		// Sync component
 		rigidbody.gravity = gravity;
 	}
 
 	void setKinematic(RigidbodyComponent& rigidbody, bool kinematic)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
 
 		// Make sure actors collision detection is discrete
 		setCollisionDetection(rigidbody, RB_CollisionDetection::DISCRETE);
 
-		// Make actor kinematic or non-kinematic
 		rigidbody.actor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, kinematic);
-
-		// Sync component
 		rigidbody.kinematic = kinematic;
 	}
 
 	void addForce(RigidbodyComponent& rigidbody, glm::vec3 value, RB_ForceMode mode)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
-
-		// Apply force to actor
 		rigidbody.actor->addForce(PxTranslator::convert(value), _getBackendForceMode(mode));
 	}
 
 	void addTorque(RigidbodyComponent& rigidbody, glm::vec3 value, RB_ForceMode mode)
 	{
-		// Validate rigidbody
 		if (!validate(rigidbody)) return;
-
-		// Apply torque to actor
 		rigidbody.actor->addTorque(PxTranslator::convert(value), _getBackendForceMode(mode));
 	}
 }

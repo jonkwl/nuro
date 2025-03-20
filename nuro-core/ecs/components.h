@@ -258,9 +258,6 @@ struct AudioListenerComponent {
 	// Gain of audio listener
 	float gain = 1.0f;
 
-	// Distance model used by audio listener
-	int32_t distanceModel = 0;
-
 	// Strength of doppler effect
 	float dopplerFactor = 0.0f;
 
@@ -271,32 +268,35 @@ struct AudioListenerComponent {
 
 struct AudioSourceComponent {
 
-	// Type of audio source
-	int32_t sourceType = 0;
+	// Volume of audio source
+	float gain = 1.0f;
+
+	// Playback speed of the audio source
+	float pitch = 1.0f;
+
+	// Sets if audio source sound should repeat when it ends
+	bool looping = false;
+
+	// Distance at which the sound starts to attenuate
+	float referenceDistance = 5.0f;
+
+	// Controls how fast the sound fades over distance
+	float rolloffFactor = 1.0f;
+
+	// Maximum distance where the sound is still audible
+	float maxDistance = 10.0f;
+
+	// Angle (in degrees) where the sound is at full volume
+	float coneInnerAngle = 360.0f;
+
+	// Angle (in degrees) where the sound starts to fade
+	float coneOuterAngle = 360.0f;
+
+	// Volume multiplier outside the cone
+	float coneOuterGain = 0.0f;
 
 	// Audio clip of audio source
 	AudioClip* clip;
-
-	// Gain of audio source playback
-	float gain = 1.0f;
-
-	// Pitch of audio source playback
-	float pitch = 0.0f;
-
-	// Sets if audio source playback should loop
-	bool looping = false;
-
-	// Enables spatial audio
-	bool is3D = true;
-
-	// Reference distance for spatial audio source
-	float referenceDistance = 1.0f;
-
-	// Maximum distance for spatial audio source to be hearable
-	float maxDistance = 25.0f;
-
-	// Loudness roll off factor for spatial audio source
-	float rollOffFactor = 1.0f;
 
 	// Backend id handle of audio source
 	uint32_t backendId;

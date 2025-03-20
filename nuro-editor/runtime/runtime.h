@@ -2,7 +2,6 @@
 
 #include <engine.h>
 #include <rendering/gizmos/imgizmo.h>
-#include <physics/core/physics_context.h>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -59,12 +58,6 @@ namespace Runtime
 	SceneViewPipeline& getSceneViewPipeline();
 	GameViewPipeline& getGameViewPipeline();
 	PreviewPipeline& getPreviewPipeline();
-
-	//
-	// Physics getters
-	//
-
-	PhysicsContext& getGamePhysics();
 
 	//
 	// Gizmo getters

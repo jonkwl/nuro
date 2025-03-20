@@ -6,6 +6,7 @@
 #include <backend/api.h>
 #include <audio/audio_context.h>
 #include <resource/resource_manager.h>
+#include <physics/core/physics_context.h>
 
 struct GLFWwindow;
 struct GLFWmonitor;
@@ -84,6 +85,9 @@ namespace ApplicationContext
 
 	// Returns the audio context
 	AudioContext& audioContext();
+
+	// Returns the physics context
+	PhysicsContext& physicsContext();
 
 	// Returns the resource manager
 	ResourceManager& resourceManager();

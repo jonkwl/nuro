@@ -42,9 +42,6 @@ namespace Runtime {
 	GameViewPipeline gGameViewPipeline;
 	PreviewPipeline gPreviewPipeline;
 
-	// Physics
-	PhysicsContext gGamePhysics;
-
 	// Scene gizmos
 	IMGizmo gSceneGizmos;
 
@@ -114,9 +111,6 @@ namespace Runtime {
 		gGameViewPipeline.create();
 		gPreviewPipeline.create();
 
-		// Create game physics instance
-		gGamePhysics.create();
-
 		// Setup scene gizmos
 		gSceneGizmos.create();
 
@@ -169,7 +163,7 @@ namespace Runtime {
 		gameUpdate();
 
 		// STEP GAME PHYSICS
-		gGamePhysics.step(Time::deltaf());
+		ApplicationContext::physicsContext().step(Time::deltaf());
 
 	}
 
@@ -293,9 +287,6 @@ namespace Runtime {
 		gGameViewPipeline.destroy();
 		gPreviewPipeline.destroy();
 
-		// Destroy physics
-		gGamePhysics.destroy();
-
 		// Destroy context
 		ApplicationContext::destroy();
 
@@ -371,19 +362,9 @@ namespace Runtime {
 		return gPreviewPipeline;
 	}
 
-	PhysicsContext& getGamePhysics()
-	{
-		return gGamePhysics;
-	}
-
 	IMGizmo& getSceneGizmos()
 	{
 		return gSceneGizmos;
-	}
-
-	PhysicsContext& getPhysicsContext()
-	{
-		return gGamePhysics;
 	}
 
 	ShadowDisk* getMainShadowDisk()

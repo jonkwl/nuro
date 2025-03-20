@@ -88,7 +88,10 @@ void _physics_example() {
 	// Camera
 	camera = ecs.createEntity("Camera", head.handle());
 	camera.add<CameraComponent>();
-	camera.add<AudioListenerComponent>();
+
+	// Audio listener
+	EntityContainer audioListener = ecs.createEntity("Audio Listener");
+	audioListener.add<AudioListenerComponent>();
 
 	// Directional light (sun)
 	EntityContainer sun(ecs.createEntity("Sun"));
@@ -120,7 +123,7 @@ void _physics_example() {
 	audio = ecs.createEntity("Audio Source");
 	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
 	AudioSourceComponent& audioSource = audio.add<AudioSourceComponent>();
-	audioSource.clip = audioClip;
+	AudioSource::setClip(audioSource, audioClip);
 
 	// Ground
 	EntityContainer ground(ecs.createEntity("Ground"));

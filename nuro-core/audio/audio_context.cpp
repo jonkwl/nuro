@@ -2,9 +2,11 @@
 
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <utils/console.h>
 #include <audio/audio_clip.h>
+#include <audio/audio_source.h>
 #include <transform/transform.h>
 #include <context/application_context.h>
 
@@ -78,6 +80,9 @@ void AudioContext::constructAudioSource(Registry& reg, Entity ent)
 
 	// Link audio source to component
 	audioSource.backendId = static_cast<uint32_t>(sourceId);
+
+	// Sync audio source
+	AudioSource::sync(audioSource);
 }
 
 void AudioContext::destroyAudioSource(Registry& reg, Entity ent)

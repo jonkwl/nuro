@@ -30,6 +30,9 @@ namespace ApplicationContext {
 	// Global audio context
 	AudioContext gAudioContext;
 
+	// Global physics context 
+	PhysicsContext gPhysicsContext;
+
 	// Global resource manager
 	ResourceManager gResourceManager;
 
@@ -172,6 +175,9 @@ namespace ApplicationContext {
 		// Create audio context
 		gAudioContext.create();
 
+		// Create physics context
+		gPhysicsContext.create();
+
 		// Create essential primitives
 		GlobalQuad::create();
 
@@ -180,6 +186,9 @@ namespace ApplicationContext {
 
 	void destroy()
 	{
+		// Destroy physics context
+		gPhysicsContext.destroy();
+
 		// Destroy window and terminate glfw
 		if (gWindow != nullptr)
 		{
@@ -381,6 +390,11 @@ namespace ApplicationContext {
 	AudioContext& audioContext()
 	{
 		return gAudioContext;
+	}
+
+	PhysicsContext& physicsContext()
+	{
+		return gPhysicsContext;
 	}
 
 	ResourceManager& resourceManager()
