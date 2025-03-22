@@ -18,12 +18,13 @@ namespace fs = std::filesystem;
 #include "../ui/footer/footer.h"
 #include "../ui/title_bar/title_bar.h"
 #include "../ui/windows/game_window.h"
-#include "../ui/windows/viewport_window.h"
+#include "../ui/search/search_popup.h"
 #include "../ui/windows/console_window.h"
+#include "../ui/windows/viewport_window.h"
 #include "../ui/windows/registry_window.h"
 #include "../ui/components/im_components.h"
-#include "../ui/search/search_popup.h"
 #include "../ui/windows/diagnostics_window.h"
+#include "../ui/windows/audio_setup_window.h"
 #include "../ui/windows/insight_panel_window.h"
 #include "../ui/windows/asset_browser_window.h"
 #include "../ui/collection/IconsFontAwesome6.h"
@@ -55,12 +56,6 @@ namespace EditorUI {
 	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t gOverwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
-	template <typename T, typename... Args>
-	void createWindow(Args&&... args) {
-		static_assert(std::is_base_of<EditorWindow, T>::value, "Only classes that derive from EditorWindow can be added to the editor!");
-		gWindows.emplace_back(new T(std::forward<Args>(args)...));
-	}
-
 	void _mergeIcons(ImGuiIO& io, float fontSize) {
 		float iconsFontSize = fontSize * 2.0f / 3.0f;
 
@@ -68,7 +63,7 @@ namespace EditorUI {
 		iconsConfig.MergeMode = true;
 		iconsConfig.PixelSnapH = true;
 		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
-
+		
 		// Check if full iconpack exists
 		if (fs::exists(fs::path(EditorFontPath::iconsFull))) {
 			gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::iconsFull, iconsFontSize, &iconsConfig, gIconRange);
@@ -233,19 +228,19 @@ namespace EditorUI {
 		}
 
 		//
-		// CREATE EDITOR WINDOWS
-		// Note: Permanently allocated, as they will be needed throughout the whole runtime
+		// ADD DEFAULT EDITOR WINDOWS
 		//
 
-		createWindow<ViewportWindow>();
-		createWindow<GameWindow>();
-		createWindow<PostProcessingWindow>(Runtime::getGameViewPipeline().getProfile());
-		createWindow<DiagnosticsWindow>();
-		createWindow<ConsoleWindow>();
-		createWindow<RegistryWindow>();
-		createWindow<InsightPanelWindow>();
-		createWindow<AssetBrowserWindow>();
-		createWindow<ResourceViewerWindow>();
+		addWindow<ViewportWindow>();
+		addWindow<GameWindow>();
+		addWindow<PostProcessingWindow>(Runtime::getGameViewPipeline().getProfile());
+		addWindow<DiagnosticsWindow>();
+		addWindow<ConsoleWindow>();
+		addWindow<RegistryWindow>();
+		addWindow<InsightPanelWindow>();
+		addWindow<AssetBrowserWindow>();
+		addWindow<ResourceViewerWindow>();
+		addWindow<AudioSetupWindow>();
 
 		//
 		// SETUP WINDOW ELEMENTS

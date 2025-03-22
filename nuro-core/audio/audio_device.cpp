@@ -5,63 +5,80 @@
 
 #include <audio/audio_context.h>
 
-AudioDevice::AudioDevice() : backendHandle(nullptr),
-cachedName()
+AudioDevice::AudioDevice() : _handle(nullptr),
+_opened(false),
+_hardwareDevices(),
+_usedHardware("System Default")
 {
 }
 
-bool AudioDevice::open(const char* name)
+bool AudioDevice::create()
 {
-	ALCdevice* _tmpHandle = alcOpenDevice(name);
+	_opened = false;
+	_hardwareDevices.clear();
 
-	if (!_tmpHandle) {
+	// Open default device
+	_handle = alcOpenDevice(nullptr);
+	if (!_handle) {
 		AudioContext::backendError();
 		return false;
 	}
+	_opened = true;
 
-	backendHandle = _tmpHandle;
-	fetchName();
+	// Try to fetch hardware devices
+	bool defaultDeviceOnly = true;
+	if (alcIsExtensionPresent(nullptr, "ALC_ENUMERATE_ALL_EXT")) {
+		const ALCchar* devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
+		if (devices) {
+			defaultDeviceOnly = false;
+			while (*devices) {
+				// Extract hardware device name
+				std::string deviceName(devices);
+				const std::string prefix = "OpenAL Soft on ";
+				if (deviceName.rfind(prefix, 0) == 0) {
+					deviceName = deviceName.substr(prefix.length());
+				}
+
+				// Add hardware device name
+				_hardwareDevices.emplace_back(deviceName);
+				devices += strlen(devices) + 1;
+			}
+		}
+	}
+	if (defaultDeviceOnly) _hardwareDevices.push_back("Default");
 
 	return true;
 }
 
-bool AudioDevice::open()
-{
-	return open(nullptr);
-}
-
 void AudioDevice::close()
 {
-	if (backendHandle) alcCloseDevice(backendHandle);
+	if (!_handle) return;
+
+	alcCloseDevice(_handle);
+	_handle = nullptr;
+	_opened = false;
+}
+
+void AudioDevice::refresh() {
+	close();
+	create();
 }
 
 bool AudioDevice::opened() const
 {
-	return backendHandle;
+	return _opened;
 }
 
-std::string AudioDevice::name() const
+const std::vector<std::string>& AudioDevice::hardwareDevices() const
 {
-	return cachedName;
+	return _hardwareDevices;
+}
+
+const std::string& AudioDevice::usedHardware() const {
+	return _usedHardware;
 }
 
 ALCdevice* AudioDevice::handle()
 {
-	return backendHandle;
-}
-
-void AudioDevice::fetchName()
-{
-	if (!backendHandle) {
-		cachedName = "NONE";
-		return;
-	}
-
-	const ALchar* name = alcGetString(backendHandle, ALC_DEVICE_SPECIFIER);
-	if (!name) {
-		cachedName = "NONE";
-		return;
-	}
-
-	cachedName = std::string(name);
+	return _handle;
 }

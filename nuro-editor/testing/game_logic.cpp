@@ -122,8 +122,8 @@ void _physics_example() {
 	// Sample audio source
 	audio = ecs.createEntity("Audio Source");
 	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
-	AudioSourceComponent& audioSource = audio.add<AudioSourceComponent>();
-	AudioSource::setClip(audioSource, audioClip);
+	// AudioSourceComponent& audioSource = audio.add<AudioSourceComponent>();
+	// AudioSource::setClip(audioSource, audioClip);
 
 	// Ground
 	EntityContainer ground(ecs.createEntity("Ground"));

@@ -24,6 +24,7 @@ set(SOURCE_FILES
 	ui/title_bar/title_bar.h
 	ui/utils/ui_utils.h
 	ui/windows/asset_browser_window.h
+	ui/windows/audio_setup_window.h
 	ui/windows/console_window.h
 	ui/windows/diagnostics_window.h
 	ui/windows/editor_window.h
@@ -59,6 +60,7 @@ set(SOURCE_FILES
 	ui/title_bar/title_bar.cpp
 	ui/utils/ui_utils.cpp
 	ui/windows/asset_browser_window.cpp
+	ui/windows/audio_setup_window.cpp
 	ui/windows/console_window.cpp
 	ui/windows/diagnostics_window.cpp
 	ui/windows/game_window.cpp

@@ -68,6 +68,13 @@ namespace EditorUI
 
 	// Sets the current editor ui cursor mode
 	void setCursorMode(int32_t cursorMode);
+
+	// Adds a window to the editor
+	template <typename T, typename... Args>
+	void addWindow(Args&&... args) {
+		static_assert(std::is_base_of<EditorWindow, T>::value, "Only classes that derive from EditorWindow can be added to the editor!");
+		gWindows.emplace_back(new T(std::forward<Args>(args)...));
+	}
 };
 
 struct EditorSizing

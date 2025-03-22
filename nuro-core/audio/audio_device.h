@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class ALCdevice;
 
@@ -9,29 +10,30 @@ class AudioDevice
 public:
 	AudioDevice();
 
-	// Opens an audio device by its name
-	bool open(const char* name);
-
-	// Opens the first available audio device
-	bool open();
+	// Creates audio device
+	bool create();
 
 	// Closes the current audio device if any
 	void close();
 
+	// Refreshes audio device
+	void refresh();
+
 	// Returns if a device is opened
 	bool opened() const;
 
-	// Returns the name of the current audio device
-	std::string name() const;
+	// Returns the currently fetched hardware devices
+	const std::vector<std::string>& hardwareDevices() const;
 
-	// Returns the current audio device handle (nullptr if none)
+	// Returns the name of the hardware device currently being used
+	const std::string& usedHardware() const;
+
+	// Return the current ausdio device handle (nullptr if none)
 	ALCdevice* handle();
 
 private:
-	// Fetches and caches the name of the current audio device
-	void fetchName();
-
-	ALCdevice* backendHandle;
-
-	std::string cachedName;
+	ALCdevice* _handle;
+	bool _opened;
+	std::vector<std::string> _hardwareDevices;
+	std::string _usedHardware;
 };
