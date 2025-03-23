@@ -50,18 +50,13 @@ bool AudioDevice::create()
 	return true;
 }
 
-void AudioDevice::close()
+void AudioDevice::destroy()
 {
 	if (!_handle) return;
 
 	alcCloseDevice(_handle);
 	_handle = nullptr;
 	_opened = false;
-}
-
-void AudioDevice::refresh() {
-	close();
-	create();
 }
 
 bool AudioDevice::opened() const

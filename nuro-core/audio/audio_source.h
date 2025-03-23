@@ -7,22 +7,22 @@ class AudioClip;
 namespace AudioSource {
 
     // Set gain (volume)
-    void setGain(AudioSourceComponent& audioSource, float gain);
+    void setVolume(AudioSourceComponent& audioSource, float volume);
 
     // Set pitch
     void setPitch(AudioSourceComponent& audioSource, float pitch);
 
-    // Enable/disable looping
+    // Enables or disables looping
     void setLooping(AudioSourceComponent& audioSource, bool looping);
 
-    // Set reference distance (start of attenuation)
-    void setReferenceDistance(AudioSourceComponent& audioSource, float distance);
+    // Makes the source use 3D spatial audio or not
+    void setIsSpatial(AudioSourceComponent& audioSource, bool spatial);
 
     // Set rolloff factor (attenuation curve)
-    void setRolloffFactor(AudioSourceComponent& audioSource, float factor);
+    void setFalloff(AudioSourceComponent& audioSource, float falloff);
 
     // Set max distance (cutoff for attenuation)
-    void setMaxDistance(AudioSourceComponent& audioSource, float maxDistance);
+    void setRange(AudioSourceComponent& audioSource, float range);
 
     // Set inner cone angle (area of normal sound)
     void setConeInnerAngle(AudioSourceComponent& audioSource, float angle);
@@ -31,15 +31,15 @@ namespace AudioSource {
     void setConeOuterAngle(AudioSourceComponent& audioSource, float angle);
 
     // Set outer cone gain (volume reduction outside cone)
-    void setConeOuterGain(AudioSourceComponent& audioSource, float gain);
-
-    // Sets the audio clip of an audio source
-    void setClip(AudioSourceComponent& audioSource, AudioClip* audioClip);
+    void setConeOuterVolume(AudioSourceComponent& audioSource, float volume);
 
     // Syncs all settings of an audio source
     void sync(AudioSourceComponent& audioSource);
 
-    // Plays the audio source
+    // Starts the playback of the audio source
     void play(AudioSourceComponent& audioSource);
+
+    // Stops the playback of the audio source
+    void stop(AudioSourceComponent& audioSource);
 
 };

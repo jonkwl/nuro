@@ -186,6 +186,9 @@ namespace ApplicationContext {
 
 	void destroy()
 	{
+		// Destroy audio context
+		gAudioContext.destroy();
+
 		// Destroy physics context
 		gPhysicsContext.destroy();
 

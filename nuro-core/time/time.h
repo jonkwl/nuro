@@ -4,22 +4,33 @@ namespace Time
 	// Calculate times for current frame (handled by application context)
 	void step(double time);
 
-	// Get current application time as double
-	const double now();
+	// Returns the current application time
+	double now();
 
-	// Get application time of last frame as double
-	const double last();
+	// Returns the current application time
+	float nowf();
 
-	// Get current delta time as double
-	const double delta();
+	// Returns the application time of last frame
+	double last();
 
-	// Get current application time as float
-	const float nowf();
+	// Returns the application time of last frame
+	float lastf();
 
-	// Get application time of last frame as float
-	const float lastf();
+	// Returns the current delta time not affected by the time scale
+	double unscaledDelta();
 
-	// Get current delta time as float
-	const float deltaf();
+	// Returns the current delta time not affected by the time scale
+	double unscaledDeltaf();
 
+	// Returns the current delta time
+	double delta();
+
+	// Returns the current delta time
+	float deltaf();
+
+	// Returns the current time scale
+	double getTimeScale();
+
+	// Sets the time scale
+	void setTimeScale(double timeScale);
 };

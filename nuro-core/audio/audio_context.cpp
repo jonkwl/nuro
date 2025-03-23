@@ -48,27 +48,29 @@ void AudioContext::create()
 	}
 	alcMakeContextCurrent(_context);
 
-	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-
 	// Check for extensions
 	stereoAngles = alIsExtensionPresent("AL_EXT_STEREO_ANGLES");
 	effects = alcIsExtensionPresent(alDevice, "ALC_EXT_EFX");
 
 	// Setup hrtf
 	setupHrtf();
+
+	// Setup listener
+	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
+	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+	ALfloat listenerOri[6] = { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f };
+	alListenerfv(AL_ORIENTATION, listenerOri);
 }
 
-void AudioContext::close() {
+void AudioContext::destroy() {
 	alcMakeContextCurrent(nullptr);
+	_device.destroy();
+
 	if (_context) {
 		alcDestroyContext(_context);
 		_context = nullptr;
 	}
-}
-
-void AudioContext::refresh() {
-	close();
-	create();
 }
 
 void AudioContext::update()
@@ -83,9 +85,9 @@ void AudioContext::update()
 	for (auto& [entity, transform, audioListener] : audioListeners.each()) {
 		// Only use audio listener if its enabled
 		if (!audioListener.enabled) break;
-
-		// Update gain
-		alListenerf(AL_GAIN, audioListener.gain);
+		 
+		// Enable output
+		alListenerf(AL_GAIN, 1.0f);
 
 		// Update position
 		glm::vec3 position = Transform::getPosition(transform, Space::WORLD);
@@ -102,8 +104,11 @@ void AudioContext::update()
 	// Update audio sources
 	auto audioSources = ECS::main().view<TransformComponent, AudioSourceComponent>();
 	for (auto& [entity, transform, audioSource] : audioSources.each()) {
+		// Skip audio source if it isn't spatial
+		if (!audioSource.isSpatial) continue;
+
 		// Get audio sources backend id
-		ALuint id = audioSource.backendId;
+		ALuint id = audioSource.id;
 
 		// Update position
 		glm::vec3 position = Transform::getPosition(transform, Space::WORLD);
@@ -150,7 +155,7 @@ void AudioContext::constructAudioSource(Registry& reg, Entity ent)
 	alGenSources(1, &sourceId);
 
 	// Link audio source to component
-	audioSource.backendId = static_cast<uint32_t>(sourceId);
+	audioSource.id = static_cast<uint32_t>(sourceId);
 
 	// Sync audio source
 	AudioSource::sync(audioSource);
@@ -163,9 +168,9 @@ void AudioContext::destroyAudioSource(Registry& reg, Entity ent)
 	AudioSourceComponent& audioSource = reg.get<AudioSourceComponent>(ent);
 
 	// Destroy audio source in backend
-	ALuint sourceId = static_cast<ALuint>(audioSource.backendId);
+	ALuint sourceId = static_cast<ALuint>(audioSource.id);
 	alDeleteSources(1, &sourceId);
-	audioSource.backendId = 0;
+	audioSource.id = 0;
 }
 
 void AudioContext::setupHrtf() {

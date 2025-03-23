@@ -16,8 +16,8 @@ public:
 	void destroy();
 
 	// Returns the audio buffers backend id
-	uint32_t backendId() const;
+	uint32_t id() const;
 
 private:
-	uint32_t _backendId;
+	uint32_t _id;
 };

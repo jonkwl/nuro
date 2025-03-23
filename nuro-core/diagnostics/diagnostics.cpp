@@ -19,8 +19,7 @@ namespace Diagnostics {
 
 	void step()
 	{
-		// Get values needed for step
-		float deltaTime = Time::deltaf();
+		float delta = Time::unscaledDeltaf();
 
 		// Reset frame based diagnostics
 		gCurrentDrawCalls = 0;
@@ -31,10 +30,10 @@ namespace Diagnostics {
 		gNGPUEntities = 0;
 
 		// Calculate current fps
-		gFps = 1.0 / deltaTime;
+		gFps = 1.0 / delta;
 
 		// Calculate current average fps
-		gAverageFpsElapsedTime += deltaTime;
+		gAverageFpsElapsedTime += delta;
 		gAverageFpsFrameCount += 1.0f;
 		if (gAverageFpsElapsedTime >= gAverageFpsUpdateTime)
 		{

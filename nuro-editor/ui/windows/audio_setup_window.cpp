@@ -16,10 +16,17 @@ void AudioSetupWindow::render()
 		AudioContext& audio = ApplicationContext::audioContext();
 		const AudioDevice& device = audio.device();
 
-		ImGui::Dummy(ImVec2(0.0f, 6.0f));
-		if (IMComponents::buttonBig("Refresh")) audio.refresh();
+		//
+		// AUDIO CONTEXT
+		//
 
-		ImGui::Dummy(ImVec2(0.0f, 15.0f));
+		ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+		IMComponents::label("Audio Context: ", EditorUI::getFonts().h4_bold);
+		ImGui::SameLine();
+		IMComponents::label("Running  " ICON_FA_SIGNAL, EditorUI::getFonts().h4_bold, IM_COL32(145, 255, 145, 200));
+
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
 		//
 		// DEVICE

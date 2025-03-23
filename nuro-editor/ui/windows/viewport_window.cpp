@@ -334,7 +334,7 @@ void ViewportWindow::updateMovement()
 	TransformComponent& cameraTransform = std::get<0>(pipeline.getFlyCamera());
 
 	// Get values needed
-	float delta = Time::deltaf();
+	float delta = Time::unscaledDeltaf();
 	glm::vec3 camForward = Transform::forward(cameraTransform);
 	glm::vec3 camRight = Transform::right(cameraTransform);
 	glm::vec3 camUp = Transform::up(cameraTransform);

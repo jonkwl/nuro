@@ -6,7 +6,7 @@
 namespace Console
 {
 
-	Printer::Printer() : textColor(Console::TextColor::DEFAULT), backgroundColor(BackgroundColor::NONE)
+	Printer::Printer() : textColor(Console::TextColor::DEFAULT), bgColor(BgColor::NONE)
 	{
 	}
 
@@ -23,7 +23,7 @@ namespace Console
 			<< static_cast<int>(textColor)
 			<< "m" 
 			<< "\033["
-			<< static_cast<int>(backgroundColor)
+			<< static_cast<int>(bgColor)
 			<< "m"
 			<< text;
 		return *this;
@@ -35,13 +35,13 @@ namespace Console
 		return *this;
 	}
 
-	Printer& Printer::operator>>(BackgroundColor color)
+	Printer& Printer::operator>>(BgColor color)
 	{
-		backgroundColor = color;
+		bgColor = color;
 		return *this;
 	}
 
-	Printer& Printer::operator>>(EndLine endLine)
+	Printer& Printer::operator>>(EndLine endl)
 	{
 		std::cout << "\033[0m" << std::endl;
 		return *this;
@@ -53,9 +53,9 @@ namespace Console
 		return *this;
 	}
 
-	Printer& Printer::operator>>(ResetBackground resetBackground)
+	Printer& Printer::operator>>(ResetBg resetBg)
 	{
-		backgroundColor = BackgroundColor::NONE;
+		bgColor = BgColor::NONE;
 		return *this;
 	}
 
@@ -78,9 +78,10 @@ namespace Console
 				>> TextColor::GRAY 
 				>> origin >> ": " 
 				>> resetText 
-				>> error >> endLine;
+				>> error 
+				>> endl;
 
-			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endLine;
+			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endl;
 
 			gLogEvent(origin, error, LogType::ERROR);
 
@@ -99,9 +100,9 @@ namespace Console
 				>> origin >> ": " 
 				>> resetText 
 				>> warning 
-				>> endLine;
+				>> endl;
 
-			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endLine;
+			if (!additionalInfo.empty()) print >> " " >> additionalInfo >> endl;
 
 			gLogEvent(origin, warning, LogType::WARNING);
 		}
@@ -120,7 +121,7 @@ namespace Console
 				>> resetText 
 				>> info
 				>> "..." 
-				>> endLine;
+				>> endl;
 
 			gLogEvent(origin, info, LogType::DEFAULT);
 		}
@@ -135,7 +136,7 @@ namespace Console
 				>> "] "
 				>> TextColor::GRAY
 				>> info
-				>> endLine;
+				>> endl;
 
 			gLogEvent("Info", info, LogType::DEFAULT);
 		}
@@ -153,7 +154,7 @@ namespace Console
 				>> ": " 
 				>> resetText 
 				>> info
-				>> endLine;
+				>> endl;
 
 			gLogEvent(origin, info, LogType::DEFAULT);
 		}
@@ -172,7 +173,7 @@ namespace Console
 				>> resetText 
 				>> info
 				>> "." 
-				>> endLine;
+				>> endl;
 
 			gLogEvent(origin, info, LogType::DEFAULT);
 		}
@@ -201,7 +202,7 @@ namespace Console
  #######################################################################################
 
 )";
-			print >> art >> endLine;
+			print >> art >> endl;
 		}
 
 	}

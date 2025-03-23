@@ -30,7 +30,7 @@ namespace Console
 	// BACKGROUND COLORS
 	//
 
-	enum class BackgroundColor
+	enum class BgColor
 	{
 		NONE = 49,
 		BLACK = 40,
@@ -49,7 +49,7 @@ namespace Console
 
 	class EndLine {};
 	class ResetText {};
-	class ResetBackground {};
+	class ResetBg {};
 
 	//
 	// PRINTER
@@ -58,7 +58,7 @@ namespace Console
 	class Printer {
 	private:
 		TextColor textColor;
-		BackgroundColor backgroundColor;
+		BgColor bgColor;
 
 	public:
 		Printer();
@@ -66,11 +66,11 @@ namespace Console
 
 		Printer& operator>>(const std::string& text);
 		Printer& operator>>(TextColor color);
-		Printer& operator>>(BackgroundColor color);
+		Printer& operator>>(BgColor color);
 
-		Printer& operator>>(EndLine endLine);
+		Printer& operator>>(EndLine endl);
 		Printer& operator>>(ResetText resetText);
-		Printer& operator>>(ResetBackground resetBackground);
+		Printer& operator>>(ResetBg resetBg);
 
 	};
 
@@ -78,9 +78,9 @@ namespace Console
 	// INSTANCES
 	//
 
-	inline EndLine endLine;
+	inline EndLine endl;
 	inline ResetText resetText;
-	inline ResetBackground resetBackground;
+	inline ResetBg resetBg;
 	inline Printer print;
 
 	//

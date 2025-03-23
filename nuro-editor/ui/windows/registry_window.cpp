@@ -526,7 +526,7 @@ void RegistryWindow::updateCameraMovement()
 		// cameraTransform.rotation = newRotation;
 
 		// Add to elapsed camera movement time
-		cameraMovementTime += Time::deltaf();
+		cameraMovementTime += Time::unscaledDeltaf();
 	}
 	else {
 		// Stop camera movement

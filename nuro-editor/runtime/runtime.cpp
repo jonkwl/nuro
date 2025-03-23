@@ -163,13 +163,13 @@ namespace Runtime {
 		gameUpdate();
 
 		// STEP GAME PHYSICS
-		ApplicationContext::physicsContext().step(Time::deltaf());
+		ApplicationContext::physicsContext().step();
 
 	}
 
 	void _initiateConsole() {
 		// Space
-		Console::print >> Console::endLine;
+		Console::print >> Console::endl;
 
 		// Register callback to log engine outputs to the editor application context
 		Console::out::logEvent().subscribe(

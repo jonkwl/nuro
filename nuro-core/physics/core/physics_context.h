@@ -15,11 +15,11 @@ public:
 	void destroy(); // Destroy physics
 
 	// Steps physics and performs simulation iterations
-	void step(float delta);
+	void step();
 
 private:
 	// Simulates physics iteration
-	void simulate(float delta);
+	void simulate();
 
 	// Apply transform of physics rigidbody on given rigidbody component
 	void syncRigidbodyComponent(RigidbodyComponent& rigidbody);
@@ -41,11 +41,8 @@ private:
 
 	PhysicsBridge bridge;
 
-private:
 	const physx::PxReal timeStep;
 	const physx::PxVec3 gravity;
-
-private:
-	float accumulatedTime;
+	double accumulatedTime;
 
 };

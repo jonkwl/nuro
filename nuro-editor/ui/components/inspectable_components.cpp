@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <unordered_map>
 
+#include <audio/audio_source.h>
 #include <transform/transform.h>
 #include <rendering/icons/icon_pool.h>
 #include <physics/rigidbody/rigidbody.h>
@@ -394,10 +395,9 @@ namespace InspectableComponents {
 
 		if (_beginComponent("Audio Listener", IconPool::get("audio_listener"), &audioListener.enabled, &removed))
 		{
-			_headline("Properties");
+			_headline("Advanced Properties");
 
-			IMComponents::input("Gain", audioListener.gain);
-			IMComponents::label("...");
+			IMComponents::input("Doppler Factor", audioListener.dopplerFactor);
 
 			_endComponent();
 		}
@@ -413,7 +413,35 @@ namespace InspectableComponents {
 		{
 			_headline("Properties");
 
-			IMComponents::label("...");
+			IMComponents::input("Volume", audioSource.volume);
+			IMComponents::input("Pitch", audioSource.pitch);
+			IMComponents::input("Looping", audioSource.looping);
+			IMComponents::input("Play On Awake", audioSource.playOnAwake);
+
+			_spacingS();
+			_headline("3D Settings");
+			IMComponents::input("Spatial Sound", audioSource.isSpatial);
+			if (audioSource.isSpatial) {
+				IMComponents::input("Falloff", audioSource.falloff);
+				IMComponents::input("Range", audioSource.range);
+
+				_spacingS();
+				IMComponents::label("Shape:");
+				IMComponents::input("      Cone Inner Angle", audioSource.coneInnerAngle);
+				IMComponents::input("      Cone Outer Angle", audioSource.coneOuterAngle);
+				IMComponents::input("      Cone Outer Volume", audioSource.coneOuterVolume);
+			}
+
+			if (audioSource.clip) {
+				_spacingS();
+				IMComponents::label("Audio Clip: ", EditorUI::getFonts().p_bold);
+				ImGui::SameLine();
+				IMComponents::label(audioSource.clip->resourceName());
+				if(IMComponents::buttonBig("Play")) AudioSource::play(audioSource);
+			}
+
+			_spacingS();
+			if (IMComponents::buttonBig("Sync")) AudioSource::sync(audioSource);
 
 			_endComponent();
 		}

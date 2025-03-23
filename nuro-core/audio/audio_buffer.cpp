@@ -5,7 +5,7 @@
 
 #include <utils/console.h>
 
-AudioBuffer::AudioBuffer() : _backendId(0)
+AudioBuffer::AudioBuffer() : _id(0)
 {
 }
 
@@ -28,24 +28,27 @@ bool AudioBuffer::create(const AudioData& data)
 		return false;
 	}
 
+	const AudioInfo& info = data.info();
 	const std::vector<int16_t>& samples = data.samples();
-	alBufferData(bufferId, data.format(), samples.data(), data.size(), data.sampleRate());
+	size_t size = samples.size() * sizeof(int16_t);
+
+	alBufferData(bufferId, data.format(), samples.data(), size, info.sampleRate);
 	if (alGetError() != AL_NO_ERROR) {
 		Console::out::warning("Audio Buffer", "Couldn't load audio data into buffer");
 		return false;
 	}
 
-	_backendId = static_cast<uint32_t>(bufferId);
+	_id = static_cast<uint32_t>(bufferId);
 	return true;
 }
 
 void AudioBuffer::destroy()
 {
-	if (_backendId) alDeleteBuffers(1, &_backendId);
-	_backendId = 0;
+	if (_id) alDeleteBuffers(1, &_id);
+	_id = 0;
 }
 
-uint32_t AudioBuffer::backendId() const
+uint32_t AudioBuffer::id() const
 {
-	return _backendId;
+	return _id;
 }

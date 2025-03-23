@@ -1,5 +1,6 @@
 #include "component_gizmos.h"
 
+#include <algorithm>
 #include <glm/glm.hpp>
 
 #include <transform/transform.h>
@@ -27,6 +28,8 @@ namespace ComponentGizmos {
 
 	void drawCamera(IMGizmo& gizmos, TransformComponent& transform, CameraComponent& camera)
 	{
+		if (!camera.enabled) return;
+
 		gizmos.foreground = true;
 		gizmos.color = EditorGizmoColor::CAMERA;
 		gizmos.opacity = EditorGizmoColor::CAMERA.a;
@@ -51,6 +54,8 @@ namespace ComponentGizmos {
 
 	void drawPointLight(IMGizmo& gizmos, TransformComponent& transform, PointLightComponent& pointLight)
 	{
+		if (!pointLight.enabled) return;
+
 		gizmos.foreground = false;
 		gizmos.color = pointLight.color;
 		gizmos.opacity = 0.1f;
@@ -59,15 +64,42 @@ namespace ComponentGizmos {
 
 	void drawSpotlight(IMGizmo& gizmos, TransformComponent& transform, SpotlightComponent& spotlight)
 	{
+		if (!spotlight.enabled) return;
+
 		//
 	}
 
 	void drawAudioSource(IMGizmo& gizmos, TransformComponent& transform, AudioSourceComponent& audioSource)
 	{
+		if (!audioSource.isSpatial) return;
+
+		// Check if active listener is within range of audio source
+		glm::vec3 sourcePosition = Transform::getPosition(transform, Space::WORLD);
+		bool listenerIntersecting = false;
+		auto audioListeners = ECS::main().view<TransformComponent, AudioListenerComponent>();
+		for (auto& [entity, listenerTransform, audioListener] : audioListeners.each()) {
+			if (!audioListener.enabled) break;
+
+			glm::vec3 listenerPosition = Transform::getPosition(listenerTransform, Space::WORLD);
+			glm::vec3 listenerScale = Transform::getScale(listenerTransform, Space::WORLD);
+			float listenerRadius = std::max({ listenerScale.x, listenerScale.y, listenerScale.z }) * 0.5f;
+
+			float distance = glm::distance(sourcePosition, listenerPosition);
+			if ((distance - listenerRadius) > audioSource.range) break;
+			
+			gizmos.color = GizmoColor::RED;
+			gizmos.opacity = 1.0f;
+			gizmos.sphere(listenerPosition, listenerRadius);
+
+			listenerIntersecting = true;
+			break;
+		}
+
+		// Draw range of audio source
 		gizmos.foreground = true;
-		gizmos.color = EditorGizmoColor::AUDIO_SOURCE;
-		gizmos.opacity = EditorGizmoColor::AUDIO_SOURCE.a;
-		gizmos.sphereWire(Transform::getPosition(transform, Space::WORLD), audioSource.maxDistance, glm::identity<glm::quat>());
+		gizmos.color = listenerIntersecting ? EditorGizmoColor::AUDIO_SOURCE_ACTIVE : EditorGizmoColor::AUDIO_SOURCE_DEFAULT;
+		gizmos.opacity = listenerIntersecting ? EditorGizmoColor::AUDIO_SOURCE_ACTIVE.a : EditorGizmoColor::AUDIO_SOURCE_DEFAULT.a;
+		gizmos.sphereWire(sourcePosition, audioSource.range, glm::identity<glm::quat>());
 	}
 
 }

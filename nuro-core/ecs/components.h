@@ -255,36 +255,33 @@ struct AudioListenerComponent {
 	// Sets if audio listener is enabled
 	bool enabled = true;
 
-	// Gain of audio listener
-	float gain = 1.0f;
-
 	// Strength of doppler effect
 	float dopplerFactor = 0.0f;
-
-	// Velocity for doppler effect
-	float dopplerVelocity = 0.0f;
 
 };
 
 struct AudioSourceComponent {
 
 	// Volume of audio source
-	float gain = 1.0f;
+	float volume = 1.0f;
 
 	// Playback speed of the audio source
 	float pitch = 1.0f;
 
 	// Sets if audio source sound should repeat when it ends
-	bool looping = false;
+	bool looping = true;
 
-	// Distance at which the sound starts to attenuate
-	float referenceDistance = 5.0f;
+	// Sets if the audio source should play when the game starts
+	bool playOnAwake = false;
+
+	// Sets if audio source is 3D
+	bool isSpatial = true;
 
 	// Controls how fast the sound fades over distance
-	float rolloffFactor = 1.0f;
+	float falloff = 1.0f;
 
 	// Maximum distance where the sound is still audible
-	float maxDistance = 10.0f;
+	float range = 10.0f;
 
 	// Angle (in degrees) where the sound is at full volume
 	float coneInnerAngle = 360.0f;
@@ -293,12 +290,12 @@ struct AudioSourceComponent {
 	float coneOuterAngle = 360.0f;
 
 	// Volume multiplier outside the cone
-	float coneOuterGain = 0.0f;
+	float coneOuterVolume = 0.0f;
 
 	// Audio clip of audio source
 	AudioClip* clip;
 
-	// Backend id handle of audio source
-	uint32_t backendId;
+	// Backend id of audio source
+	uint32_t id;
 
 };

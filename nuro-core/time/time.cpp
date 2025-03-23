@@ -4,44 +4,66 @@ namespace Time {
 
 	double gTime = 0.0;
 	double gLastTime = 0.0;
-	double gDeltaTime = 0.0;
+	double gUnscaledDelta = 0.0;
+	double gDelta = 0.0;
+	double gTimeScale = 1.0;
 
 	void step(double time)
 	{
-		// Update times
 		gTime = static_cast<float>(time);
-		gDeltaTime = gTime - gLastTime;
+		gUnscaledDelta = gTime - gLastTime;
+		gDelta = gUnscaledDelta * gTimeScale;
 		gLastTime = gTime;
 	}
 
-	const double now()
+	double now()
 	{
 		return gTime;
 	}
 
-	const double last()
-	{
-		return gLastTime;
-	}
-
-	const double delta()
-	{
-		return gDeltaTime;
-	}
-
-	const float nowf()
+	float nowf()
 	{
 		return static_cast<float>(gTime);
 	}
 
-	const float lastf()
+	double last()
+	{
+		return gLastTime;
+	}
+
+	float lastf()
 	{
 		return static_cast<float>(gLastTime);
 	}
 
-	const float deltaf()
+	double delta()
 	{
-		return static_cast<float>(gDeltaTime);
+		return gDelta;
+	}
+
+	float deltaf()
+	{
+		return static_cast<float>(gDelta);
+	}
+
+	double unscaledDelta()
+	{
+		return gUnscaledDelta;
+	}
+
+	double unscaledDeltaf()
+	{
+		return static_cast<float>(gUnscaledDelta);
+	}
+
+	double getTimeScale()
+	{
+		return gTimeScale;
+	}
+
+	void setTimeScale(double timeScale)
+	{
+		gTimeScale = timeScale;
 	}
 
 }

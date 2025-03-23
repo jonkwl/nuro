@@ -14,10 +14,7 @@ public:
 	bool create();
 
 	// Closes the current audio device if any
-	void close();
-
-	// Refreshes audio device
-	void refresh();
+	void destroy();
 
 	// Returns if a device is opened
 	bool opened() const;

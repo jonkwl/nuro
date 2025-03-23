@@ -16,11 +16,8 @@ public:
 	// Creates audio context
 	void create();
 
-	// Closes the current audio context if any
-	void close();
-
-	// Refreshes audio context
-	void refresh();
+	// Destroys the current audio context if any
+	void destroy();
 
 	// Updates the audio context
 	void update();

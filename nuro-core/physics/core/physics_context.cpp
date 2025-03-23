@@ -1,5 +1,6 @@
 #include "physics_context.h"
 
+#include <time/time.h>
 #include <utils/console.h>
 #include <transform/transform.h>
 #include <diagnostics/profiler.h>
@@ -79,7 +80,7 @@ void PhysicsContext::destroy()
 	PX_RELEASE(foundation);
 }
 
-void PhysicsContext::step(float delta)
+void PhysicsContext::step()
 {
 	// Start profiler
 	Profiler::start("physics");
@@ -88,9 +89,11 @@ void PhysicsContext::step(float delta)
 	// PHYSICS SIMULATION TIME STEP UPDATE
 	//
 
+	double delta = Time::delta();
+
 	accumulatedTime += delta;
 	while (accumulatedTime >= timeStep) {
-		simulate(delta);
+		simulate();
 		accumulatedTime -= timeStep;
 	}
 
@@ -108,10 +111,11 @@ void PhysicsContext::step(float delta)
 	Profiler::stop("physics");
 }
 
-void PhysicsContext::simulate(float delta)
+void PhysicsContext::simulate()
 {
 	// Simulate physics
-	scene->simulate(timeStep);
+	double step = timeStep * Time::getTimeScale();
+	scene->simulate(step);
 	scene->fetchResults(true);
 
 	// Sync rigidbody components

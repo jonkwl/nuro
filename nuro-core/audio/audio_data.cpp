@@ -5,18 +5,17 @@
 extern "C"
 {
 #include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswresample/swresample.h>
 }
 
 #include <utils/console.h>
+#include <utils/ioutils.h>
 
 namespace fs = std::filesystem;
 
-AudioData::AudioData() : path(),
-avSamples(),
-avLayout(AV_CHANNEL_LAYOUT_STEREO),
-avFormat(AV_SAMPLE_FMT_S16),
-avSampleRate(48000),
-avChannels(2)
+AudioData::AudioData() : _info(),
+_samples()
 {
 }
 
@@ -25,9 +24,9 @@ AudioData::~AudioData()
 	free();
 }
 
-void AudioData::setSource(const std::string& _path)
+void AudioData::setSource(const std::string& path)
 {
-	path = _path;
+	_info.path = path;
 	validateSource();
 }
 
@@ -42,8 +41,6 @@ bool AudioData::load()
     AVFormatContext* formatContext = nullptr;
     AVCodecContext* codecContext = nullptr;
     SwrContext* swrContext = nullptr;
-    AVPacket packet;
-    av_init_packet(&packet);
 
     auto cleanup = [&]() {
         if (swrContext) swr_free(&swrContext);
@@ -55,7 +52,7 @@ bool AudioData::load()
     // OPEN AUDIO FILE
     //
 
-    if (avformat_open_input(&formatContext, path.c_str(), nullptr, nullptr) != 0) {
+    if (avformat_open_input(&formatContext, _info.path.c_str(), nullptr, nullptr) != 0) {
         cleanup();
         return fail("Could not open audio file");
     }
@@ -101,11 +98,29 @@ bool AudioData::load()
         return fail("Failed to open codec");
     }
 
-    avSampleRate = codecContext->sample_rate;
+    //
+    // FETCH AUDIO INFO
+    //
+
+    _info.name = IOUtils::getFilename(_info.path);
+    _info.format = std::string(formatContext->iformat->name);
+    _info.codec = codec->name;
+    _info.sampleRate = codecContext->sample_rate;
+    _info.nChannels = codecContext->ch_layout.nb_channels;
+    _info.bitrate = formatContext->bit_rate;
+    _info.duration = formatContext->duration / (double)AV_TIME_BASE;
+
+    printInfo();
 
     //
     // DECODE AUDIO FRAMES
     //
+
+    AVChannelLayout targetLayout = AV_CHANNEL_LAYOUT_MONO;
+    AVSampleFormat targetFormat = AV_SAMPLE_FMT_S16;
+
+    AVPacket packet;
+    av_init_packet(&packet);
 
     while (av_read_frame(formatContext, &packet) >= 0) {
         if (packet.stream_index == streamIndex) {
@@ -123,11 +138,10 @@ bool AudioData::load()
             }
 
             while (avcodec_receive_frame(codecContext, frame) == 0) {
-                if (frame->format != avFormat) {
+                if (frame->format != targetFormat) {
                     if (!swrContext) {
-                        if (swr_alloc_set_opts2(&swrContext, &avLayout, AV_SAMPLE_FMT_S16, avSampleRate,
-                            &codecContext->ch_layout, codecContext->sample_fmt,
-                            codecContext->sample_rate, 0, nullptr) < 0) {
+                        if (swr_alloc_set_opts2(&swrContext, &targetLayout, targetFormat, codecContext->sample_rate,&codecContext->ch_layout, codecContext->sample_fmt, codecContext->sample_rate, 0, nullptr) < 0)
+                        {
                             av_frame_free(&frame);
                             av_packet_unref(&packet);
                             cleanup();
@@ -143,7 +157,7 @@ bool AudioData::load()
                     }
 
                     uint8_t* outputBuffer = nullptr;
-                    int outputBufferSize = av_samples_alloc(&outputBuffer, nullptr, avChannels, frame->nb_samples, AV_SAMPLE_FMT_S16, 0);
+                    int outputBufferSize = av_samples_alloc(&outputBuffer, nullptr, _info.nChannels, frame->nb_samples, targetFormat, 0);
                     if (outputBufferSize < 0) {
                         av_frame_free(&frame);
                         av_packet_unref(&packet);
@@ -159,11 +173,11 @@ bool AudioData::load()
                         return fail("Failed to convert audio samples");
                     }
 
-                    avSamples.insert(avSamples.end(), (int16_t*)outputBuffer, (int16_t*)outputBuffer + frame->nb_samples * avChannels);
+                    _samples.insert(_samples.end(), (int16_t*)outputBuffer, (int16_t*)outputBuffer + frame->nb_samples * _info.nChannels);
                     av_freep(&outputBuffer);
                 }
                 else {
-                    avSamples.insert(avSamples.end(), (int16_t*)frame->extended_data[0], (int16_t*)frame->extended_data[0] + frame->nb_samples * avChannels);
+                    _samples.insert(_samples.end(), (int16_t*)frame->extended_data[0], (int16_t*)frame->extended_data[0] + frame->nb_samples * _info.nChannels);
                 }
             }
             av_frame_free(&frame);
@@ -177,27 +191,27 @@ bool AudioData::load()
 
 void AudioData::free()
 {
-	avSamples.clear();
+    _samples.clear();
 }
 
 bool AudioData::loaded() const
 {
-	return !avSamples.empty();
+	return !_samples.empty();
+}
+
+const AudioInfo& AudioData::info() const
+{
+    return _info;
 }
 
 const std::vector<int16_t>& AudioData::samples() const
 {
-	return avSamples;
-}
-
-size_t AudioData::size() const
-{
-	return avSamples.size() * sizeof(int16_t);
+	return _samples;
 }
 
 ALenum AudioData::format() const
 {
-	switch (avChannels) {
+	/*switch (_info.numChannels) {
 	case 1: // Mono
 		switch (avFormat) {
 		case AV_SAMPLE_FMT_U8:
@@ -210,36 +224,70 @@ ALenum AudioData::format() const
 	case 2: // Stereo
 		switch (avFormat) {
 		case AV_SAMPLE_FMT_U8:
-			return AL_FORMAT_STEREO8;
+			return AL_FORMAT_MONO8;
 		case AV_SAMPLE_FMT_S16:
-			return AL_FORMAT_STEREO16;
+			return AL_FORMAT_MONO16;
 		default:
 			return 0;
 		}
 	default:
 		return 0;
-	}
-}
+	}*/
 
-const uint32_t AudioData::sampleRate() const
-{
-	return avSampleRate;
+    return AL_FORMAT_MONO16;
 }
 
 std::string AudioData::sourcePath() const
 {
-	return path;
+	return _info.path;
 }
 
 bool AudioData::fail(std::string info)
 {
-	Console::out::warning("Audio Data", info + " of audio data at '" + path + "'");
+	Console::out::warning("Audio Data", info + " of audio data at '" + _info.path + "'");
 	return false;
 }
 
 bool AudioData::validateSource()
 {
-	if (!fs::exists(path)) 
+	if (!fs::exists(_info.path))
 		return fail("Could not find audio file");
 	return true;
+}
+
+void AudioData::printInfo()
+{
+    Console::print
+        >> Console::endl
+        >> " nuro >>> Audio Data Reader [\"" + _info.name + "\"]:" >> Console::endl
+        
+
+        >> Console::endl
+        >> " "
+        >> Console::TextColor::MAGENTA
+        >> Console::BgColor::WHITE
+        >> " ---------- AUDIO FILE INFO ---------- "
+        >> Console::endl
+        >> Console::endl
+        >> Console::resetBg
+
+
+        >> " Name: " >> _info.name >> Console::endl
+        >> " Format: " >> _info.format >> Console::endl
+        >> " Codec: " >> _info.codec >> Console::endl
+        >> " Sample Rate: " >> std::to_string(_info.sampleRate) >> " Hz" >> Console::endl
+        >> " Channels: " >> std::to_string(_info.nChannels) >> Console::endl
+        >> " Bitrate: " >> std::to_string(_info.bitrate * 0.001) >> " kbit/s" >> Console::endl
+        >> " Duration: " >> std::to_string(_info.duration) >> "s" >> Console::endl
+
+
+        >> Console::endl
+        >> " "
+        >> Console::TextColor::MAGENTA
+        >> Console::BgColor::WHITE
+        >> " ---------- AUDIO FILE INFO ---------- "
+        >> Console::endl
+        >> Console::endl
+        >> Console::resetBg
+        >> Console::resetText;
 }
