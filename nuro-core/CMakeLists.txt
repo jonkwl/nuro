@@ -6,6 +6,7 @@ set(SOURCE_FILES
 	audio/audio_context.h
 	audio/audio_data.h
 	audio/audio_device.h
+	audio/audio_info.h
 	audio/audio_listener.h
 	audio/audio_source.h
 	backend/api.h

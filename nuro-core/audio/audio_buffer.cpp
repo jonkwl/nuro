@@ -1,6 +1,5 @@
 #include "audio_buffer.h"
 
-#include <AL/al.h>
 #include <AL/alc.h>
 
 #include <utils/console.h>
@@ -14,13 +13,8 @@ AudioBuffer::~AudioBuffer()
 	destroy();
 }
 
-bool AudioBuffer::create(const AudioData& data)
+bool AudioBuffer::create(const std::vector<int16_t>& pcmSamples, int32_t sampleRate, ALenum format)
 {
-	if (!data.loaded()) {
-		Console::out::warning("Audio Buffer", "Tried to create audio buffer with empty data");
-		return false;
-	}
-
 	ALuint bufferId;
 	alGenBuffers(1, &bufferId);
 	if (alGetError() != AL_NO_ERROR) {
@@ -28,11 +22,9 @@ bool AudioBuffer::create(const AudioData& data)
 		return false;
 	}
 
-	const AudioInfo& info = data.info();
-	const std::vector<int16_t>& samples = data.samples();
-	size_t size = samples.size() * sizeof(int16_t);
+	size_t size = pcmSamples.size() * sizeof(int16_t);
 
-	alBufferData(bufferId, data.format(), samples.data(), size, info.sampleRate);
+	alBufferData(bufferId, format, pcmSamples.data(), size, sampleRate);
 	if (alGetError() != AL_NO_ERROR) {
 		Console::out::warning("Audio Buffer", "Couldn't load audio data into buffer");
 		return false;

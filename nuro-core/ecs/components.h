@@ -277,11 +277,11 @@ struct AudioSourceComponent {
 	// Sets if audio source is 3D
 	bool isSpatial = true;
 
-	// Controls how fast the sound fades over distance
-	float falloff = 1.0f;
-
 	// Maximum distance where the sound is still audible
 	float range = 10.0f;
+
+	// Controls how fast the sound fades over distance
+	float falloff = 1.0f;
 
 	// Angle (in degrees) where the sound is at full volume
 	float coneInnerAngle = 360.0f;
@@ -297,5 +297,8 @@ struct AudioSourceComponent {
 
 	// Backend id of audio source
 	uint32_t id;
+
+	// Set if audio source is currently using the stereo buffer of its clip
+	bool usingStereo;
 
 };

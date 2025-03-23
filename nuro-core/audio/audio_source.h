@@ -18,11 +18,11 @@ namespace AudioSource {
     // Makes the source use 3D spatial audio or not
     void setIsSpatial(AudioSourceComponent& audioSource, bool spatial);
 
-    // Set rolloff factor (attenuation curve)
-    void setFalloff(AudioSourceComponent& audioSource, float falloff);
-
     // Set max distance (cutoff for attenuation)
     void setRange(AudioSourceComponent& audioSource, float range);
+
+    // Set rolloff factor (attenuation curve)
+    void setFalloff(AudioSourceComponent& audioSource, float falloff);
 
     // Set inner cone angle (area of normal sound)
     void setConeInnerAngle(AudioSourceComponent& audioSource, float angle);
@@ -32,6 +32,9 @@ namespace AudioSource {
 
     // Set outer cone gain (volume reduction outside cone)
     void setConeOuterVolume(AudioSourceComponent& audioSource, float volume);
+
+    // Sets the clip of an audio source
+    void setClip(AudioSourceComponent& audioSource, AudioClip* clip);
 
     // Syncs all settings of an audio source
     void sync(AudioSourceComponent& audioSource);

@@ -2,20 +2,14 @@
 
 #include <filesystem>
 
-extern "C"
-{
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswresample/swresample.h>
-}
-
 #include <utils/console.h>
 #include <utils/ioutils.h>
 
 namespace fs = std::filesystem;
 
-AudioData::AudioData() : _info(),
-_samples()
+AudioData::AudioData() : _sourcePath(),
+_monoSamples(),
+_stereoSamples()
 {
 }
 
@@ -26,11 +20,11 @@ AudioData::~AudioData()
 
 void AudioData::setSource(const std::string& path)
 {
-	_info.path = path;
+    _sourcePath = path;
 	validateSource();
 }
 
-bool AudioData::load()
+bool AudioData::load(AudioInfo& info)
 {
     if (!validateSource()) return false;
 
@@ -52,7 +46,7 @@ bool AudioData::load()
     // OPEN AUDIO FILE
     //
 
-    if (avformat_open_input(&formatContext, _info.path.c_str(), nullptr, nullptr) != 0) {
+    if (avformat_open_input(&formatContext, _sourcePath.c_str(), nullptr, nullptr) != 0) {
         cleanup();
         return fail("Could not open audio file");
     }
@@ -102,87 +96,40 @@ bool AudioData::load()
     // FETCH AUDIO INFO
     //
 
-    _info.name = IOUtils::getFilename(_info.path);
-    _info.format = std::string(formatContext->iformat->name);
-    _info.codec = codec->name;
-    _info.sampleRate = codecContext->sample_rate;
-    _info.nChannels = codecContext->ch_layout.nb_channels;
-    _info.bitrate = formatContext->bit_rate;
-    _info.duration = formatContext->duration / (double)AV_TIME_BASE;
-
-    printInfo();
+    info.path = _sourcePath;
+    info.name = IOUtils::getFilename(info.path);
+    info.format = std::string(formatContext->iformat->name);
+    info.codec = codec->name;
+    info.sampleRate = codecContext->sample_rate;
+    info.nChannels = codecContext->ch_layout.nb_channels;
+    info.stereo = info.nChannels == 2;
+    info.bitrate = formatContext->bit_rate;
+    info.duration = formatContext->duration / (double)AV_TIME_BASE;
 
     //
     // DECODE AUDIO FRAMES
     //
 
-    AVChannelLayout targetLayout = AV_CHANNEL_LAYOUT_MONO;
-    AVSampleFormat targetFormat = AV_SAMPLE_FMT_S16;
+    // Decode into mono samples
+    {
+        AVChannelLayout layout;
+        av_channel_layout_default(&layout, 1);
 
-    AVPacket packet;
-    av_init_packet(&packet);
-
-    while (av_read_frame(formatContext, &packet) >= 0) {
-        if (packet.stream_index == streamIndex) {
-            if (avcodec_send_packet(codecContext, &packet) < 0) {
-                av_packet_unref(&packet);
-                cleanup();
-                return fail("Error sending packet for decoding");
-            }
-
-            AVFrame* frame = av_frame_alloc();
-            if (!frame) {
-                av_packet_unref(&packet);
-                cleanup();
-                return fail("Frame allocation failed");
-            }
-
-            while (avcodec_receive_frame(codecContext, frame) == 0) {
-                if (frame->format != targetFormat) {
-                    if (!swrContext) {
-                        if (swr_alloc_set_opts2(&swrContext, &targetLayout, targetFormat, codecContext->sample_rate,&codecContext->ch_layout, codecContext->sample_fmt, codecContext->sample_rate, 0, nullptr) < 0)
-                        {
-                            av_frame_free(&frame);
-                            av_packet_unref(&packet);
-                            cleanup();
-                            return fail("Failed to allocate and set SwrContext options");
-                        }
-
-                        if (swr_init(swrContext) < 0) {
-                            av_frame_free(&frame);
-                            av_packet_unref(&packet);
-                            cleanup();
-                            return fail("Failed to initialize resampler");
-                        }
-                    }
-
-                    uint8_t* outputBuffer = nullptr;
-                    int outputBufferSize = av_samples_alloc(&outputBuffer, nullptr, _info.nChannels, frame->nb_samples, targetFormat, 0);
-                    if (outputBufferSize < 0) {
-                        av_frame_free(&frame);
-                        av_packet_unref(&packet);
-                        cleanup();
-                        return fail("Failed to allocate output buffer");
-                    }
-
-                    if (swr_convert(swrContext, &outputBuffer, frame->nb_samples, (const uint8_t**)frame->extended_data, frame->nb_samples) < 0) {
-                        av_freep(&outputBuffer);
-                        av_frame_free(&frame);
-                        av_packet_unref(&packet);
-                        cleanup();
-                        return fail("Failed to convert audio samples");
-                    }
-
-                    _samples.insert(_samples.end(), (int16_t*)outputBuffer, (int16_t*)outputBuffer + frame->nb_samples * _info.nChannels);
-                    av_freep(&outputBuffer);
-                }
-                else {
-                    _samples.insert(_samples.end(), (int16_t*)frame->extended_data[0], (int16_t*)frame->extended_data[0] + frame->nb_samples * _info.nChannels);
-                }
-            }
-            av_frame_free(&frame);
+        if (!decodeInto(_monoSamples, formatContext, codecContext, swrContext, streamIndex, layout, AV_TARGET_FORMAT)) {
+            cleanup();
+            return false;
         }
-        av_packet_unref(&packet);
+    }
+
+    // Decode into stereo samples if available
+    if (info.stereo) {
+        AVChannelLayout layout;
+        av_channel_layout_default(&layout, 2);
+
+        if (!decodeInto(_stereoSamples, formatContext, codecContext, swrContext, streamIndex, layout, AV_TARGET_FORMAT)) {
+            cleanup();
+            return false;
+        }
     }
 
     cleanup();
@@ -191,103 +138,120 @@ bool AudioData::load()
 
 void AudioData::free()
 {
-    _samples.clear();
+    _monoSamples.clear();
+    _stereoSamples.clear();
 }
 
-bool AudioData::loaded() const
+const std::vector<int16_t>& AudioData::monoSamples() const
 {
-	return !_samples.empty();
+	return _monoSamples;
 }
 
-const AudioInfo& AudioData::info() const
+const std::vector<int16_t>& AudioData::stereoSamples() const
 {
-    return _info;
-}
-
-const std::vector<int16_t>& AudioData::samples() const
-{
-	return _samples;
-}
-
-ALenum AudioData::format() const
-{
-	/*switch (_info.numChannels) {
-	case 1: // Mono
-		switch (avFormat) {
-		case AV_SAMPLE_FMT_U8:
-			return AL_FORMAT_MONO8;
-		case AV_SAMPLE_FMT_S16:
-			return AL_FORMAT_MONO16;
-		default:
-			return 0;
-		}
-	case 2: // Stereo
-		switch (avFormat) {
-		case AV_SAMPLE_FMT_U8:
-			return AL_FORMAT_MONO8;
-		case AV_SAMPLE_FMT_S16:
-			return AL_FORMAT_MONO16;
-		default:
-			return 0;
-		}
-	default:
-		return 0;
-	}*/
-
-    return AL_FORMAT_MONO16;
+    return _stereoSamples;
 }
 
 std::string AudioData::sourcePath() const
 {
-	return _info.path;
+    return _sourcePath;
 }
 
-bool AudioData::fail(std::string info)
+bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& formatContext, AVCodecContext*& codecContext, SwrContext*& swrContext, int streamIndex, AVChannelLayout targetLayout, AVSampleFormat targetFormat) const
 {
-	Console::out::warning("Audio Data", info + " of audio data at '" + _info.path + "'");
+    AVPacket packet;
+    av_init_packet(&packet);
+
+    while (av_read_frame(formatContext, &packet) >= 0) {
+        if (packet.stream_index == streamIndex) {
+            if (avcodec_send_packet(codecContext, &packet) < 0) {
+                av_packet_unref(&packet);
+                return fail("Error sending packet for decoding");
+            }
+
+            AVFrame* frame = av_frame_alloc();
+            if (!frame) {
+                av_packet_unref(&packet);
+                return fail("Frame allocation failed");
+            }
+
+            while (avcodec_receive_frame(codecContext, frame) == 0) {
+                if (av_channel_layout_compare(&frame->ch_layout, &targetLayout) != 0 || frame->format != targetFormat) {
+                    if (!swrContext) {
+                        if (swr_alloc_set_opts2(&swrContext, &targetLayout, targetFormat, codecContext->sample_rate, &codecContext->ch_layout, codecContext->sample_fmt, codecContext->sample_rate, 0, nullptr) < 0)
+                        {
+                            av_frame_free(&frame);
+                            av_packet_unref(&packet);
+                            return fail("Failed to allocate and set SwrContext options");
+                        }
+
+                        if (swr_init(swrContext) < 0) {
+                            av_frame_free(&frame);
+                            av_packet_unref(&packet);
+                            return fail("Failed to initialize resampler");
+                        }
+                    }
+
+                    uint8_t** outputBuffer = nullptr;
+                    int outputLinesize = 0;
+                    int outputSamples = av_rescale_rnd(frame->nb_samples, codecContext->sample_rate, codecContext->sample_rate, AV_ROUND_UP);
+
+                    if (av_samples_alloc_array_and_samples(&outputBuffer, &outputLinesize,
+                        targetLayout.nb_channels, outputSamples, targetFormat, 0) < 0)
+                    {
+                        av_frame_free(&frame);
+                        av_packet_unref(&packet);
+                        return fail("Failed to allocate output buffer");
+                    }
+
+                    int convertedSamples = swr_convert(swrContext, outputBuffer, outputSamples,
+                        (const uint8_t**)frame->extended_data, frame->nb_samples);
+                    if (convertedSamples < 0) {
+                        av_freep(&outputBuffer[0]);
+                        av_freep(&outputBuffer);
+                        av_frame_free(&frame);
+                        av_packet_unref(&packet);
+                        return fail("Failed to convert audio samples");
+                    }
+
+                    int dataSize = av_samples_get_buffer_size(nullptr, targetLayout.nb_channels, convertedSamples, targetFormat, 0);
+                    samples.insert(samples.end(), (int16_t*)outputBuffer[0], (int16_t*)(outputBuffer[0] + dataSize));
+
+                    av_freep(&outputBuffer[0]);
+                    av_freep(&outputBuffer);
+                }
+                else {
+                    if (av_sample_fmt_is_planar((AVSampleFormat)frame->format)) {
+                        for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ++ch)
+                            samples.insert(samples.end(),
+                                reinterpret_cast<int16_t*>(frame->extended_data[ch]),
+                                reinterpret_cast<int16_t*>(frame->extended_data[ch]) + frame->nb_samples);
+                    }
+                    else {
+                        int dataSize = av_samples_get_buffer_size(nullptr, codecContext->ch_layout.nb_channels,
+                            frame->nb_samples, (AVSampleFormat)frame->format, 1);
+                        int sampleCount = dataSize / sizeof(int16_t);
+                        samples.insert(samples.end(),
+                            reinterpret_cast<int16_t*>(frame->extended_data[0]),
+                            reinterpret_cast<int16_t*>(frame->extended_data[0]) + sampleCount);
+                    }
+                }
+            }
+            av_frame_free(&frame);
+        }
+        av_packet_unref(&packet);
+    }
+}
+
+bool AudioData::fail(std::string info) const
+{
+	Console::out::warning("Audio Data", info + " of audio data at '" + _sourcePath + "'");
 	return false;
 }
 
-bool AudioData::validateSource()
+bool AudioData::validateSource() const
 {
-	if (!fs::exists(_info.path))
+	if (!fs::exists(_sourcePath))
 		return fail("Could not find audio file");
 	return true;
-}
-
-void AudioData::printInfo()
-{
-    Console::print
-        >> Console::endl
-        >> " nuro >>> Audio Data Reader [\"" + _info.name + "\"]:" >> Console::endl
-        
-
-        >> Console::endl
-        >> " "
-        >> Console::TextColor::MAGENTA
-        >> Console::BgColor::WHITE
-        >> " ---------- AUDIO FILE INFO ---------- "
-        >> Console::endl
-        >> Console::endl
-        >> Console::resetBg
-
-
-        >> " Name: " >> _info.name >> Console::endl
-        >> " Format: " >> _info.format >> Console::endl
-        >> " Codec: " >> _info.codec >> Console::endl
-        >> " Sample Rate: " >> std::to_string(_info.sampleRate) >> " Hz" >> Console::endl
-        >> " Channels: " >> std::to_string(_info.nChannels) >> Console::endl
-        >> " Bitrate: " >> std::to_string(_info.bitrate * 0.001) >> " kbit/s" >> Console::endl
-        >> " Duration: " >> std::to_string(_info.duration) >> "s" >> Console::endl
-
-
-        >> Console::endl
-        >> " "
-        >> Console::TextColor::MAGENTA
-        >> Console::BgColor::WHITE
-        >> " ---------- AUDIO FILE INFO ---------- "
-        >> Console::endl
-        >> Console::endl
-        >> Console::resetBg
-        >> Console::resetText;
 }

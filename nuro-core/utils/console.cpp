@@ -136,6 +136,7 @@ namespace Console
 				>> "] "
 				>> TextColor::GRAY
 				>> info
+				>> resetText
 				>> endl;
 
 			gLogEvent("Info", info, LogType::DEFAULT);

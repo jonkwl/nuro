@@ -12,13 +12,17 @@ namespace AudioSource {
         // Stop source playback
         stop(audioSource);
 
-        // Force mono for spatial playback
+        // Fetch audio buffer from clip
         bool forceMono = audioSource.isSpatial;
+        bool useStereo = audioSource.clip->stereoAvailable() && !forceMono;
+        const AudioBuffer& buffer = useStereo ? audioSource.clip->stereoBuffer() : audioSource.clip->monoBuffer();
 
-        // Select buffer and bind it to sourcé
-        uint32_t buffer = audioSource.clip->readBuffer().id();
-        if (!buffer) return false;
-        alSourcei(audioSource.id, AL_BUFFER, buffer);
+        // Tmp
+        audioSource.usingStereo = useStereo;
+
+        // Bind buffer to source
+        if (!buffer.id()) return false;
+        alSourcei(audioSource.id, AL_BUFFER, buffer.id());
 
         return true;
     }
@@ -67,14 +71,14 @@ namespace AudioSource {
         _bindBuffer(audioSource);
     }
 
-    void setFalloff(AudioSourceComponent& audioSource, float falloff) {
-        alSourcef(audioSource.id, AL_ROLLOFF_FACTOR, falloff);
-        audioSource.falloff = falloff;
-    }
-
     void setRange(AudioSourceComponent& audioSource, float range) {
         alSourcef(audioSource.id, AL_MAX_DISTANCE, range);
         audioSource.range = range;
+    }
+
+    void setFalloff(AudioSourceComponent& audioSource, float falloff) {
+        alSourcef(audioSource.id, AL_ROLLOFF_FACTOR, falloff);
+        audioSource.falloff = falloff;
     }
 
     void setConeInnerAngle(AudioSourceComponent& audioSource, float angle) {
@@ -92,14 +96,19 @@ namespace AudioSource {
         audioSource.coneOuterVolume = volume;
     }
 
+    void setClip(AudioSourceComponent& audioSource, AudioClip* clip)
+    {
+        audioSource.clip = clip;
+    }
+
     void sync(AudioSourceComponent& audioSource)
     {
         // Individual properties
         setVolume(audioSource, audioSource.volume);
         setPitch(audioSource, audioSource.pitch);
         setLooping(audioSource, audioSource.looping);
-        setFalloff(audioSource, audioSource.falloff);
         setRange(audioSource, audioSource.range);
+        setFalloff(audioSource, audioSource.falloff);
         setConeInnerAngle(audioSource, audioSource.coneInnerAngle);
         setConeOuterAngle(audioSource, audioSource.coneOuterAngle);
         setConeOuterVolume(audioSource, audioSource.coneOuterVolume);

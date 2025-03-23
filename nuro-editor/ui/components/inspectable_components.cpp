@@ -420,13 +420,19 @@ namespace InspectableComponents {
 
 			_spacingS();
 			_headline("3D Settings");
+
 			IMComponents::input("Spatial Sound", audioSource.isSpatial);
 			if (audioSource.isSpatial) {
-				IMComponents::input("Falloff", audioSource.falloff);
 				IMComponents::input("Range", audioSource.range);
+				IMComponents::input("Falloff", audioSource.falloff);
+
+				if (audioSource.falloff < 1.0f)
+					IMComponents::label(ICON_FA_TRIANGLE_EXCLAMATION " A falloff below 1.0 prevents the source from fading out with distance", IM_COL32(255, 255, 0, 200));
 
 				_spacingS();
-				IMComponents::label("Shape:");
+				IMComponents::label("Cone Shape:");
+
+				_spacingS();
 				IMComponents::input("      Cone Inner Angle", audioSource.coneInnerAngle);
 				IMComponents::input("      Cone Outer Angle", audioSource.coneOuterAngle);
 				IMComponents::input("      Cone Outer Volume", audioSource.coneOuterVolume);
@@ -434,15 +440,27 @@ namespace InspectableComponents {
 
 			if (audioSource.clip) {
 				_spacingS();
-				IMComponents::label("Audio Clip: ", EditorUI::getFonts().p_bold);
+				_headline("Audio Clip");
+
+				IMComponents::label("Currently using: ");
 				ImGui::SameLine();
-				IMComponents::label(audioSource.clip->resourceName());
-				if(IMComponents::buttonBig("Play")) AudioSource::play(audioSource);
+				IMComponents::label(audioSource.clip->resourceName(), EditorUI::getFonts().p_bold);
+
+				_spacingS();
+				bool stereoAvailable = audioSource.clip->stereoAvailable();
+				IMComponents::flagLabel("Stereo Available", stereoAvailable);
+				IMComponents::label("Using: ");
+				ImGui::SameLine();
+				IMComponents::label(audioSource.usingStereo ? "Stereo" : "Mono", EditorUI::getFonts().p_bold, audioSource.usingStereo ? IM_COL32(185, 90, 255, 255) : IM_COL32(255, 90, 5, 255));
+				if (stereoAvailable && audioSource.isSpatial)
+					IMComponents::label(ICON_FA_ARROW_RIGHT " Spatial audio sources always use Mono", IM_COL32(220, 255, 220, 200));
+
+				_spacingM();
+				if (IMComponents::buttonBig("Play")) AudioSource::play(audioSource);
 			}
 
-			_spacingS();
-			if (IMComponents::buttonBig("Sync")) AudioSource::sync(audioSource);
-
+			_spacingM();
+			if (IMComponents::buttonBig("Sync Source")) AudioSource::sync(audioSource);
 			_endComponent();
 		}
 

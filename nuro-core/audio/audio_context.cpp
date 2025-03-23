@@ -15,7 +15,7 @@ static LPALCGETSTRINGISOFT alcGetStringiSOFT;
 static LPALCRESETDEVICESOFT alcResetDeviceSOFT;
 
 template <typename T>
-T loadOpenALFunction(ALCdevice* _device, const char* funcName) {
+T loadProc(ALCdevice* _device, const char* funcName) {
 	void* funcPtr = alcGetProcAddress(_device, funcName);
 	return reinterpret_cast<T>(funcPtr);
 }
@@ -184,8 +184,8 @@ void AudioContext::setupHrtf() {
 	if (!alcIsExtensionPresent(alDevice, "ALC_SOFT_HRTF")) return;
 
 	// Load functions
-	alcGetStringiSOFT = loadOpenALFunction<LPALCGETSTRINGISOFT>(alDevice, "alcGetStringiSOFT");
-	alcResetDeviceSOFT = loadOpenALFunction<LPALCRESETDEVICESOFT>(alDevice, "alcResetDeviceSOFT");
+	alcGetStringiSOFT = loadProc<LPALCGETSTRINGISOFT>(alDevice, "alcGetStringiSOFT");
+	alcResetDeviceSOFT = loadProc<LPALCRESETDEVICESOFT>(alDevice, "alcResetDeviceSOFT");
 
 	// Fetch all hrtfs
 	ALCint nHrtf;

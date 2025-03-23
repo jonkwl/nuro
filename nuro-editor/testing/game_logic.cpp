@@ -29,11 +29,6 @@ void _physics_example() {
 	resource.loadSync(sphereModel);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
-	// Example audio
-	auto [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
-	audioClip->setSource("./resources/example-assets/audio/example.wav");
-	resource.loadAsync(audioClip);
-
 	// Standard material
 	LitMaterial* standardMaterial = new LitMaterial();
 	standardMaterial->baseColor = glm::vec4(glm::vec3(0.5f), 1.0f);
@@ -44,6 +39,12 @@ void _physics_example() {
 	LitMaterial* redMaterial = new LitMaterial();
 	redMaterial->baseColor = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
 	redMaterial->roughness = 0.9f;
+
+	// Glowing material
+	LitMaterial* glowingMaterial = new LitMaterial();
+	glowingMaterial->emission = true;
+	glowingMaterial->emissionIntensity = 4.6f;
+	glowingMaterial->emissionColor = glm::vec3(0.4f, 0.4f, 1.0f);
 
 	// Async texture loading example
 	auto [albedoId, albedo] = resource.create<Texture>("scifi-albedo");
@@ -89,13 +90,10 @@ void _physics_example() {
 	camera = ecs.createEntity("Camera", head.handle());
 	camera.add<CameraComponent>();
 
-	// Audio listener
-	EntityContainer audioListener = ecs.createEntity("Audio Listener");
-	audioListener.add<AudioListenerComponent>();
-
 	// Directional light (sun)
 	EntityContainer sun(ecs.createEntity("Sun"));
 	DirectionalLightComponent& sunLight = sun.add<DirectionalLightComponent>();
+	sunLight.enabled = false;
 	sunLight.intensity = 0.3f;
 	sunLight.color = glm::vec3(1.0, 1.0, 1.0f);
 
@@ -112,18 +110,33 @@ void _physics_example() {
 	EntityContainer flashlight(ecs.createEntity("Flashlight", camera.handle()));
 	Transform::setPosition(flashlight.transform(), glm::vec3(0.0f, 6.0f, 5.0f));
 	SpotlightComponent& flashlightSource = flashlight.add<SpotlightComponent>();
-	flashlightSource.intensity = 10.0f;
+	flashlightSource.intensity = 0.4f;
 	flashlightSource.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	flashlightSource.range = 150.0f;
 	flashlightSource.falloff = 10.0f;
-	flashlightSource.innerAngle = 45.0f;
-	flashlightSource.outerAngle = 90.0f;
+	flashlightSource.innerAngle = 30.0f;
+	flashlightSource.outerAngle = 60.0f;
 
 	// Sample audio source
-	audio = ecs.createEntity("Audio Source");
+	auto [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
+	audioClip->setSource("./resources/example-assets/audio/example.wav");
+	resource.loadAsync(audioClip);
+
+	audio = ecs.createEntity("Sound Emitter");
 	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
-	// AudioSourceComponent& audioSource = audio.add<AudioSourceComponent>();
-	// AudioSource::setClip(audioSource, audioClip);
+	audio.add<MeshRendererComponent>(sphereMesh, glowingMaterial);
+	audio.add<SphereColliderComponent>();
+	RigidbodyComponent& audioRb = audio.add<RigidbodyComponent>();
+	Rigidbody::setGravity(audioRb, false);
+	Rigidbody::setResistance(audioRb, 1.0f);
+	AudioSourceComponent& audioSource = audio.add<AudioSourceComponent>();
+	AudioSource::setRange(audioSource, 50.0f);
+	AudioSource::setClip(audioSource, audioClip);
+	EntityContainer audioLightEntity(ecs.createEntity("Light", audio.handle()));
+	PointLightComponent& audioLight = audioLightEntity.add<PointLightComponent>();
+	audioLight.intensity = 6.0f;
+	audioLight.range = audioSource.range;
+	audioLight.color = glowingMaterial->emissionColor;
 
 	// Ground
 	EntityContainer ground(ecs.createEntity("Ground"));
@@ -152,6 +165,7 @@ void _physics_example() {
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
 	Rigidbody::setInterpolation(playerRb, RB_Interpolation::INTERPOLATE);
+	player.add<AudioListenerComponent>();
 
 	// Player child
 	EntityContainer playerChild(ecs.createEntity("Player Child", player.handle()));
