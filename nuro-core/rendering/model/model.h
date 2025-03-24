@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include <resource/resource.h>
+#include <memory/resource.h>
 #include <rendering/model/mesh.h>
 
 class aiScene;

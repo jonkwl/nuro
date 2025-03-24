@@ -5,7 +5,7 @@
 
 #include <backend/api.h>
 #include <audio/audio_context.h>
-#include <resource/resource_manager.h>
+#include <memory/resource_manager.h>
 #include <physics/core/physics_context.h>
 
 struct GLFWwindow;

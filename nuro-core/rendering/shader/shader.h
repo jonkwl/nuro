@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <resource/resource.h>
+#include <memory/resource.h>
 
 class Shader : public Resource
 {

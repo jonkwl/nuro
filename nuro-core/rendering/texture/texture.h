@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include <resource/resource.h>
+#include <memory/resource.h>
 
 enum class TextureType
 {

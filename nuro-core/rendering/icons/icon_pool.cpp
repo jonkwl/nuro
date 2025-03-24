@@ -36,17 +36,17 @@ namespace IconPool {
 			TextureType type = IOUtils::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
 			// Insert new icon
-			auto [_, texture] = resource.create<Texture>(identifier);
+			auto [textureId, texture] = resource.create<Texture>(identifier);
 			auto [it, inserted] = gIcons.insert({ identifier, texture });
 			auto& icon = it->second;
 
 			// Load icon texture
 			icon->setSource(type, file);
 			if (async) {
-				resource.loadAsync(icon);
+				resource.loadAsync(textureId);
 			}
 			else {
-				resource.loadSync(icon);
+				resource.loadSync(textureId);
 			}
 
 		}
@@ -80,11 +80,11 @@ namespace IconPool {
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		auto [_, invalidIcon] = resource.create<Texture>("fallback-icon");
-		gInvalidIcon = invalidIcon;
+		auto [textureId, texture] = resource.create<Texture>("fallback-icon");
+		gInvalidIcon = texture;
 		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, path);
 
-		resource.loadSync(gInvalidIcon);
+		resource.loadSync(textureId);
 	}
 
 }

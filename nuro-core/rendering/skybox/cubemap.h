@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <resource/resource.h>
+#include <memory/resource.h>
 
 class Cubemap : public Resource
 {

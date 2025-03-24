@@ -57,18 +57,22 @@ void Footer::renderContent(ImDrawList& drawList)
     // DRAW LOADING INFORMATION TEXT
     //
 
-    // Fetch worker state
-    auto worker = ApplicationContext::resourceManager().readWorkerState();
-
-    // Create information text
-    std::string informationText;
+    // Default text and state
     bool loading = false;
-    if (worker.active && worker.target) {
-        informationText = "Loading '" + worker.target->resourceName() + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
-        loading = true;
-    }
-    else {
-        informationText = "No pending assets.";
+    std::string informationText = "No pending assets.";
+
+    // Fetch worker state
+    ResourceManager& resource = ApplicationContext::resourceManager();
+    auto worker = resource.readWorkerState();
+
+    // Fetch target resource if worker is active
+    if (worker.targetId) {
+        auto resourceOpt = resource.getResource(worker.targetId);
+        if (resourceOpt) {
+            Resource* resource = *resourceOpt;
+            informationText = "Loading '" + resource->resourceName() + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
+            loading = true;
+        }
     }
 
     // Draw text and loading buffer

@@ -7,47 +7,71 @@
 #include <atomic>
 #include <memory>
 #include <utility>
+#include <optional>
 #include <unordered_map>
 #include <condition_variable>
 
 #include <utils/console.h>
-#include <resource/resource.h>
+#include <memory/resource.h>
 
 class ResourceManager
 {
 public:
 	struct WorkerState {
 		bool active;
-		Resource* target;
+		uint32_t targetId;
 		size_t tasksPending;
 
-		WorkerState(bool active, Resource* target, size_t tasksPending) : active(active), target(target), tasksPending(tasksPending) {};
+		WorkerState(bool active, uint32_t targetId, size_t tasksPending) : active(active), targetId(targetId), tasksPending(tasksPending) {};
 	};
 
 public:
 	ResourceManager();
 	~ResourceManager();
 
-	// Creates a new resource (lifetime managed by resource manager), returns its resource id and pointer 
+	// Creates a new resource (lifetime managed by resource manager), returns the resource id and non-owning pointer to resource
 	template <typename T, typename... Args>
 	std::pair<uint32_t, T*> create(const std::string& name, Args&&... args) {
 		return allocate<T>(name, std::forward<Args>(args)...);
 	}
 
-	// Returns the pointer to a resource by its id
+	// Retrieves a resource base by resource id, returned pointer is non-owning
+	std::optional<Resource*> getResource(uint32_t resourceId) {
+		// Find resource
+		auto it = resources.find(resourceId);
+		if (it != resources.end()) {
+			Resource* resourcePtr = it->second.get();
+			if (resourcePtr) return resourcePtr;
+		}
+
+		// Resource not found
+		return std::nullopt;
+	}
+
+	// Retrieves a resource as a derived type T by resource id, returned pointer is non-owning
 	template <typename T>
-	T* get(uint32_t id) {
-		return retrieve<T>(id);
+	std::optional<T*> getResourceAs(uint32_t resourceId) {
+		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are retrievable");
+
+		// Find resource
+		auto it = resources.find(resourceId);
+		if (it != resources.end()) {
+			T* resourcePtr = dynamic_cast<T*>(it->second).get();
+			if (resourcePtr) return resourcePtr;
+		}
+
+		// Resource not found
+		return std::nullopt;
 	}
 
 	// Loads resource synchronously, blocking until complete  
-	void loadSync(Resource* resource);
+	void loadSync(uint32_t resourceId);
 
 	// Queues resource for asynchronous loading, not blocking
-	void loadAsync(Resource* resource);
+	void loadAsync(uint32_t resourceId);
 
 	// Destroy buffers (e.g. on the gpu) of a resource if it is ready
-	void deleteBuffers(Resource* resource);
+	void deleteBuffers(uint32_t resourceId);
 
 	// Dispatch next pending resource to gpu (call when updating frame on main thread)
 	void dispatchNext();
@@ -56,7 +80,7 @@ public:
 	WorkerState readWorkerState() const;
 
 	// TEMPORARY!
-	const std::unordered_map<uint32_t, Resource*>& readResources() {
+	const auto& readResources() {
 		return resources;
 	}
 
@@ -76,7 +100,7 @@ private:
 	// 
 	
 	uint32_t idCounter;
-	std::unordered_map<uint32_t, Resource*> resources;
+	std::unordered_map<uint32_t, std::unique_ptr<Resource>> resources;
 
 	template <typename T, typename... Args>
 	std::pair<uint32_t, T*> allocate(const std::string& name, Args&&... args) {
@@ -84,28 +108,11 @@ private:
 		
 		// Create and return resource
 		uint32_t id = ++idCounter;
-		T* resource = new T(std::forward<Args>(args)...);
+		auto& result = resources.emplace(id, std::make_unique<T>(std::forward<Args>(args)...));
+		T* resource = static_cast<T*>(result.first->second.get());
 		resource->_resourceId = id;
 		resource->_resourceName = name;
-		resources[id] = resource;
 		return std::make_pair(id, resource);
-	}
-
-	template <typename T>
-	T* retrieve(uint32_t id) {
-		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are retrievable");
-		
-		// Find resource
-		auto it = resources.find(id);
-		if (it != resources.end()) {
-			return dynamic_cast<T*>(resources[id]);
-		}
-
-		// Resource not found, dynamically allocate empty resource
-		std::string name = "fallback-for-" + std::to_string(id);
-		auto [_id, _resource] = allocate<T>(name);
-		Console::out::warning("Resource Manager", "A resource with an invalid id (" + std::to_string(id) + ") was accessed", "Created empty resource with id " + std::to_string(_id) + " as fallback");
-		return _resource;
 	}
 
 	//
@@ -115,8 +122,8 @@ private:
 	// Set if the application is running
 	std::atomic<bool> running;
 
-	// Resource upload tasks on the main thread
-	std::queue<Resource*> mainTasks;
+	// Resource upload tasks on the main thread by resource id
+	std::queue<uint32_t> mainTasks;
 
 	// Atomic set if main thread can dispatch next resource
 	std::atomic<bool> mainDispatchNext;
@@ -137,8 +144,8 @@ private:
 	// Condition variable to ensure worker doesnt run when a resource dispatch from the main thread is pending
 	std::condition_variable workerAwaitingDispatch;
 
-	// Resource load tasks on the worker thread
-	std::queue<Resource*> workerTasks;
+	// Resource load tasks on the worker thread by resource id
+	std::queue<uint32_t> workerTasks;
 
 	// Amount of tasks waiting in workers queue
 	std::atomic<size_t> workerTasksPending;
@@ -146,8 +153,8 @@ private:
 	// Set if the worker is currently running, false if worker is sleeping
 	std::atomic<bool> workerActive;
 
-	// Points to the resource the worker is currently loading (nullptr if worker isn't loading any resource)
-	std::atomic<Resource*> workerTarget;
+	// Id of the resource the worker is currently loading (0 if worker isn't loading any resource)
+	std::atomic<uint32_t> workerTarget;
 
 	//
 	// HELPERS

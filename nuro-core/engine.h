@@ -15,7 +15,7 @@
 #include <rendering/model/model.h>
 #include <rendering/gizmos/gizmos.h>
 #include <rendering/skybox/skybox.h>
-#include <resource/resource_manager.h>
+#include <memory/resource_manager.h>
 #include <rendering/texture/texture.h>
 #include <context/application_context.h>
 #include <rendering/primitives/shapes.h>

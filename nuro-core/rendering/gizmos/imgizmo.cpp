@@ -33,11 +33,11 @@ void IMGizmo::create()
 
 		auto[planeId, plane] = resource.create<Model>("gizmo-plane");
 		plane->setSource("resources/primitives/plane.fbx");
-		resource.loadAsync(plane);
+		resource.loadAsync(planeId);
 
 		auto [sphereId, sphere] = resource.create<Model>("gizmo-sphere");
 		sphere->setSource("resources/primitives/sphere.fbx");
-		resource.loadAsync(sphere);
+		resource.loadAsync(sphereId);
 
 		staticData.fillShader = ShaderPool::get("gizmo_fill");
 		staticData.iconShader = ShaderPool::get("gizmo_icon");

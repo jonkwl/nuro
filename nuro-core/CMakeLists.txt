@@ -56,8 +56,8 @@ set(SOURCE_FILES
 	rendering/texture/texture.h
 	rendering/transformation/transformation.h
 	rendering/velocitybuffer/velocity_buffer.h
-	resource/resource.h
-	resource/resource_manager.h
+	memory/resource.h
+	memory/resource_manager.h
 	time/time.h
 	transform/transform.h
 	transform/transform_pass.h
@@ -111,7 +111,7 @@ set(SOURCE_FILES
 	rendering/texture/texture.cpp
 	rendering/transformation/transformation.cpp
 	rendering/velocitybuffer/velocity_buffer.cpp
-	resource/resource_manager.cpp
+	memory/resource_manager.cpp
 	time/time.cpp
 	transform/transform.cpp
 	transform/transform_pass.cpp

@@ -442,7 +442,7 @@ namespace InspectableComponents {
 				_spacingS();
 				_headline("Audio Clip");
 
-				IMComponents::label("Currently using:");
+				IMComponents::label("Clip:");
 				ImGui::SameLine();
 				IMComponents::label(audioSource.clip->resourceName(), EditorUI::getFonts().p_bold);
 

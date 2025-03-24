@@ -19,15 +19,19 @@ ResourceManager::~ResourceManager()
 	// Detach worker if required
 	if (worker.joinable()) worker.detach();
 
-	// Delete resources
-	for (auto& [id, resource] : resources) {
-		resource->freeIoData();
-		delete resource;
-	}
+	// All resources are deconstructed automatically
 }
 
-void ResourceManager::loadSync(Resource* resource)
+void ResourceManager::loadSync(uint32_t resourceId)
 {
+	// Retrieve resource
+	std::optional<Resource*> optResource = getResource(resourceId);
+	if (!optResource) {
+		Console::out::warning("Resource Manager", "Tried to load invalid resource synchronously (ID: " + std::to_string(resourceId) + ")");
+		return;
+	}
+	Resource* resource = *optResource;
+
 	// Load resources data
 	resource->_loadedIoData = resource->loadIoData();
 	if (!resource->_loadedIoData) {
@@ -35,7 +39,7 @@ void ResourceManager::loadSync(Resource* resource)
 		return;
 	}
 
-	// Dispatch resource to gpu
+	// Upload resource buffers
 	if (!resource->uploadBuffers()) {
 		resource->_resourceState = ResourceState::FAILED;
 		resource->freeIoData();
@@ -47,10 +51,18 @@ void ResourceManager::loadSync(Resource* resource)
 	resource->_resourceState = ResourceState::READY;
 }
 
-void ResourceManager::loadAsync(Resource* resource)
+void ResourceManager::loadAsync(uint32_t resourceId)
 {
+	// Retrieve resource
+	std::optional<Resource*> optResource = getResource(resourceId);
+	if (!optResource) {
+		Console::out::warning("Resource Manager", "Tried to load invalid resource asynchronously (ID: " + std::to_string(resourceId) + ")");
+		return;
+	}
+	Resource* resource = *optResource;
+
 	// Add task to load tasks queue
-	workerTasks.push(resource); // Possible race condition on the worker tasks queue
+	workerTasks.push(resourceId); // Possible race condition on the worker tasks queue
 
 	// Update resources state
 	resource->_resourceState = ResourceState::QUEUED;
@@ -62,8 +74,17 @@ void ResourceManager::loadAsync(Resource* resource)
 	workerTasksAvailable.notify_one();
 }
 
-void ResourceManager::deleteBuffers(Resource* resource)
+void ResourceManager::deleteBuffers(uint32_t resourceId)
 {
+	// Retrieve resource
+	std::optional<Resource*> optResource = getResource(resourceId);
+	if (!optResource) {
+		Console::out::warning("Resource Manager", "Tried to delete buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
+		return;
+	}
+	Resource* resource = *optResource;
+
+	// Delete resources buffers if available
 	if (resource->_resourceState == ResourceState::READY) {
 		resource->deleteBuffers();
 		resource->_resourceState = ResourceState::EMPTY;
@@ -84,8 +105,17 @@ void ResourceManager::dispatchNext()
 	
 	// Dispatch next resource in queue (only one per frame to prevent heavy main thread blocking)
 	if (!mainTasks.empty()) {
-		// Fetch resource to be dispatched
-		Resource* resource = mainTasks.front();
+		// Get queued resource id
+		uint32_t resourceId = mainTasks.front();
+		popSafe(mainTasks);
+
+		// Try to fetch resource
+		std::optional<Resource*> optResource = getResource(resourceId);
+		if (!optResource) {
+			Console::out::warning("Resource Manager", "Tried to dispatch invalid resource (ID: " + std::to_string(resourceId) + ")");
+			return;
+		}
+		Resource* resource = *optResource;
 
 		// Ensure resource loading didn't fail so far
 		if (resource->_resourceState != ResourceState::FAILED) {
@@ -99,9 +129,6 @@ void ResourceManager::dispatchNext()
 
 			tryFreeIoData(resource);
 		}
-
-		// Pop resource from queue safely
-		popSafe(mainTasks);
 	}
 
 	// Resource dispatched, prevent another dispatch
@@ -130,8 +157,17 @@ void ResourceManager::asyncWorker()
 		}
 
 		while (!workerTasks.empty()) {
-			// Fetch resource to be loaded
-			Resource* resource = workerTasks.front();
+			// Get queued resource id
+			uint32_t resourceId = workerTasks.front();
+			popSafe(workerTasks);
+
+			// Try to fetch resource
+			std::optional<Resource*> optResource = getResource(resourceId);
+			if (!optResource) {
+				Console::out::warning("Resource Manager", "Tried to upload buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
+				continue;
+			}
+			Resource* resource = *optResource;
 
 			// Update resources state
 			resource->_resourceState = ResourceState::LOADING;
@@ -139,7 +175,7 @@ void ResourceManager::asyncWorker()
 			// Sync worker state
 			workerTasksPending = workerTasks.size();
 			workerActive = true;
-			workerTarget = resource;
+			workerTarget = resourceId;
 
 			// Load resource data
 			if (!resource->loadIoData()) {
@@ -150,9 +186,9 @@ void ResourceManager::asyncWorker()
 			}
 
 			// Update queues
-			popSafe(workerTasks);
-			mainTasks.push(resource);
+			mainTasks.push(resourceId);
 
+			// Condition: Main thread must have dispatched pending resource before worker continues
 			mainDispatchNext = true;
 			workerAwaitingDispatch.wait(lock, [&]() { return !mainDispatchNext; });
 		}
@@ -160,7 +196,7 @@ void ResourceManager::asyncWorker()
 		// Sync worker state
 		workerTasksPending = 0;
 		workerActive = false;
-		workerTarget = nullptr;
+		workerTarget = 0;
 	}
 }
 

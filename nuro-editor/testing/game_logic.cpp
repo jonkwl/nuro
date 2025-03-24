@@ -26,7 +26,7 @@ void _physics_example() {
 
 	auto [sphereModelId, sphereModel] = resource.create<Model>("sphere");
 	sphereModel->setSource("./resources/primitives/sphere.fbx");
-	resource.loadSync(sphereModel);
+	resource.loadSync(sphereModelId);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
 
 	// Standard material
@@ -49,27 +49,30 @@ void _physics_example() {
 	// Async texture loading example
 	auto [albedoId, albedo] = resource.create<Texture>("scifi-albedo");
 	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
-	resource.loadAsync(albedo);
+	resource.loadAsync(albedoId);
 
 	auto [normalId, normal] = resource.create<Texture>("scifi-nromal");
 	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
-	resource.loadAsync(normal);
+	resource.loadAsync(normalId);
 
 	auto [metallicId, metallic] = resource.create<Texture>("scifi-metallic");
 	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
-	resource.loadAsync(metallic);
+	resource.loadAsync(metallicId);
 
 	auto [roughnessId, roughness] = resource.create<Texture>("scifi-roughness");
 	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
-	resource.loadAsync(roughness);
+	resource.loadAsync(roughnessId);
 
 	auto [emissiveId, emissive] = resource.create<Texture>("scifi-emissive");
 	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
-	resource.loadAsync(emissive);
+	resource.loadAsync(emissiveId);
 
 	auto [heightId, height] = resource.create<Texture>("scifi-height");
 	height->setSource(TextureType::HEIGHT, "./resources/example-assets/textures/sci-fi/height.jpg");
-	resource.loadAsync(height);
+	resource.loadAsync(heightId);
+
+	resource.loadSync(9359);
+	resource.loadAsync(94325346);
 
 	LitMaterial* scifiMaterial = new LitMaterial();
 	scifiMaterial->albedoMap = albedo;
@@ -120,7 +123,7 @@ void _physics_example() {
 	// Sample audio source
 	auto [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
 	audioClip->setSource("./resources/example-assets/audio/WAV-Surround.wav");
-	resource.loadAsync(audioClip);
+	resource.loadAsync(audioClipId);
 	audio = ecs.createEntity("Sound Emitter");
 	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
 	audio.add<MeshRendererComponent>(sphereMesh, glowingMaterial);
@@ -188,7 +191,7 @@ void _physics_example() {
 	// Model async loading example
 	auto [asyncModelId, asyncModel] = resource.create<Model>("mannequin");
 	asyncModel->setSource("resources/example-assets/models/mannequin.fbx");
-	resource.loadAsync(asyncModel);
+	resource.loadAsync(asyncModelId);
 
 	EntityContainer asyncModelEntity(ecs.createEntity("Async Model"));
 	Transform::setPosition(asyncModelEntity.transform(), glm::vec3(6.0f, 0.0f, 10.0f));

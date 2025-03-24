@@ -54,10 +54,10 @@ protected:
 	// Deletes resources previously uploaded target buffers
 	virtual void deleteBuffers() = 0;
 
+public: 
 	Resource() : _resourceId(0), _resourceName("none"), _resourceState(ResourceState::EMPTY), _loadedIoData(false), preserveIoData(false) {};
 	virtual ~Resource() = default;
 
-public: 
 	// Returns the resources id
 	uint32_t resourceId() const {
 		return _resourceId;
