@@ -84,6 +84,24 @@ void AudioSetupWindow::render()
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 		IMComponents::flagLabel(ICON_FA_EAR_LISTEN " Stereo Angles", audio.stereoAnglesAvailable());
+		ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+		IMComponents::flagLabel(ICON_FA_GLOBE " B-Format Ambisonics", audio.bformatAvailable());
+		ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+		ImGui::Dummy(ImVec2(0.0f, 15.0f));
+
+		//
+		// EFFECTS
+		//
+
+		ImGui::Separator();
+		ImGui::Dummy(ImVec2(0.0f, 12.0f));
+
+		IMComponents::label("Effects   " ICON_FA_SPARKLES, EditorUI::getFonts().h4_bold);
+		ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+		IMComponents::flagLabel("Environmental Effects", audio.effectsAvailable());
 
 		ImGui::Dummy(ImVec2(0.0f, 15.0f));
 	}

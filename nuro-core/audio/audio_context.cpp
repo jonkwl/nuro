@@ -24,6 +24,7 @@ AudioContext::AudioContext() : _context(nullptr),
 _device(),
 stereoAngles(false),
 effects(false),
+bformat(false),
 hrtf(false),
 hrtfList(),
 activeHrtf("None")
@@ -51,6 +52,7 @@ void AudioContext::create()
 	// Check for extensions
 	stereoAngles = alIsExtensionPresent("AL_EXT_STEREO_ANGLES");
 	effects = alcIsExtensionPresent(alDevice, "ALC_EXT_EFX");
+	bformat = alIsExtensionPresent("AL_EXT_BFORMAT");
 
 	// Setup hrtf
 	setupHrtf();
@@ -123,6 +125,16 @@ const AudioDevice& AudioContext::device() const {
 
 bool AudioContext::stereoAnglesAvailable() const {
 	return stereoAngles;
+}
+
+bool AudioContext::effectsAvailable() const
+{
+	return effects;
+}
+
+bool AudioContext::bformatAvailable() const
+{
+	return bformat;
 }
 
 bool AudioContext::hrtfAvailable() const {

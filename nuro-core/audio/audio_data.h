@@ -14,32 +14,13 @@ extern "C"
 }
 
 #include <audio/audio_info.h>
-
-template <typename T>
-struct AudioSamples {
-	static_assert(std::is_integral<T>::value || std::is_floating_point<T>::value, "T of AudioSamples must be a numeric type");
-
-	// Raw pcm audio samples
-	std::vector<T> data;
-
-	// Format of pcm audio samples in backend
-	ALenum format;
-};
+#include <audio/audio_samples.h>
 
 class AudioData 
 {
 public:
 	AudioData();
 	~AudioData();
-
-	// Standard audio stream target format (16-bit signed integer pcm format)
-	static constexpr AVSampleFormat AV_TARGET_FORMAT = AV_SAMPLE_FMT_S16;
-
-	// Audio backend format of mono samples
-	static constexpr ALenum AL_MONO_FORMAT = AL_FORMAT_MONO16;
-
-	// Audio backend format of stereo samples
-	static constexpr ALenum AL_STEREO_FORMAT = AL_FORMAT_STEREO16;
 
 	// Sets the path of the audio source file
 	void setSource(const std::string& path);
@@ -50,18 +31,24 @@ public:
 	// Frees any loaded audio data
 	void free();
 
-	// Returns the loaded pcm mono samples
-	const std::vector<int16_t>& monoSamples() const;
+	// Returns the loaded pcm single channel samples (nullptr if not available)
+	AudioSamples* monoSamples() const;
 
-	// Returns the loaded pcm stereo samples if available
-	const std::vector<int16_t>& stereoSamples() const;
+	// Returns the loaded pcm multichannel samples (nullptr if not available)
+	AudioSamples* multichannelSamples() const;
 
 	// Returns the current audio source file path
 	std::string sourcePath() const;
 
 private:
-	// Decodes an existing audio stream into pcm samples, converting its format and layout if needed
-	bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& formatContext, AVCodecContext*& codecContext, SwrContext*& swrContext, int streamIndex, AVChannelLayout targetLayout, AVSampleFormat targetFormat) const;
+	// Decodes an audio stream into pcm samples, target layout and format provided by samples reference
+	bool decodeInto(AudioSamples* samples, AVFormatContext*& formatContext, AVCodecContext*& codecContext, SwrContext*& swrContext, int streamIndex) const;
+
+	// Returns the channel layout for the provided amount of channels
+	AVChannelLayout getLayout_by_nChannels(int32_t nChannels) const;
+
+	// Returns the channel layout for a provided channel layout mask
+	AVChannelLayout getLayout_by_mask(uint64_t mask) const;
 
 	// Handles process fail
 	bool fail(std::string info) const;
@@ -70,6 +57,6 @@ private:
 	bool validateSource() const;
 
 	std::string _sourcePath;
-	std::vector<int16_t> _monoSamples;
-	std::vector<int16_t> _stereoSamples;
+	AudioSamples* _monoSamples;
+	AudioSamples* _multichannelSamples;
 };

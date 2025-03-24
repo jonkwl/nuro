@@ -4,7 +4,8 @@
 
 #include <utils/console.h>
 
-AudioBuffer::AudioBuffer() : _id(0)
+AudioBuffer::AudioBuffer() : _id(0),
+_loaded(false)
 {
 }
 
@@ -13,7 +14,7 @@ AudioBuffer::~AudioBuffer()
 	destroy();
 }
 
-bool AudioBuffer::create(const std::vector<int16_t>& pcmSamples, int32_t sampleRate, ALenum format)
+bool AudioBuffer::create(AudioSamples& samples)
 {
 	ALuint bufferId;
 	alGenBuffers(1, &bufferId);
@@ -22,15 +23,15 @@ bool AudioBuffer::create(const std::vector<int16_t>& pcmSamples, int32_t sampleR
 		return false;
 	}
 
-	size_t size = pcmSamples.size() * sizeof(int16_t);
-
-	alBufferData(bufferId, format, pcmSamples.data(), size, sampleRate);
+	alBufferData(bufferId, samples.getAlFormat(), samples.getSamples(), samples.getSize(), samples.getSampleRate());
 	if (alGetError() != AL_NO_ERROR) {
 		Console::out::warning("Audio Buffer", "Couldn't load audio data into buffer");
 		return false;
 	}
 
 	_id = static_cast<uint32_t>(bufferId);
+	_loaded = true;
+
 	return true;
 }
 
@@ -38,9 +39,15 @@ void AudioBuffer::destroy()
 {
 	if (_id) alDeleteBuffers(1, &_id);
 	_id = 0;
+	_loaded = false;
 }
 
 uint32_t AudioBuffer::id() const
 {
 	return _id;
+}
+
+bool AudioBuffer::loaded() const
+{
+	return _loaded;
 }

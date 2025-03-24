@@ -28,6 +28,12 @@ public:
 	// Returns if stereo angles are available
 	bool stereoAnglesAvailable() const;
 
+	// Returns if effects are available
+	bool effectsAvailable() const;
+
+	// Returns if B-format ambisonics are available
+	bool bformatAvailable() const;
+
 	// Returns if hrtf is available
 	bool hrtfAvailable() const;
 
@@ -55,6 +61,8 @@ private:
 
 	bool stereoAngles;
 	bool effects;
+	bool bformat;
+
 	bool hrtf;
 	std::vector<std::string> hrtfList;
 	std::string activeHrtf;

@@ -14,15 +14,15 @@ namespace AudioSource {
 
         // Fetch audio buffer from clip
         bool forceMono = audioSource.isSpatial;
-        bool useStereo = audioSource.clip->stereoAvailable() && !forceMono;
-        const AudioBuffer& buffer = useStereo ? audioSource.clip->stereoBuffer() : audioSource.clip->monoBuffer();
-
-        // Tmp
-        audioSource.usingStereo = useStereo;
+        bool useMultichannel = audioSource.clip->multichannelAvailable() && !forceMono;
+        const AudioBuffer& buffer = useMultichannel ? audioSource.clip->multichannelBuffer() : audioSource.clip->monoBuffer();
 
         // Bind buffer to source
         if (!buffer.id()) return false;
         alSourcei(audioSource.id, AL_BUFFER, buffer.id());
+
+        // Update using multichannel
+        audioSource.usingMultichannel = useMultichannel;
 
         return true;
     }
@@ -44,6 +44,10 @@ namespace AudioSource {
 
     void setIsSpatial(AudioSourceComponent& audioSource, bool spatial)
     {
+        // Fetch initial source state
+        State state = getState(audioSource);
+        float offset = getOffset(audioSource);
+
         if (spatial) {
             // Make source use absolute position
             alSourcei(audioSource.id, AL_SOURCE_RELATIVE, AL_FALSE);
@@ -69,6 +73,9 @@ namespace AudioSource {
 
         // Rebind buffer
         _bindBuffer(audioSource);
+
+        // Restore previous play state
+        if (state == State::PLAYING) play(audioSource, offset);
     }
 
     void setRange(AudioSourceComponent& audioSource, float range) {
@@ -117,15 +124,56 @@ namespace AudioSource {
         setIsSpatial(audioSource, audioSource.isSpatial);
     }
 
-    void play(AudioSourceComponent& audioSource)
+    State getState(AudioSourceComponent& audioSource)
     {
+        ALint state;
+        alGetSourcei(audioSource.id, AL_SOURCE_STATE, &state);
+        switch (state) {
+        case AL_PLAYING:
+            return State::PLAYING;
+        case AL_PAUSED:
+            return State::PAUSED;
+        default:
+            return State::STOPPED;
+        }
+    }
+
+    void play(AudioSourceComponent& audioSource, float offset)
+    {
+        // Always bind buffer from current audio clip
         if (!_bindBuffer(audioSource)) return;
+
+        // Set playback offset if given
+        if (offset) setOffset(audioSource, offset);
+
         alSourcePlay(audioSource.id);
+    }
+
+    void pause(AudioSourceComponent& audioSource)
+    {
+        alSourcePause(audioSource.id);
     }
 
     void stop(AudioSourceComponent& audioSource)
     {
         alSourceStop(audioSource.id);
+    }
+
+    void resume(AudioSourceComponent& audioSource)
+    {
+        play(audioSource, getOffset(audioSource));
+    }
+
+    float getOffset(AudioSourceComponent& audioSource)
+    {
+        float offset;
+        alGetSourcef(audioSource.id, AL_SEC_OFFSET, &offset);
+        return offset;
+    }
+
+    void setOffset(AudioSourceComponent& audioSource, float offset)
+    {
+        alSourcef(audioSource.id, AL_SEC_OFFSET, offset);
     }
 
 };

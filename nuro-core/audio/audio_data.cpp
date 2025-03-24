@@ -1,5 +1,8 @@
 #include "audio_data.h"
 
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alext.h>
 #include <filesystem>
 
 #include <utils/console.h>
@@ -8,8 +11,8 @@
 namespace fs = std::filesystem;
 
 AudioData::AudioData() : _sourcePath(),
-_monoSamples(),
-_stereoSamples()
+_monoSamples(nullptr),
+_multichannelSamples(nullptr)
 {
 }
 
@@ -27,6 +30,12 @@ void AudioData::setSource(const std::string& path)
 bool AudioData::load(AudioInfo& info)
 {
     if (!validateSource()) return false;
+
+    //
+    // MAKE SURE ANY EXISTING DATA IS FREED
+    //
+
+    free();
 
     //
     // RESOURCES
@@ -98,37 +107,62 @@ bool AudioData::load(AudioInfo& info)
 
     info.path = _sourcePath;
     info.name = IOUtils::getFilename(info.path);
-    info.format = std::string(formatContext->iformat->name);
+    info.fileFormat = std::string(formatContext->iformat->name);
     info.codec = codec->name;
     info.sampleRate = codecContext->sample_rate;
     info.nChannels = codecContext->ch_layout.nb_channels;
-    info.stereo = info.nChannels == 2;
+    info.sampleFormat = codecContext->sample_fmt;
     info.bitrate = formatContext->bit_rate;
     info.duration = formatContext->duration / (double)AV_TIME_BASE;
 
     //
-    // DECODE AUDIO FRAMES
+    // FETCH METADATA
     //
 
-    // Decode into mono samples
-    {
-        AVChannelLayout layout;
-        av_channel_layout_default(&layout, 1);
-
-        if (!decodeInto(_monoSamples, formatContext, codecContext, swrContext, streamIndex, layout, AV_TARGET_FORMAT)) {
-            cleanup();
-            return false;
+    AVDictionary* metaDictionary = formatContext->metadata;
+    if (metaDictionary != nullptr) {
+        AVDictionaryEntry* entry = nullptr;
+        while ((entry = av_dict_get(metaDictionary, "", entry, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+            info.metadata[entry->key] = entry->value;
         }
     }
 
-    // Decode into stereo samples if available
-    if (info.stereo) {
-        AVChannelLayout layout;
-        av_channel_layout_default(&layout, 2);
+    //
+    // DECODE MONO SAMPLES
+    //
 
-        if (!decodeInto(_stereoSamples, formatContext, codecContext, swrContext, streamIndex, layout, AV_TARGET_FORMAT)) {
+    {
+        // Mono
+        _monoSamples = new AudioSamplesBuffer<int16_t>(info.sampleRate, getLayout_by_nChannels(1), AV_SAMPLE_FMT_S16, AL_FORMAT_MONO16);
+        if (!decodeInto(_monoSamples, formatContext, codecContext, swrContext, streamIndex)) {
             cleanup();
-            return false;
+            return fail("Failed decoding mono samples");
+        }
+    }
+    
+    //
+    // DECODE MULTICHANNEL
+    //
+
+    if (info.nChannels == 2) {
+        // Stereo
+        _multichannelSamples = new AudioSamplesBuffer<int16_t>(info.sampleRate, getLayout_by_nChannels(2), AV_SAMPLE_FMT_S16, AL_FORMAT_STEREO16);
+        if (!decodeInto(_multichannelSamples, formatContext, codecContext, swrContext, streamIndex)) {
+            cleanup();
+            return fail("Failed decoding stereo samples");
+        }
+    }
+
+    // Note: Channel layouts with >2 channels can't always be determined by the audio file or stream itself, therefore the 
+    // channel layout for an audio with >2 channels should be enabled and chosen manually later to prevent mismatches.
+    // 
+    // --> For now any 4-channel audio gets decoded into B-format 3D
+    else if (info.nChannels == 4) {
+        // B-format 3D
+        _multichannelSamples = new AudioSamplesBuffer<int16_t>(info.sampleRate, getLayout_by_mask(AV_CH_LAYOUT_4POINT0), AV_SAMPLE_FMT_S16, AL_FORMAT_BFORMAT3D_16);
+        if (!decodeInto(_multichannelSamples, formatContext, codecContext, swrContext, streamIndex)) {
+            cleanup();
+            return fail("Failed decoding 4-channel bformat samples");
         }
     }
 
@@ -138,18 +172,24 @@ bool AudioData::load(AudioInfo& info)
 
 void AudioData::free()
 {
-    _monoSamples.clear();
-    _stereoSamples.clear();
+    if (_monoSamples) 
+        delete _monoSamples;
+
+    if (_multichannelSamples) 
+        delete _multichannelSamples;
+
+    _monoSamples = nullptr;
+    _multichannelSamples = nullptr;
 }
 
-const std::vector<int16_t>& AudioData::monoSamples() const
+AudioSamples* AudioData::monoSamples() const
 {
 	return _monoSamples;
 }
 
-const std::vector<int16_t>& AudioData::stereoSamples() const
+AudioSamples* AudioData::multichannelSamples() const
 {
-    return _stereoSamples;
+    return _multichannelSamples;
 }
 
 std::string AudioData::sourcePath() const
@@ -157,13 +197,43 @@ std::string AudioData::sourcePath() const
     return _sourcePath;
 }
 
-bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& formatContext, AVCodecContext*& codecContext, SwrContext*& swrContext, int streamIndex, AVChannelLayout targetLayout, AVSampleFormat targetFormat) const
+bool AudioData::decodeInto(AudioSamples* samples, AVFormatContext*& formatContext, AVCodecContext*& codecContext, SwrContext*& swrContext, int streamIndex) const
 {
+    //
+    // MAKE SURE SAMPLES TO BE FILLED EXIST
+    //
+
+    if (!samples) return false;
+
+    //
+    // RESET STREAM POSITION TO BEGINNING
+    //
+
+    if (av_seek_frame(formatContext, streamIndex, 0, AVSEEK_FLAG_BACKWARD) < 0) {
+        return fail("Failed to seek to the beginning of the stream");
+    }
+
+    avcodec_flush_buffers(codecContext);
+
+    if (swrContext) {
+        swr_free(&swrContext);
+        swrContext = nullptr;
+    }
+
+    //
+    // DECODE FRAMES
+    //
+
+    AVChannelLayout targetLayout = samples->getAvTargetLayout();
+    AVSampleFormat targetFormat = samples->getAvTargetFormat();
+
     AVPacket packet;
     av_init_packet(&packet);
 
     while (av_read_frame(formatContext, &packet) >= 0) {
+
         if (packet.stream_index == streamIndex) {
+
             if (avcodec_send_packet(codecContext, &packet) < 0) {
                 av_packet_unref(&packet);
                 return fail("Error sending packet for decoding");
@@ -176,7 +246,17 @@ bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& form
             }
 
             while (avcodec_receive_frame(codecContext, frame) == 0) {
+
+                //
+                // TARGET LAYOUT OR FORMAT NOT MATCHING
+                //
+
                 if (av_channel_layout_compare(&frame->ch_layout, &targetLayout) != 0 || frame->format != targetFormat) {
+                   
+                    //
+                    // NO SWR CONTEXT --> CREATE SWR CONTEXT
+                    //
+
                     if (!swrContext) {
                         if (swr_alloc_set_opts2(&swrContext, &targetLayout, targetFormat, codecContext->sample_rate, &codecContext->ch_layout, codecContext->sample_fmt, codecContext->sample_rate, 0, nullptr) < 0)
                         {
@@ -191,6 +271,10 @@ bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& form
                             return fail("Failed to initialize resampler");
                         }
                     }
+
+                    //
+                    // DECODE SAMPLES
+                    //
 
                     uint8_t** outputBuffer = nullptr;
                     int outputLinesize = 0;
@@ -215,25 +299,39 @@ bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& form
                     }
 
                     int dataSize = av_samples_get_buffer_size(nullptr, targetLayout.nb_channels, convertedSamples, targetFormat, 0);
-                    samples.insert(samples.end(), (int16_t*)outputBuffer[0], (int16_t*)(outputBuffer[0] + dataSize));
+                    samples->insertSamples(outputBuffer[0], outputBuffer[0] + dataSize);
 
                     av_freep(&outputBuffer[0]);
                     av_freep(&outputBuffer);
                 }
+
+                //
+                // TARGET LAYOUT OR FORMAT MATCHING
+                //
+
                 else {
+
+                    //
+                    // DECODE PLANAR SAMPLES
+                    //
+
                     if (av_sample_fmt_is_planar((AVSampleFormat)frame->format)) {
-                        for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ++ch)
-                            samples.insert(samples.end(),
-                                reinterpret_cast<int16_t*>(frame->extended_data[ch]),
-                                reinterpret_cast<int16_t*>(frame->extended_data[ch]) + frame->nb_samples);
+                        for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ++ch) {
+                            int16_t* channelData = reinterpret_cast<int16_t*>(frame->extended_data[ch]);
+                            samples->insertSamples(channelData, channelData + frame->nb_samples);
+                        }
                     }
+
+                    //
+                    // DECODE NON PLANAR SAMPLES
+                    //
+
                     else {
                         int dataSize = av_samples_get_buffer_size(nullptr, codecContext->ch_layout.nb_channels,
                             frame->nb_samples, (AVSampleFormat)frame->format, 1);
-                        int sampleCount = dataSize / sizeof(int16_t);
-                        samples.insert(samples.end(),
-                            reinterpret_cast<int16_t*>(frame->extended_data[0]),
-                            reinterpret_cast<int16_t*>(frame->extended_data[0]) + sampleCount);
+                        int sampleCount = dataSize / sizeof(int16_t); 
+                        int16_t* buffer = reinterpret_cast<int16_t*>(frame->extended_data[0]);
+                        samples->insertSamples(buffer, buffer + sampleCount);
                     }
                 }
             }
@@ -241,6 +339,22 @@ bool AudioData::decodeInto(std::vector<int16_t>& samples, AVFormatContext*& form
         }
         av_packet_unref(&packet);
     }
+
+    return true;
+}
+
+AVChannelLayout AudioData::getLayout_by_nChannels(int32_t nChannels) const
+{
+    AVChannelLayout layout;
+    av_channel_layout_default(&layout, nChannels);
+    return layout;
+}
+
+AVChannelLayout AudioData::getLayout_by_mask(uint64_t mask) const
+{
+    AVChannelLayout layout;
+    av_channel_layout_from_mask(&layout, mask);
+    return layout;
 }
 
 bool AudioData::fail(std::string info) const

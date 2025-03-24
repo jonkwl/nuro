@@ -119,9 +119,8 @@ void _physics_example() {
 
 	// Sample audio source
 	auto [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
-	audioClip->setSource("./resources/example-assets/audio/example.wav");
+	audioClip->setSource("./resources/example-assets/audio/WAV-Surround.wav");
 	resource.loadAsync(audioClip);
-
 	audio = ecs.createEntity("Sound Emitter");
 	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
 	audio.add<MeshRendererComponent>(sphereMesh, glowingMaterial);

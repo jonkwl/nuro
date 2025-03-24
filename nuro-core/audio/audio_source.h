@@ -6,6 +6,12 @@ class AudioClip;
 
 namespace AudioSource {
 
+    enum State {
+        PLAYING,
+        PAUSED,
+        STOPPED
+    };
+
     // Set gain (volume)
     void setVolume(AudioSourceComponent& audioSource, float volume);
 
@@ -39,10 +45,25 @@ namespace AudioSource {
     // Syncs all settings of an audio source
     void sync(AudioSourceComponent& audioSource);
 
-    // Starts the playback of the audio source
-    void play(AudioSourceComponent& audioSource);
+    // Returns the state of an audio source
+    State getState(AudioSourceComponent& audioSource);
 
-    // Stops the playback of the audio source
+    // Starts the playback
+    void play(AudioSourceComponent& audioSource, float offset = 0.0f);
+
+    // Pauses the playback
+    void pause(AudioSourceComponent& audioSource);
+
+    // Stops the playback
     void stop(AudioSourceComponent& audioSource);
+
+    // Continues the playback where it last stopped
+    void resume(AudioSourceComponent& audioSource);
+
+    // Returns the current playback offset
+    float getOffset(AudioSourceComponent& audioSource);
+
+    // Sets the current playback offset
+    void setOffset(AudioSourceComponent& audioSource, float offset);
 
 };

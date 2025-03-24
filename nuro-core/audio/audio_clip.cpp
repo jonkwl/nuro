@@ -1,3 +1,4 @@
+
 #include "audio_clip.h"
 
 #include <utils/console.h>
@@ -16,12 +17,17 @@ bool AudioClip::uploadBuffers()
 {
     printInfo();
 
-    if (!_monoBuffer.create(_data.monoSamples(), _info.sampleRate, AudioData::AL_MONO_FORMAT)) 
-        return false;
+    // Create mono buffer (mandatory)
+    AudioSamples* monoSamples = _data.monoSamples();
+    if (!monoSamples) return false;
+    if (!_monoBuffer.create(*monoSamples)) return false;
 
-    if (_info.stereo)
-        if (_stereoBuffer.create(_data.stereoSamples(), _info.sampleRate, AudioData::AL_STEREO_FORMAT)) 
-            _stereoAvailable = true;
+    // Create multichannel buffer if available
+    AudioSamples* multichannelSamples = _data.multichannelSamples();
+    if (multichannelSamples) {
+        if (_multichannelBuffer.create(*multichannelSamples))
+            _multichannelAvailable = true;
+    }
 
     return true;
 }
@@ -29,14 +35,14 @@ bool AudioClip::uploadBuffers()
 void AudioClip::deleteBuffers()
 {
 	_monoBuffer.destroy();
-	_stereoBuffer.destroy();
+	_multichannelBuffer.destroy();
 }
 
 AudioClip::AudioClip() : _info(),
 _data(),
-_stereoAvailable(false),
+_multichannelAvailable(false),
 _monoBuffer(),
-_stereoBuffer()
+_multichannelBuffer()
 {
 }
 
@@ -61,9 +67,9 @@ const AudioData& AudioClip::data() const
 	return _data;
 }
 
-bool AudioClip::stereoAvailable() const
+bool AudioClip::multichannelAvailable() const
 {
-    return _stereoAvailable;
+    return _multichannelAvailable;
 }
 
 const AudioBuffer& AudioClip::monoBuffer() const
@@ -71,16 +77,23 @@ const AudioBuffer& AudioClip::monoBuffer() const
 	return _monoBuffer;
 }
 
-const AudioBuffer& AudioClip::stereoBuffer() const
+const AudioBuffer& AudioClip::multichannelBuffer() const
 {
-    return _stereoBuffer;
+    return _multichannelBuffer;
 }
 
 void AudioClip::printInfo() const
 {
+    std::string metadata;
+    if (_info.metadata.empty()) metadata = "None";
+    else {
+        for (const auto& [key, value] : _info.metadata)
+            metadata.append("\n    - " + key + ": " + value);
+    }
+
     Console::print
         >> Console::endl
-        >> " nuro >>> Audio Clip \"" + resourceName() + "\":" >> Console::endl
+        >> " nuro >>> Audio Clip \"" + resourceName() + "\":"
 
 
         >> Console::endl
@@ -95,14 +108,14 @@ void AudioClip::printInfo() const
 
         >> " Path: " >> _info.path >> Console::endl
         >> " Name: " >> _info.name >> Console::endl
-        >> " Format: " >> _info.format >> Console::endl
+        >> " File Format: " >> _info.fileFormat >> Console::endl
         >> " Codec: " >> _info.codec >> Console::endl
         >> " Sample Rate: " >> std::to_string(_info.sampleRate) >> " Hz" >> Console::endl
         >> " Channels: " >> std::to_string(_info.nChannels) >> Console::endl
-        >> " Stereo: " >> (_info.stereo ? "Yes" : "No") >> Console::endl
+        >> " Sample Format: " >> _info.formatToStr(_info.sampleFormat) >> Console::endl
         >> " Bitrate: " >> std::to_string(_info.bitrate * 0.001) >> " kbit/s" >> Console::endl
         >> " Duration: " >> std::to_string(_info.duration) >> "s" >> Console::endl
-        >> " Metadata: " >> (_info.metadata.empty() ? "None" : _info.metadata) >> Console::endl
+        >> " Metadata: " >> Console::TextColor::GRAY >> metadata >> Console::endl
 
 
         >> Console::endl

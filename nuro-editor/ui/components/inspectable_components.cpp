@@ -442,21 +442,38 @@ namespace InspectableComponents {
 				_spacingS();
 				_headline("Audio Clip");
 
-				IMComponents::label("Currently using: ");
+				IMComponents::label("Currently using:");
 				ImGui::SameLine();
 				IMComponents::label(audioSource.clip->resourceName(), EditorUI::getFonts().p_bold);
 
-				_spacingS();
-				bool stereoAvailable = audioSource.clip->stereoAvailable();
-				IMComponents::flagLabel("Stereo Available", stereoAvailable);
-				IMComponents::label("Using: ");
-				ImGui::SameLine();
-				IMComponents::label(audioSource.usingStereo ? "Stereo" : "Mono", EditorUI::getFonts().p_bold, audioSource.usingStereo ? IM_COL32(185, 90, 255, 255) : IM_COL32(255, 90, 5, 255));
-				if (stereoAvailable && audioSource.isSpatial)
-					IMComponents::label(ICON_FA_ARROW_RIGHT " Spatial audio sources always use Mono", IM_COL32(220, 255, 220, 200));
+				if (audioSource.usingMultichannel) {
+					int32_t nChannels = audioSource.clip->info().nChannels;
+					std::string layoutName = "Stereo";
+					if (nChannels > 2) layoutName = std::to_string(nChannels) + " Channels";
+
+					_spacingS();
+					IMComponents::label("Using");
+					ImGui::SameLine();
+					IMComponents::label(layoutName, EditorUI::getFonts().p_bold, IM_COL32(185, 90, 255, 255));
+				}
 
 				_spacingM();
-				if (IMComponents::buttonBig("Play")) AudioSource::play(audioSource);
+				AudioSource::State state = AudioSource::getState(audioSource);
+				switch (state) {
+				case AudioSource::State::PLAYING:
+					if (IMComponents::buttonBig(ICON_FA_PAUSE "  Pause")) AudioSource::pause(audioSource);
+					ImGui::SameLine();
+					if (IMComponents::buttonBig(ICON_FA_STOP "  Stop")) AudioSource::stop(audioSource);
+					break;
+				case AudioSource::State::PAUSED:
+					if (IMComponents::buttonBig(ICON_FA_PLAY "  Resume")) AudioSource::resume(audioSource);
+					ImGui::SameLine();
+					if (IMComponents::buttonBig(ICON_FA_STOP "  Stop")) AudioSource::stop(audioSource);
+					break;
+				case AudioSource::State::STOPPED:
+					if (IMComponents::buttonBig(ICON_FA_PLAY "  Play")) AudioSource::play(audioSource);
+					break;
+				}
 			}
 
 			_spacingM();

@@ -298,7 +298,7 @@ struct AudioSourceComponent {
 	// Backend id of audio source
 	uint32_t id;
 
-	// Set if audio source is currently using the stereo buffer of its clip
-	bool usingStereo;
+	// Set if audio source is currently using a multichannel buffer
+	bool usingMultichannel;
 
 };

@@ -29,11 +29,11 @@ public:
 	// Returns a readonly reference to the audio clips mono buffer
 	const AudioBuffer& monoBuffer() const;
 
-	// Returns a readonly reference to the audio clips stereo buffer
-	const AudioBuffer& stereoBuffer() const;
+	// Returns a readonly reference to the audio clips multichannel buffer
+	const AudioBuffer& multichannelBuffer() const;
 
-	// Returns if the stereo buffer is available
-	bool stereoAvailable() const;
+	// Returns if the multichannel buffer is available
+	bool multichannelAvailable() const;
 
 	// Prints information about the audio clip
 	void printInfo() const;
@@ -43,7 +43,7 @@ private:
 	AudioData _data;	
 
 	AudioBuffer _monoBuffer;
-	AudioBuffer _stereoBuffer;
+	AudioBuffer _multichannelBuffer;
 
-	bool _stereoAvailable;
+	bool _multichannelAvailable;
 };
