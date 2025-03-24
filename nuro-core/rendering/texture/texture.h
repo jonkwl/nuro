@@ -40,7 +40,7 @@ public:
 	uint32_t backendId() const;
 
 	// Sets the given texture backend id to be the default backend id for new textures
-	static void setDefaultTexture(Texture* texture);
+	static void setDefaultTexture(uint32_t textureId);
 
 private:
 	// Default texture fallback

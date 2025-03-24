@@ -1,8 +1,8 @@
 #include "unlit_material.h"
 
+#include <utils/console.h>
 #include <rendering/texture/texture.h>
 #include <rendering/shader/shader_pool.h>
-#include <utils/console.h>
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!
    !!					   !!
@@ -37,7 +37,7 @@ uint32_t UnlitMaterial::getId() const
 	return id;
 }
 
-Shader* UnlitMaterial::getShader() const
+ResourceRef<Shader> UnlitMaterial::getShader() const
 {
 	return shader;
 }

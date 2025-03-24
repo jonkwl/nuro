@@ -1,11 +1,12 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
+#include <cstdint>
 #include <glm/glm.hpp>
 
-#include <rendering/texture/texture.h>
 #include <ecs/components.h>
+#include <memory/resource_manager.h>
+#include <rendering/texture/texture.h>
 
 class Shader;
 class Model;
@@ -69,8 +70,8 @@ private:
 	struct StaticData {
 		bool loaded = false;
 
-		Shader* fillShader = nullptr;
-		Shader* iconShader = nullptr;
+		ResourceRef<Shader> fillShader = nullptr;
+		ResourceRef<Shader> iconShader = nullptr;
 
 		const Mesh* planeMesh = nullptr;
 		const Mesh* boxMesh = nullptr;

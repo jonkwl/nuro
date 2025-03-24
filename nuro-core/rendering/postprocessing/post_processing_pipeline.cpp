@@ -5,13 +5,12 @@
 
 #include <utils/console.h>
 #include <rendering/shader/shader.h>
-#include <rendering/shader/shader_pool.h>
-#include <rendering/primitives/global_quad.h>
-#include <rendering/passes/ssao_pass.h>
 #include <rendering/passes/pre_pass.h>
-#include <rendering/passes/forward_pass.h>
 #include <rendering/texture/texture.h>
-#include <utils/console.h>
+#include <rendering/passes/ssao_pass.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/passes/forward_pass.h>
+#include <rendering/primitives/global_quad.h>
 
 PostProcessingPipeline::PostProcessingPipeline(const Viewport& viewport, bool renderToScreen) : viewport(viewport),
 renderToScreen(renderToScreen),

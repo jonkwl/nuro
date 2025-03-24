@@ -6,6 +6,7 @@
 
 #include <ecs/ecs_collection.h>
 #include <rendering/shader/shader.h>
+#include <memory/resource_manager.h>
 
 class ShadowMap
 {
@@ -74,5 +75,5 @@ private:
 	glm::mat4 lightSpace;
 
 	// Shadow pass shader
-	Shader* shadowPassShader;
+	ResourceRef<Shader> shadowPassShader;
 };

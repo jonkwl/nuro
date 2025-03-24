@@ -6,6 +6,7 @@
 
 #include <utils/console.h>
 #include <utils/ioutils.h>
+#include <memory/resource_manager.h>
 #include <rendering/texture/texture.h>
 #include <context/application_context.h>
 
@@ -15,10 +16,10 @@ namespace IconPool {
 	std::vector<std::string> gValidExtensions = { ".png", ".jpg", ".jpeg" };
 
 	// Global registry of all icons
-	std::unordered_map<std::string, Texture*> gIcons;
+	std::unordered_map<std::string, ResourceRef<Texture>> gIcons;
 
 	// Texture of fallback icon for invalid icons
-	Texture* gInvalidIcon = new Texture();
+	ResourceRef<Texture> gInvalidIcon;
 
 	void _loadAll(const std::string& directory, bool async)
 	{
@@ -35,13 +36,14 @@ namespace IconPool {
 			// Get icon texture type
 			TextureType type = IOUtils::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
+			// Create icon texture
+			auto& [textureId, texture] = resource.create<Texture>(identifier);
+			texture->setSource(type, file);
+
 			// Insert new icon
-			auto [textureId, texture] = resource.create<Texture>(identifier);
-			auto [it, inserted] = gIcons.insert({ identifier, texture });
-			auto& icon = it->second;
+			gIcons.insert({ identifier, texture });
 
 			// Load icon texture
-			icon->setSource(type, file);
 			if (async) {
 				resource.loadAsync(textureId);
 			}
@@ -80,7 +82,7 @@ namespace IconPool {
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		auto [textureId, texture] = resource.create<Texture>("fallback-icon");
+		auto& [textureId, texture] = resource.create<Texture>("fallback-icon");
 		gInvalidIcon = texture;
 		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, path);
 

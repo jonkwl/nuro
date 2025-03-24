@@ -1,10 +1,11 @@
 #pragma once
 
+#include <vector>
 #include <cstdint>
 #include <glm/glm.hpp>
-#include <vector>
 
 #include <viewport/viewport.h>
+#include <memory/resource_manager.h>
 #include <rendering/postprocessing/post_processing.h>
 
 class Shader;
@@ -43,8 +44,8 @@ private:
 	void ambientOcclusionPass(const glm::mat4& projection, const PostProcessing::Profile& profile, uint32_t depthInput, uint32_t normalInput);
 	void blurPass(const PostProcessing::Profile& profile);
 
-	Shader* aoPassShader; // Ambient occlusion pass shader
-	Shader* aoBlurShader; // Composite shader
+	ResourceRef<Shader> aoPassShader; // Ambient occlusion pass shader
+	ResourceRef<Shader> aoBlurShader; // Composite shader
 
 	std::vector<glm::vec3> kernel; // Sample kernel
 	uint32_t noiseTexture;	  // Noise texture

@@ -54,8 +54,12 @@ protected:
 	// Deletes resources previously uploaded target buffers
 	virtual void deleteBuffers() = 0;
 
-public: 
+	// Protected constructor
 	Resource() : _resourceId(0), _resourceName("none"), _resourceState(ResourceState::EMPTY), _loadedIoData(false), preserveIoData(false) {};
+
+public: 
+
+	// Public deconstructor
 	virtual ~Resource() = default;
 
 	// Returns the resources id

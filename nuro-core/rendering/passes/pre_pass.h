@@ -5,7 +5,9 @@
 #include <glm/glm.hpp>
 
 #include <viewport/viewport.h>
-#include <rendering/shader/shader.h>
+#include <memory/resource_manager.h>
+
+class Shader;
 
 class PrePass
 {
@@ -27,5 +29,5 @@ private:
 	uint32_t depthOutput;
 	uint32_t normalOutput;
 
-	Shader* prePassShader;
+	ResourceRef<Shader> prePassShader;
 };

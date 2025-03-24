@@ -14,6 +14,12 @@
 #include <utils/console.h>
 #include <memory/resource.h>
 
+template <typename T>
+using ResourceRef = std::shared_ptr<T>;
+
+template <typename T>
+using OptResource = std::optional<ResourceRef<T>>;
+
 class ResourceManager
 {
 public:
@@ -29,36 +35,40 @@ public:
 	ResourceManager();
 	~ResourceManager();
 
-	// Creates a new resource (lifetime managed by resource manager), returns the resource id and non-owning pointer to resource
+	// Creates a new resource (lifetime managed by resource manager)
 	template <typename T, typename... Args>
-	std::pair<uint32_t, T*> create(const std::string& name, Args&&... args) {
-		return allocate<T>(name, std::forward<Args>(args)...);
+	std::pair<uint32_t, ResourceRef<T>> create(const std::string& name, Args&&... args) {
+		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are valid for allocation");
+
+		// Create and return resource
+		uint32_t id = ++idCounter;
+		auto& result = resources.emplace(id, std::make_shared<T>(std::forward<Args>(args)...));
+		auto& resource = result.first->second;
+		resource->_resourceId = id;
+		resource->_resourceName = name;
+		return std::make_pair(id, std::static_pointer_cast<T>(resource));
 	}
 
-	// Retrieves a resource base by resource id, returned pointer is non-owning
-	std::optional<Resource*> getResource(uint32_t resourceId) {
+	// Retrieves an optional resource handle for a resource base by resource id
+	OptResource<Resource> getResource(uint32_t resourceId) {
 		// Find resource
 		auto it = resources.find(resourceId);
-		if (it != resources.end()) {
-			Resource* resourcePtr = it->second.get();
-			if (resourcePtr) return resourcePtr;
-		}
+		if (it != resources.end())
+			return it->second;
 
 		// Resource not found
 		return std::nullopt;
 	}
 
-	// Retrieves a resource as a derived type T by resource id, returned pointer is non-owning
+	// Retrieves an optional handle for a derived type T of resource by resource id
 	template <typename T>
-	std::optional<T*> getResourceAs(uint32_t resourceId) {
+	OptResource<T> getResourceAs(uint32_t resourceId) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are retrievable");
 
 		// Find resource
 		auto it = resources.find(resourceId);
-		if (it != resources.end()) {
-			T* resourcePtr = dynamic_cast<T*>(it->second).get();
-			if (resourcePtr) return resourcePtr;
-		}
+		if (it != resources.end())
+			return std::static_pointer_cast<T>(it->second);
 
 		// Resource not found
 		return std::nullopt;
@@ -100,20 +110,7 @@ private:
 	// 
 	
 	uint32_t idCounter;
-	std::unordered_map<uint32_t, std::unique_ptr<Resource>> resources;
-
-	template <typename T, typename... Args>
-	std::pair<uint32_t, T*> allocate(const std::string& name, Args&&... args) {
-		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are valid for allocation");
-		
-		// Create and return resource
-		uint32_t id = ++idCounter;
-		auto& result = resources.emplace(id, std::make_unique<T>(std::forward<Args>(args)...));
-		T* resource = static_cast<T*>(result.first->second.get());
-		resource->_resourceId = id;
-		resource->_resourceName = name;
-		return std::make_pair(id, resource);
-	}
+	std::unordered_map<uint32_t, ResourceRef<Resource>> resources;
 
 	//
 	// MAIN THREAD
@@ -161,5 +158,5 @@ private:
 	//
 
 	// Frees the io data of a resource if it isn't set to be preserved
-	void tryFreeIoData(Resource* resource);
+	void tryFreeIoData(ResourceRef<Resource>& resource);
 };

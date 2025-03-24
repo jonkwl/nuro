@@ -15,12 +15,12 @@ emission(1.0f)
 {
 }
 
-void Skybox::setCubemap(Cubemap* _cubemap)
+void Skybox::setCubemap(ResourceRef<Cubemap> _cubemap)
 {
 	cubemap = _cubemap;
 }
 
-Cubemap* Skybox::getCubemap() const
+ResourceRef<Cubemap> Skybox::getCubemap() const
 {
 	return cubemap;
 }

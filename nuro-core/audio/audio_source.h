@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ecs/components.h>
+#include <memory/resource_manager.h>
 
 class AudioClip;
 
@@ -40,7 +41,7 @@ namespace AudioSource {
     void setConeOuterVolume(AudioSourceComponent& audioSource, float volume);
 
     // Sets the clip of an audio source
-    void setClip(AudioSourceComponent& audioSource, AudioClip* clip);
+    void setClip(AudioSourceComponent& audioSource, ResourceRef<AudioClip> clip);
 
     // Syncs all settings of an audio source
     void sync(AudioSourceComponent& audioSource);

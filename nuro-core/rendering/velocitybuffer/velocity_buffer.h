@@ -5,8 +5,8 @@
 #include <glm/glm.hpp>
 
 #include <viewport/viewport.h>
+#include <memory/resource_manager.h>
 #include <rendering/postprocessing/post_processing.h>
-#
 
 class Shader;
 
@@ -34,6 +34,6 @@ private:
 	uint32_t postfilteredOutput; // Postfilter passed velocity buffer
 	// Postfilter applies morphological dilation on velocity buffer to decrease silhouettes
 
-	Shader* velocityPassShader; // Shader for velocity pass
-	Shader* postfilterShader; // Shader for performing postfilter pass on velocity buffer
+	ResourceRef<Shader> velocityPassShader; // Shader for velocity pass
+	ResourceRef<Shader> postfilterShader; // Shader for performing postfilter pass on velocity buffer
 };

@@ -24,7 +24,7 @@ void _physics_example() {
 	const Mesh* planeMesh = Shapes::createPlane();
 	const Mesh* cubeMesh = Shapes::createCube();
 
-	auto [sphereModelId, sphereModel] = resource.create<Model>("sphere");
+	auto& [sphereModelId, sphereModel] = resource.create<Model>("sphere");
 	sphereModel->setSource("./resources/primitives/sphere.fbx");
 	resource.loadSync(sphereModelId);
 	const Mesh* sphereMesh = sphereModel->queryMesh(0);
@@ -47,27 +47,27 @@ void _physics_example() {
 	glowingMaterial->emissionColor = glm::vec3(0.4f, 0.4f, 1.0f);
 
 	// Async texture loading example
-	auto [albedoId, albedo] = resource.create<Texture>("scifi-albedo");
+	auto& [albedoId, albedo] = resource.create<Texture>("scifi-albedo");
 	albedo->setSource(TextureType::ALBEDO, "./resources/example-assets/textures/sci-fi/albedo.jpg");
 	resource.loadAsync(albedoId);
 
-	auto [normalId, normal] = resource.create<Texture>("scifi-nromal");
+	auto& [normalId, normal] = resource.create<Texture>("scifi-nromal");
 	normal->setSource(TextureType::NORMAL, "./resources/example-assets/textures/sci-fi/normal.jpg");
 	resource.loadAsync(normalId);
 
-	auto [metallicId, metallic] = resource.create<Texture>("scifi-metallic");
+	auto& [metallicId, metallic] = resource.create<Texture>("scifi-metallic");
 	metallic->setSource(TextureType::METALLIC, "./resources/example-assets/textures/sci-fi/metallic.jpg");
 	resource.loadAsync(metallicId);
 
-	auto [roughnessId, roughness] = resource.create<Texture>("scifi-roughness");
+	auto& [roughnessId, roughness] = resource.create<Texture>("scifi-roughness");
 	roughness->setSource(TextureType::ROUGHNESS, "./resources/example-assets/textures/sci-fi/roughness.jpg");
 	resource.loadAsync(roughnessId);
 
-	auto [emissiveId, emissive] = resource.create<Texture>("scifi-emissive");
+	auto& [emissiveId, emissive] = resource.create<Texture>("scifi-emissive");
 	emissive->setSource(TextureType::EMISSIVE, "./resources/example-assets/textures/sci-fi/emissive.jpg");
 	resource.loadAsync(emissiveId);
 
-	auto [heightId, height] = resource.create<Texture>("scifi-height");
+	auto& [heightId, height] = resource.create<Texture>("scifi-height");
 	height->setSource(TextureType::HEIGHT, "./resources/example-assets/textures/sci-fi/height.jpg");
 	resource.loadAsync(heightId);
 
@@ -121,12 +121,14 @@ void _physics_example() {
 	flashlightSource.outerAngle = 60.0f;
 
 	// Sample audio source
-	auto [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
+	auto& [audioClipId, audioClip] = resource.create<AudioClip>("example-audio");
 	audioClip->setSource("./resources/example-assets/audio/WAV-Surround.wav");
 	resource.loadAsync(audioClipId);
 	audio = ecs.createEntity("Sound Emitter");
 	Transform::setPosition(audio.transform(), glm::vec3(0.0f, 0.0f, 15.0f));
-	audio.add<MeshRendererComponent>(sphereMesh, glowingMaterial);
+	MeshRendererComponent& audioMr = audio.add<MeshRendererComponent>();
+	audioMr.mesh = sphereMesh;
+	audioMr.material = glowingMaterial;
 	audio.add<SphereColliderComponent>();
 	RigidbodyComponent& audioRb = audio.add<RigidbodyComponent>();
 	Rigidbody::setGravity(audioRb, false);
@@ -144,7 +146,9 @@ void _physics_example() {
 	EntityContainer ground(ecs.createEntity("Ground"));
 	Transform::setPosition(ground.transform(), glm::vec3(0.0f, -10.1f, 35.0f));
 	Transform::setScale(ground.transform(), glm::vec3(140.0f, 0.1f, 140.0f));
-	ground.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+	MeshRendererComponent& groundMr = ground.add<MeshRendererComponent>();
+	groundMr.mesh = cubeMesh;
+	groundMr.material = standardMaterial;
 	RigidbodyComponent& groundRb = ground.add<RigidbodyComponent>();
 	Rigidbody::setKinematic(groundRb, true);
 	BoxColliderComponent& groundCollider = ground.add<BoxColliderComponent>();
@@ -153,7 +157,9 @@ void _physics_example() {
 	kinematic = ecs.createEntity("Kinematic");
 	Transform::setPosition(kinematic.transform(), glm::vec3(1.0f, 0.5f, 6.0f));
 	Transform::setScale(kinematic.transform(), glm::vec3(2.0f));
-	kinematic.add<MeshRendererComponent>(sphereMesh, redMaterial);
+	MeshRendererComponent& kinematicMr = kinematic.add<MeshRendererComponent>();
+	kinematicMr.mesh = sphereMesh;
+	kinematicMr.material = redMaterial;
 	kinematic.add<SphereColliderComponent>();
 	RigidbodyComponent& kinematicRb = kinematic.add<RigidbodyComponent>();
 	Rigidbody::setCollisionDetection(kinematicRb, RB_CollisionDetection::CONTINUOUS);
@@ -162,7 +168,9 @@ void _physics_example() {
 	// Player sphere
 	player = ecs.createEntity("Player");
 	Transform::setPosition(player.transform(), glm::vec3(8.0f, 0.0f, -4.0f));
-	player.add<MeshRendererComponent>(sphereMesh, playerMaterial);
+	MeshRendererComponent& playerMr = player.add<MeshRendererComponent>();
+	playerMr.mesh = sphereMesh;
+	playerMr.material = playerMaterial;
 	player.add<SphereColliderComponent>();
 	RigidbodyComponent& playerRb = player.add<RigidbodyComponent>();
 	Rigidbody::setCollisionDetection(playerRb, RB_CollisionDetection::CONTINUOUS);
@@ -173,31 +181,31 @@ void _physics_example() {
 	EntityContainer playerChild(ecs.createEntity("Player Child", player.handle()));
 	Transform::setPosition(playerChild.transform(), glm::vec3(8.0f, 2.0f, -4.5f), Space::WORLD);
 	Transform::setScale(playerChild.transform(), glm::vec3(0.5f));
-	playerChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
+	MeshRendererComponent& playerChildMr = playerChild.add<MeshRendererComponent>();
+	playerChildMr.mesh = sphereMesh;
+	playerChildMr.material = playerMaterial;
 
 	// Second child
 	EntityContainer secondChild(ecs.createEntity("Second Child", playerChild.handle()));
 	Transform::setPosition(secondChild.transform(), glm::vec3(-2.5f, 0.0f, 0.0f));
 	Transform::setScale(secondChild.transform(), glm::vec3(0.6f));
-	secondChild.add<MeshRendererComponent>(sphereMesh, playerMaterial);
-
-	// Height mapping example
-	EntityContainer plane = ecs.createEntity("Height Mapped Plane");
-	Transform::setPosition(plane.transform(), glm::vec3(-11.0f, 0.0f, 5.0f));
-	Transform::setEulerAngles(plane.transform(), glm::vec3(90.0f, 0.0f, 0.0f));
-	Transform::setScale(plane.transform(), glm::vec3(4.0f));
-	MeshRendererComponent& planeRenderer = plane.add<MeshRendererComponent>(planeMesh, scifiMaterial);
+	MeshRendererComponent& secondChildMr = secondChild.add<MeshRendererComponent>();
+	secondChildMr.mesh = sphereMesh;
+	secondChildMr.material = playerMaterial;
 
 	// Model async loading example
-	auto [asyncModelId, asyncModel] = resource.create<Model>("mannequin");
+	auto& [asyncModelId, asyncModel] = resource.create<Model>("mannequin");
 	asyncModel->setSource("resources/example-assets/models/mannequin.fbx");
 	resource.loadAsync(asyncModelId);
+	const Mesh* asyncModelMesh = asyncModel->queryMesh(0);
 
 	EntityContainer asyncModelEntity(ecs.createEntity("Async Model"));
 	Transform::setPosition(asyncModelEntity.transform(), glm::vec3(6.0f, 0.0f, 10.0f));
 	Transform::setRotation(asyncModelEntity.transform(), glm::quat(glm::radians(55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	Transform::setScale(asyncModelEntity.transform(), glm::vec3(7.0f));
-	asyncModelEntity.add<MeshRendererComponent>(asyncModel->queryMesh(0), scifiMaterial);
+	MeshRendererComponent& asyncModelMr = asyncModelEntity.add<MeshRendererComponent>();
+	asyncModelMr.mesh = asyncModelMesh;
+	asyncModelMr.material = scifiMaterial;
 
 	// Cube batch
 	int objectAmount = 128;
@@ -206,7 +214,9 @@ void _physics_example() {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {
 			EntityContainer e(ecs.createEntity("Cube " + std::to_string(c)));
 			Transform::setPosition(e.transform(), glm::vec3(x * 2.5f - 8.0f, y * 2.5f - 8.0f, 35.0f));
-			MeshRendererComponent& r = e.add<MeshRendererComponent>(cubeMesh, standardMaterial);
+			MeshRendererComponent& r = e.add<MeshRendererComponent>();
+			r.mesh = cubeMesh;
+			r.material = standardMaterial;
 			e.add<BoxColliderComponent>();
 			RigidbodyComponent& rb = e.add<RigidbodyComponent>();
 			c++;

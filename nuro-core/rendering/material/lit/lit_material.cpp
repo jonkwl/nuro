@@ -108,14 +108,14 @@ void LitMaterial::bind() const
 	shader->setVec3("material.emissionColor", emissionColor);
 
 	// Set textures
-	shader->setBool("material.enableAlbedoMap", albedoMap);
+	shader->setBool("material.enableAlbedoMap", albedoMap != nullptr);
 	if (albedoMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + ALBEDO_UNIT);
 		glBindTexture(GL_TEXTURE_2D, albedoMap->backendId());
 	}
 
-	shader->setBool("material.enableRoughnessMap", roughnessMap);
+	shader->setBool("material.enableRoughnessMap", roughnessMap != nullptr);
 	if (roughnessMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + ROUGHNESS_UNIT);
@@ -126,7 +126,7 @@ void LitMaterial::bind() const
 		shader->setFloat("material.roughness", roughness);
 	}
 
-	shader->setBool("material.enableMetallicMap", metallicMap);
+	shader->setBool("material.enableMetallicMap", metallicMap != nullptr);
 	if (metallicMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + METALLIC_UNIT);
@@ -137,7 +137,7 @@ void LitMaterial::bind() const
 		shader->setFloat("material.metallic", metallic);
 	}
 
-	shader->setBool("material.enableNormalMap", normalMap);
+	shader->setBool("material.enableNormalMap", normalMap != nullptr);
 	if (normalMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + NORMAL_UNIT);
@@ -152,14 +152,14 @@ void LitMaterial::bind() const
 		glBindTexture(GL_TEXTURE_2D, occlusionMap->backendId());
 	}
 
-	shader->setBool("material.enableEmissiveMap", emissiveMap);
+	shader->setBool("material.enableEmissiveMap", emissiveMap != nullptr);
 	if (emissiveMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + EMISSIVE_UNIT);
 		glBindTexture(GL_TEXTURE_2D, emissiveMap->backendId());
 	}
 
-	shader->setBool("material.enableHeightMap", heightMap);
+	shader->setBool("material.enableHeightMap", heightMap != nullptr);
 	if (heightMap)
 	{
 		glActiveTexture(GL_TEXTURE0 + HEIGHT_UNIT);
@@ -173,7 +173,7 @@ uint32_t LitMaterial::getId() const
 	return id;
 }
 
-Shader* LitMaterial::getShader() const
+ResourceRef<Shader> LitMaterial::getShader() const
 {
 	return shader;
 }

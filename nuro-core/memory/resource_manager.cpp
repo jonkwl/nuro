@@ -25,12 +25,12 @@ ResourceManager::~ResourceManager()
 void ResourceManager::loadSync(uint32_t resourceId)
 {
 	// Retrieve resource
-	std::optional<Resource*> optResource = getResource(resourceId);
+	OptResource<Resource> optResource = getResource(resourceId);
 	if (!optResource) {
 		Console::out::warning("Resource Manager", "Tried to load invalid resource synchronously (ID: " + std::to_string(resourceId) + ")");
 		return;
 	}
-	Resource* resource = *optResource;
+	ResourceRef<Resource> resource = *optResource;
 
 	// Load resources data
 	resource->_loadedIoData = resource->loadIoData();
@@ -54,12 +54,12 @@ void ResourceManager::loadSync(uint32_t resourceId)
 void ResourceManager::loadAsync(uint32_t resourceId)
 {
 	// Retrieve resource
-	std::optional<Resource*> optResource = getResource(resourceId);
+	OptResource<Resource> optResource = getResource(resourceId);
 	if (!optResource) {
 		Console::out::warning("Resource Manager", "Tried to load invalid resource asynchronously (ID: " + std::to_string(resourceId) + ")");
 		return;
 	}
-	Resource* resource = *optResource;
+	ResourceRef<Resource> resource = *optResource;
 
 	// Add task to load tasks queue
 	workerTasks.push(resourceId); // Possible race condition on the worker tasks queue
@@ -77,12 +77,12 @@ void ResourceManager::loadAsync(uint32_t resourceId)
 void ResourceManager::deleteBuffers(uint32_t resourceId)
 {
 	// Retrieve resource
-	std::optional<Resource*> optResource = getResource(resourceId);
+	OptResource<Resource> optResource = getResource(resourceId);
 	if (!optResource) {
 		Console::out::warning("Resource Manager", "Tried to delete buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
 		return;
 	}
-	Resource* resource = *optResource;
+	ResourceRef<Resource> resource = *optResource;
 
 	// Delete resources buffers if available
 	if (resource->_resourceState == ResourceState::READY) {
@@ -110,12 +110,12 @@ void ResourceManager::dispatchNext()
 		popSafe(mainTasks);
 
 		// Try to fetch resource
-		std::optional<Resource*> optResource = getResource(resourceId);
+		OptResource<Resource> optResource = getResource(resourceId);
 		if (!optResource) {
 			Console::out::warning("Resource Manager", "Tried to dispatch invalid resource (ID: " + std::to_string(resourceId) + ")");
 			return;
 		}
-		Resource* resource = *optResource;
+		ResourceRef<Resource> resource = *optResource;
 
 		// Ensure resource loading didn't fail so far
 		if (resource->_resourceState != ResourceState::FAILED) {
@@ -162,12 +162,12 @@ void ResourceManager::asyncWorker()
 			popSafe(workerTasks);
 
 			// Try to fetch resource
-			std::optional<Resource*> optResource = getResource(resourceId);
+			OptResource<Resource> optResource = getResource(resourceId);
 			if (!optResource) {
 				Console::out::warning("Resource Manager", "Tried to upload buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
 				continue;
 			}
-			Resource* resource = *optResource;
+			ResourceRef<Resource> resource = *optResource;
 
 			// Update resources state
 			resource->_resourceState = ResourceState::LOADING;
@@ -200,7 +200,7 @@ void ResourceManager::asyncWorker()
 	}
 }
 
-void ResourceManager::tryFreeIoData(Resource* resource)
+void ResourceManager::tryFreeIoData(ResourceRef<Resource>& resource)
 {
 	if (!resource->preserveIoData) {
 		resource->freeIoData();

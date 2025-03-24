@@ -6,6 +6,7 @@
 #include <transform/transform.h>
 #include <rendering/model/mesh.h>
 #include <rendering/skybox/skybox.h>
+#include <memory/resource_manager.h>
 #include <rendering/material/imaterial.h>
 #include <rendering/transformation/transformation.h>
 #include <rendering/material/unlit/unlit_material.h>
@@ -202,7 +203,7 @@ void SceneViewForwardPass::renderMesh(TransformComponent& transform, MeshRendere
 	if (!renderer.mesh) return;
 
 	// Set shader uniforms
-	Shader* shader = renderer.material->getShader();
+	ResourceRef<Shader> shader = renderer.material->getShader();
 	shader->setMatrix4("mvpMatrix", transform.mvp);
 	shader->setMatrix4("modelMatrix", transform.model);
 	shader->setMatrix3("normalMatrix", transform.normal);
@@ -273,7 +274,7 @@ void SceneViewForwardPass::renderSelectedEntity(EntityContainer* entity, const g
 	glStencilMask(0xFF); // Enable stencil writes
 		
 	// Forward render entities base mesh
-	Shader* shader = renderer.material->getShader();
+	ResourceRef<Shader> shader = renderer.material->getShader();
 	shader->bind();
 	shader->setMatrix4("mvpMatrix", transform.mvp);
 	shader->setMatrix4("modelMatrix", transform.model);

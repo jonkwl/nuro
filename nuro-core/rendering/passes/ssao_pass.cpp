@@ -1,13 +1,13 @@
 #include "ssao_pass.h"
 
-#include <glad/glad.h>
-#include <algorithm>
 #include <random>
+#include <algorithm>
+#include <glad/glad.h>
 
-#include <rendering/shader/shader_pool.h>
-#include <rendering/shader/shader.h>
-#include <rendering/primitives/global_quad.h>
 #include <utils/console.h>
+#include <rendering/shader/shader.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/primitives/global_quad.h>
 
 SSAOPass::SSAOPass(Viewport& viewport) : viewport(viewport),
 aoScale(0.0f),

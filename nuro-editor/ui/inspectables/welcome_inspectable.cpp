@@ -72,7 +72,7 @@ void WelcomeInspectable::renderStaticContent(ImDrawList& drawList)
     IMComponents::label("Some engine assets are currently not included in the open-source repository.", EditorUI::getFonts().h4);
 
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
-    IMComponents::label("Issues:", EditorUI::getFonts().h3_bold);
+    IMComponents::label("Startup Issues:", EditorUI::getFonts().h3_bold);
 }
 
 void WelcomeInspectable::renderDynamicContent(ImDrawList& drawList)

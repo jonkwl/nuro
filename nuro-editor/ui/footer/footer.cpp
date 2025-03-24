@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
-#include <context/application_context.h>
-#include <utils/ioutils.h>
-
 #include <utils/console.h>
+#include <utils/ioutils.h>
+#include <memory/resource_manager.h>
+#include <context/application_context.h>
 
 #include "../ui/components/im_components.h"
 
@@ -67,10 +67,11 @@ void Footer::renderContent(ImDrawList& drawList)
 
     // Fetch target resource if worker is active
     if (worker.targetId) {
-        auto resourceOpt = resource.getResource(worker.targetId);
+        OptResource<Resource> resourceOpt = resource.getResource(worker.targetId);
         if (resourceOpt) {
-            Resource* resource = *resourceOpt;
-            informationText = "Loading '" + resource->resourceName() + "'... (" + std::to_string(worker.tasksPending) + " remaining)";
+            ResourceRef<Resource> resource = *resourceOpt;
+            std::string remaining = worker.tasksPending ? (" (" + std::to_string(worker.tasksPending) + " remaining)") : "";
+            informationText = "Loading '" + resource->resourceName() + "'..." + remaining;
             loading = true;
         }
     }

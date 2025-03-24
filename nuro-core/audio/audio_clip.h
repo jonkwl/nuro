@@ -1,8 +1,8 @@
 #pragma once
 
+#include <memory/resource.h>
 #include <audio/audio_info.h>
 #include <audio/audio_data.h>
-#include <memory/resource.h>
 #include <audio/audio_buffer.h>
 
 class AudioClip : public Resource

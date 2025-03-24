@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <memory/resource_manager.h>
 
 class Shader;
 
@@ -14,8 +15,8 @@ namespace ShaderPool
 	void loadAllAsync(const std::string& directory);
 
 	// Returns the global empty default shader
-	Shader* empty();
+	ResourceRef<Shader> empty();
 
 	// Returns a loaded shader by the given identifier
-	Shader* get(const std::string& identifier);
+	ResourceRef<Shader> get(const std::string& identifier);
 };

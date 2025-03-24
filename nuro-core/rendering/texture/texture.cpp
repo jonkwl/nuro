@@ -158,7 +158,7 @@ uint32_t Texture::backendId() const
 	return _backendId;
 }
 
-void Texture::setDefaultTexture(Texture* texture)
+void Texture::setDefaultTexture(uint32_t textureId)
 {
-	defaultTextureId = texture->backendId();
+	defaultTextureId = textureId;
 }

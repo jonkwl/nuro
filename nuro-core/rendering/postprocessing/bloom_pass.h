@@ -1,10 +1,11 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
+#include <cstdint>
 #include <glm/glm.hpp>
 
 #include <viewport/viewport.h>
+#include <memory/resource_manager.h>
 
 class Shader;
 
@@ -46,7 +47,7 @@ private:
 	uint32_t framebuffer;
 	uint32_t prefilterOutput;
 
-	Shader* prefilterShader;
-	Shader* downsamplingShader;
-	Shader* upsamplingShader;
+	ResourceRef<Shader> prefilterShader;
+	ResourceRef<Shader> downsamplingShader;
+	ResourceRef<Shader> upsamplingShader;
 };

@@ -3,7 +3,7 @@
 #include "../imaterial.h"
 
 #include <viewport/viewport.h>
-#include <rendering/texture/texture.h>
+#include <memory/resource_manager.h>
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!
    !!					   !!
@@ -18,7 +18,7 @@ public:
 
 	void bind() const override;
 	uint32_t getId() const override;
-	Shader* getShader() const override;
+	ResourceRef<Shader> getShader() const override;
 	uint32_t getShaderId() const override;
 
 	glm::vec4 baseColor;
@@ -27,6 +27,6 @@ public:
 
 private:
 	uint32_t id;
-	Shader* shader;
+	ResourceRef<Shader> shader;
 	uint32_t shaderId;
 };

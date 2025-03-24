@@ -13,8 +13,8 @@
 
 namespace ShaderPool {
 
-	Shader* gEmpty = new Shader();
-	std::unordered_map<std::string, Shader*> gShaders;
+	ResourceRef<Shader> gEmpty = std::make_shared<Shader>();
+	std::unordered_map<std::string, ResourceRef<Shader>> gShaders;
 
 	void _loadAll(const std::string& directory, bool async)
 	{
@@ -39,15 +39,15 @@ namespace ShaderPool {
 			if (gShaders.find(identifier) != gShaders.end()) continue;
 
 			// Create new shader and set its source
-			auto [shbaderId, shader] = resource.create<Shader>(identifier);
+			auto& [shaderId, shader] = resource.create<Shader>(identifier);
 			shader->setSource(shader_paths[i]);
 
 			// Load shader
 			if (async) {
-				resource.loadAsync(shbaderId);
+				resource.loadAsync(shaderId);
 			}
 			else {
-				resource.loadSync(shbaderId);
+				resource.loadSync(shaderId);
 			}
 			gShaders[identifier] = shader;
 		}
@@ -65,12 +65,12 @@ namespace ShaderPool {
 		_loadAll(directory, true);
 	}
 
-	Shader* empty()
+	ResourceRef<Shader> empty()
 	{
 		return gEmpty;
 	}
 
-	Shader* get(const std::string& identifier)
+	ResourceRef<Shader> get(const std::string& identifier)
 	{
 		if (auto it = gShaders.find(identifier); it != gShaders.end()) {
 			// Shader available, return shader

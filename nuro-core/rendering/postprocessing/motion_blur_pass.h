@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <viewport/viewport.h>
+#include <memory/resource_manager.h>
 #include <rendering/postprocessing/post_processing.h>
 
 class Shader;
@@ -31,7 +32,7 @@ private:
 	uint32_t fbo;
 	uint32_t output;
 
-	Shader* shader;
+	ResourceRef<Shader> shader;
 
 	glm::mat4 previousViewProjectionMatrix;
 };

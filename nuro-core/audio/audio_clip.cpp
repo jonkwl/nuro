@@ -93,6 +93,7 @@ void AudioClip::printInfo() const
 
     Console::print
         >> Console::endl
+        >> Console::TextColor::GRAY
         >> " nuro >>> Audio Clip \"" + resourceName() + "\":"
 
 

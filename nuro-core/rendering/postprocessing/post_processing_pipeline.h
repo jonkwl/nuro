@@ -2,11 +2,12 @@
 
 #include <cstdint>
 
-#include <rendering/postprocessing/post_processing.h>
-#include <rendering/texture/texture.h>
-#include <rendering/postprocessing/motion_blur_pass.h>
-#include <rendering/postprocessing/bloom_pass.h>
 #include <viewport/viewport.h>
+#include <memory/resource_manager.h>
+#include <rendering/texture/texture.h>
+#include <rendering/postprocessing/bloom_pass.h>
+#include <rendering/postprocessing/post_processing.h>
+#include <rendering/postprocessing/motion_blur_pass.h>
 
 class Shader;
 
@@ -42,7 +43,7 @@ private:
 	uint32_t fbo;	 // Framebuffer
 	uint32_t output; // Post processing output
 
-	Shader* finalPassShader; // Post processing final pass shader
+	ResourceRef<Shader> finalPassShader; // Post processing final pass shader
 
 private:
 	MotionBlurPass motionBlurPass;

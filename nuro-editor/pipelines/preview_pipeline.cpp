@@ -5,6 +5,7 @@
 #include <utils/console.h>
 #include <rendering/model/model.h>
 #include <rendering/shader/shader.h>
+#include <memory/resource_manager.h>
 #include <rendering/shader/shader_pool.h>
 #include <rendering/primitives/global_quad.h>
 #include <rendering/material/lit/lit_material.h>
@@ -113,7 +114,7 @@ void PreviewPipeline::render()
 		glViewport(0, 0, output.viewport.getWidth_gl(), output.viewport.getHeight_gl());
 
 		// Bind shader and material
-		Shader* shader = instruction.modelMaterial->getShader();
+		ResourceRef<Shader> shader = instruction.modelMaterial->getShader();
 		shader->bind();
 		instruction.modelMaterial->bind();
 		instruction.modelMaterial->setSampleDirectionalLight();

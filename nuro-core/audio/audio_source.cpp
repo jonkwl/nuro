@@ -103,7 +103,7 @@ namespace AudioSource {
         audioSource.coneOuterVolume = volume;
     }
 
-    void setClip(AudioSourceComponent& audioSource, AudioClip* clip)
+    void setClip(AudioSourceComponent& audioSource, ResourceRef<AudioClip> clip)
     {
         audioSource.clip = clip;
     }

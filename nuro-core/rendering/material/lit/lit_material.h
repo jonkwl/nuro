@@ -7,6 +7,7 @@
 
 #include <viewport/viewport.h>
 #include <ecs/ecs_collection.h>
+#include <memory/resource_manager.h>
 #include <rendering/texture/texture.h>
 #include <rendering/postprocessing/post_processing.h>
 
@@ -20,7 +21,7 @@ public:
 
 	void bind() const override;
 	uint32_t getId() const override;
-	Shader* getShader() const override;
+	ResourceRef<Shader> getShader() const override;
 	uint32_t getShaderId() const override;
 
 	glm::vec4 baseColor;
@@ -34,13 +35,13 @@ public:
 	glm::vec3 emissionColor;
 	float heightMapScale;
 
-	Texture* albedoMap;
-	Texture* roughnessMap;
-	Texture* metallicMap;
-	Texture* normalMap;
-	Texture* occlusionMap;
-	Texture* emissiveMap;
-	Texture* heightMap;
+	ResourceRef<Texture> albedoMap;
+	ResourceRef<Texture> roughnessMap;
+	ResourceRef<Texture> metallicMap;
+	ResourceRef<Texture> normalMap;
+	ResourceRef<Texture> occlusionMap;
+	ResourceRef<Texture> emissiveMap;
+	ResourceRef<Texture> heightMap;
 
 	void syncStaticUniforms() const;
 	void syncLightUniforms() const;
@@ -78,6 +79,6 @@ private:
 	};
 
 	uint32_t id;
-	Shader* shader;
+	ResourceRef<Shader> shader;
 	uint32_t shaderId;
 };

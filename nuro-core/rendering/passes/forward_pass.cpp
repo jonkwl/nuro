@@ -4,6 +4,7 @@
 
 #include <utils/console.h>
 #include <rendering/model/mesh.h>
+#include <memory/resource_manager.h>
 #include <rendering/skybox/skybox.h>
 #include <diagnostics/diagnostics.h>
 #include <rendering/material/imaterial.h>
@@ -189,7 +190,7 @@ void ForwardPass::renderMesh(TransformComponent& transform, MeshRendererComponen
 	if (!renderer.mesh) return;
 
 	// Set shader uniforms
-	Shader* shader = renderer.material->getShader();
+	ResourceRef<Shader> shader = renderer.material->getShader();
 	shader->setMatrix4("mvpMatrix", transform.mvp);
 	shader->setMatrix4("modelMatrix", transform.model);
 	shader->setMatrix3("normalMatrix", transform.normal);

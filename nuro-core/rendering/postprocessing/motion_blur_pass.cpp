@@ -3,10 +3,10 @@
 #include <glad/glad.h>
 
 #include <utils/console.h>
-#include <rendering/shader/shader_pool.h>
 #include <rendering/shader/shader.h>
-#include <rendering/primitives/global_quad.h>
 #include <diagnostics/diagnostics.h>
+#include <rendering/shader/shader_pool.h>
+#include <rendering/primitives/global_quad.h>
 
 MotionBlurPass::MotionBlurPass(const Viewport& viewport) : viewport(viewport),
 fbo(0),

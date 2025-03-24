@@ -77,10 +77,10 @@ namespace Runtime {
 		ShaderPool::loadAllSync("./shaders/passes");
 
 		// Create default texture
-		auto [defaultTextureId, defaultTexture] = resource.create<Texture>("default-texture");
+		auto& [defaultTextureId, defaultTexture] = resource.create<Texture>("default-texture");
 		defaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
 		resource.loadSync(defaultTextureId);
-		Texture::setDefaultTexture(defaultTexture);
+		Texture::setDefaultTexture(defaultTexture->backendId());
 
 		// Load various editor icons
 		IconPool::createFallbackIcon("./resources/icons/fallback/fallback_icon.png");
@@ -91,7 +91,7 @@ namespace Runtime {
 		IconPool::loadAllAsync("./resources/icons/post-processing");
 
 		// Create default cubemap
-		auto [cubemapId, cubemap] = resource.create<Cubemap>("default-cubemap");
+		auto& [cubemapId, cubemap] = resource.create<Cubemap>("default-cubemap");
 		gDefaultCubemap = cubemapId;
 		cubemap->setSource_Cross("./resources/skybox/default/default_night.png");
 

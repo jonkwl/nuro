@@ -10,6 +10,7 @@
 
 #include <audio/audio_clip.h>
 #include <rendering/model/mesh.h>
+#include <memory/resource_manager.h>
 #include <rendering/material/imaterial.h>
 #include <physics/rigidbody/rigidbody_enums.h>
 
@@ -75,10 +76,6 @@ struct TransformComponent {
 };
 
 struct MeshRendererComponent {
-
-	MeshRendererComponent() : enabled(true), mesh(nullptr), material(nullptr) {};
-	MeshRendererComponent(const Mesh* mesh, IMaterial* material) : enabled(true), mesh(mesh), material(material) {};
-	
 	// Set if mesh renderer is enabled
 	bool enabled = true;
 
@@ -262,19 +259,19 @@ struct AudioListenerComponent {
 
 struct AudioSourceComponent {
 
-	// Volume of audio source
+	// Volume
 	float volume = 1.0f;
 
-	// Playback speed of the audio source
+	// Playback speed
 	float pitch = 1.0f;
 
-	// Sets if audio source sound should repeat when it ends
+	// Sets if sound should repeat when it ends
 	bool looping = true;
 
-	// Sets if the audio source should play when the game starts
+	// Sets if clip should be played when the game starts
 	bool playOnAwake = false;
 
-	// Sets if audio source is 3D
+	// Specifies whether the emitted audio is spatialized (3D audio positioning)
 	bool isSpatial = true;
 
 	// Maximum distance where the sound is still audible
@@ -292,10 +289,10 @@ struct AudioSourceComponent {
 	// Volume multiplier outside the cone
 	float coneOuterVolume = 0.0f;
 
-	// Audio clip of audio source
-	AudioClip* clip;
+	// Audio clip
+	ResourceRef<AudioClip> clip;
 
-	// Backend id of audio source
+	// Backend source id
 	uint32_t id;
 
 	// Set if audio source is currently using a multichannel buffer
