@@ -20,6 +20,8 @@ void _physics_example() {
 	// Get ecs
 	ECS& ecs = ECS::main();
 
+	Texture* texture = new Texture();
+
 	// Models
 	const Mesh* planeMesh = Shapes::createPlane();
 	const Mesh* cubeMesh = Shapes::createCube();
@@ -70,9 +72,6 @@ void _physics_example() {
 	auto& [heightId, height] = resource.create<Texture>("scifi-height");
 	height->setSource(TextureType::HEIGHT, "./resources/example-assets/textures/sci-fi/height.jpg");
 	resource.loadAsync(heightId);
-
-	resource.loadSync(9359);
-	resource.loadAsync(94325346);
 
 	LitMaterial* scifiMaterial = new LitMaterial();
 	scifiMaterial->albedoMap = albedo;

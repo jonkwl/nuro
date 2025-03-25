@@ -21,6 +21,11 @@ void ResourceViewerWindow::render()
 
 		IMComponents::headline("Resource Viewer", ICON_FA_DATABASE);
 
+		//
+		// TEMPORARY!
+		// Inefficient, just for debugging
+		//
+
 		const auto& resources = ApplicationContext::resourceManager().readResources();
 
 		IMComponents::label("Resources allocated: ", EditorUI::getFonts().h4);
@@ -28,9 +33,6 @@ void ResourceViewerWindow::render()
 		IMComponents::label(std::to_string(resources.size()), EditorUI::getFonts().h4_bold);
 
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
-		
-		// TEMPORARY!
-		// Inefficient, for debugging
 		
 		ImGui::BeginChild(EditorUI::generateId(), ImVec2(ImGui::GetContentRegionAvail()));
 		{
@@ -67,11 +69,11 @@ void ResourceViewerWindow::render()
 					break;
 				}
 
-				IMComponents::flagLabel(" - Allocated in RAM", resource->loadedIoData());
+				IMComponents::flagLabel("  - Allocated in RAM", resource->loadedIoData());
 				ImGui::SameLine();
 				IMComponents::label("- Used by: ");
 				ImGui::SameLine();
-				IMComponents::label(std::to_string(resource.use_count()));
+				IMComponents::label(std::to_string(resource.use_count() - 1));
 			}
 		}
 		ImGui::EndChild();

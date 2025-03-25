@@ -22,8 +22,8 @@ namespace IMComponents
 	void label(std::string text, ImFont* font);
 	void label(std::string text, ImFont* font, ImU32 color);
 
-	void flagLabel(std::string text, bool flag);
-	void vectorLabel(std::string text, const glm::vec3& vector);
+	void flagLabel(std::string text, bool flag, bool bold = false);
+	void vectorLabel(std::string text, const glm::vec3& vector, bool bold = false);
 
 	void tryIcon(const char* icon, float yPadding = 2.5f);
 	void tryIcon(const char* icon, ImU32 color, float yPadding = 2.5f);

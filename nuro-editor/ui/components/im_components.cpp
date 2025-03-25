@@ -196,16 +196,18 @@ namespace IMComponents {
 		ImGui::PopStyleColor();
 	}
 
-	void flagLabel(std::string text, bool flag)
+	void flagLabel(std::string text, bool flag, bool bold)
 	{
-		IMComponents::label(text + ": ");
+		ImFont* font = bold ? EditorUI::getFonts().p_bold : EditorUI::getFonts().p;
+		IMComponents::label(text + ": ", font);
 		ImGui::SameLine();
 		IMComponents::label(flag ? "Yes" : "No", flag ? IM_COL32(145, 255, 145, 200) : IM_COL32(255, 145, 145, 230));
 	}
 
-	void vectorLabel(std::string text, const glm::vec3& vector)
+	void vectorLabel(std::string text, const glm::vec3& vector, bool bold)
 	{
-		IMComponents::label(text + ": ");
+		ImFont* font = bold ? EditorUI::getFonts().p_bold : EditorUI::getFonts().p;
+		IMComponents::label(text + ": ", font);
 		ImGui::SameLine();
 		IMComponents::label(_formatNum(vector.x) + "x ", IM_COL32(255, 145, 145, 230));
 		ImGui::SameLine();

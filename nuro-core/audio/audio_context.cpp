@@ -24,7 +24,10 @@ AudioContext::AudioContext() : _context(nullptr),
 _device(),
 stereoAngles(false),
 effects(false),
-bformat(false),
+floatFmt(false),
+multichannelFmt(false),
+bFmt(false),
+bHoaFmt(false),
 hrtf(false),
 hrtfList(),
 activeHrtf("None")
@@ -52,7 +55,11 @@ void AudioContext::create()
 	// Check for extensions
 	stereoAngles = alIsExtensionPresent("AL_EXT_STEREO_ANGLES");
 	effects = alcIsExtensionPresent(alDevice, "ALC_EXT_EFX");
-	bformat = alIsExtensionPresent("AL_EXT_BFORMAT");
+
+	floatFmt = alIsExtensionPresent("AL_EXT_float32");
+	multichannelFmt = alIsExtensionPresent("AL_EXT_MCFORMATS");
+	bFmt = alIsExtensionPresent("AL_EXT_BFORMAT");
+	bHoaFmt = alIsExtensionPresent("AL_SOFT_bformat_hoa");
 
 	// Setup hrtf
 	setupHrtf();
@@ -132,9 +139,24 @@ bool AudioContext::effectsAvailable() const
 	return effects;
 }
 
-bool AudioContext::bformatAvailable() const
+bool AudioContext::floatFmtAvailable() const
 {
-	return bformat;
+	return floatFmt;
+}
+
+bool AudioContext::multichannelFmtAvailable() const
+{
+	return multichannelFmt;
+}
+
+bool AudioContext::bFmtAvailable() const
+{
+	return bFmt;
+}
+
+bool AudioContext::bHoaFmtAvailable() const
+{
+	return bHoaFmt;
 }
 
 bool AudioContext::hrtfAvailable() const {

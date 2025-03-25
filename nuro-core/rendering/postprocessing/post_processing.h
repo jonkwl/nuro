@@ -47,7 +47,7 @@ namespace PostProcessing
 	struct ChromaticAberration {
 
 		bool enabled = true;
-		float intensity = -0.155;
+		float intensity = -0.155f;
 		int32_t iterations = 12;
 
 	};

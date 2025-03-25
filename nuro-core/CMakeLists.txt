@@ -62,6 +62,7 @@ set(SOURCE_FILES
 	transform/transform.h
 	transform/transform_pass.h
 	utils/callback.h
+	utils/concurrent_queue.h
 	utils/console.h
 	utils/event.h
 	utils/format.h

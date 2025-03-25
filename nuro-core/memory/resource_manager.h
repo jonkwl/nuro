@@ -1,6 +1,5 @@
 #pragma once
 
-#include <queue>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -13,6 +12,7 @@
 
 #include <utils/console.h>
 #include <memory/resource.h>
+#include <utils/concurrent_queue.h>
 
 template <typename T>
 using ResourceRef = std::shared_ptr<T>;
@@ -98,12 +98,6 @@ private:
 	// Async worker thread
 	void asyncWorker();
 
-	// Helper to pop from queue safely
-	template <typename T>
-	void popSafe(std::queue<T>& queue) {
-		if (!queue.empty()) queue.pop();
-	}
-
 private:
 	//
 	// RESOURCE ALLOCATION
@@ -120,7 +114,10 @@ private:
 	std::atomic<bool> running;
 
 	// Resource upload tasks on the main thread by resource id
-	std::queue<uint32_t> mainTasks;
+	ConcurrentQueue<uint32_t> mainTasks;
+
+	// Keeps track of the size of the main tasks queue
+	std::atomic<int32_t> mainTasksSize;
 
 	// Atomic set if main thread can dispatch next resource
 	std::atomic<bool> mainDispatchNext;
@@ -142,16 +139,16 @@ private:
 	std::condition_variable workerAwaitingDispatch;
 
 	// Resource load tasks on the worker thread by resource id
-	std::queue<uint32_t> workerTasks;
-
-	// Amount of tasks waiting in workers queue
-	std::atomic<size_t> workerTasksPending;
+	ConcurrentQueue<uint32_t> workerTasks;
 
 	// Set if the worker is currently running, false if worker is sleeping
 	std::atomic<bool> workerActive;
 
 	// Id of the resource the worker is currently loading (0 if worker isn't loading any resource)
 	std::atomic<uint32_t> workerTarget;
+
+	// Keeps track of the size of the worker tasks queue
+	std::atomic<int32_t> workerTasksSize;
 
 	//
 	// HELPERS

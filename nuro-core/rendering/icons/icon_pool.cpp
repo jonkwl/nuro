@@ -37,7 +37,7 @@ namespace IconPool {
 			TextureType type = IOUtils::getFileExtension(file) == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
 
 			// Create icon texture
-			auto& [textureId, texture] = resource.create<Texture>(identifier);
+			auto& [textureId, texture] = resource.create<Texture>(identifier + "_icon");
 			texture->setSource(type, file);
 
 			// Insert new icon

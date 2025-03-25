@@ -56,19 +56,21 @@ void ResourceManager::loadAsync(uint32_t resourceId)
 	// Retrieve resource
 	OptResource<Resource> optResource = getResource(resourceId);
 	if (!optResource) {
-		Console::out::warning("Resource Manager", "Tried to load invalid resource asynchronously (ID: " + std::to_string(resourceId) + ")");
+		Console::out::warning("Resource Manager", "Failed to load invalid resource asynchronously (ID: " + std::to_string(resourceId) + ")");
 		return;
 	}
 	ResourceRef<Resource> resource = *optResource;
 
 	// Add task to load tasks queue
-	workerTasks.push(resourceId); // Possible race condition on the worker tasks queue
+	if (!workerTasks.try_enqueue(resourceId)) {
+		Console::out::warning("Resource Manager", "Failed to enqueue resource on main thread (ID: " + std::to_string(resourceId) + ")");
+		resource->_resourceState = ResourceState::FAILED;
+		return;
+	}
+	workerTasksSize++;
 
 	// Update resources state
 	resource->_resourceState = ResourceState::QUEUED;
-
-	// Update worker state
-	workerTasksPending++;
 
 	// Notify worker
 	workerTasksAvailable.notify_one();
@@ -79,7 +81,7 @@ void ResourceManager::deleteBuffers(uint32_t resourceId)
 	// Retrieve resource
 	OptResource<Resource> optResource = getResource(resourceId);
 	if (!optResource) {
-		Console::out::warning("Resource Manager", "Tried to delete buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
+		Console::out::warning("Resource Manager", "Failed to delete buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
 		return;
 	}
 	ResourceRef<Resource> resource = *optResource;
@@ -104,15 +106,19 @@ void ResourceManager::dispatchNext()
 	if (!lock.owns_lock()) Console::out::warning("Resource Manager", "Couldn't lock worker mutex on main thread");
 	
 	// Dispatch next resource in queue (only one per frame to prevent heavy main thread blocking)
-	if (!mainTasks.empty()) {
+	if (mainTasksSize > 0) {
 		// Get queued resource id
-		uint32_t resourceId = mainTasks.front();
-		popSafe(mainTasks);
+		uint32_t resourceId;
+		if (!mainTasks.try_dequeue(resourceId)) {
+			Console::out::warning("Resource Manager", "Failed to dequeue resource on main thread (ID: " + std::to_string(resourceId) + ")");
+			return;
+		}
+		mainTasksSize--;
 
 		// Try to fetch resource
 		OptResource<Resource> optResource = getResource(resourceId);
 		if (!optResource) {
-			Console::out::warning("Resource Manager", "Tried to dispatch invalid resource (ID: " + std::to_string(resourceId) + ")");
+			Console::out::warning("Resource Manager", "Failed to dispatch invalid resource (ID: " + std::to_string(resourceId) + ")");
 			return;
 		}
 		ResourceRef<Resource> resource = *optResource;
@@ -140,7 +146,7 @@ void ResourceManager::dispatchNext()
 
 ResourceManager::WorkerState ResourceManager::readWorkerState() const
 {
-	return WorkerState(workerActive, workerTarget, workerTasksPending);
+	return WorkerState(workerActive, workerTarget, workerTasksSize);
 }
 
 void ResourceManager::asyncWorker()
@@ -152,19 +158,23 @@ void ResourceManager::asyncWorker()
 		std::unique_lock<std::mutex> lock(workerMtx);
 
 		// Condition: Queue with tasks to load must not be empty
-		if (workerTasks.empty()) {
-			workerTasksAvailable.wait(lock, [&]() { return !workerTasks.empty(); });
+		if (workerTasksSize == 0) {
+			workerTasksAvailable.wait(lock, [&]() { return workerTasksSize > 0; });
 		}
 
-		while (!workerTasks.empty()) {
+		while (workerTasksSize > 0) {
 			// Get queued resource id
-			uint32_t resourceId = workerTasks.front();
-			popSafe(workerTasks);
+			uint32_t resourceId;
+			if (!workerTasks.try_dequeue(resourceId)) {
+				Console::out::warning("Resource Manager", "Failed to dequeue resource on worker thread (ID: " + std::to_string(resourceId) + ")");
+				continue;
+			}
+			workerTasksSize--;
 
 			// Try to fetch resource
 			OptResource<Resource> optResource = getResource(resourceId);
 			if (!optResource) {
-				Console::out::warning("Resource Manager", "Tried to upload buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
+				Console::out::warning("Resource Manager", "Failed to upload buffers of invalid resource (ID: " + std::to_string(resourceId) + ")");
 				continue;
 			}
 			ResourceRef<Resource> resource = *optResource;
@@ -173,7 +183,6 @@ void ResourceManager::asyncWorker()
 			resource->_resourceState = ResourceState::LOADING;
 
 			// Sync worker state
-			workerTasksPending = workerTasks.size();
 			workerActive = true;
 			workerTarget = resourceId;
 
@@ -186,7 +195,11 @@ void ResourceManager::asyncWorker()
 			}
 
 			// Update queues
-			mainTasks.push(resourceId);
+			if (!mainTasks.try_enqueue(resourceId)) {
+				Console::out::warning("Resource Manager", "Failed to enqueue resource on worker thread (ID: " + std::to_string(resourceId) + ")");
+				continue;
+			}
+			mainTasksSize++;
 
 			// Condition: Main thread must have dispatched pending resource before worker continues
 			mainDispatchNext = true;
@@ -194,7 +207,6 @@ void ResourceManager::asyncWorker()
 		}
 
 		// Sync worker state
-		workerTasksPending = 0;
 		workerActive = false;
 		workerTarget = 0;
 	}

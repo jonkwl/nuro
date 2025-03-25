@@ -31,8 +31,17 @@ public:
 	// Returns if effects are available
 	bool effectsAvailable() const;
 
-	// Returns if B-format ambisonics are available
-	bool bformatAvailable() const;
+	// Returns if float32 format is available
+	bool floatFmtAvailable() const;
+
+	// Returns if multichannel formats are available
+	bool multichannelFmtAvailable() const;
+
+	// Returns if B-format is available
+	bool bFmtAvailable() const;
+
+	// Returns if B-format higher order ambisonics are available
+	bool bHoaFmtAvailable() const;
 
 	// Returns if hrtf is available
 	bool hrtfAvailable() const;
@@ -61,7 +70,11 @@ private:
 
 	bool stereoAngles;
 	bool effects;
-	bool bformat;
+
+	bool floatFmt;
+	bool multichannelFmt;
+	bool bFmt;
+	bool bHoaFmt;
 
 	bool hrtf;
 	std::vector<std::string> hrtfList;
