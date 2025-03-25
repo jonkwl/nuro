@@ -61,6 +61,7 @@ void Footer::renderContent(ImDrawList& drawList)
     bool loading = false;
     std::string informationText = "No pending assets.";
 
+    /*
     // Fetch worker state
     ResourceManager& resource = ApplicationContext::resourceManager();
     auto worker = resource.readWorkerState();
@@ -75,6 +76,7 @@ void Footer::renderContent(ImDrawList& drawList)
             loading = true;
         }
     }
+    */
 
     // Draw text and loading buffer
     {

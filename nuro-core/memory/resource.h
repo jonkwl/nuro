@@ -4,6 +4,8 @@
 #include <atomic>
 #include <cstdint>
 
+#include <memory/resource_pipe.h>
+
 enum class ResourceState {
 	// Resource has not been initialized or loaded yet
 	EMPTY,
@@ -32,34 +34,18 @@ private:
 	// Name of resource
 	std::string _resourceName;
 
-	// Atomic state of the resource (indicating its usability rather than the status of its data)
+	// State of the resource
 	std::atomic<ResourceState> _resourceState;
 
-	// Atomic flag set if resources io data is loaded
-	std::atomic<bool> _loadedIoData;
-
 protected:
-	// Flag setting if io data should be preserved after uploading resource
-	bool preserveIoData;
+	// Returns a new resource pipe owned by this resource
+	ResourcePipe pipe() {
+		return ResourcePipe(_resourceId);
+	}
 
-	// Loads the resources data from io
-	virtual bool loadIoData() = 0;
+	Resource() : _resourceId(0), _resourceName("none"), _resourceState(ResourceState::EMPTY) {};
 
-	// Frees any previously loaded io data
-	virtual void freeIoData() = 0;
-
-	// Creates resources target buffers (e.g. on the gpu) with previously loaded data
-	virtual bool uploadBuffers() = 0;
-
-	// Deletes resources previously uploaded target buffers
-	virtual void deleteBuffers() = 0;
-
-	// Protected constructor
-	Resource() : _resourceId(0), _resourceName("none"), _resourceState(ResourceState::EMPTY), _loadedIoData(false), preserveIoData(false) {};
-
-public: 
-
-	// Public deconstructor
+public:
 	virtual ~Resource() = default;
 
 	// Returns the resources id
@@ -75,10 +61,5 @@ public:
 	// Returns the resources current state
 	ResourceState resourceState() const {
 		return _resourceState;
-	}
-
-	// Returns if the resources io data is loaded
-	bool loadedIoData() const {
-		return _loadedIoData;
 	}
 };

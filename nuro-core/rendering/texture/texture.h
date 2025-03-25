@@ -23,15 +23,16 @@ enum class TextureType
 
 class Texture : public Resource
 {
-protected:
-	bool loadIoData() override;
-	void freeIoData() override;
-	bool uploadBuffers() override;
-	void deleteBuffers() override;
-
 public:
 	Texture();
 	~Texture();
+
+	// Default pipe for creating texture
+	ResourcePipe create() {
+		return pipe()
+			>> BIND_TASK(Texture, loadIoData)
+			>> BIND_TASK_WITH_FLAGS(Texture, uploadBuffers, TaskFlags::UseContextThread);
+	}
 
 	// Sets the textures type and path of texture source
 	void setSource(TextureType type, const std::string& path);
@@ -43,6 +44,11 @@ public:
 	static void setDefaultTexture(uint32_t textureId);
 
 private:
+	bool loadIoData();
+	void freeIoData();
+	bool uploadBuffers();
+	void deleteBuffers();
+
 	// Default texture fallback
 	static uint32_t defaultTextureId;
 

@@ -16,117 +16,6 @@
 
 namespace fs = std::filesystem;
 
-bool Model::loadIoData()
-{
-	// Read file
-	Assimp::Importer import;
-	const uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
-	const aiScene* scene = import.ReadFile(path, importSettings);
-
-	// Validate model
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-	{
-		Console::out::warning("Model", "Couldn't load model '" + IOUtils::getFilename(path) + "'", import.GetErrorString());
-		return false;
-	}
-
-	// Reserve materials
-	/*modelMaterials.reserve(scene->mNumMaterials);
-	for (uint32_t i = 0; i < static_cast<uint32_t>(scene->mNumMaterials); i++)
-	{
-		modelMaterials.push_back(scene->mMaterials[i]);
-	}*/
-
-	// Initiate recursive processing of model
-	processNode(scene->mRootNode, scene);
-
-	// Finalize the metrics
-	finalizeMetrics();
-
-	return true;
-}
-
-void Model::freeIoData()
-{
-	meshData.clear();
-}
-
-bool Model::uploadBuffers()
-{
-	// Don't dispatch model if there is no data
-	if (meshData.empty()) return false;
-
-	// Dispatch each mesh
-	for (uint32_t i = 0; i < meshData.size(); i++) {
-		// Get mesh data metrics
-		uint32_t nVertices = meshData[i].vertices.size();
-		uint32_t nIndices = meshData[i].indices.size();
-		uint32_t materialIndex = meshData[i].materialIndex;
-
-		// VAO, VBO and EBO backend ids
-		uint32_t vao, vbo, ebo;
-
-		// Generate VAO, VBO and EBO
-		glGenVertexArrays(1, &vao);
-		glGenBuffers(1, &vbo);
-		glGenBuffers(1, &ebo);
-
-		// Bind VAO
-		glBindVertexArray(vao);
-
-		// Bind VBO, allocate its memory send vertex data
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, nVertices * sizeof(VertexData), meshData[i].vertices.data(), GL_STATIC_DRAW);
-
-		// Bind EBO, allocate its memory and send indice data
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint32_t), meshData[i].indices.data(), GL_STATIC_DRAW);
-
-		// Set attributes for VAO
-		// Vertex position attribute (location = 0)
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, position));
-		// Normal attribute (location = 1)
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));
-		// Texture coordinates attribute (location = 2)
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));
-		// Tangent attribute (location = 3)
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, tangent));
-		// Bitangent attribute (location = 3)
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, bitangent));
-
-		// Unbind VAO, ABO and EBO
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		// Mesh is not existing yet, create empty mesh
-		if (meshes.find(i) == meshes.end()) {
-			meshes[i] = Mesh();
-		}
-
-		// Update mesh
-		meshes[i].setData(vao, vbo, ebo, nVertices, nIndices, materialIndex);
-	}
-
-	return true;
-}
-
-void Model::deleteBuffers()
-{
-	for (auto& [id, mesh] : meshes) {
-		uint32_t vao = mesh.vao(), vbo = mesh.vbo(), ebo = mesh.ebo();
-		glDeleteVertexArrays(1, &vao);
-		glDeleteBuffers(1, &vbo);
-		glDeleteBuffers(1, &ebo);
-	}
-	meshes.clear();
-}
-
 Model::Model() : path(),
 meshData(),
 meshes(),
@@ -299,6 +188,117 @@ Model::MeshData Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	// Construct and return mesh data
 	return MeshData(std::move(vertices), std::move(indices), materialIndex);
+}
+
+bool Model::loadIoData()
+{
+	// Read file
+	Assimp::Importer import;
+	const uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+	const aiScene* scene = import.ReadFile(path, importSettings);
+
+	// Validate model
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		Console::out::warning("Model", "Couldn't load model '" + IOUtils::getFilename(path) + "'", import.GetErrorString());
+		return false;
+	}
+
+	// Reserve materials
+	/*modelMaterials.reserve(scene->mNumMaterials);
+	for (uint32_t i = 0; i < static_cast<uint32_t>(scene->mNumMaterials); i++)
+	{
+		modelMaterials.push_back(scene->mMaterials[i]);
+	}*/
+
+	// Initiate recursive processing of model
+	processNode(scene->mRootNode, scene);
+
+	// Finalize the metrics
+	finalizeMetrics();
+
+	return true;
+}
+
+void Model::freeIoData()
+{
+	meshData.clear();
+}
+
+bool Model::uploadBuffers()
+{
+	// Don't dispatch model if there is no data
+	if (meshData.empty()) return false;
+
+	// Dispatch each mesh
+	for (uint32_t i = 0; i < meshData.size(); i++) {
+		// Get mesh data metrics
+		uint32_t nVertices = meshData[i].vertices.size();
+		uint32_t nIndices = meshData[i].indices.size();
+		uint32_t materialIndex = meshData[i].materialIndex;
+
+		// VAO, VBO and EBO backend ids
+		uint32_t vao, vbo, ebo;
+
+		// Generate VAO, VBO and EBO
+		glGenVertexArrays(1, &vao);
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &ebo);
+
+		// Bind VAO
+		glBindVertexArray(vao);
+
+		// Bind VBO, allocate its memory send vertex data
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, nVertices * sizeof(VertexData), meshData[i].vertices.data(), GL_STATIC_DRAW);
+
+		// Bind EBO, allocate its memory and send indice data
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint32_t), meshData[i].indices.data(), GL_STATIC_DRAW);
+
+		// Set attributes for VAO
+		// Vertex position attribute (location = 0)
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, position));
+		// Normal attribute (location = 1)
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));
+		// Texture coordinates attribute (location = 2)
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));
+		// Tangent attribute (location = 3)
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, tangent));
+		// Bitangent attribute (location = 3)
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, bitangent));
+
+		// Unbind VAO, ABO and EBO
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		// Mesh is not existing yet, create empty mesh
+		if (meshes.find(i) == meshes.end()) {
+			meshes[i] = Mesh();
+		}
+
+		// Update mesh
+		meshes[i].setData(vao, vbo, ebo, nVertices, nIndices, materialIndex);
+	}
+
+	return true;
+}
+
+void Model::deleteBuffers()
+{
+	for (auto& [id, mesh] : meshes) {
+		uint32_t vao = mesh.vao(), vbo = mesh.vbo(), ebo = mesh.ebo();
+		glDeleteVertexArrays(1, &vao);
+		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &ebo);
+	}
+	meshes.clear();
 }
 
 void Model::addMeshToMetrics(const std::vector<VertexData>& vertices, uint32_t nFaces)

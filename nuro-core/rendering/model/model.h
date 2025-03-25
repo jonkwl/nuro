@@ -14,12 +14,6 @@ class aiMesh;
 
 class Model : public Resource
 {
-protected:
-	bool loadIoData() override;
-	void freeIoData() override;
-	bool uploadBuffers() override;
-	void deleteBuffers() override;
-
 public:
 	Model();
 	~Model();
@@ -86,6 +80,13 @@ public:
 		};
 	};
 
+	// Default pipe for creating model
+	ResourcePipe create() {
+		return pipe()
+			>> BIND_TASK(Model, loadIoData)
+			>> BIND_TASK_WITH_FLAGS(Model, uploadBuffers, TaskFlags::UseContextThread);
+	}
+
 	// Sets the path of the models source
 	void setSource(std::string path);
 
@@ -109,6 +110,11 @@ private:
 
 	void processNode(aiNode* node, const aiScene* scene);
 	MeshData processMesh(aiMesh* mesh, const aiScene* scene);
+
+	bool loadIoData();
+	void freeIoData();
+	bool uploadBuffers();
+	void deleteBuffers();
 
 	//
 	// MODEL DATA

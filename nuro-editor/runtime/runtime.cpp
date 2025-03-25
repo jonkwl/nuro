@@ -79,7 +79,7 @@ namespace Runtime {
 		// Create default texture
 		auto& [defaultTextureId, defaultTexture] = resource.create<Texture>("default-texture");
 		defaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
-		resource.loadSync(defaultTextureId);
+		resource.execSync(defaultTexture->create());
 		Texture::setDefaultTexture(defaultTexture->backendId());
 
 		// Load various editor icons
@@ -271,7 +271,9 @@ namespace Runtime {
 
 		// LOAD DEFAULT CUBEMAP
 		ResourceManager& resource = ApplicationContext::resourceManager();
-		resource.loadAsync(gDefaultCubemap);
+		if (auto cubemap = resource.getResourceAs<Cubemap>(gDefaultCubemap)) {
+			resource.execAsync((*cubemap)->create());
+		}
 
 		// MAIN LOOP
 		while (ApplicationContext::running()) _nextFrame();

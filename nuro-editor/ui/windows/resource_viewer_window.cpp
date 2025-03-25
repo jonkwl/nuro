@@ -69,8 +69,6 @@ void ResourceViewerWindow::render()
 					break;
 				}
 
-				IMComponents::flagLabel("  - Allocated in RAM", resource->loadedIoData());
-				ImGui::SameLine();
 				IMComponents::label("- Used by: ");
 				ImGui::SameLine();
 				IMComponents::label(std::to_string(resource.use_count() - 1));

@@ -45,10 +45,10 @@ namespace IconPool {
 
 			// Load icon texture
 			if (async) {
-				resource.loadAsync(textureId);
+				resource.execAsync(texture->create());
 			}
 			else {
-				resource.loadSync(textureId);
+				resource.execSync(texture->create());
 			}
 
 		}
@@ -86,7 +86,7 @@ namespace IconPool {
 		gInvalidIcon = texture;
 		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, path);
 
-		resource.loadSync(textureId);
+		resource.execSync(texture->create());
 	}
 
 }

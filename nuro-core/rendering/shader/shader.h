@@ -1,23 +1,25 @@
 #pragma once
 
+#include <string>
 #include <cstdint>
 #include <glm/glm.hpp>
-#include <string>
 #include <unordered_map>
 
+#include <utils/console.h>
 #include <memory/resource.h>
 
 class Shader : public Resource
 {
-protected:
-	bool loadIoData() override;
-	void freeIoData() override;
-	bool uploadBuffers() override;
-	void deleteBuffers() override;
-
 public:
 	Shader();
 	~Shader();
+
+	// Default pipe for creating shader
+	ResourcePipe create() {
+		return pipe()
+			>> BIND_TASK(Shader, loadIoData)
+			>> BIND_TASK_WITH_FLAGS(Shader, uploadBuffers, TaskFlags::UseContextThread);
+	}
 
 	// Sets the path of the shaders source
 	void setSource(std::string path);
@@ -60,4 +62,9 @@ private:
 
 	bool shaderCompiled(const char* type, int32_t shader);
 	bool programLinked(int32_t program);
+
+	bool loadIoData();
+	void freeIoData();
+	bool uploadBuffers();
+	void deleteBuffers();
 };

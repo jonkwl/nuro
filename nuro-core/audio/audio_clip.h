@@ -7,15 +7,16 @@
 
 class AudioClip : public Resource
 {
-protected:
-	bool loadIoData() override;
-	void freeIoData() override;
-	bool uploadBuffers() override;
-	void deleteBuffers() override;
-
 public:
 	AudioClip();
 	~AudioClip();
+
+	// Default pipe for creating audio clip
+	ResourcePipe create() {
+		return pipe()
+			>> BIND_TASK(AudioClip, loadIoData)
+			>> BIND_TASK_WITH_FLAGS(AudioClip, uploadBuffers, TaskFlags::UseContextThread);
+	}
 
 	// Sets the path of the audio clips data source
 	void setSource(const std::string& path);
@@ -39,6 +40,11 @@ public:
 	void printInfo() const;
 
 private:
+	bool loadIoData();
+	void freeIoData();
+	bool uploadBuffers();
+	void deleteBuffers();
+
 	AudioInfo _info;
 	AudioData _data;	
 

@@ -12,6 +12,7 @@
 
 #include <utils/console.h>
 #include <memory/resource.h>
+#include <memory/resource_pipe.h>
 #include <utils/concurrent_queue.h>
 
 template <typename T>
@@ -23,17 +24,17 @@ using OptResource = std::optional<ResourceRef<T>>;
 class ResourceManager
 {
 public:
-	struct WorkerState {
-		bool active;
-		uint32_t targetId;
-		size_t tasksPending;
-
-		WorkerState(bool active, uint32_t targetId, size_t tasksPending) : active(active), targetId(targetId), tasksPending(tasksPending) {};
-	};
-
-public:
 	ResourceManager();
 	~ResourceManager();
+
+	// Updates the resource manager from the context thread
+	void update();
+
+	// Executes a resource pipe synchronously
+	bool execSync(ResourcePipe pipe);
+
+	// Queues the execution of a resource pipe for asynchronous execution
+	bool execAsync(ResourcePipe pipe);
 
 	// Creates a new resource (lifetime managed by resource manager)
 	template <typename T, typename... Args>
@@ -74,86 +75,12 @@ public:
 		return std::nullopt;
 	}
 
-	// Loads resource synchronously, blocking until complete  
-	void loadSync(uint32_t resourceId);
-
-	// Queues resource for asynchronous loading, not blocking
-	void loadAsync(uint32_t resourceId);
-
-	// Destroy buffers (e.g. on the gpu) of a resource if it is ready
-	void deleteBuffers(uint32_t resourceId);
-
-	// Dispatch next pending resource to gpu (call when updating frame on main thread)
-	void dispatchNext();
-
-	// Returns the current state of the worker
-	WorkerState readWorkerState() const;
-
 	// TEMPORARY!
 	const auto& readResources() {
 		return resources;
 	}
 
 private:
-	// Async worker thread
-	void asyncWorker();
-
-private:
-	//
-	// RESOURCE ALLOCATION
-	// 
-	
 	uint32_t idCounter;
 	std::unordered_map<uint32_t, ResourceRef<Resource>> resources;
-
-	//
-	// MAIN THREAD
-	//
-
-	// Set if the application is running
-	std::atomic<bool> running;
-
-	// Resource upload tasks on the main thread by resource id
-	ConcurrentQueue<uint32_t> mainTasks;
-
-	// Keeps track of the size of the main tasks queue
-	std::atomic<int32_t> mainTasksSize;
-
-	// Atomic set if main thread can dispatch next resource
-	std::atomic<bool> mainDispatchNext;
-	
-	//
-	// WORKER THREAD
-	//
-
-	// Worker thread handle
-	std::thread worker;
-
-	// Worker thread mutex
-	std::mutex workerMtx;
-
-	// Condition variable to ensure worker doesnt run when no tasks are available
-	std::condition_variable workerTasksAvailable;
-
-	// Condition variable to ensure worker doesnt run when a resource dispatch from the main thread is pending
-	std::condition_variable workerAwaitingDispatch;
-
-	// Resource load tasks on the worker thread by resource id
-	ConcurrentQueue<uint32_t> workerTasks;
-
-	// Set if the worker is currently running, false if worker is sleeping
-	std::atomic<bool> workerActive;
-
-	// Id of the resource the worker is currently loading (0 if worker isn't loading any resource)
-	std::atomic<uint32_t> workerTarget;
-
-	// Keeps track of the size of the worker tasks queue
-	std::atomic<int32_t> workerTasksSize;
-
-	//
-	// HELPERS
-	//
-
-	// Frees the io data of a resource if it isn't set to be preserved
-	void tryFreeIoData(ResourceRef<Resource>& resource);
 };

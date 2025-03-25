@@ -12,6 +12,42 @@ namespace fs = std::filesystem;
 
 uint32_t Texture::defaultTextureId = 0;
 
+Texture::Texture() : type(TextureType::EMPTY),
+path(),
+width(0),
+height(0),
+channels(0),
+data(nullptr),
+_backendId(defaultTextureId)
+{
+}
+
+Texture::~Texture()
+{
+	freeIoData();
+	deleteBuffers();
+}
+
+void Texture::setSource(TextureType _type, const std::string& _path)
+{
+	// Validate source path
+	if (!fs::exists(_path))
+		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
+
+	type = _type;
+	path = _path;
+}
+
+uint32_t Texture::backendId() const
+{
+	return _backendId;
+}
+
+void Texture::setDefaultTexture(uint32_t textureId)
+{
+	defaultTextureId = textureId;
+}
+
 bool Texture::loadIoData()
 {
 	// Load image data
@@ -121,44 +157,8 @@ bool Texture::uploadBuffers()
 
 void Texture::deleteBuffers()
 {
-	if (_backendId) 
+	if (_backendId)
 		glDeleteTextures(1, &_backendId);
 
 	_backendId = defaultTextureId;
-}
-
-Texture::Texture() : type(TextureType::EMPTY),
-path(),
-width(0),
-height(0),
-channels(0),
-data(nullptr),
-_backendId(defaultTextureId)
-{
-}
-
-Texture::~Texture()
-{
-	freeIoData();
-	deleteBuffers();
-}
-
-void Texture::setSource(TextureType _type, const std::string& _path)
-{
-	// Validate source path
-	if (!fs::exists(_path))
-		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
-
-	type = _type;
-	path = _path;
-}
-
-uint32_t Texture::backendId() const
-{
-	return _backendId;
-}
-
-void Texture::setDefaultTexture(uint32_t textureId)
-{
-	defaultTextureId = textureId;
 }
