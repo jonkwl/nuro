@@ -9,13 +9,13 @@ class AudioClip : public Resource
 {
 public:
 	AudioClip();
-	~AudioClip();
+	~AudioClip() override;
 
 	// Default pipe for creating audio clip
 	ResourcePipe create() {
-		return pipe()
+		return std::move(pipe()
 			>> BIND_TASK(AudioClip, loadIoData)
-			>> BIND_TASK_WITH_FLAGS(AudioClip, uploadBuffers, TaskFlags::UseContextThread);
+			>> BIND_TASK_WITH_FLAGS(AudioClip, uploadBuffers, TaskFlags::UseContextThread));
 	}
 
 	// Sets the path of the audio clips data source

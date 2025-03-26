@@ -10,13 +10,13 @@ class Cubemap : public Resource
 {
 public:
 	Cubemap();
-	~Cubemap();
+	~Cubemap() override;
 
 	// Default pipe for creating cubemap
 	ResourcePipe create() {
-		return pipe()
+		return std::move(pipe()
 			>> BIND_TASK(Cubemap, loadIoData)
-			>> BIND_TASK_WITH_FLAGS(Cubemap, uploadBuffers, TaskFlags::UseContextThread);
+			>> BIND_TASK_WITH_FLAGS(Cubemap, uploadBuffers, TaskFlags::UseContextThread));
 	}
 
 	// Sets cubemaps source to be cross layout

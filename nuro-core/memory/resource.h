@@ -6,6 +6,8 @@
 
 #include <memory/resource_pipe.h>
 
+using ResourceID = uint32_t;
+
 enum class ResourceState {
 	// Resource has not been initialized or loaded yet
 	EMPTY,
@@ -29,7 +31,7 @@ private:
 	friend class ResourceManager;
 
 	// ID of the resource
-	uint32_t _resourceId;
+	ResourceID _resourceId;
 
 	// Name of resource
 	std::string _resourceName;
@@ -40,16 +42,16 @@ private:
 protected:
 	// Returns a new resource pipe owned by this resource
 	ResourcePipe pipe() {
-		return ResourcePipe(_resourceId);
+		return std::move(ResourcePipe(_resourceId));
 	}
 
 	Resource() : _resourceId(0), _resourceName("none"), _resourceState(ResourceState::EMPTY) {};
 
 public:
-	virtual ~Resource() = default;
+	virtual ~Resource() = 0;
 
 	// Returns the resources id
-	uint32_t resourceId() const {
+	ResourceID resourceId() const {
 		return _resourceId;
 	}
 
@@ -63,3 +65,5 @@ public:
 		return _resourceState;
 	}
 };
+
+inline Resource::~Resource() {}

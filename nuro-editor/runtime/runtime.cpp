@@ -79,16 +79,16 @@ namespace Runtime {
 		// Create default texture
 		auto& [defaultTextureId, defaultTexture] = resource.create<Texture>("default-texture");
 		defaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
-		resource.execSync(defaultTexture->create());
+		resource.execAsDependency(defaultTexture->create());
 		Texture::setDefaultTexture(defaultTexture->backendId());
 
 		// Load various editor icons
 		IconPool::createFallbackIcon("./resources/icons/fallback/fallback_icon.png");
 		IconPool::loadAllSync("./resources/icons/shared");
-		IconPool::loadAllAsync("./resources/icons/assets");
-		IconPool::loadAllAsync("./resources/icons/components");
-		IconPool::loadAllAsync("./resources/icons/scene");
-		IconPool::loadAllAsync("./resources/icons/post-processing");
+		IconPool::loadAllSync("./resources/icons/assets");
+		IconPool::loadAllSync("./resources/icons/components");
+		IconPool::loadAllSync("./resources/icons/scene");
+		IconPool::loadAllSync("./resources/icons/post-processing");
 
 		// Create default cubemap
 		auto& [cubemapId, cubemap] = resource.create<Cubemap>("default-cubemap");
@@ -272,7 +272,7 @@ namespace Runtime {
 		// LOAD DEFAULT CUBEMAP
 		ResourceManager& resource = ApplicationContext::resourceManager();
 		if (auto cubemap = resource.getResourceAs<Cubemap>(gDefaultCubemap)) {
-			resource.execAsync((*cubemap)->create());
+			resource.exec((*cubemap)->create());
 		}
 
 		// MAIN LOOP

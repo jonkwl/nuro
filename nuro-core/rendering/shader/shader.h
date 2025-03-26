@@ -16,9 +16,9 @@ public:
 
 	// Default pipe for creating shader
 	ResourcePipe create() {
-		return pipe()
+		return std::move(pipe()
 			>> BIND_TASK(Shader, loadIoData)
-			>> BIND_TASK_WITH_FLAGS(Shader, uploadBuffers, TaskFlags::UseContextThread);
+			>> BIND_TASK_WITH_FLAGS(Shader, uploadBuffers, TaskFlags::UseContextThread));
 	}
 
 	// Sets the path of the shaders source

@@ -1,8 +1,8 @@
 #include "texture.h"
 
+#include <filesystem>
 #include <glad/glad.h>
 #include <stb_image.h>
-#include <filesystem>
 
 #include <utils/console.h>
 #include <utils/ioutils.h>

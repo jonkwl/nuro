@@ -25,13 +25,14 @@ class Texture : public Resource
 {
 public:
 	Texture();
-	~Texture();
+	~Texture() override;
 
 	// Default pipe for creating texture
 	ResourcePipe create() {
-		return pipe()
+		return std::move(pipe()
 			>> BIND_TASK(Texture, loadIoData)
-			>> BIND_TASK_WITH_FLAGS(Texture, uploadBuffers, TaskFlags::UseContextThread);
+			>> BIND_TASK_WITH_FLAGS(Texture, uploadBuffers, TaskFlags::UseContextThread)
+		);
 	}
 
 	// Sets the textures type and path of texture source

@@ -16,7 +16,7 @@ class Model : public Resource
 {
 public:
 	Model();
-	~Model();
+	~Model() override;
 
 	struct Metrics
 	{
@@ -82,9 +82,9 @@ public:
 
 	// Default pipe for creating model
 	ResourcePipe create() {
-		return pipe()
+		return std::move(pipe()
 			>> BIND_TASK(Model, loadIoData)
-			>> BIND_TASK_WITH_FLAGS(Model, uploadBuffers, TaskFlags::UseContextThread);
+			>> BIND_TASK_WITH_FLAGS(Model, uploadBuffers, TaskFlags::UseContextThread));
 	}
 
 	// Sets the path of the models source

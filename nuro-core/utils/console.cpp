@@ -179,6 +179,23 @@ namespace Console
 			gLogEvent(origin, info, LogType::DEFAULT);
 		}
 
+		void debug(std::string origin, std::string info)
+		{
+			print
+				>> TextColor::WHITE
+				>> BgColor::RED
+				>> " debug >>> ["
+				>> "process"
+				>> "] "
+				>> origin
+				>> ": "
+				>> info
+				>> "."
+				>> resetText
+				>> resetBg
+				>> endl;
+		}
+
 		void welcome() {
 			const char* art = R"(
 

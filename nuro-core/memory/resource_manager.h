@@ -28,21 +28,21 @@ public:
 	~ResourceManager();
 
 	// Updates the resource manager from the context thread
-	void update();
-
-	// Executes a resource pipe synchronously
-	bool execSync(ResourcePipe pipe);
+	void updateContext();
 
 	// Queues the execution of a resource pipe for asynchronous execution
-	bool execAsync(ResourcePipe pipe);
+	bool exec(ResourcePipe&& pipe);
+
+	// Executes a resource pipe synchronously, only possible until the first pipe was queued for asynchronous execution
+	bool execAsDependency(ResourcePipe&& pipe);
 
 	// Creates a new resource (lifetime managed by resource manager)
 	template <typename T, typename... Args>
-	std::pair<uint32_t, ResourceRef<T>> create(const std::string& name, Args&&... args) {
+	std::pair<ResourceID, ResourceRef<T>> create(const std::string& name, Args&&... args) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are valid for allocation");
 
 		// Create and return resource
-		uint32_t id = ++idCounter;
+		ResourceID id = ++idCounter;
 		auto& result = resources.emplace(id, std::make_shared<T>(std::forward<Args>(args)...));
 		auto& resource = result.first->second;
 		resource->_resourceId = id;
@@ -51,9 +51,9 @@ public:
 	}
 
 	// Retrieves an optional resource handle for a resource base by resource id
-	OptResource<Resource> getResource(uint32_t resourceId) {
+	OptResource<Resource> getResource(ResourceID id) {
 		// Find resource
-		auto it = resources.find(resourceId);
+		auto it = resources.find(id);
 		if (it != resources.end())
 			return it->second;
 
@@ -63,11 +63,11 @@ public:
 
 	// Retrieves an optional handle for a derived type T of resource by resource id
 	template <typename T>
-	OptResource<T> getResourceAs(uint32_t resourceId) {
+	OptResource<T> getResourceAs(ResourceID id) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are retrievable");
 
 		// Find resource
-		auto it = resources.find(resourceId);
+		auto it = resources.find(id);
 		if (it != resources.end())
 			return std::static_pointer_cast<T>(it->second);
 
@@ -75,12 +75,52 @@ public:
 		return std::nullopt;
 	}
 
+	//
 	// TEMPORARY!
+	//
+
+	struct ProcessorState {
+		bool loading;
+		std::string name;
+
+		void setSleeping() { loading = false; name = ""; }
+		void setLoading(std::string name) { loading = true; this->name = name; }
+	};
+
+	const ProcessorState& readProcessorState() {
+		return processorState;
+	}
+
 	const auto& readResources() {
 		return resources;
 	}
 
 private:
-	uint32_t idCounter;
-	std::unordered_map<uint32_t, ResourceRef<Resource>> resources;
+	// Counter for unique resource ids throughout application lifetime
+	ResourceID idCounter;
+
+	// Registry mapping a resource id to its resource reference
+	std::unordered_map<ResourceID, ResourceRef<Resource>> resources;
+
+	//
+	// RESOURCE PIPE PROCESSING
+	//
+
+	// Resource pipes queued for async execution
+	ConcurrentQueue<std::unique_ptr<ResourcePipe>> asyncPipes;
+
+	// Processes pending async pipes
+	void asyncPipeProcessor();
+
+	std::atomic<bool> processorRunning;
+	std::thread processor;
+	std::mutex mtxProcessor;
+	ProcessorState processorState;
+
+	std::condition_variable cvNextPipe;
+	std::condition_variable cvAwaitingContext;
+
+	std::atomic<bool> contextNext;
+	std::atomic<bool> contextResult;
+	ResourceTask::TaskFunc contextTask;
 };

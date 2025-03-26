@@ -1,24 +1,88 @@
 #include "resource_manager.h"
 
 ResourceManager::ResourceManager() : idCounter(0),
-resources()
+resources(),
+asyncPipes(),
+processorRunning(false),
+processor(),
+mtxProcessor(),
+processorState(),
+cvNextPipe(),
+cvAwaitingContext(),
+contextNext(false),
+contextResult(false),
+contextTask(nullptr)
 {
 }
 
 ResourceManager::~ResourceManager()
 {
+	// Stop processor
+	processorRunning = false;
+	if (processor.joinable()) processor.detach();
 }
 
-void ResourceManager::update()
+void ResourceManager::updateContext()
 {
+	// Make sure task is waiting to get executed on context thread
+	if (!contextNext) return;
+
+	// Execute context thread task
+	if (contextTask)
+		contextResult = contextTask();
+
+	// Notify pipe processor
+	cvAwaitingContext.notify_all();
 }
 
-bool ResourceManager::execSync(ResourcePipe pipe)
+bool ResourceManager::exec(ResourcePipe&& pipe)
 {
+	// Start async pipe processing if not running already
+	if (!processorRunning) {
+		processorRunning = true;
+		processor = std::thread(&ResourceManager::asyncPipeProcessor, this);
+	}
+
+	// Ensure owner resource is valid
 	OptResource<Resource> owner = getResource(pipe.owner());
 	if (!owner) {
 		// Pipe owning resource not available
-		Console::out::warning("Resource Manager", "Failed to synchronously execute pipe, its owner resource with id " + std::to_string(pipe.owner()) + " is invalid!");
+		Console::out::warning("Resource Manager", "Failed to enqueue execution of pipe, its owner resource with id " + std::to_string(pipe.owner()) + " is invalid");
+		return false;
+	}
+
+	// Fetch resource owning the pipe
+	ResourceRef<Resource> resource = *owner;
+
+	// Try to enqueue the pipe
+	auto pipeHandle = std::make_unique<ResourcePipe>(std::move(pipe));
+	bool success = asyncPipes.try_enqueue(std::move(pipeHandle));
+
+	// Update resource status if pipe was enqueued
+	if (success) {
+		resource->_resourceState = ResourceState::QUEUED;
+		cvNextPipe.notify_all();
+	}
+	else {
+		resource->_resourceState = ResourceState::FAILED;
+	}
+
+	return success;
+}
+
+bool ResourceManager::execAsDependency(ResourcePipe&& pipe)
+{
+	// Make sure async pipe processing isn't running yet
+	if (processorRunning) {
+		Console::out::warning("Resource Manager", "Tried to execute a pipe as a dependency, but the async pipe processor is already running");
+		return false;
+	}
+
+	// Ensure owner resource is valid
+	OptResource<Resource> owner = getResource(pipe.owner());
+	if (!owner) {
+		// Pipe owning resource not available
+		Console::out::warning("Resource Manager", "Failed to synchronously execute pipe, its owner resource with id " + std::to_string(pipe.owner()) + " is invalid");
 		return false;
 	}
 
@@ -26,11 +90,9 @@ bool ResourceManager::execSync(ResourcePipe pipe)
 	ResourceRef<Resource> resource = *owner;
 
 	// Execute each pipe task synchronously
-	while (NextTask next = pipe.next()) {
-		ResourceTask task = *next;
+	while (NextTask nextTask = pipe.next()) {
+		ResourceTask task = *nextTask;
 		bool success = task.func();
-
-		// Cancel further execution of pipe if last task failed
 		if (!success) {
 			resource->_resourceState = ResourceState::FAILED;
 			return false;
@@ -42,18 +104,66 @@ bool ResourceManager::execSync(ResourcePipe pipe)
 	return true;
 }
 
-bool ResourceManager::execAsync(ResourcePipe pipe)
-{
-	OptResource<Resource> owner = getResource(pipe.owner());
-	if (!owner) {
-		// Pipe owning resource not available
-		Console::out::warning("Resource Manager", "Failed to enqueue execution of pipe, its owner resource with id " + std::to_string(pipe.owner()) + " is invalid!");
-		return false;
+void ResourceManager::asyncPipeProcessor() {
+
+	while (processorRunning) {
+
+		std::unique_lock lock(mtxProcessor);
+
+		// Try to dequeue next pipe
+		std::unique_ptr<ResourcePipe> pipe;
+		bool nextPipe = asyncPipes.try_dequeue(pipe);
+
+		if (nextPipe) {
+			OptResource<Resource> owner = getResource(pipe->owner());
+			if (!owner) {
+				// Pipe owning resource not available
+				Console::out::warning("Resource Manager", "Failed to asynchronously execute pipe, its owner resource with id " + std::to_string(pipe->owner()) + " is invalid");
+				continue;
+			}
+
+			// Fetch resource owning the pipe
+			ResourceRef<Resource> resource = *owner;
+
+			// Update processor state
+			processorState.setLoading(resource->resourceName());
+
+			// Execute each pipe task
+			resource->_resourceState = ResourceState::LOADING;
+			while (NextTask nextTask = pipe->next()) {
+				ResourceTask task = *nextTask;
+
+				bool success = false;
+
+				// Execute task on context thread
+				if (task.flags & TaskFlags::UseContextThread) {
+					contextTask = task.func;		// A
+					contextNext = true;				// B
+					cvAwaitingContext.wait(lock);	// C
+					contextNext = false;			// B
+					contextTask = nullptr;			// A
+					success = contextResult;
+				}
+				// Execute task on this thread
+				else {
+					success = task.func();
+				}
+
+				if (!success) {
+					resource->_resourceState = ResourceState::FAILED;
+					continue;
+				}
+			}
+
+			// Check if all tasks executed successfully
+			if (resource->_resourceState != ResourceState::FAILED)
+				resource->_resourceState = ResourceState::READY;
+		}
+		else {
+			processorState.setSleeping();
+			cvNextPipe.wait(lock);
+		}
+
 	}
 
-	// Fetch resource owning the pipe
-	ResourceRef<Resource> resource = *owner;
-
-	Console::out::info("Resource Manager", "Enqueued execution of pipe owned by resource \"" + resource->resourceName() + "\"");
-	return true;
 }

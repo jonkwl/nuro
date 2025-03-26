@@ -22,10 +22,10 @@ constexpr bool operator&(TaskFlags a, TaskFlags b) {
 	return (static_cast<uint32_t>(a) & static_cast<uint32_t>(b)) != 0;
 }
 
-// Constructs a resource task by binding a member function of the current class
+// Constructs a resource task with a member function of the current class ("this")
 #define BIND_TASK(_class, _member) ResourceTask(std::bind(&_class::_member, this))
 
-// Constructs a resource task by binding a member function of the current class with specified task flags
+// Constructs a resource task with a member function of the current class ("this") with specified task flags
 #define BIND_TASK_WITH_FLAGS(_class, _member, _flags) ResourceTask(std::bind(&_class::_member, this), _flags)
 
 class ResourceTask {
@@ -40,7 +40,7 @@ private:
 	// Only the resource manager should be able to access and execute the function associated with a task
 	friend class ResourceManager;
 
-	// Function that defines the task to be executed
+	// Function that defines the task to be executed, returns success
 	TaskFunc func;
 
 	// Configuration of the task
@@ -51,6 +51,24 @@ using NextTask = std::optional<ResourceTask>;
 
 class ResourcePipe {
 public:
+
+	ResourcePipe(ResourcePipe&& other) noexcept : ownerId(other.ownerId), tasks(std::move(other.tasks)) {
+		other.ownerId = 0;
+	};
+
+	ResourcePipe& operator=(ResourcePipe&& other) noexcept {
+		if (this != &other) {
+			ownerId = other.ownerId;
+			tasks = std::move(other.tasks);
+			other.ownerId = 0;
+		}
+		return *this;
+	}
+
+	ResourcePipe(const ResourcePipe&) = delete;
+	ResourcePipe& operator=(const ResourcePipe&) = delete;
+
+	// Adds a resource task to the pipe
 	ResourcePipe& operator>>(ResourceTask&& task) {
 		tasks.emplace(task);
 		return *this;
