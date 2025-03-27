@@ -57,37 +57,25 @@ void Footer::renderContent(ImDrawList& drawList)
     // DRAW LOADING INFORMATION TEXT
     //
 
-    // Default text and state
-    bool loading = false;
-    std::string informationText = "No pending assets.";
-
     // Fetch worker state
-    ResourceManager& resource = ApplicationContext::resourceManager();
-    auto worker = resource.readWorkerState();
+    auto state = ApplicationContext::resourceManager().readProcessorState();
 
     // Fetch target resource if worker is active
-    if (worker.targetId) {
-        OptResource<Resource> resourceOpt = resource.getResource(worker.targetId);
-        if (resourceOpt) {
-            ResourceRef<Resource> resource = *resourceOpt;
-            std::string remaining = worker.tasksPending ? (" (" + std::to_string(worker.tasksPending) + " remaining)") : "";
-            informationText = "Loading '" + resource->resourceName() + "'..." + remaining;
-            loading = true;
-        }
-    }
+    std::string informationText = "No pending assets.";
+    if (state.loading) informationText = "Loading '" + state.name + "'...";
 
     // Draw text and loading buffer
     {
         // Draw loading buffer
         float bufferSize = style.height * 0.4f;
-        if (loading) {
+        if (state.loading) {
             ImVec2 bufferPos = ImVec2(footerPosition.x + footerSize.x - bufferSize - style.padding.x, footerPosition.y + (footerSize.y - bufferSize) * 0.5f);
             IMComponents::loadingBuffer(drawList, bufferPos, bufferSize * 0.5f, 2, style.primaryTextColor);
         }
 
         // Draw text
         float fontSize = style.primaryFont->FontSize;
-        ImVec2 textPadding = loading ? ImVec2(bufferSize + 16.0f + style.padding.x, style.padding.y) : style.padding;
+        ImVec2 textPadding = state.loading ? ImVec2(bufferSize + 16.0f + style.padding.x, style.padding.y) : style.padding;
         ImVec2 textSize = style.primaryFont->CalcTextSizeA(fontSize, FLT_MAX, 0.0f, informationText.c_str()) + textPadding;
         ImVec2 textPos = ImVec2(footerPosition.x + footerSize.x - textSize.x, footerPosition.y + (footerSize.y - textSize.y) * 0.5f);
         drawList.AddText(style.primaryFont, fontSize, textPos, style.primaryTextColor, informationText.c_str());

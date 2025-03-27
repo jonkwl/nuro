@@ -58,6 +58,7 @@ set(SOURCE_FILES
 	rendering/velocitybuffer/velocity_buffer.h
 	memory/resource.h
 	memory/resource_manager.h
+	memory/resource_pipe.h
 	time/time.h
 	transform/transform.h
 	transform/transform_pass.h

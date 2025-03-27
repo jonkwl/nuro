@@ -116,6 +116,9 @@ namespace Console
 		// Prints that some specified process is done
 		void done(std::string origin, std::string info);
 
+		// Prints a highlighted debug message
+		void debug(std::string origin, std::string info);
+
 		// Prints the ASCII welcome message
 		void welcome();
 

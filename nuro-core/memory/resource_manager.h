@@ -12,6 +12,7 @@
 
 #include <utils/console.h>
 #include <memory/resource.h>
+#include <memory/resource_pipe.h>
 #include <utils/concurrent_queue.h>
 
 template <typename T>
@@ -23,25 +24,25 @@ using OptResource = std::optional<ResourceRef<T>>;
 class ResourceManager
 {
 public:
-	struct WorkerState {
-		bool active;
-		uint32_t targetId;
-		size_t tasksPending;
-
-		WorkerState(bool active, uint32_t targetId, size_t tasksPending) : active(active), targetId(targetId), tasksPending(tasksPending) {};
-	};
-
-public:
 	ResourceManager();
 	~ResourceManager();
 
+	// Updates the resource manager from the context thread
+	void updateContext();
+
+	// Queues the execution of a resource pipe for asynchronous execution
+	bool exec(ResourcePipe&& pipe);
+
+	// Executes a resource pipe synchronously, only possible until the first pipe was queued for asynchronous execution
+	bool execAsDependency(ResourcePipe&& pipe);
+
 	// Creates a new resource (lifetime managed by resource manager)
 	template <typename T, typename... Args>
-	std::pair<uint32_t, ResourceRef<T>> create(const std::string& name, Args&&... args) {
+	std::pair<ResourceID, ResourceRef<T>> create(const std::string& name, Args&&... args) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are valid for allocation");
 
 		// Create and return resource
-		uint32_t id = ++idCounter;
+		ResourceID id = ++idCounter;
 		auto& result = resources.emplace(id, std::make_shared<T>(std::forward<Args>(args)...));
 		auto& resource = result.first->second;
 		resource->_resourceId = id;
@@ -50,9 +51,9 @@ public:
 	}
 
 	// Retrieves an optional resource handle for a resource base by resource id
-	OptResource<Resource> getResource(uint32_t resourceId) {
+	OptResource<Resource> getResource(ResourceID id) {
 		// Find resource
-		auto it = resources.find(resourceId);
+		auto it = resources.find(id);
 		if (it != resources.end())
 			return it->second;
 
@@ -62,11 +63,11 @@ public:
 
 	// Retrieves an optional handle for a derived type T of resource by resource id
 	template <typename T>
-	OptResource<T> getResourceAs(uint32_t resourceId) {
+	OptResource<T> getResourceAs(ResourceID id) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are retrievable");
 
 		// Find resource
-		auto it = resources.find(resourceId);
+		auto it = resources.find(id);
 		if (it != resources.end())
 			return std::static_pointer_cast<T>(it->second);
 
@@ -74,86 +75,52 @@ public:
 		return std::nullopt;
 	}
 
-	// Loads resource synchronously, blocking until complete  
-	void loadSync(uint32_t resourceId);
-
-	// Queues resource for asynchronous loading, not blocking
-	void loadAsync(uint32_t resourceId);
-
-	// Destroy buffers (e.g. on the gpu) of a resource if it is ready
-	void deleteBuffers(uint32_t resourceId);
-
-	// Dispatch next pending resource to gpu (call when updating frame on main thread)
-	void dispatchNext();
-
-	// Returns the current state of the worker
-	WorkerState readWorkerState() const;
-
+	//
 	// TEMPORARY!
+	//
+
+	struct ProcessorState {
+		bool loading;
+		std::string name;
+
+		void setSleeping() { loading = false; name = ""; }
+		void setLoading(std::string name) { loading = true; this->name = name; }
+	};
+
+	const ProcessorState& readProcessorState() {
+		return processorState;
+	}
+
 	const auto& readResources() {
 		return resources;
 	}
 
 private:
-	// Async worker thread
-	void asyncWorker();
+	// Counter for unique resource ids throughout application lifetime
+	ResourceID idCounter;
 
-private:
-	//
-	// RESOURCE ALLOCATION
-	// 
-	
-	uint32_t idCounter;
-	std::unordered_map<uint32_t, ResourceRef<Resource>> resources;
+	// Registry mapping a resource id to its resource reference
+	std::unordered_map<ResourceID, ResourceRef<Resource>> resources;
 
 	//
-	// MAIN THREAD
+	// RESOURCE PIPE PROCESSING
 	//
 
-	// Set if the application is running
-	std::atomic<bool> running;
+	// Resource pipes queued for async execution
+	ConcurrentQueue<std::unique_ptr<ResourcePipe>> asyncPipes;
 
-	// Resource upload tasks on the main thread by resource id
-	ConcurrentQueue<uint32_t> mainTasks;
+	// Processes pending async pipes
+	void asyncPipeProcessor();
 
-	// Keeps track of the size of the main tasks queue
-	std::atomic<int32_t> mainTasksSize;
+	std::atomic<bool> processorRunning;
+	std::thread processor;
+	std::mutex mtxProcessor;
+	ProcessorState processorState;
 
-	// Atomic set if main thread can dispatch next resource
-	std::atomic<bool> mainDispatchNext;
-	
-	//
-	// WORKER THREAD
-	//
+	std::condition_variable cvNextPipe;
+	std::condition_variable cvAwaitingContext;
 
-	// Worker thread handle
-	std::thread worker;
-
-	// Worker thread mutex
-	std::mutex workerMtx;
-
-	// Condition variable to ensure worker doesnt run when no tasks are available
-	std::condition_variable workerTasksAvailable;
-
-	// Condition variable to ensure worker doesnt run when a resource dispatch from the main thread is pending
-	std::condition_variable workerAwaitingDispatch;
-
-	// Resource load tasks on the worker thread by resource id
-	ConcurrentQueue<uint32_t> workerTasks;
-
-	// Set if the worker is currently running, false if worker is sleeping
-	std::atomic<bool> workerActive;
-
-	// Id of the resource the worker is currently loading (0 if worker isn't loading any resource)
-	std::atomic<uint32_t> workerTarget;
-
-	// Keeps track of the size of the worker tasks queue
-	std::atomic<int32_t> workerTasksSize;
-
-	//
-	// HELPERS
-	//
-
-	// Frees the io data of a resource if it isn't set to be preserved
-	void tryFreeIoData(ResourceRef<Resource>& resource);
+	std::atomic<bool> contextNext;
+	std::atomic<bool> contextResult;
+	ResourceTask::TaskFunc contextTask;
 };

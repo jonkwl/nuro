@@ -3,41 +3,6 @@
 
 #include <utils/console.h>
 
-bool AudioClip::loadIoData()
-{
-	return _data.load(_info);
-}
-
-void AudioClip::freeIoData()
-{
-	_data.free();
-}
-
-bool AudioClip::uploadBuffers()
-{
-    printInfo();
-
-    // Create mono buffer (mandatory)
-    AudioSamples* monoSamples = _data.monoSamples();
-    if (!monoSamples) return false;
-    if (!_monoBuffer.create(*monoSamples)) return false;
-
-    // Create multichannel buffer if available
-    AudioSamples* multichannelSamples = _data.multichannelSamples();
-    if (multichannelSamples) {
-        if (_multichannelBuffer.create(*multichannelSamples))
-            _multichannelAvailable = true;
-    }
-
-    return true;
-}
-
-void AudioClip::deleteBuffers()
-{
-	_monoBuffer.destroy();
-	_multichannelBuffer.destroy();
-}
-
 AudioClip::AudioClip() : _info(),
 _data(),
 _multichannelAvailable(false),
@@ -128,4 +93,39 @@ void AudioClip::printInfo() const
         >> Console::endl
         >> Console::resetBg
         >> Console::resetText;
+}
+
+bool AudioClip::loadIoData()
+{
+    return _data.load(_info);
+}
+
+void AudioClip::freeIoData()
+{
+    _data.free();
+}
+
+bool AudioClip::uploadBuffers()
+{
+    printInfo();
+
+    // Create mono buffer (mandatory)
+    AudioSamples* monoSamples = _data.monoSamples();
+    if (!monoSamples) return false;
+    if (!_monoBuffer.create(*monoSamples)) return false;
+
+    // Create multichannel buffer if available
+    AudioSamples* multichannelSamples = _data.multichannelSamples();
+    if (multichannelSamples) {
+        if (_multichannelBuffer.create(*multichannelSamples))
+            _multichannelAvailable = true;
+    }
+
+    return true;
+}
+
+void AudioClip::deleteBuffers()
+{
+    _monoBuffer.destroy();
+    _multichannelBuffer.destroy();
 }

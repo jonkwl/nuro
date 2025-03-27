@@ -44,10 +44,10 @@ namespace ShaderPool {
 
 			// Load shader
 			if (async) {
-				resource.loadAsync(shaderId);
+				resource.exec(shader->create());
 			}
 			else {
-				resource.loadSync(shaderId);
+				resource.execAsDependency(shader->create());
 			}
 			gShaders[identifier] = shader;
 		}

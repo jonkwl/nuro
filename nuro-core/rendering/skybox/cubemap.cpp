@@ -9,72 +9,6 @@
 
 namespace fs = std::filesystem;
 
-bool Cubemap::loadIoData()
-{
-	switch (source.type) {
-	case Source::Type::CROSS:
-		if (source.paths.empty()) return false;
-		loadCrossCubemap(source.paths[0]);
-		break;
-	case Source::Type::INDIVIDUAL:
-		if (source.paths.size() < 6) return false;
-		loadIndividualFace(source.paths[0]);
-		loadIndividualFace(source.paths[1]);
-		loadIndividualFace(source.paths[2]);
-		loadIndividualFace(source.paths[3]);
-		loadIndividualFace(source.paths[4]);
-		loadIndividualFace(source.paths[5]);
-		break;
-	default:
-		break;
-	}
-
-	return true;
-}
-
-void Cubemap::freeIoData()
-{
-	data.clear();
-}
-
-bool Cubemap::uploadBuffers()
-{
-	// Don't dispatch cubemap if there is no data
-	if (data.empty()) return false;
-
-	glGenTextures(1, &_backendId);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, _backendId);
-
-	for (int32_t i = 0; i < data.size(); i++)
-	{
-		FaceData face = data[i];
-
-		GLenum format = GL_RGB;
-		if (face.channels == 4)
-		{
-			format = GL_RGBA;
-		}
-
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, face.width, face.height, 0, format, GL_UNSIGNED_BYTE, face.data.data());
-	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-	return true;
-}
-
-void Cubemap::deleteBuffers()
-{
-	if (_backendId) glDeleteTextures(1, &_backendId);
-	_backendId = 0;
-}
-
 Cubemap::Cubemap() : source(),
 data(),
 _backendId(0)
@@ -214,4 +148,70 @@ void Cubemap::loadIndividualFace(std::string path)
 
 	// Free temporary image data
 	stbi_image_free(image.data);
+}
+
+bool Cubemap::loadIoData()
+{
+	switch (source.type) {
+	case Source::Type::CROSS:
+		if (source.paths.empty()) return false;
+		loadCrossCubemap(source.paths[0]);
+		break;
+	case Source::Type::INDIVIDUAL:
+		if (source.paths.size() < 6) return false;
+		loadIndividualFace(source.paths[0]);
+		loadIndividualFace(source.paths[1]);
+		loadIndividualFace(source.paths[2]);
+		loadIndividualFace(source.paths[3]);
+		loadIndividualFace(source.paths[4]);
+		loadIndividualFace(source.paths[5]);
+		break;
+	default:
+		break;
+	}
+
+	return true;
+}
+
+void Cubemap::freeIoData()
+{
+	data.clear();
+}
+
+bool Cubemap::uploadBuffers()
+{
+	// Don't dispatch cubemap if there is no data
+	if (data.empty()) return false;
+
+	glGenTextures(1, &_backendId);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, _backendId);
+
+	for (int32_t i = 0; i < data.size(); i++)
+	{
+		FaceData face = data[i];
+
+		GLenum format = GL_RGB;
+		if (face.channels == 4)
+		{
+			format = GL_RGBA;
+		}
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, face.width, face.height, 0, format, GL_UNSIGNED_BYTE, face.data.data());
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return true;
+}
+
+void Cubemap::deleteBuffers()
+{
+	if (_backendId) glDeleteTextures(1, &_backendId);
+	_backendId = 0;
 }

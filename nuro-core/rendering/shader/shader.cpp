@@ -9,62 +9,6 @@
 
 namespace fs = std::filesystem;
 
-bool Shader::loadIoData()
-{
-	data.vertexSource = IOUtils::readFile(path + "/.vert");
-	data.fragmentSource = IOUtils::readFile(path + "/.frag");
-
-	return true;
-}
-
-void Shader::freeIoData()
-{
-	data.vertexSource.clear();
-	data.fragmentSource.clear();
-}
-
-bool Shader::uploadBuffers()
-{
-	// Don't dispatch shader if there is no data
-	if (data.vertexSource.empty() || data.fragmentSource.empty()) return false;
-
-	// Shader backend ids
-	uint32_t vertexShader, fragmentShader;
-
-	// Compile vertex shader source
-	const char* vertexSource = data.vertexSource.c_str();
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
-	glCompileShader(vertexShader);
-	if (!shaderCompiled("vertex", vertexShader)) return false;
-
-	// Compile fragment shader source
-	const char* fragmentSource = data.fragmentSource.c_str();
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
-	glCompileShader(fragmentShader);
-	if (!shaderCompiled("fragment", fragmentShader)) return false;
-
-	// Create and link shader program
-	_backendId = glCreateProgram();
-	glAttachShader(_backendId, vertexShader);
-	glAttachShader(_backendId, fragmentShader);
-	glLinkProgram(_backendId);
-	if (!programLinked(_backendId)) return false;
-
-	// Delete shader sources
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	return true;
-}
-
-void Shader::deleteBuffers()
-{
-	if (_backendId) glDeleteProgram(_backendId);
-	_backendId = 0;
-}
-
 Shader::Shader() : path(),
 data(),
 uniforms(),
@@ -179,4 +123,60 @@ bool Shader::programLinked(int32_t program)
 
 	// Shader program linking successful
 	return true;
+}
+
+bool Shader::loadIoData()
+{
+	data.vertexSource = IOUtils::readFile(path + "/.vert");
+	data.fragmentSource = IOUtils::readFile(path + "/.frag");
+
+	return true;
+}
+
+void Shader::freeIoData()
+{
+	data.vertexSource.clear();
+	data.fragmentSource.clear();
+}
+
+bool Shader::uploadBuffers()
+{
+	// Don't dispatch shader if there is no data
+	if (data.vertexSource.empty() || data.fragmentSource.empty()) return false;
+
+	// Shader backend ids
+	uint32_t vertexShader, fragmentShader;
+
+	// Compile vertex shader source
+	const char* vertexSource = data.vertexSource.c_str();
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
+	glCompileShader(vertexShader);
+	if (!shaderCompiled("vertex", vertexShader)) return false;
+
+	// Compile fragment shader source
+	const char* fragmentSource = data.fragmentSource.c_str();
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
+	glCompileShader(fragmentShader);
+	if (!shaderCompiled("fragment", fragmentShader)) return false;
+
+	// Create and link shader program
+	_backendId = glCreateProgram();
+	glAttachShader(_backendId, vertexShader);
+	glAttachShader(_backendId, fragmentShader);
+	glLinkProgram(_backendId);
+	if (!programLinked(_backendId)) return false;
+
+	// Delete shader sources
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	return true;
+}
+
+void Shader::deleteBuffers()
+{
+	if (_backendId) glDeleteProgram(_backendId);
+	_backendId = 0;
 }

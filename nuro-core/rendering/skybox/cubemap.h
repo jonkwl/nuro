@@ -8,15 +8,16 @@
 
 class Cubemap : public Resource
 {
-protected:
-	bool loadIoData() override;
-	void freeIoData() override;
-	bool uploadBuffers() override;
-	void deleteBuffers() override;
-
 public:
 	Cubemap();
-	~Cubemap();
+	~Cubemap() override;
+
+	// Default pipe for creating cubemap
+	ResourcePipe create() {
+		return std::move(pipe()
+			>> BIND_TASK(Cubemap, loadIoData)
+			>> BIND_TASK_WITH_FLAGS(Cubemap, uploadBuffers, TaskFlags::UseContextThread));
+	}
 
 	// Sets cubemaps source to be cross layout
 	void setSource_Cross(std::string path);
@@ -72,6 +73,17 @@ private:
 	};
 
 private:
+	// Loads a cubemap by multiple faces in one file
+	void loadCrossCubemap(std::string path);
+
+	// Loads an individual face for a cubemap
+	void loadIndividualFace(std::string path);
+
+	bool loadIoData();
+	void freeIoData();
+	bool uploadBuffers();
+	void deleteBuffers();
+
 	// Cubemap source
 	Source source;
 
@@ -83,10 +95,4 @@ private:
 
 	// Loads given images data
 	ImageData loadImageData(std::string path);
-
-	// Loads a cubemap by multiple faces in one file
-	void loadCrossCubemap(std::string path);
-
-	// Loads an individual face for a cubemap
-	void loadIndividualFace(std::string path);
 };
