@@ -233,7 +233,7 @@ namespace EditorUI {
 
 		addWindow<ViewportWindow>();
 		addWindow<GameWindow>();
-		addWindow<PostProcessingWindow>(Runtime::getGameViewPipeline().getProfile());
+		addWindow<PostProcessingWindow>(Runtime::gameViewPipeline().getProfile());
 		addWindow<DiagnosticsWindow>();
 		addWindow<ConsoleWindow>();
 		addWindow<RegistryWindow>();

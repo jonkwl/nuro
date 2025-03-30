@@ -45,7 +45,7 @@ void WelcomeInspectable::renderStaticContent(ImDrawList& drawList)
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
         if (IMComponents::buttonBig("Play Game", IM_COL32(50, 50, 80, 255))) Runtime::startGame();
 
-        if (Runtime::getGameState() == GameState::GAME_RUNNING) playedGame = true;
+        if (Runtime::gameState() == GameState::GAME_RUNNING) playedGame = true;
     }
     else {
         ImGui::Dummy(ImVec2(0.0f, 20.0f));

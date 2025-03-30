@@ -58,11 +58,16 @@ void Footer::renderContent(ImDrawList& drawList)
     //
 
     // Fetch worker state
-    auto state = ApplicationContext::resourceManager().readProcessorState();
+    ResourceManager& manager = ApplicationContext::resourceManager();
+    auto state = manager.readProcessorState();
+    uint32_t nPending = manager.nQueuedPipes();
 
     // Fetch target resource if worker is active
     std::string informationText = "No pending assets.";
-    if (state.loading) informationText = "Loading '" + state.name + "'...";
+    if (state.loading) {
+        std::string pending = nPending < 1 ? "" : (" (" + std::to_string(nPending) + " pending)");
+        informationText = "Loading '" + state.name + "'..." + pending;
+    }
 
     // Draw text and loading buffer
     {

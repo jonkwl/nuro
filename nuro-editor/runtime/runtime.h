@@ -6,7 +6,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include "../project/project.h"
+#include "../project/project_manager.h"
 #include "../pipelines/game_view_pipeline.h"
 #include "../pipelines/scene_view_pipeline.h"
 #include "../pipelines/preview_pipeline.h"
@@ -37,8 +37,7 @@ namespace Runtime
 	// Project
 	//
 
-	void loadProject(const fs::path& path);
-	const Project& getProject();
+	ProjectManager& projectManager();
 
 	//
 	// Game functions
@@ -49,26 +48,26 @@ namespace Runtime
 	void pauseGame();
 	void continueGame();
 
-	GameState getGameState();
+	GameState gameState();
 
 	//
 	// Pipelines getters
 	//
 
-	SceneViewPipeline& getSceneViewPipeline();
-	GameViewPipeline& getGameViewPipeline();
-	PreviewPipeline& getPreviewPipeline();
+	SceneViewPipeline& sceneViewPipeline();
+	GameViewPipeline& gameViewPipeline();
+	PreviewPipeline& previewPipeline();
 
 	//
 	// Gizmo getters
 	//
 
-	IMGizmo& getSceneGizmos();
+	IMGizmo& sceneGizmos();
 
 	//
 	// Shadow getters
 	//
 
-	ShadowDisk* getMainShadowDisk();
-	ShadowMap* getMainShadowMap();
+	ShadowDisk* mainShadowDisk();
+	ShadowMap* mainShadowMap();
 };

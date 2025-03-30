@@ -9,6 +9,7 @@
 		"stb",
 		"nlohmann-json",
 		"ffmpeg",
-		"openal-soft"
+		"openal-soft",
+		"efsw"
 	]
 }

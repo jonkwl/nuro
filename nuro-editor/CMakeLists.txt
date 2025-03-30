@@ -6,7 +6,8 @@ set(SOURCE_FILES
 	pipelines/preview_pipeline.h
 	pipelines/scene_view_pipeline.h
 	pipelines/scene_view_forward_pass.h
-	project/project.h
+	project/project_manager.h
+	project/project_observer.h
 	runtime/runtime.h
 	ui/collection/IconsFontAwesome6.h
 	ui/components/im_components.h
@@ -45,7 +46,8 @@ set(SOURCE_FILES
 	pipelines/preview_pipeline.cpp
 	pipelines/scene_view_pipeline.cpp
 	pipelines/scene_view_forward_pass.cpp
-	project/project.cpp
+	project/project_manager.cpp
+	project/project_observer.cpp
 	runtime/runtime.cpp
 	ui/components/im_components.cpp
 	ui/components/inspectable_components.cpp
@@ -93,7 +95,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${IMGUI_SOURCES})
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC 
-		${CMAKE_CURRENT_LIST_DIR}/utfcpp # vendor library: utfcpp
+		${CMAKE_CURRENT_LIST_DIR}/utfcpp
 	PRIVATE 
 		${CMAKE_CURRENT_LIST_DIR}/imgui
 )
@@ -103,6 +105,7 @@ target_link_libraries(${PROJECT_NAME}
 		nuro::core
 		glm::glm
 		nlohmann_json::nlohmann_json
+		efsw::efsw
 )
 
 add_custom_command(TARGET nuro-editor POST_BUILD

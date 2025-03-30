@@ -34,8 +34,8 @@
 
 namespace Runtime {
 
-	// Project
-	Project gProject;
+	// Project manager
+	ProjectManager gProjectManager;
 
 	// Pipelines
 	SceneViewPipeline gSceneViewPipeline;
@@ -177,6 +177,9 @@ namespace Runtime {
 			{
 				if (logType != LogType::DEFAULT)
 					ConsoleWindow::log(ConsoleLog(origin, content, logType));
+
+				if (logType == LogType::ERROR) 
+					TERMINATE();
 			}
 		);
 	}
@@ -237,6 +240,7 @@ namespace Runtime {
 		// gPreviewPipeline.render();
 
 		// RENDER EDITOR
+		gProjectManager.pollEvents();
 		Profiler::start("ui_pass");
 		EditorUI::newFrame();
 		EditorUI::render();
@@ -297,15 +301,10 @@ namespace Runtime {
 
 		return 0;
 	}
-
-	void loadProject(const fs::path& path)
+	
+	ProjectManager& projectManager()
 	{
-		gProject.load(path);
-	}
-
-	const Project& getProject()
-	{
-		return gProject;
+		return gProjectManager;
 	}
 
 	void startGame()
@@ -345,36 +344,36 @@ namespace Runtime {
 		gGameState = GameState::GAME_RUNNING;
 	}
 
-	GameState getGameState() {
+	GameState gameState() {
 		return gGameState;
 	}
 
-	SceneViewPipeline& getSceneViewPipeline()
+	SceneViewPipeline& sceneViewPipeline()
 	{
 		return gSceneViewPipeline;
 	}
 
-	GameViewPipeline& getGameViewPipeline()
+	GameViewPipeline& gameViewPipeline()
 	{
 		return gGameViewPipeline;
 	}
 
-	PreviewPipeline& getPreviewPipeline()
+	PreviewPipeline& previewPipeline()
 	{
 		return gPreviewPipeline;
 	}
 
-	IMGizmo& getSceneGizmos()
+	IMGizmo& sceneGizmos()
 	{
 		return gSceneGizmos;
 	}
 
-	ShadowDisk* getMainShadowDisk()
+	ShadowDisk* mainShadowDisk()
 	{
 		return gMainShadowDisk;
 	}
 
-	ShadowMap* getMainShadowMap()
+	ShadowMap* mainShadowMap()
 	{
 		return gMainShadowMap;
 	}

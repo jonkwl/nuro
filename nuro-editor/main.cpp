@@ -9,7 +9,7 @@ int main()
 	fs::path project = fs::current_path() / "examples" / "empty-project";
 
 	// SYNCHRONOUSLY LOAD PROJECT
-	Runtime::loadProject(project);
+	Runtime::projectManager().load(project);
 
 	// RUN EDITOR
 	return Runtime::START_LOOP();

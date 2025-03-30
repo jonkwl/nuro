@@ -219,7 +219,7 @@ void RegistryWindow::renderItem(ImDrawList& drawList, HierarchyItem& item, uint3
 
 			// Select item
 			selectedItems[_item.entity.id()] = &_item;
-			Runtime::getSceneViewPipeline().setSelectedEntity(&_item.entity);
+			Runtime::sceneViewPipeline().setSelectedEntity(&_item.entity);
 
 			// Update insight panel
 			InsightPanelWindow::inspect<EntityInspectable>(_item);
@@ -502,7 +502,7 @@ void RegistryWindow::updateCameraMovement()
 	if (!cameraMoving || !cameraTarget) return;
 
 	// Get fly camera transform
-	TransformComponent& cameraTransform = std::get<0>(Runtime::getSceneViewPipeline().getFlyCamera());
+	TransformComponent& cameraTransform = std::get<0>(Runtime::sceneViewPipeline().getFlyCamera());
 
 	// Get target transform
 	TransformComponent& targetTransform = *cameraTarget;

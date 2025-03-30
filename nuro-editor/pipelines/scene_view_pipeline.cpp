@@ -60,7 +60,7 @@ void SceneViewPipeline::create()
 	createPasses();
 
 	// Set game view gizmos
-	Runtime::getGameViewPipeline().linkGizmos(&Runtime::getSceneGizmos());
+	Runtime::gameViewPipeline().linkGizmos(&Runtime::sceneGizmos());
 }
 
 void SceneViewPipeline::destroy()
@@ -81,7 +81,7 @@ void SceneViewPipeline::render()
 
 	// Select game profile if profile effects are enabled and not rendering wireframe
 	bool useDefaultProfile = !useProfileEffects || wireframe;
-	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::getGameViewPipeline().getProfile();
+	PostProcessing::Profile& targetProfile = useDefaultProfile ? defaultProfile : Runtime::gameViewPipeline().getProfile();
 
 	// Get transformation matrices
 	view = Transformation::view(cameraTransform.position, cameraTransform.rotation);
@@ -90,7 +90,7 @@ void SceneViewPipeline::render()
 	glm::mat3 viewNormal = glm::transpose(glm::inverse(glm::mat3(view)));
 
 	// Start new gizmo frame
-	IMGizmo& gizmos = Runtime::getSceneGizmos();
+	IMGizmo& gizmos = Runtime::sceneGizmos();
 	gizmos.newFrame();
 	ComponentGizmos::drawSceneViewIcons(gizmos, cameraTransform);
 
@@ -140,12 +140,12 @@ void SceneViewPipeline::render()
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &targetProfile;
 	LitMaterial::castShadows = renderingShadows;
-	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
-	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
+	LitMaterial::mainShadowDisk = Runtime::mainShadowDisk();
+	LitMaterial::mainShadowMap = Runtime::mainShadowMap();
 
 	sceneViewForwardPass.wireframe = wireframe;
 	sceneViewForwardPass.drawSkybox = showSkybox;
-	sceneViewForwardPass.linkSkybox(Runtime::getGameViewPipeline().getLinkedSkybox());
+	sceneViewForwardPass.linkSkybox(Runtime::gameViewPipeline().getLinkedSkybox());
 	sceneViewForwardPass.drawGizmos = showGizmos;
 	uint32_t FORWARD_PASS_OUTPUT = sceneViewForwardPass.render(view, projection, viewProjection, camera, selectedEntities);
 
@@ -233,7 +233,7 @@ void SceneViewPipeline::createPasses()
 {
 	prePass.create();
 	sceneViewForwardPass.create(msaaSamples);
-	sceneViewForwardPass.linkGizmos(&Runtime::getSceneGizmos());
+	sceneViewForwardPass.linkGizmos(&Runtime::sceneGizmos());
 	ssaoPass.create();
 	postProcessingPipeline.create();
 }

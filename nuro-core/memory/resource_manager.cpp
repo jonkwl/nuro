@@ -3,6 +3,7 @@
 ResourceManager::ResourceManager() : idCounter(0),
 resources(),
 asyncPipes(),
+asyncPipesSize(0),
 processorRunning(false),
 processor(),
 mtxProcessor(),
@@ -60,6 +61,7 @@ bool ResourceManager::exec(ResourcePipe&& pipe)
 
 	// Update resource status if pipe was enqueued
 	if (success) {
+		asyncPipesSize++;
 		resource->_resourceState = ResourceState::QUEUED;
 		cvNextPipe.notify_all();
 	}
@@ -115,6 +117,8 @@ void ResourceManager::asyncPipeProcessor() {
 		bool nextPipe = asyncPipes.try_dequeue(pipe);
 
 		if (nextPipe) {
+			asyncPipesSize--;
+
 			OptResource<Resource> owner = getResource(pipe->owner());
 			if (!owner) {
 				// Pipe owning resource not available

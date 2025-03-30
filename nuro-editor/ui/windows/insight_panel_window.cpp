@@ -10,7 +10,7 @@ InsightPanelWindow::InsightPanelWindow() : previewViewerOutput(0),
 previewViewerHeight(300.0f),
 previewCameraTransform()
 {
-	previewViewerOutput = Runtime::getPreviewPipeline().createOutput();
+	previewViewerOutput = Runtime::previewPipeline().createOutput();
 }
 
 void InsightPanelWindow::render()
@@ -158,7 +158,7 @@ void InsightPanelWindow::renderPreviewViewer(ImDrawList& drawList, ImVec2 size)
 	bool render = true;
 
 	// Get output
-	PreviewPipeline& pipeline = Runtime::getPreviewPipeline();
+	PreviewPipeline& pipeline = Runtime::previewPipeline();
 	const PreviewOutput& output = pipeline.getOutput(previewViewerOutput);
 
 	// Get current output size

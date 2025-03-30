@@ -78,7 +78,7 @@ void GameWindow::renderToolbar(ImDrawList& drawList, ImVec2 position)
 void GameWindow::renderGameView()
 {
 	// Prepare game view data
-	GameViewPipeline& pipeline = Runtime::getGameViewPipeline();
+	GameViewPipeline& pipeline = Runtime::gameViewPipeline();
 	bool availableCamera = pipeline.getCameraAvailable();
 	uint32_t output = pipeline.getOutput();
 
@@ -123,7 +123,7 @@ void GameWindow::renderGameView()
 
 void GameWindow::renderForegroundIndicators()
 {
-	GameViewPipeline& pipeline = Runtime::getGameViewPipeline();
+	GameViewPipeline& pipeline = Runtime::gameViewPipeline();
 
 	// Render no camera indicator if no camera is available
 	if (!pipeline.getCameraAvailable()) {

@@ -118,8 +118,8 @@ void GameViewPipeline::render()
 	LitMaterial::ssaoInput = SSAO_OUTPUT;
 	LitMaterial::profile = &profile;
 	LitMaterial::castShadows = true;
-	LitMaterial::mainShadowDisk = Runtime::getMainShadowDisk();
-	LitMaterial::mainShadowMap = Runtime::getMainShadowMap();
+	LitMaterial::mainShadowDisk = Runtime::mainShadowDisk();
+	LitMaterial::mainShadowMap = Runtime::mainShadowMap();
 
 	Profiler::start("forward_pass");
 	forwardPass.drawSkybox = drawSkybox;

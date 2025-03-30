@@ -4,6 +4,7 @@ project(nuro CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# core
 find_package(assimp CONFIG REQUIRED) 
 find_package(EnTT CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
@@ -14,6 +15,9 @@ find_package(unofficial-omniverse-physx-sdk CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(FFMPEG REQUIRED)
 find_package(OpenAL CONFIG REQUIRED)
+
+# editor
+find_package(efsw CONFIG REQUIRED)
 
 add_subdirectory(nuro-core)
 add_subdirectory(nuro-editor)

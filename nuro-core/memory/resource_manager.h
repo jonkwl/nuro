@@ -75,10 +75,7 @@ public:
 		return std::nullopt;
 	}
 
-	//
-	// TEMPORARY!
-	//
-
+	// State of the async pipe processor
 	struct ProcessorState {
 		bool loading;
 		std::string name;
@@ -87,9 +84,19 @@ public:
 		void setLoading(std::string name) { loading = true; this->name = name; }
 	};
 
+	// Returns the current state of the processor
 	const ProcessorState& readProcessorState() {
 		return processorState;
 	}
+
+	// Returns the amount of pipes awaiting execution
+	uint32_t nQueuedPipes() {
+		return asyncPipesSize;
+	}
+
+	//
+	// TEMPORARY!
+	//
 
 	const auto& readResources() {
 		return resources;
@@ -108,6 +115,7 @@ private:
 
 	// Resource pipes queued for async execution
 	ConcurrentQueue<std::unique_ptr<ResourcePipe>> asyncPipes;
+	std::atomic<uint32_t> asyncPipesSize;
 
 	// Processes pending async pipes
 	void asyncPipeProcessor();

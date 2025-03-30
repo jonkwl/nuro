@@ -61,7 +61,7 @@ gizmoScaleMin(0.1f)
 	speedChangeIndicator.addText(speedChangeText);
 
 	// Setup main toggles
-	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline();
 	mainToggles.addItem(ICON_FA_CUBE, pipeline.wireframe);
 	mainToggles.addItem(ICON_FA_ECLIPSE, pipeline.renderingShadows);
 	mainToggles.addItem(ICON_FA_SUN, pipeline.showSkybox);
@@ -124,7 +124,7 @@ void ViewportWindow::render()
 
 void ViewportWindow::renderSceneView()
 {
-	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline();
 	uint32_t output = pipeline.getOutput();
 
 	// Get position of scene view
@@ -181,10 +181,10 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 {
 	// Get foreground draw list and pipeline
 	ImDrawList& drawList = *ImGui::GetWindowDrawList();
-	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline();
 
 	// Evaluate game state values
-	GameState gameState = Runtime::getGameState();
+	GameState gameState = Runtime::gameState();
 	gamePaused = gameState == GameState::GAME_PAUSED;
 	gameExecuting = gameState == GameState::GAME_RUNNING || gamePaused;
 
@@ -234,7 +234,7 @@ void ViewportWindow::renderSceneToolbar(ImVec2 position, ImVec2 size)
 void ViewportWindow::renderTransformGizmos()
 {
 	// Fetch selected entities
-	const std::vector<EntityContainer*>& selectedEntities = Runtime::getSceneViewPipeline().getSelectedEntities();
+	const std::vector<EntityContainer*>& selectedEntities = Runtime::sceneViewPipeline().getSelectedEntities();
 	if (selectedEntities.empty()) return;
 	EntityContainer* selected = selectedEntities[0];
 
@@ -272,8 +272,8 @@ void ViewportWindow::renderTransformGizmos()
 	// Draw transformation gizmo
 	glm::mat4 delta = glm::mat4(1.0f);
 	ImGuizmo::Manipulate(
-		glm::value_ptr(Runtime::getSceneViewPipeline().getView()), 
-		glm::value_ptr(Runtime::getSceneViewPipeline().getProjection()), 
+		glm::value_ptr(Runtime::sceneViewPipeline().getView()), 
+		glm::value_ptr(Runtime::sceneViewPipeline().getProjection()), 
 		(ImGuizmo::OPERATION)gizmoOperation, 
 		ImGuizmo::MODE::LOCAL, 
 		glm::value_ptr(model), 
@@ -330,7 +330,7 @@ void ViewportWindow::renderSpeedChangeIndicator()
 
 void ViewportWindow::updateMovement()
 {
-	SceneViewPipeline& pipeline = Runtime::getSceneViewPipeline();
+	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline();
 	TransformComponent& cameraTransform = std::get<0>(pipeline.getFlyCamera());
 
 	// Get values needed
