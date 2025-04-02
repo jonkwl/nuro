@@ -1,6 +1,26 @@
 #include "project_observer.h"
 
+#include <utils/ioutils.h>
 #include <utils/console.h>
+
+#include "../runtime/runtime.h"
+
+ProjectObserver::File::File(std::string name, fs::path path) : IONode(name, path), invisible(false), assetId(0)
+{
+	// File is asset, make sure its loaded
+	if (IOUtils::getFileExtension(name) != ".meta")
+		assetId = Runtime::projectManager().assets().load(path);
+	// File is metadata
+	else
+		invisible = true;
+}
+
+ProjectObserver::File::~File()
+{
+	// Unload files asset
+	if(assetId)
+		Runtime::projectManager().assets().unload(assetId);
+}
 
 bool ProjectObserver::Folder::hasSubfolders()
 {
@@ -9,8 +29,11 @@ bool ProjectObserver::Folder::hasSubfolders()
 
 void ProjectObserver::Folder::addFile(const std::string& fileName)
 {
+	// Instantiate file
 	fs::path newPath = path / fileName;
 	auto file = std::make_shared<File>(fileName, newPath);
+
+	// Insert file
 	auto it = std::lower_bound(files.begin(), files.end(), file,
 		[](const std::shared_ptr<File>& a, const std::shared_ptr<File>& b) {
 			return a->name < b->name;
@@ -20,14 +43,17 @@ void ProjectObserver::Folder::addFile(const std::string& fileName)
 
 void ProjectObserver::Folder::addFolder(const std::string& folderName)
 {
+	// Instantiate folder
 	fs::path newPath = path / folderName;
-	auto folder = std::make_shared<Folder>(folderName, newPath);
+	auto folder = std::make_shared<Folder>(folderName, newPath, id);
+	
+	// Insert folder
 	auto it = std::lower_bound(subfolders.begin(), subfolders.end(), folder,
 		[](const std::shared_ptr<Folder>& a, const std::shared_ptr<Folder>& b) {
 			return a->name < b->name;
 		});
 	subfolders.insert(it, folder);
-	folderRegistry.emplace(folder->ioId, folder);
+	folderRegistry.emplace(folder->id, folder);
 }
 
 void ProjectObserver::Folder::removeFile(const std::string& fileName)
@@ -39,9 +65,14 @@ void ProjectObserver::Folder::removeFile(const std::string& fileName)
 
 void ProjectObserver::Folder::removeFolder(const std::string& folderName)
 {
-	subfolders.erase(std::remove_if(subfolders.begin(), subfolders.end(),
-		[&](const std::shared_ptr<Folder>& folder) { return folder->name == folderName; }),
-		subfolders.end());
+	auto it = std::find_if(subfolders.begin(), subfolders.end(),
+		[&](const std::shared_ptr<Folder>& folder) { return folder->name == folderName; });
+
+	if (it != subfolders.end()) {
+		auto folderToRemove = *it;
+		folderRegistry.erase(folderToRemove->id);
+		subfolders.erase(it);
+	}
 }
 
 void ProjectObserver::Folder::removeAny(const std::string& name)
@@ -185,14 +216,14 @@ void ProjectObserver::IOListener::handleFileAction(efsw::WatchID watchId, const 
 		Console::out::warning("Project Observer", "Failed to enqueue an io event");
 }
 
-std::shared_ptr<ProjectObserver::Folder> ProjectObserver::createFolder(const fs::path& path)
+std::shared_ptr<ProjectObserver::Folder> ProjectObserver::createFolder(const fs::path& path, uint32_t parentId)
 {
-	auto root = std::make_shared<Folder>(path.filename().string(), path);
-	folderRegistry.emplace(root->ioId, root);
+	auto root = std::make_shared<Folder>(path.filename().string(), path, parentId);
+	folderRegistry.emplace(root->id, root);
 
 	for (const auto& entry : fs::directory_iterator(path)) {
 		if (entry.is_directory())
-			root->subfolders.push_back(createFolder(entry.path()));
+			root->subfolders.push_back(createFolder(entry.path(), root->id));
 		else if (entry.is_regular_file())
 			root->addFile(entry.path().filename().string());
 	}

@@ -1,14 +1,17 @@
 #include "asset_browser_window.h"
 
+#include <cstdlib>
 #include <algorithm>
 #include <entt/entt.hpp>
 
 #include "../ui/windows/insight_panel_window.h"
 
 AssetBrowserWindow::AssetBrowserWindow() : observer(Runtime::projectManager().observer()),
+assets(Runtime::projectManager().assets()),
 assetScale(1.0f),
 targetAssetScale(1.0f),
-selectedFolder(0)
+selectedFolder(0),
+selectedNode(0)
 {
 }
 
@@ -111,6 +114,37 @@ void AssetBrowserWindow::evaluateInputs()
 	assetScale = glm::mix(assetScale, targetAssetScale, assetScaleSmoothing * Time::deltaf());
 }
 
+void AssetBrowserWindow::openNode(const NodeRef& node)
+{
+	fs::path projectPath = Runtime::projectManager().project().path;
+	fs::path nodePath = node->path;
+	fs::path fullPath = projectPath / nodePath;
+	std::string filename = fullPath.string();
+	std::string command;
+
+#if defined(_WIN32) || defined(_WIN64)
+	command = "start \"\" \"" + filename + "\"";
+#elif defined(__APPLE__)
+	command = "open \"" + filename + "\"";
+#elif defined(__linux__)
+	command = "xdg-open \"" + filename + "\"";
+#endif
+
+	if (!command.empty())
+		std::system(command.c_str());
+}
+
+void AssetBrowserWindow::selectFolder(uint32_t folderId)
+{
+	selectedFolder = folderId;
+	selectedNode = 0;
+}
+
+void AssetBrowserWindow::unselectFolder()
+{
+	selectFolder(0);
+}
+
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
 {
 	//
@@ -126,11 +160,28 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 
 	ImU32 color = IM_COL32(11, 11, 11, 255);
 
+	FolderRef folder = nullptr;
+	if (auto folderOpt = observer.fetchFolder(selectedFolder))
+		folder = *folderOpt;
+
 	//
 	// DRAW BACKGROUND
 	//
 
 	drawList.AddRectFilled(p0, p1, color);
+
+	//
+	// DRAW BACK BUTTON
+	//
+
+	if (folder) {
+		ImVec2 buttonPos = ImVec2(position.x + 14.0f, position.y + 13.0f);
+		if (IMComponents::iconButton(ICON_FA_ARROW_LEFT, drawList, buttonPos)) {
+			uint32_t parentId = folder->parentId;
+			if (parentId) selectFolder(parentId);
+		}
+		position.x += 20.0f;
+	}
 
 	//
 	// DRAW PATH BREADCRUMB
@@ -139,19 +190,15 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 	std::string pathRoot = "No folder selected";
 	std::string pathEnd = "";
 
-	if (selectedFolder) {
-		auto folder = observer.fetchFolder(selectedFolder);
-		if (folder) {
-			pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + folder->get()->path.parent_path().string();
-			pathEnd = "\\" + folder->get()->name;
-		}
-		else selectedFolder = 0;
+	if (folder) {
+		pathRoot = std::string(ICON_FA_FOLDER_OPEN) + "   " + folder->path.parent_path().string();
+		pathEnd = "\\" + folder->name;
 	}
 
 	// Evaluate position
 	ImFont* baseFont = EditorUI::getFonts().h4;
 	ImVec2 textSize = baseFont->CalcTextSizeA(baseFont->FontSize, FLT_MAX, 0.0f, pathRoot.c_str());
-	ImVec2 textPosition = ImVec2(position.x + xPadding, position.y + (height - textSize.y) * 0.5f);
+	ImVec2 textPosition = ImVec2(position.x + xPadding, 1.0f + position.y + (height - textSize.y) * 0.5f);
 	
 	// Path root text
 	drawList.AddText(baseFont, baseFont->FontSize, textPosition, EditorColor::text_transparent, pathRoot.c_str());
@@ -224,7 +271,7 @@ void AssetBrowserWindow::renderSideFolder(ImDrawList& drawList, FolderRef folder
 	// EVALUATE
 	//
 
-	const bool selected = folder->ioId == selectedFolder;
+	const bool selected = folder->id == selectedFolder;
 	const bool hasChildren = folder->hasSubfolders();
 	const float itemHeight = ImGui::GetFontSize();
 	const float textOffset = indentation * indentationOffset;
@@ -266,7 +313,7 @@ void AssetBrowserWindow::renderSideFolder(ImDrawList& drawList, FolderRef folder
 	// CHECK FOR SELECTION
 	//
 
-	if (clicked) selectedFolder = folder->ioId;
+	if (clicked) selectFolder(folder->id);
 
 	//
 	// DRAW FOLDER ICON
@@ -323,7 +370,7 @@ void AssetBrowserWindow::renderSideFolder(ImDrawList& drawList, FolderRef folder
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon) + folder->name;
+	std::string textValue = std::string(icon) + folder->name + " " + std::to_string(folder->id);
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -381,11 +428,9 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 		ImVec2 cursor = padding;
 		ImVec2 lastAssetSize = ImVec2(0.0f, 0.0f);
 
-		auto folder = observer.fetchFolder(selectedFolder);
-		if (!folder) {
-			selectedFolder = 0;
-			return;
-		}
+		FolderRef folder = nullptr;
+		if (auto folderOpt = observer.fetchFolder(selectedFolder))
+			folder = *folderOpt;
 
 		auto _node = [&](const NodeRef& node) {
 			// Create ui data
@@ -408,12 +453,14 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 			cursor.x += uiData.size.x + gap.x;
 		};
 
-		for (const auto& subfolder : folder->get()->subfolders) {
-			_node(subfolder);
-		}
+		if (folder) {
+			for (const auto& subfolder : folder->subfolders) {
+				_node(subfolder);
+			}
 
-		for (const auto& file : folder->get()->files) {
-			_node(file);
+			for (const auto& file : folder->files) {
+				_node(file);
+			}
 		}
 
 		// Bottom padding
@@ -434,7 +481,35 @@ void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	ImVec2 p1 = position + uiData.size;
 
 	bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
-	bool selected = false;
+	bool clicked = hovered && ImGui::IsMouseDown(0);
+	bool doubleclicked = hovered && ImGui::IsMouseDoubleClicked(0);
+	bool selected = node->id == selectedNode;
+	bool isFolder = node->isFolder();
+	bool loading = false;
+	uint32_t icon = isFolder ? icon = IconPool::get("folder") : IconPool::get("file");
+
+	//
+	// ASSET NODE HANDLING
+	//
+
+	// Node is file, fetch its asset id
+	AssetID assetId = 0;
+	if (!isFolder) {
+		auto file = std::dynamic_pointer_cast<ProjectObserver::File>(node);
+		if (!file) return;
+		if (file->invisible) return;
+		assetId = file->assetId;
+	}
+
+	// Fetch asset ref if node is an asset
+	AssetRef asset = nullptr;
+	if (assetId) {
+		if (auto assetOpt = assets.get(assetId)) {
+			asset = *assetOpt;
+			loading = asset->loading();
+			icon = asset->icon();
+		}
+	}
 
 	//
 	// DRAW BACKGROUND
@@ -442,21 +517,36 @@ void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 
 	ImU32 color = IM_COL32(0, 0, 0, 0);
 	if (hovered) color = IM_COL32(255, 255, 255, 12);
-	if (selected) color = IM_COL32(85, 110, 255, 80);
+	if (selected) color = UIUtils::windowFocused() ? IM_COL32(85, 110, 255, 80) : IM_COL32(100, 100, 100, 80);
 
 	drawList.AddRectFilled(p0, p1, color, 10.0f);
 
 	//
+	// HANDLE DOUBLE CLICK
+	//
+
+	if (doubleclicked) {
+		// Enter folder if double clicked
+		if (isFolder)
+			selectFolder(node->id);
+
+		// Open asset if double clicked
+		else
+			openNode(node);
+	}
+
+	//
+	// HANDLE ASSET SELECTION
+	//
+
+	if (clicked && asset) {
+		selectedNode = node->id;
+		asset->inspect();
+	}
+
+	//
 	// DRAW ICON
 	//
-	
-	uint32_t icon = 0;
-	if (node->isFolder())
-		icon = IconPool::get("folder");
-	else
-		icon = IconPool::get("file");
-
-	bool loading = false;
 
 	ImU32 iconColor = loading ? IM_COL32(200, 200, 200, 180) : IM_COL32_WHITE;
 	ImVec2 iconPos = ImVec2(position.x + (uiData.size.x - uiData.iconSize.x) * 0.5f, position.y + uiData.padding.y);
@@ -477,6 +567,11 @@ void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	// DRAW TEXT
 	//
 
+	std::string name = node->name;
+	uint32_t maxChars = 12;
+	if (name.length() - 3 > maxChars) 
+		name = name.substr(0, maxChars - 3) + "...";
+
 	ImVec2 textPos = ImVec2(position.x + (uiData.size.x - uiData.textSize.x) * 0.5f, iconPos.y + uiData.iconSize.y + uiData.padding.y);
-	drawList.AddText(uiData.font, uiData.font->FontSize, textPos, textColor, node->name.c_str());
+	drawList.AddText(uiData.font, uiData.font->FontSize, textPos, textColor, name.c_str());
 }

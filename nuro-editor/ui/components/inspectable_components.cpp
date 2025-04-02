@@ -126,9 +126,8 @@ namespace InspectableComponents {
 		if (removedPtr) {
 			float size = 20.0f;
 			cursor.x = p1.x - size - titlePadding.x;
-			if (IMComponents::iconButton(ICON_FA_XMARK, drawList, cursor, ImVec2(-1.0f, 2.0f), IM_COL32(0, 0, 0, 0), IM_COL32(255, 65, 65, 90))) {
+			if (IMComponents::iconButton(ICON_FA_XMARK, drawList, cursor, ImVec2(-1.0f, 2.0f), IM_COL32(0, 0, 0, 0), IM_COL32(255, 65, 65, 90)))
 				*removedPtr = true;
-			}
 		}
 
 		//

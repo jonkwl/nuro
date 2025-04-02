@@ -13,13 +13,15 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+#include "../assetsys/editor_asset.h"
+
 class ProjectObserver {
 public:
 	struct IONode {
 		inline static uint32_t idCounter;
 
 		// Session-unique identifier of io node
-		uint32_t ioId;
+		uint32_t id;
 
 		// Name of node, e.g. filename
 		std::string name;
@@ -27,14 +29,21 @@ public:
 		// Path to io node, relative to project root
 		fs::path path;
 
-		explicit IONode(std::string name, fs::path path) : ioId(++idCounter), name(name), path(path) {}
+		explicit IONode(std::string name, fs::path path) : id(++idCounter), name(name), path(path) {}
 
 		virtual bool isFolder() = 0;
 		virtual ~IONode() = default;
 	};
 
 	struct File : public IONode {
-		explicit File(std::string name, fs::path path) : IONode(name, path) {}
+		// Set if file should be invisible in editor
+		bool invisible;
+
+		// Asset id associated with file
+		AssetID assetId;
+
+		explicit File(std::string name, fs::path path);
+		~File();
 
 		bool isFolder() override { return false; }
 	};
@@ -42,10 +51,11 @@ public:
 	struct Folder : public IONode {
 		std::vector<std::shared_ptr<File>> files;
 		std::vector<std::shared_ptr<Folder>> subfolders;
+		uint32_t parentId;
 		bool expanded;
 
-		explicit Folder(std::string name, fs::path path) : IONode(name, path), files(), subfolders(), expanded(false) {}
-		~Folder() override { folderRegistry.erase(ioId); }
+		explicit Folder(std::string name, fs::path path, uint32_t parentId) : IONode(name, path), files(), subfolders(), parentId(parentId), expanded(false) {}
+		~Folder() override {}
 
 		bool isFolder() override { return true; }
 
@@ -105,7 +115,7 @@ private:
 	};
 
 	// Creates the root folder structure for a given path recursively
-	std::shared_ptr<Folder> createFolder(const fs::path& path);
+	std::shared_ptr<Folder> createFolder(const fs::path& path, uint32_t parentId = 0);
 
 	// Finds a folder node given a relative path
 	std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const fs::path& relativePath, const std::shared_ptr<Folder>& currentFolder);

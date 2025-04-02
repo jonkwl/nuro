@@ -9,6 +9,7 @@
 namespace fs = std::filesystem;
 
 #include "editor_window.h"
+#include "../project/project_assets.h"
 #include "../project/project_observer.h"
 
 using NodeRef = std::shared_ptr<ProjectObserver::IONode>;
@@ -41,17 +42,32 @@ private:
 	// Reference to the global project observer
 	ProjectObserver& observer;
 
+	// Reference to the global project assets
+	ProjectAssets& assets;
+
 	// Current displayed scale of ui assets
 	float assetScale;
 
 	// Target asset scale for smoothly interpolated asset scaling
 	float targetAssetScale;
 
-	// IO ID of currently selected folder
+	// Currently selected folders io node id
 	uint32_t selectedFolder;
+
+	// Currently selected io nodes id
+	uint32_t selectedNode;
 
 	// Checks for asset broser related inputs
 	void evaluateInputs();
+
+	// Opens an io node using the system default application
+	void openNode(const NodeRef& node);
+
+	// Selects a folder by its io node id
+	void selectFolder(uint32_t folderId);
+
+	// Unselects the currently selected folder if any
+	void unselectFolder();
 
 	//
 	// RENDERING FUNCTIONS

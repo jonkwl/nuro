@@ -6,7 +6,8 @@
 #include <utils/console.h>
 
 ProjectManager::ProjectManager() : _project(),
-_observer()
+_observer(),
+_assets() 
 {
 }
 
@@ -42,6 +43,11 @@ const Project& ProjectManager::project() const
 ProjectObserver& ProjectManager::observer()
 {
 	return _observer;
+}
+
+ProjectAssets& ProjectManager::assets()
+{
+	return _assets;
 }
 
 bool ProjectManager::ensureConfig()

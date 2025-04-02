@@ -13,6 +13,8 @@ EntityContainer kinematic;
 EntityContainer player;
 EntityContainer audio;
 
+uint32_t albedoResourceId;
+
 void _physics_example() {
 	// Get resource manager
 	ResourceManager& resource = ApplicationContext::resourceManager();
@@ -81,6 +83,8 @@ void _physics_example() {
 	scifiMaterial->emissiveMap = emissive;
 	scifiMaterial->emission = true;
 	scifiMaterial->emissionIntensity = 250.0f;
+
+	albedoResourceId = albedoId;
 
 	// Player material
 	LitMaterial* playerMaterial = new LitMaterial();
@@ -278,5 +282,4 @@ void gameUpdate() {
 	zoom = glm::clamp(zoom, -20.0f, -5.0f);
 	glm::vec3 offset = glm::vec3(0.0f, 1.5f, zoom);
 	Transform::setPosition(camera.transform(), glm::mix(camera.transform().position, player.transform().position + offset, 10 * delta));
-
 }

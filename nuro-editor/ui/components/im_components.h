@@ -57,7 +57,7 @@ namespace IMComponents
 	bool caret(bool& opened, ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor);
 
 	// Draws a clickable icon button at the given cursor screen position and returns true if it was clicked
-	bool iconButton(const char* icon, ImDrawList& drawList, ImVec2 position, ImVec2 offset, ImU32 color, ImU32 hoveredColor);
+	bool iconButton(const char* icon, ImDrawList& drawList, ImVec2 position, ImVec2 offset = ImVec2(-1.0f, 2.0f), ImU32 color = IM_COL32(0, 0, 0, 0), ImU32 hoveredColor = IM_COL32(65, 65, 80, 120));
 
 	// Draws a loading buffer at the current cursor position
 	void loadingBuffer(ImDrawList& drawList, ImVec2 position, float radius, int thickness, const ImU32& color);

@@ -7,6 +7,7 @@
 namespace fs = std::filesystem;
 
 #include "../project/project_observer.h"
+#include "../project/project_assets.h"
 
 struct Project {
 	// Root path of the project
@@ -40,10 +41,14 @@ public:
 	// Returns the project observer
 	ProjectObserver& observer();
 
+	// Returns the project assets
+	ProjectAssets& assets();
+
 private:
 	// Ensures configuration of the current project exists, returns false if creating failed
 	bool ensureConfig();
 
 	Project _project;
 	ProjectObserver _observer;
+	ProjectAssets _assets;
 };

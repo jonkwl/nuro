@@ -1,14 +1,18 @@
 project(nuro-editor)
 
 set(SOURCE_FILES 
-	testing/game_logic.h
+	assetsys/asset_extensions.h
+	assetsys/editor_asset.h
+	assetsys/texture_asset.h
 	pipelines/game_view_pipeline.h
 	pipelines/preview_pipeline.h
 	pipelines/scene_view_pipeline.h
 	pipelines/scene_view_forward_pass.h
+	project/project_assets.h
 	project/project_manager.h
 	project/project_observer.h
 	runtime/runtime.h
+	testing/game_logic.h
 	ui/collection/IconsFontAwesome6.h
 	ui/components/im_components.h
 	ui/components/inspectable_components.h
@@ -21,6 +25,7 @@ set(SOURCE_FILES
 	ui/footer/footer.h
 	ui/inspectables/entity_inspectable.h
 	ui/inspectables/inspectable.h
+	ui/inspectables/texture_inspectable.h
 	ui/inspectables/welcome_inspectable.h
 	ui/title_bar/title_bar.h
 	ui/utils/ui_utils.h
@@ -42,10 +47,13 @@ set(SOURCE_FILES
 	ui/search/search_popup.h
 
 	main.cpp
+	assetsys/asset_extensions.cpp
+	assetsys/texture_asset.cpp
 	pipelines/game_view_pipeline.cpp
 	pipelines/preview_pipeline.cpp
 	pipelines/scene_view_pipeline.cpp
 	pipelines/scene_view_forward_pass.cpp
+	project/project_assets.cpp
 	project/project_manager.cpp
 	project/project_observer.cpp
 	runtime/runtime.cpp
@@ -58,6 +66,7 @@ set(SOURCE_FILES
 	ui/editor_ui.cpp
 	ui/footer/footer.cpp
 	ui/inspectables/entity_inspectable.cpp
+	ui/inspectables/texture_inspectable.cpp
 	ui/inspectables/welcome_inspectable.cpp
 	ui/title_bar/title_bar.cpp
 	ui/utils/ui_utils.cpp
