@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <entt/entt.hpp>
 
+#include "../reflection/asset_registry.h"
 #include "../ui/windows/insight_panel_window.h"
 
 AssetBrowserWindow::AssetBrowserWindow() : observer(Runtime::projectManager().observer()),
@@ -159,10 +160,8 @@ ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 positio
 	ImVec2 p1 = p0 + size;
 
 	ImU32 color = IM_COL32(11, 11, 11, 255);
-
-	FolderRef folder = nullptr;
-	if (auto folderOpt = observer.fetchFolder(selectedFolder))
-		folder = *folderOpt;
+	
+	auto folder = observer.fetchFolder(selectedFolder);
 
 	//
 	// DRAW BACKGROUND
@@ -370,7 +369,7 @@ void AssetBrowserWindow::renderSideFolder(ImDrawList& drawList, FolderRef folder
 	// DRAW TEXT
 	//
 
-	std::string textValue = std::string(icon) + folder->name + " " + std::to_string(folder->id);
+	std::string textValue = std::string(icon) + folder->name;
 	drawList.AddText(textPos, EditorColor::text, textValue.c_str());
 
 	//
@@ -428,11 +427,12 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 		ImVec2 cursor = padding;
 		ImVec2 lastAssetSize = ImVec2(0.0f, 0.0f);
 
-		FolderRef folder = nullptr;
-		if (auto folderOpt = observer.fetchFolder(selectedFolder))
-			folder = *folderOpt;
+		auto folder = observer.fetchFolder(selectedFolder);
 
 		auto _node = [&](const NodeRef& node) {
+			// Cache current cursor position
+			ImVec2 initialCursor = cursor;
+
 			// Create ui data
 			NodeUIData uiData = NodeUIData::createFor(node->name, assetScale);
 
@@ -446,11 +446,16 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 			// Advance internal cursor
 			ImGui::SetCursorPos(cursor);
 
-			// Draw asset
-			renderNode(drawList, node, uiData, ImGui::GetCursorScreenPos());
-
-			// Add vertical gap for next asset
-			cursor.x += uiData.size.x + gap.x;
+			// Try to render current node
+			if (renderNode(drawList, node, uiData, ImGui::GetCursorScreenPos())) {
+				// Add vertical gap for next asset
+				cursor.x += uiData.size.x + gap.x;
+			}
+			else {
+				// Not rendered node
+				cursor = initialCursor;
+				ImGui::SetCursorPos(cursor);
+			}
 		};
 
 		if (folder) {
@@ -469,7 +474,7 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 	IMComponents::endClippedChild();
 }
 
-void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position)
+bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position)
 {
 	//
 	// EVALUATE
@@ -496,16 +501,17 @@ void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	AssetID assetId = 0;
 	if (!isFolder) {
 		auto file = std::dynamic_pointer_cast<ProjectObserver::File>(node);
-		if (!file) return;
-		if (file->invisible) return;
+		if (!file) return false;
+
+		// Don't render node if file isn't linked to asset
+		if (!file->assetId) return false;
 		assetId = file->assetId;
 	}
 
 	// Fetch asset ref if node is an asset
-	AssetRef asset = nullptr;
 	if (assetId) {
-		if (auto assetOpt = assets.get(assetId)) {
-			asset = *assetOpt;
+		AssetRef asset = assets.get(assetId);
+		if (asset) {
 			loading = asset->loading();
 			icon = asset->icon();
 		}
@@ -539,9 +545,20 @@ void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	// HANDLE ASSET SELECTION
 	//
 
-	if (clicked && asset) {
-		selectedNode = node->id;
-		asset->inspect();
+	// Check if node was clicked and is an asset
+	if (clicked && assetId) {
+		
+		// Get derived file from node
+		if (auto file = std::dynamic_pointer_cast<ProjectObserver::File>(node)) {
+			
+			// Fetch assets info by the nodes path
+			if (auto assetInfo = AssetRegistry::fetchByPath(node->path)) {
+
+				// Select and inspect asset
+				selectedNode = node->id;
+				assetInfo->inspect(file->assetId);
+			}
+		}
 	}
 
 	//
@@ -574,4 +591,6 @@ void AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 
 	ImVec2 textPos = ImVec2(position.x + (uiData.size.x - uiData.textSize.x) * 0.5f, iconPos.y + uiData.iconSize.y + uiData.padding.y);
 	drawList.AddText(uiData.font, uiData.font->FontSize, textPos, textColor, name.c_str());
+
+	return true;
 }

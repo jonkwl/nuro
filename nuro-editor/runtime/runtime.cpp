@@ -9,6 +9,7 @@
 #include "../ui/editor_ui.h"
 #include "../testing/game_logic.h"
 #include "../ui/windows/console_window.h"
+#include "../reflection/asset_registry.h"
 #include "../reflection/component_registry.h"
 #include "../ui/windows/insight_panel_window.h"
 #include "../ui/inspectables/welcome_inspectable.h"
@@ -207,6 +208,9 @@ namespace Runtime {
 		// Print welcome
 		Console::out::welcome();
 
+		// Create asset registry
+		AssetRegistry::create();
+
 		// Create editor component registry
 		ComponentRegistry::create();
 
@@ -217,6 +221,10 @@ namespace Runtime {
 		ApplicationContext::setResizeable(true);
 		ApplicationContext::maximizeWindow();
 		ApplicationContext::setVisible(true);
+
+		// Load example project
+		fs::path project = fs::current_path() / "examples" / "empty-project";
+		gProjectManager.load(project);
 
 		// Show welcome inspectable
 		InsightPanelWindow::inspect<WelcomeInspectable>();
@@ -276,7 +284,7 @@ namespace Runtime {
 		// LOAD DEFAULT CUBEMAP
 		ResourceManager& resource = ApplicationContext::resourceManager();
 		if (auto cubemap = resource.getResourceAs<Cubemap>(gDefaultCubemap)) {
-			resource.exec((*cubemap)->create());
+			resource.exec(cubemap->create());
 		}
 
 		// MAIN LOOP

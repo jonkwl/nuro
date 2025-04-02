@@ -45,15 +45,12 @@ bool ResourceManager::exec(ResourcePipe&& pipe)
 	}
 
 	// Ensure owner resource is valid
-	OptResource<Resource> owner = getResource(pipe.owner());
-	if (!owner) {
+	ResourceRef<Resource> resource = getResource(pipe.owner());
+	if (!resource) {
 		// Pipe owning resource not available
 		Console::out::warning("Resource Manager", "Failed to enqueue execution of pipe, its owner resource with id " + std::to_string(pipe.owner()) + " is invalid");
 		return false;
 	}
-
-	// Fetch resource owning the pipe
-	ResourceRef<Resource> resource = *owner;
 
 	// Try to enqueue the pipe
 	auto pipeHandle = std::make_unique<ResourcePipe>(std::move(pipe));
@@ -81,15 +78,12 @@ bool ResourceManager::execAsDependency(ResourcePipe&& pipe)
 	}
 
 	// Ensure owner resource is valid
-	OptResource<Resource> owner = getResource(pipe.owner());
-	if (!owner) {
+	ResourceRef<Resource> resource = getResource(pipe.owner());
+	if (!resource) {
 		// Pipe owning resource not available
 		Console::out::warning("Resource Manager", "Failed to synchronously execute pipe, its owner resource with id " + std::to_string(pipe.owner()) + " is invalid");
 		return false;
 	}
-
-	// Fetch resource owning the pipe
-	ResourceRef<Resource> resource = *owner;
 
 	// Execute each pipe task synchronously
 	while (NextTask nextTask = pipe.next()) {
@@ -119,15 +113,12 @@ void ResourceManager::asyncPipeProcessor() {
 		if (nextPipe) {
 			asyncPipesSize--;
 
-			OptResource<Resource> owner = getResource(pipe->owner());
-			if (!owner) {
+			ResourceRef<Resource> resource = getResource(pipe->owner());
+			if (!resource) {
 				// Pipe owning resource not available
 				Console::out::warning("Resource Manager", "Failed to asynchronously execute pipe, its owner resource with id " + std::to_string(pipe->owner()) + " is invalid");
 				continue;
 			}
-
-			// Fetch resource owning the pipe
-			ResourceRef<Resource> resource = *owner;
 
 			// Update processor state
 			processorState.setLoading(resource->resourceName());

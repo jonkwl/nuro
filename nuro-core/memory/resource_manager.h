@@ -6,7 +6,6 @@
 #include <atomic>
 #include <memory>
 #include <utility>
-#include <optional>
 #include <unordered_map>
 #include <condition_variable>
 
@@ -17,9 +16,6 @@
 
 template <typename T>
 using ResourceRef = std::shared_ptr<T>;
-
-template <typename T>
-using OptResource = std::optional<ResourceRef<T>>;
 
 class ResourceManager
 {
@@ -50,20 +46,20 @@ public:
 		return std::make_pair(id, std::static_pointer_cast<T>(resource));
 	}
 
-	// Retrieves an optional resource handle for a resource base by resource id
-	OptResource<Resource> getResource(ResourceID id) {
+	// Retrieves an optional resource handle for a resource base by resource id, nullptr if none
+	ResourceRef<Resource> getResource(ResourceID id) {
 		// Find resource
 		auto it = resources.find(id);
 		if (it != resources.end())
 			return it->second;
 
 		// Resource not found
-		return std::nullopt;
+		return nullptr;
 	}
 
-	// Retrieves an optional handle for a derived type T of resource by resource id
+	// Retrieves an optional handle for a derived type T of resource by resource id, nullptr if none
 	template <typename T>
-	OptResource<T> getResourceAs(ResourceID id) {
+	ResourceRef<T> getResourceAs(ResourceID id) {
 		static_assert(std::is_base_of<Resource, T>::value, "Only classes that derive from Resource are retrievable");
 
 		// Find resource
@@ -72,7 +68,7 @@ public:
 			return std::static_pointer_cast<T>(it->second);
 
 		// Resource not found
-		return std::nullopt;
+		return nullptr;
 	}
 
 	// State of the async pipe processor

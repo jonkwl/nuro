@@ -1,7 +1,6 @@
 project(nuro-editor)
 
 set(SOURCE_FILES 
-	assetsys/asset_extensions.h
 	assetsys/editor_asset.h
 	assetsys/texture_asset.h
 	pipelines/game_view_pipeline.h
@@ -43,11 +42,11 @@ set(SOURCE_FILES
 	testing/game_logic.cpp
 	gizmos/component_gizmos.h
 	gizmos/editor_gizmo_color.h
+	reflection/asset_registry.h
 	reflection/component_registry.h
 	ui/search/search_popup.h
 
 	main.cpp
-	assetsys/asset_extensions.cpp
 	assetsys/texture_asset.cpp
 	pipelines/game_view_pipeline.cpp
 	pipelines/preview_pipeline.cpp
@@ -81,6 +80,7 @@ set(SOURCE_FILES
 	ui/windows/viewport_window.cpp
 	ui/windows/resource_viewer_window.cpp
 	gizmos/component_gizmos.cpp
+	reflection/asset_registry.cpp
 	reflection/component_registry.cpp
 	ui/search/search_popup.cpp
 )

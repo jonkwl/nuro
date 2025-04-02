@@ -86,5 +86,5 @@ private:
 	void renderNodes(ImDrawList& drawList, ImVec2 position, ImVec2 size);
 
 	// Renders a node at the given screen position using its ui data created before
-	void renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position);
+	bool renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position);
 };

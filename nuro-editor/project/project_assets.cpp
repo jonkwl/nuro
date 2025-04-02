@@ -3,25 +3,31 @@
 #include <chrono>
 
 #include <utils/console.h>
+#include <utils/ioutils.h>
 
 #include "../assetsys/texture_asset.h"
-#include "../assetsys/asset_extensions.h"
+#include "../reflection/asset_registry.h"
 
 AssetID ProjectAssets::load(const fs::path& relativePath)
 {
+	// Try to fetch asset info
+	auto assetInfo = AssetRegistry::fetchByPath(relativePath);
+	if (!assetInfo) return 0;
+
 	// Create metadata file if it doesn't exist already
 	// ...
 
 	AssetID id = generateId();
 	// (Use id from the assets metadata if existing already later on)
 
-	// Create asset
-	auto optAsset = assetInstance(id, relativePath);
-	if (!optAsset) return 0;
+	// Create instance of asset
+	auto asset = assetInfo->createInstance();
+	asset->_assetId = id;
+	asset->_assetType = assetInfo->type;
+	asset->_assetPath = relativePath;
 
 	// Register asset
-	id = (*optAsset)->_assetId;
-	assets[id] = (*optAsset);
+	assets[id] = asset;
 
 	return id;
 }
@@ -39,13 +45,11 @@ bool ProjectAssets::reload(AssetID id)
 	return true;
 }
 
-std::optional<AssetRef> ProjectAssets::get(AssetID id) const
+AssetRef ProjectAssets::get(AssetID id) const
 {
 	auto it = assets.find(id);
-	if (it != assets.end())
-		return it->second;
-	
-	return std::nullopt;
+	if (it != assets.end()) return it->second;
+	return nullptr;
 }
 
 AssetID ProjectAssets::generateId()
@@ -56,29 +60,4 @@ AssetID ProjectAssets::generateId()
 	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 	AssetID id = milliseconds + (++counter);
 	return id;
-}
-
-std::optional<AssetRef> ProjectAssets::assetInstance(AssetID id, const fs::path& relativePath)
-{
-	// Empty asset reference
-	AssetRef asset = nullptr;
-
-	// Resolve asset type
-	AssetType type = AssetExtensions::resolveType(relativePath);
-
-	switch (type) {
-	case AssetType::TEXTURE:
-		asset = std::make_shared<TextureAsset>();
-		break;
-	default:
-		return std::nullopt;
-	}
-
-	if (!asset) return std::nullopt;
-
-	asset->_assetId = id;
-	asset->_assetType = type;
-	asset->_assetPath = relativePath;
-
-	return asset;
 }

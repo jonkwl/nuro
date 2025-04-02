@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <optional>
 #include <algorithm>
 #include <unordered_map>
 #include <efsw/efsw.hpp>
@@ -36,9 +35,6 @@ public:
 	};
 
 	struct File : public IONode {
-		// Set if file should be invisible in editor
-		bool invisible;
-
 		// Asset id associated with file
 		AssetID assetId;
 
@@ -104,8 +100,8 @@ public:
 	// Returns the project structures root folder node
 	const std::shared_ptr<Folder>& rootNode();
 
-	// Returns a folder from the folder registry by its io id
-	std::optional<const std::shared_ptr<Folder>> fetchFolder(uint32_t ioId);
+	// Returns a folder from the folder registry by its id, nullptr if invalid
+	std::shared_ptr<const Folder> fetchFolder(uint32_t id);
 
 private:
 	// Listens to file watcher events

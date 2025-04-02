@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 #include <unordered_map>
 
 #include <filesystem>
@@ -22,15 +21,12 @@ public:
 	// Reloads an asset, returns success
 	bool reload(AssetID id);
 
-	// Returns an editor asset reference by its id
-	std::optional<AssetRef> get(AssetID id) const;
+	// Returns an editor asset reference by its id, nullptr if none
+	AssetRef get(AssetID id) const;
 
 private:
 	// Generates an id for an editor asset
 	AssetID generateId();
-
-	// Creates an editor asset instance
-	std::optional<AssetRef> assetInstance(AssetID id, const fs::path& relativePath);
 
 	// Registry of all assets by their id
 	std::unordered_map<AssetID, AssetRef> assets;

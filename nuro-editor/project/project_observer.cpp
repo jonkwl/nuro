@@ -5,21 +5,14 @@
 
 #include "../runtime/runtime.h"
 
-ProjectObserver::File::File(std::string name, fs::path path) : IONode(name, path), invisible(false), assetId(0)
+ProjectObserver::File::File(std::string name, fs::path path) : IONode(name, path), assetId(0)
 {
-	// File is asset, make sure its loaded
-	if (IOUtils::getFileExtension(name) != ".meta")
-		assetId = Runtime::projectManager().assets().load(path);
-	// File is metadata
-	else
-		invisible = true;
+	assetId = Runtime::projectManager().assets().load(path);
 }
 
 ProjectObserver::File::~File()
 {
-	// Unload files asset
-	if(assetId)
-		Runtime::projectManager().assets().unload(assetId);
+	if(assetId) Runtime::projectManager().assets().unload(assetId);
 }
 
 bool ProjectObserver::Folder::hasSubfolders()
@@ -198,14 +191,11 @@ const std::shared_ptr<ProjectObserver::Folder>& ProjectObserver::rootNode()
 	return projectStructure;
 }
 
-std::optional<const std::shared_ptr<ProjectObserver::Folder>> ProjectObserver::fetchFolder(uint32_t ioId)
+std::shared_ptr<const ProjectObserver::Folder> ProjectObserver::fetchFolder(uint32_t id)
 {
-	auto it = folderRegistry.find(ioId);
-
-	if (it != folderRegistry.end())
-		return it->second;
-
-	return std::nullopt;
+	auto it = folderRegistry.find(id);
+	if (it != folderRegistry.end()) return it->second;
+	return nullptr;
 }
 
 void ProjectObserver::IOListener::handleFileAction(efsw::WatchID watchId, const std::string& directory, const std::string& filename, efsw::Action action, std::string oldFilename)
