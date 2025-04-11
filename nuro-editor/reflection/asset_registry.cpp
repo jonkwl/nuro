@@ -9,6 +9,8 @@
 #include "../ui/windows/insight_panel_window.h"
 #include "../ui/inspectables/texture_inspectable.h"
 
+namespace fs = std::filesystem;
+
 namespace AssetRegistry {
 
     // Global registry for all assets by extension
@@ -27,7 +29,7 @@ namespace AssetRegistry {
         auto assetInfo = std::make_shared<AssetInfo>();
         assetInfo->type = type;
         assetInfo->createInstance = []() { return std::make_shared<InstanceType>(); };
-        assetInfo->inspect = [](AssetID id) { InsightPanelWindow::inspect<InspectableType>(); };
+        assetInfo->inspect = [](AssetID id) { InsightPanelWindow::inspect<InspectableType>(id); };
 
         // Register asset info reference by extensions
         for (const std::string& extension : extensions) {

@@ -1,10 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
-
 #include <filesystem>
-namespace fs = std::filesystem;
+#include <unordered_map>
 
 #include "../assetsys/editor_asset.h"
 
@@ -13,7 +11,7 @@ using AssetRef = std::shared_ptr<EditorAsset>;
 class ProjectAssets {
 public:
 	// Loads an editor asset and returns its id
-	AssetID load(const fs::path& relativePath);
+	AssetID load(const std::filesystem::path& relativePath);
 
 	// Unloads an editor asset if existing
 	void unload(AssetID id);

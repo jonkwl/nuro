@@ -4,7 +4,7 @@
 #include <implot.h>
 
 #include <time/time.h>
-#include <utils/ioutils.h>
+#include <utils/fsutil.h>
 #include <diagnostics/profiler.h>
 #include <diagnostics/diagnostics.h>
 

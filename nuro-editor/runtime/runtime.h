@@ -3,9 +3,6 @@
 #include <engine.h>
 #include <rendering/gizmos/imgizmo.h>
 
-#include <filesystem>
-namespace fs = std::filesystem;
-
 #include "../project/project_manager.h"
 #include "../pipelines/game_view_pipeline.h"
 #include "../pipelines/scene_view_pipeline.h"

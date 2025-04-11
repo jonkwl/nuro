@@ -71,6 +71,9 @@ public:
 		return nullptr;
 	}
 
+	// Unregisters a resource, it will be released once its not used anymore
+	void release(ResourceID id);
+
 	// State of the async pipe processor
 	struct ProcessorState {
 		bool loading;

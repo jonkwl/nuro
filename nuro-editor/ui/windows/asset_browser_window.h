@@ -5,9 +5,6 @@
 #include <memory>
 #include <unordered_map>
 
-#include <filesystem>
-namespace fs = std::filesystem;
-
 #include "editor_window.h"
 #include "../project/project_assets.h"
 #include "../project/project_observer.h"
@@ -25,14 +22,15 @@ public:
 
 private:
 	struct NodeUIData {
+		std::string text;
 		ImFont* font;
 		ImVec2 padding;
 		ImVec2 iconSize;
 		ImVec2 textSize;
 		ImVec2 size;
 
-		explicit NodeUIData(ImFont* font, ImVec2 padding, ImVec2 iconSize, ImVec2 textSize, ImVec2 size) :
-			font(font), padding(padding), iconSize(iconSize), textSize(textSize), size(size) 
+		explicit NodeUIData(std::string text, ImFont* font, ImVec2 padding, ImVec2 iconSize, ImVec2 textSize, ImVec2 size) :
+			text(text), font(font), padding(padding), iconSize(iconSize), textSize(textSize), size(size) 
 		{
 		};
 
@@ -85,6 +83,6 @@ private:
 	// Renders all nodes for current selected folder at given position with given size
 	void renderNodes(ImDrawList& drawList, ImVec2 position, ImVec2 size);
 
-	// Renders a node at the given screen position using its ui data created before
+	// Tries to render a node at the given screen position using its ui data created before
 	bool renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position);
 };

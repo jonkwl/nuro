@@ -67,7 +67,7 @@ set(SOURCE_FILES
 	utils/console.h
 	utils/event.h
 	utils/format.h
-	utils/ioutils.h
+	utils/fsutil.h
 	utils/string_helper.h
 	viewport/viewport.h
 	audio/audio_buffer.cpp
@@ -119,7 +119,7 @@ set(SOURCE_FILES
 	transform/transform_pass.cpp
 	utils/console.cpp
 	utils/format.cpp
-	utils/ioutils.cpp
+	utils/fsutil.cpp
 	utils/string_helper.cpp
 	viewport/viewport.cpp
 )

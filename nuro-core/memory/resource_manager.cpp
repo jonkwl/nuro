@@ -100,6 +100,16 @@ bool ResourceManager::execAsDependency(ResourcePipe&& pipe)
 	return true;
 }
 
+void ResourceManager::release(ResourceID id)
+{
+	ResourceRef<Resource> resource = getResource(id);
+	if (!resource) 
+		return;
+
+	resource->_resourceState = ResourceState::EMPTY;
+	resources.erase(id);
+}
+
 void ResourceManager::asyncPipeProcessor() {
 
 	while (processorRunning) {

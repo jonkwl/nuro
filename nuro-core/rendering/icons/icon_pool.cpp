@@ -5,7 +5,7 @@
 #include <stb_image.h>
 
 #include <utils/console.h>
-#include <utils/ioutils.h>
+#include <utils/fsutil.h>
 #include <memory/resource_manager.h>
 #include <rendering/texture/texture.h>
 #include <context/application_context.h>

@@ -1,11 +1,11 @@
 #include "cubemap.h"
 
+#include <filesystem>
 #include <stb_image.h>
 #include <glad/glad.h>
-#include <filesystem>
 
 #include <utils/console.h>
-#include <utils/ioutils.h>
+#include <utils/fsutil.h>
 
 namespace fs = std::filesystem;
 

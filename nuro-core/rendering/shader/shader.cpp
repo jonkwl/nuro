@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../../utils/console.h"
-#include "../../utils/ioutils.h"
+#include "../../utils/fsutil.h"
 
 namespace fs = std::filesystem;
 

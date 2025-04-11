@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <type_traits>
 
 #include "editor_window.h"
@@ -18,11 +19,8 @@ public:
 		// Make sure provided type is derived from inspectable
 		static_assert(std::is_base_of_v<Inspectable, T>, "Only objects which are derived from class 'Inspectable' can be inspected!");
 
-		// Delete old inspected object if existing
-		if (inspected) delete inspected;
-
 		// Instantiate new inspectable
-		inspected = new T(std::forward<Args>(args)...);
+		inspected = std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
 public:
@@ -30,11 +28,11 @@ public:
 	static void renderImage(uint32_t textureId, float aspectRatio, std::array<float, 2> margin = { 0.0f, 15.0f });
 
 	// tmp
-	static uint32_t previewOutput;
+	static inline uint32_t previewOutput;
 
 private:
 	// Currently inspected object
-	static Inspectable* inspected;
+	static inline std::unique_ptr<Inspectable> inspected;
 
 	// Output texture of preview viewer
 	size_t previewViewerOutput;

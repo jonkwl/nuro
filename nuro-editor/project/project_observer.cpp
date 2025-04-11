@@ -1,11 +1,13 @@
 #include "project_observer.h"
 
-#include <utils/ioutils.h>
+#include <utils/fsutil.h>
 #include <utils/console.h>
 
 #include "../runtime/runtime.h"
 
-ProjectObserver::File::File(std::string name, fs::path path) : IONode(name, path), assetId(0)
+namespace fs = std::filesystem;
+
+ProjectObserver::File::File(const std::string& name, const fs::path& path) : IONode(name, path), assetId(0)
 {
 	assetId = Runtime::projectManager().assets().load(path);
 }

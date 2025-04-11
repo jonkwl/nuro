@@ -5,6 +5,7 @@
 
 #include <thread>
 #include <chrono>
+#include <filesystem>
 
 #include "../ui/editor_ui.h"
 #include "../testing/game_logic.h"
@@ -32,6 +33,8 @@
 #include <rendering/shadows/shadow_disk.h>
 #include <rendering/material/lit/lit_material.h>
 #include <rendering/transformation/transformation.h>
+
+namespace fs = std::filesystem;
 
 namespace Runtime {
 

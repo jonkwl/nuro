@@ -5,7 +5,7 @@
 #include <stb_image.h>
 
 #include <utils/console.h>
-#include <utils/ioutils.h>
+#include <utils/fsutil.h>
 #include <context/application_context.h>
 
 namespace fs = std::filesystem;

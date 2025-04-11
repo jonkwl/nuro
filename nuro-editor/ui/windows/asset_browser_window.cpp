@@ -2,10 +2,13 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <filesystem>
 #include <entt/entt.hpp>
 
 #include "../reflection/asset_registry.h"
 #include "../ui/windows/insight_panel_window.h"
+
+namespace fs = std::filesystem;
 
 AssetBrowserWindow::AssetBrowserWindow() : observer(Runtime::projectManager().observer()),
 assets(Runtime::projectManager().assets()),
@@ -56,21 +59,22 @@ AssetBrowserWindow::NodeUIData AssetBrowserWindow::NodeUIData::createFor(const s
 	// EVALUATE
 	//
 
+	std::string text = name;
+	uint32_t maxChars = 12;
+	if (text.length() - 3 > maxChars)
+		text = text.substr(0, maxChars - 3) + "...";
+
 	ImFont* font = EditorUI::getFonts().p;
 	ImVec2 padding = ImVec2(10.0f, 7.0f) * scale;
 	ImVec2 iconSize = ImVec2(50.0f, 50.0f) * scale;
 
-	ImVec2 textSize = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.0f, name.c_str());
-	ImVec2 size = iconSize + padding * 2.0f + ImVec2(0.0f, textSize.y + padding.y);
+	ImVec2 textSize = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.0f, text.c_str());
+	
+	float totalWidth = iconSize.x + padding.x * 2.0f + 13.0f;
+	float totalHeight = iconSize.y + padding.y * 2.0f + textSize.y + padding.y;
+	ImVec2 size(totalWidth, totalHeight);
 
-	// Modular width
-	// size.x = std::max(size.x, textSize.x + padding.x * 2.0f);
-
-	// Fixed width
-	float xFixedPadding = 13.0f;
-	size.x = iconSize.x + padding.x * 2.0f + xFixedPadding;
-
-	return NodeUIData(font, padding, iconSize, textSize, size);
+	return NodeUIData(text, font, padding, iconSize, textSize, size);
 }
 
 void AssetBrowserWindow::evaluateInputs()
@@ -448,11 +452,11 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 
 			// Try to render current node
 			if (renderNode(drawList, node, uiData, ImGui::GetCursorScreenPos())) {
-				// Add vertical gap for next asset
+				// Node rendered, add vertical gap for next asset
 				cursor.x += uiData.size.x + gap.x;
 			}
 			else {
-				// Not rendered node
+				// Not rendered node, reset cursor to initial state
 				cursor = initialCursor;
 				ImGui::SetCursorPos(cursor);
 			}
@@ -584,13 +588,8 @@ bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	// DRAW TEXT
 	//
 
-	std::string name = node->name;
-	uint32_t maxChars = 12;
-	if (name.length() - 3 > maxChars) 
-		name = name.substr(0, maxChars - 3) + "...";
-
 	ImVec2 textPos = ImVec2(position.x + (uiData.size.x - uiData.textSize.x) * 0.5f, iconPos.y + uiData.iconSize.y + uiData.padding.y);
-	drawList.AddText(uiData.font, uiData.font->FontSize, textPos, textColor, name.c_str());
+	drawList.AddText(uiData.font, uiData.font->FontSize, textPos, textColor, uiData.text.c_str());
 
 	return true;
 }

@@ -2,10 +2,6 @@
 
 #include <input/cursor.h>
 
-Inspectable* InsightPanelWindow::inspected;
-
-uint32_t InsightPanelWindow::previewOutput = 0;
-
 InsightPanelWindow::InsightPanelWindow() : previewViewerOutput(0),
 previewViewerHeight(300.0f),
 previewCameraTransform()

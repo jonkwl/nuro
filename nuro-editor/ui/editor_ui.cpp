@@ -2,6 +2,7 @@
 
 #include <implot.h>
 #include <ImGuizmo.h>
+#include <filesystem>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
@@ -10,9 +11,6 @@
 #include <input/cursor.h>
 #include <utils/console.h>
 #include <context/application_context.h>
-
-#include <filesystem>
-namespace fs = std::filesystem;
 
 #include "../runtime/runtime.h"
 #include "../ui/footer/footer.h"
@@ -30,6 +28,8 @@ namespace fs = std::filesystem;
 #include "../ui/collection/IconsFontAwesome6.h"
 #include "../ui/windows/post_processing_window.h"
 #include "../ui/windows/resource_viewer_window.h"
+
+namespace fs = std::filesystem;
 
 namespace EditorUI {
 

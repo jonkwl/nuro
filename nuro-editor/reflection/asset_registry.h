@@ -5,9 +5,7 @@
 #include <vector>
 #include <optional>
 #include <functional>
-
 #include <filesystem>
-namespace fs = std::filesystem;
 
 #include "../assetsys/editor_asset.h"
 
@@ -25,7 +23,7 @@ struct AssetInfo {
 	// Function to inspect this asset type by an assets id
 	std::function<void(AssetID)> inspect;
 
-};
+}; 
 
 namespace AssetRegistry {
 
@@ -36,6 +34,6 @@ namespace AssetRegistry {
 	const std::unordered_map<std::string, std::shared_ptr<AssetInfo>>& get();
 
 	// Fetches asset info by an asset path, nullptr if none
-	std::shared_ptr<AssetInfo> fetchByPath(const fs::path& path);
+	std::shared_ptr<AssetInfo> fetchByPath(const std::filesystem::path& path);
 
 }

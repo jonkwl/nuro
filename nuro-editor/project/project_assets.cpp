@@ -3,10 +3,12 @@
 #include <chrono>
 
 #include <utils/console.h>
-#include <utils/ioutils.h>
+#include <utils/fsutil.h>
 
 #include "../assetsys/texture_asset.h"
 #include "../reflection/asset_registry.h"
+
+namespace fs = std::filesystem;
 
 AssetID ProjectAssets::load(const fs::path& relativePath)
 {
@@ -25,6 +27,7 @@ AssetID ProjectAssets::load(const fs::path& relativePath)
 	asset->_assetId = id;
 	asset->_assetType = assetInfo->type;
 	asset->_assetPath = relativePath;
+	asset->onDefaultLoad();
 
 	// Register asset
 	assets[id] = asset;
@@ -35,8 +38,11 @@ AssetID ProjectAssets::load(const fs::path& relativePath)
 void ProjectAssets::unload(AssetID id)
 {
 	auto it = assets.find(id);
-	if (it != assets.end())
-		assets.erase(it);
+	if (it == assets.end())
+		return;
+
+	it->second->onUnload();
+	assets.erase(it);
 }
 
 bool ProjectAssets::reload(AssetID id)

@@ -1,9 +1,10 @@
-
 #include "project_manager.h"
 
 #include <fstream>
 
 #include <utils/console.h>
+
+namespace fs = std::filesystem;
 
 ProjectManager::ProjectManager() : _project(),
 _observer(),

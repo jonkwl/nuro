@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <cstdint>
-
 #include <filesystem>
-namespace fs = std::filesystem;
+
+#include <memory/resource_manager.h>
 
 class ProjectAssets;
 
@@ -31,13 +31,16 @@ private:
 	AssetType _assetType;
 
 	// Path to asset relative to project root
-	fs::path _assetPath;
+	std::filesystem::path _assetPath;
 
 	// List of assets this asset depends on
 	std::vector<AssetID> _assetDependencies;
 
 protected:
-	EditorAsset() : _assetId(0), _assetType(AssetType::UNKNOWN), _assetDependencies() {};
+	// Underlying asset core resource
+	ResourceRef<Resource> _assetResource;
+
+	EditorAsset() : _assetId(0), _assetType(AssetType::UNKNOWN), _assetPath(), _assetDependencies(), _assetResource(nullptr) {};
 
 public:
 	virtual ~EditorAsset() = 0;
@@ -53,7 +56,7 @@ public:
 	}
 
 	// Returns the path to the asset relative to project root path
-	fs::path path() const {
+	std::filesystem::path path() const {
 		return _assetPath;
 	}
 
@@ -62,11 +65,17 @@ public:
 		return _assetDependencies;
 	}
 
-	// Inspects the asset in the insight panel
-	virtual void inspect() const = 0;
-
 	// Returns if the asset is currently in a loading state
-	virtual bool loading() const = 0;
+	bool loading() const {
+		if (_assetResource)
+			return _assetResource->resourceState() != ResourceState::READY;
+	}
+
+	// Event when the asset is first loaded within the editor
+	virtual void onDefaultLoad() = 0;
+
+	// Event when the asset is unloaded or destroyed within the editor
+	virtual void onUnload() = 0;
 
 	// Returns the assets icon
 	virtual uint32_t icon() const = 0;
