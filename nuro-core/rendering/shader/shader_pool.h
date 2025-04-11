@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+
+#include <utils/fsutil.h>
 #include <memory/resource_manager.h>
 
 class Shader;
@@ -9,10 +11,10 @@ class Shader;
 namespace ShaderPool
 {
 	// Loads all shaders from the given directory synchronously
-	void loadAllSync(const std::string& directory);
+	void loadAllSync(const path& directory);
 
 	// Loads all shaders from the given directory asynchronously
-	void loadAllAsync(const std::string& directory);
+	void loadAllAsync(const path& directory);
 
 	// Returns the global empty default shader
 	ResourceRef<Shader> empty();

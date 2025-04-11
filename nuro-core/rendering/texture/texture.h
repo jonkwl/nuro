@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
+#include <cstdint>
 
+#include <utils/fsutil.h>
 #include <memory/resource.h>
 
 enum class TextureType
@@ -36,7 +37,7 @@ public:
 	}
 
 	// Sets the textures type and path of texture source
-	void setSource(TextureType type, const std::string& path);
+	void setSource(TextureType type, const path& sourcePath);
 
 	// Returns the textures backend id
 	uint32_t backendId() const;
@@ -57,7 +58,7 @@ private:
 	TextureType type;
 
 	// Path of texture source
-	std::string path;
+	path sourcePath;
 
 	// Dynamic temporary texture data
 	unsigned char* data;

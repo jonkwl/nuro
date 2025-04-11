@@ -5,7 +5,6 @@
 #include <glad/glad.h>
 
 #include <utils/console.h>
-#include <utils/fsutil.h>
 
 namespace fs = std::filesystem;
 
@@ -21,22 +20,22 @@ Cubemap::~Cubemap()
 	deleteBuffers();
 }
 
-void Cubemap::setSource_Cross(std::string path)
+void Cubemap::setSource_Cross(const path& sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(path))
-		Console::out::warning("Cubemap", "Cubemap source at '" + path + "' could not be found");
+	if (!fs::exists(sourcePath))
+		Console::out::warning("Cubemap", "Cubemap source at '" + sourcePath.string() + "' could not be found");
 
 	source.type = Source::Type::CROSS;
-	source.paths = { path };
+	source.paths = { sourcePath };
 }
 
-void Cubemap::setSource_Individual(std::string rightPath, std::string leftPath, std::string topPath, std::string bottomPath, std::string frontPath, std::string backPath)
+void Cubemap::setSource_Individual(const path& rightPath, const path& leftPath, const path& topPath, const path& bottomPath, const path& frontPath, const path& backPath)
 {
 	// Source path validation lambda
-	auto validatePath = [](const std::string& path, const std::string& face) {
+	auto validatePath = [](const path& path, const std::string& face) {
 		if (!fs::exists(path))
-			Console::out::warning("Cubemap", "Cubemap source for '" + face + "' face at '" + path + "' could not be found");
+			Console::out::warning("Cubemap", "Cubemap source for '" + face + "' face at '" + path.string() + "' could not be found");
 	};
 
 	// Validate source paths
@@ -56,29 +55,30 @@ uint32_t Cubemap::backendId() const
 	return _backendId;
 }
 
-Cubemap::ImageData Cubemap::loadImageData(std::string path)
+Cubemap::ImageData Cubemap::loadImageData(const path& sourcePath)
 {
 	stbi_set_flip_vertically_on_load(false);
 
 	int32_t width, height, channels;
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+	std::string pathStr = sourcePath.string();
+	unsigned char* data = stbi_load(pathStr.c_str(), &width, &height, &channels, 0);
 	if (!data)
 	{
-		Console::out::warning("Cubemap", "Failed to load cubemap at " + path);
+		Console::out::warning("Cubemap", "Failed to load cubemap at " + sourcePath.string());
 		return ImageData();
 	}
 
 	return ImageData(data, width, height, channels);
 }
 
-void Cubemap::loadCrossCubemap(std::string path)
+void Cubemap::loadCrossCubemap(const path& sourcePath)
 {
 	//
 	// WORK ON MEMORY EFFICIENCY HERE!
 	//
 	
 	// Load temporary image data
-	ImageData image = loadImageData(path);
+	ImageData image = loadImageData(sourcePath);
 
 	// Calculate dimensions of each face (assuming default 4x3 layout)
 	int32_t faceWidth = image.width / 4;
@@ -125,7 +125,7 @@ void Cubemap::loadCrossCubemap(std::string path)
 	stbi_image_free(image.data);
 }
 
-void Cubemap::loadIndividualFace(std::string path)
+void Cubemap::loadIndividualFace(const path& sourcePath)
 {
 	//
 	// WORK ON MEMORY EFFICIENCY HERE!
@@ -133,7 +133,7 @@ void Cubemap::loadIndividualFace(std::string path)
 	//
 
 	// Load temporary image data
-	ImageData image = loadImageData(path);
+	ImageData image = loadImageData(sourcePath);
 
 	// Initialize face data
 	std::vector<unsigned char> faceData(image.data, image.data + (image.width * image.height * image.channels));

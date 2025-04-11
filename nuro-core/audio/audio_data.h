@@ -13,6 +13,7 @@ extern "C"
 #include <libswresample/swresample.h>
 }
 
+#include <utils/fsutil.h>
 #include <audio/audio_info.h>
 #include <audio/audio_samples.h>
 
@@ -23,7 +24,7 @@ public:
 	~AudioData();
 
 	// Sets the path of the audio source file
-	void setSource(const std::string& path);
+	void setSource(const path& sourcePath);
 
 	// Loads the audio data from the current source and sets audio info
 	bool load(AudioInfo& info);
@@ -38,7 +39,7 @@ public:
 	AudioSamples* multichannelSamples() const;
 
 	// Returns the current audio source file path
-	std::string sourcePath() const;
+	const path& sourcePath() const;
 
 private:
 	// Decodes an audio stream into pcm samples, target layout and format provided by samples reference
@@ -56,7 +57,8 @@ private:
 	// Validates the current source path
 	bool validateSource() const;
 
-	std::string _sourcePath;
+	path _sourcePath;
+
 	AudioSamples* _monoSamples;
 	AudioSamples* _multichannelSamples;
 };

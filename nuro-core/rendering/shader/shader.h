@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
-#include <utils/console.h>
+#include <utils/fsutil.h>
 #include <memory/resource.h>
 
 class Shader : public Resource
@@ -22,7 +22,7 @@ public:
 	}
 
 	// Sets the path of the shaders source
-	void setSource(std::string path);
+	void setSource(const path& sourcePath);
 
 	// Binds the shader program
 	void bind() const;
@@ -46,7 +46,7 @@ private:
 	};
 
 	// Path of shader source
-	std::string path;
+	path sourcePath;
 
 	// Shader source data
 	Data data;

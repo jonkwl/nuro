@@ -4,12 +4,11 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../../utils/console.h"
-#include "../../utils/fsutil.h"
+#include <utils/console.h>
 
 namespace fs = std::filesystem;
 
-Shader::Shader() : path(),
+Shader::Shader() : sourcePath(),
 data(),
 uniforms(),
 _backendId(0)
@@ -22,13 +21,13 @@ Shader::~Shader()
 	deleteBuffers();
 }
 
-void Shader::setSource(std::string _path)
+void Shader::setSource(const path& _sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(_path))
-		Console::out::warning("Shader", "Shader source at '" + _path + "' could not be found");
+	if (!fs::exists(_sourcePath))
+		Console::out::warning("Shader", "Shader source at '" + _sourcePath.string() + "' could not be found");
 
-	path = _path;
+	sourcePath = _sourcePath;
 }
 
 void Shader::bind() const
@@ -127,8 +126,8 @@ bool Shader::programLinked(int32_t program)
 
 bool Shader::loadIoData()
 {
-	data.vertexSource = IOUtils::readFile(path + "/.vert");
-	data.fragmentSource = IOUtils::readFile(path + "/.frag");
+	data.vertexSource = FSUtil::readFile(sourcePath / ".vert");
+	data.fragmentSource = FSUtil::readFile(sourcePath / ".frag");
 
 	return true;
 }

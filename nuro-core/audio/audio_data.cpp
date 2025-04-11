@@ -6,7 +6,6 @@
 #include <filesystem>
 
 #include <utils/console.h>
-#include <utils/fsutil.h>
 
 namespace fs = std::filesystem;
 
@@ -21,9 +20,9 @@ AudioData::~AudioData()
 	free();
 }
 
-void AudioData::setSource(const std::string& path)
+void AudioData::setSource(const path& sourcePath)
 {
-    _sourcePath = path;
+    _sourcePath = sourcePath;
 	validateSource();
 }
 
@@ -55,7 +54,8 @@ bool AudioData::load(AudioInfo& info)
     // OPEN AUDIO FILE
     //
 
-    if (avformat_open_input(&formatContext, _sourcePath.c_str(), nullptr, nullptr) != 0) {
+    std::string pathStr = _sourcePath.string();
+    if (avformat_open_input(&formatContext, pathStr.c_str(), nullptr, nullptr) != 0) {
         cleanup();
         return fail("Could not open audio file");
     }
@@ -105,8 +105,8 @@ bool AudioData::load(AudioInfo& info)
     // FETCH AUDIO INFO
     //
 
-    info.path = _sourcePath;
-    info.name = IOUtils::getFilename(info.path);
+    info.path = _sourcePath.string();
+    info.name = _sourcePath.stem().string();
     info.fileFormat = std::string(formatContext->iformat->name);
     info.codec = codec->name;
     info.sampleRate = codecContext->sample_rate;
@@ -192,7 +192,7 @@ AudioSamples* AudioData::multichannelSamples() const
     return _multichannelSamples;
 }
 
-std::string AudioData::sourcePath() const
+const path& AudioData::sourcePath() const
 {
     return _sourcePath;
 }
@@ -359,7 +359,7 @@ AVChannelLayout AudioData::getLayout_by_mask(uint64_t mask) const
 
 bool AudioData::fail(std::string info) const
 {
-	Console::out::warning("Audio Data", info + " of audio data at '" + _sourcePath + "'");
+	Console::out::warning("Audio Data", info + " of audio data at '" + _sourcePath.string() + "'");
 	return false;
 }
 

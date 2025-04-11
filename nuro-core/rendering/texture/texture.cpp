@@ -5,7 +5,6 @@
 #include <stb_image.h>
 
 #include <utils/console.h>
-#include <utils/fsutil.h>
 #include <context/application_context.h>
 
 namespace fs = std::filesystem;
@@ -13,7 +12,7 @@ namespace fs = std::filesystem;
 uint32_t Texture::defaultTextureId = 0;
 
 Texture::Texture() : type(TextureType::EMPTY),
-path(),
+sourcePath(),
 width(0),
 height(0),
 channels(0),
@@ -28,14 +27,14 @@ Texture::~Texture()
 	deleteBuffers();
 }
 
-void Texture::setSource(TextureType _type, const std::string& _path)
+void Texture::setSource(TextureType _type, const path& _sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(_path))
-		Console::out::warning("Texture", "Texture source at '" + _path + "' could not be found");
+	if (!fs::exists(_sourcePath))
+		Console::out::warning("Texture", "Texture source at '" + _sourcePath.string() + "' could not be found");
 
 	type = _type;
-	path = _path;
+	sourcePath = _sourcePath;
 }
 
 uint32_t Texture::backendId() const
@@ -53,10 +52,11 @@ bool Texture::loadIoData()
 	// Load image data
 	int _width, _height, _channels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* _data = stbi_load(path.c_str(), &_width, &_height, &_channels, 0);
+	std::string pathStr = sourcePath.string();
+	unsigned char* _data = stbi_load(pathStr.c_str(), &_width, &_height, &_channels, 0);
 	if (!_data)
 	{
-		Console::out::warning("Texture", "Couldn't load data for texture '" + IOUtils::getFilename(path) + "'");
+		Console::out::warning("Texture", "Couldn't load data for texture '" + sourcePath.filename().string() + "'");
 		return false;
 	}
 

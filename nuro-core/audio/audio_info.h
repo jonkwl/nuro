@@ -13,7 +13,7 @@ extern "C"
 
 struct AudioInfo {
 
-	// Path to audio file
+	// String representation of path to audio file
 	std::string path = "None";
 
 	//  Audio files name

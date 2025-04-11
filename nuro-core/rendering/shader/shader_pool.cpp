@@ -1,46 +1,45 @@
 
 #include "shader_pool.h"
 
+#include <thread>
+#include <chrono>
 #include <unordered_map>
 
 #include <utils/console.h>
-#include <utils/fsutil.h>
 #include <rendering/shader/shader.h>
 #include <context/application_context.h>
-
-#include <thread>
-#include <chrono>
 
 namespace ShaderPool {
 
 	ResourceRef<Shader> gEmpty = std::make_shared<Shader>();
 	std::unordered_map<std::string, ResourceRef<Shader>> gShaders;
 
-	void _loadAll(const std::string& directory, bool async)
+	void _loadAll(const path& directory, bool async)
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		std::vector<std::string> shader_paths;
-		std::vector<std::string> shader_names;
+		std::vector<path> shaderPaths;
+		std::vector<std::string> shaderNames;
 
-		std::vector<std::string> shaders_in_folder = IOUtils::getFolders(directory);
-		for (int32_t x = 0; x < shaders_in_folder.size(); x++)
+		std::vector<path> shadersInFolder = FSUtil::getFolders(directory);
+		for (int32_t i = 0; i < shadersInFolder.size(); i++)
 		{
-			shader_paths.push_back(directory + "/" + shaders_in_folder[x]);
-			shader_names.push_back(shaders_in_folder[x]);
+			const path& shaderPath = shadersInFolder[i];
+			shaderPaths.push_back(shaderPath);
+			shaderNames.push_back(shaderPath.filename().string());
 		}
 
-		for (int32_t i = 0; i < shader_paths.size(); i++)
+		for (int32_t i = 0; i < shaderPaths.size(); i++)
 		{
 			// Get shaders identifier
-			std::string identifier = shader_names[i];
+			std::string identifier = shaderNames[i];
 
 			// Skip shader creation if it already exists
 			if (gShaders.find(identifier) != gShaders.end()) continue;
 
 			// Create new shader and set its source
 			auto& [shaderId, shader] = resource.create<Shader>(identifier + "_shader");
-			shader->setSource(shader_paths[i]);
+			shader->setSource(shaderPaths[i]);
 
 			// Load shader
 			if (async) {
@@ -53,15 +52,15 @@ namespace ShaderPool {
 		}
 	}
 
-	void loadAllSync(const std::string& directory)
+	void loadAllSync(const path& directory)
 	{
-		Console::out::info("Shader Pool", "Loading shaders from '" + directory + "'");
+		Console::out::info("Shader Pool", "Loading shaders from '" + directory.string() + "'");
 		_loadAll(directory, false);
 	}
 
-	void loadAllAsync(const std::string& directory)
+	void loadAllAsync(const path& directory)
 	{
-		Console::out::info("Shader Pool", "Queued loading shader in '" + directory + "'");
+		Console::out::info("Shader Pool", "Queued loading shader in '" + directory.string() + "'");
 		_loadAll(directory, true);
 	}
 

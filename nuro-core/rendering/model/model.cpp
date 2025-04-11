@@ -9,14 +9,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include <rendering/transformation/transformation.h>
 #include <utils/console.h>
-#include <utils/fsutil.h>
 #include <utils/string_helper.h>
+#include <rendering/transformation/transformation.h>
 
 namespace fs = std::filesystem;
 
-Model::Model() : path(),
+Model::Model() : sourcePath(),
 meshData(),
 meshes(),
 metrics()
@@ -29,13 +28,13 @@ Model::~Model()
 	deleteBuffers();
 }
 
-void Model::setSource(std::string _path)
+void Model::setSource(const path& _sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(_path))
-		Console::out::warning("Model", "Model source at '" + _path + "' could not be found");
+	if (!fs::exists(_sourcePath))
+		Console::out::warning("Model", "Model source at '" + _sourcePath.string() + "' could not be found");
 
-	path = _path;
+	sourcePath = _sourcePath;
 }
 
 const Mesh* Model::queryMesh(uint32_t index)
@@ -195,12 +194,12 @@ bool Model::loadIoData()
 	// Read file
 	Assimp::Importer import;
 	const uint32_t importSettings = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
-	const aiScene* scene = import.ReadFile(path, importSettings);
+	const aiScene* scene = import.ReadFile(sourcePath.string(), importSettings);
 
 	// Validate model
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		Console::out::warning("Model", "Couldn't load model '" + IOUtils::getFilename(path) + "'", import.GetErrorString());
+		Console::out::warning("Model", "Couldn't load model '" + sourcePath.filename().string() + "'", import.GetErrorString());
 		return false;
 	}
 

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
-#include <glm/glm.hpp>
 #include <cstdint>
+#include <glm/glm.hpp>
 #include <unordered_map>
 
+#include <utils/fsutil.h>
 #include <memory/resource.h>
 #include <rendering/model/mesh.h>
 
@@ -88,7 +89,7 @@ public:
 	}
 
 	// Sets the path of the models source
-	void setSource(std::string path);
+	void setSource(const path& sourcePath);
 
 	// Returns models mesh at given index or creates an empty mesh at that index
 	const Mesh* queryMesh(uint32_t index);
@@ -121,7 +122,7 @@ private:
 	//
 
 	// Path of models source
-	std::string path;
+	path sourcePath;
 
 	// Intermediate temporary representation of mesh data
 	std::vector<MeshData> meshData;

@@ -1,9 +1,10 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <vector>
+#include <cstdint>
 
+#include <utils/fsutil.h>
 #include <memory/resource.h>
 
 class Cubemap : public Resource
@@ -20,10 +21,10 @@ public:
 	}
 
 	// Sets cubemaps source to be cross layout
-	void setSource_Cross(std::string path);
+	void setSource_Cross(const path& sourcePath);
 
 	// Sets cubemaps source to be multiple individual faces
-	void setSource_Individual(std::string rightPath, std::string leftPath, std::string topPath, std::string bottomPath, std::string frontPath, std::string backPath);
+	void setSource_Individual(const path& rightPath, const path& leftPath, const path& topPath, const path& bottomPath, const path& frontPath, const path& backPath);
 
 	// Returns the backend id of the cubemap texture
 	uint32_t backendId() const;
@@ -39,7 +40,7 @@ private:
 		Type type = Type::CROSS;
 
 		// All image source paths associated with the cubemap
-		std::vector<std::string> paths;
+		std::vector<path> paths;
 	};
 
 	struct FaceData
@@ -74,10 +75,10 @@ private:
 
 private:
 	// Loads a cubemap by multiple faces in one file
-	void loadCrossCubemap(std::string path);
+	void loadCrossCubemap(const path& sourcePath);
 
 	// Loads an individual face for a cubemap
-	void loadIndividualFace(std::string path);
+	void loadIndividualFace(const path& sourcePath);
 
 	bool loadIoData();
 	void freeIoData();
@@ -94,5 +95,5 @@ private:
 	uint32_t _backendId;
 
 	// Loads given images data
-	ImageData loadImageData(std::string path);
+	ImageData loadImageData(const path& sourcePath);
 };
