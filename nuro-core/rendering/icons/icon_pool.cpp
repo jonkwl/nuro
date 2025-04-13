@@ -12,7 +12,7 @@
 namespace IconPool {
 
 	// List of valid extensions for icon source files
-	std::vector<path> gValidExtensions = { ".png", ".jpg", ".jpeg" };
+	std::vector<FS::Path> gValidExtensions = { ".png", ".jpg", ".jpeg" };
 
 	// Global registry of all icons by their identifiers
 	std::unordered_map<std::string, ResourceRef<Texture>> gIcons;
@@ -20,11 +20,11 @@ namespace IconPool {
 	// Texture of fallback icon for invalid icons
 	ResourceRef<Texture> gInvalidIcon;
 
-	void _loadAll(const path& directory, bool async)
+	void _loadAll(const FS::Path& directory, bool async)
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		std::vector<path> files = FSUtil::getFilesWithExtensions(directory, gValidExtensions);
+		std::vector<FS::Path> files = FS::getFilesWithExtensions(directory, gValidExtensions);
 		for (const auto& file : files) {
 			// Get icon identifier
 			std::string identifier = file.stem().string();
@@ -53,13 +53,13 @@ namespace IconPool {
 		}
 	}
 
-	void loadAllSync(const path& directory)
+	void loadAllSync(const FS::Path& directory)
 	{
 		Console::out::info("Icon Pool", "Loading icons from '" + directory.string() + "'");
 		_loadAll(directory, false);
 	}
 
-	void loadAllAsync(const path& directory)
+	void loadAllAsync(const FS::Path& directory)
 	{
 		Console::out::info("Icon Pool", "Queued loading icons in '" + directory.string() + "'");
 		_loadAll(directory, true);
@@ -77,7 +77,7 @@ namespace IconPool {
 		}
 	}
 
-	void createFallbackIcon(const path& path)
+	void createFallbackIcon(const FS::Path& path)
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 

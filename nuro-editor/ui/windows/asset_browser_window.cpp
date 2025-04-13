@@ -2,13 +2,12 @@
 
 #include <cstdlib>
 #include <algorithm>
-#include <filesystem>
 #include <entt/entt.hpp>
+
+#include <utils/fsutil.h>
 
 #include "../reflection/asset_registry.h"
 #include "../ui/windows/insight_panel_window.h"
-
-namespace fs = std::filesystem;
 
 AssetBrowserWindow::AssetBrowserWindow() : observer(Runtime::projectManager().observer()),
 assets(Runtime::projectManager().assets()),
@@ -121,9 +120,9 @@ void AssetBrowserWindow::evaluateInputs()
 
 void AssetBrowserWindow::openNode(const NodeRef& node)
 {
-	fs::path projectPath = Runtime::projectManager().project().path;
-	fs::path nodePath = node->path;
-	fs::path fullPath = projectPath / nodePath;
+	FS::Path projectPath = Runtime::projectManager().project().path;
+	FS::Path nodePath = node->path;
+	FS::Path fullPath = projectPath / nodePath;
 	std::string filename = fullPath.string();
 	std::string command;
 

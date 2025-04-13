@@ -14,17 +14,17 @@ namespace ShaderPool {
 	ResourceRef<Shader> gEmpty = std::make_shared<Shader>();
 	std::unordered_map<std::string, ResourceRef<Shader>> gShaders;
 
-	void _loadAll(const path& directory, bool async)
+	void _loadAll(const FS::Path& directory, bool async)
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		std::vector<path> shaderPaths;
+		std::vector<FS::Path> shaderPaths;
 		std::vector<std::string> shaderNames;
 
-		std::vector<path> shadersInFolder = FSUtil::getFolders(directory);
+		std::vector<FS::Path> shadersInFolder = FS::getFolders(directory);
 		for (int32_t i = 0; i < shadersInFolder.size(); i++)
 		{
-			const path& shaderPath = shadersInFolder[i];
+			const FS::Path& shaderPath = shadersInFolder[i];
 			shaderPaths.push_back(shaderPath);
 			shaderNames.push_back(shaderPath.filename().string());
 		}
@@ -52,13 +52,13 @@ namespace ShaderPool {
 		}
 	}
 
-	void loadAllSync(const path& directory)
+	void loadAllSync(const FS::Path& directory)
 	{
 		Console::out::info("Shader Pool", "Loading shaders from '" + directory.string() + "'");
 		_loadAll(directory, false);
 	}
 
-	void loadAllAsync(const path& directory)
+	void loadAllAsync(const FS::Path& directory)
 	{
 		Console::out::info("Shader Pool", "Queued loading shader in '" + directory.string() + "'");
 		_loadAll(directory, true);

@@ -89,7 +89,7 @@ public:
 	}
 
 	// Sets the path of the models source
-	void setSource(const path& sourcePath);
+	void setSource(const FS::Path& sourcePath);
 
 	// Returns models mesh at given index or creates an empty mesh at that index
 	const Mesh* queryMesh(uint32_t index);
@@ -122,7 +122,7 @@ private:
 	//
 
 	// Path of models source
-	path sourcePath;
+	FS::Path sourcePath;
 
 	// Intermediate temporary representation of mesh data
 	std::vector<MeshData> meshData;

@@ -9,8 +9,6 @@
 #include "../ui/windows/insight_panel_window.h"
 #include "../ui/inspectables/texture_inspectable.h"
 
-namespace fs = std::filesystem;
-
 namespace AssetRegistry {
 
     // Global registry for all assets by extension
@@ -50,7 +48,7 @@ namespace AssetRegistry {
         return gAssetRegistry;
     }
 
-    std::shared_ptr<AssetInfo> fetchByPath(const fs::path& path)
+    std::shared_ptr<AssetInfo> fetchByPath(const FS::Path& path)
     {
         // Extract file extension from path
         std::string extension = path.extension().string();

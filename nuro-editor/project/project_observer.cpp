@@ -1,20 +1,17 @@
 #include "project_observer.h"
 
-#include <utils/fsutil.h>
 #include <utils/console.h>
 
 #include "../runtime/runtime.h"
 
-namespace fs = std::filesystem;
-
-ProjectObserver::File::File(const std::string& name, const fs::path& path) : IONode(name, path), assetId(0)
+ProjectObserver::File::File(const std::string& name, const FS::Path& path) : IONode(name, path), assetId(0)
 {
 	assetId = Runtime::projectManager().assets().load(path);
 }
 
 ProjectObserver::File::~File()
 {
-	if(assetId) Runtime::projectManager().assets().unload(assetId);
+	if(assetId) Runtime::projectManager().assets().remove(assetId);
 }
 
 bool ProjectObserver::Folder::hasSubfolders()
@@ -25,7 +22,7 @@ bool ProjectObserver::Folder::hasSubfolders()
 void ProjectObserver::Folder::addFile(const std::string& fileName)
 {
 	// Instantiate file
-	fs::path newPath = path / fileName;
+	FS::Path newPath = path / fileName;
 	auto file = std::make_shared<File>(fileName, newPath);
 
 	// Insert file
@@ -39,7 +36,7 @@ void ProjectObserver::Folder::addFile(const std::string& fileName)
 void ProjectObserver::Folder::addFolder(const std::string& folderName)
 {
 	// Instantiate folder
-	fs::path newPath = path / folderName;
+	FS::Path newPath = path / folderName;
 	auto folder = std::make_shared<Folder>(folderName, newPath, id);
 	
 	// Insert folder
@@ -114,18 +111,18 @@ void ProjectObserver::pollEvents()
 
 	// Get event related data
 	std::string filename = event->filename;
-	fs::path absolutePath = fs::path(event->directory) / event->filename;
-	fs::path relativePath = fs::relative(absolutePath, target);
+	FS::Path absolutePath = FS::Path(event->directory) / event->filename;
+	FS::Path relativePath = FS::getRelativePath(absolutePath, target);
 
 	switch (event->action) {
 	case efsw::Action::Add:
 	{
-		fs::path parentRelative = relativePath.parent_path();
+		FS::Path parentRelative = relativePath.parent_path();
 
 		auto parentFolder = findFolder(parentRelative, projectStructure);
 		if (!parentFolder) break;
 
-		if (fs::is_directory(absolutePath))
+		if (FS::isDirectory(absolutePath))
 			parentFolder->addFolder(filename);
 		else
 			parentFolder->addFile(filename);
@@ -134,7 +131,7 @@ void ProjectObserver::pollEvents()
 	}
 	case efsw::Action::Delete:
 	{
-		fs::path parentRelative = relativePath.parent_path();
+		FS::Path parentRelative = relativePath.parent_path();
 
 		auto parentFolder = findFolder(parentRelative, projectStructure);
 		if (!parentFolder) break;
@@ -147,8 +144,8 @@ void ProjectObserver::pollEvents()
 		break;
 	case efsw::Action::Moved:
 	{
-		fs::path oldRelativePath(event->oldFilename);
-		fs::path oldParentRelative = oldRelativePath.parent_path();
+		FS::Path oldRelativePath(event->oldFilename);
+		FS::Path oldParentRelative = oldRelativePath.parent_path();
 		auto oldParentFolder = findFolder(oldParentRelative, projectStructure);
 		if (!oldParentFolder) break;
 
@@ -156,11 +153,11 @@ void ProjectObserver::pollEvents()
 		oldParentFolder->removeAny(oldBaseName);
 
 		std::string newBaseName = absolutePath.filename().string();
-		fs::path newParentRelative = relativePath.parent_path();
+		FS::Path newParentRelative = relativePath.parent_path();
 		auto newParentFolder = findFolder(newParentRelative, projectStructure);
 		if (!newParentFolder) break;
 
-		if (fs::is_directory(absolutePath))
+		if (FS::isDirectory(absolutePath))
 			newParentFolder->addFolder(newBaseName);
 		else
 			newParentFolder->addFile(newBaseName);
@@ -170,7 +167,7 @@ void ProjectObserver::pollEvents()
 	}
 }
 
-void ProjectObserver::setTarget(const fs::path& path)
+void ProjectObserver::setTarget(const FS::Path& path)
 {
 	target = path;
 
@@ -208,12 +205,12 @@ void ProjectObserver::IOListener::handleFileAction(efsw::WatchID watchId, const 
 		Console::out::warning("Project Observer", "Failed to enqueue an io event");
 }
 
-std::shared_ptr<ProjectObserver::Folder> ProjectObserver::createFolder(const fs::path& path, uint32_t parentId)
+std::shared_ptr<ProjectObserver::Folder> ProjectObserver::createFolder(const FS::Path& path, uint32_t parentId)
 {
 	auto root = std::make_shared<Folder>(path.filename().string(), path, parentId);
 	folderRegistry.emplace(root->id, root);
 
-	for (const auto& entry : fs::directory_iterator(path)) {
+	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		if (entry.is_directory())
 			root->subfolders.push_back(createFolder(entry.path(), root->id));
 		else if (entry.is_regular_file())
@@ -223,7 +220,7 @@ std::shared_ptr<ProjectObserver::Folder> ProjectObserver::createFolder(const fs:
 	return root;
 }
 
-std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const fs::path& relativePath, const std::shared_ptr<Folder>& currentFolder)
+std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const FS::Path& relativePath, const std::shared_ptr<Folder>& currentFolder)
 {
 	if (!currentFolder) {
 		Console::out::warning("Project Observer", "Attempted to search from an invalid folder");
@@ -242,7 +239,7 @@ std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const fs::p
 	for (const auto& subfolder : currentFolder->subfolders) {
 		if (subfolder->name == targetName) {
 			// Compute remaining path by advancing iterator
-			fs::path remaining;
+			FS::Path remaining;
 			for (++it; it != relativePath.end(); ++it)
 				remaining /= *it;
 			// Recurse finding target folder

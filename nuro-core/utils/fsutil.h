@@ -11,183 +11,195 @@
 #include <optional>
 #include <filesystem>
 
-namespace fs = std::filesystem;
-
-using path = fs::path;
-
-// todo: 
-// 1) replace any fs::path with path later
-// 2) add missing function implementations
-// 3) consistently use fsutil wrapper functions throughout the codebase
-
-namespace FSUtil
+namespace FS
 {
+
+    //
+    // FILESYSTEM TYPE ALIASES
+    //
+
+    using Path = std::filesystem::path;
+    using DirectoryIterator = std::filesystem::directory_iterator;
+    using RecursiveDirectoryIterator = std::filesystem::recursive_directory_iterator;
+    using DirectoryEntry = std::filesystem::directory_entry;
+    using FileStatus = std::filesystem::file_status;
+    using SpaceInfo = std::filesystem::space_info;
+    using FileType = std::filesystem::file_type;
+    using Perms = std::filesystem::perms;
+    using Perm_options = std::filesystem::perm_options;
+    using Copy_options = std::filesystem::copy_options;
+    using FileTime = std::filesystem::file_time_type;
+    using FilesystemError = std::filesystem::filesystem_error;
+    using Directory_options = std::filesystem::directory_options;
+    using PathFormat = std::filesystem::path::format;
+    using DirectoryOptions = std::filesystem::directory_options;
+    using RecursiveDirectoryOptions = std::filesystem::directory_options;
+    using SymlinkStatus = std::filesystem::file_status;
+    using FileSize = std::uintmax_t;
+
     //
     // FILE ACCESS & MANIPULATION
     //
 
     // Reads entire file contents as string
-    std::string readFile(const fs::path& path);
+    std::string readFile(const std::filesystem::path& path);
 
     // Reads file line by line
-    std::vector<std::string> readFileLines(const fs::path& path);
+    std::vector<std::string> readFileLines(const std::filesystem::path& path);
 
     // Writes string content to file (overwrites existing content)
-    bool writeFile(const fs::path& path, const std::string& content);
+    bool writeFile(const std::filesystem::path& path, const std::string& content);
 
     // Appends string content to existing file
-    bool appendToFile(const fs::path& path, const std::string& content);
+    bool appendToFile(const std::filesystem::path& path, const std::string& content);
 
     // Copies a file, optionally overwriting if destination exists
-    bool copyFile(const fs::path& from, const fs::path& to, bool overwriteExisting = true);
+    bool copyFile(const std::filesystem::path& from, const std::filesystem::path& to, bool overwriteExisting = true);
 
     //
     // PATH INFORMATION
     //
 
     // Returns absolute path from relative path
-    fs::path getAbsolutePath(const fs::path& path);
+    std::filesystem::path getAbsolutePath(const std::filesystem::path& path);
 
     // Returns canonical path (resolves symlinks, . and ..)
-    fs::path getCanonicalPath(const fs::path& path);
+    std::filesystem::path getCanonicalPath(const std::filesystem::path& path);
 
     // Returns relative path from base to path
-    fs::path getRelativePath(const fs::path& path, const fs::path& base);
+    std::filesystem::path getRelativePath(const std::filesystem::path& path, const std::filesystem::path& base);
 
     //
     // FILE STATUS
     //
 
     // Checks if path exists
-    bool exists(const fs::path& path);
+    bool exists(const std::filesystem::path& path);
 
     // Checks if path is a regular file
-    bool isRegularFile(const fs::path& path);
+    bool isRegularFile(const std::filesystem::path& path);
 
     // Checks if path is a directory
-    bool isDirectory(const fs::path& path);
+    bool isDirectory(const std::filesystem::path& path);
 
     // Checks if path is a symbolic link
-    bool isSymlink(const fs::path& path);
+    bool isSymlink(const std::filesystem::path& path);
 
     // Checks if path is empty (directory with no entries or zero-length file)
-    bool isEmpty(const fs::path& path);
+    bool isEmpty(const std::filesystem::path& path);
 
     // Returns file size in bytes, 0 for non-files or errors
-    uintmax_t fileSize(const fs::path& path);
+    uintmax_t fileSize(const std::filesystem::path& path);
 
     //
     // FILE TIMES
     //
 
     // Gets last write time of file or directory
-    std::optional<fs::file_time_type> getLastWriteTime(const fs::path& path);
+    std::optional<std::filesystem::file_time_type> getLastWriteTime(const std::filesystem::path& path);
 
     // Sets last write time for file or directory
-    bool setLastWriteTime(const fs::path& path, fs::file_time_type newTime);
+    bool setLastWriteTime(const std::filesystem::path& path, std::filesystem::file_time_type newTime);
 
     //
     // DIRECTORY OPERATIONS
     //
 
     // Creates directory (single level)
-    bool createDirectory(const fs::path& path);
+    bool createDirectory(const std::filesystem::path& path);
 
     // Creates directories recursively (like mkdir -p)
-    bool createDirectories(const fs::path& path);
+    bool createDirectories(const std::filesystem::path& path);
 
     // Removes file or empty directory
-    bool remove(const fs::path& path);
+    bool remove(const std::filesystem::path& path);
 
     // Removes directory and all contents recursively
-    bool removeAll(const fs::path& path);
+    bool removeAll(const std::filesystem::path& path);
 
     // Returns all directory entries (files and subdirectories)
-    std::vector<fs::path> getDirectoryEntries(const fs::path& path);
+    std::vector<std::filesystem::path> getDirectoryEntries(const std::filesystem::path& path);
 
     // Returns only directories within a path
-    std::vector<fs::path> getFolders(const fs::path& path);
+    std::vector<std::filesystem::path> getFolders(const std::filesystem::path& path);
 
     // Returns only files within a path
-    std::vector<fs::path> getFiles(const fs::path& path);
+    std::vector<std::filesystem::path> getFiles(const std::filesystem::path& path);
 
     // Returns files with specific extensions (recursive)
-    std::vector<fs::path> getFilesWithExtensions(const fs::path& path, const std::vector<fs::path>& extensions);
+    std::vector<std::filesystem::path> getFilesWithExtensions(const std::filesystem::path& path, const std::vector<std::filesystem::path>& extensions);
 
     // Returns files with specific extension (recursive)
-    std::vector<fs::path> getFilesWithExtension(const fs::path& path, const fs::path& extension);
+    std::vector<std::filesystem::path> getFilesWithExtension(const std::filesystem::path& path, const std::filesystem::path& extension);
 
     // Returns files matching a pattern
-    std::vector<fs::path> getFilesMatching(const fs::path& path, const std::string& pattern, bool recursive = true);
+    std::vector<std::filesystem::path> getFilesMatching(const std::filesystem::path& path, const std::string& pattern, bool recursive = true);
 
     //
     // PATH MODIFICATIONS
     //
 
     // Renames/moves a file or directory
-    bool rename(const fs::path& from, const fs::path& to);
+    bool rename(const std::filesystem::path& from, const std::filesystem::path& to);
 
     // Creates a symlink
-    bool createSymlink(const fs::path& target, const fs::path& link);
+    bool createSymlink(const std::filesystem::path& target, const std::filesystem::path& link);
 
     // Creates a hard link
-    bool createHardLink(const fs::path& target, const fs::path& link);
+    bool createHardLink(const std::filesystem::path& target, const std::filesystem::path& link);
 
     // Creates a directory symlink
-    bool createDirectorySymlink(const fs::path& target, const fs::path& link);
+    bool createDirectorySymlink(const std::filesystem::path& target, const std::filesystem::path& link);
 
     // Reads target of symlink
-    fs::path readSymlink(const fs::path& path);
+    std::filesystem::path readSymlink(const std::filesystem::path& path);
 
     // Gets current path
-    fs::path currentPath();
+    std::filesystem::path currentPath();
 
     // Sets current path, returns success
-    bool setCurrentPath(const fs::path& path);
+    bool setCurrentPath(const std::filesystem::path& path);
 
     //
     // SPACE INFO
     //
 
     // Gets free space on volume containing path
-    uintmax_t getFreeSpace(const fs::path& path);
+    uintmax_t getFreeSpace(const std::filesystem::path& path);
 
     // Gets total capacity of volume containing path
-    uintmax_t getTotalSpace(const fs::path& path);
+    uintmax_t getTotalSpace(const std::filesystem::path& path);
 
     // Gets space available to calling process on volume containing path
-    uintmax_t getAvailableSpace(const fs::path& path);
+    uintmax_t getAvailableSpace(const std::filesystem::path& path);
 
     //
     // TMP DIRECTORIES
     //
 
     // Gets system's temp directory
-    fs::path getTempDirectory();
+    std::filesystem::path getTempDirectory();
 
     // Creates unique temporary directory and returns its path
-    fs::path createTempDirectory(const fs::path& model = "%%%%-%%%%-%%%%-%%%%");
+    std::filesystem::path createTempDirectory(const std::filesystem::path& model = "%%%%-%%%%-%%%%-%%%%");
 
     // Creates unique temporary filename and returns its path
-    fs::path createTempFilename(const fs::path& model = "%%%%-%%%%-%%%%-%%%%");
+    std::filesystem::path createTempFilename(const std::filesystem::path& model = "%%%%-%%%%-%%%%-%%%%");
 
     //
     // PATH NORMALIZATION
     //
 
     // Normalizes path separators to system native
-    fs::path normalizeSeparators(const fs::path& path);
+    std::filesystem::path normalizeSeparators(const std::filesystem::path& path);
 
     //
     // OTHER UTILITIES
     //
 
-    // Creates backup copy of file with .bak extension
-    bool createBackup(const fs::path& path);
-
     // Touches a file (creates if doesn't exist, updates timestamp if it does)
-    bool touch(const fs::path& path);
+    bool touch(const std::filesystem::path& path);
 
     // Checks if path has specific extension (case insensitive)
-    bool hasExtension(const fs::path& path, const fs::path& extension);
+    bool hasExtension(const std::filesystem::path& path, const std::filesystem::path& extension);
 }

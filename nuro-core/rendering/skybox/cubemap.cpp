@@ -1,12 +1,9 @@
 #include "cubemap.h"
 
-#include <filesystem>
 #include <stb_image.h>
 #include <glad/glad.h>
 
 #include <utils/console.h>
-
-namespace fs = std::filesystem;
 
 Cubemap::Cubemap() : source(),
 data(),
@@ -20,21 +17,21 @@ Cubemap::~Cubemap()
 	deleteBuffers();
 }
 
-void Cubemap::setSource_Cross(const path& sourcePath)
+void Cubemap::setSource_Cross(const FS::Path& sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(sourcePath))
+	if (!FS::exists(sourcePath))
 		Console::out::warning("Cubemap", "Cubemap source at '" + sourcePath.string() + "' could not be found");
 
 	source.type = Source::Type::CROSS;
 	source.paths = { sourcePath };
 }
 
-void Cubemap::setSource_Individual(const path& rightPath, const path& leftPath, const path& topPath, const path& bottomPath, const path& frontPath, const path& backPath)
+void Cubemap::setSource_Individual(const FS::Path& rightPath, const FS::Path& leftPath, const FS::Path& topPath, const FS::Path& bottomPath, const FS::Path& frontPath, const FS::Path& backPath)
 {
 	// Source path validation lambda
-	auto validatePath = [](const path& path, const std::string& face) {
-		if (!fs::exists(path))
+	auto validatePath = [](const FS::Path& path, const std::string& face) {
+		if (!FS::exists(path))
 			Console::out::warning("Cubemap", "Cubemap source for '" + face + "' face at '" + path.string() + "' could not be found");
 	};
 
@@ -55,7 +52,7 @@ uint32_t Cubemap::backendId() const
 	return _backendId;
 }
 
-Cubemap::ImageData Cubemap::loadImageData(const path& sourcePath)
+Cubemap::ImageData Cubemap::loadImageData(const FS::Path& sourcePath)
 {
 	stbi_set_flip_vertically_on_load(false);
 
@@ -71,7 +68,7 @@ Cubemap::ImageData Cubemap::loadImageData(const path& sourcePath)
 	return ImageData(data, width, height, channels);
 }
 
-void Cubemap::loadCrossCubemap(const path& sourcePath)
+void Cubemap::loadCrossCubemap(const FS::Path& sourcePath)
 {
 	//
 	// WORK ON MEMORY EFFICIENCY HERE!
@@ -125,7 +122,7 @@ void Cubemap::loadCrossCubemap(const path& sourcePath)
 	stbi_image_free(image.data);
 }
 
-void Cubemap::loadIndividualFace(const path& sourcePath)
+void Cubemap::loadIndividualFace(const FS::Path& sourcePath)
 {
 	//
 	// WORK ON MEMORY EFFICIENCY HERE!

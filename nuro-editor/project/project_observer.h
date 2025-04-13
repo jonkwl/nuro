@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <filesystem>
 #include <unordered_map>
 #include <efsw/efsw.hpp>
-#include <utils/event.h>
+
+#include <utils/fsutil.h>
 #include <utils/concurrent_queue.h>
 
 #include "../assetsys/editor_asset.h"
@@ -24,9 +24,9 @@ public:
 		std::string name;
 
 		// Path to io node, relative to project root
-		std::filesystem::path path;
+		FS::Path path;
 
-		explicit IONode(const std::string& name, const std::filesystem::path& path) : id(++idCounter), name(name), path(path) {}
+		explicit IONode(const std::string& name, const FS::Path& path) : id(++idCounter), name(name), path(path) {}
 
 		virtual bool isFolder() = 0;
 		virtual ~IONode() = default;
@@ -36,7 +36,7 @@ public:
 		// Asset id associated with file
 		AssetID assetId;
 
-		explicit File(const std::string& name, const std::filesystem::path& path);
+		explicit File(const std::string& name, const FS::Path& path);
 		~File();
 
 		bool isFolder() override { return false; }
@@ -48,7 +48,7 @@ public:
 		uint32_t parentId;
 		bool expanded;
 
-		explicit Folder(std::string name, std::filesystem::path path, uint32_t parentId) : IONode(name, path), files(), subfolders(), parentId(parentId), expanded(false) {}
+		explicit Folder(std::string name, FS::Path path, uint32_t parentId) : IONode(name, path), files(), subfolders(), parentId(parentId), expanded(false) {}
 		~Folder() override {}
 
 		bool isFolder() override { return true; }
@@ -93,7 +93,7 @@ public:
 	void pollEvents();
 
 	// Updates the path of the project to observe
-	void setTarget(const std::filesystem::path& path);
+	void setTarget(const FS::Path& path);
 
 	// Returns the project structures root folder node
 	const std::shared_ptr<Folder>& rootNode();
@@ -109,13 +109,13 @@ private:
 	};
 
 	// Creates the root folder structure for a given path recursively
-	std::shared_ptr<Folder> createFolder(const std::filesystem::path& path, uint32_t parentId = 0);
+	std::shared_ptr<Folder> createFolder(const FS::Path& path, uint32_t parentId = 0);
 
 	// Finds a folder node given a relative path
-	std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const std::filesystem::path& relativePath, const std::shared_ptr<Folder>& currentFolder);
+	std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const FS::Path& relativePath, const std::shared_ptr<Folder>& currentFolder);
 
 	// Project root path being observed
-	std::filesystem::path target;
+	FS::Path target;
 
 	// Root node of project structure representation
 	std::shared_ptr<Folder> projectStructure;

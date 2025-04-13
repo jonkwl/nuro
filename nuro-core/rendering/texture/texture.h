@@ -37,7 +37,7 @@ public:
 	}
 
 	// Sets the textures type and path of texture source
-	void setSource(TextureType type, const path& sourcePath);
+	void setSource(TextureType type, const FS::Path& sourcePath);
 
 	// Returns the textures backend id
 	uint32_t backendId() const;
@@ -58,7 +58,7 @@ private:
 	TextureType type;
 
 	// Path of texture source
-	path sourcePath;
+	FS::Path sourcePath;
 
 	// Dynamic temporary texture data
 	unsigned char* data;

@@ -2,7 +2,6 @@
 
 #include <implot.h>
 #include <ImGuizmo.h>
-#include <filesystem>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
@@ -28,8 +27,6 @@
 #include "../ui/collection/IconsFontAwesome6.h"
 #include "../ui/windows/post_processing_window.h"
 #include "../ui/windows/resource_viewer_window.h"
-
-namespace fs = std::filesystem;
 
 namespace EditorUI {
 
@@ -65,7 +62,7 @@ namespace EditorUI {
 		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
 		
 		// Check if full iconpack exists
-		if (fs::exists(fs::path(EditorFontPath::iconsFull))) {
+		if (FS::exists(FS::Path(EditorFontPath::iconsFull))) {
 			gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::iconsFull, iconsFontSize, &iconsConfig, gIconRange);
 		}
 		// Load open source icons
@@ -99,7 +96,7 @@ namespace EditorUI {
 		//	
 
 		// Full iconpack exists, print warning
-		if (!fs::exists(fs::path(EditorFontPath::iconsFull))) {
+		if (!FS::exists(FS::Path(EditorFontPath::iconsFull))) {
 			Console::out::warning("Editor UI", "Licensed icons aren't available when cloned from the open source repository");
 		}
 

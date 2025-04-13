@@ -5,7 +5,6 @@
 
 #include <thread>
 #include <chrono>
-#include <filesystem>
 
 #include "../ui/editor_ui.h"
 #include "../testing/game_logic.h"
@@ -33,8 +32,6 @@
 #include <rendering/shadows/shadow_disk.h>
 #include <rendering/material/lit/lit_material.h>
 #include <rendering/transformation/transformation.h>
-
-namespace fs = std::filesystem;
 
 namespace Runtime {
 
@@ -226,7 +223,7 @@ namespace Runtime {
 		ApplicationContext::setVisible(true);
 
 		// Load example project
-		fs::path project = fs::current_path() / "examples" / "empty-project";
+		FS::Path project = FS::currentPath() / "examples" / "empty-project";
 		gProjectManager.load(project);
 
 		// Show welcome inspectable

@@ -2,18 +2,16 @@
 
 #include <vector>
 #include <sstream>
-#include <filesystem>
 #include <glad/glad.h>
 
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
+#include <utils/fsutil.h>
 #include <utils/console.h>
 #include <utils/string_helper.h>
 #include <rendering/transformation/transformation.h>
-
-namespace fs = std::filesystem;
 
 Model::Model() : sourcePath(),
 meshData(),
@@ -28,10 +26,10 @@ Model::~Model()
 	deleteBuffers();
 }
 
-void Model::setSource(const path& _sourcePath)
+void Model::setSource(const FS::Path& _sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(_sourcePath))
+	if (!FS::exists(_sourcePath))
 		Console::out::warning("Model", "Model source at '" + _sourcePath.string() + "' could not be found");
 
 	sourcePath = _sourcePath;

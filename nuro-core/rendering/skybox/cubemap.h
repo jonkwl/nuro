@@ -21,10 +21,10 @@ public:
 	}
 
 	// Sets cubemaps source to be cross layout
-	void setSource_Cross(const path& sourcePath);
+	void setSource_Cross(const FS::Path& sourcePath);
 
 	// Sets cubemaps source to be multiple individual faces
-	void setSource_Individual(const path& rightPath, const path& leftPath, const path& topPath, const path& bottomPath, const path& frontPath, const path& backPath);
+	void setSource_Individual(const FS::Path& rightPath, const FS::Path& leftPath, const FS::Path& topPath, const FS::Path& bottomPath, const FS::Path& frontPath, const FS::Path& backPath);
 
 	// Returns the backend id of the cubemap texture
 	uint32_t backendId() const;
@@ -40,7 +40,7 @@ private:
 		Type type = Type::CROSS;
 
 		// All image source paths associated with the cubemap
-		std::vector<path> paths;
+		std::vector<FS::Path> paths;
 	};
 
 	struct FaceData
@@ -75,10 +75,10 @@ private:
 
 private:
 	// Loads a cubemap by multiple faces in one file
-	void loadCrossCubemap(const path& sourcePath);
+	void loadCrossCubemap(const FS::Path& sourcePath);
 
 	// Loads an individual face for a cubemap
-	void loadIndividualFace(const path& sourcePath);
+	void loadIndividualFace(const FS::Path& sourcePath);
 
 	bool loadIoData();
 	void freeIoData();
@@ -95,5 +95,5 @@ private:
 	uint32_t _backendId;
 
 	// Loads given images data
-	ImageData loadImageData(const path& sourcePath);
+	ImageData loadImageData(const FS::Path& sourcePath);
 };

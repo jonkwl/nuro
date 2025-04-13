@@ -1,20 +1,16 @@
 #pragma once
 
 #include <string>
-#include <filesystem>
 #include <nlohmann/json.hpp>
+
+#include <utils/fsutil.h>
 
 #include "../project/project_observer.h"
 #include "../project/project_assets.h"
 
 struct Project {
 	// Root path of the project
-	std::filesystem::path path;
-
-	// Get relative path to project path
-	std::filesystem::path pathRelative(const std::filesystem::path& other) const {
-		return std::filesystem::relative(path, other);
-	}
+	FS::Path path;
 
 	// Configuration of the project
 	struct Config {
@@ -31,7 +27,7 @@ public:
 	void pollEvents();
 
 	// Loads the project located in the given directory
-	bool load(const std::filesystem::path& directory);
+	bool load(const FS::Path& directory);
 
 	// Returns the currently loaded project
 	const Project& project() const;

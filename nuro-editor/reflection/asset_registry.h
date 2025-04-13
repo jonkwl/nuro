@@ -5,7 +5,8 @@
 #include <vector>
 #include <optional>
 #include <functional>
-#include <filesystem>
+
+#include <utils/fsutil.h>
 
 #include "../assetsys/editor_asset.h"
 
@@ -34,6 +35,6 @@ namespace AssetRegistry {
 	const std::unordered_map<std::string, std::shared_ptr<AssetInfo>>& get();
 
 	// Fetches asset info by an asset path, nullptr if none
-	std::shared_ptr<AssetInfo> fetchByPath(const std::filesystem::path& path);
+	std::shared_ptr<AssetInfo> fetchByPath(const FS::Path& path);
 
 }

@@ -4,8 +4,6 @@
 
 #include <utils/console.h>
 
-namespace fs = std::filesystem;
-
 ProjectManager::ProjectManager() : _project(),
 _observer(),
 _assets() 
@@ -17,9 +15,9 @@ void ProjectManager::pollEvents()
 	_observer.pollEvents();
 }
 
-bool ProjectManager::load(const fs::path& directory)
+bool ProjectManager::load(const FS::Path& directory)
 {
-	if (!fs::exists(directory) || !fs::is_directory(directory)) {
+	if (!FS::exists(directory) || !FS::isDirectory(directory)) {
 		Console::out::error("Project", "Project path is invalid.", "Provided path was '" + directory.string() + "'");
 		return false;
 	}
@@ -28,7 +26,8 @@ bool ProjectManager::load(const fs::path& directory)
 	_project.path = directory;
 
 	// Ensure project configuration is valid
-	if (!ensureConfig()) return false;
+	if (!ensureConfig()) 
+		return false;
 
 	// Start observing project
 	_observer.setTarget(_project.path);
@@ -54,19 +53,12 @@ ProjectAssets& ProjectManager::assets()
 bool ProjectManager::ensureConfig()
 {
 	// Default configuration path
-	fs::path file_path = fs::path(_project.path) / ".project";
+	FS::Path configPath = FS::Path(_project.path) / ".project";
 
-	// Check project configuration file exists
-	if (fs::exists(file_path) && fs::is_regular_file(file_path)) return true;
-
-	// Configuration doens't exist, create it
-	std::ofstream file(file_path);
-	if (file.is_open()) {
-		Console::out::start("Project", "Created project configuration at '" + file_path.string() + "'");
+	// Touch configuration file
+	if (FS::touch(configPath)) 
 		return true;
-	}
-	else {
-		Console::out::error("Project", "Couldn't create project configuration.", "Tried to create it at '" + file_path.string() + "'");
-		return false;
-	}
+
+	Console::out::error("Project", "Couldn't locate or create project configuration.", "Tried to create it at '" + configPath.string() + "'");
+	return false;
 }

@@ -3,11 +3,9 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alext.h>
-#include <filesystem>
 
+#include <utils/fsutil.h>
 #include <utils/console.h>
-
-namespace fs = std::filesystem;
 
 AudioData::AudioData() : _sourcePath(),
 _monoSamples(nullptr),
@@ -20,7 +18,7 @@ AudioData::~AudioData()
 	free();
 }
 
-void AudioData::setSource(const path& sourcePath)
+void AudioData::setSource(const FS::Path& sourcePath)
 {
     _sourcePath = sourcePath;
 	validateSource();
@@ -192,7 +190,7 @@ AudioSamples* AudioData::multichannelSamples() const
     return _multichannelSamples;
 }
 
-const path& AudioData::sourcePath() const
+const FS::Path& AudioData::sourcePath() const
 {
     return _sourcePath;
 }
@@ -365,7 +363,7 @@ bool AudioData::fail(std::string info) const
 
 bool AudioData::validateSource() const
 {
-	if (!fs::exists(_sourcePath))
+	if (!FS::exists(_sourcePath))
 		return fail("Could not find audio file");
 	return true;
 }

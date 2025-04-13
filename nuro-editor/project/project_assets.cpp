@@ -3,21 +3,24 @@
 #include <chrono>
 
 #include <utils/console.h>
-#include <utils/fsutil.h>
 
+#include "../runtime/runtime.h"
 #include "../assetsys/texture_asset.h"
 #include "../reflection/asset_registry.h"
 
-namespace fs = std::filesystem;
-
-AssetID ProjectAssets::load(const fs::path& relativePath)
+AssetID ProjectAssets::load(const FS::Path& relativePath)
 {
+	FS::Path absolutePath = FS::Path(Runtime::projectManager().project().path) / relativePath;
+
 	// Try to fetch asset info
 	auto assetInfo = AssetRegistry::fetchByPath(relativePath);
-	if (!assetInfo) return 0;
+	if (!assetInfo) 
+		return 0;
 
-	// Create metadata file if it doesn't exist already
-	// ...
+	// Touch metadata file
+	FS::Path metaPath = absolutePath.string() + ".meta";
+	if (!FS::touch(metaPath))
+		return 0;
 
 	AssetID id = generateId();
 	// (Use id from the assets metadata if existing already later on)
@@ -35,14 +38,26 @@ AssetID ProjectAssets::load(const fs::path& relativePath)
 	return id;
 }
 
-void ProjectAssets::unload(AssetID id)
+void ProjectAssets::remove(AssetID id)
 {
+	// Try to find asset id
 	auto it = assets.find(id);
 	if (it == assets.end())
 		return;
+	AssetRef asset = it->second;
 
+	// Cache assets path
+	FS::Path relativePath = asset->_assetPath;
+	FS::Path absolutePath = FS::Path(Runtime::projectManager().project().path) / relativePath;
+
+	// Unloads asset and removes it
 	it->second->onUnload();
 	assets.erase(it);
+
+	// Delete assets metafile if existing
+	FS::Path metaPath = absolutePath.string() + ".meta";
+	if (FS::exists(metaPath))
+		FS::remove(metaPath);
 }
 
 bool ProjectAssets::reload(AssetID id)

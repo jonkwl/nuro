@@ -1,14 +1,10 @@
 #include "texture_asset.h"
 
-#include <filesystem>
-
 #include <rendering/icons/icon_pool.h>
 #include <rendering/texture/texture.h>
 
 #include "../ui/windows/insight_panel_window.h"
 #include "../ui/inspectables/texture_inspectable.h"
-
-namespace fs = std::filesystem;
 
 TextureAsset::TextureAsset()
 {
@@ -33,6 +29,9 @@ uint32_t TextureAsset::icon() const
 {
 	if (loading())
 		return IconPool::get("texture");
+
+	if (_assetResource->resourceState() == ResourceState::FAILED)
+		return IconPool::get("failed");
 
 	if (auto texture = std::dynamic_pointer_cast<Texture>(_assetResource))
 		return texture->backendId();

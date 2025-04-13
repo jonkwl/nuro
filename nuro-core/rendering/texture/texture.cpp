@@ -1,13 +1,11 @@
 #include "texture.h"
 
-#include <filesystem>
 #include <glad/glad.h>
 #include <stb_image.h>
 
+#include <utils/fsutil.h>
 #include <utils/console.h>
 #include <context/application_context.h>
-
-namespace fs = std::filesystem;
 
 uint32_t Texture::defaultTextureId = 0;
 
@@ -27,10 +25,10 @@ Texture::~Texture()
 	deleteBuffers();
 }
 
-void Texture::setSource(TextureType _type, const path& _sourcePath)
+void Texture::setSource(TextureType _type, const FS::Path& _sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(_sourcePath))
+	if (!FS::exists(_sourcePath))
 		Console::out::warning("Texture", "Texture source at '" + _sourcePath.string() + "' could not be found");
 
 	type = _type;
@@ -72,7 +70,8 @@ bool Texture::loadIoData()
 void Texture::freeIoData()
 {
 	// No data loaded
-	if (!data) return;
+	if (!data) 
+		return;
 
 	// Free memory allocated for image data
 	stbi_image_free(data);
@@ -83,7 +82,8 @@ void Texture::freeIoData()
 bool Texture::uploadBuffers()
 {
 	// Don't dispatch texture if there is no data
-	if (!data) return false;
+	if (!data) 
+		return false;
 
 	// Generate texture
 	glGenTextures(1, &_backendId);

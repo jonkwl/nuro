@@ -22,7 +22,7 @@ public:
 	}
 
 	// Sets the path of the shaders source
-	void setSource(const path& sourcePath);
+	void setSource(const FS::Path& sourcePath);
 
 	// Binds the shader program
 	void bind() const;
@@ -46,7 +46,7 @@ private:
 	};
 
 	// Path of shader source
-	path sourcePath;
+	FS::Path sourcePath;
 
 	// Shader source data
 	Data data;

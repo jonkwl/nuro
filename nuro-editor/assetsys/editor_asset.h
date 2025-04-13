@@ -2,7 +2,8 @@
 
 #include <vector>
 #include <cstdint>
-#include <filesystem>
+
+#include <utils/fsutil.h>
 
 #include <memory/resource_manager.h>
 
@@ -31,7 +32,7 @@ private:
 	AssetType _assetType;
 
 	// Path to asset relative to project root
-	std::filesystem::path _assetPath;
+	FS::Path _assetPath;
 
 	// List of assets this asset depends on
 	std::vector<AssetID> _assetDependencies;
@@ -56,7 +57,7 @@ public:
 	}
 
 	// Returns the path to the asset relative to project root path
-	std::filesystem::path path() const {
+	FS::Path path() const {
 		return _assetPath;
 	}
 
@@ -68,7 +69,7 @@ public:
 	// Returns if the asset is currently in a loading state
 	bool loading() const {
 		if (_assetResource)
-			return _assetResource->resourceState() != ResourceState::READY;
+			return _assetResource->resourceState() == ResourceState::LOADING || _assetResource->resourceState() == ResourceState::QUEUED;
 	}
 
 	// Event when the asset is first loaded within the editor

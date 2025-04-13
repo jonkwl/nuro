@@ -1,12 +1,10 @@
 #include "shader.h"
 
-#include <filesystem>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <utils/fsutil.h>
 #include <utils/console.h>
-
-namespace fs = std::filesystem;
 
 Shader::Shader() : sourcePath(),
 data(),
@@ -21,10 +19,10 @@ Shader::~Shader()
 	deleteBuffers();
 }
 
-void Shader::setSource(const path& _sourcePath)
+void Shader::setSource(const FS::Path& _sourcePath)
 {
 	// Validate source path
-	if (!fs::exists(_sourcePath))
+	if (!FS::exists(_sourcePath))
 		Console::out::warning("Shader", "Shader source at '" + _sourcePath.string() + "' could not be found");
 
 	sourcePath = _sourcePath;
@@ -126,8 +124,8 @@ bool Shader::programLinked(int32_t program)
 
 bool Shader::loadIoData()
 {
-	data.vertexSource = FSUtil::readFile(sourcePath / ".vert");
-	data.fragmentSource = FSUtil::readFile(sourcePath / ".frag");
+	data.vertexSource = FS::readFile(sourcePath / ".vert");
+	data.fragmentSource = FS::readFile(sourcePath / ".frag");
 
 	return true;
 }

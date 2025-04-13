@@ -9,13 +9,15 @@
 
 #include <utils/console.h>
 
-namespace FSUtil
+namespace sfs = std::filesystem;
+
+namespace FS
 {
 
-    std::string readFile(const fs::path& path)
+    std::string readFile(const sfs::path& path)
     {
         std::error_code ec;
-        if (!fs::exists(path, ec) || ec)
+        if (!sfs::exists(path, ec) || ec)
         {
             Console::out::warning("Filesystem", "Failed to find file: " + path.string());
             return "";
@@ -34,11 +36,11 @@ namespace FSUtil
         return buffer.str();
     }
 
-    std::vector<std::string> readFileLines(const fs::path& path)
+    std::vector<std::string> readFileLines(const sfs::path& path)
     {
         std::vector<std::string> lines;
         std::error_code ec;
-        if (!fs::exists(path, ec) || ec)
+        if (!sfs::exists(path, ec) || ec)
         {
             Console::out::warning("Filesystem", "Failed to find file: " + path.string());
             return lines;
@@ -60,14 +62,14 @@ namespace FSUtil
         return lines;
     }
 
-    bool writeFile(const fs::path& path, const std::string& content)
+    bool writeFile(const sfs::path& path, const std::string& content)
     {
         try
         {
             // Ensure parent directory exists
             std::error_code ec;
-            fs::path parent = path.parent_path();
-            if (!parent.empty() && !fs::exists(parent, ec))
+            sfs::path parent = path.parent_path();
+            if (!parent.empty() && !sfs::exists(parent, ec))
             {
                 if (!createDirectories(parent))
                 {
@@ -100,14 +102,14 @@ namespace FSUtil
         }
     }
 
-    bool appendToFile(const fs::path& path, const std::string& content)
+    bool appendToFile(const sfs::path& path, const std::string& content)
     {
         try
         {
             // Ensure parent directory exists
             std::error_code ec;
-            fs::path parent = path.parent_path();
-            if (!parent.empty() && !fs::exists(parent, ec))
+            sfs::path parent = path.parent_path();
+            if (!parent.empty() && !sfs::exists(parent, ec))
             {
                 if (!createDirectories(parent))
                 {
@@ -140,12 +142,12 @@ namespace FSUtil
         }
     }
 
-    bool copyFile(const fs::path& from, const fs::path& to, bool overwriteExisting)
+    bool copyFile(const sfs::path& from, const sfs::path& to, bool overwriteExisting)
     {
         std::error_code ec;
 
         // Check source exists
-        if (!fs::exists(from, ec))
+        if (!sfs::exists(from, ec))
         {
             Console::out::warning("Filesystem", "Source file does not exist: " + from.string());
             return false;
@@ -158,8 +160,8 @@ namespace FSUtil
         }
 
         // Create destination directory if needed
-        fs::path toParent = to.parent_path();
-        if (!toParent.empty() && !fs::exists(toParent, ec))
+        sfs::path toParent = to.parent_path();
+        if (!toParent.empty() && !sfs::exists(toParent, ec))
         {
             if (!createDirectories(toParent))
             {
@@ -168,11 +170,11 @@ namespace FSUtil
         }
 
         // Set copy options
-        fs::copy_options options = overwriteExisting ?
-            fs::copy_options::overwrite_existing :
-            fs::copy_options::none;
+        sfs::copy_options options = overwriteExisting ?
+            sfs::copy_options::overwrite_existing :
+            sfs::copy_options::none;
 
-        fs::copy_file(from, to, options, ec);
+        sfs::copy_file(from, to, options, ec);
 
         if (ec)
         {
@@ -183,10 +185,10 @@ namespace FSUtil
         return true;
     }
 
-    fs::path getAbsolutePath(const fs::path& path)
+    sfs::path getAbsolutePath(const sfs::path& path)
     {
         std::error_code ec;
-        fs::path result = fs::absolute(path, ec);
+        sfs::path result = sfs::absolute(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to get absolute path for " + path.string() + ": " + ec.message());
@@ -195,18 +197,18 @@ namespace FSUtil
         return result;
     }
 
-    fs::path getCanonicalPath(const fs::path& path)
+    sfs::path getCanonicalPath(const sfs::path& path)
     {
         std::error_code ec;
 
         // Check if path exists first (canonical requires existing path)
-        if (!fs::exists(path, ec))
+        if (!sfs::exists(path, ec))
         {
             Console::out::warning("Filesystem", "Cannot get canonical path, path does not exist: " + path.string());
             return getAbsolutePath(path); // Return absolute path as fallback
         }
 
-        fs::path result = fs::canonical(path, ec);
+        sfs::path result = sfs::canonical(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to get canonical path for " + path.string() + ": " + ec.message());
@@ -215,10 +217,10 @@ namespace FSUtil
         return result;
     }
 
-    fs::path getRelativePath(const fs::path& path, const fs::path& base)
+    sfs::path getRelativePath(const sfs::path& path, const sfs::path& base)
     {
         std::error_code ec;
-        fs::path result = fs::relative(path, base, ec);
+        sfs::path result = sfs::relative(path, base, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to get relative path from " + base.string() + " to " + path.string() + ": " + ec.message());
@@ -227,10 +229,10 @@ namespace FSUtil
         return result;
     }
 
-    bool exists(const fs::path& path)
+    bool exists(const sfs::path& path)
     {
         std::error_code ec;
-        bool result = fs::exists(path, ec);
+        bool result = sfs::exists(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Error checking if path exists " + path.string() + ": " + ec.message());
@@ -239,10 +241,10 @@ namespace FSUtil
         return result;
     }
 
-    bool isRegularFile(const fs::path& path)
+    bool isRegularFile(const sfs::path& path)
     {
         std::error_code ec;
-        bool result = fs::is_regular_file(path, ec);
+        bool result = sfs::is_regular_file(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Error checking if path is regular file " + path.string() + ": " + ec.message());
@@ -251,10 +253,10 @@ namespace FSUtil
         return result;
     }
 
-    bool isDirectory(const fs::path& path)
+    bool isDirectory(const sfs::path& path)
     {
         std::error_code ec;
-        bool result = fs::is_directory(path, ec);
+        bool result = sfs::is_directory(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Error checking if path is directory " + path.string() + ": " + ec.message());
@@ -263,10 +265,10 @@ namespace FSUtil
         return result;
     }
 
-    bool isSymlink(const fs::path& path)
+    bool isSymlink(const sfs::path& path)
     {
         std::error_code ec;
-        bool result = fs::is_symlink(path, ec);
+        bool result = sfs::is_symlink(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Error checking if path is symlink " + path.string() + ": " + ec.message());
@@ -275,11 +277,11 @@ namespace FSUtil
         return result;
     }
 
-    bool isEmpty(const fs::path& path)
+    bool isEmpty(const sfs::path& path)
     {
         std::error_code ec;
 
-        if (!fs::exists(path, ec))
+        if (!sfs::exists(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist when checking if empty: " + path.string());
             return true; // Non-existent path is considered empty
@@ -291,7 +293,7 @@ namespace FSUtil
             return true;
         }
 
-        if (fs::is_directory(path, ec))
+        if (sfs::is_directory(path, ec))
         {
             if (ec)
             {
@@ -300,9 +302,9 @@ namespace FSUtil
             }
 
             // Check if directory is empty
-            return fs::begin(fs::directory_iterator(path, ec)) == fs::end(fs::directory_iterator());
+            return sfs::begin(sfs::directory_iterator(path, ec)) == sfs::end(sfs::directory_iterator());
         }
-        else if (fs::is_regular_file(path, ec))
+        else if (sfs::is_regular_file(path, ec))
         {
             if (ec)
             {
@@ -311,17 +313,17 @@ namespace FSUtil
             }
 
             // Check if file is empty
-            return fs::file_size(path, ec) == 0;
+            return sfs::file_size(path, ec) == 0;
         }
 
         return true; // Other types (symlinks, etc.) are considered empty
     }
 
-    uintmax_t fileSize(const fs::path& path)
+    uintmax_t fileSize(const sfs::path& path)
     {
         std::error_code ec;
 
-        if (!fs::is_regular_file(path, ec))
+        if (!sfs::is_regular_file(path, ec))
         {
             if (ec)
             {
@@ -334,7 +336,7 @@ namespace FSUtil
             return 0;
         }
 
-        uintmax_t size = fs::file_size(path, ec);
+        uintmax_t size = sfs::file_size(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to get file size for " + path.string() + ": " + ec.message());
@@ -343,17 +345,17 @@ namespace FSUtil
         return size;
     }
 
-    std::optional<fs::file_time_type> getLastWriteTime(const fs::path& path)
+    std::optional<sfs::file_time_type> getLastWriteTime(const sfs::path& path)
     {
         std::error_code ec;
 
-        if (!fs::exists(path, ec))
+        if (!sfs::exists(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist when getting last write time: " + path.string());
             return std::nullopt;
         }
 
-        fs::file_time_type time = fs::last_write_time(path, ec);
+        sfs::file_time_type time = sfs::last_write_time(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to get last write time for " + path.string() + ": " + ec.message());
@@ -362,17 +364,17 @@ namespace FSUtil
         return time;
     }
 
-    bool setLastWriteTime(const fs::path& path, fs::file_time_type newTime)
+    bool setLastWriteTime(const sfs::path& path, sfs::file_time_type newTime)
     {
         std::error_code ec;
 
-        if (!fs::exists(path, ec))
+        if (!sfs::exists(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist when setting last write time: " + path.string());
             return false;
         }
 
-        fs::last_write_time(path, newTime, ec);
+        sfs::last_write_time(path, newTime, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to set last write time for " + path.string() + ": " + ec.message());
@@ -381,11 +383,11 @@ namespace FSUtil
         return true;
     }
 
-    bool createDirectory(const fs::path& path)
+    bool createDirectory(const sfs::path& path)
     {
         std::error_code ec;
 
-        bool result = fs::create_directory(path, ec);
+        bool result = sfs::create_directory(path, ec);
         if (ec && ec.value() != 0)  // Ignore if directory already exists
         {
             Console::out::warning("Filesystem", "Failed to create directory " + path.string() + ": " + ec.message());
@@ -394,11 +396,11 @@ namespace FSUtil
         return true;
     }
 
-    bool createDirectories(const fs::path& path)
+    bool createDirectories(const sfs::path& path)
     {
         std::error_code ec;
 
-        bool result = fs::create_directories(path, ec);
+        bool result = sfs::create_directories(path, ec);
         if (ec && ec.value() != 0)  // Ignore if directory already exists
         {
             Console::out::warning("Filesystem", "Failed to create directories " + path.string() + ": " + ec.message());
@@ -407,17 +409,17 @@ namespace FSUtil
         return true;
     }
 
-    bool remove(const fs::path& path)
+    bool remove(const sfs::path& path)
     {
         std::error_code ec;
 
-        if (!fs::exists(path, ec))
+        if (!sfs::exists(path, ec))
         {
             // Not an error if the file doesn't exist
             return true;
         }
 
-        bool result = fs::remove(path, ec);
+        bool result = sfs::remove(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to remove " + path.string() + ": " + ec.message());
@@ -426,17 +428,17 @@ namespace FSUtil
         return result;
     }
 
-    bool removeAll(const fs::path& path)
+    bool removeAll(const sfs::path& path)
     {
         std::error_code ec;
 
-        if (!fs::exists(path, ec))
+        if (!sfs::exists(path, ec))
         {
             // Not an error if the directory doesn't exist
             return true;
         }
 
-        uintmax_t count = fs::remove_all(path, ec);
+        uintmax_t count = sfs::remove_all(path, ec);
         if (ec)
         {
             Console::out::warning("Filesystem", "Failed to remove directory and contents " + path.string() + ": " + ec.message());
@@ -445,18 +447,18 @@ namespace FSUtil
         return true;
     }
 
-    std::vector<fs::path> getDirectoryEntries(const fs::path& path)
+    std::vector<sfs::path> getDirectoryEntries(const sfs::path& path)
     {
-        std::vector<fs::path> entries;
+        std::vector<sfs::path> entries;
         std::error_code ec;
 
-        if (!fs::exists(path, ec) || !fs::is_directory(path, ec))
+        if (!sfs::exists(path, ec) || !sfs::is_directory(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist or is not a directory: " + path.string());
             return entries;
         }
 
-        for (const auto& entry : fs::directory_iterator(path, ec))
+        for (const auto& entry : sfs::directory_iterator(path, ec))
         {
             if (ec)
             {
@@ -469,18 +471,18 @@ namespace FSUtil
         return entries;
     }
 
-    std::vector<fs::path> getFolders(const fs::path& path)
+    std::vector<sfs::path> getFolders(const sfs::path& path)
     {
-        std::vector<fs::path> folders;
+        std::vector<sfs::path> folders;
         std::error_code ec;
 
-        if (!fs::exists(path, ec) || !fs::is_directory(path, ec))
+        if (!sfs::exists(path, ec) || !sfs::is_directory(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist or is not a directory: " + path.string());
             return folders;
         }
 
-        for (const auto& entry : fs::directory_iterator(path, ec))
+        for (const auto& entry : sfs::directory_iterator(path, ec))
         {
             if (ec)
             {
@@ -488,7 +490,7 @@ namespace FSUtil
                 continue;
             }
 
-            if (fs::is_directory(entry, ec))
+            if (sfs::is_directory(entry, ec))
             {
                 if (ec)
                 {
@@ -502,18 +504,18 @@ namespace FSUtil
         return folders;
     }
 
-    std::vector<fs::path> getFiles(const fs::path& path)
+    std::vector<sfs::path> getFiles(const sfs::path& path)
     {
-        std::vector<fs::path> files;
+        std::vector<sfs::path> files;
         std::error_code ec;
 
-        if (!fs::exists(path, ec) || !fs::is_directory(path, ec))
+        if (!sfs::exists(path, ec) || !sfs::is_directory(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist or is not a directory: " + path.string());
             return files;
         }
 
-        for (const auto& entry : fs::directory_iterator(path, ec))
+        for (const auto& entry : sfs::directory_iterator(path, ec))
         {
             if (ec)
             {
@@ -521,7 +523,7 @@ namespace FSUtil
                 continue;
             }
 
-            if (fs::is_regular_file(entry, ec))
+            if (sfs::is_regular_file(entry, ec))
             {
                 if (ec)
                 {
@@ -535,12 +537,12 @@ namespace FSUtil
         return files;
     }
 
-    std::vector<fs::path> getFilesWithExtensions(const fs::path& path, const std::vector<fs::path>& extensions)
+    std::vector<sfs::path> getFilesWithExtensions(const sfs::path& path, const std::vector<sfs::path>& extensions)
     {
-        std::vector<fs::path> files;
+        std::vector<sfs::path> files;
         std::error_code ec;
 
-        if (!fs::exists(path, ec) || !fs::is_directory(path, ec))
+        if (!sfs::exists(path, ec) || !sfs::is_directory(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist or is not a directory: " + path.string());
             return files;
@@ -557,21 +559,21 @@ namespace FSUtil
                 lowerExtensions.push_back(extStr);
             }
 
-            fs::recursive_directory_iterator dirIter(path, fs::directory_options::skip_permission_denied, ec);
+            sfs::recursive_directory_iterator dirIter(path, sfs::directory_options::skip_permission_denied, ec);
             if (ec)
             {
                 Console::out::warning("Filesystem", "Error accessing directory: " + ec.message());
                 return files;
             }
 
-            fs::recursive_directory_iterator end;
+            sfs::recursive_directory_iterator end;
             while (dirIter != end)
             {
                 std::error_code iterEc;
 
-                if (fs::is_regular_file(*dirIter, iterEc) && !iterEc)
+                if (sfs::is_regular_file(*dirIter, iterEc) && !iterEc)
                 {
-                    fs::path filePath = dirIter->path();
+                    sfs::path filePath = dirIter->path();
                     std::string ext = filePath.extension().string();
                     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
@@ -606,17 +608,17 @@ namespace FSUtil
         return files;
     }
 
-    std::vector<fs::path> getFilesWithExtension(const fs::path& path, const fs::path& extension)
+    std::vector<sfs::path> getFilesWithExtension(const sfs::path& path, const sfs::path& extension)
     {
         return getFilesWithExtensions(path, { extension });
     }
 
-    std::vector<fs::path> getFilesMatching(const fs::path& path, const std::string& pattern, bool recursive)
+    std::vector<sfs::path> getFilesMatching(const sfs::path& path, const std::string& pattern, bool recursive)
     {
-        std::vector<fs::path> files;
+        std::vector<sfs::path> files;
         std::error_code ec;
 
-        if (!fs::exists(path, ec) || !fs::is_directory(path, ec))
+        if (!sfs::exists(path, ec) || !sfs::is_directory(path, ec))
         {
             Console::out::warning("Filesystem", "Path does not exist or is not a directory: " + path.string());
             return files;
@@ -637,19 +639,19 @@ namespace FSUtil
             // Choose directory iterator based on recursive flag
             if (recursive)
             {
-                fs::recursive_directory_iterator dirIter(path, fs::directory_options::skip_permission_denied, ec);
+                sfs::recursive_directory_iterator dirIter(path, sfs::directory_options::skip_permission_denied, ec);
                 if (ec)
                 {
                     Console::out::warning("Filesystem", "Error accessing directory: " + path.string() + ": " + ec.message());
                     return files;
                 }
 
-                fs::recursive_directory_iterator end;
+                sfs::recursive_directory_iterator end;
                 while (dirIter != end)
                 {
                     std::error_code iterEc;
 
-                    if (fs::is_regular_file(*dirIter, iterEc) && !iterEc)
+                    if (sfs::is_regular_file(*dirIter, iterEc) && !iterEc)
                     {
                         std::string filename = dirIter->path().filename().string();
                         if (std::regex_match(filename, re))
@@ -673,7 +675,7 @@ namespace FSUtil
             }
             else
             {
-                fs::directory_iterator dirIter(path, ec);
+                sfs::directory_iterator dirIter(path, ec);
                 if (ec)
                 {
                     Console::out::warning("Filesystem", "Error accessing directory: " + path.string() + ": " + ec.message());
@@ -684,7 +686,7 @@ namespace FSUtil
                 {
                     std::error_code iterEc;
 
-                    if (fs::is_regular_file(entry, iterEc) && !iterEc)
+                    if (sfs::is_regular_file(entry, iterEc) && !iterEc)
                     {
                         std::string filename = entry.path().filename().string();
                         if (std::regex_match(filename, re))
@@ -703,6 +705,422 @@ namespace FSUtil
         return files;
     }
 
-    // PATH MODIFICATION TO BE DONE
+    bool rename(const sfs::path& from, const sfs::path& to)
+    {
+        std::error_code ec;
+
+        if (!sfs::exists(from, ec))
+        {
+            Console::out::warning("Filesystem", "Source path does not exist: " + from.string());
+            return false;
+        }
+
+        // Create parent directory if it doesn't exist
+        sfs::path toParent = to.parent_path();
+        if (!toParent.empty() && !sfs::exists(toParent, ec))
+        {
+            if (!createDirectories(toParent))
+            {
+                return false;
+            }
+        }
+
+        sfs::rename(from, to, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to rename " + from.string() + " to " + to.string() + ": " + ec.message());
+            return false;
+        }
+
+        return true;
+    }
+
+    bool createSymlink(const sfs::path& target, const sfs::path& link)
+    {
+        std::error_code ec;
+
+        // Create parent directory if it doesn't exist
+        sfs::path linkParent = link.parent_path();
+        if (!linkParent.empty() && !sfs::exists(linkParent, ec))
+        {
+            if (!createDirectories(linkParent))
+            {
+                return false;
+            }
+        }
+
+        sfs::create_symlink(target, link, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to create symlink from " + link.string() + " to " + target.string() + ": " + ec.message());
+            return false;
+        }
+
+        return true;
+    }
+
+    bool createHardLink(const sfs::path& target, const sfs::path& link)
+    {
+        std::error_code ec;
+
+        if (!sfs::exists(target, ec))
+        {
+            Console::out::warning("Filesystem", "Target file does not exist: " + target.string());
+            return false;
+        }
+
+        // Create parent directory if it doesn't exist
+        sfs::path linkParent = link.parent_path();
+        if (!linkParent.empty() && !sfs::exists(linkParent, ec))
+        {
+            if (!createDirectories(linkParent))
+            {
+                return false;
+            }
+        }
+
+        sfs::create_hard_link(target, link, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to create hard link from " + link.string() + " to " + target.string() + ": " + ec.message());
+            return false;
+        }
+
+        return true;
+    }
+
+    bool createDirectorySymlink(const sfs::path& target, const sfs::path& link)
+    {
+        std::error_code ec;
+
+        // Create parent directory if it doesn't exist
+        sfs::path linkParent = link.parent_path();
+        if (!linkParent.empty() && !sfs::exists(linkParent, ec))
+        {
+            if (!createDirectories(linkParent))
+            {
+                return false;
+            }
+        }
+
+        sfs::create_directory_symlink(target, link, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to create directory symlink from " + link.string() + " to " + target.string() + ": " + ec.message());
+            return false;
+        }
+
+        return true;
+    }
+
+    sfs::path readSymlink(const sfs::path& path)
+    {
+        std::error_code ec;
+
+        if (!sfs::exists(path, ec))
+        {
+            Console::out::warning("Filesystem", "Symlink does not exist: " + path.string());
+            return sfs::path();
+        }
+
+        if (!sfs::is_symlink(path, ec))
+        {
+            Console::out::warning("Filesystem", "Path is not a symlink: " + path.string());
+            return sfs::path();
+        }
+
+        sfs::path target = sfs::read_symlink(path, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to read symlink " + path.string() + ": " + ec.message());
+            return sfs::path();
+        }
+
+        return target;
+    }
+
+    sfs::path currentPath()
+    {
+        std::error_code ec;
+        sfs::path result = sfs::current_path(ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get current path: " + ec.message());
+            return sfs::path();
+        }
+        return result;
+    }
+
+    bool setCurrentPath(const sfs::path& path)
+    {
+        std::error_code ec;
+
+        if (!sfs::exists(path, ec))
+        {
+            Console::out::warning("Filesystem", "Path does not exist: " + path.string());
+            return false;
+        }
+
+        sfs::current_path(path, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to set current path to " + path.string() + ": " + ec.message());
+            return false;
+        }
+
+        return true;
+    }
+
+    // Space Info
+    // ---------
+
+    uintmax_t getFreeSpace(const sfs::path& path)
+    {
+        std::error_code ec;
+
+        sfs::space_info space = sfs::space(path, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get space info for " + path.string() + ": " + ec.message());
+            return 0;
+        }
+
+        return space.free;
+    }
+
+    uintmax_t getTotalSpace(const sfs::path& path)
+    {
+        std::error_code ec;
+
+        sfs::space_info space = sfs::space(path, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get space info for " + path.string() + ": " + ec.message());
+            return 0;
+        }
+
+        return space.capacity;
+    }
+
+    uintmax_t getAvailableSpace(const sfs::path& path)
+    {
+        std::error_code ec;
+
+        sfs::space_info space = sfs::space(path, ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get space info for " + path.string() + ": " + ec.message());
+            return 0;
+        }
+
+        return space.available;
+    }
+
+    // Temp Directories
+    // ---------------
+
+    sfs::path getTempDirectory()
+    {
+        std::error_code ec;
+        sfs::path temp = sfs::temp_directory_path(ec);
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get temp directory path: " + ec.message());
+            return sfs::path();
+        }
+        return temp;
+    }
+
+    sfs::path createTempDirectory(const sfs::path& model)
+    {
+        std::error_code ec;
+        sfs::path tempDir = sfs::temp_directory_path(ec);
+
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get temp directory path: " + ec.message());
+            return sfs::path();
+        }
+
+        // Generate a random string for the directory name
+        std::string dirTemplate = model.string();
+
+        // For safety, ensure the template contains at least one % for randomization
+        if (dirTemplate.find('%') == std::string::npos)
+        {
+            dirTemplate += "-%%%%";
+        }
+
+        // Replace % with random chars
+        static const char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, sizeof(alphanum) - 2);
+
+        for (size_t i = 0; i < dirTemplate.length(); ++i)
+        {
+            if (dirTemplate[i] == '%')
+            {
+                dirTemplate[i] = alphanum[dis(gen)];
+            }
+        }
+
+        sfs::path fullPath = tempDir / dirTemplate;
+
+        // Ensure directory doesn't already exist
+        if (sfs::exists(fullPath, ec))
+        {
+            Console::out::warning("Filesystem", "Temp directory already exists, generating new name");
+            return createTempDirectory(model); // Recursively try again
+        }
+
+        // Create the directory
+        if (!createDirectory(fullPath))
+        {
+            return sfs::path();
+        }
+
+        return fullPath;
+    }
+
+    sfs::path createTempFilename(const sfs::path& model)
+    {
+        std::error_code ec;
+        sfs::path tempDir = sfs::temp_directory_path(ec);
+
+        if (ec)
+        {
+            Console::out::warning("Filesystem", "Failed to get temp directory path: " + ec.message());
+            return sfs::path();
+        }
+
+        // Generate a random string for the filename
+        std::string fileTemplate = model.string();
+
+        // For safety, ensure the template contains at least one % for randomization
+        if (fileTemplate.find('%') == std::string::npos)
+        {
+            fileTemplate += "-%%%%";
+        }
+
+        // Replace % with random chars
+        static const char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, sizeof(alphanum) - 2);
+
+        for (size_t i = 0; i < fileTemplate.length(); ++i)
+        {
+            if (fileTemplate[i] == '%')
+            {
+                fileTemplate[i] = alphanum[dis(gen)];
+            }
+        }
+
+        sfs::path fullPath = tempDir / fileTemplate;
+
+        // Ensure file doesn't already exist
+        if (sfs::exists(fullPath, ec))
+        {
+            return createTempFilename(model); // Recursively try again
+        }
+
+        return fullPath;
+    }
+
+    // Path Normalization
+    // -----------------
+
+    sfs::path normalizeSeparators(const sfs::path& path)
+    {
+        std::string pathStr = path.string();
+
+        // Replace all forward slashes with preferred separator
+        char nativeSep = sfs::path::preferred_separator;
+        for (size_t i = 0; i < pathStr.length(); ++i)
+        {
+            if (pathStr[i] == '/' || pathStr[i] == '\\')
+            {
+                pathStr[i] = nativeSep;
+            }
+        }
+
+        // Replace double separators with single ones
+        std::string doubleSep(2, nativeSep);
+        std::string singleSep(1, nativeSep);
+        size_t pos = 0;
+        while ((pos = pathStr.find(doubleSep, pos)) != std::string::npos)
+        {
+            pathStr.replace(pos, 2, singleSep);
+        }
+
+        return sfs::path(pathStr);
+    }
+
+    bool touch(const sfs::path& path)
+    {
+        std::error_code ec;
+
+        // If file exists, update timestamp
+        if (sfs::exists(path, ec))
+        {
+            auto now = sfs::file_time_type::clock::now();
+            sfs::last_write_time(path, now, ec);
+            if (ec)
+            {
+                Console::out::warning("Filesystem", "Failed to update timestamp for " + path.string() + ": " + ec.message());
+                return false;
+            }
+            return true;
+        }
+
+        // Otherwise create empty file
+        // Ensure parent directory exists
+        sfs::path parent = path.parent_path();
+        if (!parent.empty() && !sfs::exists(parent, ec))
+        {
+            if (!createDirectories(parent))
+            {
+                return false;
+            }
+        }
+
+        // Create empty file
+        std::ofstream file(path);
+        if (!file.is_open())
+        {
+            Console::out::warning("Filesystem", "Failed to create file " + path.string());
+            return false;
+        }
+        file.close();
+
+        return true;
+    }
+
+    bool hasExtension(const sfs::path& path, const sfs::path& extension)
+    {
+        std::string pathExt = path.extension().string();
+        std::string checkExt = extension.string();
+
+        // Ensure extension starts with a dot if not already
+        if (!checkExt.empty() && checkExt[0] != '.')
+        {
+            checkExt = "." + checkExt;
+        }
+
+        // Convert both to lowercase for case-insensitive comparison
+        std::transform(pathExt.begin(), pathExt.end(), pathExt.begin(), ::tolower);
+        std::transform(checkExt.begin(), checkExt.end(), checkExt.begin(), ::tolower);
+
+        return pathExt == checkExt;
+    }
 
 }

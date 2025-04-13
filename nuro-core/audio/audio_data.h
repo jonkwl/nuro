@@ -24,7 +24,7 @@ public:
 	~AudioData();
 
 	// Sets the path of the audio source file
-	void setSource(const path& sourcePath);
+	void setSource(const FS::Path& sourcePath);
 
 	// Loads the audio data from the current source and sets audio info
 	bool load(AudioInfo& info);
@@ -39,7 +39,7 @@ public:
 	AudioSamples* multichannelSamples() const;
 
 	// Returns the current audio source file path
-	const path& sourcePath() const;
+	const FS::Path& sourcePath() const;
 
 private:
 	// Decodes an audio stream into pcm samples, target layout and format provided by samples reference
@@ -57,7 +57,7 @@ private:
 	// Validates the current source path
 	bool validateSource() const;
 
-	path _sourcePath;
+	FS::Path _sourcePath;
 
 	AudioSamples* _monoSamples;
 	AudioSamples* _multichannelSamples;
