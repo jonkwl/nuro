@@ -91,7 +91,7 @@ void AudioContext::update()
 
 	// Apply first audio listener
 	auto audioListeners = ECS::main().view<TransformComponent, AudioListenerComponent>();
-	for (auto& [entity, transform, audioListener] : audioListeners.each()) {
+	for (auto [entity, transform, audioListener] : audioListeners.each()) {
 		// Only use audio listener if its enabled
 		if (!audioListener.enabled) break;
 		 
@@ -112,7 +112,7 @@ void AudioContext::update()
 
 	// Update audio sources
 	auto audioSources = ECS::main().view<TransformComponent, AudioSourceComponent>();
-	for (auto& [entity, transform, audioSource] : audioSources.each()) {
+	for (auto [entity, transform, audioSource] : audioSources.each()) {
 		// Skip audio source if it isn't spatial
 		if (!audioSource.isSpatial) continue;
 

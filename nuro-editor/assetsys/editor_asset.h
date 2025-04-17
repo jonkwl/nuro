@@ -1,9 +1,12 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <cstdint>
 
 #include <utils/fsutil.h>
+
+#include "asset_meta.h"
 
 class ProjectAssets;
 
@@ -60,7 +63,7 @@ public:
 	}
 
 	// Returns the editor assets dependencies
-	const std::vector<uint32_t>& dependencies() const {
+	const std::vector<AssetID>& dependencies() const {
 		return _assetDependencies;
 	}
 
@@ -70,7 +73,7 @@ public:
 	}
 
 	// Event when the asset is first loaded within the editor
-	virtual void onDefaultLoad() = 0;
+	virtual void onDefaultLoad(const FS::Path& metaPath) = 0;
 
 	// Event when the asset is unloaded or destroyed within the editor
 	virtual void onUnload() = 0;

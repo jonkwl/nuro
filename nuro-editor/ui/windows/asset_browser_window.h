@@ -59,7 +59,10 @@ private:
 	void evaluateInputs();
 
 	// Opens an io node using the system default application
-	void openNode(const NodeRef& node);
+	void openNodeInApplication(const NodeRef& node);
+
+	// Opens an io nodes path using the system default explorer
+	void openNodeInExplorer(const NodeRef& node);
 
 	// Selects a folder by its io node id
 	void selectFolder(uint32_t folderId);

@@ -5,8 +5,35 @@
 #include <utils/console.h>
 
 #include "../runtime/runtime.h"
+#include "../assetsys/asset_meta.h"
 #include "../assetsys/texture_asset.h"
 #include "../reflection/asset_registry.h"
+
+// tmp
+bool _safeGUIDParse(const std::string& str, uint32_t& out) {
+	try {
+		size_t idx = 0;
+		unsigned long val = std::stoul(str, &idx, 10);
+
+		if (idx != str.length()) {
+			return false;
+		}
+
+		if (val > std::numeric_limits<uint32_t>::max()) {
+			return false;
+		}
+
+		out = static_cast<uint32_t>(val);
+		return true;
+
+	}
+	catch (const std::invalid_argument& e) {
+		return false;
+	}
+	catch (const std::out_of_range& e) {
+		return false;
+	}
+}
 
 AssetID ProjectAssets::load(const FS::Path& relativePath)
 {
@@ -17,20 +44,45 @@ AssetID ProjectAssets::load(const FS::Path& relativePath)
 	if (!assetInfo) 
 		return 0;
 
-	// Touch metadata file
-	FS::Path metaPath = absolutePath.string() + ".meta";
-	if (!FS::touch(metaPath))
-		return 0;
+	//
+	// METADATA
+	//
 
-	AssetID id = generateId();
-	// (Use id from the assets metadata if existing already later on)
+	FS::Path metaPath = absolutePath.string() + ".meta";
+	AssetID id = 0;
+
+	// Metadata doesn't exist yet, create metadata header
+	if (!FS::exists(metaPath)) {
+
+		AssetID newId = generateId();
+		AssetGUID newGuid = std::to_string(newId);
+
+		// Create metadata file
+		if (!FS::touch(metaPath))
+			return 0;
+
+		// Write metadata header
+		if (!FS::writeFile(metaPath, AssetMeta::createHeader(newGuid)))
+			return 0;
+
+		id = newId;
+	}
+	// Metadata exists already, fetch guid from metadata
+	else {
+		AssetGUID guid = AssetMeta::parseGUID(metaPath);
+		if (!_safeGUIDParse(guid, id))
+			return 0;
+	}
+
+	// Ensure id was parsed or generated
+	if (!id) return 0;
 
 	// Create instance of asset
 	auto asset = assetInfo->createInstance();
 	asset->_assetId = id;
 	asset->_assetType = assetInfo->type;
 	asset->_assetPath = relativePath;
-	asset->onDefaultLoad();
+	asset->onDefaultLoad(metaPath);
 
 	// Register asset
 	assets[id] = asset;

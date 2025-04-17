@@ -6,6 +6,11 @@
 
 #include <utils/fsutil.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#include <shellapi.h>
+#endif
+
 #include "../reflection/asset_registry.h"
 #include "../ui/windows/insight_panel_window.h"
 
@@ -118,7 +123,7 @@ void AssetBrowserWindow::evaluateInputs()
 	assetScale = glm::mix(assetScale, targetAssetScale, assetScaleSmoothing * Time::deltaf());
 }
 
-void AssetBrowserWindow::openNode(const NodeRef& node)
+void AssetBrowserWindow::openNodeInApplication(const NodeRef& node)
 {
 	FS::Path projectPath = Runtime::projectManager().project().path;
 	FS::Path nodePath = node->path;
@@ -136,6 +141,68 @@ void AssetBrowserWindow::openNode(const NodeRef& node)
 
 	if (!command.empty())
 		std::system(command.c_str());
+}
+
+void AssetBrowserWindow::openNodeInExplorer(const NodeRef& node)
+{
+	// Target path is the nodes parent directory
+	FS::Path path = node->path.parent_path();
+
+	// Check if path exists
+	if (!std::filesystem::exists(path)) {
+		Console::out::warning("Asset Browser", "Couldn't open invalid path in explorer: '" + path.string() + "'");
+		return;
+	}
+
+	bool success = false;
+
+#ifdef _WIN32
+	std::wstring wpath = path.wstring();
+	SHELLEXECUTEINFOW shellExecuteInfo = { 0 };
+	shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
+	shellExecuteInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	shellExecuteInfo.lpVerb = L"explore";
+	shellExecuteInfo.lpFile = wpath.c_str();
+	shellExecuteInfo.nShow = SW_SHOW;
+
+	success = ShellExecuteExW(&shellExecuteInfo) != 0;
+
+#elif defined(__APPLE__)
+	std::string command = "open \"" + path.string() + "\"";
+	int result = std::system(command.c_str());
+	success = (result == 0);
+
+#else
+	std::string command;
+	std::string quoted_path = "\"" + path.string() + "\"";
+	// Try different file managers
+	command = "xdg-open " + quoted_path;
+	int result = std::system(command.c_str());
+
+	if (result != 0) {
+		const char* fileManagers[] = {
+			"nautilus", // GNOME
+			"dolphin", // KDE
+			"thunar", // XFCE
+			"pcmanfm", // LXDE
+			"caja", // MATE
+			"nemo" // Cinnamon
+		};
+
+		for (const auto& manager : fileManagers) {
+			command = std::string(manager) + " " + quoted_path;
+			result = std::system(command.c_str());
+			if (result == 0) {
+				break;
+			}
+		}
+	}
+
+	success = (result == 0);
+#endif
+
+	if (!success)
+		Console::out::warning("Asset Browser", "Couldn't open path in explorer: '" + path.string() + "'");
 }
 
 void AssetBrowserWindow::selectFolder(uint32_t folderId)
@@ -491,6 +558,7 @@ bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	bool hovered = ImGui::IsMouseHoveringRect(p0, p1);
 	bool clicked = hovered && ImGui::IsMouseDown(0);
 	bool doubleclicked = hovered && ImGui::IsMouseDoubleClicked(0);
+	bool middleclicked = hovered && ImGui::IsMouseDown(2);
 	bool selected = node->id == selectedNode;
 	bool isFolder = node->isFolder();
 	bool loading = false;
@@ -504,10 +572,12 @@ bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	AssetID assetId = 0;
 	if (!isFolder) {
 		auto file = std::dynamic_pointer_cast<ProjectObserver::File>(node);
-		if (!file) return false;
+		if (!file) 
+			return false;
 
 		// Don't render node if file isn't linked to asset
-		if (!file->assetId) return false;
+		if (!file->assetId) 
+			return false;
 		assetId = file->assetId;
 	}
 
@@ -541,7 +611,7 @@ bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 
 		// Open asset if double clicked
 		else
-			openNode(node);
+			openNodeInApplication(node);
 	}
 
 	//
@@ -563,6 +633,14 @@ bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 			}
 		}
 	}
+
+	//
+	// HANDLE MIDDLECLICK
+	//
+
+	// Check if node was middleclicked to open it in the explorer
+	if (middleclicked)
+		openNodeInExplorer(node);
 
 	//
 	// DRAW ICON

@@ -39,7 +39,7 @@ public:
 
 		// Create and return resource
 		ResourceID id = ++idCounter;
-		auto& result = resources.emplace(id, std::make_shared<T>(std::forward<Args>(args)...));
+		const auto& result = resources.emplace(id, std::make_shared<T>(std::forward<Args>(args)...));
 		auto& resource = result.first->second;
 		resource->_resourceId = id;
 		resource->_resourceName = name;

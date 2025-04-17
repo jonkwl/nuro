@@ -53,6 +53,14 @@ namespace EditorUI {
 	int32_t gOverwriteCursorType = CursorType::DEFAULT; // Type of cursor if overwriting default cursor
 	int32_t gOverwriteCursorMode = CursorMode::NORMAL; // Mode of cursor if overwriting default cursor
 
+
+	// Adds a window to the editor
+	template <typename T, typename... Args>
+	void _addWindow(Args&&... args) {
+		static_assert(std::is_base_of<EditorWindow, T>::value, "Only classes that derive from EditorWindow can be added to the editor!");
+		gWindows.emplace_back(new T(std::forward<Args>(args)...));
+	}
+
 	void _mergeIcons(ImGuiIO& io, float fontSize) {
 		float iconsFontSize = fontSize * 2.0f / 3.0f;
 
@@ -228,16 +236,16 @@ namespace EditorUI {
 		// ADD DEFAULT EDITOR WINDOWS
 		//
 
-		addWindow<ViewportWindow>();
-		addWindow<GameWindow>();
-		addWindow<PostProcessingWindow>(Runtime::gameViewPipeline().getProfile());
-		addWindow<DiagnosticsWindow>();
-		addWindow<ConsoleWindow>();
-		addWindow<RegistryWindow>();
-		addWindow<InsightPanelWindow>();
-		addWindow<AssetBrowserWindow>();
-		addWindow<ResourceViewerWindow>();
-		addWindow<AudioSetupWindow>();
+		_addWindow<ViewportWindow>();
+		_addWindow<GameWindow>();
+		_addWindow<PostProcessingWindow>(Runtime::gameViewPipeline().getProfile());
+		_addWindow<DiagnosticsWindow>();
+		_addWindow<ConsoleWindow>();
+		_addWindow<RegistryWindow>();
+		_addWindow<InsightPanelWindow>();
+		_addWindow<AssetBrowserWindow>();
+		_addWindow<ResourceViewerWindow>();
+		_addWindow<AudioSetupWindow>();
 
 		//
 		// SETUP WINDOW ELEMENTS

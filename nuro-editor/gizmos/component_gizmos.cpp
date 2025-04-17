@@ -77,7 +77,7 @@ namespace ComponentGizmos {
 		glm::vec3 sourcePosition = Transform::getPosition(transform, Space::WORLD);
 		bool listenerIntersecting = false;
 		auto audioListeners = ECS::main().view<TransformComponent, AudioListenerComponent>();
-		for (auto& [entity, listenerTransform, audioListener] : audioListeners.each()) {
+		for (auto [entity, listenerTransform, audioListener] : audioListeners.each()) {
 			if (!audioListener.enabled) break;
 
 			glm::vec3 listenerPosition = Transform::getPosition(listenerTransform, Space::WORLD);

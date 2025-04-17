@@ -151,6 +151,7 @@ target_link_libraries(${PROJECT_NAME}
 		glfw
 		${FFMPEG_LIBRARIES}
 		OpenAL::OpenAL
+		reflectcpp::reflectcpp
 )
 
 if (MSVC)

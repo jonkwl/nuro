@@ -33,7 +33,7 @@ namespace IconPool {
 			if (gIcons.find(identifier) != gIcons.end()) continue;
 
 			// Create icon texture
-			auto& [textureId, texture] = resource.create<Texture>(identifier + "_icon");
+			auto [textureId, texture] = resource.create<Texture>(identifier + "_icon");
 			texture->setSource(TextureType::IMAGE, file);
 
 			// Insert new icon
@@ -78,7 +78,7 @@ namespace IconPool {
 	{
 		ResourceManager& resource = ApplicationContext::resourceManager();
 
-		auto& [textureId, texture] = resource.create<Texture>("fallback-icon");
+		auto [textureId, texture] = resource.create<Texture>("fallback-icon");
 		gInvalidIcon = texture;
 		gInvalidIcon->setSource(TextureType::IMAGE, path);
 

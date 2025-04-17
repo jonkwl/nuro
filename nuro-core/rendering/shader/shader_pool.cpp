@@ -38,7 +38,7 @@ namespace ShaderPool {
 			if (gShaders.find(identifier) != gShaders.end()) continue;
 
 			// Create new shader and set its source
-			auto& [shaderId, shader] = resource.create<Shader>(identifier + "_shader");
+			auto [shaderId, shader] = resource.create<Shader>(identifier + "_shader");
 			shader->setSource(shaderPaths[i]);
 
 			// Load shader

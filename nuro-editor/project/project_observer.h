@@ -112,7 +112,7 @@ private:
 	std::shared_ptr<Folder> createFolder(const FS::Path& path, uint32_t parentId = 0);
 
 	// Finds a folder node given a relative path
-	std::shared_ptr<ProjectObserver::Folder> ProjectObserver::findFolder(const FS::Path& relativePath, const std::shared_ptr<Folder>& currentFolder);
+	std::shared_ptr<ProjectObserver::Folder> findFolder(const FS::Path& relativePath, const std::shared_ptr<Folder>& currentFolder);
 
 	// Project root path being observed
 	FS::Path target;

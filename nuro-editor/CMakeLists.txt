@@ -1,6 +1,7 @@
 project(nuro-editor)
 
 set(SOURCE_FILES 
+	assetsys/asset_meta.h
 	assetsys/editor_asset.h
 	assetsys/texture_asset.h
 	pipelines/game_view_pipeline.h
@@ -47,6 +48,7 @@ set(SOURCE_FILES
 	ui/search/search_popup.h
 
 	main.cpp
+	assetsys/asset_meta.cpp
 	assetsys/texture_asset.cpp
 	pipelines/game_view_pipeline.cpp
 	pipelines/preview_pipeline.cpp
@@ -113,7 +115,6 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		nuro::core
 		glm::glm
-		nlohmann_json::nlohmann_json
 		efsw::efsw
 )
 

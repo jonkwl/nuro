@@ -10,6 +10,7 @@
 		"nlohmann-json",
 		"ffmpeg",
 		"openal-soft",
-		"efsw"
+		"efsw",
+		"reflectcpp"
 	]
 }
