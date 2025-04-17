@@ -5,14 +5,14 @@
 #include <glm/glm.hpp>
 
 #include <utils/console.h>
-#include <ecs/reflection.h>
+#include <ecs/ecs_reflection.h>
 #include <audio/audio_context.h>
 #include <transform/transform.h>
 
 ECS::ECS() : registry(), idCounter(0), renderQueue()
 {
-	// Setup component reflection
-	Reflection::setup();
+	// Setup ecs component reflection
+	ECSReflection::registerAll();
 
 	// Register mesh renderer events
 	registry.on_construct<MeshRendererComponent>().connect<&ECS::insertMeshRenderer>(this);

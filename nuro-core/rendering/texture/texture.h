@@ -9,6 +9,7 @@
 enum class TextureType
 {
 	EMPTY,
+	IMAGE,
 
 	ALBEDO,
 	ROUGHNESS,
@@ -17,9 +18,6 @@ enum class TextureType
 	OCCLUSION,
 	EMISSIVE,
 	HEIGHT,
-
-	IMAGE_RGB,
-	IMAGE_RGBA,
 };
 
 class Texture : public Resource

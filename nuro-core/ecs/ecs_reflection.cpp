@@ -1,4 +1,4 @@
-#include "reflection.h"
+#include "ecs_reflection.h"
 
 #include <string>
 #include <entt/entt.hpp>
@@ -7,17 +7,9 @@
 
 using namespace entt::literals;
 
-namespace Reflection {
+namespace ECSReflection {
 
-	struct ComponentMeta {
-		std::string name;
-
-		ComponentMeta(std::string name) :
-			name(name)
-		{};
-	};
-
-	void setup() {
+	void registerAll() {
 
 		//
 		// TRANSFORM COMPONENT 

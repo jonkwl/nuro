@@ -32,12 +32,9 @@ namespace IconPool {
 			// Skip icon creation if it already exists
 			if (gIcons.find(identifier) != gIcons.end()) continue;
 
-			// Get icon texture type
-			TextureType type = file.extension() == ".png" ? TextureType::IMAGE_RGBA : TextureType::IMAGE_RGB;
-
 			// Create icon texture
 			auto& [textureId, texture] = resource.create<Texture>(identifier + "_icon");
-			texture->setSource(type, file);
+			texture->setSource(TextureType::IMAGE, file);
 
 			// Insert new icon
 			gIcons.insert({ identifier, texture });
@@ -83,7 +80,7 @@ namespace IconPool {
 
 		auto& [textureId, texture] = resource.create<Texture>("fallback-icon");
 		gInvalidIcon = texture;
-		gInvalidIcon->setSource(TextureType::IMAGE_RGBA, path);
+		gInvalidIcon->setSource(TextureType::IMAGE, path);
 
 		resource.execAsDependency(texture->create());
 	}

@@ -1,8 +1,8 @@
 #pragma once
 
-namespace Reflection {
+namespace ECSReflection {
 
 	// Registers all types and their associated reflection metadata
-	void setup();
+	void registerAll();
 
 }

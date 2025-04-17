@@ -79,7 +79,7 @@ namespace Runtime {
 
 		// Create default texture
 		auto& [defaultTextureId, defaultTexture] = resource.create<Texture>("default-texture");
-		defaultTexture->setSource(TextureType::IMAGE_RGBA, "./resources/icons/fallback/fallback_texture.png");
+		defaultTexture->setSource(TextureType::IMAGE, "./resources/icons/fallback/fallback_texture.png");
 		resource.execAsDependency(defaultTexture->create());
 		Texture::setDefaultTexture(defaultTexture->backendId());
 

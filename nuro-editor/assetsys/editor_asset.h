@@ -5,8 +5,6 @@
 
 #include <utils/fsutil.h>
 
-#include <memory/resource_manager.h>
-
 class ProjectAssets;
 
 using AssetID = uint32_t;
@@ -37,11 +35,11 @@ private:
 	// List of assets this asset depends on
 	std::vector<AssetID> _assetDependencies;
 
-protected:
-	// Underlying asset core resource
-	ResourceRef<Resource> _assetResource;
+	// If asset is currently loading
+	bool _assetLoading;
 
-	EditorAsset() : _assetId(0), _assetType(AssetType::UNKNOWN), _assetPath(), _assetDependencies(), _assetResource(nullptr) {};
+protected:
+	EditorAsset() : _assetId(0), _assetType(AssetType::UNKNOWN), _assetPath(), _assetDependencies(), _assetLoading(false) {};
 
 public:
 	virtual ~EditorAsset() = 0;
@@ -68,8 +66,7 @@ public:
 
 	// Returns if the asset is currently in a loading state
 	bool loading() const {
-		if (_assetResource)
-			return _assetResource->resourceState() == ResourceState::LOADING || _assetResource->resourceState() == ResourceState::QUEUED;
+		return _assetLoading;
 	}
 
 	// Event when the asset is first loaded within the editor
@@ -77,6 +74,9 @@ public:
 
 	// Event when the asset is unloaded or destroyed within the editor
 	virtual void onUnload() = 0;
+
+	// Renders the assets insight panel inspectable ui
+	virtual void renderInspectableUI() = 0;
 
 	// Returns the assets icon
 	virtual uint32_t icon() const = 0;

@@ -18,7 +18,7 @@ set(SOURCE_FILES
 	ecs/ecs.h
 	ecs/ecs_collection.h
 	ecs/entity_container.h
-	ecs/reflection.h
+	ecs/ecs_reflection.h
 	engine.h
 	input/cursor.h
 	input/input.h
@@ -81,7 +81,7 @@ set(SOURCE_FILES
 	diagnostics/diagnostics.cpp
 	diagnostics/profiler.cpp
 	ecs/ecs.cpp
-	ecs/reflection.cpp
+	ecs/ecs_reflection.cpp
 	input/cursor.cpp
 	input/input.cpp
 	misc/stb_image.cpp

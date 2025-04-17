@@ -23,8 +23,8 @@ set(SOURCE_FILES
 	ui/editor_ui.h
 	ui/footer/footer.h
 	ui/inspectables/entity_inspectable.h
+	ui/inspectables/asset_inspectable.h
 	ui/inspectables/inspectable.h
-	ui/inspectables/texture_inspectable.h
 	ui/inspectables/welcome_inspectable.h
 	ui/title_bar/title_bar.h
 	ui/utils/ui_utils.h
@@ -64,8 +64,8 @@ set(SOURCE_FILES
 	ui/dynamic_drawing/dynamic_text.cpp
 	ui/editor_ui.cpp
 	ui/footer/footer.cpp
+	ui/inspectables/asset_inspectable.cpp
 	ui/inspectables/entity_inspectable.cpp
-	ui/inspectables/texture_inspectable.cpp
 	ui/inspectables/welcome_inspectable.cpp
 	ui/title_bar/title_bar.cpp
 	ui/utils/ui_utils.cpp

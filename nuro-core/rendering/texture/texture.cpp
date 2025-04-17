@@ -101,10 +101,36 @@ bool Texture::uploadBuffers()
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, maxAniso);
 
 	// Get texture backend format from texture type
-	GLenum internalFormat = GL_SRGB;
-	GLenum format = GL_RGB;
+	GLenum internalFormat;
+	GLenum format;
 	switch (type)
 	{
+	case TextureType::IMAGE:
+	{
+		switch (channels) {
+		case 1:
+			internalFormat = GL_RED;
+			format = GL_RED;
+			break;
+		case 2:
+			internalFormat = GL_RG;
+			format = GL_RG;
+			break;
+		case 3:
+			internalFormat = GL_RGB;
+			format = GL_RGB;
+			break;
+		case 4:
+			internalFormat = GL_RGBA;
+			format = GL_RGBA;
+			break;
+		default:
+			internalFormat = GL_RGB;
+			format = GL_RGB;
+			break;
+		}
+		break;
+	}
 	case TextureType::ALBEDO:
 		internalFormat = GL_SRGB;
 		format = GL_RGB;
@@ -133,13 +159,9 @@ bool Texture::uploadBuffers()
 		internalFormat = GL_RED;
 		format = GL_RED;
 		break;
-	case TextureType::IMAGE_RGB:
+	default:
 		internalFormat = GL_RGB;
 		format = GL_RGB;
-		break;
-	case TextureType::IMAGE_RGBA:
-		internalFormat = GL_RGBA;
-		format = GL_RGBA;
 		break;
 	}
 

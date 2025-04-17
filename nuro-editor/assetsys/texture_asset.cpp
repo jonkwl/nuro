@@ -4,9 +4,8 @@
 #include <rendering/texture/texture.h>
 
 #include "../ui/windows/insight_panel_window.h"
-#include "../ui/inspectables/texture_inspectable.h"
 
-TextureAsset::TextureAsset()
+TextureAsset::TextureAsset() : textureResource(nullptr)
 {
 }
 
@@ -16,30 +15,41 @@ TextureAsset::~TextureAsset()
 
 void TextureAsset::onDefaultLoad()
 {
-	load(TextureType::IMAGE_RGBA);
+	load(TextureType::IMAGE);
 }
 
 void TextureAsset::onUnload()
 {
-	if (_assetResource)
-		ApplicationContext::resourceManager().release(_assetResource->resourceId());
+	if (!textureResource)
+		return
+	
+	ApplicationContext::resourceManager().release(textureResource->resourceId());
+}
+
+void TextureAsset::renderInspectableUI()
+{
+	if (!textureResource) {
+		IMComponents::label("Error: Texture is not available", EditorUI::getFonts().h2_bold, IM_COL32(255, 100, 100, 255));
+		return;
+	}
+
+	IMComponents::label(path().filename().string(), EditorUI::getFonts().h2_bold);
+	ImGui::Separator();
+	float contentX = ImGui::GetContentRegionAvail().x;
+	ImGui::Image(textureResource->backendId(), ImVec2(contentX, contentX), ImVec2(0, 1), ImVec2(1, 0));
 }
 
 uint32_t TextureAsset::icon() const
 {
-	if (loading())
+	if (!textureResource)
 		return IconPool::get("texture");
 
-	if (_assetResource->resourceState() == ResourceState::FAILED)
-		return IconPool::get("failed");
-
-	if (auto texture = std::dynamic_pointer_cast<Texture>(_assetResource))
-		return texture->backendId();
+	return textureResource->backendId();
 }
 
 void TextureAsset::load(TextureType type)
 {
-	if (_assetResource)
+	if (textureResource)
 		return; // Resource already created; later hot reload it here instead
 
 	std::string name = path().filename().string();
@@ -50,5 +60,5 @@ void TextureAsset::load(TextureType type)
 	texture->setSource(type, path().string());
 	resource.exec(texture->create());
 
-	_assetResource = texture;
+	textureResource = texture;
 }
