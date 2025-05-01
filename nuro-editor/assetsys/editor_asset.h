@@ -10,8 +10,6 @@
 
 class ProjectAssets;
 
-using AssetID = uint32_t;
-
 enum class AssetType {
 	UNKNOWN,
 
@@ -27,7 +25,7 @@ private:
 	friend class ProjectAssets;
 
 	// Assets id
-	AssetID _assetId;
+	AssetKey _assetKey;
 
 	// Type of the asset
 	AssetType _assetType;
@@ -36,20 +34,20 @@ private:
 	FS::Path _assetPath;
 
 	// List of assets this asset depends on
-	std::vector<AssetID> _assetDependencies;
+	std::vector<AssetGUID> _assetDependencies;
 
 	// If asset is currently loading
 	bool _assetLoading;
 
 protected:
-	EditorAsset() : _assetId(0), _assetType(AssetType::UNKNOWN), _assetPath(), _assetDependencies(), _assetLoading(false) {};
+	EditorAsset() : _assetKey(), _assetType(AssetType::UNKNOWN), _assetPath(), _assetDependencies(), _assetLoading(false) {};
 
 public:
 	virtual ~EditorAsset() = 0;
 
-	// Returns the editor assets id
-	AssetID id() const {
-		return _assetId;
+	// Returns the editor assets key
+	AssetKey key() const {
+		return _assetKey;
 	}
 
 	// Returns the type of the asset
@@ -63,7 +61,7 @@ public:
 	}
 
 	// Returns the editor assets dependencies
-	const std::vector<AssetID>& dependencies() const {
+	const auto& dependencies() const {
 		return _assetDependencies;
 	}
 

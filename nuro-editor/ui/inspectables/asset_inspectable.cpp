@@ -2,7 +2,7 @@
 
 #include "../../runtime/runtime.h"
 
-AssetInspectable::AssetInspectable(AssetID assetId) : assetId(assetId)
+AssetInspectable::AssetInspectable(AssetSID assetId) : assetId(assetId)
 {
 }
 

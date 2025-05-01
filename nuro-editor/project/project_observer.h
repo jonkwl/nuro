@@ -33,8 +33,8 @@ public:
 	};
 
 	struct File : public IONode {
-		// Asset id associated with file
-		AssetID assetId;
+		// Asset session id associated with file
+		AssetSID assetId;
 
 		explicit File(const std::string& name, const FS::Path& path);
 		~File();

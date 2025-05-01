@@ -11,23 +11,34 @@ using AssetRef = std::shared_ptr<EditorAsset>;
 
 class ProjectAssets {
 public:
-	// Loads an editor asset and returns its id
-	AssetID load(const FS::Path& relativePath);
+	ProjectAssets();
+
+	// Loads an editor asset and returns its session id
+	AssetSID load(const FS::Path& relativePath);
 
 	// Removes an editor asset if existing
-	void remove(AssetID id);
+	void remove(AssetSID id);
 
 	// Reloads an asset, returns success
-	bool reload(AssetID id);
+	bool reload(AssetSID id);
 
-	// Returns an editor asset reference by its id, nullptr if none
-	AssetRef get(AssetID id) const;
+	// Returns an editor asset reference by its session id, nullptr if none
+	AssetRef get(AssetSID id) const;
+
+	// Returns an assets session id by its guid
+	AssetSID resolveGUID(AssetGUID guid);
 
 private:
-	// Generates an id for an editor asset
-	AssetID generateId();
+	// Counter for asset session ids
+	uint32_t sidCounter;
 
-	// Registry of all assets by their id
-	std::unordered_map<AssetID, AssetRef> assets;
+	// Returns a new session id
+	AssetSID createSID();
+
+	// Registry of all assets by their session id
+	std::unordered_map<AssetSID, AssetRef> assets;
+
+	// Registry of all asset session ids by their guid
+	std::unordered_map<AssetGUID, AssetSID> assetSIDs;
 
 };

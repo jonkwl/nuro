@@ -8,10 +8,20 @@
 #include <rfl/yaml.hpp>
 #include <yaml-cpp/yaml.h>
 
+#include <utils/guid.h>
 #include <utils/fsutil.h>
 #include <utils/console.h>
 
-using AssetGUID = std::string;
+using AssetGUID = XG::GUID;
+using AssetSID = uint32_t;
+
+struct AssetKey {
+	// Global asset id
+	AssetGUID guid;
+
+	// Session-only runtime id of the asset
+	AssetSID sessionID = 0;
+};
 
 namespace AssetMeta {
 

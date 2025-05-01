@@ -32,8 +32,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include <cstring>
 #include "guid.h"
+
+#include <chrono>
+#include <random>
+#include <cstring>
 
 #ifdef GUID_LIBUUID
 #include <uuid/uuid.h>
@@ -52,10 +55,12 @@ THE SOFTWARE.
 #include <cassert>
 #endif
 
+BEGIN_XG_NAMESPACE
+
 #ifdef GUID_ANDROID
 AndroidGuidInfo androidInfo;
 
-AndroidGuidInfo AndroidGuidInfo::fromJniEnv(JNIEnv *env)
+AndroidGuidInfo AndroidGuidInfo::fromJniEnv(JNIEnv* env)
 {
 	AndroidGuidInfo info;
 	info.env = env;
@@ -72,14 +77,14 @@ AndroidGuidInfo AndroidGuidInfo::fromJniEnv(JNIEnv *env)
 	return info;
 }
 
-void initJni(JNIEnv *env)
+void initJni(JNIEnv* env)
 {
 	androidInfo = AndroidGuidInfo::fromJniEnv(env);
 }
 #endif
 
 // overload << so that it's easy to convert to a string
-std::ostream &operator<<(std::ostream &s, const XGUID &guid)
+std::ostream& operator<<(std::ostream& s, const GUID& guid)
 {
 	std::ios_base::fmtflags f(s.flags()); // politely don't leave the ostream in hex mode
 	s << std::hex << std::setfill('0')
@@ -107,19 +112,19 @@ std::ostream &operator<<(std::ostream &s, const XGUID &guid)
 	return s;
 }
 
-bool operator<(const XGUID &lhs, const XGUID &rhs)
+bool operator<(const XG::GUID& lhs, const XG::GUID& rhs)
 {
-	return lhs.bytes() <  rhs.bytes();
+	return lhs.bytes() < rhs.bytes();
 }
 
-bool XGUID::isValid() const
+bool GUID::isValid() const
 {
-	XGUID empty;
+	XG::GUID empty;
 	return *this != empty;
 }
 
 // convert to string using std::snprintf() and std::string
-std::string XGUID::str() const
+std::string GUID::str() const
 {
 	char one[10], two[6], three[6], four[6], five[14];
 
@@ -145,24 +150,26 @@ std::string XGUID::str() const
 }
 
 // conversion operator for std::string
-XGUID::operator std::string() const
+GUID::operator std::string() const
 {
 	return str();
 }
 
 // Access underlying bytes
-const std::array<unsigned char, 16>& XGUID::bytes() const
+const std::array<unsigned char, 16>& GUID::bytes() const
 {
-    return _bytes;
+	return _bytes;
 }
 
 // create a guid from vector of bytes
-XGUID::XGUID(const std::array<unsigned char, 16> &bytes) : _bytes(bytes)
-{ }
+GUID::GUID(const std::array<unsigned char, 16>& bytes) : _bytes(bytes)
+{
+}
 
 // create a guid from vector of bytes
-XGUID::XGUID(std::array<unsigned char, 16> &&bytes) : _bytes(std::move(bytes))
-{ }
+GUID::GUID(std::array<unsigned char, 16>&& bytes) : _bytes(std::move(bytes))
+{
+}
 
 // converts a single hex char to a number (0 - 15)
 unsigned char hexDigitToChar(char ch)
@@ -206,14 +213,14 @@ unsigned char hexPairToChar(char a, char b)
 }
 
 // create a guid from string
-XGUID::XGUID(std::string_view fromString)
+GUID::GUID(std::string_view fromString)
 {
 	char charOne = '\0';
 	char charTwo = '\0';
 	bool lookingForFirstChar = true;
 	unsigned nextByte = 0;
 
-	for (const char &ch : fromString)
+	for (const char& ch : fromString)
 	{
 		if (ch == '-')
 			continue;
@@ -248,55 +255,55 @@ XGUID::XGUID(std::string_view fromString)
 }
 
 // create empty guid
-XGUID::XGUID() : _bytes{ {0} }
-{ }
+GUID::GUID() : _bytes{ {0} }
+{
+}
 
 // set all bytes to zero
-void XGUID::zeroify()
+void GUID::zeroify()
 {
 	std::fill(_bytes.begin(), _bytes.end(), static_cast<unsigned char>(0));
 }
 
 // overload equality operator
-bool XGUID::operator==(const XGUID &other) const
+bool GUID::operator==(const GUID& other) const
 {
 	return _bytes == other._bytes;
 }
 
 // overload inequality operator
-bool XGUID::operator!=(const XGUID &other) const
+bool GUID::operator!=(const GUID& other) const
 {
 	return !((*this) == other);
 }
 
 // member swap function
-void XGUID::swap(XGUID &other)
+void GUID::swap(GUID& other)
 {
 	_bytes.swap(other._bytes);
 }
 
-// This is the linux friendly implementation, but it could work on other
-// systems that have libuuid available
+// Linux
 #ifdef GUID_LIBUUID
-XGUID newGuid()
+GUID createGUID()
 {
 	std::array<unsigned char, 16> data;
 	static_assert(std::is_same<unsigned char[16], uuid_t>::value, "Wrong type!");
 	uuid_generate(data.data());
-	return XGUID{std::move(data)};
+	return GUID{ std::move(data) };
 }
 #endif
 
-// this is the mac and ios version
+// MacOS / IOS
 #ifdef GUID_CFUUID
-XGUID newGuid()
+GUID createGUID()
 {
 	auto newId = CFUUIDCreate(NULL);
 	auto bytes = CFUUIDGetUUIDBytes(newId);
 	CFRelease(newId);
 
 	std::array<unsigned char, 16> byteArray =
-	{{
+	{ {
 		bytes.byte0,
 		bytes.byte1,
 		bytes.byte2,
@@ -313,16 +320,16 @@ XGUID newGuid()
 		bytes.byte13,
 		bytes.byte14,
 		bytes.byte15
-	}};
-	return XGUID{std::move(byteArray)};
+	} };
+	return GUID{ std::move(byteArray) };
 }
 #endif
 
-// obviously this is the windows version
+// Windows
 #ifdef GUID_WINDOWS
-XGUID newGuid()
+GUID createGUID()
 {
-	XGUID newId;
+	GUID newId;
 	CoCreateGuid(&newId);
 
 	std::array<unsigned char, 16> bytes =
@@ -348,13 +355,13 @@ XGUID newGuid()
 		(unsigned char)newId.Data4[7]
 	};
 
-	return XGUID{std::move(bytes)};
+	return GUID{ std::move(bytes) };
 }
 #endif
 
-// android version that uses a call to a java api
+// Android
 #ifdef GUID_ANDROID
-XGUID newGuid(JNIEnv *env)
+GUID createGUID(JNIEnv* env)
 {
 	assert(env != androidInfo.env || std::this_thread::get_id() == androidInfo.initThreadId);
 
@@ -387,21 +394,58 @@ XGUID newGuid(JNIEnv *env)
 
 	env->DeleteLocalRef(javaUuid);
 
-	return XGUID{std::move(bytes)};
+	return GUID{ std::move(bytes) };
 }
 
-XGUID newGuid()
+GUID createGUID()
 {
-	return newGuid(androidInfo.env);
+	return createGUID(androidInfo.env);
 }
 #endif
 
-// Specialization for std::swap<XGUID>() --
+// OS agnostic implementation
+#if !defined(GUID_LIBUUID) && !defined(GUID_CFUUID) && !defined(GUID_WINDOWS) && !defined(GUID_ANDROID)
+GUID createGUID()
+{
+	// Create a seed from system clock and a random device
+	std::random_device rd;
+	auto seed = rd() ^ (
+		static_cast<std::mt19937::result_type>(
+			std::chrono::high_resolution_clock::now().time_since_epoch().count()
+			) +
+		static_cast<std::mt19937::result_type>(
+			std::chrono::system_clock::now().time_since_epoch().count()
+			)
+		);
+
+	std::mt19937 gen(seed);
+	std::uniform_int_distribution<unsigned int> distrib(0, 255);
+
+	std::array<unsigned char, 16> bytes;
+
+	// Generate 16 random bytes
+	for (int i = 0; i < 16; i++) {
+		bytes[i] = static_cast<unsigned char>(distrib(gen));
+	}
+
+	// Set variant and version for RFC 4122 compliance (v4 random UUID)
+	// Variant 1 - bits: 10xx
+	bytes[8] = (bytes[8] & 0x3F) | 0x80;
+	// Version 4 - bits: 0100xxxx
+	bytes[6] = (bytes[6] & 0x0F) | 0x40;
+
+	return GUID{ std::move(bytes) };
+}
+#endif
+
+END_XG_NAMESPACE
+
+// Specialization for std::swap<GUID>() --
 // call member swap function of lhs, passing rhs
 namespace std
 {
 	template <>
-	void swap(XGUID &lhs, XGUID &rhs) noexcept
+	void swap(XG::GUID& lhs, XG::GUID& rhs) noexcept
 	{
 		lhs.swap(rhs);
 	}

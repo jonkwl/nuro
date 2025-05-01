@@ -26,20 +26,12 @@ namespace AssetRegistry {
         auto assetInfo = std::make_shared<AssetInfo>();
         assetInfo->type = type;
         assetInfo->createInstance = []() { return std::make_shared<InstanceType>(); };
-        assetInfo->inspect = [](AssetID id) { InsightPanelWindow::inspect<AssetInspectable>(id); };
+        assetInfo->inspect = [](AssetSID id) { InsightPanelWindow::inspect<AssetInspectable>(id); };
 
         // Register asset info reference by extensions
         for (const std::string& extension : extensions) {
             gAssetRegistry[extension] = assetInfo;
         }
-    }
-
-    void create()
-    {
-        registerAsset<TextureAsset>(
-            AssetType::TEXTURE,
-            { "jpg", "jpeg", "png", "bmp", "tga", "psd", "gif", "hdr", "pic", "ppm", "pgm" }
-        );
     }
 
     const std::unordered_map<std::string, std::shared_ptr<AssetInfo>>& get()
@@ -58,6 +50,14 @@ namespace AssetRegistry {
         auto it = gAssetRegistry.find(extension);
         if (it == gAssetRegistry.end()) return nullptr;
         return it->second;
+    }
+
+    void create()
+    {
+        registerAsset<TextureAsset>(
+            AssetType::TEXTURE,
+            { "jpg", "jpeg", "png", "bmp", "tga", "psd", "gif", "hdr", "pic", "ppm", "pgm" }
+        );
     }
 
 }

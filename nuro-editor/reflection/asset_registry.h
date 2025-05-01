@@ -28,13 +28,13 @@ struct AssetInfo {
 
 namespace AssetRegistry {
 
-	// Creates global asset registry
-	void create();
-
 	// Returns asset registry (key represents file extension)
 	const std::unordered_map<std::string, std::shared_ptr<AssetInfo>>& get();
 
 	// Fetches asset info by an asset path, nullptr if none
 	std::shared_ptr<AssetInfo> fetchByPath(const FS::Path& path);
+
+	// Creates global asset registry
+	void create();
 
 }

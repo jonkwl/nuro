@@ -47,27 +47,36 @@ THE SOFTWARE.
 #include <utility>
 #include <iomanip>
 
-class XGUID
+#define BEGIN_XG_NAMESPACE namespace XG {
+#define END_XG_NAMESPACE }
+
+BEGIN_XG_NAMESPACE
+
+// Class to represent a GUID/UUID. Each instance acts as a wrapper around a
+// 16 byte value that can be passed around by value. It also supports
+// conversion to string (via the stream operator <<) and conversion from a
+// string via constructor.
+class GUID
 {
 public:
-	explicit XGUID(const std::array<unsigned char, 16> &bytes);
-	explicit XGUID(std::array<unsigned char, 16> &&bytes);
+	explicit GUID(const std::array<unsigned char, 16>& bytes);
+	explicit GUID(std::array<unsigned char, 16>&& bytes);
 
-	explicit XGUID(std::string_view fromString);
-	XGUID();
-	
-	XGUID(const XGUID &other) = default;
-	XGUID &operator=(const XGUID &other) = default;
-	XGUID(XGUID &&other) = default;
-	XGUID &operator=(XGUID &&other) = default;
+	explicit GUID(std::string_view fromString);
+	GUID();
 
-	bool operator==(const XGUID &other) const;
-	bool operator!=(const XGUID &other) const;
+	GUID(const GUID& other) = default;
+	GUID& operator=(const GUID& other) = default;
+	GUID(GUID&& other) = default;
+	GUID& operator=(GUID&& other) = default;
+
+	bool operator==(const GUID& other) const;
+	bool operator!=(const GUID& other) const;
 
 	std::string str() const;
 	operator std::string() const;
 	const std::array<unsigned char, 16>& bytes() const;
-	void swap(XGUID &other);
+	void swap(GUID& other);
 	bool isValid() const;
 
 private:
@@ -77,18 +86,18 @@ private:
 	std::array<unsigned char, 16> _bytes;
 
 	// make the << operator a friend so it can access _bytes
-	friend std::ostream &operator<<(std::ostream &s, const XGUID &guid);
-	friend bool operator<(const XGUID &lhs, const XGUID &rhs);
+	friend std::ostream& operator<<(std::ostream& s, const GUID& guid);
+	friend bool operator<(const GUID& lhs, const GUID& rhs);
 };
 
-XGUID newGuid();
+GUID createGUID();
 
 #ifdef GUID_ANDROID
 struct AndroidGuidInfo
 {
-	static AndroidGuidInfo fromJniEnv(JNIEnv *env);
+	static AndroidGuidInfo fromJniEnv(JNIEnv* env);
 
-	JNIEnv *env;
+	JNIEnv* env;
 	jclass uuidClass;
 	jmethodID newGuidMethod;
 	jmethodID mostSignificantBitsMethod;
@@ -98,17 +107,17 @@ struct AndroidGuidInfo
 
 extern AndroidGuidInfo androidInfo;
 
-void initJni(JNIEnv *env);
+void initJni(JNIEnv* env);
 
 // overloading for multi-threaded calls
-XGUID newGuid(JNIEnv *env);
+GUID createGUID(JNIEnv* env);
 #endif
 
 namespace details
 {
 	template <typename...> struct hash;
 
-	template<typename T> 
+	template<typename T>
 	struct hash<T> : public std::hash<T>
 	{
 		using std::hash<T>::hash;
@@ -120,29 +129,31 @@ namespace details
 	{
 		inline std::size_t operator()(const T& v, const Rest&... rest) {
 			std::size_t seed = hash<Rest...>{}(rest...);
-			seed ^= hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			seed ^= hash<T>{}(v)+0x9e3779b9 + (seed << 6) + (seed >> 2);
 			return seed;
 		}
 	};
 }
 
+END_XG_NAMESPACE
+
 namespace std
 {
-	// Template specialization for std::swap<XGUID>() --
+	// Template specialization for std::swap<GUID>() --
 	// See guid.cpp for the function definition
 	template <>
-	void swap(XGUID &guid0, XGUID &guid1) noexcept;
+	void swap(XG::GUID& guid0, XG::GUID& guid1) noexcept;
 
-	// Specialization for std::hash<XGUID> -- this implementation
+	// Specialization for std::hash<GUID> -- this implementation
 	// uses std::hash<std::string> on the stringification of the guid
 	// to calculate the hash
 	template <>
-	struct hash<XGUID>
+	struct hash<XG::GUID>
 	{
-		std::size_t operator()(XGUID const &guid) const
+		std::size_t operator()(XG::GUID const& guid) const
 		{
 			const uint64_t* p = reinterpret_cast<const uint64_t*>(guid.bytes().data());
-			return details::hash<uint64_t, uint64_t>{}(p[0], p[1]);
+			return XG::details::hash<uint64_t, uint64_t>{}(p[0], p[1]);
 		}
 	};
 }

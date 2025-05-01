@@ -7,38 +7,35 @@ namespace AssetMeta {
 		try {
 			// Ensure metadata file is valid
 			if (!FS::exists(path))
-				return "INVALID-GUID";
+				return AssetGUID();
 
 			// Open metadata file
 			std::ifstream file(path);
 			if (!file.is_open()) {
-				return "INVALID-GUID";
+				return AssetGUID();
 			}
 
 			// Read first line of metadata file (containing guid)
 			std::string line;
 			if (!std::getline(file, line))
-				return "INVALID-GUID";
+				return AssetGUID();
 
+			// Extract guid string
 			const std::string guidPrefix = "guid: ";
 			if (line.rfind(guidPrefix, 0) != 0)
-				return "INVALID-GUID";
+				return AssetGUID();
+			std::string guidStr = line.substr(guidPrefix.length());
 
-			std::string guid = line.substr(guidPrefix.length());
-
-			// Optional guid validation
-			// if (guid.length() != 32 || guid.find_first_not_of("0123456789abcdef") != std::string::npos) return "INVALID-GUID";
-
-			return guid;
+			return AssetGUID(guidStr);
 		}
 		catch (...) {
-			return "INVALID-GUID";
+			return AssetGUID();
 		}
     }
 
 	std::string createHeader(AssetGUID guid)
 	{
-		return "guid: " + guid + "\n---\n";
+		return "guid: " + guid.str() + "\n---\n";
 	}
 
 	void removeHeader(std::string& source)

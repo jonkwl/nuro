@@ -568,8 +568,8 @@ bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const No
 	// ASSET NODE HANDLING
 	//
 
-	// Node is file, fetch its asset id
-	AssetID assetId = 0;
+	// Node is file, fetch its asset session id
+	AssetSID assetId = 0;
 	if (!isFolder) {
 		auto file = std::dynamic_pointer_cast<ProjectObserver::File>(node);
 		if (!file) 

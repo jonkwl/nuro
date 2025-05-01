@@ -7,10 +7,10 @@
 class AssetInspectable : public Inspectable
 {
 public:
-	AssetInspectable(AssetID assetId);
+	AssetInspectable(AssetSID assetId);
 
 	void renderStaticContent(ImDrawList& drawList) override;
 	void renderDynamicContent(ImDrawList& drawList) override;
 private:
-	AssetID assetId;
+	AssetSID assetId;
 };
