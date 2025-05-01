@@ -11,6 +11,9 @@
 		"ffmpeg",
 		"openal-soft",
 		"efsw",
-		"reflectcpp"
+		{
+			"name": "reflectcpp",
+			"features": [ "yaml" ]
+		}
 	]
 }

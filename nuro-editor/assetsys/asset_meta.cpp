@@ -38,15 +38,25 @@ namespace AssetMeta {
 
 	std::string createHeader(AssetGUID guid)
 	{
-		return "guid: " + guid + "\n";
+		return "guid: " + guid + "\n---\n";
 	}
 
 	void removeHeader(std::string& source)
 	{
-		// Removes the first line of metadata source containing guid
-		size_t newlinePos = source.find('\n');
-		if (newlinePos == std::string::npos) return;
-		source = source.substr(newlinePos + 1);
+		try {
+			// Find header document separator
+			size_t separatorPos = source.find("---");
+			if (separatorPos == std::string::npos) return;
+
+			size_t newlineAfterSeparator = source.find('\n', separatorPos);
+			if (newlineAfterSeparator == std::string::npos) return;
+
+			// Remove header
+			source = source.substr(newlineAfterSeparator + 1);
+		}
+		catch (const std::exception& e) {
+			Console::out::warning("Asset Meta", "Failed to remove header: " + std::string(e.what()));
+		}
 	}
 
 }

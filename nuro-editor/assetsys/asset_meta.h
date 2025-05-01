@@ -5,7 +5,8 @@
 #include <optional>
 
 #include <rfl.hpp>
-#include <rfl/json.hpp>
+#include <rfl/yaml.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include <utils/fsutil.h>
 #include <utils/console.h>
@@ -29,7 +30,7 @@ namespace AssetMeta {
 		// Try to serialize object
 		std::string serialized;
 		try {
-			serialized = rfl::json::write(obj);
+			serialized = rfl::yaml::write(obj);
 		}
 		catch (const std::exception& e) {
 			std::string err = std::string(e.what());
@@ -60,7 +61,7 @@ namespace AssetMeta {
 
 		// Try to deserialize metadata source
 		try {
-			const T obj = rfl::json::read<T>(source).value();
+			const T obj = rfl::yaml::read<T>(source).value();
 			return obj;
 		}
 		catch (const std::exception& e) {

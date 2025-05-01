@@ -11,8 +11,14 @@ enum class TextureType;
 
 class TextureAsset : public EditorAsset {
 public:
+	struct TextureSize {
+		int width = 256;
+		int height = 256;
+	};
+
 	struct Meta {
-		int size = 256;
+		TextureType type = TextureType::IMAGE;
+		TextureSize size;
 	};
 
 	TextureAsset();

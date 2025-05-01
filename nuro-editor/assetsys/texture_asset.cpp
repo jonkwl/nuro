@@ -53,8 +53,10 @@ uint32_t TextureAsset::icon() const
 
 void TextureAsset::load(TextureType type)
 {
-	if (textureResource)
+	if (textureResource) {
+		Console::out::warning("Texture Asset", "HOT RELOAD TEXTURE!");
 		return; // Resource already created; later hot reload it here instead
+	}
 
 	std::string name = path().filename().string();
 

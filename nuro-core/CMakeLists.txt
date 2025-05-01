@@ -68,6 +68,7 @@ set(SOURCE_FILES
 	utils/event.h
 	utils/format.h
 	utils/fsutil.h
+	utils/guid.h
 	utils/string_helper.h
 	viewport/viewport.h
 	audio/audio_buffer.cpp
@@ -120,6 +121,7 @@ set(SOURCE_FILES
 	utils/console.cpp
 	utils/format.cpp
 	utils/fsutil.cpp
+	utils/guid.cpp
 	utils/string_helper.cpp
 	viewport/viewport.cpp
 )
