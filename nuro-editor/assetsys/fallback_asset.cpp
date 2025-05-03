@@ -29,7 +29,7 @@ void FallbackAsset::onReload()
 
 void FallbackAsset::renderInspectableUI()
 {
-	IMComponents::label("Asset: " + path().filename().string(), EditorUI::getFonts().h2_bold);
+	IMComponents::label("Asset: " + path().filename().string(), EditorUI::getFonts().h3_bold);
 }
 
 uint32_t FallbackAsset::icon() const

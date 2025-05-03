@@ -6,12 +6,23 @@
 
 ProjectObserver::File::File(const std::string& name, const FS::Path& path) : IONode(name, path), assetId(0)
 {
+}
+
+void ProjectObserver::File::makeAsset()
+{
 	assetId = Runtime::projectManager().assets().load(path);
 }
 
-ProjectObserver::File::~File()
+void ProjectObserver::File::linkAsset(AssetSID id)
 {
-	if(assetId) Runtime::projectManager().assets().remove(assetId);
+	assetId = id;
+}
+
+void ProjectObserver::File::destroyAsset()
+{
+	if (!assetId) return;
+	Runtime::projectManager().assets().remove(assetId);
+	assetId = 0;
 }
 
 bool ProjectObserver::Folder::hasSubfolders()
@@ -19,7 +30,7 @@ bool ProjectObserver::Folder::hasSubfolders()
 	return !subfolders.empty();
 }
 
-void ProjectObserver::Folder::addFile(const std::string& fileName)
+std::shared_ptr<ProjectObserver::File> ProjectObserver::Folder::addFile(const std::string& fileName)
 {
 	// Instantiate file
 	FS::Path newPath = path / fileName;
@@ -31,14 +42,16 @@ void ProjectObserver::Folder::addFile(const std::string& fileName)
 			return a->name < b->name;
 		});
 	files.insert(it, file);
+
+	return file;
 }
 
-void ProjectObserver::Folder::addFolder(const std::string& folderName)
+std::shared_ptr<ProjectObserver::Folder> ProjectObserver::Folder::addFolder(const std::string& folderName)
 {
 	// Instantiate folder
 	FS::Path newPath = path / folderName;
 	auto folder = std::make_shared<Folder>(folderName, newPath, id);
-	
+
 	// Insert folder
 	auto it = std::lower_bound(subfolders.begin(), subfolders.end(), folder,
 		[](const std::shared_ptr<Folder>& a, const std::shared_ptr<Folder>& b) {
@@ -46,13 +59,19 @@ void ProjectObserver::Folder::addFolder(const std::string& folderName)
 		});
 	subfolders.insert(it, folder);
 	folderRegistry.emplace(folder->id, folder);
+
+	return folder;
 }
 
-void ProjectObserver::Folder::removeFile(const std::string& fileName)
+void ProjectObserver::Folder::removeFile(const std::string& fileName, bool destroyAsset)
 {
-	files.erase(std::remove_if(files.begin(), files.end(),
-		[&](const std::shared_ptr<File>& file) { return file->name == fileName; }),
-		files.end());
+	auto it = std::find_if(files.begin(), files.end(), [&](const std::shared_ptr<File>& file) { return file->name == fileName; });
+
+	if (it != files.end()) {
+		if (destroyAsset) 
+			(*it)->destroyAsset();
+		files.erase(it);
+	}
 }
 
 void ProjectObserver::Folder::removeFolder(const std::string& folderName)
@@ -65,12 +84,6 @@ void ProjectObserver::Folder::removeFolder(const std::string& folderName)
 		folderRegistry.erase(folderToRemove->id);
 		subfolders.erase(it);
 	}
-}
-
-void ProjectObserver::Folder::removeAny(const std::string& name)
-{
-	removeFile(name);
-	removeFolder(name);
 }
 
 void ProjectObserver::Folder::print(uint32_t depth)
@@ -107,7 +120,7 @@ void ProjectObserver::pollEvents()
 	// Fetch next io listener event
 	std::unique_ptr<IOEvent> event;
 	bool success = listener->eventQueue.try_dequeue(event);
-	if (!success) 
+	if (!success)
 		return;
 
 	// Get event related data
@@ -120,14 +133,14 @@ void ProjectObserver::pollEvents()
 	{
 		// Find parent folder of action
 		auto parentFolder = findFolder(relativePath.parent_path(), projectStructure);
-		if (!parentFolder) 
+		if (!parentFolder)
 			break;
 
 		// Add folder or file
 		if (FS::isDirectory(absolutePath))
 			parentFolder->addFolder(filename);
 		else
-			parentFolder->addFile(filename);
+			parentFolder->addFile(filename)->makeAsset();
 
 		break;
 	}
@@ -135,11 +148,12 @@ void ProjectObserver::pollEvents()
 	{
 		// Find parent folder of action
 		auto parentFolder = findFolder(relativePath.parent_path(), projectStructure);
-		if (!parentFolder) 
+		if (!parentFolder)
 			break;
 
 		// Remove folder or file
-		parentFolder->removeAny(filename);
+		parentFolder->removeFolder(filename);
+		parentFolder->removeFile(filename, true);
 
 		break;
 	}
@@ -151,14 +165,11 @@ void ProjectObserver::pollEvents()
 			break;
 
 		// Find modified file
-		auto fileIt = std::find_if(parentFolder->files.begin(), parentFolder->files.end(),
-			[&filename](const std::shared_ptr<File>& file) {
-				return file->name == filename;
-			});
+		auto fileIt = std::find_if(parentFolder->files.begin(), parentFolder->files.end(), [&filename](const auto& file) { return file->name == filename; });
 
 		// Reload asset if available
 		if (fileIt != parentFolder->files.end()) {
-			std::shared_ptr<File> modifiedFile = *fileIt;
+			auto modifiedFile = *fileIt;
 			if (modifiedFile->assetId)
 				Runtime::projectManager().assets().reload(modifiedFile->assetId);
 		}
@@ -169,26 +180,39 @@ void ProjectObserver::pollEvents()
 	{
 		// Find old parent folder of action
 		FS::Path oldRelativePath(event->oldFilename);
+		std::string oldFilename = oldRelativePath.filename().string();
 		auto oldParentFolder = findFolder(oldRelativePath.parent_path(), projectStructure);
-		if (!oldParentFolder) 
+		if (!oldParentFolder)
 			break;
 
-		// Remove old folder or file
-		std::string oldBaseName = oldRelativePath.filename().string();
-		oldParentFolder->removeAny(oldBaseName);
+		// Find last asset sid if moved object is a file
+		AssetSID lastSid = 0;
+		auto fileIt = std::find_if(oldParentFolder->files.begin(), oldParentFolder->files.end(), [&oldFilename](const auto& file) { return file->name == oldFilename; });
+		if (fileIt != oldParentFolder->files.end()) {
+			lastSid = (*fileIt)->assetId;
+
+			// Remove old file without destroying linked asset
+			oldParentFolder->removeFile(oldFilename, false);
+		}
+		else {
+			// Remove old folder
+			oldParentFolder->removeFolder(oldFilename);
+		}
 
 		// Find new parent folder of action
 		std::string newBaseName = absolutePath.filename().string();
 		auto newParentFolder = findFolder(relativePath.parent_path(), projectStructure);
-		if (!newParentFolder) 
+		if (!newParentFolder)
 			break;
 
 		// Recreate folder or file
 		if (FS::isDirectory(absolutePath))
 			newParentFolder->addFolder(newBaseName);
-		else
-			newParentFolder->addFile(newBaseName);
-		
+		else {
+			newParentFolder->addFile(newBaseName)->linkAsset(lastSid);
+			Runtime::projectManager().assets().updateLocation(lastSid, absolutePath);
+		}
+
 		break;
 	}
 	}
@@ -241,7 +265,7 @@ std::shared_ptr<ProjectObserver::Folder> ProjectObserver::createFolder(const FS:
 		if (entry.is_directory())
 			root->subfolders.push_back(createFolder(entry.path(), root->id));
 		else if (entry.is_regular_file())
-			root->addFile(entry.path().filename().string());
+			root->addFile(entry.path().filename().string())->makeAsset();
 	}
 
 	return root;

@@ -14,7 +14,7 @@ public:
 	ProjectAssets();
 
 	// Loads an editor asset and returns its session id
-	AssetSID load(const FS::Path& relativePath);
+	AssetSID load(const FS::Path& path);
 
 	// Removes an editor asset if existing
 	void remove(AssetSID id);
@@ -27,6 +27,9 @@ public:
 
 	// Returns an assets session id by its guid
 	AssetSID resolveGUID(AssetGUID guid);
+
+	// Updates an existing assets io location
+	void updateLocation(AssetSID id, FS::Path path);
 
 private:
 	// Counter for asset session ids

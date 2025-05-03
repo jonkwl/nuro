@@ -45,8 +45,6 @@ void TextureAsset::renderInspectableUI()
 	ImGui::Separator();
 	float contentX = ImGui::GetContentRegionAvail().x;
 	ImGui::Image(textureResource->backendId(), ImVec2(contentX, contentX), ImVec2(0, 1), ImVec2(1, 0));
-	ImGui::Dummy(ImVec2(0.0f, 15.0f));
-	IMComponents::label("GUID: " + key().guid.str(), EditorUI::getFonts().h2_bold, IM_COL32(255, 100, 100, 255));
 }
 
 uint32_t TextureAsset::icon() const

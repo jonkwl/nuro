@@ -37,7 +37,15 @@ public:
 		AssetSID assetId;
 
 		explicit File(const std::string& name, const FS::Path& path);
-		~File();
+
+		// Links this file to a new editor asset
+		void makeAsset();
+
+		// Links this file to an existing editor asset
+		void linkAsset(AssetSID id);
+
+		// Destroys the editor asset being linked to this file
+		void destroyAsset();
 
 		bool isFolder() override { return false; }
 	};
@@ -57,19 +65,16 @@ public:
 		bool hasSubfolders();
 		
 		// Adds a file
-		void addFile(const std::string& fileName);
+		std::shared_ptr<File> addFile(const std::string& fileName);
 
 		// Adds a subfolder
-		void addFolder(const std::string& folderName);
+		std::shared_ptr<Folder> addFolder(const std::string& folderName);
 
 		// Removes a file by its name if existing
-		void removeFile(const std::string& fileName);
+		void removeFile(const std::string& fileName, bool destroyAsset);
 
 		// Removes a subfolder by its name if existing
 		void removeFolder(const std::string& folderName);
-
-		// Removes either a file or subfolder by its name if existing
-		void removeAny(const std::string& name);
 
 		// Prints the folders contents recursively
 		void print(uint32_t depth = 0);

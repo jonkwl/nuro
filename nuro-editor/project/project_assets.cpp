@@ -15,23 +15,23 @@ assetSIDs()
 {
 }
 
-AssetSID ProjectAssets::load(const FS::Path& relativePath)
+AssetSID ProjectAssets::load(const FS::Path& path)
 {
-	FS::Path absolutePath = Runtime::projectManager().abs(relativePath);
+	FS::Path absolutePath = Runtime::projectManager().abs(path);
 
 	//
 	// PREPARE ASSET
 	//
 
 	// Try to fetch asset type info
-	auto assetInfo = AssetRegistry::fetchByPath(relativePath);
+	auto assetInfo = AssetRegistry::fetchByPath(path);
 	if (!assetInfo) 
 		return 0;
 
 	// Create asset instance
 	AssetRef asset = assetInfo->createInstance();
 	asset->_assetType = assetInfo->type;
-	asset->_assetPath = relativePath;
+	asset->_assetPath = path;
 	asset->_assetKey.sessionID = createSID();
 
 	//
@@ -129,6 +129,25 @@ AssetSID ProjectAssets::resolveGUID(AssetGUID guid)
 	if (it != assetSIDs.end())
 		return it->second;
 	return 0;
+}
+
+void ProjectAssets::updateLocation(AssetSID id, FS::Path path)
+{
+	auto it = assets.find(id);
+	if (it == assets.end())
+		return;
+	AssetRef asset = it->second;
+
+	// Cache old relative path and update it
+	FS::Path oldRelativePath = asset->_assetPath;
+	asset->_assetPath = path;
+
+	// Cache old and current absolute path
+	FS::Path oldAbsolutePath = Runtime::projectManager().abs(oldRelativePath);
+	FS::Path absolutePath = Runtime::projectManager().abs(path);
+
+	// Moves the meta file
+	FS::rename(oldAbsolutePath.string() + ".meta", absolutePath.string() + ".meta");
 }
 
 AssetSID ProjectAssets::createSID()

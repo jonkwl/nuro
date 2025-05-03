@@ -12,14 +12,14 @@
 #include <utils/fsutil.h>
 #include <utils/console.h>
 
+// Global asset id
 using AssetGUID = XG::GUID;
+
+// Session-only runtime id of an asset
 using AssetSID = uint32_t;
 
 struct AssetKey {
-	// Global asset id
 	AssetGUID guid;
-
-	// Session-only runtime id of the asset
 	AssetSID sessionID = 0;
 };
 
