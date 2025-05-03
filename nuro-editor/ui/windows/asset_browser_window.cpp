@@ -374,7 +374,7 @@ void AssetBrowserWindow::renderSideFolder(ImDrawList& drawList, FolderRef folder
 	// Priority #3:  Color when item is hovered
 	if (hovered) color = UIUtils::lighten(color, 0.75f);
 	// Priority #2: Color when item is selected
-	if (selected) color = UIUtils::windowFocused() ? EditorColor::selection : EditorColor::selectionInactive;
+	if (selected) color = UIUtils::windowFocused() ? IM_COL32(57, 80, 157, 255) : EditorColor::selectionInactive;
 
 	//
 	// DRAW ITEM BACKGROUND
