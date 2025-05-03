@@ -3,6 +3,8 @@ project(nuro-editor)
 set(SOURCE_FILES 
 	assetsys/asset_meta.h
 	assetsys/editor_asset.h
+	assetsys/fallback_asset.h
+	assetsys/font_asset.h
 	assetsys/texture_asset.h
 	pipelines/game_view_pipeline.h
 	pipelines/preview_pipeline.h
@@ -49,6 +51,8 @@ set(SOURCE_FILES
 
 	main.cpp
 	assetsys/asset_meta.cpp
+	assetsys/fallback_asset.cpp
+	assetsys/font_asset.cpp
 	assetsys/texture_asset.cpp
 	pipelines/game_view_pipeline.cpp
 	pipelines/preview_pipeline.cpp

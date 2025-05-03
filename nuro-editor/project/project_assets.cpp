@@ -17,21 +17,25 @@ assetSIDs()
 
 AssetSID ProjectAssets::load(const FS::Path& relativePath)
 {
-	FS::Path absolutePath = FS::Path(Runtime::projectManager().project().path) / relativePath;
+	FS::Path absolutePath = Runtime::projectManager().abs(relativePath);
 
-	// Try to fetch asset info
+	//
+	// PREPARE ASSET
+	//
+
+	// Try to fetch asset type info
 	auto assetInfo = AssetRegistry::fetchByPath(relativePath);
 	if (!assetInfo) 
 		return 0;
 
 	// Create asset instance
-	auto asset = assetInfo->createInstance();
+	AssetRef asset = assetInfo->createInstance();
 	asset->_assetType = assetInfo->type;
 	asset->_assetPath = relativePath;
 	asset->_assetKey.sessionID = createSID();
 
 	//
-	// METADATA
+	// LOAD OR CREATE METADATA
 	//
 
 	FS::Path metaPath = absolutePath.string() + ".meta";
@@ -57,11 +61,19 @@ AssetSID ProjectAssets::load(const FS::Path& relativePath)
 	if (!asset->_assetKey.guid.isValid()) 
 		return 0;
 
+	//
+	// REGISTER ASSET
+	//
+
 	// Register asset instance
 	assets[asset->_assetKey.sessionID] = asset;
 
 	// Register asset guid and session id link
 	assetSIDs[asset->_assetKey.guid] = asset->_assetKey.sessionID;
+
+	//
+	// ASSET LOAD EVENT
+	//
 
 	// Asset default load event
 	asset->onDefaultLoad(metaPath);
@@ -71,18 +83,17 @@ AssetSID ProjectAssets::load(const FS::Path& relativePath)
 
 void ProjectAssets::remove(AssetSID id)
 {
-	// Try to find asset id
+	// Try to find asset
 	auto it = assets.find(id);
 	if (it == assets.end())
 		return;
 	AssetRef asset = it->second;
 
 	// Cache assets path
-	FS::Path relativePath = asset->_assetPath;
-	FS::Path absolutePath = FS::Path(Runtime::projectManager().project().path) / relativePath;
+	FS::Path absolutePath = Runtime::projectManager().abs(asset->_assetPath);
 
 	// Unloads asset and removes it
-	it->second->onUnload();
+	asset->onUnload();
 	assets.erase(it);
 
 	// Delete assets metafile if existing
@@ -93,7 +104,14 @@ void ProjectAssets::remove(AssetSID id)
 
 bool ProjectAssets::reload(AssetSID id)
 {
-	// Reload an asset...
+	// Try to find asset
+	auto it = assets.find(id);
+	if (it == assets.end())
+		return false;
+	AssetRef asset = it->second;
+
+	// Reload asset
+	asset->onReload();
 	return true;
 }
 

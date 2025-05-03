@@ -125,9 +125,7 @@ void AssetBrowserWindow::evaluateInputs()
 
 void AssetBrowserWindow::openNodeInApplication(const NodeRef& node)
 {
-	FS::Path projectPath = Runtime::projectManager().project().path;
-	FS::Path nodePath = node->path;
-	FS::Path fullPath = projectPath / nodePath;
+	FS::Path fullPath = Runtime::projectManager().abs(node->path);
 	std::string filename = fullPath.string();
 	std::string command;
 
@@ -317,6 +315,12 @@ ImVec2 AssetBrowserWindow::renderSideFolders(ImDrawList& drawList, ImVec2 positi
 		ImGui::Dummy(ImVec2(0.0f, 8.5f));
 	}
 	IMComponents::endClippedChild();
+
+	//
+	// DRAW BORDER
+	//
+
+	drawList.AddLine(p0 + ImVec2(width - 1.0f, 0.0f), p1, IM_COL32(50, 50, 50, 255), 2.0f);
 
 	return size;
 }

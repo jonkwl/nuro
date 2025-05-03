@@ -45,6 +45,7 @@ private:
 	static constexpr const char* messageIcon = ICON_FA_MESSAGE_LINES;
 	static constexpr const char* warningIcon = ICON_FA_TRIANGLE_EXCLAMATION;
 	static constexpr const char* errorIcon = ICON_FA_CIRCLE_EXCLAMATION;
+	static constexpr const char* clearIcon = ICON_FA_CROSS;
 
 	static std::deque<ConsoleLog> logs;
 	static std::vector<ConsoleLog> logsToAdd;

@@ -38,6 +38,9 @@ public:
 	// Returns the project assets
 	ProjectAssets& assets();
 
+	// Converts a relative path within the current project to an absolute path
+	FS::Path abs(const FS::Path& path);
+
 private:
 	// Ensures configuration of the current project exists, returns false if creating failed
 	bool ensureConfig();

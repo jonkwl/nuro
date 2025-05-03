@@ -16,8 +16,9 @@ TextureAsset::~TextureAsset()
 
 void TextureAsset::onDefaultLoad(const FS::Path& metaPath)
 {
-	load(TextureType::IMAGE);
-	AssetMeta::loadInto<Meta>(&meta, metaPath);
+	AssetMeta::loadMeta<Meta>(&meta, metaPath);
+
+	load(meta.type);
 }
 
 void TextureAsset::onUnload()
@@ -26,6 +27,11 @@ void TextureAsset::onUnload()
 		return;
 
 	ApplicationContext::resourceManager().release(textureResource->resourceId());
+}
+
+void TextureAsset::onReload()
+{
+	// Perform resource hot reload here
 }
 
 void TextureAsset::renderInspectableUI()
@@ -53,11 +59,6 @@ uint32_t TextureAsset::icon() const
 
 void TextureAsset::load(TextureType type)
 {
-	if (textureResource) {
-		Console::out::warning("Texture Asset", "HOT RELOAD TEXTURE!");
-		return; // Resource already created; later hot reload it here instead
-	}
-
 	std::string name = path().filename().string();
 
 	auto& resource = ApplicationContext::resourceManager();

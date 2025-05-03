@@ -26,6 +26,7 @@ public:
 
 	void onDefaultLoad(const FS::Path& metaPath) override;
 	void onUnload() override;
+	void onReload() override;
 
 	void renderInspectableUI() override;
 

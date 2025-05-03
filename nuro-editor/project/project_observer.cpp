@@ -107,7 +107,8 @@ void ProjectObserver::pollEvents()
 	// Fetch next io listener event
 	std::unique_ptr<IOEvent> event;
 	bool success = listener->eventQueue.try_dequeue(event);
-	if (!success) return;
+	if (!success) 
+		return;
 
 	// Get event related data
 	std::string filename = event->filename;
@@ -117,11 +118,12 @@ void ProjectObserver::pollEvents()
 	switch (event->action) {
 	case efsw::Action::Add:
 	{
-		FS::Path parentRelative = relativePath.parent_path();
+		// Find parent folder of action
+		auto parentFolder = findFolder(relativePath.parent_path(), projectStructure);
+		if (!parentFolder) 
+			break;
 
-		auto parentFolder = findFolder(parentRelative, projectStructure);
-		if (!parentFolder) break;
-
+		// Add folder or file
 		if (FS::isDirectory(absolutePath))
 			parentFolder->addFolder(filename);
 		else
@@ -131,32 +133,57 @@ void ProjectObserver::pollEvents()
 	}
 	case efsw::Action::Delete:
 	{
-		FS::Path parentRelative = relativePath.parent_path();
+		// Find parent folder of action
+		auto parentFolder = findFolder(relativePath.parent_path(), projectStructure);
+		if (!parentFolder) 
+			break;
 
-		auto parentFolder = findFolder(parentRelative, projectStructure);
-		if (!parentFolder) break;
-
+		// Remove folder or file
 		parentFolder->removeAny(filename);
 
 		break;
 	}
 	case efsw::Action::Modified:
+	{
+		// Find parent folder of action
+		auto parentFolder = findFolder(relativePath.parent_path(), projectStructure);
+		if (!parentFolder)
+			break;
+
+		// Find modified file
+		auto fileIt = std::find_if(parentFolder->files.begin(), parentFolder->files.end(),
+			[&filename](const std::shared_ptr<File>& file) {
+				return file->name == filename;
+			});
+
+		// Reload asset if available
+		if (fileIt != parentFolder->files.end()) {
+			std::shared_ptr<File> modifiedFile = *fileIt;
+			if (modifiedFile->assetId)
+				Runtime::projectManager().assets().reload(modifiedFile->assetId);
+		}
+
 		break;
+	}
 	case efsw::Action::Moved:
 	{
+		// Find old parent folder of action
 		FS::Path oldRelativePath(event->oldFilename);
-		FS::Path oldParentRelative = oldRelativePath.parent_path();
-		auto oldParentFolder = findFolder(oldParentRelative, projectStructure);
-		if (!oldParentFolder) break;
+		auto oldParentFolder = findFolder(oldRelativePath.parent_path(), projectStructure);
+		if (!oldParentFolder) 
+			break;
 
+		// Remove old folder or file
 		std::string oldBaseName = oldRelativePath.filename().string();
 		oldParentFolder->removeAny(oldBaseName);
 
+		// Find new parent folder of action
 		std::string newBaseName = absolutePath.filename().string();
-		FS::Path newParentRelative = relativePath.parent_path();
-		auto newParentFolder = findFolder(newParentRelative, projectStructure);
-		if (!newParentFolder) break;
+		auto newParentFolder = findFolder(relativePath.parent_path(), projectStructure);
+		if (!newParentFolder) 
+			break;
 
+		// Recreate folder or file
 		if (FS::isDirectory(absolutePath))
 			newParentFolder->addFolder(newBaseName);
 		else

@@ -16,7 +16,7 @@ struct AssetInfo {
 	using AssetID = uint32_t;
 
 	// Type of the asset
-	AssetType type = AssetType::UNKNOWN;
+	AssetType type = AssetType::FALLBACK;
 
 	// Function to create an asset instance from this asset
 	std::function<AssetRef()> createInstance;
@@ -24,7 +24,7 @@ struct AssetInfo {
 	// Function to inspect this asset type by an assets id
 	std::function<void(AssetID)> inspect;
 
-}; 
+};
 
 namespace AssetRegistry {
 

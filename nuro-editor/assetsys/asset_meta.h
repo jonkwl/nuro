@@ -81,9 +81,9 @@ namespace AssetMeta {
 		}
 	}
 
-	// Loads an assets metadata into its slot
+	// Loads an assets metadata from a metadata file
 	template <typename T>
-	void loadInto(T* slot, const FS::Path& path) {
+	void loadMeta(T* slot, const FS::Path& path) {
 		auto meta = deserialize<T>(path);
 		if (!meta) {
 			*slot = T();

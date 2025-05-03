@@ -11,10 +11,11 @@
 class ProjectAssets;
 
 enum class AssetType {
-	UNKNOWN,
+	FALLBACK,
 
 	ANIMATION,
 	AUDIO_CLIP,
+	FONT,
 	MATERIAL,
 	MODEL,
 	TEXTURE
@@ -40,7 +41,7 @@ private:
 	bool _assetLoading;
 
 protected:
-	EditorAsset() : _assetKey(), _assetType(AssetType::UNKNOWN), _assetPath(), _assetDependencies(), _assetLoading(false) {};
+	EditorAsset() : _assetKey(), _assetType(AssetType::FALLBACK), _assetPath(), _assetDependencies(), _assetLoading(false) {};
 
 public:
 	virtual ~EditorAsset() = 0;
@@ -75,6 +76,9 @@ public:
 
 	// Event when the asset is unloaded or destroyed within the editor
 	virtual void onUnload() = 0;
+
+	// Event when the asset is reloaded, e.g. due to file modifications
+	virtual void onReload() = 0;
 
 	// Renders the assets insight panel inspectable ui
 	virtual void renderInspectableUI() = 0;

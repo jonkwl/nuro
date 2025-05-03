@@ -50,6 +50,11 @@ ProjectAssets& ProjectManager::assets()
 	return _assets;
 }
 
+FS::Path ProjectManager::abs(const FS::Path& path)
+{
+	return _project.path / path;
+}
+
 bool ProjectManager::ensureConfig()
 {
 	// Default configuration path
