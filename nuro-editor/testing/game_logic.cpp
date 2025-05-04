@@ -112,6 +112,15 @@ void _physics_example() {
 	pointLightSource.range = 25.0f;
 	pointLightSource.falloff = 15.0f;
 
+	Profiler::start("SERIALIZE_A");
+	auto json = ECSReflection::serializeComponent(pointLightSource);
+	Console::out::info(json.dump(4));
+	Profiler::stop("SERIALIZE_A");
+	Console::out::info("Serialized in: " + std::to_string(Profiler::getUs("SERIALIZE_A")) + "us");
+
+	EntityContainer xauto(ecs.createEntity("Copied PL"));
+	ECSReflection::deserializeComponent(xauto.handle(), json);
+
 	// Sample spotlight
 	EntityContainer flashlight(ecs.createEntity("Flashlight", camera.handle()));
 	Transform::setPosition(flashlight.transform(), glm::vec3(0.0f, 6.0f, 5.0f));
@@ -211,7 +220,7 @@ void _physics_example() {
 	asyncModelMr.material = scifiMaterial;
 
 	// Cube batch
-	int objectAmount = 128;
+	int objectAmount = 28;
 	uint32_t c = 1;
 	for (int x = 0; x < std::sqrt(objectAmount); x++) {
 		for (int y = 0; y < std::sqrt(objectAmount); y++) {

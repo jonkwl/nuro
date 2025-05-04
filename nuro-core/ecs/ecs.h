@@ -9,6 +9,7 @@
 
 #include <utils/console.h>
 #include <ecs/components.h>
+#include <ecs/ecs_reflection.h>
 
 using namespace entt::literals;
 

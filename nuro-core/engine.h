@@ -11,6 +11,7 @@
 #include <audio/audio_source.h>
 #include <ecs/ecs_collection.h>
 #include <transform/transform.h>
+#include <diagnostics/profiler.h>
 #include <glm/gtc/quaternion.hpp>
 #include <rendering/model/model.h>
 #include <rendering/gizmos/gizmos.h>

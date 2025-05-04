@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <entt/entt.hpp>
 #include <PxPhysicsAPI.h>
+#include <nlohmann/json.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 #include <audio/audio_clip.h>

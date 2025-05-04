@@ -56,6 +56,8 @@ set(SOURCE_FILES
 	rendering/texture/texture.h
 	rendering/transformation/transformation.h
 	rendering/velocitybuffer/velocity_buffer.h
+	scene/scene.h
+	scene/scene_manager.h
 	memory/resource.h
 	memory/resource_manager.h
 	memory/resource_pipe.h
@@ -114,6 +116,8 @@ set(SOURCE_FILES
 	rendering/texture/texture.cpp
 	rendering/transformation/transformation.cpp
 	rendering/velocitybuffer/velocity_buffer.cpp
+	scene/scene.cpp
+	scene/scene_manager.cpp
 	memory/resource_manager.cpp
 	time/time.cpp
 	transform/transform.cpp
@@ -146,6 +150,7 @@ target_link_libraries(${PROJECT_NAME}
 	PUBLIC
 		glad::glad 
 		glm::glm 
+		nlohmann_json::nlohmann_json
 		unofficial::omniverse-physx-sdk::sdk
 	PRIVATE 
 		assimp::assimp

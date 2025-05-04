@@ -316,12 +316,6 @@ ImVec2 AssetBrowserWindow::renderSideFolders(ImDrawList& drawList, ImVec2 positi
 	}
 	IMComponents::endClippedChild();
 
-	//
-	// DRAW BORDER
-	//
-
-	drawList.AddLine(p0 + ImVec2(width - 1.0f, 0.0f), p1, IM_COL32(50, 50, 50, 255), 2.0f);
-
 	return size;
 }
 
@@ -546,6 +540,12 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 		ImGui::SetCursorPos(cursor + ImVec2(0.0f, padding.y + lastAssetSize.y));
 	}
 	IMComponents::endClippedChild();
+
+	//
+	// DRAW BORDER
+	//
+
+	// drawList.AddLine(p0, ImVec2(p0.x, p1.y), IM_COL32(50, 50, 50, 255), 2.0f);
 }
 
 bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position)

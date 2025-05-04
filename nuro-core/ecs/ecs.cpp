@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 
 #include <utils/console.h>
-#include <ecs/ecs_reflection.h>
 #include <audio/audio_context.h>
 #include <transform/transform.h>
 

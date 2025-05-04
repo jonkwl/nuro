@@ -5,8 +5,8 @@
 #include <optional>
 
 #include <rfl.hpp>
-#include <rfl/yaml.hpp>
-#include <yaml-cpp/yaml.h>
+#include <rfl/json.hpp>
+#include <nlohmann/json.hpp>
 
 #include <utils/guid.h>
 #include <utils/fsutil.h>
@@ -40,7 +40,9 @@ namespace AssetMeta {
 		// Try to serialize object
 		std::string serialized;
 		try {
-			serialized = rfl::yaml::write(obj);
+			serialized = rfl::json::write(obj);
+			auto json = nlohmann::json::parse(serialized);
+			serialized = json.dump(4);
 		}
 		catch (const std::exception& e) {
 			std::string err = std::string(e.what());
@@ -54,6 +56,8 @@ namespace AssetMeta {
 
 		// Write serialized object to metadata file
 		FS::writeFile(path, serialized);
+
+		return true;
 	}
 
 	// Deserializes a metadata file, returns optional of deserialized object depending on success
@@ -71,7 +75,7 @@ namespace AssetMeta {
 
 		// Try to deserialize metadata source
 		try {
-			const T obj = rfl::yaml::read<T>(source).value();
+			const T obj = rfl::json::read<T>(source).value();
 			return obj;
 		}
 		catch (const std::exception& e) {
