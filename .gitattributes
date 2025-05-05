@@ -2,19 +2,16 @@
 *.cpp    text
 *.h      text
 *.hpp    text
-
 # Object files, compiled binaries, and static libraries
 *.o      binary
 *.obj    binary
 *.a      binary
 *.lib    binary
 *.dll    binary
-
 # CMake and build system files
 CMakeLists.txt text
 *.cmake   text
 Makefile  text
-
 # Asset files (handled as binary)
 *.ttf    binary
 *.otf    binary
@@ -33,13 +30,16 @@ Makefile  text
 *.dae    binary
 *.3ds    binary
 *.blend  binary
-
 # Ignore temporary and IDE specific files
 .vscode/* binary
 .idea/*   binary
 *.user    binary
 *.swp     binary
-
 # Miscellaneous
 *.log    text
 *.md     text
+resources/*.png filter=lfs diff=lfs merge=lfs -text
+resources/*.fbx filter=lfs diff=lfs merge=lfs -text
+resources/*.jpg filter=lfs diff=lfs merge=lfs -text
+resources/*.ttf filter=lfs diff=lfs merge=lfs -text
+resources/*.otf filter=lfs diff=lfs merge=lfs -text
