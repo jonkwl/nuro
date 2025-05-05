@@ -3,6 +3,7 @@
 #include <utils/console.h>
 
 #include "../runtime/runtime.h"
+#include "../ui/windows/asset_browser_window.h"
 
 ProjectObserver::File::File(const std::string& name, const FS::Path& path) : IONode(name, path), assetId(0)
 {
@@ -224,6 +225,9 @@ void ProjectObserver::setTarget(const FS::Path& path)
 
 	folderRegistry.clear();
 	projectStructure = createFolder(target);
+
+	if (projectStructure)
+		AssetBrowserWindow::selectFolder(projectStructure->id);
 
 	if (watchId)
 		watcher->removeWatch(watchId);

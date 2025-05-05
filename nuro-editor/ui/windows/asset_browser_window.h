@@ -20,6 +20,12 @@ public:
 
 	void render() override;
 
+	// Selects a folder by its io node id
+	static void selectFolder(uint32_t folderId);
+
+	// Unselects the currently selected folder if any
+	static void unselectFolder();
+
 private:
 	struct NodeUIData {
 		std::string text;
@@ -50,10 +56,10 @@ private:
 	float targetAssetScale;
 
 	// Currently selected folders io node id
-	uint32_t selectedFolder;
+	static uint32_t selectedFolder;
 
 	// Currently selected io nodes id
-	uint32_t selectedNode;
+	static uint32_t selectedNode;
 
 	// Checks for asset broser related inputs
 	void evaluateInputs();
@@ -63,12 +69,6 @@ private:
 
 	// Opens an io nodes path using the system default explorer
 	void openNodeInExplorer(const NodeRef& node);
-
-	// Selects a folder by its io node id
-	void selectFolder(uint32_t folderId);
-
-	// Unselects the currently selected folder if any
-	void unselectFolder();
 
 	//
 	// RENDERING FUNCTIONS

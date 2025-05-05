@@ -14,12 +14,13 @@
 #include "../reflection/asset_registry.h"
 #include "../ui/windows/insight_panel_window.h"
 
+uint32_t AssetBrowserWindow::selectedFolder = 0;
+uint32_t AssetBrowserWindow::selectedNode = 0;
+
 AssetBrowserWindow::AssetBrowserWindow() : observer(Runtime::projectManager().observer()),
 assets(Runtime::projectManager().assets()),
 assetScale(1.0f),
-targetAssetScale(1.0f),
-selectedFolder(0),
-selectedNode(0)
+targetAssetScale(1.0f)
 {
 }
 
@@ -55,6 +56,17 @@ void AssetBrowserWindow::render()
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+void AssetBrowserWindow::selectFolder(uint32_t folderId)
+{
+	selectedFolder = folderId;
+	selectedNode = 0;
+}
+
+void AssetBrowserWindow::unselectFolder()
+{
+	selectFolder(0);
 }
 
 AssetBrowserWindow::NodeUIData AssetBrowserWindow::NodeUIData::createFor(const std::string& name, float scale)
@@ -201,17 +213,6 @@ void AssetBrowserWindow::openNodeInExplorer(const NodeRef& node)
 
 	if (!success)
 		Console::out::warning("Asset Browser", "Couldn't open path in explorer: '" + path.string() + "'");
-}
-
-void AssetBrowserWindow::selectFolder(uint32_t folderId)
-{
-	selectedFolder = folderId;
-	selectedNode = 0;
-}
-
-void AssetBrowserWindow::unselectFolder()
-{
-	selectFolder(0);
 }
 
 ImVec2 AssetBrowserWindow::renderNavigation(ImDrawList& drawList, ImVec2 position)
@@ -545,7 +546,7 @@ void AssetBrowserWindow::renderNodes(ImDrawList& drawList, ImVec2 position, ImVe
 	// DRAW BORDER
 	//
 
-	// drawList.AddLine(p0, ImVec2(p0.x, p1.y), IM_COL32(50, 50, 50, 255), 2.0f);
+	drawList.AddLine(p0, ImVec2(p0.x, p1.y), IM_COL32(50, 50, 50, 255), 2.0f);
 }
 
 bool AssetBrowserWindow::renderNode(ImDrawList& drawList, NodeRef node, const NodeUIData& uiData, ImVec2 position)
