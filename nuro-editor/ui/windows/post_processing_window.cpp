@@ -11,7 +11,7 @@ void PostProcessingWindow::render()
 	std::string title = UIUtils::windowTitle("Post Processing");
 	ImGui::Begin(title.c_str(), nullptr, EditorFlag::standard);
 	{
-		IMComponents::headline("Post Processing", ICON_FA_SPARKLES);
+		IMComponents::headline("Post Processing", ICON_FA_WAND_MAGIC_SPARKLES);
 
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
 		IMComponents::label(ICON_FA_PENCIL "  Editing: Global Profile", EditorUI::getFonts().h4_bold);

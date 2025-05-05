@@ -61,22 +61,14 @@ namespace EditorUI {
 		gWindows.emplace_back(new T(std::forward<Args>(args)...));
 	}
 
+	// Loads and merges icons into font
 	void _mergeIcons(ImGuiIO& io, float fontSize) {
 		float iconsFontSize = fontSize * 2.0f / 3.0f;
-
 		ImFontConfig iconsConfig;
 		iconsConfig.MergeMode = true;
 		iconsConfig.PixelSnapH = true;
 		iconsConfig.GlyphMinAdvanceX = iconsFontSize;
-		
-		// Check if full iconpack exists
-		if (FS::exists(FS::Path(EditorFontPath::iconsFull))) {
-			gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::iconsFull, iconsFontSize, &iconsConfig, gIconRange);
-		}
-		// Load open source icons
-		else {
-			gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
-		}
+		gFonts.icons = io.Fonts->AddFontFromFileTTF(EditorFontPath::icons, iconsFontSize, &iconsConfig, gIconRange);
 	}
 
 	void setup()
@@ -101,12 +93,7 @@ namespace EditorUI {
 
 		//
 		// LOAD FONTS
-		//	
-
-		// Full iconpack exists, print warning
-		if (!FS::exists(FS::Path(EditorFontPath::iconsFull))) {
-			Console::out::warning("Editor UI", "Licensed icons aren't available when cloned from the open source repository");
-		}
+		//
 
 		// p
 		gFonts.p = io.Fonts->AddFontFromFileTTF(EditorFontPath::regular, EditorSizing::p_FontSize);

@@ -33,7 +33,7 @@ void ConsoleWindow::render()
 		toolbarPos += ImVec2(toolbarOffset, 0.0f);
 		
 		// Draw clear button
-		//if (IMComponents::buttonBig(ICON_FA_BRROM_WIDE " Clear")) logs.clear();
+		// if (IMComponents::buttonBig(ICON_FA_CIRCLE_XMARK " Clear")) logs.clear();
 		
 		// Advance cursor
 		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0.0f, 50.0f));

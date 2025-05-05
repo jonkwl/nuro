@@ -22,8 +22,6 @@ void _physics_example() {
 	// Get ecs
 	ECS& ecs = ECS::main();
 
-	Texture* texture = new Texture();
-
 	// Models
 	const Mesh* planeMesh = Shapes::createPlane();
 	const Mesh* cubeMesh = Shapes::createCube();
@@ -111,15 +109,6 @@ void _physics_example() {
 	pointLightSource.color = glm::vec3(0.5f, 0.0f, 1.0f);
 	pointLightSource.range = 25.0f;
 	pointLightSource.falloff = 15.0f;
-
-	Profiler::start("SERIALIZE_A");
-	auto json = ECSReflection::serializeComponent(pointLightSource);
-	Console::out::info(json.dump(4));
-	Profiler::stop("SERIALIZE_A");
-	Console::out::info("Serialized in: " + std::to_string(Profiler::getUs("SERIALIZE_A")) + "us");
-
-	EntityContainer xauto(ecs.createEntity("Copied PL"));
-	ECSReflection::deserializeComponent(xauto.handle(), json);
 
 	// Sample spotlight
 	EntityContainer flashlight(ecs.createEntity("Flashlight", camera.handle()));

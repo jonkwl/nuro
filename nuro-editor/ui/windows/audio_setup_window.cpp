@@ -106,7 +106,7 @@ void AudioSetupWindow::render()
 		ImGui::Separator();
 		ImGui::Dummy(ImVec2(0.0f, 12.0f));
 
-		IMComponents::label("Effects   " ICON_FA_SPARKLES, EditorUI::getFonts().h4_bold);
+		IMComponents::label("Effects   " ICON_FA_WAND_MAGIC_SPARKLES, EditorUI::getFonts().h4_bold);
 		ImGui::Dummy(ImVec2(0.0f, 8.0f));
 
 		IMComponents::flagLabel("Environmental Effects", audio.effectsAvailable(), true);

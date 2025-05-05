@@ -1407,29 +1407,3 @@
 #define ICON_FA_YEN_SIGN "\xef\x85\x97"                               // U+f157
 #define ICON_FA_YIN_YANG "\xef\x9a\xad"                               // U+f6ad
 #define ICON_FA_Z "Z"                                                 // U+005a
-
-// CUSTOM DEFINITIONS
-#define ICON_FA_FRAME "\xee\x92\x95" // U+e495
-#define ICON_FA_EMPTY_SET "\xEF\x99\x96" // U+f656
-#define ICON_FA_ECLIPSE "\xEF\x9D\x89" // U+f749
-#define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
-#define ICON_FA_MONITOR_WAVEFORM "\xEF\x98\x91" // U+f611
-#define ICON_FA_SPARKLES "\xEF\xA2\x90" // U+f890
-#define ICON_FA_PROJECTOR "\xEF\xA3\x96" // U+f8d6
-#define ICON_FA_RABBIT_RUNNING "\xEF\x9C\x89" // U+f709
-#define ICON_FA_BRAKE_WARNING "\xEE\x83\x87" // U+e0c7
-#define ICON_FA_XMARK_LARGE "\xEE\x96\x9B" // U+e59b
-#define ICON_FA_MESSAGE_LINES "\xEF\x92\xA6" // U+f4a6
-#define ICON_FA_BRROM_WIDE "\xEE\x97\x91" // U+e5d1
-#define ICON_FA_CLOUDS_SUN "\xEF\x9D\x86" // U+f746
-#define ICON_FA_DRAW_SQUARE "\xEF\x97\xAF" // U+f5ef
-#define ICON_FA_LOCATION_PLUS "\xEF\x98\x8A" // U+f60a
-#define ICON_FA_ARROW_TURN_DOWN_RIGHT "\xEE\x8F\x96" // U+e3d6
-#define ICON_FA_ARROW_TURN_DOWN_LEFT "\xEE\x8B\xA1" // U+e2e1
-#define ICON_FA_LEFT_FROM_LINE "\xEF\x8D\x88" // U+f348
-#define ICON_FA_OCTAGON_PLUS "\xEF\x8C\x81" // U+f301
-#define ICON_FA_LAYER_PLUS "\xEF\x97\xBF" // U+f5ff
-#define ICON_FA_CRATE_EMPTY "\xEE\x85\x91" // U+e151
-#define ICON_FA_CAMERA_MOVIE "\xEF\xA2\xA9" // U+f8a9
-#define ICON_FA_CIRLCE_XMARK "\xEF\x81\x97" // U+f057
-#define ICON_FA_CHART_SCATTER_3D "\xEE\x83\xA8" // U+e0e8

@@ -449,12 +449,12 @@ void RegistryWindow::renderContextMenu()
 			ContextMenu::seperator();
 		}
 
-		if (ContextMenu::item(ICON_FA_LAYER_PLUS, "Empty Entity"))
+		if (ContextMenu::item(ICON_FA_PLUS, "Empty Entity"))
 		{
 			// Handle empty entity
 		}
 
-		if (ContextMenu::item(ICON_FA_CAMERA_MOVIE, "Camera"))
+		if (ContextMenu::item(ICON_FA_CAMERA, "Camera"))
 		{
 			// Handle camera
 		}

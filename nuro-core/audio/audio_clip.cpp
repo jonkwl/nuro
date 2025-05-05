@@ -107,8 +107,6 @@ void AudioClip::freeIoData()
 
 bool AudioClip::uploadBuffers()
 {
-    printInfo();
-
     // Create mono buffer (mandatory)
     AudioSamples* monoSamples = _data.monoSamples();
     if (!monoSamples) return false;

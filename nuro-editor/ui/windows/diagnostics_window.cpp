@@ -21,7 +21,7 @@ void DiagnosticsWindow::render()
 	std::string title = UIUtils::windowTitle("Diagnostics");
 	ImGui::Begin(title.c_str(), nullptr, EditorFlag::fixed);
 	{
-		IMComponents::headline("Diagnostics", ICON_FA_MONITOR_WAVEFORM);
+		IMComponents::headline("Diagnostics", ICON_FA_HEART_PULSE);
 
 		IMComponents::indicatorLabel("Average FPS:", Diagnostics::getAverageFps());
 

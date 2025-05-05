@@ -63,10 +63,10 @@ gizmoScaleMin(0.1f)
 	// Setup main toggles
 	SceneViewPipeline& pipeline = Runtime::sceneViewPipeline();
 	mainToggles.addItem(ICON_FA_CUBE, pipeline.wireframe);
-	mainToggles.addItem(ICON_FA_ECLIPSE, pipeline.renderingShadows);
+	mainToggles.addItem(ICON_FA_CIRCLE, pipeline.renderingShadows);
 	mainToggles.addItem(ICON_FA_SUN, pipeline.showSkybox);
-	mainToggles.addItem(ICON_FA_SPARKLES, pipeline.useProfileEffects);
-	mainToggles.addItem(ICON_FA_DRAW_SQUARE, pipeline.showGizmos);
+	mainToggles.addItem(ICON_FA_WAND_MAGIC_SPARKLES, pipeline.useProfileEffects);
+	mainToggles.addItem(ICON_FA_DIAMOND, pipeline.showGizmos);
 
 	// Setup play toggles
 	static bool tmp = false;

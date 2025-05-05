@@ -42,7 +42,7 @@ private:
 	bool showErrors;
 
 	static constexpr int32_t maxLogs = 300;
-	static constexpr const char* messageIcon = ICON_FA_MESSAGE_LINES;
+	static constexpr const char* messageIcon = ICON_FA_COMMENT;
 	static constexpr const char* warningIcon = ICON_FA_TRIANGLE_EXCLAMATION;
 	static constexpr const char* errorIcon = ICON_FA_CIRCLE_EXCLAMATION;
 	static constexpr const char* clearIcon = ICON_FA_CROSS;
