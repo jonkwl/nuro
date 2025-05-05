@@ -38,8 +38,8 @@ Makefile  text
 # Miscellaneous
 *.log    text
 *.md     text
-resources/*.png filter=lfs diff=lfs merge=lfs -text
-resources/*.fbx filter=lfs diff=lfs merge=lfs -text
-resources/*.jpg filter=lfs diff=lfs merge=lfs -text
-resources/*.ttf filter=lfs diff=lfs merge=lfs -text
-resources/*.otf filter=lfs diff=lfs merge=lfs -text
+resources/**/*.png filter=lfs diff=lfs merge=lfs -text
+resources/**/*.fbx filter=lfs diff=lfs merge=lfs -text
+resources/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+resources/**/*.ttf filter=lfs diff=lfs merge=lfs -text
+resources/**/*.otf filter=lfs diff=lfs merge=lfs -text

@@ -438,8 +438,4 @@ FodyWeavers.xsd
 build/
 
 /resources/skybox
-/resources/other
-/resources/icons
 /resources/example-assets
-
-**/iconpack-full.ttf
